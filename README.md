@@ -12,7 +12,7 @@ Built as a same-day pitch for principal Steven McLuckie following his 2026-05-21
 
 ```
 Data-Representation/
-├── Teacher Observation Pitch Deck.html   # the deck (open in any browser)
+├── index.html   # the deck (open in any browser)
 ├── Assets/brand/AIS Logo/                # runtime: AIS White.png + AIS Navy.png
 └── SPEA Data Report/                     # worked-example source files
     ├── Jo Mare Kruger from DB Files.jpg  # teacher portrait used on P1
