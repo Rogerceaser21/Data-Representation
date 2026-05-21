@@ -1041,6 +1041,41 @@ body {
 }
 .scroll-hint.hide { opacity: 0; pointer-events: none; }
 
+/* Version badge — bottom-right, links to GitHub releases for navigation */
+.version-badge {
+  position: fixed;
+  bottom: clamp(0.5rem, 1vw, 0.9rem);
+  right: clamp(1rem, 1.8vw, 1.5rem);
+  z-index: 90;
+  display: inline-flex; align-items: center; gap: 0.5em;
+  font-family: var(--body-font);
+  font-size: clamp(0.65rem, 0.85vw, 0.78rem);
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--paper-faint);
+  background: var(--surface-mid);
+  border: 1px solid var(--rule);
+  padding: 0.35em 0.85em;
+  border-radius: 999px;
+  text-decoration: none;
+  opacity: 0.55;
+  transition: opacity 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  -webkit-backdrop-filter: blur(6px);
+          backdrop-filter: blur(6px);
+}
+.version-badge:hover {
+  opacity: 1;
+  color: var(--rate-verygood);
+  border-color: var(--rate-verygood);
+  transform: translateY(-1px);
+}
+.version-badge .dot {
+  width: 0.45em; height: 0.45em; border-radius: 50%;
+  background: var(--rate-verygood);
+  box-shadow: 0 0 6px var(--rate-verygood);
+}
+
 /* Animations */
 .reveal { opacity: 0; transform: translateY(14px); animation: reveal 0.9s cubic-bezier(.2,.7,.2,1) forwards; animation-play-state: paused; }
 .slide.active .reveal { animation-play-state: running; }
@@ -1138,7 +1173,7 @@ body {
   :root { color-scheme: light; }
   html, body { background: #ffffff !important; overflow: visible !important; height: auto !important; }
   body { margin: 0; color: #0f1530 !important; }
-  .fab-cluster, .nav-dots, .scroll-hint, .theme-toggle { display: none !important; }
+  .fab-cluster, .nav-dots, .scroll-hint, .theme-toggle, .version-badge { display: none !important; }
   .deck-track { height: auto !important; position: static !important; }
   .slide {
     position: static !important; opacity: 1 !important;
@@ -1169,7 +1204,7 @@ body {
         <img src="Assets/brand/AIS Logo/AIS White.png" data-light-src="Assets/brand/AIS Logo/AIS Navy.png" alt="AIS" class="logo">
         <span class="school">Australian International School · Sharjah</span>
       </div>
-      <span class="term-tag">Teacher Observation · Pitch v0.1</span>
+      <span class="term-tag">Teacher Observation · Pitch v0.4</span>
     </div>
     <div class="cover-hero">
       <span class="cover-kicker reveal r2"><span class="stripe"></span>Teacher Profile Dashboard</span>
@@ -1214,7 +1249,7 @@ body {
     <div class="masthead reveal r1">
       <span class="brand">
         <img src="Assets/brand/AIS Logo/AIS White.png" data-light-src="Assets/brand/AIS Logo/AIS Navy.png" alt="AIS" class="ais-logo">
-        <span class="school">Teacher Observation · Pitch v0.1</span>
+        <span class="school">Teacher Observation · Pitch v0.4</span>
       </span>
       <span class="pg">02 / 05 · Rating scale</span>
     </div>
@@ -1273,7 +1308,7 @@ body {
     <div class="masthead reveal r1">
       <span class="brand">
         <img src="Assets/brand/AIS Logo/AIS White.png" data-light-src="Assets/brand/AIS Logo/AIS Navy.png" alt="AIS" class="ais-logo">
-        <span class="school">Teacher Observation · Pitch v0.1</span>
+        <span class="school">Teacher Observation · Pitch v0.4</span>
       </span>
       <span class="pg">03 / 05 · Teacher dashboard</span>
     </div>
@@ -1398,7 +1433,7 @@ body {
     <div class="masthead reveal r1">
       <span class="brand">
         <img src="Assets/brand/AIS Logo/AIS White.png" data-light-src="Assets/brand/AIS Logo/AIS Navy.png" alt="AIS" class="ais-logo">
-        <span class="school">Teacher Observation · Pitch v0.1</span>
+        <span class="school">Teacher Observation · Pitch v0.4</span>
       </span>
       <span class="pg">04 / 05 · Department dashboard</span>
     </div>
@@ -1575,7 +1610,7 @@ body {
     <div class="masthead reveal r1">
       <span class="brand">
         <img src="Assets/brand/AIS Logo/AIS White.png" data-light-src="Assets/brand/AIS Logo/AIS Navy.png" alt="AIS" class="ais-logo">
-        <span class="school">Teacher Observation · Pitch v0.1</span>
+        <span class="school">Teacher Observation · Pitch v0.4</span>
       </span>
       <span class="pg">05 / 05 · The build</span>
     </div>
@@ -1629,7 +1664,7 @@ body {
     </div>
 
     <div class="floor reveal r10">
-      <span>Pitch · v0.1 · For SLT discussion</span>
+      <span>Pitch · v0.4 · For SLT discussion</span>
       <span>Australian International School Sharjah</span>
     </div>
   </div>
@@ -1650,6 +1685,11 @@ body {
 <div class="fab-cluster">
   <button class="fab-pdf" onclick="window.print()" title="Save this pitch as a PDF">Save as PDF</button>
 </div>
+
+<a class="version-badge" href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener" title="Browse all versions of this deck on GitHub">
+  <span class="dot"></span>
+  <span>v0.4</span>
+</a>
 
 <button class="scroll-hint" id="scroll-hint" aria-label="Next slide">
   <span class="chev"></span>
