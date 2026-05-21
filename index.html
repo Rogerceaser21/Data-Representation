@@ -523,9 +523,9 @@ body {
     var(--rate-verygood)           45deg  89deg, transparent  89deg  90deg,
     var(--rate-outstanding)        90deg 134deg, transparent 134deg 135deg,
     var(--rate-outstanding)       135deg 179deg, transparent 179deg 180deg,
-    var(--rate-sound)             180deg 224deg, transparent 224deg 225deg,
-    var(--rate-outstanding)       225deg 269deg, transparent 269deg 270deg,
-    var(--rate-verygood)          270deg 314deg, transparent 314deg 315deg,
+    var(--rate-outstanding)       180deg 224deg, transparent 224deg 225deg,
+    var(--rate-verygood)          225deg 269deg, transparent 269deg 270deg,
+    var(--rate-not-assessed)      270deg 314deg, transparent 314deg 315deg,
     var(--rate-not-assessed)      315deg 359deg, transparent 359deg 360deg
   );
   filter: drop-shadow(0 12px 30px rgba(0,0,0,0.35));
@@ -799,6 +799,7 @@ body {
 .mx-dot.o { background: var(--rate-outstanding); }
 .mx-dot.v { background: var(--rate-verygood); }
 .mx-dot.s { background: var(--rate-sound); }
+.mx-dot.na { background: transparent; border: 1px dashed var(--rule); }
 .mx-overall {
   text-align: center;
   font-family: var(--body-font);
@@ -1288,14 +1289,13 @@ body {
           <div class="donut-hole">
             <span class="ovr-label">Overall</span>
             <span class="ovr-value">Outstanding</span>
-            <span class="ovr-frac">4 · 2 · 1 of 7 rated</span>
+            <span class="ovr-frac">6 of 8 rated</span>
           </div>
         </div>
         <div class="donut-legend">
           <span class="item"><span class="swatch o"></span>Outstanding · 4</span>
           <span class="item"><span class="swatch v"></span>Very Good · 2</span>
-          <span class="item"><span class="swatch s"></span>Sound · 1</span>
-          <span class="item"><span class="swatch na"></span>Not assessed · 1</span>
+          <span class="item"><span class="swatch na"></span>Not assessed · 2</span>
         </div>
         <div class="donut-tagline">
           Aggregated across all observation types for the current cycle.
@@ -1344,18 +1344,8 @@ body {
           </div>
           <span class="rating-pill outstanding">Outstanding</span>
         </div>
-        <div class="cat-card is-sound reveal r7">
+        <div class="cat-card is-outstanding reveal r7">
           <span class="cat-num">05</span>
-          <div class="cat-meta">
-            <div class="cat-name">File Attachments</div>
-            <div class="cat-actions">
-              <span class="cat-action is-pending">Link pending</span>
-            </div>
-          </div>
-          <span class="rating-pill sound">Sound</span>
-        </div>
-        <div class="cat-card is-outstanding reveal r8">
-          <span class="cat-num">06</span>
           <div class="cat-meta">
             <div class="cat-name">Classroom Profiling ESCM</div>
             <div class="cat-actions">
@@ -1365,7 +1355,7 @@ body {
           <span class="rating-pill outstanding">Outstanding</span>
         </div>
         <div class="cat-card is-verygood reveal r8">
-          <span class="cat-num">07</span>
+          <span class="cat-num">06</span>
           <div class="cat-meta">
             <div class="cat-name">OTP &amp; APR (Self-Assessment)</div>
             <div class="cat-actions">
@@ -1374,11 +1364,19 @@ body {
           </div>
           <span class="rating-pill verygood">Very Good</span>
         </div>
-        <div class="cat-card is-not-assessed reveal r9">
-          <span class="cat-num">08</span>
+        <div class="cat-card is-not-assessed reveal r8">
+          <span class="cat-num">07</span>
           <div class="cat-meta">
             <div class="cat-name">Additional Notes &amp; Attachments</div>
             <div class="cat-sub">Reference material &amp; supporting evidence · provided for context</div>
+          </div>
+          <span class="rating-pill not-assessed">Not Assessed</span>
+        </div>
+        <div class="cat-card is-not-assessed reveal r9">
+          <span class="cat-num">08</span>
+          <div class="cat-meta">
+            <div class="cat-name">File Attachments</div>
+            <div class="cat-sub">Supporting evidence uploads · provided for context</div>
           </div>
           <span class="rating-pill not-assessed">Not Assessed</span>
         </div>
@@ -1439,10 +1437,10 @@ body {
         <span class="col-h" title="Walkthroughs">02</span>
         <span class="col-h" title="Probationary Observations">03</span>
         <span class="col-h" title="Lesson Observations">04</span>
-        <span class="col-h" title="File Attachments">05</span>
-        <span class="col-h" title="Classroom Profiling ESCM">06</span>
-        <span class="col-h" title="OTP &amp; APR">07</span>
-        <span class="col-h" title="Additional Notes">08</span>
+        <span class="col-h" title="Classroom Profiling ESCM">05</span>
+        <span class="col-h" title="OTP &amp; APR">06</span>
+        <span class="col-h" title="Additional Notes">07</span>
+        <span class="col-h" title="File Attachments">08</span>
         <span class="col-h">Overall</span>
       </div>
       <div class="mx-row">
@@ -1457,10 +1455,10 @@ body {
         <span class="mx-dot v" title="Very Good"></span>
         <span class="mx-dot o"></span>
         <span class="mx-dot o"></span>
-        <span class="mx-dot s" title="Sound"></span>
         <span class="mx-dot o"></span>
         <span class="mx-dot v"></span>
-        <span class="mx-dot o"></span>
+        <span class="mx-dot na" title="Not assessed"></span>
+        <span class="mx-dot na"></span>
         <span class="mx-overall o">Outstanding</span>
       </div>
       <div class="mx-row">
@@ -1477,8 +1475,8 @@ body {
         <span class="mx-dot o"></span>
         <span class="mx-dot o"></span>
         <span class="mx-dot o"></span>
-        <span class="mx-dot o"></span>
-        <span class="mx-dot o"></span>
+        <span class="mx-dot na"></span>
+        <span class="mx-dot na"></span>
         <span class="mx-overall o">Outstanding</span>
       </div>
       <div class="mx-row">
@@ -1493,10 +1491,10 @@ body {
         <span class="mx-dot o"></span>
         <span class="mx-dot o"></span>
         <span class="mx-dot v"></span>
-        <span class="mx-dot o"></span>
         <span class="mx-dot v"></span>
         <span class="mx-dot o"></span>
-        <span class="mx-dot o"></span>
+        <span class="mx-dot na"></span>
+        <span class="mx-dot na"></span>
         <span class="mx-overall v">Very Good</span>
       </div>
       <div class="mx-row">
@@ -1511,10 +1509,10 @@ body {
         <span class="mx-dot o"></span>
         <span class="mx-dot o"></span>
         <span class="mx-dot o"></span>
-        <span class="mx-dot v"></span>
         <span class="mx-dot o"></span>
         <span class="mx-dot o"></span>
-        <span class="mx-dot v"></span>
+        <span class="mx-dot na"></span>
+        <span class="mx-dot na"></span>
         <span class="mx-overall o">Outstanding</span>
       </div>
       <div class="mx-row">
@@ -1529,10 +1527,10 @@ body {
         <span class="mx-dot v"></span>
         <span class="mx-dot v"></span>
         <span class="mx-dot o"></span>
-        <span class="mx-dot s"></span>
         <span class="mx-dot v"></span>
         <span class="mx-dot v"></span>
-        <span class="mx-dot o"></span>
+        <span class="mx-dot na"></span>
+        <span class="mx-dot na"></span>
         <span class="mx-overall v">Very Good</span>
       </div>
       <div class="mx-row">
@@ -1549,8 +1547,8 @@ body {
         <span class="mx-dot o"></span>
         <span class="mx-dot o"></span>
         <span class="mx-dot o"></span>
-        <span class="mx-dot o"></span>
-        <span class="mx-dot o"></span>
+        <span class="mx-dot na"></span>
+        <span class="mx-dot na"></span>
         <span class="mx-overall o">Outstanding</span>
       </div>
     </div>
@@ -1558,8 +1556,8 @@ body {
     <div class="matrix-legend reveal r9">
       <span class="grp"><span class="swatch o"></span>Outstanding</span>
       <span class="grp"><span class="swatch v"></span>Very Good</span>
-      <span class="grp"><span class="swatch s"></span>Sound</span>
-      <span class="grp" style="margin-left:auto;"><span class="kbd">01</span>SPEA <span class="kbd" style="margin-left:0.6rem;">02</span>Walkthroughs <span class="kbd" style="margin-left:0.6rem;">03</span>Probation <span class="kbd" style="margin-left:0.6rem;">04</span>Lesson Obs <span class="kbd" style="margin-left:0.6rem;">05</span>Files <span class="kbd" style="margin-left:0.6rem;">06</span>ESCM <span class="kbd" style="margin-left:0.6rem;">07</span>OTP/APR <span class="kbd" style="margin-left:0.6rem;">08</span>Notes</span>
+      <span class="grp"><span class="swatch" style="background:transparent;border:1px dashed var(--rule);"></span>Not assessed</span>
+      <span class="grp" style="margin-left:auto;"><span class="kbd">01</span>SPEA <span class="kbd" style="margin-left:0.6rem;">02</span>Walkthroughs <span class="kbd" style="margin-left:0.6rem;">03</span>Probation <span class="kbd" style="margin-left:0.6rem;">04</span>Lesson Obs <span class="kbd" style="margin-left:0.6rem;">05</span>ESCM <span class="kbd" style="margin-left:0.6rem;">06</span>OTP/APR <span class="kbd" style="margin-left:0.6rem;">07</span>Notes <span class="kbd" style="margin-left:0.6rem;">08</span>Files</span>
     </div>
 
     <div class="floor reveal r10">
@@ -1618,7 +1616,7 @@ body {
       <div class="job-card is-current reveal r6">
         <div class="job-num">03</div>
         <div class="job-label">Job Three</div>
-        <h3 class="job-title">Data <em>Representation</em></h3>
+        <h3 class="job-title">Pretty <em>Data Representation</em></h3>
         <div class="job-lead">The showcase layer. Same look-and-feel as the academic reports, drilling from school → department → teacher.</div>
         <ul>
           <li>Per-teacher dashboards (slide 3 of this deck).</li>
