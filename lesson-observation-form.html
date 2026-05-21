@@ -525,6 +525,136 @@ body {
           mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 
+/* Submit (Save & Lock) button — deeper green, primary action when in draft */
+.action-btn.submit {
+  background: var(--rate-success-deep);
+  border-color: var(--rate-success-deep);
+  color: white;
+  box-shadow: 0 10px 24px -8px rgba(15, 95, 48, 0.45);
+}
+.action-btn.submit:hover {
+  background: var(--rate-success);
+  border-color: var(--rate-success);
+  color: white;
+}
+.action-btn.submit:disabled,
+.action-btn.submit.disabled {
+  background: var(--surface-mid);
+  border-color: var(--rule);
+  color: var(--paper-faint);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+.action-btn.submit::before {
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.action-btn.new::before {
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* ===========================================
+   SUBMITTED BANNER + LOCK STATE
+   =========================================== */
+.submitted-banner {
+  display: none;
+  background: linear-gradient(135deg, rgba(46,161,90,0.12), rgba(46,161,90,0.04));
+  border: 1px solid rgba(46,161,90,0.32);
+  border-left: 4px solid var(--rate-success);
+  border-radius: clamp(0.4rem, 0.7vw, 0.6rem);
+  padding: clamp(0.75rem, 1.4vw, 1.1rem) clamp(0.9rem, 1.6vw, 1.3rem);
+  margin-bottom: clamp(1rem, 1.8vw, 1.5rem);
+  align-items: center;
+  gap: clamp(0.65rem, 1.2vw, 1rem);
+  flex-wrap: wrap;
+}
+.submitted-banner.is-active { display: flex; }
+.submitted-banner .check {
+  width: 1.7em; height: 1.7em;
+  border-radius: 50%;
+  background: var(--rate-success);
+  color: white;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-weight: 700;
+  font-size: 1em;
+  flex-shrink: 0;
+}
+.submitted-banner .stack {
+  display: flex; flex-direction: column; gap: 0.1em;
+  min-width: 0;
+}
+.submitted-banner .title {
+  font-family: var(--display-font);
+  font-weight: 600;
+  font-size: clamp(1rem, 1.4vw, 1.2rem);
+  color: var(--rate-success-deep);
+  letter-spacing: -0.005em;
+}
+:root[data-theme="dark"] .submitted-banner .title { color: var(--rate-success); }
+.submitted-banner .meta {
+  font-family: var(--body-font);
+  font-size: var(--small);
+  color: var(--paper-mid);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Locked-form visual treatment */
+.form-container.is-locked .info-cell input,
+.form-container.is-locked .criteria-table textarea,
+.form-container.is-locked .overall-block textarea,
+.form-container.is-locked .feedback-line input,
+.form-container.is-locked .signature-cell input {
+  cursor: not-allowed;
+  background: var(--row-tint);
+  color: var(--paper);
+  opacity: 1;
+}
+.form-container.is-locked .info-cell input:focus,
+.form-container.is-locked .signature-cell input:focus,
+.form-container.is-locked .criteria-table textarea:focus,
+.form-container.is-locked .overall-block textarea:focus {
+  border-bottom-color: var(--rule);
+  border-color: var(--rule);
+}
+.form-container.is-locked .su-toggle label { cursor: not-allowed; }
+.form-container.is-locked .su-toggle input:not(:checked) + label {
+  opacity: 0.3;
+  pointer-events: none;
+}
+.form-container.is-locked .form-footer .save-status { display: none; }
+
+/* Action-bar swaps when form is locked */
+body.is-locked .action-btn.submit,
+body.is-locked .action-btn.secondary { display: none; }
+.action-btn.new { display: none; }
+body.is-locked .action-btn.new { display: inline-flex; }
+
+/* Toast — error / success feedback */
+.toast {
+  position: fixed;
+  bottom: clamp(4rem, 8vw, 6rem);
+  right: clamp(0.7rem, 1.4vw, 1.2rem);
+  z-index: 110;
+  padding: 0.7em 1.05em;
+  border-radius: 8px;
+  background: var(--card-bg);
+  border: 1px solid var(--rule);
+  box-shadow: 0 12px 32px -12px rgba(20,54,66,0.32);
+  font-family: var(--body-font);
+  font-size: var(--small);
+  color: var(--paper);
+  max-width: 360px;
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.toast.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.toast.error { border-color: rgba(214,138,26,0.5); color: var(--rate-unsuccess-deep); }
+.toast.success { border-color: rgba(46,161,90,0.5); color: var(--rate-success-deep); }
+
 /* ===========================================
    THEME TOGGLE  (mirrors deck style)
    =========================================== */
@@ -705,6 +835,15 @@ body {
 </button>
 
 <form class="form-container" id="lesson-obs-form" autocomplete="on" novalidate>
+  <!-- Submitted / closed-record banner (hidden until submit success or ?id=... fetched) -->
+  <div class="submitted-banner" id="submitted-banner" role="status">
+    <span class="check" aria-hidden="true">✓</span>
+    <div class="stack">
+      <span class="title">Submitted · Cannot be edited</span>
+      <span class="meta" id="submitted-meta"></span>
+    </div>
+  </div>
+
   <header class="form-header">
     <div class="brand-row">
       <img src="Assets/brand/AIS Logo/AIS Navy.png" data-light-src="Assets/brand/AIS Logo/AIS Navy.png" data-dark-src="Assets/brand/AIS Logo/AIS White.png" alt="Australian International School Sharjah">
@@ -1041,7 +1180,7 @@ body {
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · Lesson Observation · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.7</a></span>
+    <span>Form · Lesson Observation · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.8</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -1051,8 +1190,12 @@ body {
 
 <div class="action-bar">
   <button type="button" class="action-btn secondary" id="btn-reset" title="Wipe all fields">Reset</button>
+  <button type="button" class="action-btn new" id="btn-new" title="Start a new observation">New observation</button>
+  <button type="button" class="action-btn submit disabled" id="btn-submit" title="Fill Teacher / Observer / Date to enable saving" disabled>Save &amp; Lock</button>
   <button type="button" class="action-btn primary" id="btn-print" title="Save this form as a PDF">Save as PDF</button>
 </div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
   /* === Theme toggle ============================================= */
@@ -1164,7 +1307,172 @@ body {
     });
     try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
     showSaved();
+    updateSubmitState();
   });
+
+  document.getElementById('btn-new').addEventListener('click', () => {
+    if (!confirm('Start a new observation? The locked record stays in the Sheet.')) return;
+    window.location.href = window.location.pathname;
+  });
+
+  /* === Cloud submit + lock + closed-record viewer ================== */
+  const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzoxepKzA8vSQkDd0_OEl65EVw017BCC_kFhxSJueP5nZqTQYMtLVMuUr_vpILdavQ4/exec';
+  const REQUIRED_FIELDS = ['teacher', 'observer', 'date'];
+
+  function updateSubmitState() {
+    const btn = document.getElementById('btn-submit');
+    if (!btn || btn.dataset.locked === '1') return;
+    const allFilled = REQUIRED_FIELDS.every(name => {
+      const el = FORM.querySelector('[name="' + name + '"]');
+      return el && el.value && el.value.trim();
+    });
+    btn.classList.toggle('disabled', !allFilled);
+    btn.disabled = !allFilled;
+    btn.title = allFilled ? 'Save and lock this observation' : 'Fill Teacher / Observer / Date to enable saving';
+  }
+  FORM.addEventListener('input', updateSubmitState);
+  FORM.addEventListener('change', updateSubmitState);
+  updateSubmitState();
+
+  function showToast(msg, kind) {
+    const toast = document.getElementById('toast');
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.classList.remove('error', 'success');
+    if (kind) toast.classList.add(kind);
+    toast.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => toast.classList.remove('show'), 4500);
+  }
+
+  function formatStamp(iso) {
+    if (!iso) return '';
+    try {
+      const d = new Date(iso);
+      if (isNaN(d)) return iso;
+      return d.toLocaleString('en-GB', { year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+    } catch (e) { return iso; }
+  }
+
+  function lockForm(recordId, submittedAt, mode) {
+    FORM.querySelectorAll('input, textarea').forEach(el => { el.disabled = true; });
+    FORM.classList.add('is-locked');
+    document.body.classList.add('is-locked');
+
+    const banner = document.getElementById('submitted-banner');
+    const meta = document.getElementById('submitted-meta');
+    if (banner && meta) {
+      let bits = ['Record ID ' + recordId];
+      if (submittedAt) bits.push('Submitted ' + formatStamp(submittedAt));
+      if (mode === 'closed') bits.push('Read-only view');
+      meta.textContent = bits.join(' · ');
+      banner.classList.add('is-active');
+    }
+    const submitBtn = document.getElementById('btn-submit');
+    if (submitBtn) submitBtn.dataset.locked = '1';
+  }
+
+  async function submitForm() {
+    const btn = document.getElementById('btn-submit');
+    if (!btn || btn.disabled) return;
+
+    if (!confirm('Save and lock this observation? Cannot be edited after.')) return;
+
+    // Build payload — preserves every input value, including blank radios as "".
+    const data = {};
+    FORM.querySelectorAll('input, textarea').forEach(el => {
+      if (el.type === 'radio') {
+        if (el.checked) data[el.name] = el.value;
+        else if (!(el.name in data)) data[el.name] = '';
+      } else {
+        const key = el.name || el.id;
+        if (key) data[key] = el.value;
+      }
+    });
+
+    btn.disabled = true;
+    const prevText = btn.textContent;
+    btn.textContent = 'Saving…';
+
+    try {
+      const resp = await fetch(WEB_APP_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(data),
+        redirect: 'follow'
+      });
+      const result = await resp.json();
+      if (!result.success) throw new Error(result.error || 'Submit failed');
+
+      try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+      lockForm(result.id, new Date().toISOString(), 'submit');
+      showToast('Submitted · Record ID ' + result.id, 'success');
+    } catch (err) {
+      btn.disabled = false;
+      btn.textContent = prevText;
+      showToast('Submit failed: ' + (err.message || err), 'error');
+    }
+  }
+
+  document.getElementById('btn-submit').addEventListener('click', submitForm);
+
+  // === Closed-record viewer ============================================
+  async function loadClosedRecord(id) {
+    showToast('Loading record ' + id + '…');
+    try {
+      const resp = await fetch(WEB_APP_URL + '?id=' + encodeURIComponent(id), { redirect: 'follow' });
+      const result = await resp.json();
+      if (!result.success) throw new Error(result.error || 'Record not found');
+
+      const rec = result.data;
+      Object.entries(rec).forEach(([key, value]) => {
+        if (value === null || value === undefined || value === '') return;
+
+        // Apps Script sheets sometimes return dates as ISO strings — normalise for <input type=date>
+        const toDateInput = (v) => {
+          const d = new Date(v);
+          if (isNaN(d)) return String(v);
+          return d.toISOString().split('T')[0];
+        };
+
+        const radios = FORM.querySelectorAll('input[type="radio"][name="' + CSS.escape(key) + '"]');
+        if (radios.length) {
+          radios.forEach(r => { r.checked = (r.value === String(value)); });
+          return;
+        }
+
+        // Sheet headers use underscores (observation_date, feedback_date, sig_*) but
+        // the form fields use either the same key or hyphen variants (feedback-date, sig-teacher).
+        const candidates = [key];
+        if (key === 'observation_date') candidates.push('date');
+        if (key === 'feedback_date')    candidates.push('feedback-date');
+        if (key === 'sig_teacher')      candidates.push('sig-teacher');
+        if (key === 'sig_observer')     candidates.push('sig-observer');
+        if (key === 'sig_date')         candidates.push('sig-date');
+
+        for (const cand of candidates) {
+          const el = FORM.querySelector('[name="' + CSS.escape(cand) + '"]') || document.getElementById(cand);
+          if (el) {
+            if (el.type === 'date') el.value = toDateInput(value);
+            else el.value = value;
+            break;
+          }
+        }
+      });
+
+      lockForm(rec.record_id, rec.submitted_at, 'closed');
+      showToast('Record loaded · ' + rec.teacher, 'success');
+    } catch (err) {
+      showToast('Could not load record: ' + (err.message || err), 'error');
+    }
+  }
+
+  // On load: if URL has ?id=AIS-OBS-..., fetch & render in read-only mode.
+  (function checkClosedRecord() {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+    if (id) loadClosedRecord(id);
+  })();
 
   // Keyboard convenience: Cmd/Ctrl + P → uses print path (browser default already does this, no override needed)
 </script>
