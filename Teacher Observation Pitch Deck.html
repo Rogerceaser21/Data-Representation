@@ -1,0 +1,1745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teacher Observation System · Pitch Deck · AIS Sharjah</title>
+<script>
+  (function() {
+    try {
+      var stored = localStorage.getItem('ais-obs-theme');
+      var theme = stored || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+      if (theme === 'light') document.documentElement.setAttribute('data-theme', 'light');
+    } catch (e) {}
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,500;1,8..60,600&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ===========================================
+   VIEWPORT-BASE  (lifted from master, unchanged behaviour)
+   =========================================== */
+html, body { height: 100%; overflow: hidden; margin: 0; }
+.deck-track { width: 100vw; height: 100vh; height: 100dvh; position: relative; }
+.slide {
+  width: 100vw; height: 100vh; height: 100dvh;
+  overflow: hidden;
+  display: flex; flex-direction: column;
+  position: absolute; inset: 0;
+  opacity: 0;
+  transform: translateY(18px);
+  pointer-events: none;
+  transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1), transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.slide.active { opacity: 1; transform: translateY(0); pointer-events: auto; z-index: 1; }
+.slide-content {
+  flex: 1; min-height: 0;
+  display: flex; flex-direction: column;
+  justify-content: center;
+  max-height: 100%; overflow: hidden;
+  padding: var(--slide-padding);
+  position: relative;
+}
+:root { --slide-padding: clamp(1.4rem, 4vw, 4rem); }
+.slide-content > .masthead,
+.slide-content > .floor { display: flex; margin-bottom: clamp(0.6rem, 1.2vw, 1rem); }
+.slide-content > .floor { margin-bottom: 0; margin-top: clamp(0.6rem, 1.2vw, 1rem); }
+.slide-content > * { min-height: 0; }
+@media (max-height: 700px) { :root { --slide-padding: clamp(0.9rem, 3vw, 2.4rem); }}
+@media (max-height: 600px) { :root { --slide-padding: clamp(0.6rem, 2.5vw, 1.8rem); }}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.2s !important; } }
+
+/* ===========================================
+   THEME TOKENS · dark default
+   =========================================== */
+:root {
+  --display-font: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --body-font:    'Source Sans 3', system-ui, -apple-system, sans-serif;
+
+  --navy: #0a0d1f;
+  --navy-elev: #11162e;
+  --navy-card: #131938;
+  --navy-edge: #1c244d;
+  --paper: #f2efe6;
+  --paper-dim: #cdd0e0;
+  --paper-mid: #9ea3bf;
+  --paper-faint: #6c7290;
+  --ais-red: #EF343A;
+  --ais-red-deep: #BE2126;
+  --ais-blue: #1257FF;
+  --ais-blue-soft: #4d8dff;
+  --ais-yellow: #FFBA14;
+  --ais-yellow-bright: #FDE74C;
+  --ais-green: #3CBB6C;
+  --ais-orange: #ff9a4d;
+  --ais-orange-deep: #e87a1f;
+
+  /* Observation rating ramp — green spectrum for P3/P4 */
+  --rate-outstanding: #1e7a3f;        /* deep forest */
+  --rate-outstanding-bright: #2aa55a; /* lighter for accents */
+  --rate-verygood: #3CBB6C;           /* AIS green */
+  --rate-sound: #F4A737;              /* warm amber */
+  --rate-developing: var(--ais-orange);
+
+  --rule: rgba(255, 255, 255, 0.10);
+  --rule-soft: rgba(255, 255, 255, 0.06);
+
+  --cover-title: clamp(3.4rem, 8.5vw, 6.8rem);
+  --slide-title: clamp(2.4rem, 5vw, 4rem);
+  --section-title: clamp(1.7rem, 3vw, 2.4rem);
+  --eyebrow: clamp(1.05rem, 1.55vw, 1.35rem);
+  --dek: clamp(1.4rem, 2.1vw, 1.85rem);
+  --body: clamp(1.05rem, 1.5vw, 1.35rem);
+  --body-lg: clamp(1.2rem, 1.8vw, 1.55rem);
+  --small: clamp(0.95rem, 1.3vw, 1.2rem);
+  --tiny: clamp(0.88rem, 1.15vw, 1.05rem);
+  --stat-num: clamp(2.4rem, 4.5vw, 3.8rem);
+  --stat-num-big: clamp(3.6rem, 7.2vw, 6.2rem);
+
+  --page-bg: #04061a;
+  --grad-blue:   rgba(18, 87, 255, 0.16);
+  --grad-red:    rgba(239, 52, 58, 0.13);
+  --grad-yellow: rgba(255, 186, 20, 0.08);
+  --grad-green:  rgba(60, 187, 108, 0.12);
+  --surface-soft: rgba(255, 255, 255, 0.03);
+  --surface-mid:  rgba(255, 255, 255, 0.04);
+  --surface-elev: rgba(255, 255, 255, 0.06);
+  --surface-strong: rgba(255, 255, 255, 0.08);
+  --surface-mute: rgba(255, 255, 255, 0.10);
+  --shadow-deep: rgba(0, 0, 0, 0.35);
+
+  --accent-headline: var(--ais-yellow);
+}
+
+/* ===========================================
+   LIGHT THEME
+   =========================================== */
+:root[data-theme="light"] {
+  --display-font: 'Lora', Georgia, 'Times New Roman', serif;
+  --body-font:    'Inter', system-ui, -apple-system, sans-serif;
+
+  --navy:        #fafaf7;
+  --navy-elev:   #ffffff;
+  --navy-card:   #f4f3ee;
+  --navy-edge:   #e3e2dc;
+  --paper:       #143642;
+  --paper-dim:   #3a4f59;
+  --paper-mid:   #6b7e85;
+  --paper-faint: #9aa6ac;
+  --rule:        rgba(20, 54, 66, 0.14);
+  --rule-soft:   rgba(20, 54, 66, 0.07);
+  --page-bg:     #efece2;
+  --grad-blue:   rgba(18, 87, 255, 0.05);
+  --grad-red:    rgba(239, 52, 58, 0.04);
+  --grad-yellow: rgba(255, 186, 20, 0.06);
+  --grad-green:  rgba(60, 187, 108, 0.07);
+  --surface-soft:   rgba(20, 54, 66, 0.025);
+  --surface-mid:    rgba(20, 54, 66, 0.045);
+  --surface-elev:   rgba(20, 54, 66, 0.06);
+  --surface-strong: rgba(20, 54, 66, 0.08);
+  --surface-mute:   rgba(20, 54, 66, 0.10);
+  --shadow-deep:    rgba(20, 54, 66, 0.16);
+
+  /* Rating ramp on light theme — slightly deeper so it reads on cream */
+  --rate-outstanding: #0f5f30;
+  --rate-outstanding-bright: #1e8a4a;
+  --rate-verygood: #2ea15a;
+  --rate-sound: #d68a1a;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: var(--body-font);
+  background: var(--page-bg);
+  color: var(--paper);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  transition: background 0.35s ease, color 0.35s ease;
+}
+.slide {
+  background:
+    radial-gradient(circle at 12% 20%, var(--grad-blue),   transparent 38%),
+    radial-gradient(circle at 88% 80%, var(--grad-green),  transparent 42%),
+    radial-gradient(circle at 80% 12%, var(--grad-yellow), transparent 32%),
+    var(--navy);
+  transition: background 0.35s ease;
+}
+
+/* ===========================================
+   PRIMITIVES
+   =========================================== */
+.eyebrow {
+  font-family: var(--body-font);
+  font-size: var(--eyebrow);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--ais-red);
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+}
+.eyebrow .stripe {
+  width: clamp(2rem, 3vw, 3rem);
+  height: 3px;
+  background: linear-gradient(90deg, var(--ais-red), var(--ais-yellow), var(--rate-verygood));
+  border-radius: 2px;
+}
+.slide-title {
+  font-family: var(--display-font);
+  font-weight: 700;
+  font-size: var(--slide-title);
+  line-height: 1.0;
+  letter-spacing: -0.012em;
+  color: var(--paper);
+  margin: 0;
+}
+.slide-title em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--ais-yellow);
+  padding-right: 0.08em;
+  display: inline-block;
+}
+
+.masthead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--body-font);
+  font-size: var(--tiny);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+  font-weight: 600;
+  padding-bottom: clamp(0.6rem, 1.2vw, 1rem);
+  border-bottom: 1px solid var(--rule-soft);
+}
+.masthead .brand { display: inline-flex; align-items: center; gap: clamp(0.5rem, 0.9vw, 0.8rem); }
+.masthead .ais-logo { height: clamp(22px, 3.2vh, 32px); width: auto; display: block; }
+.masthead .school { border-left: 1px solid var(--navy-edge); padding-left: clamp(0.5rem, 0.9vw, 0.8rem); letter-spacing: 0.16em; }
+.masthead .pg {
+  color: var(--ais-yellow);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.22em;
+  display: inline-flex; align-items: center; gap: 0.5em;
+}
+.masthead .pg::before {
+  content: "";
+  width: 0.45em; height: 0.45em; border-radius: 50%;
+  background: var(--ais-yellow);
+  box-shadow: 0 0 8px var(--ais-yellow);
+}
+.floor {
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: var(--body-font);
+  font-size: var(--tiny);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--paper-faint);
+  font-weight: 500;
+  padding-top: clamp(0.6rem, 1.2vw, 1rem);
+  border-top: 1px solid var(--rule-soft);
+}
+
+/* ===========================================
+   SLIDE 1 · TEACHER PROFILE COVER
+   (adapted from master cover-content)
+   =========================================== */
+.cover-content {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: clamp(1.2rem, 2.4vw, 2rem);
+  padding: clamp(1.6rem, 3.5vw, 3.6rem);
+  min-height: 0; position: relative;
+}
+.cover-content > .masthead,
+.cover-content > .floor { display: none; }
+.cover-top {
+  grid-column: 1 / -1;
+  display: flex; justify-content: space-between; align-items: center;
+  position: relative; z-index: 2;
+}
+.cover-top-left { display: flex; align-items: center; gap: clamp(0.7rem, 1.3vw, 1.1rem); }
+.cover-top .logo { height: clamp(36px, 5vh, 56px); width: auto; display: block; }
+.cover-top .school {
+  font-family: var(--body-font); font-weight: 500;
+  font-size: clamp(0.85rem, 1.1vw, 1.05rem);
+  letter-spacing: 0.16em; text-transform: uppercase; color: var(--paper-dim);
+  border-left: 1px solid var(--navy-edge); padding-left: clamp(0.7rem, 1.3vw, 1.1rem);
+}
+.cover-top .term-tag {
+  font-family: var(--body-font); font-weight: 600;
+  font-size: clamp(0.78rem, 1.05vw, 1rem);
+  letter-spacing: 0.32em; text-transform: uppercase; color: var(--rate-verygood);
+  display: inline-flex; align-items: center; gap: 0.5em;
+}
+.cover-top .term-tag::before {
+  content: ""; width: 0.45em; height: 0.45em; border-radius: 50%;
+  background: var(--rate-verygood); box-shadow: 0 0 8px var(--rate-verygood);
+}
+.cover-hero {
+  grid-column: 1; grid-row: 2;
+  display: flex; flex-direction: column; justify-content: center;
+  gap: clamp(0.8rem, 1.5vw, 1.3rem);
+  padding-right: clamp(0.8rem, 2vw, 1.6rem);
+  min-height: 0; position: relative; z-index: 2; overflow: visible;
+}
+.cover-kicker {
+  font-family: var(--body-font); font-weight: 700;
+  font-size: clamp(0.85rem, 1.1vw, 1.05rem);
+  letter-spacing: 0.34em; text-transform: uppercase; color: var(--ais-red);
+  display: inline-flex; align-items: center; gap: 0.7em;
+}
+.cover-kicker .stripe {
+  width: clamp(2rem, 3vw, 3rem); height: 3px;
+  background: linear-gradient(90deg, var(--ais-red), var(--ais-yellow), var(--rate-verygood));
+  border-radius: 2px;
+}
+.cover-title {
+  font-family: var(--display-font);
+  font-weight: 700;
+  font-size: var(--cover-title);
+  line-height: 0.96;
+  letter-spacing: -0.012em;
+  color: var(--paper); margin: 0;
+  overflow: visible;
+}
+.cover-title em {
+  font-style: italic; font-weight: 400; color: var(--ais-yellow);
+  padding-right: 0.08em; display: inline-block;
+}
+.cover-name {
+  font-family: var(--display-font); font-style: italic; font-weight: 400;
+  font-size: clamp(1.6rem, 2.6vw, 2.2rem); color: var(--ais-yellow); margin: 0;
+  letter-spacing: -0.005em;
+}
+.cover-name-mobile {
+  display: none;
+  font-family: var(--display-font); font-style: italic; font-weight: 400;
+  font-size: clamp(1.4rem, 5.5vw, 2rem); color: var(--ais-yellow);
+  letter-spacing: -0.005em;
+  margin: clamp(0.8rem, 3vw, 1.2rem) 0 0; text-align: center;
+}
+.cover-meta {
+  display: flex; gap: clamp(1rem, 2vw, 1.8rem); flex-wrap: wrap;
+  font-family: var(--body-font);
+  font-size: clamp(0.95rem, 1.3vw, 1.2rem); color: var(--paper-dim);
+  letter-spacing: 0.04em;
+}
+.cover-meta .item { display: inline-flex; align-items: baseline; gap: 0.5em; }
+.cover-meta .lbl {
+  font-size: clamp(0.78rem, 1.05vw, 1rem);
+  letter-spacing: 0.22em; text-transform: uppercase; color: var(--paper-faint);
+  font-weight: 600;
+}
+.cover-meta .val { font-weight: 500; color: var(--paper); }
+.portrait-stage {
+  grid-column: 2; grid-row: 2;
+  display: flex; align-items: center; justify-content: center;
+  position: relative; min-height: 0; overflow: hidden; z-index: 2;
+}
+.portrait-wrap {
+  position: relative;
+  height: clamp(220px, 50vh, 420px);
+  aspect-ratio: 4 / 5;
+  max-width: 100%;
+  display: flex; align-items: center; justify-content: center;
+}
+.portrait-img {
+  width: 100%; height: 100%;
+  border-radius: 50%; overflow: hidden; background: white;
+  position: relative;
+  box-shadow:
+    0 0 0 4px var(--navy-elev),
+    0 0 0 8px var(--rate-verygood),
+    0 30px 60px -20px rgba(0, 0, 0, 0.7);
+}
+.portrait-img img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: 50% 30%;
+  display: block; filter: saturate(0.95) contrast(1.02); max-height: none;
+}
+.fed-star { position: absolute; font-size: clamp(1rem, 1.8vw, 1.6rem); font-family: var(--display-font); pointer-events: none; }
+.fed-star.r { top: 6%; left: -6%; color: var(--ais-red); animation: tw 4s ease-in-out infinite; }
+.fed-star.b { top: 24%; right: -8%; color: var(--ais-blue-soft); animation: tw 5s ease-in-out infinite 0.6s; }
+.fed-star.y { bottom: 10%; left: -5%; color: var(--ais-yellow); animation: tw 4.5s ease-in-out infinite 1.2s; }
+.fed-star.g { bottom: 22%; right: -4%; color: var(--rate-outstanding-bright); font-size: clamp(0.7rem, 1.2vw, 1rem); animation: tw 5.5s ease-in-out infinite 0.3s; }
+.cover-bottom {
+  grid-column: 1 / -1; grid-row: 3;
+  display: flex; flex-direction: column;
+  gap: clamp(0.7rem, 1.4vw, 1.2rem);
+  position: relative; z-index: 2;
+}
+.cover-floor {
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: var(--body-font);
+  font-size: var(--tiny);
+  letter-spacing: 0.22em; text-transform: uppercase; color: var(--paper-faint);
+  font-weight: 500;
+  padding-top: clamp(0.6rem, 1.2vw, 1rem);
+  border-top: 1px solid var(--navy-edge);
+}
+/* Bio chips row beneath the name on P1 */
+.bio-chips {
+  display: flex; flex-wrap: wrap;
+  gap: clamp(0.4rem, 0.8vw, 0.7rem);
+  margin-top: clamp(0.4rem, 0.8vw, 0.7rem);
+}
+.bio-chip {
+  display: inline-flex; align-items: center; gap: 0.5em;
+  padding: clamp(0.35rem, 0.6vw, 0.5rem) clamp(0.65rem, 1.1vw, 0.95rem);
+  border-radius: 999px;
+  background: var(--surface-mid);
+  border: 1px solid var(--rule);
+  font-family: var(--body-font);
+  font-size: clamp(0.78rem, 1.05vw, 0.95rem);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--paper-dim);
+}
+.bio-chip .dot {
+  width: 0.5em; height: 0.5em; border-radius: 50%;
+  background: var(--rate-verygood);
+  box-shadow: 0 0 6px var(--rate-verygood);
+}
+.bio-narr {
+  font-family: var(--display-font); font-style: italic; font-weight: 300;
+  font-size: clamp(1.1rem, 1.7vw, 1.45rem);
+  line-height: 1.45;
+  color: var(--paper-dim);
+  max-width: 50ch;
+  padding-left: clamp(0.9rem, 1.6vw, 1.3rem);
+  border-left: 3px solid var(--rate-verygood);
+  margin-top: clamp(0.6rem, 1.1vw, 0.95rem);
+}
+.bio-narr strong { font-style: normal; font-weight: 600; color: var(--paper); }
+
+/* ===========================================
+   SLIDE 2 · RATING SCALE  (single-column dual-table)
+   =========================================== */
+.lvl-pill {
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--display-font);
+  font-weight: 700; font-style: italic; letter-spacing: -0.02em;
+  border-radius: 999px;
+  padding: 0.2em 0.7em; min-width: 2.6em; text-align: center;
+}
+.lvl-pill.vh { background: var(--rate-outstanding); color: white; }
+.lvl-pill.h  { background: var(--rate-verygood); color: var(--navy); }
+.lvl-pill.s  { background: var(--rate-sound); color: var(--navy); }
+.lvl-pill.d, .lvl-pill.sr { background: var(--ais-orange); color: var(--navy); }
+.lvl-pill.f  { background: var(--ais-orange-deep); color: white; }
+.lvl-pill.ie { background: rgba(255,255,255,0.08); color: var(--paper); border: 1px solid var(--rule); }
+
+.scale-explainer {
+  font-family: var(--display-font); font-style: italic; font-weight: 300;
+  font-size: var(--body-lg); line-height: 1.4; color: var(--paper-dim);
+  max-width: 88ch;
+  padding-left: clamp(1rem, 1.7vw, 1.4rem);
+  border-left: 3px solid var(--rate-verygood);
+  margin-bottom: clamp(0.9rem, 1.5vw, 1.2rem);
+}
+.scale-explainer strong { color: var(--rate-outstanding-bright); font-style: normal; font-weight: 600; }
+.scale-table {
+  display: flex; flex-direction: column;
+  flex: 1; overflow: hidden;
+  border-radius: clamp(0.5rem, 0.9vw, 0.7rem);
+  border: 1px solid var(--rule);
+  background: rgba(255,255,255,0.03);
+}
+.scale-row {
+  display: grid;
+  grid-template-columns: clamp(4.5rem, 7vw, 6rem) 1fr;
+  gap: clamp(0.6rem, 1.2vw, 1rem);
+  padding: clamp(0.55rem, 1vw, 0.85rem) clamp(0.7rem, 1.3vw, 1.1rem);
+  align-items: center;
+  border-bottom: 1px solid var(--rule-soft);
+}
+.scale-row:last-child { border-bottom: none; }
+.scale-row.head {
+  background: rgba(255,255,255,0.04);
+  font-family: var(--body-font);
+  font-size: var(--tiny);
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--paper-mid); font-weight: 700;
+}
+.scale-row .desc {
+  font-family: var(--display-font);
+  font-size: clamp(1rem, 1.45vw, 1.25rem); line-height: 1.35;
+  color: var(--paper-dim);
+}
+.scale-row .desc strong {
+  font-family: var(--display-font); font-style: italic;
+  color: var(--paper); font-weight: 600; margin-right: 0.5em;
+}
+
+/* ===========================================
+   SLIDE 3 · TEACHER OBSERVATION DASHBOARD
+   =========================================== */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: clamp(1.2rem, 2.4vw, 2rem);
+  flex: 1;
+  align-items: stretch;
+  min-height: 0;
+}
+.donut-stage {
+  position: relative;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: clamp(0.8rem, 1.4vw, 1.2rem);
+  background:
+    radial-gradient(circle at 50% 50%, rgba(60,187,108,0.06), transparent 70%),
+    var(--navy-elev);
+  border: 1px solid var(--rule);
+  border-radius: clamp(0.7rem, 1.3vw, 1.1rem);
+  padding: clamp(1rem, 2vw, 1.6rem);
+  overflow: hidden;
+}
+.donut-stage::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--rate-outstanding), var(--rate-verygood), var(--rate-sound));
+}
+.donut-wrap {
+  position: relative;
+  width: min(82%, clamp(220px, 36vh, 360px));
+  aspect-ratio: 1 / 1;
+}
+.donut {
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    from -90deg,
+    var(--rate-outstanding)         0deg  44deg, transparent  44deg  45deg,
+    var(--rate-verygood)           45deg  89deg, transparent  89deg  90deg,
+    var(--rate-outstanding)        90deg 134deg, transparent 134deg 135deg,
+    var(--rate-outstanding)       135deg 179deg, transparent 179deg 180deg,
+    var(--rate-sound)             180deg 224deg, transparent 224deg 225deg,
+    var(--rate-outstanding)       225deg 269deg, transparent 269deg 270deg,
+    var(--rate-verygood)          270deg 314deg, transparent 314deg 315deg,
+    var(--rate-outstanding)       315deg 359deg, transparent 359deg 360deg
+  );
+  filter: drop-shadow(0 12px 30px rgba(0,0,0,0.35));
+}
+.donut-hole {
+  position: absolute;
+  inset: 18%;
+  border-radius: 50%;
+  background: var(--navy-card);
+  border: 1px solid var(--rule);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: clamp(0.15rem, 0.4vw, 0.3rem);
+  text-align: center;
+  box-shadow: inset 0 0 24px rgba(0,0,0,0.4);
+}
+.donut-hole .ovr-label {
+  font-family: var(--body-font); font-weight: 700;
+  font-size: clamp(0.65rem, 0.95vw, 0.85rem);
+  letter-spacing: 0.32em; text-transform: uppercase;
+  color: var(--paper-faint);
+}
+.donut-hole .ovr-value {
+  font-family: var(--display-font); font-style: italic;
+  font-weight: 700;
+  font-size: clamp(1.4rem, 2.6vw, 2.1rem);
+  color: var(--rate-outstanding-bright); line-height: 1; letter-spacing: -0.01em;
+}
+.donut-hole .ovr-frac {
+  font-family: var(--body-font);
+  font-size: clamp(0.7rem, 1vw, 0.9rem);
+  color: var(--paper-mid);
+  letter-spacing: 0.08em;
+}
+.donut-legend {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: clamp(0.5rem, 1vw, 0.9rem);
+  font-family: var(--body-font);
+  font-size: clamp(0.72rem, 1vw, 0.88rem);
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--paper-mid); font-weight: 600;
+}
+.donut-legend .item { display: inline-flex; align-items: center; gap: 0.5em; }
+.donut-legend .swatch { width: 0.75em; height: 0.75em; border-radius: 50%; }
+.donut-legend .swatch.o { background: var(--rate-outstanding); }
+.donut-legend .swatch.v { background: var(--rate-verygood); }
+.donut-legend .swatch.s { background: var(--rate-sound); }
+.donut-tagline {
+  font-family: var(--display-font); font-style: italic;
+  font-size: clamp(0.85rem, 1.2vw, 1.05rem);
+  color: var(--paper-dim);
+  text-align: center;
+  max-width: 32ch;
+}
+
+.cat-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(0.45rem, 0.85vw, 0.7rem);
+  min-height: 0;
+}
+.cat-card {
+  display: grid;
+  grid-template-columns: clamp(2rem, 3.2vw, 2.6rem) 1fr auto auto;
+  align-items: center;
+  gap: clamp(0.65rem, 1.2vw, 1rem);
+  padding: clamp(0.55rem, 1vw, 0.85rem) clamp(0.75rem, 1.3vw, 1.05rem);
+  border-radius: clamp(0.5rem, 0.9vw, 0.7rem);
+  border: 1px solid var(--rule);
+  background: var(--navy-elev);
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+.cat-card::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 3px; background: var(--rate-verygood);
+}
+.cat-card.is-outstanding::before { background: var(--rate-outstanding); }
+.cat-card.is-verygood::before    { background: var(--rate-verygood); }
+.cat-card.is-sound::before       { background: var(--rate-sound); }
+.cat-card:hover {
+  transform: translateX(2px);
+  border-color: var(--rate-verygood);
+  background: var(--navy-card);
+}
+.cat-card .cat-num {
+  font-family: var(--display-font); font-style: italic; font-weight: 700;
+  font-size: clamp(1.1rem, 1.7vw, 1.45rem);
+  color: var(--paper-faint);
+  letter-spacing: -0.02em;
+  text-align: center;
+}
+.cat-card .cat-meta { min-width: 0; }
+.cat-card .cat-name {
+  font-family: var(--display-font);
+  font-weight: 600;
+  font-size: clamp(0.95rem, 1.3vw, 1.15rem);
+  color: var(--paper);
+  line-height: 1.2;
+}
+.cat-card .cat-sub {
+  font-family: var(--body-font);
+  font-size: clamp(0.72rem, 1vw, 0.88rem);
+  color: var(--paper-mid);
+  letter-spacing: 0.02em;
+  margin-top: 0.18em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.rating-pill {
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--body-font);
+  font-size: clamp(0.7rem, 0.95vw, 0.85rem);
+  font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 0.35em 0.85em;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.rating-pill.outstanding { background: var(--rate-outstanding); color: white; }
+.rating-pill.verygood    { background: var(--rate-verygood); color: var(--navy); }
+.rating-pill.sound       { background: var(--rate-sound); color: var(--navy); }
+.cat-card .link-icon {
+  width: 1.6em; height: 1.6em;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  background: var(--surface-mid);
+  color: var(--paper-mid);
+  font-size: 1em;
+  border: 1px solid var(--rule);
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.cat-card:hover .link-icon {
+  background: var(--rate-verygood);
+  color: var(--navy);
+  border-color: var(--rate-verygood);
+}
+.cat-card.is-pending {
+  opacity: 0.78;
+}
+.cat-card.is-pending .link-icon {
+  border-style: dashed;
+}
+
+/* ===========================================
+   SLIDE 4 · DEPARTMENT DASHBOARD
+   =========================================== */
+.dept-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(0.55rem, 1vw, 0.85rem);
+  margin-bottom: clamp(0.8rem, 1.4vw, 1.15rem);
+}
+.dept-tile {
+  background: var(--navy-elev);
+  border: 1px solid var(--rule);
+  border-radius: clamp(0.5rem, 0.95vw, 0.8rem);
+  padding: clamp(0.7rem, 1.2vw, 1rem) clamp(0.8rem, 1.3vw, 1.1rem);
+  position: relative;
+  overflow: hidden;
+}
+.dept-tile::before {
+  content: ""; position: absolute; top: 0; left: 0;
+  width: clamp(1.6rem, 2.6vw, 2.2rem); height: 4px;
+}
+.dept-tile.o::before { background: var(--rate-outstanding); }
+.dept-tile.v::before { background: var(--rate-verygood); }
+.dept-tile.s::before { background: var(--rate-sound); }
+.dept-tile.y::before { background: var(--ais-yellow); }
+.dept-tile .num {
+  font-family: var(--display-font); font-weight: 700;
+  font-size: clamp(1.4rem, 2.4vw, 2rem);
+  color: var(--paper); line-height: 0.95; letter-spacing: -0.02em;
+}
+.dept-tile .label {
+  font-size: clamp(0.72rem, 1vw, 0.88rem);
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--paper-mid); font-weight: 700;
+  margin-top: 0.25em;
+}
+.dept-tile .sub {
+  font-family: var(--display-font); font-style: italic;
+  font-size: clamp(0.78rem, 1.05vw, 0.95rem);
+  line-height: 1.3; color: var(--paper-dim);
+  margin-top: 0.2em;
+}
+
+.matrix-wrap {
+  flex: 1; min-height: 0; overflow: hidden;
+  border: 1px solid var(--rule);
+  border-radius: clamp(0.5rem, 0.95vw, 0.8rem);
+  background: rgba(255,255,255,0.03);
+  display: flex; flex-direction: column;
+}
+.mx-row {
+  display: grid;
+  grid-template-columns: minmax(11rem, 1.5fr) repeat(8, minmax(0, 1fr)) minmax(7rem, 1.1fr);
+  gap: clamp(0.3rem, 0.6vw, 0.5rem);
+  padding: clamp(0.45rem, 0.85vw, 0.7rem) clamp(0.7rem, 1.2vw, 1rem);
+  align-items: center;
+  border-bottom: 1px solid var(--rule-soft);
+}
+.mx-row:last-child { border-bottom: none; }
+.mx-row.head {
+  background: rgba(255,255,255,0.04);
+  font-family: var(--body-font);
+  font-size: var(--tiny);
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--paper-mid); font-weight: 700;
+}
+.mx-row.head .col-h {
+  text-align: center;
+}
+.mx-row .teacher-cell {
+  display: flex; align-items: center; gap: clamp(0.5rem, 0.9vw, 0.8rem);
+  min-width: 0;
+}
+.mx-row .teacher-cell .avatar {
+  width: clamp(28px, 3.8vw, 38px); aspect-ratio: 1;
+  border-radius: 50%; overflow: hidden; background: var(--surface-mid);
+  border: 1px solid var(--rule);
+  flex-shrink: 0;
+  font-family: var(--display-font); font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--paper);
+  font-size: clamp(0.78rem, 1.05vw, 0.95rem);
+  letter-spacing: -0.02em;
+}
+.mx-row .teacher-cell .avatar img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
+.mx-row .teacher-cell .nm {
+  font-family: var(--display-font);
+  font-weight: 600;
+  font-size: clamp(0.95rem, 1.25vw, 1.1rem);
+  color: var(--paper); line-height: 1.15;
+}
+.mx-row .teacher-cell .sub {
+  font-family: var(--body-font);
+  font-size: clamp(0.7rem, 0.95vw, 0.82rem);
+  color: var(--paper-faint);
+  letter-spacing: 0.06em;
+}
+.mx-dot {
+  display: inline-block;
+  width: clamp(0.95rem, 1.5vw, 1.25rem); aspect-ratio: 1;
+  border-radius: 999px;
+  margin: 0 auto;
+}
+.mx-dot.o { background: var(--rate-outstanding); }
+.mx-dot.v { background: var(--rate-verygood); }
+.mx-dot.s { background: var(--rate-sound); }
+.mx-overall {
+  text-align: center;
+  font-family: var(--body-font);
+  font-size: clamp(0.75rem, 1vw, 0.88rem);
+  font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 0.35em 0.75em;
+  border-radius: 999px;
+  display: inline-flex; align-items: center; justify-content: center;
+  white-space: nowrap;
+}
+.mx-overall.o { background: var(--rate-outstanding); color: white; }
+.mx-overall.v { background: var(--rate-verygood); color: var(--navy); }
+.mx-overall.s { background: var(--rate-sound); color: var(--navy); }
+.matrix-legend {
+  display: flex; flex-wrap: wrap; gap: clamp(0.6rem, 1.1vw, 0.95rem);
+  margin-top: clamp(0.6rem, 1.1vw, 0.9rem);
+  font-family: var(--body-font);
+  font-size: var(--tiny);
+  letter-spacing: 0.06em; color: var(--paper-mid);
+}
+.matrix-legend .grp {
+  display: inline-flex; align-items: center; gap: 0.5em;
+}
+.matrix-legend .swatch {
+  width: 0.95em; height: 0.95em; border-radius: 50%;
+}
+.matrix-legend .swatch.o { background: var(--rate-outstanding); }
+.matrix-legend .swatch.v { background: var(--rate-verygood); }
+.matrix-legend .swatch.s { background: var(--rate-sound); }
+.matrix-legend .kbd {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 1.6em; height: 1.6em; border-radius: 0.35em;
+  background: var(--surface-mid); border: 1px solid var(--rule);
+  font-family: var(--display-font); font-weight: 700; font-style: italic;
+  font-size: 0.95em; color: var(--paper);
+  margin-right: 0.35em;
+}
+
+/* ===========================================
+   SLIDE 5 · PROCESS / BUILD ROADMAP
+   =========================================== */
+.process-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(0.9rem, 1.6vw, 1.4rem);
+  flex: 1; align-items: stretch;
+}
+.job-card {
+  background:
+    radial-gradient(circle at 80% 0%, rgba(60,187,108,0.12), transparent 60%),
+    var(--navy-elev);
+  border: 1px solid var(--rule);
+  border-radius: clamp(0.7rem, 1.3vw, 1.1rem);
+  padding: clamp(1.1rem, 2vw, 1.7rem);
+  display: flex; flex-direction: column;
+  gap: clamp(0.6rem, 1.1vw, 0.95rem);
+  position: relative; overflow: hidden;
+}
+.job-card::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--rate-outstanding), var(--rate-verygood));
+}
+.job-card .job-num {
+  font-family: var(--display-font); font-style: italic; font-weight: 700;
+  font-size: clamp(2.6rem, 4.5vw, 3.8rem);
+  color: var(--rate-verygood);
+  line-height: 0.85; letter-spacing: -0.04em;
+}
+.job-card .job-label {
+  font-family: var(--body-font); font-weight: 700;
+  font-size: clamp(0.75rem, 1vw, 0.9rem);
+  letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--paper-faint);
+}
+.job-card .job-title {
+  font-family: var(--display-font);
+  font-weight: 700;
+  font-size: clamp(1.25rem, 2vw, 1.65rem);
+  color: var(--paper); line-height: 1.15;
+  margin: 0;
+}
+.job-card .job-title em {
+  font-style: italic; font-weight: 400; color: var(--rate-verygood);
+}
+.job-card .job-lead {
+  font-family: var(--display-font); font-style: italic; font-weight: 300;
+  font-size: clamp(0.95rem, 1.3vw, 1.15rem);
+  color: var(--paper-dim);
+  line-height: 1.4;
+  border-left: 2px solid var(--rate-verygood);
+  padding-left: clamp(0.55rem, 1vw, 0.85rem);
+}
+.job-card ul {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column;
+  gap: clamp(0.4rem, 0.75vw, 0.6rem);
+}
+.job-card li {
+  display: flex; align-items: flex-start; gap: 0.6em;
+  font-family: var(--body-font);
+  font-size: clamp(0.85rem, 1.15vw, 1.02rem);
+  line-height: 1.4;
+  color: var(--paper-dim);
+}
+.job-card li::before {
+  content: ""; flex-shrink: 0;
+  width: 0.55em; height: 0.55em; border-radius: 50%;
+  background: var(--rate-verygood);
+  margin-top: 0.55em;
+  box-shadow: 0 0 6px rgba(60,187,108,0.5);
+}
+.job-card .job-footer {
+  margin-top: auto;
+  font-family: var(--body-font);
+  font-size: clamp(0.72rem, 1vw, 0.88rem);
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--paper-faint); font-weight: 600;
+  padding-top: clamp(0.6rem, 1vw, 0.85rem);
+  border-top: 1px solid var(--rule-soft);
+}
+.job-card.is-current .job-footer { color: var(--ais-yellow); }
+.job-card.is-current::after {
+  content: "You are here";
+  position: absolute;
+  top: clamp(0.6rem, 1vw, 0.85rem);
+  right: clamp(0.6rem, 1vw, 0.85rem);
+  font-family: var(--body-font);
+  font-size: clamp(0.6rem, 0.85vw, 0.72rem);
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--navy); font-weight: 700;
+  background: var(--ais-yellow);
+  padding: 0.3em 0.7em; border-radius: 999px;
+}
+
+/* ===========================================
+   FLOATING CONTROLS
+   =========================================== */
+.fab-cluster {
+  position: fixed;
+  top: clamp(1rem, 2vw, 1.6rem);
+  right: clamp(1rem, 2vw, 1.6rem);
+  z-index: 100;
+  display: flex; gap: clamp(0.4rem, 0.8vw, 0.7rem);
+}
+.fab-pdf {
+  font-family: var(--body-font);
+  font-size: var(--small); font-weight: 600;
+  letter-spacing: 0.06em; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 0.55em;
+  padding: clamp(0.55rem, 1vw, 0.85rem) clamp(1rem, 1.6vw, 1.4rem);
+  border-radius: 999px;
+  background: var(--rate-verygood); color: var(--navy);
+  border: none;
+  box-shadow: 0 12px 24px -10px rgba(60, 187, 108, 0.4);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+.fab-pdf:hover { transform: translateY(-2px); background: var(--rate-outstanding-bright); color: white; }
+.fab-pdf::before {
+  content: ""; width: 1.05em; height: 1.05em;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.theme-toggle {
+  position: fixed;
+  left: clamp(0.7rem, 1.4vw, 1.2rem);
+  top: 50%; transform: translateY(-50%);
+  z-index: 100;
+  width: clamp(2rem, 2.4vw, 2.4rem); height: clamp(2rem, 2.4vw, 2.4rem);
+  border-radius: 50%;
+  border: 1px solid var(--rule);
+  background: var(--surface-mid);
+  color: var(--paper-dim);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; padding: 0;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  -webkit-backdrop-filter: blur(6px);
+          backdrop-filter: blur(6px);
+}
+.theme-toggle:hover {
+  background: var(--surface-strong);
+  color: var(--paper);
+  border-color: var(--rate-verygood);
+  transform: translateY(-50%) scale(1.06);
+}
+.theme-toggle .icon { width: 1.05em; height: 1.05em; display: block; }
+.theme-toggle .icon-sun { display: none; }
+.theme-toggle .icon-moon { display: block; }
+:root[data-theme="light"] .theme-toggle .icon-sun  { display: block; }
+:root[data-theme="light"] .theme-toggle .icon-moon { display: none; }
+
+.nav-dots {
+  position: fixed;
+  right: clamp(1rem, 1.8vw, 1.5rem);
+  top: 50%; transform: translateY(-50%);
+  display: flex; flex-direction: column;
+  gap: clamp(0.5rem, 1vw, 0.8rem);
+  z-index: 50;
+}
+.nav-dot {
+  width: clamp(0.55rem, 0.9vw, 0.75rem);
+  height: clamp(0.55rem, 0.9vw, 0.75rem);
+  border-radius: 50%;
+  background: var(--rule);
+  border: none; cursor: pointer; padding: 0;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.nav-dot:hover { background: var(--rate-verygood); transform: scale(1.2); }
+.nav-dot.active { background: var(--rate-verygood); transform: scale(1.3); box-shadow: 0 0 8px var(--rate-verygood); }
+.scroll-hint {
+  position: fixed;
+  left: 50%; bottom: clamp(0.4rem, 0.9vw, 0.7rem);
+  transform: translateX(-50%);
+  z-index: 90;
+  width: clamp(1.5rem, 2.4vw, 2rem); height: clamp(1.5rem, 2.4vw, 2rem);
+  border: none; border-radius: 50%;
+  background: transparent; padding: 0; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--paper-faint);
+  transition: opacity 0.3s ease, color 0.2s ease;
+}
+.scroll-hint:hover { color: var(--rate-verygood); }
+.scroll-hint .chev {
+  display: inline-block;
+  width: 0.55em; height: 0.55em;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  animation: chev-bounce 1.6s ease-in-out infinite;
+}
+.scroll-hint.hide { opacity: 0; pointer-events: none; }
+
+/* Animations */
+.reveal { opacity: 0; transform: translateY(14px); animation: reveal 0.9s cubic-bezier(.2,.7,.2,1) forwards; animation-play-state: paused; }
+.slide.active .reveal { animation-play-state: running; }
+.r1 { animation-delay: 0.1s; } .r2 { animation-delay: 0.22s; } .r3 { animation-delay: 0.35s; }
+.r4 { animation-delay: 0.48s; } .r5 { animation-delay: 0.6s; } .r6 { animation-delay: 0.72s; }
+.r7 { animation-delay: 0.85s; } .r8 { animation-delay: 0.98s; } .r9 { animation-delay: 1.1s; } .r10 { animation-delay: 1.22s; }
+.reveal-scale { opacity: 0; transform: scale(0.95); animation: reveal-scale 1s cubic-bezier(.2,.7,.2,1) forwards; animation-play-state: paused; }
+.slide.active .reveal-scale { animation-play-state: running; }
+@keyframes reveal { to { opacity: 1; transform: translateY(0); } }
+@keyframes reveal-scale { to { opacity: 1; transform: scale(1); } }
+@keyframes tw { 0%, 100% { opacity: 0.55; transform: scale(1); } 50% { opacity: 1; transform: scale(1.18); } }
+@keyframes chev-bounce { 0%, 100% { transform: rotate(45deg) translate(0, 0); } 50% { transform: rotate(45deg) translate(0.18em, 0.18em); } }
+
+/* ===========================================
+   MOBILE  (mirrors master's stacked-document mode)
+   =========================================== */
+@media (max-width: 880px) {
+  html, body { overflow: auto; height: auto; min-height: 100%; }
+  .deck-track { height: auto; min-height: 0; width: 100%; position: static; }
+  .slide {
+    position: static; inset: auto;
+    width: 100%; height: auto; min-height: 0;
+    opacity: 1 !important; transform: none !important;
+    pointer-events: auto !important; transition: none !important;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .slide:last-child { border-bottom: none; }
+  .slide-content { height: auto; max-height: none; justify-content: flex-start; padding: clamp(1.4rem, 5vw, 2.4rem); }
+
+  .cover-content {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto auto;
+    padding: clamp(1.4rem, 5vw, 2.4rem);
+  }
+  .cover-hero { grid-column: 1; grid-row: 2; padding-right: 0; }
+  .portrait-stage { grid-column: 1; grid-row: 3; overflow: visible; }
+  .portrait-wrap { height: clamp(200px, 60vw, 320px); }
+  .cover-bottom { grid-row: 4; }
+  .cover-title { font-size: clamp(2.6rem, 13vw, 5rem); }
+  .cover-meta { gap: 0.6rem 1.2rem; }
+  .cover-top { justify-content: center; border-bottom: none; }
+  .cover-top-left { justify-content: center; }
+  .cover-top .school, .cover-top .term-tag, .cover-floor { display: none; }
+  .cover-hero .cover-name { display: none; }
+  .cover-name-mobile { display: block; }
+  .bio-narr { max-width: 100%; }
+
+  .dashboard-grid { grid-template-columns: 1fr; }
+  .donut-wrap { width: min(70%, 280px); }
+  .process-grid { grid-template-columns: 1fr; }
+  .dept-strip { grid-template-columns: 1fr 1fr; }
+
+  /* Matrix becomes scroll-wide on phones — keep it horizontal */
+  .matrix-wrap { overflow-x: auto; }
+  .mx-row { min-width: 760px; }
+
+  .theme-toggle { top: 0.6rem; left: 0.6rem; transform: none; width: 2.1rem; height: 2.1rem; }
+  .theme-toggle:hover { transform: scale(1.06); }
+  .nav-dots, .scroll-hint { display: none; }
+  .reveal, .reveal-scale { opacity: 1 !important; transform: none !important; animation: none !important; }
+  .fab-cluster { top: 0.6rem; right: 0.6rem; }
+  .fab-pdf { padding: 0.45rem 0.8rem; font-size: 0.78rem; }
+}
+
+@media (max-width: 480px) {
+  .cover-meta { flex-direction: column; gap: 0.3rem; }
+  .dept-strip { grid-template-columns: 1fr; }
+}
+
+/* ===========================================
+   LIGHT THEME OVERRIDES
+   =========================================== */
+:root[data-theme="light"] .scale-table          { background: rgba(255,255,255,0.65); }
+:root[data-theme="light"] .scale-row.head       { background: rgba(20,54,66,0.04); }
+:root[data-theme="light"] .matrix-wrap          { background: rgba(255,255,255,0.65); }
+:root[data-theme="light"] .mx-row.head          { background: rgba(20,54,66,0.04); }
+:root[data-theme="light"] .donut-stage          { background: radial-gradient(circle at 50% 50%, rgba(46,161,90,0.08), transparent 70%), rgba(255,255,255,0.85); }
+:root[data-theme="light"] .donut-hole           { background: var(--navy-card); }
+:root[data-theme="light"] .donut-hole .ovr-value { color: var(--rate-outstanding); }
+:root[data-theme="light"] .cat-card             { background: rgba(255,255,255,0.78); }
+:root[data-theme="light"] .cat-card:hover       { background: rgba(255,255,255,0.95); }
+:root[data-theme="light"] .dept-tile            { background: rgba(255,255,255,0.78); }
+:root[data-theme="light"] .job-card             { background: radial-gradient(circle at 80% 0%, rgba(46,161,90,0.10), transparent 60%), rgba(255,255,255,0.78); }
+:root[data-theme="light"] .rating-pill.outstanding { background: var(--rate-outstanding); color: white; }
+:root[data-theme="light"] .mx-overall.o            { background: var(--rate-outstanding); color: white; }
+:root[data-theme="light"] .lvl-pill.vh             { background: var(--rate-outstanding); color: white; }
+:root[data-theme="light"] .scale-explainer strong  { color: var(--rate-outstanding); }
+:root[data-theme="light"] .donut-tagline           { color: var(--paper-mid); }
+
+/* ===========================================
+   PRINT
+   =========================================== */
+@media print {
+  @page { size: 297mm 167mm; margin: 0; }
+  :root { color-scheme: light; }
+  html, body { background: #ffffff !important; overflow: visible !important; height: auto !important; }
+  body { margin: 0; color: #0f1530 !important; }
+  .fab-cluster, .nav-dots, .scroll-hint, .theme-toggle { display: none !important; }
+  .deck-track { height: auto !important; position: static !important; }
+  .slide {
+    position: static !important; opacity: 1 !important;
+    transform: none !important; pointer-events: auto !important;
+    transition: none !important;
+    width: 100% !important; height: auto !important;
+    min-height: 167mm;
+    page-break-after: always; page-break-inside: avoid; break-after: page;
+    background: #ffffff !important;
+  }
+  .slide:last-child { page-break-after: auto; }
+  .reveal, .reveal-scale { opacity: 1 !important; transform: none !important; animation: none !important; }
+  * { animation: none !important; }
+}
+</style>
+</head>
+<body>
+
+<div class="deck-track" id="deck-track">
+
+<!-- ============================================
+     SLIDE 1 · TEACHER PROFILE
+     ============================================ -->
+<section class="slide" id="slide-1">
+  <div class="slide-content cover-content">
+    <div class="cover-top reveal r1">
+      <div class="cover-top-left">
+        <img src="Assets/brand/AIS Logo/AIS White.png" data-light-src="Assets/brand/AIS Logo/AIS Navy.png" alt="AIS" class="logo">
+        <span class="school">Australian International School · Sharjah</span>
+      </div>
+      <span class="term-tag">Teacher Observation · Pitch v0.1</span>
+    </div>
+    <div class="cover-hero">
+      <span class="cover-kicker reveal r2"><span class="stripe"></span>Teacher Profile Dashboard</span>
+      <h1 class="cover-title reveal r3">Jo Mare<br><em>Kruger</em></h1>
+      <p class="cover-name reveal r4">Grade 6 Teacher · Teaches all subjects</p>
+      <div class="bio-chips reveal r5">
+        <span class="bio-chip"><span class="dot"></span>10 years experience</span>
+        <span class="bio-chip"><span class="dot"></span>Australian-trained</span>
+        <span class="bio-chip"><span class="dot"></span>At AIS since 2022</span>
+        <span class="bio-chip"><span class="dot"></span>Grade 6A homeroom</span>
+      </div>
+      <p class="bio-narr reveal r6">
+        <strong>B.Ed (Primary), University of Melbourne.</strong> ESL-endorsed; previously taught upper primary across two Australian state systems before joining AIS Sharjah. Currently teaching the full Grade 6 programme — English, Maths, Science, HASS, Arts, HPE and Technology.
+      </p>
+    </div>
+    <div class="portrait-stage reveal-scale r4">
+      <div class="portrait-wrap">
+        <span class="fed-star r">★</span>
+        <span class="fed-star b">★</span>
+        <span class="fed-star y">★</span>
+        <span class="fed-star g">★</span>
+        <div class="portrait-img">
+          <img src="SPEA Data Report/Jo Mare Kruger from DB Files.jpg" alt="Jo Mare Kruger">
+        </div>
+      </div>
+    </div>
+    <p class="cover-name-mobile reveal r5">Jo Mare Kruger · Grade 6</p>
+    <div class="cover-bottom">
+      <div class="cover-floor reveal r8">
+        <span>Australian International School Sharjah</span>
+        <span>Pitch Mock-up · For SLT Review</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 2 · RATING SCALE
+     ============================================ -->
+<section class="slide" id="slide-2">
+  <div class="slide-content">
+    <div class="masthead reveal r1">
+      <span class="brand">
+        <img src="Assets/brand/AIS Logo/AIS White.png" data-light-src="Assets/brand/AIS Logo/AIS Navy.png" alt="AIS" class="ais-logo">
+        <span class="school">Teacher Observation · Pitch v0.1</span>
+      </span>
+      <span class="pg">02 / 05 · Rating scale</span>
+    </div>
+    <div style="margin-bottom: clamp(0.8rem, 1.4vw, 1.2rem);">
+      <div class="eyebrow reveal r2"><span class="stripe"></span>How ratings are read</div>
+      <h2 class="slide-title reveal r3">Rating <em>scale</em></h2>
+    </div>
+
+    <p class="scale-explainer reveal r4">
+      A single shared scale across all observation types — formal, walkthrough, probation, ESCM, OTP &amp; APR. <strong>Outstanding</strong> and <strong>Very Good</strong> are the two "at or above" bands; <strong>Sound</strong> meets expectation; the lower bands flag where targeted support is needed.
+    </p>
+
+    <div class="scale-table">
+      <div class="scale-row head">
+        <span></span>
+        <span>Level &amp; descriptor</span>
+      </div>
+      <div class="scale-row reveal r5">
+        <span class="lvl-pill vh">O</span>
+        <span class="desc"><strong>Outstanding</strong>Consistently demonstrates a very high level of practice, applied independently across a wide range of contexts and observation types.</span>
+      </div>
+      <div class="scale-row reveal r6">
+        <span class="lvl-pill h">VG</span>
+        <span class="desc"><strong>Very Good</strong>Demonstrates a high level of practice, applied independently across most contexts.</span>
+      </div>
+      <div class="scale-row reveal r7">
+        <span class="lvl-pill s">S</span>
+        <span class="desc"><strong>Sound</strong>Demonstrates a sound level of practice, applied in some contexts; meets expectation.</span>
+      </div>
+      <div class="scale-row reveal r8">
+        <span class="lvl-pill d">D</span>
+        <span class="desc"><strong>Developing</strong>Practice is developing; targeted coaching or follow-up support recommended.</span>
+      </div>
+      <div class="scale-row reveal r9">
+        <span class="lvl-pill sr">SR</span>
+        <span class="desc"><strong>Support Required</strong>Significant support required to develop the area of practice; structured intervention.</span>
+      </div>
+      <div class="scale-row reveal r10">
+        <span class="lvl-pill ie">IE</span>
+        <span class="desc"><strong>Insufficient Evidence</strong>Practice level not yet able to be established for this observation cycle.</span>
+      </div>
+    </div>
+
+    <div class="floor reveal r10">
+      <span>Jo Mare Kruger · Grade 6 · 2025/2026</span>
+      <span>Australian International School Sharjah</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 3 · TEACHER DASHBOARD
+     ============================================ -->
+<section class="slide" id="slide-3">
+  <div class="slide-content">
+    <div class="masthead reveal r1">
+      <span class="brand">
+        <img src="Assets/brand/AIS Logo/AIS White.png" data-light-src="Assets/brand/AIS Logo/AIS Navy.png" alt="AIS" class="ais-logo">
+        <span class="school">Teacher Observation · Pitch v0.1</span>
+      </span>
+      <span class="pg">03 / 05 · Teacher dashboard</span>
+    </div>
+    <div style="margin-bottom: clamp(0.6rem, 1.2vw, 1rem);">
+      <div class="eyebrow reveal r2"><span class="stripe"></span>Jo Mare's practice · at a glance</div>
+      <h2 class="slide-title reveal r3">Observation <em>dashboard</em></h2>
+    </div>
+
+    <div class="dashboard-grid">
+      <div class="donut-stage reveal-scale r4">
+        <div class="donut-wrap">
+          <div class="donut" role="img" aria-label="Distribution across 8 observation categories"></div>
+          <div class="donut-hole">
+            <span class="ovr-label">Overall</span>
+            <span class="ovr-value">Outstanding</span>
+            <span class="ovr-frac">5 · 2 · 1 across 8 areas</span>
+          </div>
+        </div>
+        <div class="donut-legend">
+          <span class="item"><span class="swatch o"></span>Outstanding · 5</span>
+          <span class="item"><span class="swatch v"></span>Very Good · 2</span>
+          <span class="item"><span class="swatch s"></span>Sound · 1</span>
+        </div>
+        <div class="donut-tagline">
+          Aggregated across all observation types for the current cycle.
+        </div>
+      </div>
+
+      <div class="cat-list">
+        <a class="cat-card is-outstanding reveal r5" href="SPEA Data Report/Lesson Observation - Igor- 12_11.docx" target="_blank" rel="noopener">
+          <span class="cat-num">01</span>
+          <div class="cat-meta">
+            <div class="cat-name">SPEA Observations</div>
+            <div class="cat-sub">Lesson plan · Lesson slides · Lesson observation</div>
+          </div>
+          <span class="rating-pill outstanding">Outstanding</span>
+          <span class="link-icon" aria-hidden="true">↗</span>
+        </a>
+        <a class="cat-card is-verygood is-pending reveal r6" href="#" onclick="return false;">
+          <span class="cat-num">02</span>
+          <div class="cat-meta">
+            <div class="cat-name">Walkthroughs</div>
+            <div class="cat-sub">Informal walk-in notes · GDrive link to be added</div>
+          </div>
+          <span class="rating-pill verygood">Very Good</span>
+          <span class="link-icon" aria-hidden="true">↗</span>
+        </a>
+        <a class="cat-card is-outstanding reveal r6" href="SPEA Data Report/Form_ Probation Lesson Observation (8).pdf" target="_blank" rel="noopener">
+          <span class="cat-num">03</span>
+          <div class="cat-meta">
+            <div class="cat-name">Probationary Observations</div>
+            <div class="cat-sub">Probation lesson observation form</div>
+          </div>
+          <span class="rating-pill outstanding">Outstanding</span>
+          <span class="link-icon" aria-hidden="true">↗</span>
+        </a>
+        <a class="cat-card is-outstanding reveal r7" href="SPEA Data Report/Lesson Observation - Igor- 12_11.docx" target="_blank" rel="noopener">
+          <span class="cat-num">04</span>
+          <div class="cat-meta">
+            <div class="cat-name">Lesson Observations</div>
+            <div class="cat-sub">Formal in-class observation record</div>
+          </div>
+          <span class="rating-pill outstanding">Outstanding</span>
+          <span class="link-icon" aria-hidden="true">↗</span>
+        </a>
+        <a class="cat-card is-sound is-pending reveal r7" href="#" onclick="return false;">
+          <span class="cat-num">05</span>
+          <div class="cat-meta">
+            <div class="cat-name">File Attachments</div>
+            <div class="cat-sub">Supporting evidence uploads · GDrive link to be added</div>
+          </div>
+          <span class="rating-pill sound">Sound</span>
+          <span class="link-icon" aria-hidden="true">↗</span>
+        </a>
+        <a class="cat-card is-outstanding is-pending reveal r8" href="#" onclick="return false;">
+          <span class="cat-num">06</span>
+          <div class="cat-meta">
+            <div class="cat-name">Classroom Profiling ESCM</div>
+            <div class="cat-sub">Essential Skills for Classroom Management profile</div>
+          </div>
+          <span class="rating-pill outstanding">Outstanding</span>
+          <span class="link-icon" aria-hidden="true">↗</span>
+        </a>
+        <a class="cat-card is-verygood reveal r8" href="SPEA Data Report/24-25-Primary School OTP - v4.docx" target="_blank" rel="noopener">
+          <span class="cat-num">07</span>
+          <div class="cat-meta">
+            <div class="cat-name">OTP &amp; APR (Self-Assessment)</div>
+            <div class="cat-sub">Observation, Teaching &amp; Planning · Annual Performance Review</div>
+          </div>
+          <span class="rating-pill verygood">Very Good</span>
+          <span class="link-icon" aria-hidden="true">↗</span>
+        </a>
+        <a class="cat-card is-outstanding is-pending reveal r9" href="#" onclick="return false;">
+          <span class="cat-num">08</span>
+          <div class="cat-meta">
+            <div class="cat-name">Additional Notes &amp; Attachments</div>
+            <div class="cat-sub">Free-form notes &amp; supplementary files</div>
+          </div>
+          <span class="rating-pill outstanding">Outstanding</span>
+          <span class="link-icon" aria-hidden="true">↗</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="floor reveal r10">
+      <span>Jo Mare Kruger · Grade 6 · 2025/2026</span>
+      <span>Australian International School Sharjah</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 4 · DEPARTMENT DASHBOARD
+     ============================================ -->
+<section class="slide" id="slide-4">
+  <div class="slide-content">
+    <div class="masthead reveal r1">
+      <span class="brand">
+        <img src="Assets/brand/AIS Logo/AIS White.png" data-light-src="Assets/brand/AIS Logo/AIS Navy.png" alt="AIS" class="ais-logo">
+        <span class="school">Teacher Observation · Pitch v0.1</span>
+      </span>
+      <span class="pg">04 / 05 · Department dashboard</span>
+    </div>
+    <div style="margin-bottom: clamp(0.6rem, 1.2vw, 1rem);">
+      <div class="eyebrow reveal r2"><span class="stripe"></span>Grade 6 · Primary</div>
+      <h2 class="slide-title reveal r3">Department <em>view</em></h2>
+    </div>
+
+    <div class="dept-strip">
+      <div class="dept-tile o reveal r4">
+        <div class="num">6</div>
+        <div class="label">Teachers</div>
+        <div class="sub">Grade 6 cohort, full-time.</div>
+      </div>
+      <div class="dept-tile v reveal r5">
+        <div class="num">73%</div>
+        <div class="label">Outstanding cells</div>
+        <div class="sub">Across all categories &amp; teachers.</div>
+      </div>
+      <div class="dept-tile s reveal r6">
+        <div class="num">21%</div>
+        <div class="label">Very Good</div>
+        <div class="sub">Strong cycle, no Developing flags.</div>
+      </div>
+      <div class="dept-tile y reveal r7">
+        <div class="num">48</div>
+        <div class="label">Observation events</div>
+        <div class="sub">Logged this academic year so far.</div>
+      </div>
+    </div>
+
+    <div class="matrix-wrap reveal r8">
+      <div class="mx-row head">
+        <span>Teacher</span>
+        <span class="col-h" title="SPEA Observations">01</span>
+        <span class="col-h" title="Walkthroughs">02</span>
+        <span class="col-h" title="Probationary Observations">03</span>
+        <span class="col-h" title="Lesson Observations">04</span>
+        <span class="col-h" title="File Attachments">05</span>
+        <span class="col-h" title="Classroom Profiling ESCM">06</span>
+        <span class="col-h" title="OTP &amp; APR">07</span>
+        <span class="col-h" title="Additional Notes">08</span>
+        <span class="col-h">Overall</span>
+      </div>
+      <div class="mx-row">
+        <div class="teacher-cell">
+          <div class="avatar"><img src="SPEA Data Report/Jo Mare Kruger from DB Files.jpg" alt="Jo Mare Kruger"></div>
+          <div>
+            <div class="nm">Jo Mare Kruger</div>
+            <div class="sub">Grade 6A · Homeroom</div>
+          </div>
+        </div>
+        <span class="mx-dot o" title="Outstanding"></span>
+        <span class="mx-dot v" title="Very Good"></span>
+        <span class="mx-dot o"></span>
+        <span class="mx-dot o"></span>
+        <span class="mx-dot s" title="Sound"></span>
+        <span class="mx-dot o"></span>
+        <span class="mx-dot v"></span>
+        <span class="mx-dot o"></span>
+        <span class="mx-overall o">Outstanding</span>
+      </div>
+      <div class="mx-row">
+        <div class="teacher-cell">
+          <div class="avatar">OG</div>
+          <div>
+            <div class="nm">Olivia Gill</div>
+            <div class="sub">Grade 6B · Homeroom</div>
+          </div>
+        </div>
+        <span class="mx-dot o"></span>
+        <span class="mx-dot o"></span>
+        <span class="mx-dot v"></span>
+        <span class="mx-dot o"></span>
+        <span class="mx-dot o"></span>
+        <span class="mx-dot o"></span>
+        <span class="mx-dot o"></span>
+        <span class="mx-dot o"></span>
+        <span class="mx-overall o">Outstanding</span>
+      </div>
+      <div class="mx-row">
+        <div class="teacher-cell">
+          <div class="avatar">DC</div>
+          <div>
+            <div class="nm">Daniel O'Connor</div>
+            <div class="sub">Grade 6C · Homeroom</div>
+          </div>
+        </div>
+        <span class="mx-dot v"></span>
+        <span class="mx-dot o"></span>
+        <span class="mx-dot o"></span>
+        <span class="mx-dot v"></span>
+        <span class="mx-dot o"></span>
+        <span class="mx-dot v"></span>
+        <span class="mx-dot o"></span>
+        <span class="mx-dot o"></span>
+        <span class="mx-overall v">Very Good</span>
+      </div>
+      <div class="mx-row">
+        <div class="teacher-cell">
+          <div class="avatar">SP</div>
+          <div>
+            <div class="nm">Sarah Patel</div>
+            <div class="sub">Grade 6D · Homeroom</div>
+          </div>
+        </div>
+        <span class="mx-dot o"></span>
+        <span class="mx-dot o"></span>
+        <span class="mx-dot o"></span>
+        <span class="mx-dot o"></span>
+        <span class="mx-dot v"></span>
+        <span class="mx-dot o"></span>
+        <span class="mx-dot o"></span>
+        <span class="mx-dot v"></span>
+        <span class="mx-overall o">Outstanding</span>
+      </div>
+      <div class="mx-row">
+        <div class="teacher-cell">
+          <div class="avatar">MS</div>
+          <div>
+            <div class="nm">Michael Stevens</div>
+            <div class="sub">Grade 6E · Homeroom</div>
+          </div>
+        </div>
+        <span class="mx-dot o"></span>
+        <span class="mx-dot v"></span>
+        <span class="mx-dot v"></span>
+        <span class="mx-dot o"></span>
+        <span class="mx-dot s"></span>
+        <span class="mx-dot v"></span>
+        <span class="mx-dot v"></span>
+        <span class="mx-dot o"></span>
+        <span class="mx-overall v">Very Good</span>
+      </div>
+      <div class="mx-row">
+        <div class="teacher-cell">
+          <div class="avatar">FH</div>
+          <div>
+            <div class="nm">Fatima Al-Hashimi</div>
+            <div class="sub">Grade 6F · Homeroom</div>
+          </div>
+        </div>
+        <span class="mx-dot o"></span>
+        <span class="mx-dot o"></span>
+        <span class="mx-dot o"></span>
+        <span class="mx-dot o"></span>
+        <span class="mx-dot o"></span>
+        <span class="mx-dot o"></span>
+        <span class="mx-dot o"></span>
+        <span class="mx-dot o"></span>
+        <span class="mx-overall o">Outstanding</span>
+      </div>
+    </div>
+
+    <div class="matrix-legend reveal r9">
+      <span class="grp"><span class="swatch o"></span>Outstanding</span>
+      <span class="grp"><span class="swatch v"></span>Very Good</span>
+      <span class="grp"><span class="swatch s"></span>Sound</span>
+      <span class="grp" style="margin-left:auto;"><span class="kbd">01</span>SPEA <span class="kbd" style="margin-left:0.6rem;">02</span>Walkthroughs <span class="kbd" style="margin-left:0.6rem;">03</span>Probation <span class="kbd" style="margin-left:0.6rem;">04</span>Lesson Obs <span class="kbd" style="margin-left:0.6rem;">05</span>Files <span class="kbd" style="margin-left:0.6rem;">06</span>ESCM <span class="kbd" style="margin-left:0.6rem;">07</span>OTP/APR <span class="kbd" style="margin-left:0.6rem;">08</span>Notes</span>
+    </div>
+
+    <div class="floor reveal r10">
+      <span>Grade 6 · Primary department · 2025/2026</span>
+      <span>Australian International School Sharjah</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     SLIDE 5 · THE BUILD
+     ============================================ -->
+<section class="slide" id="slide-5">
+  <div class="slide-content">
+    <div class="masthead reveal r1">
+      <span class="brand">
+        <img src="Assets/brand/AIS Logo/AIS White.png" data-light-src="Assets/brand/AIS Logo/AIS Navy.png" alt="AIS" class="ais-logo">
+        <span class="school">Teacher Observation · Pitch v0.1</span>
+      </span>
+      <span class="pg">05 / 05 · The build</span>
+    </div>
+    <div style="margin-bottom: clamp(0.6rem, 1.2vw, 1rem);">
+      <div class="eyebrow reveal r2"><span class="stripe"></span>From paper to pretty website</div>
+      <h2 class="slide-title reveal r3">How we <em>build</em> this</h2>
+    </div>
+
+    <div class="process-grid">
+      <div class="job-card reveal r4">
+        <div class="job-num">01</div>
+        <div class="job-label">Job One</div>
+        <h3 class="job-title">Form <em>conversions</em></h3>
+        <div class="job-lead">Paper &amp; PDF observation forms become structured digital forms. One source of truth — no double-handling, no lost notes.</div>
+        <ul>
+          <li>Digital SPEA, walkthrough, probation, ESCM, OTP &amp; APR forms.</li>
+          <li>Built for speed: observers complete during the observation, not after.</li>
+          <li>Tablet- and phone-friendly; works offline, syncs on connect.</li>
+          <li>Same field structure across all forms feeds the same database.</li>
+        </ul>
+        <div class="job-footer">Step 1 of 3 · Collection</div>
+      </div>
+
+      <div class="job-card reveal r5">
+        <div class="job-num">02</div>
+        <div class="job-label">Job Two</div>
+        <h3 class="job-title">Central <em>database</em></h3>
+        <div class="job-lead">Every observation, walkthrough and self-assessment lands in one place. Per-teacher, per-department, per-school — queryable, exportable.</div>
+        <ul>
+          <li>Single source of truth for all observation data.</li>
+          <li>Role-based access: SLT, observers, individual teachers.</li>
+          <li>Audit log on every record — who, when, what changed.</li>
+          <li>Export-ready for KHDA, accreditation and federation reviews.</li>
+        </ul>
+        <div class="job-footer">Step 2 of 3 · Storage</div>
+      </div>
+
+      <div class="job-card is-current reveal r6">
+        <div class="job-num">03</div>
+        <div class="job-label">Job Three</div>
+        <h3 class="job-title">Pretty <em>website</em></h3>
+        <div class="job-lead">The showcase layer. Same look-and-feel as the academic reports, drilling from school → department → teacher.</div>
+        <ul>
+          <li>Per-teacher dashboards (slide 3 of this deck).</li>
+          <li>Per-department views (slide 4 of this deck).</li>
+          <li>School-level rollup for SLT &amp; review-readiness.</li>
+          <li>Branded, password-gated, exportable as PDF for reviewers.</li>
+        </ul>
+        <div class="job-footer">Step 3 of 3 · Showcase</div>
+      </div>
+    </div>
+
+    <div class="floor reveal r10">
+      <span>Pitch · v0.1 · For SLT discussion</span>
+      <span>Australian International School Sharjah</span>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle light or dark theme" title="Toggle light / dark theme">
+  <svg class="icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+  </svg>
+  <svg class="icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="4"/>
+    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+  </svg>
+</button>
+
+<div class="fab-cluster">
+  <button class="fab-pdf" onclick="window.print()" title="Save this pitch as a PDF">Save as PDF</button>
+</div>
+
+<button class="scroll-hint" id="scroll-hint" aria-label="Next slide">
+  <span class="chev"></span>
+</button>
+
+<nav class="nav-dots" aria-label="Slide navigation">
+  <button class="nav-dot active" data-slide="1" title="Teacher profile"></button>
+  <button class="nav-dot" data-slide="2" title="Rating scale"></button>
+  <button class="nav-dot" data-slide="3" title="Teacher dashboard"></button>
+  <button class="nav-dot" data-slide="4" title="Department dashboard"></button>
+  <button class="nav-dot" data-slide="5" title="The build"></button>
+</nav>
+
+<script>
+  (function initTheme() {
+    const root = document.documentElement;
+    const toggle = document.getElementById('theme-toggle');
+    const themedImages = Array.from(document.querySelectorAll('img[data-light-src]'));
+    themedImages.forEach(img => { img.dataset.darkSrc = img.getAttribute('src'); });
+
+    function syncImages(theme) {
+      themedImages.forEach(img => {
+        const next = theme === 'light' ? img.dataset.lightSrc : img.dataset.darkSrc;
+        if (img.getAttribute('src') !== next) img.setAttribute('src', next);
+      });
+    }
+    function applyTheme(theme, persist) {
+      if (theme === 'light') root.setAttribute('data-theme', 'light');
+      else root.removeAttribute('data-theme');
+      syncImages(theme);
+      if (persist) {
+        try { localStorage.setItem('ais-obs-theme', theme); } catch (e) {}
+      }
+    }
+    syncImages(root.getAttribute('data-theme') === 'light' ? 'light' : 'dark');
+    if (toggle) {
+      toggle.addEventListener('click', () => {
+        const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        applyTheme(next, true);
+      });
+    }
+    const mq = window.matchMedia('(prefers-color-scheme: light)');
+    mq.addEventListener('change', e => {
+      let stored = null;
+      try { stored = localStorage.getItem('ais-obs-theme'); } catch (err) {}
+      if (!stored) applyTheme(e.matches ? 'light' : 'dark', false);
+    });
+  })();
+
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const dots = document.querySelectorAll('.nav-dot');
+  const scrollHint = document.getElementById('scroll-hint');
+  const total = slides.length;
+  let currentSlide = 0;
+
+  function goTo(idx) {
+    idx = Math.max(0, Math.min(total - 1, idx));
+    if (idx === currentSlide) return;
+    slides[currentSlide].classList.remove('active');
+    currentSlide = idx;
+    slides[idx].classList.add('active');
+    dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+    updateScrollHint();
+  }
+  function updateScrollHint() {
+    if (!scrollHint) return;
+    scrollHint.classList.toggle('hide', currentSlide === total - 1);
+  }
+  slides[0].classList.add('active');
+  updateScrollHint();
+
+  const mqMobile = window.matchMedia('(max-width: 880px)');
+  const isMobile = () => mqMobile.matches;
+  function applyMobileMode() {
+    if (isMobile()) {
+      slides.forEach(s => s.classList.add('active'));
+    } else {
+      slides.forEach((s, i) => s.classList.toggle('active', i === currentSlide));
+    }
+  }
+  applyMobileMode();
+  mqMobile.addEventListener('change', applyMobileMode);
+
+  let wheelCooldown = false;
+  window.addEventListener('wheel', (e) => {
+    if (isMobile()) return;
+    if (wheelCooldown) return;
+    if (Math.abs(e.deltaY) < 30) return;
+    wheelCooldown = true;
+    setTimeout(() => { wheelCooldown = false; }, 650);
+    if (e.deltaY > 0) goTo(currentSlide + 1);
+    else goTo(currentSlide - 1);
+  }, { passive: true });
+
+  let touchStartY = 0, touchStartX = 0;
+  window.addEventListener('touchstart', (e) => {
+    if (isMobile()) return;
+    touchStartY = e.touches[0].clientY;
+    touchStartX = e.touches[0].clientX;
+  }, { passive: true });
+  window.addEventListener('touchend', (e) => {
+    if (isMobile()) return;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 60) {
+      if (dy < 0) goTo(currentSlide + 1);
+      else goTo(currentSlide - 1);
+    }
+  }, { passive: true });
+
+  dots.forEach((dot, i) => dot.addEventListener('click', () => goTo(i)));
+  if (scrollHint) scrollHint.addEventListener('click', () => goTo(currentSlide + 1));
+
+  document.addEventListener('keydown', (e) => {
+    if (isMobile()) return;
+    const tag = (e.target.tagName || '').toLowerCase();
+    if (tag === 'input' || tag === 'textarea') return;
+    switch (e.key) {
+      case 'ArrowDown': case 'ArrowRight': case 'PageDown': case ' ':
+        e.preventDefault(); goTo(currentSlide + 1); break;
+      case 'ArrowUp': case 'ArrowLeft': case 'PageUp':
+        e.preventDefault(); goTo(currentSlide - 1); break;
+      case 'Home': e.preventDefault(); goTo(0); break;
+      case 'End': e.preventDefault(); goTo(total - 1); break;
+    }
+  });
+</script>
+
+</body>
+</html>
