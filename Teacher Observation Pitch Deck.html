@@ -81,6 +81,8 @@ html, body { height: 100%; overflow: hidden; margin: 0; }
   --rate-verygood: #3CBB6C;           /* AIS green */
   --rate-sound: #F4A737;              /* warm amber */
   --rate-developing: var(--ais-orange);
+  --rate-not-assessed: rgba(255, 255, 255, 0.12);
+  --rate-not-assessed-fill: rgba(255, 255, 255, 0.06);
 
   --rule: rgba(255, 255, 255, 0.10);
   --rule-soft: rgba(255, 255, 255, 0.06);
@@ -146,6 +148,8 @@ html, body { height: 100%; overflow: hidden; margin: 0; }
   --rate-outstanding-bright: #1e8a4a;
   --rate-verygood: #2ea15a;
   --rate-sound: #d68a1a;
+  --rate-not-assessed: rgba(20, 54, 66, 0.14);
+  --rate-not-assessed-fill: rgba(20, 54, 66, 0.07);
 }
 
 * { box-sizing: border-box; }
@@ -522,7 +526,7 @@ body {
     var(--rate-sound)             180deg 224deg, transparent 224deg 225deg,
     var(--rate-outstanding)       225deg 269deg, transparent 269deg 270deg,
     var(--rate-verygood)          270deg 314deg, transparent 314deg 315deg,
-    var(--rate-outstanding)       315deg 359deg, transparent 359deg 360deg
+    var(--rate-not-assessed)      315deg 359deg, transparent 359deg 360deg
   );
   filter: drop-shadow(0 12px 30px rgba(0,0,0,0.35));
 }
@@ -569,6 +573,7 @@ body {
 .donut-legend .swatch.o { background: var(--rate-outstanding); }
 .donut-legend .swatch.v { background: var(--rate-verygood); }
 .donut-legend .swatch.s { background: var(--rate-sound); }
+.donut-legend .swatch.na { background: var(--rate-not-assessed-fill); border: 1px solid var(--rule); }
 .donut-tagline {
   font-family: var(--display-font); font-style: italic;
   font-size: clamp(0.85rem, 1.2vw, 1.05rem);
@@ -585,18 +590,16 @@ body {
 }
 .cat-card {
   display: grid;
-  grid-template-columns: clamp(2rem, 3.2vw, 2.6rem) 1fr auto auto;
+  grid-template-columns: clamp(2rem, 3.2vw, 2.6rem) 1fr auto;
   align-items: center;
   gap: clamp(0.65rem, 1.2vw, 1rem);
   padding: clamp(0.55rem, 1vw, 0.85rem) clamp(0.75rem, 1.3vw, 1.05rem);
   border-radius: clamp(0.5rem, 0.9vw, 0.7rem);
   border: 1px solid var(--rule);
   background: var(--navy-elev);
-  text-decoration: none;
-  color: inherit;
   position: relative;
   overflow: hidden;
-  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  transition: border-color 0.2s ease, background 0.2s ease;
 }
 .cat-card::before {
   content: ""; position: absolute; left: 0; top: 0; bottom: 0;
@@ -605,11 +608,8 @@ body {
 .cat-card.is-outstanding::before { background: var(--rate-outstanding); }
 .cat-card.is-verygood::before    { background: var(--rate-verygood); }
 .cat-card.is-sound::before       { background: var(--rate-sound); }
-.cat-card:hover {
-  transform: translateX(2px);
-  border-color: var(--rate-verygood);
-  background: var(--navy-card);
-}
+.cat-card.is-not-assessed::before { background: var(--rate-not-assessed); }
+.cat-card.is-not-assessed { background: var(--surface-soft); }
 .cat-card .cat-num {
   font-family: var(--display-font); font-style: italic; font-weight: 700;
   font-size: clamp(1.1rem, 1.7vw, 1.45rem);
@@ -635,6 +635,45 @@ body {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.cat-actions {
+  display: flex; flex-wrap: wrap;
+  gap: clamp(0.3rem, 0.55vw, 0.45rem);
+  margin-top: 0.3em;
+}
+.cat-action {
+  display: inline-flex; align-items: center; gap: 0.35em;
+  padding: 0.28em 0.7em;
+  border-radius: 999px;
+  background: rgba(60,187,108,0.12);
+  color: var(--rate-verygood);
+  border: 1px solid rgba(60,187,108,0.32);
+  font-family: var(--body-font);
+  font-size: clamp(0.7rem, 0.95vw, 0.82rem);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+.cat-action:hover {
+  background: var(--rate-verygood);
+  color: var(--navy);
+  transform: translateY(-1px);
+}
+.cat-action::after { content: "↗"; font-size: 0.95em; opacity: 0.85; }
+.cat-action.is-pending {
+  background: var(--surface-mid);
+  color: var(--paper-faint);
+  border-color: var(--rule);
+  border-style: dashed;
+  cursor: default;
+}
+.cat-action.is-pending:hover {
+  background: var(--surface-mid);
+  color: var(--paper-faint);
+  transform: none;
+}
+.cat-action.is-pending::after { content: "…"; opacity: 0.6; }
 .rating-pill {
   display: inline-flex; align-items: center; justify-content: center;
   font-family: var(--body-font);
@@ -647,26 +686,11 @@ body {
 .rating-pill.outstanding { background: var(--rate-outstanding); color: white; }
 .rating-pill.verygood    { background: var(--rate-verygood); color: var(--navy); }
 .rating-pill.sound       { background: var(--rate-sound); color: var(--navy); }
-.cat-card .link-icon {
-  width: 1.6em; height: 1.6em;
-  display: inline-flex; align-items: center; justify-content: center;
-  border-radius: 50%;
-  background: var(--surface-mid);
+.rating-pill.not-assessed {
+  background: transparent;
   color: var(--paper-mid);
-  font-size: 1em;
-  border: 1px solid var(--rule);
-  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-}
-.cat-card:hover .link-icon {
-  background: var(--rate-verygood);
-  color: var(--navy);
-  border-color: var(--rate-verygood);
-}
-.cat-card.is-pending {
-  opacity: 0.78;
-}
-.cat-card.is-pending .link-icon {
-  border-style: dashed;
+  border: 1px dashed var(--rule);
+  letter-spacing: 0.1em;
 }
 
 /* ===========================================
@@ -921,20 +945,27 @@ body {
   display: flex; gap: clamp(0.4rem, 0.8vw, 0.7rem);
 }
 .fab-pdf {
-  font-family: var(--body-font);
-  font-size: var(--small); font-weight: 600;
-  letter-spacing: 0.06em; cursor: pointer;
-  display: inline-flex; align-items: center; gap: 0.55em;
-  padding: clamp(0.55rem, 1vw, 0.85rem) clamp(1rem, 1.6vw, 1.4rem);
-  border-radius: 999px;
-  background: var(--rate-verygood); color: var(--navy);
-  border: none;
-  box-shadow: 0 12px 24px -10px rgba(60, 187, 108, 0.4);
-  transition: transform 0.2s ease, background 0.2s ease;
+  cursor: pointer;
+  width: clamp(1.7rem, 2.1vw, 2.1rem); height: clamp(1.7rem, 2.1vw, 2.1rem);
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0;
+  border-radius: 50%;
+  background: var(--surface-mid);
+  color: var(--paper-faint);
+  border: 1px solid var(--rule);
+  opacity: 0.55;
+  -webkit-backdrop-filter: blur(6px);
+          backdrop-filter: blur(6px);
+  transition: opacity 0.2s ease, color 0.2s ease, background 0.2s ease, border-color 0.2s ease;
 }
-.fab-pdf:hover { transform: translateY(-2px); background: var(--rate-outstanding-bright); color: white; }
+.fab-pdf:hover {
+  opacity: 1;
+  color: var(--rate-verygood);
+  border-color: var(--rate-verygood);
+  background: var(--surface-strong);
+}
 .fab-pdf::before {
-  content: ""; width: 1.05em; height: 1.05em;
+  content: ""; width: 0.85em; height: 0.85em;
   background: currentColor;
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3'/%3E%3C/svg%3E") center / contain no-repeat;
           mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3'/%3E%3C/svg%3E") center / contain no-repeat;
@@ -1257,13 +1288,14 @@ body {
           <div class="donut-hole">
             <span class="ovr-label">Overall</span>
             <span class="ovr-value">Outstanding</span>
-            <span class="ovr-frac">5 · 2 · 1 across 8 areas</span>
+            <span class="ovr-frac">4 · 2 · 1 of 7 rated</span>
           </div>
         </div>
         <div class="donut-legend">
-          <span class="item"><span class="swatch o"></span>Outstanding · 5</span>
+          <span class="item"><span class="swatch o"></span>Outstanding · 4</span>
           <span class="item"><span class="swatch v"></span>Very Good · 2</span>
           <span class="item"><span class="swatch s"></span>Sound · 1</span>
+          <span class="item"><span class="swatch na"></span>Not assessed · 1</span>
         </div>
         <div class="donut-tagline">
           Aggregated across all observation types for the current cycle.
@@ -1271,78 +1303,85 @@ body {
       </div>
 
       <div class="cat-list">
-        <a class="cat-card is-outstanding reveal r5" href="SPEA Data Report/Lesson Observation - Igor- 12_11.docx" target="_blank" rel="noopener">
+        <div class="cat-card is-outstanding reveal r5">
           <span class="cat-num">01</span>
           <div class="cat-meta">
             <div class="cat-name">SPEA Observations</div>
-            <div class="cat-sub">Lesson plan · Lesson slides · Lesson observation</div>
+            <div class="cat-actions">
+              <a class="cat-action" href="https://docs.google.com/document/d/1EPr788idVebgyYd29JjaCQX2iYO0Aol3/edit?usp=sharing&amp;ouid=106984200176503861980&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener">Lesson plan</a>
+              <a class="cat-action" href="https://rogerceaser21.github.io/finishing-and-debugging-y5y6/Finishing%20and%20Debugging%20-%20Year%205%2B6.html" target="_blank" rel="noopener">Lesson slides</a>
+            </div>
           </div>
           <span class="rating-pill outstanding">Outstanding</span>
-          <span class="link-icon" aria-hidden="true">↗</span>
-        </a>
-        <a class="cat-card is-verygood is-pending reveal r6" href="#" onclick="return false;">
+        </div>
+        <div class="cat-card is-verygood reveal r6">
           <span class="cat-num">02</span>
           <div class="cat-meta">
             <div class="cat-name">Walkthroughs</div>
-            <div class="cat-sub">Informal walk-in notes · GDrive link to be added</div>
+            <div class="cat-actions">
+              <span class="cat-action is-pending">Link pending</span>
+            </div>
           </div>
           <span class="rating-pill verygood">Very Good</span>
-          <span class="link-icon" aria-hidden="true">↗</span>
-        </a>
-        <a class="cat-card is-outstanding reveal r6" href="SPEA Data Report/Form_ Probation Lesson Observation (8).pdf" target="_blank" rel="noopener">
+        </div>
+        <div class="cat-card is-outstanding reveal r6">
           <span class="cat-num">03</span>
           <div class="cat-meta">
             <div class="cat-name">Probationary Observations</div>
-            <div class="cat-sub">Probation lesson observation form</div>
+            <div class="cat-actions">
+              <a class="cat-action" href="https://drive.google.com/file/d/1c8U0NB6RHLpmPhOarcIsE3YKRCpbM9XM/view?usp=sharing" target="_blank" rel="noopener">Probation form</a>
+            </div>
           </div>
           <span class="rating-pill outstanding">Outstanding</span>
-          <span class="link-icon" aria-hidden="true">↗</span>
-        </a>
-        <a class="cat-card is-outstanding reveal r7" href="SPEA Data Report/Lesson Observation - Igor- 12_11.docx" target="_blank" rel="noopener">
+        </div>
+        <div class="cat-card is-outstanding reveal r7">
           <span class="cat-num">04</span>
           <div class="cat-meta">
             <div class="cat-name">Lesson Observations</div>
-            <div class="cat-sub">Formal in-class observation record</div>
+            <div class="cat-actions">
+              <a class="cat-action" href="https://docs.google.com/document/d/1LBZEi1SlXKs3B6h17xGhPZXdOHKVnGAZ/edit?usp=sharing&amp;ouid=106984200176503861980&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener">Observation record</a>
+            </div>
           </div>
           <span class="rating-pill outstanding">Outstanding</span>
-          <span class="link-icon" aria-hidden="true">↗</span>
-        </a>
-        <a class="cat-card is-sound is-pending reveal r7" href="#" onclick="return false;">
+        </div>
+        <div class="cat-card is-sound reveal r7">
           <span class="cat-num">05</span>
           <div class="cat-meta">
             <div class="cat-name">File Attachments</div>
-            <div class="cat-sub">Supporting evidence uploads · GDrive link to be added</div>
+            <div class="cat-actions">
+              <span class="cat-action is-pending">Link pending</span>
+            </div>
           </div>
           <span class="rating-pill sound">Sound</span>
-          <span class="link-icon" aria-hidden="true">↗</span>
-        </a>
-        <a class="cat-card is-outstanding is-pending reveal r8" href="#" onclick="return false;">
+        </div>
+        <div class="cat-card is-outstanding reveal r8">
           <span class="cat-num">06</span>
           <div class="cat-meta">
             <div class="cat-name">Classroom Profiling ESCM</div>
-            <div class="cat-sub">Essential Skills for Classroom Management profile</div>
+            <div class="cat-actions">
+              <span class="cat-action is-pending">Link pending</span>
+            </div>
           </div>
           <span class="rating-pill outstanding">Outstanding</span>
-          <span class="link-icon" aria-hidden="true">↗</span>
-        </a>
-        <a class="cat-card is-verygood reveal r8" href="SPEA Data Report/24-25-Primary School OTP - v4.docx" target="_blank" rel="noopener">
+        </div>
+        <div class="cat-card is-verygood reveal r8">
           <span class="cat-num">07</span>
           <div class="cat-meta">
             <div class="cat-name">OTP &amp; APR (Self-Assessment)</div>
-            <div class="cat-sub">Observation, Teaching &amp; Planning · Annual Performance Review</div>
+            <div class="cat-actions">
+              <a class="cat-action" href="https://docs.google.com/document/d/1k8FCY9VMcoZzfMJVfVHkGwCzQt5yVmZf/edit?usp=sharing&amp;ouid=106984200176503861980&amp;rtpof=true&amp;sd=true" target="_blank" rel="noopener">OTP document</a>
+            </div>
           </div>
           <span class="rating-pill verygood">Very Good</span>
-          <span class="link-icon" aria-hidden="true">↗</span>
-        </a>
-        <a class="cat-card is-outstanding is-pending reveal r9" href="#" onclick="return false;">
+        </div>
+        <div class="cat-card is-not-assessed reveal r9">
           <span class="cat-num">08</span>
           <div class="cat-meta">
             <div class="cat-name">Additional Notes &amp; Attachments</div>
-            <div class="cat-sub">Free-form notes &amp; supplementary files</div>
+            <div class="cat-sub">Reference material &amp; supporting evidence · provided for context</div>
           </div>
-          <span class="rating-pill outstanding">Outstanding</span>
-          <span class="link-icon" aria-hidden="true">↗</span>
-        </a>
+          <span class="rating-pill not-assessed">Not Assessed</span>
+        </div>
       </div>
     </div>
 
@@ -1426,9 +1465,9 @@ body {
       </div>
       <div class="mx-row">
         <div class="teacher-cell">
-          <div class="avatar">OG</div>
+          <div class="avatar"><img src="SPEA Data Report/Curtis All.jpg" alt="Curtis All"></div>
           <div>
-            <div class="nm">Olivia Gill</div>
+            <div class="nm">Curtis All</div>
             <div class="sub">Grade 6B · Homeroom</div>
           </div>
         </div>
@@ -1444,9 +1483,9 @@ body {
       </div>
       <div class="mx-row">
         <div class="teacher-cell">
-          <div class="avatar">DC</div>
+          <div class="avatar"><img src="SPEA Data Report/Deena AbuGeras from DB Files.jpg" alt="Deena AbuGeras"></div>
           <div>
-            <div class="nm">Daniel O'Connor</div>
+            <div class="nm">Deena AbuGeras</div>
             <div class="sub">Grade 6C · Homeroom</div>
           </div>
         </div>
@@ -1462,9 +1501,9 @@ body {
       </div>
       <div class="mx-row">
         <div class="teacher-cell">
-          <div class="avatar">SP</div>
+          <div class="avatar"><img src="SPEA Data Report/Lana Mosleh.jpg" alt="Lana Mosleh"></div>
           <div>
-            <div class="nm">Sarah Patel</div>
+            <div class="nm">Lana Mosleh</div>
             <div class="sub">Grade 6D · Homeroom</div>
           </div>
         </div>
@@ -1480,9 +1519,9 @@ body {
       </div>
       <div class="mx-row">
         <div class="teacher-cell">
-          <div class="avatar">MS</div>
+          <div class="avatar"><img src="SPEA Data Report/Gina Hanlon from DB Files (1).jpg" alt="Gina Hanlon"></div>
           <div>
-            <div class="nm">Michael Stevens</div>
+            <div class="nm">Gina Hanlon</div>
             <div class="sub">Grade 6E · Homeroom</div>
           </div>
         </div>
@@ -1498,9 +1537,9 @@ body {
       </div>
       <div class="mx-row">
         <div class="teacher-cell">
-          <div class="avatar">FH</div>
+          <div class="avatar"><img src="SPEA Data Report/Hani Asad - DB Files.jpg" alt="Hani Asad"></div>
           <div>
-            <div class="nm">Fatima Al-Hashimi</div>
+            <div class="nm">Hani Asad</div>
             <div class="sub">Grade 6F · Homeroom</div>
           </div>
         </div>
@@ -1579,7 +1618,7 @@ body {
       <div class="job-card is-current reveal r6">
         <div class="job-num">03</div>
         <div class="job-label">Job Three</div>
-        <h3 class="job-title">Pretty <em>website</em></h3>
+        <h3 class="job-title">Data <em>Representation</em></h3>
         <div class="job-lead">The showcase layer. Same look-and-feel as the academic reports, drilling from school → department → teacher.</div>
         <ul>
           <li>Per-teacher dashboards (slide 3 of this deck).</li>
