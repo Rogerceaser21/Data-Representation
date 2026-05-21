@@ -947,27 +947,32 @@ body {
 }
 .fab-pdf {
   cursor: pointer;
-  width: clamp(1.7rem, 2.1vw, 2.1rem); height: clamp(1.7rem, 2.1vw, 2.1rem);
-  display: inline-flex; align-items: center; justify-content: center;
-  padding: 0;
-  border-radius: 50%;
-  background: var(--surface-mid);
+  display: inline-flex; align-items: center; gap: 0.5em;
+  font-family: var(--body-font);
+  font-size: clamp(0.65rem, 0.85vw, 0.78rem);
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
   color: var(--paper-faint);
+  background: var(--surface-mid);
   border: 1px solid var(--rule);
+  padding: 0.35em 0.95em;
+  border-radius: 999px;
   opacity: 0.55;
   -webkit-backdrop-filter: blur(6px);
           backdrop-filter: blur(6px);
-  transition: opacity 0.2s ease, color 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  transition: opacity 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
 .fab-pdf:hover {
   opacity: 1;
   color: var(--rate-verygood);
   border-color: var(--rate-verygood);
-  background: var(--surface-strong);
+  transform: translateY(-1px);
 }
 .fab-pdf::before {
-  content: ""; width: 0.85em; height: 0.85em;
+  content: ""; width: 0.9em; height: 0.9em;
   background: currentColor;
+  flex-shrink: 0;
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3'/%3E%3C/svg%3E") center / contain no-repeat;
           mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3'/%3E%3C/svg%3E") center / contain no-repeat;
 }
@@ -1204,7 +1209,7 @@ body {
         <img src="Assets/brand/AIS Logo/AIS White.png" data-light-src="Assets/brand/AIS Logo/AIS Navy.png" alt="AIS" class="logo">
         <span class="school">Australian International School · Sharjah</span>
       </div>
-      <span class="term-tag">Teacher Observation · Pitch v0.4</span>
+      <span class="term-tag">Teacher Observation · Pitch v0.5</span>
     </div>
     <div class="cover-hero">
       <span class="cover-kicker reveal r2"><span class="stripe"></span>Teacher Profile Dashboard</span>
@@ -1249,7 +1254,7 @@ body {
     <div class="masthead reveal r1">
       <span class="brand">
         <img src="Assets/brand/AIS Logo/AIS White.png" data-light-src="Assets/brand/AIS Logo/AIS Navy.png" alt="AIS" class="ais-logo">
-        <span class="school">Teacher Observation · Pitch v0.4</span>
+        <span class="school">Teacher Observation · Pitch v0.5</span>
       </span>
       <span class="pg">02 / 05 · Rating scale</span>
     </div>
@@ -1308,7 +1313,7 @@ body {
     <div class="masthead reveal r1">
       <span class="brand">
         <img src="Assets/brand/AIS Logo/AIS White.png" data-light-src="Assets/brand/AIS Logo/AIS Navy.png" alt="AIS" class="ais-logo">
-        <span class="school">Teacher Observation · Pitch v0.4</span>
+        <span class="school">Teacher Observation · Pitch v0.5</span>
       </span>
       <span class="pg">03 / 05 · Teacher dashboard</span>
     </div>
@@ -1433,7 +1438,7 @@ body {
     <div class="masthead reveal r1">
       <span class="brand">
         <img src="Assets/brand/AIS Logo/AIS White.png" data-light-src="Assets/brand/AIS Logo/AIS Navy.png" alt="AIS" class="ais-logo">
-        <span class="school">Teacher Observation · Pitch v0.4</span>
+        <span class="school">Teacher Observation · Pitch v0.5</span>
       </span>
       <span class="pg">04 / 05 · Department dashboard</span>
     </div>
@@ -1610,7 +1615,7 @@ body {
     <div class="masthead reveal r1">
       <span class="brand">
         <img src="Assets/brand/AIS Logo/AIS White.png" data-light-src="Assets/brand/AIS Logo/AIS Navy.png" alt="AIS" class="ais-logo">
-        <span class="school">Teacher Observation · Pitch v0.4</span>
+        <span class="school">Teacher Observation · Pitch v0.5</span>
       </span>
       <span class="pg">05 / 05 · The build</span>
     </div>
@@ -1664,7 +1669,7 @@ body {
     </div>
 
     <div class="floor reveal r10">
-      <span>Pitch · v0.4 · For SLT discussion</span>
+      <span>Pitch · v0.5 · For SLT discussion</span>
       <span>Australian International School Sharjah</span>
     </div>
   </div>
@@ -1688,7 +1693,7 @@ body {
 
 <a class="version-badge" href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener" title="Browse all versions of this deck on GitHub">
   <span class="dot"></span>
-  <span>v0.4</span>
+  <span>v0.5</span>
 </a>
 
 <button class="scroll-hint" id="scroll-hint" aria-label="Next slide">
