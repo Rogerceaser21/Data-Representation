@@ -1,4 +1,4 @@
-# CLAUDE.md — Data-Representation
+# CLAUDE.md · Data-Representation
 
 > Bootstrap doc for future Claude sessions. Read this *before* touching anything in this folder.
 
@@ -6,13 +6,14 @@
 
 ## What this is
 
-AIS Sharjah **Teacher Observation showcase system**, pitched 2026-05-21 to principal Steven McLuckie ahead of the early-2027 school review. Three pieces glued together:
+AIS Sharjah **Teacher Observation showcase system**, pitched 2026-05-21 to principal Steven McLuckie ahead of the early-2027 school review. Currently at **v0.10** with **two parallel HTML forms** wired to **two separate Google Sheets** backed by **two separate Apps Script projects** (both under admin.user@ais.ae):
 
-1. **5-slide HTML pitch deck** (`index.html`) — the showcase Steven sees first
-2. **Interactive lesson-observation form** (`lesson-observation-form.html`) — observers fill this in, it locks on submit, and can be re-opened in read-only mode via `?id=AIS-OBS-...`
-3. **Google Apps Script backend** (`apps-script/`) — receives form POSTs, appends rows to a Google Sheet, returns records on GET
+1. **Lesson Observation form**, internal AIS template, 4 sections, 36 S/U criteria, signatures, OTP aligned
+2. **R3 Evidence form**, SPEA / governance template, single-select Evidence Type, 10 judgements on a 1-6 scale, searchable teacher dropdown sourced from 6 staff Workspace Groups
 
-Currently at **v0.9** (Apps Script + Web App migrated to admin.user@ais.ae). Live at https://rogerceaser21.github.io/Data-Representation/
+Plus a **5-slide HTML pitch deck** at `index.html` that links to both forms from P3.
+
+Live: https://rogerceaser21.github.io/Data-Representation/
 
 ---
 
@@ -20,83 +21,120 @@ Currently at **v0.9** (Apps Script + Web App migrated to admin.user@ais.ae). Liv
 
 ```
 Data-Representation/                          github.com/Rogerceaser21/Data-Representation (PRIVATE)
-├── index.html                                5-slide pitch deck; P3 has 3 sub-link buttons (GDoc, HTML form, closed form)
-├── lesson-observation-form.html              interactive form; WEB_APP_URL constant lives at line 1319
-├── apps-script/                              clasp project for the Web App backend
-│   ├── .clasp.json                           scriptId 1wfwv-3le3lMFeiV6E_hghRQ3F2kAiInNaNlnQbipx4bLMFH9N0yRKXEL (admin.user@ais.ae)
-│   ├── 00_Config.gs                          SHEET_ID + getColumns() — 80+ column schema, DO NOT REORDER
-│   ├── 01_doPost.gs                          append-row handler, generates record_id
-│   ├── 02_doGet.gs                           ?id=AIS-OBS-... → record as JSON
-│   ├── 03_helpers.gs                         jsonOut wrapper + forceAuth (one-shot OAuth trigger; keep)
+├── index.html                                5-slide pitch deck; P3 links to both forms
+├── lesson-observation-form.html              3-line redirect stub (preserves old URL after the v0.10 move)
+├── apps-script/                              Lesson Observation backend (clasp, admin.user)
+│   ├── .clasp.json                           scriptId 1wfwv-3le3lMFeiV6E_hghRQ3F2kAiInNaNlnQbipx4bLMFH9N0yRKXEL
+│   ├── 00_Config.gs                          SHEET_ID + getColumns(), 80+ col schema, DO NOT REORDER
+│   ├── 01_doPost.gs                          append row, generates AIS-OBS-YYYYMMDD-HHMM
+│   ├── 02_doGet.gs                           ?id=AIS-OBS-... returns record as JSON
+│   ├── 03_helpers.gs                         jsonOut + forceAuth (one-shot OAuth trigger; keep)
 │   └── appsscript.json                       webapp: ANYONE_ANONYMOUS, USER_DEPLOYING
+├── Assets/
+│   ├── brand/AIS Logo/                       AIS White.png + AIS Navy.png (only runtime brand assets)
+│   ├── Lesson Observation Form/
+│   │   └── lesson-observation-form.html      THE Lesson Observation form (moved here in v0.10)
+│   └── R3/
+│       ├── r3-evidence-form.html             R3 Evidence form (v0.10, new)
+│       ├── R3 Evidence Form Template.docx    source template from SPEA
+│       ├── apps-script/                      R3 backend (clasp, admin.user)
+│       │   ├── .clasp.json                   scriptId 1BYxWpSsqs-48AKnWH4BUQonAKHqDcY6VbiWA1SNbhBZT0QgDzLUatgRn
+│       │   ├── 00_Config.gs                  getSheetId() via PropertiesService + getR3Columns() 45-col schema
+│       │   ├── 01_doPost.gs                  append row, generates AIS-R3-YYYYMMDD-HHMM
+│       │   ├── 02_doGet.gs                   ?id=AIS-R3-... or ?action=options (returns dropdown bundle)
+│       │   ├── 03_helpers.gs                 jsonOut, forceAuth, bootstrap (creates Sheet + tabs + seeds + stores SHEET_ID)
+│       │   ├── 04_TeacherLoader.gs           pulls staff from 6 Workspace Groups via Admin SDK (recurses nested groups)
+│       │   └── appsscript.json               webapp + AdminDirectory advanced service + admin.directory.* scopes
+│       └── 2026-05-28_email_R3-Data...md     correspondence record (R3 kickoff email to Dave, CC Leon + Steve)
 ├── SPEA Data Report/                         worked-example source docs (Jo Mare Kruger portrait, OTP, probation form)
-├── Assets/brand/AIS Logo/                    AIS White.png + AIS Navy.png (only assets the deck loads at runtime)
-├── README.md                                 STALE — still describes v0.1 pitch only; slated for rewrite separately
+├── .planning/
+│   └── v0.10-r3-form-checklist.md            multi-phase plan + acceptance criteria + IDs
+├── README.md                                 STALE (still describes v0.1 pitch only)
 ├── CLAUDE.md                                 this file
 └── .gitignore
 ```
 
-The deck and form are self-contained at runtime — all CSS and JS are inline; only Google Fonts and the AIS logo PNGs are external.
+Each form is self-contained at runtime. All CSS and JS are inline; only Google Fonts and the AIS logo PNGs are external. Asset paths inside the form HTML use `../brand/AIS Logo/...` since both forms live one level under `Assets/`.
 
 ---
 
 ## How the pieces connect
 
+Two parallel pipelines, both running under admin.user@ais.ae:
+
 ```
-                                          Google Sheet "Submissions"
-                                     (admin.user@ais.ae's Drive, shared
-                                      with igor.sesar and igorsbasketball)
-                                                    ▲
-                                                    │ append row / read row
-                                                    │
-   index.html ──P3 buttons──► form ──POST JSON──► Apps Script Web App
-   (GitHub Pages)            (Pages)      ▲       (deployed as igorsbasketball@gmail.com)
-                               │           │
-                               └─GET ?id=──┘   closed-record viewer mode
+                  admin.user@ais.ae Drive
+                  ┌──────────────────┬──────────────────┐
+                  │ AIS Lesson Obs   │ AIS R3 Evidence  │
+                  │ Submissions tab  │ Submissions + 4  │
+                  │ (80+ cols)       │ reference tabs   │
+                  └────────▲─────────┴─────────▲────────┘
+                           │                   │
+                POST + GET │                   │ POST + GET + options
+                           │                   │
+        ┌──────────────────┴───┐   ┌───────────┴──────────┐
+        │ Apps Script "AIS     │   │ Apps Script "AIS R3  │
+        │ Lesson Observation"  │   │ Evidence Web App"    │
+        │ scriptId 1wfwv-3le.. │   │ scriptId 1BYxWpSsqs..│
+        └──────────▲───────────┘   └───────────▲──────────┘
+                   │                            │
+    ┌──────────────┴────────────┐   ┌──────────┴──────────────┐
+    │ lesson-observation-       │   │ r3-evidence-form.html   │
+    │ form.html                 │   │ (in Assets/R3/)         │
+    │ (in Assets/Lesson         │   │                         │
+    │  Observation Form/)       │   │                         │
+    └──────────────┬────────────┘   └──────────┬──────────────┘
+                   │                            │
+                   └──────────┬─────────────────┘
+                              │
+                        index.html (deck)
+                  P3 has buttons linking to both
 ```
 
 ---
 
-## Hard rules — do not break
+## Hard rules · do not break
 
-1. **Sheet column order is load-bearing.** The 80+ column schema in `apps-script/00_Config.gs` `getColumns()` was auto-created on first POST. Existing rows are positional. *Append* new columns at the end if needed — never reorder or insert in the middle.
-2. **Record ID format is `AIS-OBS-YYYYMMDD-HHMM`** (generated server-side from `submitted_at` in `01_doPost.gs:62`). Changing the format breaks the closed-record-viewer URL pattern for every existing record.
-3. **`WEB_APP_URL` lives at `lesson-observation-form.html:1319`.** If you `clasp deploy` a new version that gets a new `/exec` URL, you must update that constant and ship the HTML — otherwise the form silently keeps hitting the old deployment.
-4. **Repo stays private** until ratings are real OR the deck is StatiCrypt-encrypted like the sibling `sample-student-report`. Real teacher names (Jo Mare Kruger, Olivia Gill) sit next to fabricated ratings, plus real SPEA source docs.
-5. **Don't commit the `.docx` file's noise diffs.** `SPEA Data Report/Lesson Observation - Igor- 12_11.docx` flutters by a byte every time Word touches it. Skip it unless the content actually changed.
-6. **Every push bumps the visible version label AND tags.** Bump version in: cover term-tag, every masthead `.school` text, P5 floor, `.version-badge` element. Commit msg starts `vX.Y · summary`. `git tag vX.Y` after the commit. `git push origin main --tags`. The version badge must be visible on the live site so Igor can tell at a glance what he's looking at.
+1. **Sheet column order is load-bearing for both Sheets.** `apps-script/00_Config.gs` `getColumns()` (Lesson Obs, 80+ cols) and `Assets/R3/apps-script/00_Config.gs` `getR3Columns()` (R3, 45 cols) define schemas auto-created on first POST. Existing rows are positional. *Append* new columns at the end if needed. Never reorder or insert in the middle.
+2. **Record ID formats are `AIS-OBS-YYYYMMDD-HHMM` and `AIS-R3-YYYYMMDD-HHMM`.** Generated server-side. Changing the format breaks the closed-record-viewer URL pattern for every existing record.
+3. **`WEB_APP_URL` constants must match the deployed `/exec` URL for each form.** If you `clasp deploy` a new version that gets a new `/exec` URL, update the matching constant in the form HTML and ship.
+   - Lesson Observation: `Assets/Lesson Observation Form/lesson-observation-form.html`, search for `const WEB_APP_URL`
+   - R3: `Assets/R3/r3-evidence-form.html`, search for `const WEB_APP_URL`
+4. **Repo stays private** until ratings are real OR the deck is StatiCrypt-encrypted like the sibling `sample-student-report`. Real teacher names sit next to fabricated ratings.
+5. **Don't commit the `.docx` file's noise diffs.** `SPEA Data Report/Lesson Observation - Igor- 12_11.docx` flutters by a byte every time Word touches it. Skip unless content actually changed.
+6. **Every push bumps the visible version label AND tags.** Bump version in: cover term-tag, every masthead `.school` text, P5 floor, version-badge element, AND both form footers. Commit msg starts `vX.Y · summary`. `git tag vX.Y` after the commit. `git push origin main --tags`.
+7. **R3 reference tab schemas are load-bearing.** The R3 form reads Inspectors / Curriculum / Subjects / Teachers from named tabs via `?action=options`. Single-column tabs assume header row + data rows; Teachers tab uses `[email, name]`. The form's `setupSearchableTeacher` + `loadDropdownOptions` break silently if the tab schemas shift.
+8. **The redirect stub at `lesson-observation-form.html` (root) must be preserved.** It catches old URLs (`/lesson-observation-form.html?id=AIS-OBS-...`) and forwards to the new path. Removing it 404s any reference shared before the v0.10 move.
 
 ---
 
-## Identity / auth (current state as of v0.9 · 2026-05-24)
+## Identity / auth (current state as of v0.10 · 2026-05-28)
 
-Apps Script project + Web App run as **`admin.user@ais.ae`** (Super Admin).
-Destination Sheet also lives in **`admin.user@ais.ae`**'s Drive — single-identity setup.
+Both Apps Script projects and both Sheets run as **`admin.user@ais.ae`** (Super Admin). Single-identity setup across the whole system. R3 also requires the **AdminDirectory** advanced service (for the staff-groups teacher list).
 
-**The old two-identity setup (pre-v0.9):** Originally the script was deployed under `igorsbasketball@gmail.com` (Igor's personal Gmail) because an AIS Workspace policy was blocking `ANYONE_ANONYMOUS` Apps Script Web Apps under @ais.ae — deploys returned 302 to `accounts.google.com/ServiceLogin`. That setup was migrated out on 2026-05-24 once admin.user got Super Admin rights. Empirical test confirmed @ais.ae now serves `ANYONE_ANONYMOUS` web apps without any visible Admin Console toggle being flipped — Google appears to auto-trust internal apps deployed by a Super Admin.
+**Pre-v0.9 history:** the lesson observation script was originally on `igorsbasketball@gmail.com` because an AIS Workspace policy blocked `ANYONE_ANONYMOUS` Apps Script Web Apps under @ais.ae. Migrated to admin.user once Super Admin rights landed; empirical test confirmed @ais.ae now serves anon web apps without a visible Admin Console toggle being flipped (likely Super Admin auto-trust for internal apps). The old igorsbasketball deployment is the rollback path, decommission target ~2026-06-07.
 
-**Old deployment still alive as rollback** (will be soft-cut ~2026-06-07): `https://script.google.com/macros/s/AKfycbzoxepKzA8vSQkDd0_OEl65EVw017BCC_kFhxSJueP5nZqTQYMtLVMuUr_vpILdavQ4/exec` (script `1_7so0rIf1guEYc8AkEPj6f2-yDerR3aH4tItFYDemf7E_UdcrtbWky_e`). If the new deployment develops a problem, revert `WEB_APP_URL` in `lesson-observation-form.html:1319` to the old URL, push, done.
-
-**Diagnosing future Apps Script web app 302s:** A 302 from `/macros/.../exec` is *normal* — Apps Script always sandbox-redirects to `script.googleusercontent.com/macros/echo?...` to serve responses. **Look at the `Location:` header** before panicking: `googleusercontent.com` = healthy, `accounts.google.com/ServiceLogin` = auth broken. For POSTs via `curl`, do NOT use `-X POST` — Apps Script needs the redirect followed as a GET (which is what browsers do by default; curl needs `-d` without `-X POST`).
+**Diagnosing future Apps Script web app 302s:** A 302 from `/macros/.../exec` is *normal*. Apps Script always sandbox-redirects to `script.googleusercontent.com/macros/echo?...` to serve responses. **Look at the `Location:` header** before panicking: `googleusercontent.com` = healthy, `accounts.google.com/ServiceLogin` = auth broken. For POSTs via `curl`, do NOT use `-X POST`. Apps Script needs the redirect followed as a GET (browser default behavior).
 
 ---
 
 ## Deploy chain
 
-### HTML changes (`index.html`, `lesson-observation-form.html`)
+### HTML changes (`index.html` or either form)
 
-1. Edit master → bump version labels everywhere (see hard rule 6)
+1. Edit master, bump version labels everywhere (see hard rule 6)
 2. `git add -p && git commit -m "vX.Y · ..."`
 3. `git tag vX.Y && git push origin main --tags`
-4. GitHub Pages rebuilds in ~30-90s; hard-refresh (Cmd+Shift+R) to verify
+4. **Pages auto-rebuild has been flaky.** If changes don't appear after ~2 min, force a rebuild: `gh api -X POST repos/Rogerceaser21/Data-Representation/pages/builds`
+5. For large pushes (touching the docx template or full forms), Git push may fail with `HTTP 400`. Fix: `git config http.postBuffer 524288000` and retry.
 
-### Apps Script changes (`apps-script/*.gs`)
+### Apps Script changes (either `apps-script/*.gs` or `Assets/R3/apps-script/*.gs`)
 
 1. Edit `.gs` files
-2. `cd apps-script && clasp push --force` (clasp must be logged in as the script owner — currently `admin.user@ais.ae`)
-3. `clasp deploy --description "..."` → note the new `/exec` URL
-4. **If the URL changed**: update `WEB_APP_URL` in `lesson-observation-form.html:1319` and ship the HTML
-5. **First-time deploys** require a one-time manual auth: open the script in the browser editor, run any function, click through the unverified-app warning. CLI cannot trigger this.
+2. `cd <correct apps-script folder> && clasp push --force` (clasp must be logged in as admin.user@ais.ae)
+3. `clasp create-deployment --description "..."` returns the new `/exec` URL
+4. **If the URL changed:** update the matching `WEB_APP_URL` constant in the corresponding form HTML and ship
+5. **First-time deploys or new scopes:** open the script in the browser editor, run `forceAuth` (and `bootstrap` + `buildTeacherSheet` for R3), click through OAuth consent. CLI cannot trigger this.
 
 ---
 
@@ -104,18 +142,20 @@ Destination Sheet also lives in **`admin.user@ais.ae`**'s Drive — single-ident
 
 These apply to every edit in this repo. If a request seems to require violating one, surface it first.
 
-1. **Think before coding.** State assumptions explicitly. If multiple interpretations exist, present them — don't pick silently. If a simpler approach exists, say so. Push back when warranted. If something's unclear, stop and ask.
+1. **Think before coding.** State assumptions explicitly. If multiple interpretations exist, present them; don't pick silently. If a simpler approach exists, say so. Push back when warranted. If something's unclear, stop and ask.
 2. **Simplicity first.** Minimum code that solves the problem. No speculative features, no abstractions for single-use code, no flexibility or configurability that wasn't requested, no error handling for impossible scenarios. If 200 lines could be 50, rewrite it.
-3. **Surgical changes.** Touch only what the user asked about. Don't "improve" adjacent code, formatting, or comments. Match existing style even if you'd do it differently. Mention unrelated dead code — don't delete it. Every changed line should trace directly to the request.
-4. **Goal-driven execution.** Transform vague tasks into verifiable goals before starting. "Add validation" → "Write tests for invalid inputs, then make them pass." "Fix the bug" → "Write a test that reproduces it, then make it pass." For multi-step work, state a brief plan with a verify step per item.
+3. **Surgical changes.** Touch only what the user asked about. Don't "improve" adjacent code, formatting, or comments. Match existing style even if you'd do it differently. Mention unrelated dead code; don't delete it. Every changed line should trace directly to the request.
+4. **Goal-driven execution.** Transform vague tasks into verifiable goals before starting. "Add validation" becomes "Write tests for invalid inputs, then make them pass". For multi-step work, state a brief plan with a verify step per item.
 
 ---
 
 ## When in doubt
 
-Ask Igor — he prefers a question over a wrong assumption. But the bar is *genuinely undetermined*. Things derivable from this repo, the sibling `Export Ready HTML AIS Report/`, or the prior conversation are not genuinely undetermined — infer the default and proceed (noting the assumption briefly).
+Ask Igor. He prefers a question over a wrong assumption, but the bar is *genuinely undetermined*. Things derivable from this repo, the sibling `Export Ready HTML AIS Report/`, or the prior conversation are not genuinely undetermined; infer the default and proceed (noting the assumption briefly).
 
-Once Igor has weighed a concern and made a call, **execute** — don't re-raise the same concern with a different framing.
+Once Igor has weighed a concern and made a call, **execute**; don't re-raise the same concern with a different framing.
+
+**Never use em dashes (—) or en dashes (–) in any output.** Substitute with commas, periods, parentheses, or semicolons. Hyphens inside compound words (like "spreadsheet-first" or "single-select") are fine.
 
 ---
 
@@ -125,13 +165,22 @@ Once Igor has weighed a concern and made a call, **execute** — don't re-raise 
 |---|---|
 | This repo | `github.com/Rogerceaser21/Data-Representation` (private) |
 | Live deck | https://rogerceaser21.github.io/Data-Representation/ |
-| Live form | https://rogerceaser21.github.io/Data-Representation/lesson-observation-form.html |
-| Sample locked record | https://rogerceaser21.github.io/Data-Representation/lesson-observation-form.html?id=AIS-OBS-20241112-1430 |
+| **Lesson Observation** ||
+| Live form | https://rogerceaser21.github.io/Data-Representation/Assets/Lesson%20Observation%20Form/lesson-observation-form.html |
+| Sample locked record | https://rogerceaser21.github.io/Data-Representation/Assets/Lesson%20Observation%20Form/lesson-observation-form.html?id=AIS-OBS-20241112-1430 |
 | Sheet | https://docs.google.com/spreadsheets/d/1KKgHe42JnRe5iA8iODRrh3UZHD93szZSDatQylivoAc/edit |
-| Apps Script project (current) | `1wfwv-3le3lMFeiV6E_hghRQ3F2kAiInNaNlnQbipx4bLMFH9N0yRKXEL` (admin.user@ais.ae) |
-| Web App `/exec` (current) | `https://script.google.com/macros/s/AKfycbw8b_yMyCg1cW63q4d6SDxOKRLeFFv7rwywCIAh-y4bY3ZUUxhKrpYOmkZXAODTeDI3/exec` |
-| Apps Script project (old, rollback) | `1_7so0rIf1guEYc8AkEPj6f2-yDerR3aH4tItFYDemf7E_UdcrtbWky_e` (igorsbasketball@gmail.com, decommission ~2026-06-07) |
-| Web App `/exec` (old, rollback) | `https://script.google.com/macros/s/AKfycbzoxepKzA8vSQkDd0_OEl65EVw017BCC_kFhxSJueP5nZqTQYMtLVMuUr_vpILdavQ4/exec` |
+| Apps Script | scriptId `1wfwv-3le3lMFeiV6E_hghRQ3F2kAiInNaNlnQbipx4bLMFH9N0yRKXEL` (admin.user) |
+| Web App `/exec` | `https://script.google.com/macros/s/AKfycbw8b_yMyCg1cW63q4d6SDxOKRLeFFv7rwywCIAh-y4bY3ZUUxhKrpYOmkZXAODTeDI3/exec` |
 | Seed record | `AIS-OBS-20241112-1430` (Ben Hyde observing Mr Igor, 2024-11-12) |
+| **R3 Evidence** ||
+| Live form | https://rogerceaser21.github.io/Data-Representation/Assets/R3/r3-evidence-form.html |
+| Sheet | https://docs.google.com/spreadsheets/d/1V1Nb8hTWN-FpDps2Q_-F0TBWBFnPHVBW_sicWk8XVKo/edit |
+| Apps Script | scriptId `1BYxWpSsqs-48AKnWH4BUQonAKHqDcY6VbiWA1SNbhBZT0QgDzLUatgRn` (admin.user) |
+| Web App `/exec` | `https://script.google.com/macros/s/AKfycbx3efKiQzs2MSwESEuNBCceXr5FqBCXuk1IgSzPFbOVgLSc3fvXy40e8V9lhw_KH0z2nQ/exec` |
+| Source template | `Assets/R3/R3 Evidence Form Template.docx` |
+| **Lesson Observation rollback (pre-v0.9, decommission ~2026-06-07)** ||
+| Apps Script | scriptId `1_7so0rIf1guEYc8AkEPj6f2-yDerR3aH4tItFYDemf7E_UdcrtbWky_e` (igorsbasketball@gmail.com) |
+| Web App `/exec` | `https://script.google.com/macros/s/AKfycbzoxepKzA8vSQkDd0_OEl65EVw017BCC_kFhxSJueP5nZqTQYMtLVMuUr_vpILdavQ4/exec` |
+| **Other** ||
 | Sibling design-precedent | `../Export Ready HTML AIS Report/` (academic report, StatiCrypt, ship.sh workflow) |
 | Sibling deployed | `github.com/Rogerceaser21/sample-student-report` |
