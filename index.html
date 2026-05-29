@@ -633,7 +633,8 @@ body {
   border: 1px solid var(--rule);
   background: var(--navy-elev);
   position: relative;
-  overflow: hidden;
+  /* Was overflow: hidden — that clipped the pill rows when flex compressed the card.
+     Now the slide-level overflow safety net handles overflow detection correctly. */
   transition: border-color 0.2s ease, background 0.2s ease;
 }
 .cat-card::before {
@@ -772,7 +773,11 @@ body {
 }
 
 .matrix-wrap {
-  flex: 1; min-height: 0; overflow: hidden;
+  flex: 1; min-height: 0;
+  /* Was overflow: hidden — that silently clipped teacher rows when flex compressed
+     the wrapper. The slide-level overflow safety net (CSS + JS observer) handles
+     overflow at the .slide-content level so the matrix can extend to its natural
+     height and scroll within the slide. */
   border: 1px solid var(--rule);
   border-radius: clamp(0.5rem, 0.95vw, 0.8rem);
   background: rgba(255,255,255,0.03);
@@ -1275,7 +1280,7 @@ body {
         <img src="Assets/brand/AIS Logo/AIS White.png" data-light-src="Assets/brand/AIS Logo/AIS Navy.png" alt="AIS" class="logo">
         <span class="school">Australian International School · Sharjah</span>
       </div>
-      <span class="term-tag">Teacher Observation · Pitch v0.11</span>
+      <span class="term-tag">Teacher Observation · Pitch v0.12</span>
     </div>
     <div class="cover-hero">
       <span class="eyebrow reveal r2"><span class="stripe"></span>Teacher Profile</span>
@@ -1320,7 +1325,7 @@ body {
     <div class="masthead reveal r1">
       <span class="brand">
         <img src="Assets/brand/AIS Logo/AIS White.png" data-light-src="Assets/brand/AIS Logo/AIS Navy.png" alt="AIS" class="ais-logo">
-        <span class="school">Teacher Observation · Pitch v0.11</span>
+        <span class="school">Teacher Observation · Pitch v0.12</span>
       </span>
       <span class="pg">02 / 05 · Rating scale</span>
     </div>
@@ -1379,7 +1384,7 @@ body {
     <div class="masthead reveal r1">
       <span class="brand">
         <img src="Assets/brand/AIS Logo/AIS White.png" data-light-src="Assets/brand/AIS Logo/AIS Navy.png" alt="AIS" class="ais-logo">
-        <span class="school">Teacher Observation · Pitch v0.11</span>
+        <span class="school">Teacher Observation · Pitch v0.12</span>
       </span>
       <span class="pg">03 / 05 · Teacher dashboard</span>
     </div>
@@ -1507,7 +1512,7 @@ body {
     <div class="masthead reveal r1">
       <span class="brand">
         <img src="Assets/brand/AIS Logo/AIS White.png" data-light-src="Assets/brand/AIS Logo/AIS Navy.png" alt="AIS" class="ais-logo">
-        <span class="school">Teacher Observation · Pitch v0.11</span>
+        <span class="school">Teacher Observation · Pitch v0.12</span>
       </span>
       <span class="pg">04 / 05 · Department dashboard</span>
     </div>
@@ -1684,7 +1689,7 @@ body {
     <div class="masthead reveal r1">
       <span class="brand">
         <img src="Assets/brand/AIS Logo/AIS White.png" data-light-src="Assets/brand/AIS Logo/AIS Navy.png" alt="AIS" class="ais-logo">
-        <span class="school">Teacher Observation · Pitch v0.11</span>
+        <span class="school">Teacher Observation · Pitch v0.12</span>
       </span>
       <span class="pg">05 / 05 · The build</span>
     </div>
@@ -1738,7 +1743,7 @@ body {
     </div>
 
     <div class="floor reveal r10">
-      <span>Pitch · v0.11 · For SLT discussion</span>
+      <span>Pitch · v0.12 · For SLT discussion</span>
       <span>Australian International School Sharjah</span>
     </div>
   </div>
