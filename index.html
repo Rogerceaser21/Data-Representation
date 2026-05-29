@@ -46,6 +46,41 @@ html, body { height: 100%; overflow: hidden; margin: 0; }
 .slide-content > .floor { display: flex; margin-bottom: clamp(0.6rem, 1.2vw, 1rem); }
 .slide-content > .floor { margin-bottom: 0; margin-top: clamp(0.6rem, 1.2vw, 1rem); }
 .slide-content > * { min-height: 0; }
+
+/* Universal overflow safety net. Default keeps overflow hidden so slides
+   that fit stay visually identical. JS adds .has-overflow when needed. */
+.slide.has-overflow .slide-content {
+  justify-content: flex-start;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  transition: scrollbar-color 0.25s ease;
+}
+.slide.has-overflow .slide-content:hover,
+.slide.has-overflow .slide-content:focus-within {
+  scrollbar-color: var(--rule) transparent;
+}
+.slide.has-overflow .slide-content::-webkit-scrollbar { width: 6px; }
+.slide.has-overflow .slide-content::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 3px;
+  transition: background 0.25s ease;
+}
+.slide.has-overflow .slide-content:hover::-webkit-scrollbar-thumb,
+.slide.has-overflow .slide-content:focus-within::-webkit-scrollbar-thumb {
+  background: var(--rule);
+}
+.slide.has-overflow::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0;
+  height: 48px; pointer-events: none;
+  background: linear-gradient(to bottom, transparent, var(--page-bg, #fff));
+  opacity: 0.9;
+  z-index: 2;
+  transition: opacity 0.2s ease;
+}
+.slide.has-overflow.is-at-bottom::after { opacity: 0; }
+
 @media (max-height: 700px) { :root { --slide-padding: clamp(0.9rem, 3vw, 2.4rem); }}
 @media (max-height: 600px) { :root { --slide-padding: clamp(0.6rem, 2.5vw, 1.8rem); }}
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.2s !important; } }
@@ -1213,6 +1248,14 @@ body {
     background: #ffffff !important;
   }
   .slide:last-child { page-break-after: auto; }
+  /* Expand overflowing slides for PDF capture; hide scroll affordances in print */
+  .slide-content {
+    max-height: none !important;
+    overflow: visible !important;
+    justify-content: flex-start !important;
+  }
+  .slide.has-overflow::after { display: none !important; }
+  .slide-content::-webkit-scrollbar { display: none !important; }
   .reveal, .reveal-scale { opacity: 1 !important; transform: none !important; animation: none !important; }
   * { animation: none !important; }
 }
@@ -1232,7 +1275,7 @@ body {
         <img src="Assets/brand/AIS Logo/AIS White.png" data-light-src="Assets/brand/AIS Logo/AIS Navy.png" alt="AIS" class="logo">
         <span class="school">Australian International School · Sharjah</span>
       </div>
-      <span class="term-tag">Teacher Observation · Pitch v0.10</span>
+      <span class="term-tag">Teacher Observation · Pitch v0.11</span>
     </div>
     <div class="cover-hero">
       <span class="eyebrow reveal r2"><span class="stripe"></span>Teacher Profile</span>
@@ -1277,7 +1320,7 @@ body {
     <div class="masthead reveal r1">
       <span class="brand">
         <img src="Assets/brand/AIS Logo/AIS White.png" data-light-src="Assets/brand/AIS Logo/AIS Navy.png" alt="AIS" class="ais-logo">
-        <span class="school">Teacher Observation · Pitch v0.10</span>
+        <span class="school">Teacher Observation · Pitch v0.11</span>
       </span>
       <span class="pg">02 / 05 · Rating scale</span>
     </div>
@@ -1336,7 +1379,7 @@ body {
     <div class="masthead reveal r1">
       <span class="brand">
         <img src="Assets/brand/AIS Logo/AIS White.png" data-light-src="Assets/brand/AIS Logo/AIS Navy.png" alt="AIS" class="ais-logo">
-        <span class="school">Teacher Observation · Pitch v0.10</span>
+        <span class="school">Teacher Observation · Pitch v0.11</span>
       </span>
       <span class="pg">03 / 05 · Teacher dashboard</span>
     </div>
@@ -1464,7 +1507,7 @@ body {
     <div class="masthead reveal r1">
       <span class="brand">
         <img src="Assets/brand/AIS Logo/AIS White.png" data-light-src="Assets/brand/AIS Logo/AIS Navy.png" alt="AIS" class="ais-logo">
-        <span class="school">Teacher Observation · Pitch v0.10</span>
+        <span class="school">Teacher Observation · Pitch v0.11</span>
       </span>
       <span class="pg">04 / 05 · Department dashboard</span>
     </div>
@@ -1641,7 +1684,7 @@ body {
     <div class="masthead reveal r1">
       <span class="brand">
         <img src="Assets/brand/AIS Logo/AIS White.png" data-light-src="Assets/brand/AIS Logo/AIS Navy.png" alt="AIS" class="ais-logo">
-        <span class="school">Teacher Observation · Pitch v0.10</span>
+        <span class="school">Teacher Observation · Pitch v0.11</span>
       </span>
       <span class="pg">05 / 05 · The build</span>
     </div>
@@ -1695,7 +1738,7 @@ body {
     </div>
 
     <div class="floor reveal r10">
-      <span>Pitch · v0.10 · For SLT discussion</span>
+      <span>Pitch · v0.11 · For SLT discussion</span>
       <span>Australian International School Sharjah</span>
     </div>
   </div>
@@ -1783,6 +1826,9 @@ body {
   function goTo(idx) {
     idx = Math.max(0, Math.min(total - 1, idx));
     if (idx === currentSlide) return;
+    // Reset outgoing slide's scroll so re-entering starts at the top.
+    const prevSc = slides[currentSlide].querySelector('.slide-content');
+    if (prevSc) prevSc.scrollTop = 0;
     slides[currentSlide].classList.remove('active');
     currentSlide = idx;
     slides[idx].classList.add('active');
@@ -1808,15 +1854,72 @@ body {
   applyMobileMode();
   mqMobile.addEventListener('change', applyMobileMode);
 
+  /* === Universal overflow detection (auto-applies .has-overflow class) === */
+  (function setupOverflowDetection() {
+    const TOLERANCE = 4;
+    const slideContents = document.querySelectorAll('.slide-content');
+
+    function check(sc) {
+      const slide = sc.closest('.slide');
+      if (!slide) return;
+      const overflows = sc.scrollHeight > sc.clientHeight + TOLERANCE;
+      slide.classList.toggle('has-overflow', overflows);
+      if (overflows) {
+        const atBottom = sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 1;
+        slide.classList.toggle('is-at-bottom', atBottom);
+      } else {
+        slide.classList.remove('is-at-bottom');
+      }
+    }
+
+    slideContents.forEach(sc => {
+      check(sc);
+      if (typeof ResizeObserver !== 'undefined') {
+        new ResizeObserver(() => check(sc)).observe(sc);
+      }
+      sc.addEventListener('scroll', () => check(sc), { passive: true });
+    });
+
+    let resizeT;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeT);
+      resizeT = setTimeout(() => slideContents.forEach(check), 100);
+    });
+
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => slideContents.forEach(check));
+    }
+
+    document.querySelectorAll('img').forEach(img => {
+      if (img.complete) return;
+      img.addEventListener('load', () => slideContents.forEach(check), { once: true });
+    });
+
+    const themeObserver = new MutationObserver(() => {
+      setTimeout(() => slideContents.forEach(check), 50);
+    });
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme']
+    });
+  })();
+
   let wheelCooldown = false;
   window.addEventListener('wheel', (e) => {
     if (isMobile()) return;
+    const sc = slides[currentSlide].querySelector('.slide-content');
+    if (sc && sc.scrollHeight > sc.clientHeight + 1) {
+      const atTop    = sc.scrollTop <= 0;
+      const atBottom = sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 1;
+      if (e.deltaY > 0 && !atBottom) return;
+      if (e.deltaY < 0 && !atTop)    return;
+    }
     if (wheelCooldown) return;
     if (Math.abs(e.deltaY) < 30) return;
     wheelCooldown = true;
     setTimeout(() => { wheelCooldown = false; }, 650);
     if (e.deltaY > 0) goTo(currentSlide + 1);
-    else goTo(currentSlide - 1);
+    else              goTo(currentSlide - 1);
   }, { passive: true });
 
   let touchStartY = 0, touchStartX = 0;
@@ -1829,10 +1932,18 @@ body {
     if (isMobile()) return;
     const dy = e.changedTouches[0].clientY - touchStartY;
     const dx = e.changedTouches[0].clientX - touchStartX;
-    if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 60) {
-      if (dy < 0) goTo(currentSlide + 1);
-      else goTo(currentSlide - 1);
+    if (Math.abs(dy) <= Math.abs(dx) || Math.abs(dy) <= 60) return;
+
+    const sc = slides[currentSlide].querySelector('.slide-content');
+    if (sc && sc.scrollHeight > sc.clientHeight + 1) {
+      const atTop    = sc.scrollTop <= 0;
+      const atBottom = sc.scrollTop + sc.clientHeight >= sc.scrollHeight - 1;
+      if (dy < 0 && !atBottom) return;
+      if (dy > 0 && !atTop)    return;
     }
+
+    if (dy < 0) goTo(currentSlide + 1);
+    else        goTo(currentSlide - 1);
   }, { passive: true });
 
   dots.forEach((dot, i) => dot.addEventListener('click', () => goTo(i)));
