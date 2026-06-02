@@ -16,6 +16,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,500&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700&family=Lora:ital,wght@0,400;0,500;0,600;0,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Tom Select 2.6.1 (vendored locally in lib/ so the form works on any network, v0.19) -->
+<link href="lib/tom-select.css" rel="stylesheet">
+<script src="lib/tom-select.complete.min.js"></script>
 <style>
 /* ===========================================
    THEME TOKENS · LIGHT default (form-context)
@@ -851,136 +854,119 @@ body.is-locked .action-btn.new { display: inline-flex; }
   font-weight: 700;
 }
 
-/* Searchable dropdown (Teacher, Inspector, Subject) */
-.searchable { position: relative; }
-
-/* Strict-combobox states (v0.18):
-   - Unset (default): editable input, no chip styling, × hidden
-   - Picked: readonly input with chip styling, × visible to clear */
-.searchable.is-picked .searchable-input {
-  font-weight: 600;
-  color: var(--paper);
-  background: var(--row-tint);
-  border-radius: 0.3rem;
-  padding-left: 0.5rem;
-  padding-right: 1.9rem;
-  cursor: default;
-  border-bottom-color: var(--rate-success);
-}
-.searchable-clear {
-  position: absolute;
-  right: 0.15rem;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 1.5rem;
-  height: 1.5rem;
-  border: none;
-  background: transparent;
-  color: var(--paper-mid);
-  font-size: 1.25rem;
-  line-height: 1;
-  cursor: pointer;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  padding: 0;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: rgba(20, 54, 66, 0.06);
-  -webkit-user-select: none;
-  user-select: none;
-}
-.searchable.is-picked .searchable-clear { display: inline-flex; }
-.searchable-clear:hover {
-  background: var(--surface-mid);
-  color: var(--paper);
-}
-form.is-locked .searchable-clear { display: none !important; }
-
-.searchable-input {
+/* ===========================================
+   Tom Select theme overrides · v0.19
+   Tom Select (vendored locally in lib/) handles the searchable dropdowns
+   for Teacher, Inspector, Subject. The library brings its own .ts-*
+   classes; these overrides re-skin them to match the form's aesthetic
+   (display font, transparent backgrounds, green focus underline, card
+   styling on the dropdown).
+   =========================================== */
+.ts-wrapper { width: 100%; }
+.ts-wrapper .ts-control {
   font-family: var(--display-font);
   font-size: clamp(1rem, 1.4vw, 1.15rem);
   color: var(--paper);
   background: transparent;
   border: none;
-  border-bottom: 1px solid transparent;
-  padding: 0.15rem 0;
-  width: 100%;
-  outline: none;
-  transition: border-color 0.2s ease;
+  border-bottom: 1px solid var(--rule);
+  border-radius: 0;
+  padding: 0.4rem 0;
+  min-height: 2.4rem;
+  box-shadow: none;
+  cursor: pointer;
 }
-.searchable-input::placeholder { color: var(--paper-faint); font-style: italic; }
-.searchable-input:focus { border-bottom-color: var(--rate-success); }
-.searchable-list {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  max-height: 280px;
-  overflow-y: auto;
+.ts-wrapper.focus .ts-control,
+.ts-wrapper.dropdown-active .ts-control {
+  border-bottom-color: var(--rate-success);
+  box-shadow: none;
+}
+.ts-wrapper .ts-control > input {
+  font-family: var(--display-font);
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  color: var(--paper);
+  background: transparent;
+}
+.ts-wrapper .ts-control > input::placeholder {
+  color: var(--paper-faint);
+  font-style: italic;
+}
+.ts-wrapper .ts-control .item {
+  font-family: var(--display-font);
+  font-weight: 600;
+  color: var(--paper);
+  background: transparent;
+  padding: 0;
+  border: none;
+}
+.ts-wrapper.single .ts-control:not(.rtl)::after {
+  /* Tom Select's default caret arrow. Subtle, matching paper-mid tint. */
+  border-top-color: var(--paper-mid);
+}
+.ts-wrapper.disabled .ts-control,
+.ts-wrapper.disabled .ts-control > input,
+.ts-wrapper.disabled .ts-control .item {
+  background: var(--row-tint);
+  color: var(--paper);
+  opacity: 1;
+  cursor: not-allowed;
+}
+.ts-wrapper.disabled .ts-control { border-bottom-color: var(--rule); }
+
+.ts-dropdown {
+  font-family: var(--body-font);
+  font-size: var(--small);
   background: var(--card-bg);
+  color: var(--paper);
   border: 1px solid var(--rule);
   border-radius: 0 0 0.4rem 0.4rem;
   box-shadow: 0 12px 28px -12px rgba(20, 54, 66, 0.22);
-  z-index: 30;
   margin-top: 0.1rem;
+  z-index: 40;
 }
-.searchable-list[hidden] { display: none; }
-.searchable-item {
-  padding: 0.55rem 0.8rem;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
+.ts-dropdown .ts-dropdown-content { max-height: 280px; }
+.ts-dropdown .option {
+  padding: 0.6rem 0.8rem;
+  color: var(--paper);
   border-bottom: 1px solid var(--rule-soft);
-  font-size: var(--small);
+  font-weight: 500;
 }
-.searchable-item:last-child { border-bottom: none; }
-.searchable-item:hover { background: var(--surface-mid); }
-.searchable-item .item-name { font-weight: 600; color: var(--paper); }
-.searchable-item .item-email { color: var(--paper-mid); font-family: var(--body-font); font-size: var(--tiny); }
-
-/* Visible scrollbar on the search list (v0.17) so users can SEE
-   it's scrollable on touch + macOS Safari. iOS still hides until
-   touched but the styling helps everywhere else. */
-.searchable-list::-webkit-scrollbar { width: 8px; }
-.searchable-list::-webkit-scrollbar-track { background: transparent; }
-.searchable-list::-webkit-scrollbar-thumb {
-  background: var(--rule);
-  border-radius: 4px;
+.ts-dropdown .option:last-child { border-bottom: none; }
+.ts-dropdown .active {
+  background: var(--surface-mid);
+  color: var(--paper);
 }
-.searchable-list::-webkit-scrollbar-thumb:hover { background: var(--paper-mid); }
-
-/* Truncation footer shown when results exceed the 60-item cap. */
-.searchable-footer {
-  padding: 0.5rem 0.8rem;
-  font-size: var(--tiny);
+.ts-dropdown .selected {
+  background: var(--rate-success);
+  color: white;
+  font-weight: 600;
+}
+.ts-dropdown .selected.active {
+  background: var(--rate-success-deep);
+  color: white;
+}
+.ts-dropdown .no-results,
+.ts-dropdown .create {
+  padding: 0.6rem 0.8rem;
   color: var(--paper-mid);
   font-style: italic;
+}
+.ts-dropdown .optgroup-header {
+  padding: 0.4rem 0.8rem;
+  color: var(--paper-mid);
+  font-size: var(--tiny);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
   background: var(--surface-soft);
-  border-top: 1px solid var(--rule-soft);
-  text-align: center;
-  position: sticky;
-  bottom: 0;
 }
-
-/* Scroll affordance for iPad (where ::-webkit-scrollbar is ignored).
-   A sticky "more below" hint pinned to the bottom of an overflowing list,
-   hidden once the user has scrolled to the bottom. v0.18. */
-.searchable-list.has-overflow:not(.is-at-bottom)::after {
-  content: '↓ scroll for more';
-  position: sticky;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: block;
-  padding: 0.45rem;
-  text-align: center;
-  font-size: var(--tiny);
-  font-style: italic;
-  color: var(--paper-mid);
-  background: linear-gradient(to top, var(--card-bg) 55%, rgba(255, 255, 255, 0));
-  pointer-events: none;
+/* iPad zoom-prevention: bump font to 16px on coarse pointers */
+@media (pointer: coarse) {
+  .ts-control,
+  .ts-control > input,
+  .ts-control .item,
+  .ts-dropdown .option {
+    font-size: 16px !important;
+  }
 }
 
 /* Single-select pill group (Evidence Type) */
@@ -1094,38 +1080,34 @@ textarea.long-text:focus { border-color: var(--rate-success); }
     color: #6b7e85 !important;
     border: 1px dashed #cccccc !important;
   }
-  .searchable-list { display: none !important; }
-  .searchable-input { border-bottom: 1px solid #143642 !important; }
+  /* Print Tom Select as plain text */
+  .ts-wrapper .ts-control {
+    border-bottom: 1px solid #143642 !important;
+    background: transparent !important;
+  }
+  .ts-dropdown { display: none !important; }
+  .ts-wrapper.single .ts-control:not(.rtl)::after { display: none !important; }
   textarea.long-text { background: white !important; border-color: #cccccc !important; }
 }
 
 /* ===========================================
-   iPad / Safari touch hardening (v0.16)
-   Applied to every interactive control. Native <select> is no longer
-   used (Inspector/Curriculum/Subject replaced with searchable + pill
-   patterns in v0.16) so we don't need the select selectors anymore.
+   iPad / Safari touch hardening (v0.19)
+   Applied to every interactive control. Tom Select handles its own touch
+   behaviour internally so we don't need to harden .ts-* classes here.
    =========================================== */
 .pill,
 .rate,
 .action-btn,
 .theme-toggle,
-.su-toggle label,
-.searchable-input,
-.searchable-item {
+.su-toggle label {
   touch-action: manipulation;
   -webkit-tap-highlight-color: rgba(20, 54, 66, 0.06);
   -webkit-touch-callout: none;
-}
-.pill,
-.rate,
-.action-btn,
-.theme-toggle,
-.su-toggle label {
   -webkit-user-select: none;
   user-select: none;
 }
 @media (pointer: coarse) {
-  input, textarea, .searchable-input {
+  input, textarea {
     font-size: 16px !important;
   }
 }
@@ -1134,7 +1116,6 @@ textarea.long-text:focus { border-color: var(--rate-success); }
     background: transparent;
     color: var(--paper-mid);
   }
-  .searchable-item:hover { background: var(--card-bg); }
   .action-btn:hover {
     color: var(--paper-dim);
     border-color: var(--rule);
@@ -1195,23 +1176,13 @@ textarea.long-text:focus { border-color: var(--rate-success); }
     <div class="info-grid info-grid-r3">
 
       <div class="info-cell info-cell-full">
-        <label for="teacher-search" class="required-field">Teacher</label>
-        <div class="searchable" data-name="teacher">
-          <input type="text" id="teacher-search" class="searchable-input" autocomplete="off" placeholder="Tap to browse staff, or type to search…">
-          <button type="button" class="searchable-clear" data-for="teacher" aria-label="Clear teacher selection" tabindex="-1">×</button>
-          <input type="hidden" name="teacher" id="teacher" value="">
-          <div class="searchable-list" id="teacher-list" hidden></div>
-        </div>
+        <label for="teacher" class="required-field">Teacher</label>
+        <select id="teacher" name="teacher" placeholder="Tap to browse staff, or type to search…" required></select>
       </div>
 
       <div class="info-cell">
-        <label for="inspector-search" class="required-field">Inspector</label>
-        <div class="searchable" data-name="inspector">
-          <input type="text" id="inspector-search" class="searchable-input" autocomplete="off" placeholder="Tap to browse inspectors, or type to search…">
-          <button type="button" class="searchable-clear" data-for="inspector" aria-label="Clear inspector selection" tabindex="-1">×</button>
-          <input type="hidden" name="inspector" id="inspector" value="">
-          <div class="searchable-list" id="inspector-list" hidden></div>
-        </div>
+        <label for="inspector" class="required-field">Inspector</label>
+        <select id="inspector" name="inspector" placeholder="Tap to browse inspectors, or type to search…" required></select>
       </div>
       <div class="info-cell">
         <label class="required-field">Curriculum</label>
@@ -1219,13 +1190,8 @@ textarea.long-text:focus { border-color: var(--rate-success); }
         <input type="hidden" name="curriculum" id="curriculum" value="">
       </div>
       <div class="info-cell">
-        <label for="subject-search" class="required-field">Subject</label>
-        <div class="searchable" data-name="subject">
-          <input type="text" id="subject-search" class="searchable-input" autocomplete="off" placeholder="Tap to browse subjects, or type to search…">
-          <button type="button" class="searchable-clear" data-for="subject" aria-label="Clear subject selection" tabindex="-1">×</button>
-          <input type="hidden" name="subject" id="subject" value="">
-          <div class="searchable-list" id="subject-list" hidden></div>
-        </div>
+        <label for="subject" class="required-field">Subject</label>
+        <select id="subject" name="subject" placeholder="Tap to browse subjects, or type to search…" required></select>
       </div>
 
       <div class="info-cell">
@@ -1525,7 +1491,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.18</a></span>
+    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.19</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -1657,12 +1623,8 @@ textarea.long-text:focus { border-color: var(--rate-success); }
     });
     // Clear pill / rate selected state and their hidden inputs.
     document.querySelectorAll('.pill-group .pill.is-selected, .rate-row .rate.is-selected').forEach(b => b.classList.remove('is-selected'));
-    // Clear searchable visible inputs + return them to Unset state (v0.18).
-    document.querySelectorAll('.searchable-input').forEach(i => {
-      i.value = '';
-      i.readOnly = false;
-    });
-    document.querySelectorAll('.searchable.is-picked').forEach(w => w.classList.remove('is-picked'));
+    // Reset Tom Select instances so the visible chrome matches the cleared values (v0.19).
+    Object.values(tomSelects).forEach(ts => { ts.clear(true); });
     try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
     showSaved();
     updateSubmitState();
@@ -1714,6 +1676,9 @@ textarea.long-text:focus { border-color: var(--rate-success); }
 
   function lockForm(recordId, submittedAt, mode) {
     FORM.querySelectorAll('input, textarea, select').forEach(el => { el.disabled = true; });
+    // Tom Select instances need to be disabled via the library API so the
+    // chrome (control + dropdown) reflects the locked state (v0.19).
+    Object.values(tomSelects).forEach(ts => { ts.disable(); });
     FORM.classList.add('is-locked');
     document.body.classList.add('is-locked');
 
@@ -1740,12 +1705,11 @@ textarea.long-text:focus { border-color: var(--rate-success); }
       el.disabled = false;
     });
     document.querySelectorAll('.pill-group .pill.is-selected, .rate-row .rate.is-selected').forEach(b => b.classList.remove('is-selected'));
-    // Clear searchable visible inputs + return them to Unset state (v0.18).
-    document.querySelectorAll('.searchable-input').forEach(i => {
-      i.value = '';
-      i.readOnly = false;
+    // Re-enable + clear each Tom Select instance (v0.19).
+    Object.values(tomSelects).forEach(ts => {
+      ts.enable();
+      ts.clear(true);
     });
-    document.querySelectorAll('.searchable.is-picked').forEach(w => w.classList.remove('is-picked'));
     const banner = document.getElementById('submitted-banner');
     if (banner) banner.classList.remove('is-active');
     FORM.classList.remove('is-locked');
@@ -1847,7 +1811,12 @@ textarea.long-text:focus { border-color: var(--rate-success); }
       });
 
       syncSingleSelectVisuals();
-      syncAllSearchableDisplays();
+      // Push restored values into each Tom Select so the chrome matches (v0.19).
+      ['teacher', 'inspector', 'subject'].forEach(name => {
+        const ts = tomSelects[name];
+        const sel = document.getElementById(name);
+        if (ts && sel && sel.value) ts.setValue(sel.value, true);
+      });
       lockForm(rec.record_id, rec.submitted_at, 'closed');
       showToast('Record loaded · ' + (rec.teacher || rec.record_id), 'success');
     } catch (err) {
@@ -1903,173 +1872,60 @@ textarea.long-text:focus { border-color: var(--rate-success); }
   }
 
   // ===========================================
-  // Searchable dropdowns (Teacher / Inspector / Subject) · v0.16
+  // Searchable dropdowns via Tom Select · v0.19
   // ===========================================
-  // SEARCHABLE_DATA holds the list for each searchable, populated by
-  // loadDropdownOptions(). Teacher items are {name, email} objects;
-  // Inspector and Subject items are plain strings.
-  const SEARCHABLE_DATA = { teacher: [], inspector: [], subject: [] };
+  // Tom Select handles every iPad-Safari touch quirk we spent v0.14-v0.18
+  // fighting: tap-vs-scroll distinction, blur timing, picker open delay,
+  // free-text leaking into the Sheet, scroll discoverability. The library
+  // is vendored locally in lib/ so the form works on any network.
   const HTML_ESCAPE = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const tomSelects = {};
 
-  // Generic searchable setup. opts.display / opts.value / opts.filter let
-  // the caller adapt for object-shaped items (Teacher) vs string items.
-  // v0.18: strict-combobox semantics. Two states per field:
-  //   Unset  → editable input, hidden empty, list opens on focus
-  //   Picked → readonly chip styling, × button visible to clear and re-pick
-  // Typed text that isn't committed via tap is reverted on blur, so the
-  // Sheet never receives free text that doesn't match a list value.
-  function setupSearchable(name, opts) {
-    const input = document.getElementById(name + '-search');
-    const hidden = document.getElementById(name);
-    const list = document.getElementById(name + '-list');
-    const clearBtn = document.querySelector('.searchable-clear[data-for="' + name + '"]');
-    const wrap = input ? input.closest('.searchable') : null;
-    if (!input || !hidden || !list || !wrap) return;
-
-    const display = opts.display || (it => String(it));
-    const value = opts.value || (it => String(it));
-    const filter = opts.filter || ((it, q) => display(it).toLowerCase().indexOf(q) >= 0);
-
-    const closeList = () => { list.hidden = true; };
-
-    function refreshOverflowState() {
-      const overflows = list.scrollHeight > list.clientHeight + 4;
-      list.classList.toggle('has-overflow', overflows);
-      const atBottom = list.scrollTop + list.clientHeight >= list.scrollHeight - 4;
-      list.classList.toggle('is-at-bottom', atBottom);
-    }
-
-    function rebuild(query) {
-      const q = (query || '').toLowerCase().trim();
-      const items = SEARCHABLE_DATA[name] || [];
-      const filtered = q ? items.filter(it => filter(it, q)) : items;
-      const shown = filtered.slice(0, 60);
-      let html = shown.map(it =>
-        '<div class="searchable-item" data-value="' + HTML_ESCAPE(value(it)) + '" data-display="' + HTML_ESCAPE(display(it)) + '">' +
-          '<span class="item-name">' + HTML_ESCAPE(display(it)) + '</span>' +
-        '</div>'
-      ).join('');
-      if (filtered.length > shown.length) {
-        html += '<div class="searchable-footer">Showing ' + shown.length + ' of ' + filtered.length + ' · type to refine</div>';
-      }
-      list.innerHTML = html;
-      list.scrollTop = 0;
-      requestAnimationFrame(refreshOverflowState);
-    }
-
-    function commit(displayText, valueText) {
-      input.value = displayText;
-      hidden.value = valueText;
-      wrap.classList.add('is-picked');
-      input.readOnly = true;
-      closeList();
-      input.blur();
-      hidden.dispatchEvent(new Event('change', { bubbles: true }));
-    }
-
-    function clearSelection({ openList = true, focus = true } = {}) {
-      wrap.classList.remove('is-picked');
-      input.readOnly = false;
-      input.value = '';
-      hidden.value = '';
-      hidden.dispatchEvent(new Event('change', { bubbles: true }));
-      if (focus) input.focus();
-      if (openList && !FORM.classList.contains('is-locked')) {
-        list.hidden = false;
-        rebuild('');
-      }
-    }
-
-    // Expose so loadForm / loadClosedRecord / syncSearchableDisplay can flip
-    // a field into Picked state programmatically without re-implementing.
-    wrap._searchable = { commit, clear: clearSelection, rebuild };
-
-    list.addEventListener('scroll', refreshOverflowState);
-
-    input.addEventListener('focus', () => {
-      if (FORM.classList.contains('is-locked')) return;
-      // Picked state: tapping the input should not re-open the list.
-      // User must press × to clear and re-pick.
-      if (wrap.classList.contains('is-picked')) return;
-      list.hidden = false;
-      rebuild(input.value);
-    });
-    input.addEventListener('input', () => {
-      if (FORM.classList.contains('is-locked')) return;
-      // Typing while not picked just filters the list. Hidden is already
-      // empty (or gets cleared here defensively).
-      hidden.value = '';
-      rebuild(input.value);
-      list.hidden = false;
-      hidden.dispatchEvent(new Event('change', { bubbles: true }));
-    });
-
-    // Strict mode: on blur, if there's typed text but no committed value,
-    // wipe the input so the field can never end up half-set.
-    input.addEventListener('blur', () => {
-      setTimeout(() => {
-        if (FORM.classList.contains('is-locked')) return;
-        if (wrap.classList.contains('is-picked')) return;
-        if (input.value && !hidden.value) {
-          input.value = '';
-        }
-      }, 200);
-    });
-
-    // Commit selection via pointerdown so it fires before the input's blur on iPad Safari.
-    list.addEventListener('pointerdown', e => {
-      const item = e.target.closest('.searchable-item');
-      if (!item) return;
-      e.preventDefault();
-      commit(item.dataset.display, item.dataset.value);
-    });
-
-    if (clearBtn) {
-      clearBtn.addEventListener('pointerdown', e => {
-        e.preventDefault();
-        if (FORM.classList.contains('is-locked')) return;
-        clearSelection({ openList: true, focus: true });
-      });
-    }
-
-    // Dismiss when the user taps anywhere outside the searchable wrap.
-    document.addEventListener('pointerdown', e => {
-      if (!list.hidden && !wrap.contains(e.target)) closeList();
-    });
-  }
-
-  // Populate the visible search input with the display text for the saved
-  // hidden value (used after restoring a draft or loading a closed record).
-  // v0.18: also flips the field into Picked state so chip styling + ×
-  // button match the committed value.
-  function syncSearchableDisplay(name) {
-    const input = document.getElementById(name + '-search');
-    const hidden = document.getElementById(name);
-    const wrap = input ? input.closest('.searchable') : null;
-    if (!input || !hidden || !wrap) return;
-    const v = hidden.value;
-    if (!v) {
-      // No saved value: ensure Unset state (handles softReset / fresh page).
-      wrap.classList.remove('is-picked');
-      input.readOnly = false;
+  function initTomSelects() {
+    if (typeof TomSelect !== 'function') {
+      showToast('Tom Select did not load · dropdowns will not work', 'error');
       return;
     }
-    if (wrap.classList.contains('is-picked')) return; // already set
-    const items = SEARCHABLE_DATA[name] || [];
-    let displayText;
-    if (name === 'teacher') {
-      const match = items.find(t => t.email === v);
-      displayText = match ? match.name : v;
-    } else {
-      displayText = v;
-    }
-    input.value = displayText;
-    wrap.classList.add('is-picked');
-    input.readOnly = true;
+    const baseOpts = {
+      create: false,             // strict: only list values
+      maxItems: 1,
+      allowEmptyOption: false,
+      hideSelected: false,
+      closeAfterSelect: true,
+      sortField: { field: 'text', direction: 'asc' },
+      // Tell Tom Select to dispatch native change events so updateSubmitState fires.
+      onChange: () => updateSubmitState(),
+    };
+    tomSelects.teacher = new TomSelect('#teacher', Object.assign({}, baseOpts, {
+      placeholder: 'Tap to browse staff, or type to search…',
+      searchField: ['text', 'value'], // search by name and email
+    }));
+    tomSelects.inspector = new TomSelect('#inspector', Object.assign({}, baseOpts, {
+      placeholder: 'Tap to browse inspectors, or type to search…',
+    }));
+    tomSelects.subject = new TomSelect('#subject', Object.assign({}, baseOpts, {
+      placeholder: 'Tap to browse subjects, or type to search…',
+    }));
   }
 
-  function syncAllSearchableDisplays() {
-    ['teacher', 'inspector', 'subject'].forEach(syncSearchableDisplay);
+  function readRestoredFromLocalStorage(name) {
+    // loadForm runs before Tom Select inits; without matching options the
+    // underlying <select> drops the restored value. So we read it back from
+    // localStorage when populating options and re-apply via setValue().
+    try {
+      const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      return data[name] || '';
+    } catch (e) { return ''; }
+  }
+
+  function populateTomSelect(name, items) {
+    const ts = tomSelects[name];
+    if (!ts) return;
+    const pending = ts.getValue() || readRestoredFromLocalStorage(name);
+    ts.clearOptions();
+    ts.addOptions(items);
+    ts.refreshOptions(false);
+    if (pending) ts.setValue(pending, true);   // silent: don't re-fire onChange
   }
 
   // Render the Curriculum pill buttons from the loaded options list.
@@ -2081,7 +1937,6 @@ textarea.long-text:focus { border-color: var(--rate-success); }
     ).join('');
     // setupSingleSelectGroups already attached a delegated click listener
     // to .pill-group at init, so newly-added pills work without rewiring.
-    // Re-highlight if the hidden input already has a value (restored draft).
     syncSingleSelectVisuals();
   }
 
@@ -2093,12 +1948,10 @@ textarea.long-text:focus { border-color: var(--rate-success); }
       if (!result.success) throw new Error(result.error || 'Could not load options');
       const opts = result.options || {};
 
-      SEARCHABLE_DATA.teacher = opts.teachers || [];
-      SEARCHABLE_DATA.inspector = opts.inspectors || [];
-      SEARCHABLE_DATA.subject = opts.subjects || [];
-
+      populateTomSelect('teacher', (opts.teachers || []).map(t => ({ value: t.email, text: t.name })));
+      populateTomSelect('inspector', (opts.inspectors || []).map(s => ({ value: s, text: s })));
+      populateTomSelect('subject', (opts.subjects || []).map(s => ({ value: s, text: s })));
       renderCurriculumPills(opts.curricula || []);
-      syncAllSearchableDisplays();
     } catch (err) {
       showToast('Could not load dropdown options: ' + (err.message || err), 'error');
     }
@@ -2106,13 +1959,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
 
   // Init the R3-specific UI after the rest of the form's setup has run.
   setupSingleSelectGroups();
-  setupSearchable('teacher', {
-    display: t => t.name,
-    value: t => t.email,
-    filter: (t, q) => t.name.toLowerCase().indexOf(q) >= 0 || t.email.toLowerCase().indexOf(q) >= 0,
-  });
-  setupSearchable('inspector', {});
-  setupSearchable('subject', {});
+  initTomSelects();
   syncSingleSelectVisuals();
   loadDropdownOptions();
 
