@@ -833,88 +833,17 @@ body.is-locked .action-btn.new { display: inline-flex; }
   border-bottom-color: transparent;
 }
 
-/* Native select styled to match the existing input cells.
-   v0.15: the user-facing trigger is now a <button>; the native <select>
-   is kept in the DOM for form data + native picker, but visually hidden. */
-.info-cell select {
-  font-family: var(--display-font);
-  font-size: clamp(1rem, 1.4vw, 1.15rem);
-  color: var(--paper);
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid transparent;
-  padding: 0.15rem 0;
-  width: 100%;
-  outline: none;
-  appearance: none;
-  cursor: pointer;
+/* Inline pill-group fits inside a single .info-cell (Curriculum, v0.16) */
+.pill-group-inline {
+  padding-top: 0.1rem;
+  padding-bottom: 0.1rem;
 }
-.info-cell select:focus { border-bottom-color: var(--rate-success); }
-.info-cell select:disabled { opacity: 0.6; cursor: default; }
-
-/* Button-trigger pattern for native <select> · v0.15
-   Sidesteps the iOS Safari long-press / text-callout that delays the
-   picker open on appearance:none selects. The <button> takes the tap;
-   showPicker() opens the native iOS picker on the hidden <select>. */
-.info-cell-select { position: relative; }
-.info-cell-select label { pointer-events: none; }
-.info-cell-select .visually-hidden-select {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  pointer-events: none;
-  border: none;
-}
-.select-trigger {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  width: 100%;
-  min-height: 2.4rem;
-  padding: 0.4rem 0;
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid transparent;
-  font-family: var(--display-font);
-  font-size: clamp(1rem, 1.4vw, 1.15rem);
-  color: var(--paper);
-  text-align: left;
-  cursor: pointer;
-  outline: none;
-  -webkit-appearance: none;
-  appearance: none;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: rgba(20, 54, 66, 0.06);
-  -webkit-user-select: none;
-  user-select: none;
-}
-.select-trigger:focus { border-bottom-color: var(--rate-success); }
-.select-trigger .select-value {
-  flex: 1 1 auto;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.select-trigger .select-value.is-placeholder {
-  color: var(--paper-faint);
-  font-style: italic;
-}
-.select-trigger .select-chevron {
-  flex: 0 0 0.7rem;
-  width: 0.7rem;
-  height: 0.5rem;
-  color: var(--paper-mid);
-}
-.select-trigger:focus .select-chevron { color: var(--rate-success); }
-form.is-locked .select-trigger {
-  pointer-events: none;
-  cursor: not-allowed;
+.pill-group-inline .pill {
+  padding: 0.4rem 0.85rem;
+  font-size: var(--small);
 }
 
-/* Searchable teacher dropdown */
+/* Searchable dropdown (Teacher, Inspector, Subject) */
 .searchable { position: relative; }
 .searchable-input {
   font-family: var(--display-font);
@@ -1073,24 +1002,14 @@ textarea.long-text:focus { border-color: var(--rate-success); }
   .searchable-list { display: none !important; }
   .searchable-input { border-bottom: 1px solid #143642 !important; }
   textarea.long-text { background: white !important; border-color: #cccccc !important; }
-  .info-cell select { background: transparent !important; }
-  /* v0.15 button-trigger renders like the original native select on paper. */
-  .select-trigger {
-    border-bottom: 1px solid #143642 !important;
-    color: #143642 !important;
-  }
-  .select-trigger .select-chevron { display: none !important; }
-  .info-cell-select .visually-hidden-select { display: none !important; }
 }
 
 /* ===========================================
-   iPad / Safari touch hardening (v0.14.1)
-   -webkit-touch-callout: none suppresses the ~1s iOS long-press
-   text-callout that was delaying native <select> pickers when the
-   cell already had a value displayed. Other properties handle
-   sticky :hover, tap highlight, and auto-zoom.
+   iPad / Safari touch hardening (v0.16)
+   Applied to every interactive control. Native <select> is no longer
+   used (Inspector/Curriculum/Subject replaced with searchable + pill
+   patterns in v0.16) so we don't need the select selectors anymore.
    =========================================== */
-select,
 .pill,
 .rate,
 .action-btn,
@@ -1102,7 +1021,6 @@ select,
   -webkit-tap-highlight-color: rgba(20, 54, 66, 0.06);
   -webkit-touch-callout: none;
 }
-select,
 .pill,
 .rate,
 .action-btn,
@@ -1111,12 +1029,8 @@ select,
   -webkit-user-select: none;
   user-select: none;
 }
-.info-cell select {
-  min-height: 2.4rem;
-  padding: 0.4rem 0;
-}
 @media (pointer: coarse) {
-  input, textarea, select, .searchable-input {
+  input, textarea, .searchable-input {
     font-size: 16px !important;
   }
 }
@@ -1194,29 +1108,26 @@ select,
         </div>
       </div>
 
-      <div class="info-cell info-cell-select">
-        <label for="inspector">Inspector</label>
-        <button type="button" class="select-trigger" data-for="inspector" aria-haspopup="listbox">
-          <span class="select-value is-placeholder">Loading…</span>
-          <svg class="select-chevron" viewBox="0 0 12 8" aria-hidden="true"><path d="M1 1l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <select id="inspector" name="inspector" data-options="inspectors" class="visually-hidden-select" tabindex="-1"><option value="">Loading…</option></select>
+      <div class="info-cell">
+        <label for="inspector-search">Inspector</label>
+        <div class="searchable" data-name="inspector">
+          <input type="text" id="inspector-search" class="searchable-input" autocomplete="off" placeholder="Type to search inspectors…">
+          <input type="hidden" name="inspector" id="inspector" value="">
+          <div class="searchable-list" id="inspector-list" hidden></div>
+        </div>
       </div>
-      <div class="info-cell info-cell-select">
-        <label for="curriculum">Curriculum</label>
-        <button type="button" class="select-trigger" data-for="curriculum" aria-haspopup="listbox">
-          <span class="select-value is-placeholder">Loading…</span>
-          <svg class="select-chevron" viewBox="0 0 12 8" aria-hidden="true"><path d="M1 1l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <select id="curriculum" name="curriculum" data-options="curricula" class="visually-hidden-select" tabindex="-1"><option value="">Loading…</option></select>
+      <div class="info-cell">
+        <label>Curriculum</label>
+        <div class="pill-group pill-group-inline" data-name="curriculum" id="curriculum-pills"></div>
+        <input type="hidden" name="curriculum" id="curriculum" value="">
       </div>
-      <div class="info-cell info-cell-select">
-        <label for="subject">Subject</label>
-        <button type="button" class="select-trigger" data-for="subject" aria-haspopup="listbox">
-          <span class="select-value is-placeholder">Loading…</span>
-          <svg class="select-chevron" viewBox="0 0 12 8" aria-hidden="true"><path d="M1 1l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <select id="subject" name="subject" data-options="subjects" class="visually-hidden-select" tabindex="-1"><option value="">Loading…</option></select>
+      <div class="info-cell">
+        <label for="subject-search">Subject</label>
+        <div class="searchable" data-name="subject">
+          <input type="text" id="subject-search" class="searchable-input" autocomplete="off" placeholder="Type to search subjects…">
+          <input type="hidden" name="subject" id="subject" value="">
+          <div class="searchable-list" id="subject-list" hidden></div>
+        </div>
       </div>
 
       <div class="info-cell">
@@ -1315,6 +1226,14 @@ select,
     <h2 class="section-title">Focus / <em>Context</em></h2>
     <p class="src-path">Main purpose of the inspection activity.</p>
     <textarea name="focus_context" id="focus_context" class="long-text" rows="4" placeholder="Notes…"></textarea>
+  </section>
+
+  <!-- ============================================
+       OBSERVER NOTES
+       ============================================ -->
+  <section class="form-section">
+    <h2 class="section-title">Observer <em>Notes</em></h2>
+    <textarea name="observer_notes" id="observer_notes" class="long-text" rows="4" placeholder="Notes…"></textarea>
   </section>
 
   <!-- ============================================
@@ -1508,7 +1427,7 @@ select,
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.15</a></span>
+    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.16</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -1794,7 +1713,7 @@ select,
       });
 
       syncSingleSelectVisuals();
-      syncTeacherDisplay();
+      syncAllSearchableDisplays();
       lockForm(rec.record_id, rec.submitted_at, 'closed');
       showToast('Record loaded · ' + (rec.teacher || rec.record_id), 'success');
     } catch (err) {
@@ -1849,44 +1768,51 @@ select,
     });
   }
 
-  // Searchable teacher dropdown — fetches the list at page load from the backend.
-  let TEACHER_LIST = [];
+  // ===========================================
+  // Searchable dropdowns (Teacher / Inspector / Subject) · v0.16
+  // ===========================================
+  // SEARCHABLE_DATA holds the list for each searchable, populated by
+  // loadDropdownOptions(). Teacher items are {name, email} objects;
+  // Inspector and Subject items are plain strings.
+  const SEARCHABLE_DATA = { teacher: [], inspector: [], subject: [] };
   const HTML_ESCAPE = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
-  function rebuildTeacherList(filter) {
-    const list = document.getElementById('teacher-list');
-    if (!list) return;
-    const q = (filter || '').toLowerCase().trim();
-    const filtered = q
-      ? TEACHER_LIST.filter(t => t.name.toLowerCase().indexOf(q) >= 0 || t.email.toLowerCase().indexOf(q) >= 0)
-      : TEACHER_LIST;
-    list.innerHTML = filtered.slice(0, 60).map(t =>
-      '<div class="searchable-item" data-email="' + HTML_ESCAPE(t.email) + '" data-name="' + HTML_ESCAPE(t.name) + '">' +
-        '<span class="item-name">' + HTML_ESCAPE(t.name) + '</span>' +
-        '<span class="item-email">' + HTML_ESCAPE(t.email) + '</span>' +
-      '</div>'
-    ).join('');
-  }
-
-  function setupSearchableTeacher() {
-    const input = document.getElementById('teacher-search');
-    const hidden = document.getElementById('teacher');
-    const list = document.getElementById('teacher-list');
+  // Generic searchable setup. opts.display / opts.value / opts.filter let
+  // the caller adapt for object-shaped items (Teacher) vs string items.
+  function setupSearchable(name, opts) {
+    const input = document.getElementById(name + '-search');
+    const hidden = document.getElementById(name);
+    const list = document.getElementById(name + '-list');
     const wrap = input ? input.closest('.searchable') : null;
     if (!input || !hidden || !list || !wrap) return;
 
+    const display = opts.display || (it => String(it));
+    const value = opts.value || (it => String(it));
+    const filter = opts.filter || ((it, q) => display(it).toLowerCase().indexOf(q) >= 0);
+
     const closeList = () => { list.hidden = true; };
+
+    function rebuild(query) {
+      const q = (query || '').toLowerCase().trim();
+      const items = SEARCHABLE_DATA[name] || [];
+      const filtered = q ? items.filter(it => filter(it, q)) : items;
+      list.innerHTML = filtered.slice(0, 60).map(it =>
+        '<div class="searchable-item" data-value="' + HTML_ESCAPE(value(it)) + '" data-display="' + HTML_ESCAPE(display(it)) + '">' +
+          '<span class="item-name">' + HTML_ESCAPE(display(it)) + '</span>' +
+        '</div>'
+      ).join('');
+    }
 
     input.addEventListener('focus', () => {
       if (FORM.classList.contains('is-locked')) return;
       list.hidden = false;
-      rebuildTeacherList(input.value);
+      rebuild(input.value);
     });
     input.addEventListener('input', () => {
       if (FORM.classList.contains('is-locked')) return;
       // Typing clears the prior committed selection so the hidden value reflects current state.
       hidden.value = '';
-      rebuildTeacherList(input.value);
+      rebuild(input.value);
       list.hidden = false;
       hidden.dispatchEvent(new Event('change', { bubbles: true }));
     });
@@ -1896,8 +1822,8 @@ select,
       const item = e.target.closest('.searchable-item');
       if (!item) return;
       e.preventDefault();
-      input.value = item.dataset.name + ' <' + item.dataset.email + '>';
-      hidden.value = item.dataset.email;
+      input.value = item.dataset.display;
+      hidden.value = item.dataset.value;
       closeList();
       input.blur();
       hidden.dispatchEvent(new Event('change', { bubbles: true }));
@@ -1909,17 +1835,38 @@ select,
     });
   }
 
-  // Show "Name <email>" in the search input once the hidden teacher value is set
-  // and the staff list has loaded. Useful after restoring a saved draft or closed record.
-  function syncTeacherDisplay() {
-    const input = document.getElementById('teacher-search');
-    const hidden = document.getElementById('teacher');
+  // Populate the visible search input with the display text for the saved
+  // hidden value (used after restoring a draft or loading a closed record).
+  function syncSearchableDisplay(name) {
+    const input = document.getElementById(name + '-search');
+    const hidden = document.getElementById(name);
     if (!input || !hidden) return;
-    const email = hidden.value;
-    if (!email) return;
-    if (input.value && input.value.indexOf('<') >= 0) return; // already formatted
-    const match = TEACHER_LIST.find(t => t.email === email);
-    input.value = match ? (match.name + ' <' + match.email + '>') : email;
+    const v = hidden.value;
+    if (!v || input.value) return; // empty value or already populated
+    const items = SEARCHABLE_DATA[name] || [];
+    if (name === 'teacher') {
+      const match = items.find(t => t.email === v);
+      input.value = match ? match.name : v;
+    } else {
+      input.value = v;
+    }
+  }
+
+  function syncAllSearchableDisplays() {
+    ['teacher', 'inspector', 'subject'].forEach(syncSearchableDisplay);
+  }
+
+  // Render the Curriculum pill buttons from the loaded options list.
+  function renderCurriculumPills(values) {
+    const group = document.getElementById('curriculum-pills');
+    if (!group) return;
+    group.innerHTML = (values || []).map(v =>
+      '<button type="button" class="pill" data-value="' + HTML_ESCAPE(v) + '">' + HTML_ESCAPE(v) + '</button>'
+    ).join('');
+    // setupSingleSelectGroups already attached a delegated click listener
+    // to .pill-group at init, so newly-added pills work without rewiring.
+    // Re-highlight if the hidden input already has a value (restored draft).
+    syncSingleSelectVisuals();
   }
 
   // Load Inspectors / Curriculum / Subjects / Teachers from the backend.
@@ -1930,71 +1877,26 @@ select,
       if (!result.success) throw new Error(result.error || 'Could not load options');
       const opts = result.options || {};
 
-      document.querySelectorAll('select[data-options]').forEach(sel => {
-        const key = sel.dataset.options;
-        const values = opts[key] || [];
-        const prior = sel.value;
-        sel.innerHTML = '<option value="">— select —</option>' +
-                         values.map(v => '<option value="' + HTML_ESCAPE(v) + '">' + HTML_ESCAPE(v) + '</option>').join('');
-        if (prior && values.indexOf(prior) >= 0) sel.value = prior;
-        // Notify the button-trigger to refresh its displayed value (v0.15).
-        sel.dispatchEvent(new Event('change', { bubbles: true }));
-      });
+      SEARCHABLE_DATA.teacher = opts.teachers || [];
+      SEARCHABLE_DATA.inspector = opts.inspectors || [];
+      SEARCHABLE_DATA.subject = opts.subjects || [];
 
-      TEACHER_LIST = opts.teachers || [];
-      syncTeacherDisplay();
+      renderCurriculumPills(opts.curricula || []);
+      syncAllSearchableDisplays();
     } catch (err) {
       showToast('Could not load dropdown options: ' + (err.message || err), 'error');
     }
   }
 
-  // Button-trigger pattern for the native <select> elements (v0.15).
-  // The visible <button> takes the tap; showPicker() opens the native iOS
-  // picker on the hidden <select>. Sidesteps the iPad Safari long-press
-  // text-callout that delayed picker open by 700-1200ms.
-  function setupSelectTriggers() {
-    document.querySelectorAll('.select-trigger').forEach(btn => {
-      const select = document.getElementById(btn.dataset.for);
-      if (!select) return;
-      const display = btn.querySelector('.select-value');
-
-      function refreshDisplay() {
-        const hasValue = select.value && String(select.value).trim();
-        const opt = select.options[select.selectedIndex];
-        const text = (hasValue && opt) ? opt.textContent : '— select —';
-        if (display) {
-          display.textContent = text;
-          display.classList.toggle('is-placeholder', !hasValue);
-        }
-      }
-
-      btn.addEventListener('click', () => {
-        if (FORM.classList.contains('is-locked')) return;
-        // showPicker requires the select to be interactable; we toggle
-        // pointer-events on for the call and back off after the picker shows.
-        select.style.pointerEvents = 'auto';
-        try {
-          if (typeof select.showPicker === 'function') {
-            select.showPicker();
-          } else {
-            select.focus();
-            select.click();
-          }
-        } catch (err) {
-          try { select.focus(); select.click(); } catch (e) {}
-        }
-        requestAnimationFrame(() => { select.style.pointerEvents = 'none'; });
-      });
-
-      select.addEventListener('change', refreshDisplay);
-      refreshDisplay();
-    });
-  }
-
   // Init the R3-specific UI after the rest of the form's setup has run.
   setupSingleSelectGroups();
-  setupSearchableTeacher();
-  setupSelectTriggers();
+  setupSearchable('teacher', {
+    display: t => t.name,
+    value: t => t.email,
+    filter: (t, q) => t.name.toLowerCase().indexOf(q) >= 0 || t.email.toLowerCase().indexOf(q) >= 0,
+  });
+  setupSearchable('inspector', {});
+  setupSearchable('subject', {});
   syncSingleSelectVisuals();
   loadDropdownOptions();
 

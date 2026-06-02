@@ -17,7 +17,7 @@ const SHEET_NAME_CURRICULUM  = 'Curriculum';
 const SHEET_NAME_SUBJECTS    = 'Subjects';
 
 const SEED_INSPECTORS = ['Dave Richards', 'Hayden Ryan', 'Brooke Pickett'];
-const SEED_CURRICULUM = ['Australian', 'IB', 'Ministry'];
+const SEED_CURRICULUM = ['Australian', 'Ministry'];
 const SEED_SUBJECTS   = ['Maths', 'English', 'Science', 'Arabic', 'Islamic'];
 
 /**
@@ -76,7 +76,7 @@ function getR3Columns() {
     judgementCols.push('j_' + cat + '_c');
   });
 
-  const tail = ['summary_strengths', 'summary_weakness'];
+  const tail = ['summary_strengths', 'summary_weakness', 'observer_notes'];
 
   return header.concat(judgementCols, tail);
 }
