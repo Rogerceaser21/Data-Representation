@@ -1013,10 +1013,11 @@ textarea.long-text:focus { border-color: var(--rate-success); }
 }
 
 /* ===========================================
-   iPad / Safari touch hardening (v0.14)
-   Fixes: native <select> needing two taps because iOS treats the first tap
-   as a text-selection gesture; sticky :hover after a tap; iOS auto-zoom on
-   small inputs.
+   iPad / Safari touch hardening (v0.14.1)
+   -webkit-touch-callout: none suppresses the ~1s iOS long-press
+   text-callout that was delaying native <select> pickers when the
+   cell already had a value displayed. Other properties handle
+   sticky :hover, tap highlight, and auto-zoom.
    =========================================== */
 select,
 .pill,
@@ -1028,6 +1029,7 @@ select,
 .searchable-item {
   touch-action: manipulation;
   -webkit-tap-highlight-color: rgba(20, 54, 66, 0.06);
+  -webkit-touch-callout: none;
 }
 select,
 .pill,
@@ -1423,7 +1425,7 @@ select,
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.14</a></span>
+    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.14.1</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>

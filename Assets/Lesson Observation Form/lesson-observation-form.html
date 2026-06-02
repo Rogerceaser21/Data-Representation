@@ -822,9 +822,9 @@ body.is-locked .action-btn.new { display: inline-flex; }
 }
 
 /* ===========================================
-   iPad / Safari touch hardening (v0.14)
-   Same baseline as R3 form: prevents iOS auto-zoom on small inputs,
-   sticky :hover after tap, and ambiguous tap targets on buttons.
+   iPad / Safari touch hardening (v0.14.1)
+   Same baseline as R3 form. -webkit-touch-callout: none suppresses
+   the iOS long-press text-callout that delays interaction on touch.
    =========================================== */
 .action-btn,
 .theme-toggle,
@@ -833,6 +833,7 @@ body.is-locked .action-btn.new { display: inline-flex; }
   -webkit-tap-highlight-color: rgba(20, 54, 66, 0.06);
   -webkit-user-select: none;
   user-select: none;
+  -webkit-touch-callout: none;
 }
 @media (pointer: coarse) {
   input, textarea {
@@ -1217,7 +1218,7 @@ body.is-locked .action-btn.new { display: inline-flex; }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · Lesson Observation · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.14</a></span>
+    <span>Form · Lesson Observation · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.14.1</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
