@@ -853,6 +853,50 @@ body.is-locked .action-btn.new { display: inline-flex; }
 
 /* Searchable dropdown (Teacher, Inspector, Subject) */
 .searchable { position: relative; }
+
+/* Strict-combobox states (v0.18):
+   - Unset (default): editable input, no chip styling, × hidden
+   - Picked: readonly input with chip styling, × visible to clear */
+.searchable.is-picked .searchable-input {
+  font-weight: 600;
+  color: var(--paper);
+  background: var(--row-tint);
+  border-radius: 0.3rem;
+  padding-left: 0.5rem;
+  padding-right: 1.9rem;
+  cursor: default;
+  border-bottom-color: var(--rate-success);
+}
+.searchable-clear {
+  position: absolute;
+  right: 0.15rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.5rem;
+  height: 1.5rem;
+  border: none;
+  background: transparent;
+  color: var(--paper-mid);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  padding: 0;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(20, 54, 66, 0.06);
+  -webkit-user-select: none;
+  user-select: none;
+}
+.searchable.is-picked .searchable-clear { display: inline-flex; }
+.searchable-clear:hover {
+  background: var(--surface-mid);
+  color: var(--paper);
+}
+form.is-locked .searchable-clear { display: none !important; }
+
 .searchable-input {
   font-family: var(--display-font);
   font-size: clamp(1rem, 1.4vw, 1.15rem);
@@ -918,6 +962,25 @@ body.is-locked .action-btn.new { display: inline-flex; }
   text-align: center;
   position: sticky;
   bottom: 0;
+}
+
+/* Scroll affordance for iPad (where ::-webkit-scrollbar is ignored).
+   A sticky "more below" hint pinned to the bottom of an overflowing list,
+   hidden once the user has scrolled to the bottom. v0.18. */
+.searchable-list.has-overflow:not(.is-at-bottom)::after {
+  content: '↓ scroll for more';
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: block;
+  padding: 0.45rem;
+  text-align: center;
+  font-size: var(--tiny);
+  font-style: italic;
+  color: var(--paper-mid);
+  background: linear-gradient(to top, var(--card-bg) 55%, rgba(255, 255, 255, 0));
+  pointer-events: none;
 }
 
 /* Single-select pill group (Evidence Type) */
@@ -1135,6 +1198,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
         <label for="teacher-search" class="required-field">Teacher</label>
         <div class="searchable" data-name="teacher">
           <input type="text" id="teacher-search" class="searchable-input" autocomplete="off" placeholder="Tap to browse staff, or type to search…">
+          <button type="button" class="searchable-clear" data-for="teacher" aria-label="Clear teacher selection" tabindex="-1">×</button>
           <input type="hidden" name="teacher" id="teacher" value="">
           <div class="searchable-list" id="teacher-list" hidden></div>
         </div>
@@ -1144,6 +1208,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
         <label for="inspector-search" class="required-field">Inspector</label>
         <div class="searchable" data-name="inspector">
           <input type="text" id="inspector-search" class="searchable-input" autocomplete="off" placeholder="Tap to browse inspectors, or type to search…">
+          <button type="button" class="searchable-clear" data-for="inspector" aria-label="Clear inspector selection" tabindex="-1">×</button>
           <input type="hidden" name="inspector" id="inspector" value="">
           <div class="searchable-list" id="inspector-list" hidden></div>
         </div>
@@ -1157,6 +1222,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
         <label for="subject-search" class="required-field">Subject</label>
         <div class="searchable" data-name="subject">
           <input type="text" id="subject-search" class="searchable-input" autocomplete="off" placeholder="Tap to browse subjects, or type to search…">
+          <button type="button" class="searchable-clear" data-for="subject" aria-label="Clear subject selection" tabindex="-1">×</button>
           <input type="hidden" name="subject" id="subject" value="">
           <div class="searchable-list" id="subject-list" hidden></div>
         </div>
@@ -1459,7 +1525,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.17</a></span>
+    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.18</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -1591,7 +1657,12 @@ textarea.long-text:focus { border-color: var(--rate-success); }
     });
     // Clear pill / rate selected state and their hidden inputs.
     document.querySelectorAll('.pill-group .pill.is-selected, .rate-row .rate.is-selected').forEach(b => b.classList.remove('is-selected'));
-    document.querySelectorAll('.searchable-input').forEach(i => { i.value = ''; });
+    // Clear searchable visible inputs + return them to Unset state (v0.18).
+    document.querySelectorAll('.searchable-input').forEach(i => {
+      i.value = '';
+      i.readOnly = false;
+    });
+    document.querySelectorAll('.searchable.is-picked').forEach(w => w.classList.remove('is-picked'));
     try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
     showSaved();
     updateSubmitState();
@@ -1669,7 +1740,12 @@ textarea.long-text:focus { border-color: var(--rate-success); }
       el.disabled = false;
     });
     document.querySelectorAll('.pill-group .pill.is-selected, .rate-row .rate.is-selected').forEach(b => b.classList.remove('is-selected'));
-    document.querySelectorAll('.searchable-input').forEach(i => { i.value = ''; });
+    // Clear searchable visible inputs + return them to Unset state (v0.18).
+    document.querySelectorAll('.searchable-input').forEach(i => {
+      i.value = '';
+      i.readOnly = false;
+    });
+    document.querySelectorAll('.searchable.is-picked').forEach(w => w.classList.remove('is-picked'));
     const banner = document.getElementById('submitted-banner');
     if (banner) banner.classList.remove('is-active');
     FORM.classList.remove('is-locked');
@@ -1837,10 +1913,16 @@ textarea.long-text:focus { border-color: var(--rate-success); }
 
   // Generic searchable setup. opts.display / opts.value / opts.filter let
   // the caller adapt for object-shaped items (Teacher) vs string items.
+  // v0.18: strict-combobox semantics. Two states per field:
+  //   Unset  → editable input, hidden empty, list opens on focus
+  //   Picked → readonly chip styling, × button visible to clear and re-pick
+  // Typed text that isn't committed via tap is reverted on blur, so the
+  // Sheet never receives free text that doesn't match a list value.
   function setupSearchable(name, opts) {
     const input = document.getElementById(name + '-search');
     const hidden = document.getElementById(name);
     const list = document.getElementById(name + '-list');
+    const clearBtn = document.querySelector('.searchable-clear[data-for="' + name + '"]');
     const wrap = input ? input.closest('.searchable') : null;
     if (!input || !hidden || !list || !wrap) return;
 
@@ -1849,6 +1931,13 @@ textarea.long-text:focus { border-color: var(--rate-success); }
     const filter = opts.filter || ((it, q) => display(it).toLowerCase().indexOf(q) >= 0);
 
     const closeList = () => { list.hidden = true; };
+
+    function refreshOverflowState() {
+      const overflows = list.scrollHeight > list.clientHeight + 4;
+      list.classList.toggle('has-overflow', overflows);
+      const atBottom = list.scrollTop + list.clientHeight >= list.scrollHeight - 4;
+      list.classList.toggle('is-at-bottom', atBottom);
+    }
 
     function rebuild(query) {
       const q = (query || '').toLowerCase().trim();
@@ -1864,20 +1953,67 @@ textarea.long-text:focus { border-color: var(--rate-success); }
         html += '<div class="searchable-footer">Showing ' + shown.length + ' of ' + filtered.length + ' · type to refine</div>';
       }
       list.innerHTML = html;
+      list.scrollTop = 0;
+      requestAnimationFrame(refreshOverflowState);
     }
+
+    function commit(displayText, valueText) {
+      input.value = displayText;
+      hidden.value = valueText;
+      wrap.classList.add('is-picked');
+      input.readOnly = true;
+      closeList();
+      input.blur();
+      hidden.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    function clearSelection({ openList = true, focus = true } = {}) {
+      wrap.classList.remove('is-picked');
+      input.readOnly = false;
+      input.value = '';
+      hidden.value = '';
+      hidden.dispatchEvent(new Event('change', { bubbles: true }));
+      if (focus) input.focus();
+      if (openList && !FORM.classList.contains('is-locked')) {
+        list.hidden = false;
+        rebuild('');
+      }
+    }
+
+    // Expose so loadForm / loadClosedRecord / syncSearchableDisplay can flip
+    // a field into Picked state programmatically without re-implementing.
+    wrap._searchable = { commit, clear: clearSelection, rebuild };
+
+    list.addEventListener('scroll', refreshOverflowState);
 
     input.addEventListener('focus', () => {
       if (FORM.classList.contains('is-locked')) return;
+      // Picked state: tapping the input should not re-open the list.
+      // User must press × to clear and re-pick.
+      if (wrap.classList.contains('is-picked')) return;
       list.hidden = false;
       rebuild(input.value);
     });
     input.addEventListener('input', () => {
       if (FORM.classList.contains('is-locked')) return;
-      // Typing clears the prior committed selection so the hidden value reflects current state.
+      // Typing while not picked just filters the list. Hidden is already
+      // empty (or gets cleared here defensively).
       hidden.value = '';
       rebuild(input.value);
       list.hidden = false;
       hidden.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+
+    // Strict mode: on blur, if there's typed text but no committed value,
+    // wipe the input so the field can never end up half-set.
+    input.addEventListener('blur', () => {
+      setTimeout(() => {
+        if (FORM.classList.contains('is-locked')) return;
+        if (wrap.classList.contains('is-picked')) return;
+        if (input.value && !hidden.value) {
+          input.value = '';
+        }
+      }, 200);
     });
 
     // Commit selection via pointerdown so it fires before the input's blur on iPad Safari.
@@ -1885,12 +2021,16 @@ textarea.long-text:focus { border-color: var(--rate-success); }
       const item = e.target.closest('.searchable-item');
       if (!item) return;
       e.preventDefault();
-      input.value = item.dataset.display;
-      hidden.value = item.dataset.value;
-      closeList();
-      input.blur();
-      hidden.dispatchEvent(new Event('change', { bubbles: true }));
+      commit(item.dataset.display, item.dataset.value);
     });
+
+    if (clearBtn) {
+      clearBtn.addEventListener('pointerdown', e => {
+        e.preventDefault();
+        if (FORM.classList.contains('is-locked')) return;
+        clearSelection({ openList: true, focus: true });
+      });
+    }
 
     // Dismiss when the user taps anywhere outside the searchable wrap.
     document.addEventListener('pointerdown', e => {
@@ -1900,19 +2040,32 @@ textarea.long-text:focus { border-color: var(--rate-success); }
 
   // Populate the visible search input with the display text for the saved
   // hidden value (used after restoring a draft or loading a closed record).
+  // v0.18: also flips the field into Picked state so chip styling + ×
+  // button match the committed value.
   function syncSearchableDisplay(name) {
     const input = document.getElementById(name + '-search');
     const hidden = document.getElementById(name);
-    if (!input || !hidden) return;
+    const wrap = input ? input.closest('.searchable') : null;
+    if (!input || !hidden || !wrap) return;
     const v = hidden.value;
-    if (!v || input.value) return; // empty value or already populated
+    if (!v) {
+      // No saved value: ensure Unset state (handles softReset / fresh page).
+      wrap.classList.remove('is-picked');
+      input.readOnly = false;
+      return;
+    }
+    if (wrap.classList.contains('is-picked')) return; // already set
     const items = SEARCHABLE_DATA[name] || [];
+    let displayText;
     if (name === 'teacher') {
       const match = items.find(t => t.email === v);
-      input.value = match ? match.name : v;
+      displayText = match ? match.name : v;
     } else {
-      input.value = v;
+      displayText = v;
     }
+    input.value = displayText;
+    wrap.classList.add('is-picked');
+    input.readOnly = true;
   }
 
   function syncAllSearchableDisplays() {
