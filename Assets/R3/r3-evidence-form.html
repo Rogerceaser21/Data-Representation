@@ -843,6 +843,14 @@ body.is-locked .action-btn.new { display: inline-flex; }
   font-size: var(--small);
 }
 
+/* Red asterisk on required-field labels (v0.17) */
+.info-cell label.required-field::after,
+.info-cell .required-field::after {
+  content: ' *';
+  color: var(--ais-red);
+  font-weight: 700;
+}
+
 /* Searchable dropdown (Teacher, Inspector, Subject) */
 .searchable { position: relative; }
 .searchable-input {
@@ -887,6 +895,30 @@ body.is-locked .action-btn.new { display: inline-flex; }
 .searchable-item:hover { background: var(--surface-mid); }
 .searchable-item .item-name { font-weight: 600; color: var(--paper); }
 .searchable-item .item-email { color: var(--paper-mid); font-family: var(--body-font); font-size: var(--tiny); }
+
+/* Visible scrollbar on the search list (v0.17) so users can SEE
+   it's scrollable on touch + macOS Safari. iOS still hides until
+   touched but the styling helps everywhere else. */
+.searchable-list::-webkit-scrollbar { width: 8px; }
+.searchable-list::-webkit-scrollbar-track { background: transparent; }
+.searchable-list::-webkit-scrollbar-thumb {
+  background: var(--rule);
+  border-radius: 4px;
+}
+.searchable-list::-webkit-scrollbar-thumb:hover { background: var(--paper-mid); }
+
+/* Truncation footer shown when results exceed the 60-item cap. */
+.searchable-footer {
+  padding: 0.5rem 0.8rem;
+  font-size: var(--tiny);
+  color: var(--paper-mid);
+  font-style: italic;
+  background: var(--surface-soft);
+  border-top: 1px solid var(--rule-soft);
+  text-align: center;
+  position: sticky;
+  bottom: 0;
+}
 
 /* Single-select pill group (Evidence Type) */
 .pill-group {
@@ -1100,38 +1132,38 @@ textarea.long-text:focus { border-color: var(--rate-success); }
     <div class="info-grid info-grid-r3">
 
       <div class="info-cell info-cell-full">
-        <label for="teacher-search">Teacher</label>
+        <label for="teacher-search" class="required-field">Teacher</label>
         <div class="searchable" data-name="teacher">
-          <input type="text" id="teacher-search" class="searchable-input" autocomplete="off" placeholder="Type to search the staff list…">
+          <input type="text" id="teacher-search" class="searchable-input" autocomplete="off" placeholder="Tap to browse staff, or type to search…">
           <input type="hidden" name="teacher" id="teacher" value="">
           <div class="searchable-list" id="teacher-list" hidden></div>
         </div>
       </div>
 
       <div class="info-cell">
-        <label for="inspector-search">Inspector</label>
+        <label for="inspector-search" class="required-field">Inspector</label>
         <div class="searchable" data-name="inspector">
-          <input type="text" id="inspector-search" class="searchable-input" autocomplete="off" placeholder="Type to search inspectors…">
+          <input type="text" id="inspector-search" class="searchable-input" autocomplete="off" placeholder="Tap to browse inspectors, or type to search…">
           <input type="hidden" name="inspector" id="inspector" value="">
           <div class="searchable-list" id="inspector-list" hidden></div>
         </div>
       </div>
       <div class="info-cell">
-        <label>Curriculum</label>
+        <label class="required-field">Curriculum</label>
         <div class="pill-group pill-group-inline" data-name="curriculum" id="curriculum-pills"></div>
         <input type="hidden" name="curriculum" id="curriculum" value="">
       </div>
       <div class="info-cell">
-        <label for="subject-search">Subject</label>
+        <label for="subject-search" class="required-field">Subject</label>
         <div class="searchable" data-name="subject">
-          <input type="text" id="subject-search" class="searchable-input" autocomplete="off" placeholder="Type to search subjects…">
+          <input type="text" id="subject-search" class="searchable-input" autocomplete="off" placeholder="Tap to browse subjects, or type to search…">
           <input type="hidden" name="subject" id="subject" value="">
           <div class="searchable-list" id="subject-list" hidden></div>
         </div>
       </div>
 
       <div class="info-cell">
-        <label for="date">Date</label>
+        <label for="date" class="required-field">Date</label>
         <input id="date" name="date" type="date">
       </div>
       <div class="info-cell">
@@ -1427,7 +1459,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.16</a></span>
+    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.17</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -1572,7 +1604,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
 
   /* === Cloud submit + lock + closed-record viewer ================== */
   const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbx3efKiQzs2MSwESEuNBCceXr5FqBCXuk1IgSzPFbOVgLSc3fvXy40e8V9lhw_KH0z2nQ/exec';
-  const REQUIRED_FIELDS = ['teacher', 'inspector', 'date'];
+  const REQUIRED_FIELDS = ['teacher', 'inspector', 'curriculum', 'subject', 'date'];
 
   function updateSubmitState() {
     const btn = document.getElementById('btn-submit');
@@ -1583,7 +1615,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
     });
     btn.classList.toggle('disabled', !allFilled);
     btn.disabled = !allFilled;
-    btn.title = allFilled ? 'Save and lock this R3 evidence form' : 'Fill Teacher / Inspector / Date to enable saving';
+    btn.title = allFilled ? 'Save and lock this R3 evidence form' : 'Fill Teacher / Inspector / Curriculum / Subject / Date to enable saving';
   }
   FORM.addEventListener('input', updateSubmitState);
   FORM.addEventListener('change', updateSubmitState);
@@ -1627,6 +1659,30 @@ textarea.long-text:focus { border-color: var(--rate-success); }
     if (submitBtn) submitBtn.dataset.locked = '1';
   }
 
+  // Clear all fields + unlock the form so the user can start the next
+  // observation immediately. Called automatically 3s after a successful
+  // submit (v0.17); no confirm dialog (unlike the manual Reset button).
+  function softResetForm() {
+    FORM.querySelectorAll('input, textarea, select').forEach(el => {
+      if (el.type === 'radio' || el.type === 'checkbox') el.checked = false;
+      else el.value = '';
+      el.disabled = false;
+    });
+    document.querySelectorAll('.pill-group .pill.is-selected, .rate-row .rate.is-selected').forEach(b => b.classList.remove('is-selected'));
+    document.querySelectorAll('.searchable-input').forEach(i => { i.value = ''; });
+    const banner = document.getElementById('submitted-banner');
+    if (banner) banner.classList.remove('is-active');
+    FORM.classList.remove('is-locked');
+    document.body.classList.remove('is-locked');
+    const submitBtn = document.getElementById('btn-submit');
+    if (submitBtn) {
+      submitBtn.textContent = 'Save & Lock';
+      delete submitBtn.dataset.locked;
+    }
+    try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    updateSubmitState();
+  }
+
   async function submitForm() {
     const btn = document.getElementById('btn-submit');
     if (!btn || btn.disabled) return;
@@ -1661,7 +1717,9 @@ textarea.long-text:focus { border-color: var(--rate-success); }
 
       try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
       lockForm(result.id, new Date().toISOString(), 'submit');
-      showToast('Submitted · Record ID ' + result.id, 'success');
+      showToast('Submitted · Record ID ' + result.id + ' · resetting…', 'success');
+      // Auto-reset for back-to-back observations (v0.17).
+      setTimeout(softResetForm, 3000);
     } catch (err) {
       btn.disabled = false;
       btn.textContent = prevText;
@@ -1796,11 +1854,16 @@ textarea.long-text:focus { border-color: var(--rate-success); }
       const q = (query || '').toLowerCase().trim();
       const items = SEARCHABLE_DATA[name] || [];
       const filtered = q ? items.filter(it => filter(it, q)) : items;
-      list.innerHTML = filtered.slice(0, 60).map(it =>
+      const shown = filtered.slice(0, 60);
+      let html = shown.map(it =>
         '<div class="searchable-item" data-value="' + HTML_ESCAPE(value(it)) + '" data-display="' + HTML_ESCAPE(display(it)) + '">' +
           '<span class="item-name">' + HTML_ESCAPE(display(it)) + '</span>' +
         '</div>'
       ).join('');
+      if (filtered.length > shown.length) {
+        html += '<div class="searchable-footer">Showing ' + shown.length + ' of ' + filtered.length + ' · type to refine</div>';
+      }
+      list.innerHTML = html;
     }
 
     input.addEventListener('focus', () => {
