@@ -1012,6 +1012,65 @@ textarea.long-text:focus { border-color: var(--rate-success); }
   .info-cell select { background: transparent !important; }
 }
 
+/* ===========================================
+   iPad / Safari touch hardening (v0.14)
+   Fixes: native <select> needing two taps because iOS treats the first tap
+   as a text-selection gesture; sticky :hover after a tap; iOS auto-zoom on
+   small inputs.
+   =========================================== */
+select,
+.pill,
+.rate,
+.action-btn,
+.theme-toggle,
+.su-toggle label,
+.searchable-input,
+.searchable-item {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(20, 54, 66, 0.06);
+}
+select,
+.pill,
+.rate,
+.action-btn,
+.theme-toggle,
+.su-toggle label {
+  -webkit-user-select: none;
+  user-select: none;
+}
+.info-cell select {
+  min-height: 2.4rem;
+  padding: 0.4rem 0;
+}
+@media (pointer: coarse) {
+  input, textarea, select, .searchable-input {
+    font-size: 16px !important;
+  }
+}
+@media (hover: none) {
+  .pill:hover, .rate:hover {
+    background: transparent;
+    color: var(--paper-mid);
+  }
+  .searchable-item:hover { background: var(--card-bg); }
+  .action-btn:hover {
+    color: var(--paper-dim);
+    border-color: var(--rule);
+    transform: none;
+  }
+  .theme-toggle:hover {
+    background: var(--surface-mid);
+    color: var(--paper-dim);
+    border-color: var(--rule);
+    transform: none;
+  }
+  .su-toggle label:hover {
+    border-color: var(--rule);
+    color: var(--paper-mid);
+    transform: none;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -1364,7 +1423,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.13</a></span>
+    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.14</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -1718,7 +1777,10 @@ textarea.long-text:focus { border-color: var(--rate-success); }
     const input = document.getElementById('teacher-search');
     const hidden = document.getElementById('teacher');
     const list = document.getElementById('teacher-list');
-    if (!input || !hidden || !list) return;
+    const wrap = input ? input.closest('.searchable') : null;
+    if (!input || !hidden || !list || !wrap) return;
+
+    const closeList = () => { list.hidden = true; };
 
     input.addEventListener('focus', () => {
       if (FORM.classList.contains('is-locked')) return;
@@ -1733,20 +1795,22 @@ textarea.long-text:focus { border-color: var(--rate-success); }
       list.hidden = false;
       hidden.dispatchEvent(new Event('change', { bubbles: true }));
     });
-    input.addEventListener('blur', () => {
-      // Delay so a click on an item registers before the list hides.
-      setTimeout(() => { list.hidden = true; }, 160);
-    });
-    list.addEventListener('mousedown', e => {
+
+    // Commit selection via pointerdown so it fires before the input's blur on iPad Safari.
+    list.addEventListener('pointerdown', e => {
       const item = e.target.closest('.searchable-item');
       if (!item) return;
       e.preventDefault();
-      const name = item.dataset.name;
-      const email = item.dataset.email;
-      input.value = name + ' <' + email + '>';
-      hidden.value = email;
-      list.hidden = true;
+      input.value = item.dataset.name + ' <' + item.dataset.email + '>';
+      hidden.value = item.dataset.email;
+      closeList();
+      input.blur();
       hidden.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+
+    // Dismiss when the user taps anywhere outside the searchable wrap.
+    document.addEventListener('pointerdown', e => {
+      if (!list.hidden && !wrap.contains(e.target)) closeList();
     });
   }
 
