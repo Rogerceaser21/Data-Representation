@@ -886,11 +886,32 @@ body.is-locked .action-btn.new { display: inline-flex; }
   font-size: clamp(1rem, 1.4vw, 1.15rem);
   color: var(--paper);
   background: transparent;
+  /* v0.20: keep the search input on the same row as the selected .item so
+     .ts-control doesn't grow vertically with a wrapped-around 7rem-wide input. */
+  min-width: 0 !important;
+  flex: 1 1 0;
 }
 .ts-wrapper .ts-control > input::placeholder {
   color: var(--paper-faint);
   font-style: italic;
 }
+
+/* v0.20: clear_button plugin × button styled to match the form */
+.ts-wrapper .clear-button {
+  color: var(--paper-mid);
+  opacity: 0.55;
+  transition: opacity 0.15s ease, color 0.15s ease;
+  cursor: pointer;
+  right: 0.25rem;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+.ts-wrapper:hover .clear-button,
+.ts-wrapper .clear-button:hover {
+  opacity: 1;
+  color: var(--paper);
+}
+.ts-wrapper.disabled .clear-button { display: none; }
 .ts-wrapper .ts-control .item {
   font-family: var(--display-font);
   font-weight: 600;
@@ -1491,7 +1512,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.19</a></span>
+    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.20</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -1889,9 +1910,11 @@ textarea.long-text:focus { border-color: var(--rate-success); }
     const baseOpts = {
       create: false,             // strict: only list values
       maxItems: 1,
+      maxOptions: 1000,          // v0.20: render whole list (default 50 hid late-alphabet teachers)
       allowEmptyOption: false,
       hideSelected: false,
       closeAfterSelect: true,
+      plugins: ['clear_button'], // v0.20: built-in × button to clear selection
       sortField: { field: 'text', direction: 'asc' },
       // Tell Tom Select to dispatch native change events so updateSubmitState fires.
       onChange: () => updateSubmitState(),
