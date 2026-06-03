@@ -1019,6 +1019,25 @@ body.is-locked .action-btn.new { display: inline-flex; }
 .pill:disabled { cursor: default; opacity: 0.6; }
 form.is-locked .pill { pointer-events: none; opacity: 0.7; }
 
+/* Number-picker grid (SEN, G&T, Male, Female, Roll, How many present?) · v0.22
+   5 columns, rows determined by range. Pills are compact and rectangular
+   so they don't look like the rounded .pill chips used for Evidence Type. */
+.pill-group.number-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.3rem;
+  padding: 0.4rem 0;
+}
+.num-pill {
+  padding: 0.45rem 0.1rem;
+  min-height: 2.2rem;
+  border-radius: 6px;
+  font-size: var(--small);
+  font-weight: 600;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
 /* Judgement legend */
 .judgement-legend {
   font-size: var(--small);
@@ -1100,6 +1119,17 @@ textarea.long-text:focus { border-color: var(--rate-success); }
     background: transparent !important;
     color: #6b7e85 !important;
     border: 1px dashed #cccccc !important;
+  }
+  /* Number-pickers (v0.22): print only the chosen number, not all 10/20/30 cells */
+  .pill-group.number-grid {
+    display: block !important;
+    padding: 0 !important;
+  }
+  .pill-group.number-grid .num-pill:not(.is-selected) { display: none !important; }
+  .pill-group.number-grid .num-pill.is-selected {
+    display: inline-block !important;
+    margin: 0 !important;
+    padding: 0.1rem 0.6rem !important;
   }
   /* Print Tom Select as plain text */
   .ts-wrapper .ts-control {
@@ -1257,29 +1287,35 @@ textarea.long-text:focus { border-color: var(--rate-success); }
       </div>
 
       <div class="info-cell">
-        <label for="num_sen">Number of SEN</label>
-        <select id="num_sen" name="num_sen"></select>
+        <label>Number of SEN</label>
+        <div class="pill-group number-grid" data-name="num_sen"></div>
+        <input type="hidden" name="num_sen" id="num_sen" value="">
       </div>
       <div class="info-cell">
-        <label for="num_gt">Number of G&amp;T</label>
-        <select id="num_gt" name="num_gt"></select>
+        <label>Number of G&amp;T</label>
+        <div class="pill-group number-grid" data-name="num_gt"></div>
+        <input type="hidden" name="num_gt" id="num_gt" value="">
       </div>
       <div class="info-cell">
-        <label for="num_on_roll">Number on Roll</label>
-        <input id="num_on_roll" name="num_on_roll" type="number" min="0" placeholder="0">
+        <label>Number on Roll</label>
+        <div class="pill-group number-grid" data-name="num_on_roll"></div>
+        <input type="hidden" name="num_on_roll" id="num_on_roll" value="">
       </div>
 
       <div class="info-cell">
-        <label for="num_male">Number Male</label>
-        <select id="num_male" name="num_male"></select>
+        <label>Number Male</label>
+        <div class="pill-group number-grid" data-name="num_male"></div>
+        <input type="hidden" name="num_male" id="num_male" value="">
       </div>
       <div class="info-cell">
-        <label for="num_female">Number Female</label>
-        <select id="num_female" name="num_female"></select>
+        <label>Number Female</label>
+        <div class="pill-group number-grid" data-name="num_female"></div>
+        <input type="hidden" name="num_female" id="num_female" value="">
       </div>
       <div class="info-cell">
-        <label for="present">How many present?</label>
-        <input id="present" name="present" type="text" placeholder="e.g. 24">
+        <label>How many present?</label>
+        <div class="pill-group number-grid" data-name="present"></div>
+        <input type="hidden" name="present" id="present" value="">
       </div>
 
     </div>
@@ -1512,7 +1548,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.21</a></span>
+    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.22</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -1915,6 +1951,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
       closeAfterSelect: true,
       plugins: ['clear_button'], // v0.20: built-in × button to clear selection
       sortField: { field: 'text', direction: 'asc' },
+      dropdownParent: 'body',    // v0.22: render dropdown attached to <body> so it can't be clipped by .info-grid { overflow: hidden }
       // Tell Tom Select to dispatch native change events so updateSubmitState fires.
       onChange: () => updateSubmitState(),
     };
@@ -1930,33 +1967,28 @@ textarea.long-text:focus { border-color: var(--rate-success); }
     }));
     // Disable until loadDropdownOptions finishes (greys out the controls).
     setSearchableLoadingState(true);
+  }
 
-    // v0.21: numeric pickers (SEN, G&T, Male, Female). Static ranges
-    // so no async load required; options are added immediately. Sorting
-    // is disabled so '10' doesn't sort before '2' alphabetically.
-    const numericOpts = Object.assign({}, baseOpts, {
-      sortField: null,
-      placeholder: 'Pick a number…',
-    });
-    function buildNumberOptions(from, to) {
-      const arr = [];
-      for (let n = from; n <= to; n++) arr.push({ value: String(n), text: String(n) });
-      return arr;
+  // Number pickers (v0.22): grid of tappable pills, 5 columns wide.
+  // Range is upper-bound-exclusive so the grid fills cleanly without orphan
+  // rows ("don't include the extra 1"): SEN/G&T 0-9 (5×2), Male/Female 0-19
+  // (5×4), Roll/Present 5-34 (5×6).
+  function renderNumberPills(name, from, toExclusive) {
+    const group = document.querySelector('.pill-group.number-grid[data-name="' + name + '"]');
+    if (!group) return;
+    const html = [];
+    for (let n = from; n < toExclusive; n++) {
+      html.push('<button type="button" class="pill num-pill" data-value="' + n + '">' + n + '</button>');
     }
-    ['num_sen', 'num_gt'].forEach(name => {
-      tomSelects[name] = new TomSelect('#' + name, numericOpts);
-      tomSelects[name].addOptions(buildNumberOptions(0, 10));
-      tomSelects[name].refreshOptions(false);
-      const pending = readRestoredFromLocalStorage(name);
-      if (pending) tomSelects[name].setValue(pending, true);
-    });
-    ['num_male', 'num_female'].forEach(name => {
-      tomSelects[name] = new TomSelect('#' + name, numericOpts);
-      tomSelects[name].addOptions(buildNumberOptions(0, 20));
-      tomSelects[name].refreshOptions(false);
-      const pending = readRestoredFromLocalStorage(name);
-      if (pending) tomSelects[name].setValue(pending, true);
-    });
+    group.innerHTML = html.join('');
+  }
+  function renderAllNumberPickers() {
+    renderNumberPills('num_sen', 0, 10);     // 0-9 (10 items, 5×2)
+    renderNumberPills('num_gt', 0, 10);
+    renderNumberPills('num_male', 0, 20);    // 0-19 (20 items, 5×4)
+    renderNumberPills('num_female', 0, 20);
+    renderNumberPills('num_on_roll', 5, 35); // 5-34 (30 items, 5×6)
+    renderNumberPills('present', 5, 35);
   }
 
   function readRestoredFromLocalStorage(name) {
@@ -2040,6 +2072,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
   // Init the R3-specific UI after the rest of the form's setup has run.
   setupSingleSelectGroups();
   initTomSelects();
+  renderAllNumberPickers();      // v0.22: render the 6 number-grids (must run before syncSingleSelectVisuals so restored values get highlighted)
   syncSingleSelectVisuals();
   loadDropdownOptions();
 
