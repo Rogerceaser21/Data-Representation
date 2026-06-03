@@ -1249,10 +1249,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
         <label for="gender">Gender (M / F / Mix)</label>
         <input id="gender" name="gender" type="text" placeholder="e.g. Mix">
       </div>
-      <div class="info-cell">
-        <label for="present">Present</label>
-        <input id="present" name="present" type="text" placeholder="e.g. 24">
-      </div>
+      <div class="info-cell info-cell-spacer" aria-hidden="true"></div>
 
       <div class="info-cell info-cell-full">
         <label for="support_teachers_cas">Support Teachers / CAs</label>
@@ -1261,11 +1258,11 @@ textarea.long-text:focus { border-color: var(--rate-success); }
 
       <div class="info-cell">
         <label for="num_sen">Number of SEN</label>
-        <input id="num_sen" name="num_sen" type="number" min="0" placeholder="0">
+        <select id="num_sen" name="num_sen"></select>
       </div>
       <div class="info-cell">
         <label for="num_gt">Number of G&amp;T</label>
-        <input id="num_gt" name="num_gt" type="number" min="0" placeholder="0">
+        <select id="num_gt" name="num_gt"></select>
       </div>
       <div class="info-cell">
         <label for="num_on_roll">Number on Roll</label>
@@ -1274,13 +1271,16 @@ textarea.long-text:focus { border-color: var(--rate-success); }
 
       <div class="info-cell">
         <label for="num_male">Number Male</label>
-        <input id="num_male" name="num_male" type="number" min="0" placeholder="0">
+        <select id="num_male" name="num_male"></select>
       </div>
       <div class="info-cell">
         <label for="num_female">Number Female</label>
-        <input id="num_female" name="num_female" type="number" min="0" placeholder="0">
+        <select id="num_female" name="num_female"></select>
       </div>
-      <div class="info-cell info-cell-spacer" aria-hidden="true"></div>
+      <div class="info-cell">
+        <label for="present">How many present?</label>
+        <input id="present" name="present" type="text" placeholder="e.g. 24">
+      </div>
 
     </div>
   </section>
@@ -1512,7 +1512,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.20</a></span>
+    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.21</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -1832,9 +1832,8 @@ textarea.long-text:focus { border-color: var(--rate-success); }
       });
 
       syncSingleSelectVisuals();
-      // Push restored values into each Tom Select so the chrome matches (v0.19).
-      ['teacher', 'inspector', 'subject'].forEach(name => {
-        const ts = tomSelects[name];
+      // Push restored values into every Tom Select instance so the chrome matches (v0.19+).
+      Object.entries(tomSelects).forEach(([name, ts]) => {
         const sel = document.getElementById(name);
         if (ts && sel && sel.value) ts.setValue(sel.value, true);
       });
@@ -1920,15 +1919,44 @@ textarea.long-text:focus { border-color: var(--rate-success); }
       onChange: () => updateSubmitState(),
     };
     tomSelects.teacher = new TomSelect('#teacher', Object.assign({}, baseOpts, {
-      placeholder: 'Tap to browse staff, or type to search…',
+      placeholder: LOADING_PLACEHOLDERS.teacher,  // shown until options load
       searchField: ['text', 'value'], // search by name and email
     }));
     tomSelects.inspector = new TomSelect('#inspector', Object.assign({}, baseOpts, {
-      placeholder: 'Tap to browse inspectors, or type to search…',
+      placeholder: LOADING_PLACEHOLDERS.inspector,
     }));
     tomSelects.subject = new TomSelect('#subject', Object.assign({}, baseOpts, {
-      placeholder: 'Tap to browse subjects, or type to search…',
+      placeholder: LOADING_PLACEHOLDERS.subject,
     }));
+    // Disable until loadDropdownOptions finishes (greys out the controls).
+    setSearchableLoadingState(true);
+
+    // v0.21: numeric pickers (SEN, G&T, Male, Female). Static ranges
+    // so no async load required; options are added immediately. Sorting
+    // is disabled so '10' doesn't sort before '2' alphabetically.
+    const numericOpts = Object.assign({}, baseOpts, {
+      sortField: null,
+      placeholder: 'Pick a number…',
+    });
+    function buildNumberOptions(from, to) {
+      const arr = [];
+      for (let n = from; n <= to; n++) arr.push({ value: String(n), text: String(n) });
+      return arr;
+    }
+    ['num_sen', 'num_gt'].forEach(name => {
+      tomSelects[name] = new TomSelect('#' + name, numericOpts);
+      tomSelects[name].addOptions(buildNumberOptions(0, 10));
+      tomSelects[name].refreshOptions(false);
+      const pending = readRestoredFromLocalStorage(name);
+      if (pending) tomSelects[name].setValue(pending, true);
+    });
+    ['num_male', 'num_female'].forEach(name => {
+      tomSelects[name] = new TomSelect('#' + name, numericOpts);
+      tomSelects[name].addOptions(buildNumberOptions(0, 20));
+      tomSelects[name].refreshOptions(false);
+      const pending = readRestoredFromLocalStorage(name);
+      if (pending) tomSelects[name].setValue(pending, true);
+    });
   }
 
   function readRestoredFromLocalStorage(name) {
@@ -1963,8 +1991,35 @@ textarea.long-text:focus { border-color: var(--rate-success); }
     syncSingleSelectVisuals();
   }
 
+  // Placeholder text per searchable, used both at init and to restore after loading.
+  const PLACEHOLDERS = {
+    teacher: 'Tap to browse staff, or type to search…',
+    inspector: 'Tap to browse inspectors, or type to search…',
+    subject: 'Tap to browse subjects, or type to search…',
+  };
+  const LOADING_PLACEHOLDERS = {
+    teacher: 'Loading staff list…',
+    inspector: 'Loading inspectors…',
+    subject: 'Loading subjects…',
+  };
+
+  function setSearchableLoadingState(loading) {
+    ['teacher', 'inspector', 'subject'].forEach(name => {
+      const ts = tomSelects[name];
+      if (!ts) return;
+      const text = loading ? LOADING_PLACEHOLDERS[name] : PLACEHOLDERS[name];
+      if (loading) ts.disable(); else ts.enable();
+      ts.settings.placeholder = text;
+      // Tom Select keeps its placeholder on the internal <input>; refresh it
+      // directly so the text swap is visible right away.
+      if (ts.control_input) ts.control_input.setAttribute('placeholder', text);
+      if (typeof ts.inputState === 'function') ts.inputState();
+    });
+  }
+
   // Load Inspectors / Curriculum / Subjects / Teachers from the backend.
   async function loadDropdownOptions() {
+    setSearchableLoadingState(true);
     try {
       const resp = await fetch(WEB_APP_URL + '?action=options', { redirect: 'follow' });
       const result = await resp.json();
@@ -1975,7 +2030,9 @@ textarea.long-text:focus { border-color: var(--rate-success); }
       populateTomSelect('inspector', (opts.inspectors || []).map(s => ({ value: s, text: s })));
       populateTomSelect('subject', (opts.subjects || []).map(s => ({ value: s, text: s })));
       renderCurriculumPills(opts.curricula || []);
+      setSearchableLoadingState(false);
     } catch (err) {
+      setSearchableLoadingState(false);
       showToast('Could not load dropdown options: ' + (err.message || err), 'error');
     }
   }
