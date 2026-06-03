@@ -52,10 +52,14 @@ function bootstrap() {
   ss.insertSheet(SHEET_NAME_INSPECTORS);
   ss.insertSheet(SHEET_NAME_CURRICULUM);
   ss.insertSheet(SHEET_NAME_SUBJECTS);
+  ss.insertSheet(SHEET_NAME_ABILITY_GROUPS);
+  ss.insertSheet(SHEET_NAME_GENDERS);
 
-  seedReferenceTab(ss, SHEET_NAME_INSPECTORS, 'Inspector', SEED_INSPECTORS);
-  seedReferenceTab(ss, SHEET_NAME_CURRICULUM, 'Curriculum', SEED_CURRICULUM);
-  seedReferenceTab(ss, SHEET_NAME_SUBJECTS,   'Subject',    SEED_SUBJECTS);
+  seedReferenceTab(ss, SHEET_NAME_INSPECTORS,     'Inspector',     SEED_INSPECTORS);
+  seedReferenceTab(ss, SHEET_NAME_CURRICULUM,     'Curriculum',    SEED_CURRICULUM);
+  seedReferenceTab(ss, SHEET_NAME_SUBJECTS,       'Subject',       SEED_SUBJECTS);
+  seedReferenceTab(ss, SHEET_NAME_ABILITY_GROUPS, 'Ability Group', SEED_ABILITY_GROUPS);
+  seedReferenceTab(ss, SHEET_NAME_GENDERS,        'Gender',        SEED_GENDERS);
   seedTeachersHeader(ss);
 
   props.setProperty('SHEET_ID', sheetId);

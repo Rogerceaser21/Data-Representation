@@ -846,9 +846,8 @@ body.is-locked .action-btn.new { display: inline-flex; }
   font-size: var(--small);
 }
 
-/* Red asterisk on required-field labels (v0.17) */
-.info-cell label.required-field::after,
-.info-cell .required-field::after {
+/* Red asterisk on required-field labels and section titles (v0.17, generalised v0.25) */
+.required-field::after {
   content: ' *';
   color: var(--ais-red);
   font-weight: 700;
@@ -1264,8 +1263,8 @@ textarea.long-text:focus { border-color: var(--rate-success); }
       </div>
 
       <div class="info-cell">
-        <label for="grade_class">Grade / Class</label>
-        <input id="grade_class" name="grade_class" type="text" placeholder="e.g. Grade 6A">
+        <label for="grade_class">Grade</label>
+        <select id="grade_class" name="grade_class" placeholder="Select grade"></select>
       </div>
       <div class="info-cell">
         <label for="room_number">Room Number</label>
@@ -1277,12 +1276,14 @@ textarea.long-text:focus { border-color: var(--rate-success); }
       </div>
 
       <div class="info-cell">
-        <label for="ability_group">Ability Group Type</label>
-        <input id="ability_group" name="ability_group" type="text" placeholder="e.g. Mixed ability">
+        <label>Ability Group Type</label>
+        <div class="pill-group pill-group-inline" data-name="ability_group" id="ability-group-pills"></div>
+        <input type="hidden" name="ability_group" id="ability_group" value="">
       </div>
       <div class="info-cell">
-        <label for="gender">Gender (M / F / Mix)</label>
-        <input id="gender" name="gender" type="text" placeholder="e.g. Mix">
+        <label>Gender Mix</label>
+        <div class="pill-group pill-group-inline" data-name="gender" id="gender-pills"></div>
+        <input type="hidden" name="gender" id="gender" value="">
       </div>
       <div class="info-cell">
         <label for="time_out">Time Out</label>
@@ -1327,8 +1328,8 @@ textarea.long-text:focus { border-color: var(--rate-success); }
        OBSERVATION / EVIDENCE TYPE · single-select pill buttons
        ============================================ -->
   <section class="form-section">
-    <h2 class="section-title">Observation / Evidence <em>Type</em></h2>
-    <div class="pill-group" data-name="evidence_type">
+    <h2 class="section-title required-field">Observation / Evidence <em>Type</em></h2>
+    <div class="pill-group" data-name="evidence_type" data-mandatory="1">
       <button type="button" class="pill" data-value="Lesson">Lesson</button>
       <button type="button" class="pill" data-value="Work scrutiny">Work scrutiny</button>
       <button type="button" class="pill" data-value="Assembly">Assembly</button>
@@ -1339,7 +1340,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
       <button type="button" class="pill" data-value="Learning walk">Learning walk</button>
       <button type="button" class="pill" data-value="Other Activity">Other Activity</button>
     </div>
-    <input type="hidden" name="evidence_type" id="evidence_type" value="">
+    <input type="hidden" name="evidence_type" id="evidence_type" value="Lesson">
   </section>
 
   <!-- ============================================
@@ -1550,7 +1551,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.24</a></span>
+    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.25</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -1687,6 +1688,8 @@ textarea.long-text:focus { border-color: var(--rate-success); }
     try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
     // v0.24: school just cleared; let Subject revert to disabled state.
     if (typeof refreshSubjectOptions === 'function') refreshSubjectOptions();
+    // v0.25: re-apply mandatory defaults (Evidence Type = Lesson).
+    if (typeof applyMandatoryDefaults === 'function') applyMandatoryDefaults();
     showSaved();
     updateSubmitState();
   });
@@ -1698,7 +1701,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
 
   /* === Cloud submit + lock + closed-record viewer ================== */
   const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbx3efKiQzs2MSwESEuNBCceXr5FqBCXuk1IgSzPFbOVgLSc3fvXy40e8V9lhw_KH0z2nQ/exec';
-  const REQUIRED_FIELDS = ['teacher', 'inspector', 'curriculum', 'school', 'subject', 'date'];
+  const REQUIRED_FIELDS = ['teacher', 'inspector', 'curriculum', 'school', 'subject', 'date', 'evidence_type'];
 
   function updateSubmitState() {
     const btn = document.getElementById('btn-submit');
@@ -1709,7 +1712,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
     });
     btn.classList.toggle('disabled', !allFilled);
     btn.disabled = !allFilled;
-    btn.title = allFilled ? 'Save and lock this R3 evidence form' : 'Fill Teacher / Inspector / Curriculum / School / Subject / Date to enable saving';
+    btn.title = allFilled ? 'Save and lock this R3 evidence form' : 'Fill Teacher / Inspector / Curriculum / School / Subject / Date / Evidence Type to enable saving';
   }
   FORM.addEventListener('input', updateSubmitState);
   FORM.addEventListener('change', updateSubmitState);
@@ -1784,7 +1787,20 @@ textarea.long-text:focus { border-color: var(--rate-success); }
     // v0.24: school just got cleared by the reset loop above; let Subject
     // reflect that (back to disabled "Select School first" state).
     if (typeof refreshSubjectOptions === 'function') refreshSubjectOptions();
+    // v0.25: re-apply mandatory defaults (Evidence Type = Lesson).
+    applyMandatoryDefaults();
     updateSubmitState();
+  }
+
+  // v0.25: re-apply defaults for mandatory pill-groups after any reset.
+  // Currently only Evidence Type has a default. Generalises if more added.
+  function applyMandatoryDefaults() {
+    const evType = document.querySelector('input[name="evidence_type"]');
+    if (evType && !evType.value) {
+      evType.value = 'Lesson';
+      evType.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+    if (typeof syncSingleSelectVisuals === 'function') syncSingleSelectVisuals();
   }
 
   async function submitForm() {
@@ -1903,16 +1919,21 @@ textarea.long-text:focus { border-color: var(--rate-success); }
   /* === R3 evidence form additions ================================== */
 
   // Single-select toggle for pill groups (Evidence Type) and rate rows (1-6 judgements).
-  // Click a button to select; click it again to deselect. Hidden input mirrors value.
+  // Click a button to select; click it again to deselect (unless data-mandatory="1"
+  // on the group, in which case the user can only switch between options and can't
+  // end up with nothing picked). Hidden input mirrors value.
   function setupSingleSelectGroups() {
     document.querySelectorAll('.pill-group, .rate-row').forEach(group => {
       const name = group.dataset.name;
+      const mandatory = group.dataset.mandatory === '1';
       const hidden = document.querySelector('input[type="hidden"][name="' + name + '"]');
       group.addEventListener('click', e => {
         const btn = e.target.closest('.pill, .rate');
         if (!btn || !group.contains(btn)) return;
         if (FORM.classList.contains('is-locked')) return;
         const wasSelected = btn.classList.contains('is-selected');
+        // For mandatory groups, tapping the already-selected pill is a no-op.
+        if (wasSelected && mandatory) return;
         group.querySelectorAll('.pill, .rate').forEach(b => b.classList.remove('is-selected'));
         if (!wasSelected) {
           btn.classList.add('is-selected');
@@ -2014,6 +2035,20 @@ textarea.long-text:focus { border-color: var(--rate-success); }
     initNumberPicker('num_female', 0, 20);
     initNumberPicker('num_on_roll', 5, 35);
     initNumberPicker('present', 5, 35);
+
+    // Grade picker (v0.25): Kindy + 1-12, same grid styling. Renders as
+    // 5 cols × 3 rows; last row shows 10, 11, 12 with two trailing empties
+    // (the same visual style as other number pickers with non-multiple-of-5
+    // ranges).
+    tomSelects.grade_class = new TomSelect('#grade_class', Object.assign({}, numberOpts, {
+      placeholder: 'Select grade',
+    }));
+    const gradeOpts = [{ value: 'Kindy', text: 'Kindy' }];
+    for (let n = 1; n <= 12; n++) gradeOpts.push({ value: String(n), text: String(n) });
+    tomSelects.grade_class.addOptions(gradeOpts);
+    tomSelects.grade_class.refreshOptions(false);
+    const gradePending = readRestoredFromLocalStorage('grade_class');
+    if (gradePending) tomSelects.grade_class.setValue(gradePending, true);
   }
 
   function readRestoredFromLocalStorage(name) {
@@ -2133,6 +2168,8 @@ textarea.long-text:focus { border-color: var(--rate-success); }
       populateTomSelect('inspector', (opts.inspectors || []).map(s => ({ value: s, text: s })));
       renderPillGroup('curriculum-pills', opts.curricula || []);
       renderPillGroup('school-pills', opts.schools || ['Kindy', 'Primary', 'Secondary']);
+      renderPillGroup('ability-group-pills', opts.ability_groups || ['Mixed Ability', 'Essential', 'Advanced', 'Inclusion']);
+      renderPillGroup('gender-pills', opts.genders || ['Male', 'Female', 'Mixed']);
 
       // Subject is school-filtered; store raw + run filter for currently-set school.
       SUBJECTS_RAW = opts.subjects || [];
@@ -2147,13 +2184,15 @@ textarea.long-text:focus { border-color: var(--rate-success); }
 
   // Init the R3-specific UI after the rest of the form's setup has run.
   setupSingleSelectGroups();
-  initTomSelects();              // wraps Teacher/Inspector/Subject + 6 number pickers
+  initTomSelects();              // wraps Teacher/Inspector/Subject + 6 number pickers + grade_class
   syncSingleSelectVisuals();
   // School-aware Subject: refresh Subject options whenever School value changes.
   (function wireSchoolToSubject() {
     const schoolInput = document.querySelector('input[name="school"]');
     if (schoolInput) schoolInput.addEventListener('change', refreshSubjectOptions);
   })();
+  // v0.25: ensure Evidence Type starts as "Lesson" even if a restored draft cleared it.
+  applyMandatoryDefaults();
   loadDropdownOptions();
 
   // Keyboard convenience: Cmd/Ctrl + P → uses print path (browser default already does this, no override needed)
