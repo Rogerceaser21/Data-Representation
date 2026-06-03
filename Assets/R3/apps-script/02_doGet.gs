@@ -117,14 +117,15 @@ function readSingleColumnTab(ss, tabName) {
 }
 
 /**
- * Teachers tab schema: [email, name]. Returns objects so the form can search
- * by either field.
+ * Teachers tab schema: column A = name (display + submission value). Other
+ * columns (Title, First Name, Family Name, Code, Email, Curriculum, ...) are
+ * for downstream matrices and not read by the form.
  */
 function readTeachersTab(ss) {
   const sheet = ss.getSheetByName(SHEET_NAME_TEACHERS);
   if (!sheet || sheet.getLastRow() < 2) return [];
-  const values = sheet.getRange(2, 1, sheet.getLastRow() - 1, 2).getValues();
+  const values = sheet.getRange(2, 1, sheet.getLastRow() - 1, 1).getValues();
   return values
-    .map(function(r) { return { email: String(r[0]).trim(), name: String(r[1]).trim() }; })
-    .filter(function(t) { return t.email.length > 0; });
+    .map(function(r) { return { name: String(r[0]).trim() }; })
+    .filter(function(t) { return t.name.length > 0; });
 }

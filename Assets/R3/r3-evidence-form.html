@@ -1571,7 +1571,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.27</a></span>
+    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.28</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -2188,7 +2188,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
       if (!result.success) throw new Error(result.error || 'Could not load options');
       const opts = result.options || {};
 
-      populateTomSelect('teacher', (opts.teachers || []).map(t => ({ value: t.email, text: t.name })));
+      populateTomSelect('teacher', (opts.teachers || []).map(t => ({ value: t.name, text: t.name })));
       populateTomSelect('inspector', (opts.inspectors || []).map(s => ({ value: s, text: s })));
       renderPillGroup('curriculum-pills', opts.curricula || []);
       renderPillGroup('school-pills', opts.schools || ['Kindy', 'Primary', 'Secondary']);
