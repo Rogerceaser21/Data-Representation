@@ -979,13 +979,21 @@ body.is-locked .action-btn.new { display: inline-flex; }
   letter-spacing: 0.12em;
   background: var(--surface-soft);
 }
-/* iPad zoom-prevention: bump font to 16px on coarse pointers */
+/* iPad zoom-prevention: bump font to 16px on coarse pointers (only the
+   <input> needs this; options don't trigger zoom because they're not text
+   inputs). v0.27: number-picker option text relaxes to 14px so word labels
+   like "Kindy" and "Prep" fit inside the compact pill cells. */
 @media (pointer: coarse) {
   .ts-control,
   .ts-control > input,
-  .ts-control .item,
-  .ts-dropdown .option {
+  .ts-control .item {
     font-size: 16px !important;
+  }
+  .ts-dropdown .option {
+    font-size: 15px !important;
+  }
+  .ts-dropdown.number-picker .option {
+    font-size: 14px !important;
   }
 }
 
@@ -1029,7 +1037,7 @@ form.is-locked .pill { pointer-events: none; opacity: 0.7; }
   max-height: 320px;
 }
 .ts-dropdown.number-picker .option {
-  padding: 0.55rem 0.2rem;
+  padding: 0.55rem 0.15rem;
   text-align: center;
   font-weight: 600;
   font-size: var(--small);
@@ -1038,6 +1046,10 @@ form.is-locked .pill { pointer-events: none; opacity: 0.7; }
   border: 1px dashed var(--rule);
   background: transparent;
   color: var(--paper);
+  /* v0.27: ensure word-length labels (Kindy, Prep) fit without overflow */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .ts-dropdown.number-picker .option.active {
   background: var(--surface-mid);
@@ -1220,7 +1232,6 @@ textarea.long-text:focus { border-color: var(--rate-success); }
         <h1 class="form-title">Form: R3 <em>Evidence</em></h1>
       </div>
     </div>
-    <p class="src-path">Source template: Data-Representation / Assets / R3 / R3 Evidence Form Template.docx</p>
   </header>
 
   <!-- ============================================
@@ -1560,7 +1571,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.26</a></span>
+    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.27</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -2038,21 +2049,25 @@ textarea.long-text:focus { border-color: var(--rate-success); }
       const pending = readRestoredFromLocalStorage(name);
       if (pending) tomSelects[name].setValue(pending, true);
     }
-    initNumberPicker('num_sen', 0, 10);
-    initNumberPicker('num_gt', 0, 10);
-    initNumberPicker('num_male', 0, 20);
-    initNumberPicker('num_female', 0, 20);
+    initNumberPicker('num_sen', 0, 30);     // v0.27: was 0-9 (5×2)  → now 0-29 (5×6)
+    initNumberPicker('num_gt', 0, 30);      // v0.27: was 0-9 (5×2)  → now 0-29 (5×6)
+    initNumberPicker('num_male', 0, 30);    // v0.27: was 0-19 (5×4) → now 0-29 (5×6)
+    initNumberPicker('num_female', 0, 30);  // v0.27: was 0-19 (5×4) → now 0-29 (5×6)
     initNumberPicker('num_on_roll', 5, 35);
     initNumberPicker('present', 5, 35);
 
-    // Grade picker (v0.25): Kindy + 1-12, same grid styling. Renders as
-    // 5 cols × 3 rows; last row shows 10, 11, 12 with two trailing empties
-    // (the same visual style as other number pickers with non-multiple-of-5
-    // ranges).
+    // Grade picker (v0.25, +Prep v0.27): Kindy + Prep + 1-12 (14 items).
+    // Renders as 5 cols × 3 rows with 1 trailing empty cell. sortField uses
+    // '$order' so Kindy + Prep stay at the start rather than getting sorted
+    // alphabetically to the end of the list.
     tomSelects.grade_class = new TomSelect('#grade_class', Object.assign({}, numberOpts, {
       placeholder: 'Select grade',
+      sortField: { field: '$order', direction: 'asc' },
     }));
-    const gradeOpts = [{ value: 'Kindy', text: 'Kindy' }];
+    const gradeOpts = [
+      { value: 'Kindy', text: 'Kindy' },
+      { value: 'Prep',  text: 'Prep'  }
+    ];
     for (let n = 1; n <= 12; n++) gradeOpts.push({ value: String(n), text: String(n) });
     tomSelects.grade_class.addOptions(gradeOpts);
     tomSelects.grade_class.refreshOptions(false);
