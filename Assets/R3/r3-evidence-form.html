@@ -1277,12 +1277,21 @@ textarea.long-text:focus { border-color: var(--rate-success); }
 
       <div class="info-cell">
         <label>Ability Group Type</label>
-        <div class="pill-group pill-group-inline" data-name="ability_group" id="ability-group-pills"></div>
+        <div class="pill-group pill-group-inline" data-name="ability_group">
+          <button type="button" class="pill" data-value="Mixed Ability">Mixed Ability</button>
+          <button type="button" class="pill" data-value="Essential">Essential</button>
+          <button type="button" class="pill" data-value="Advanced">Advanced</button>
+          <button type="button" class="pill" data-value="Inclusion">Inclusion</button>
+        </div>
         <input type="hidden" name="ability_group" id="ability_group" value="">
       </div>
       <div class="info-cell">
         <label>Gender Mix</label>
-        <div class="pill-group pill-group-inline" data-name="gender" id="gender-pills"></div>
+        <div class="pill-group pill-group-inline" data-name="gender">
+          <button type="button" class="pill" data-value="Male">Male</button>
+          <button type="button" class="pill" data-value="Female">Female</button>
+          <button type="button" class="pill" data-value="Mixed">Mixed</button>
+        </div>
         <input type="hidden" name="gender" id="gender" value="">
       </div>
       <div class="info-cell">
@@ -1551,7 +1560,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.25</a></span>
+    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.26</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -2168,8 +2177,6 @@ textarea.long-text:focus { border-color: var(--rate-success); }
       populateTomSelect('inspector', (opts.inspectors || []).map(s => ({ value: s, text: s })));
       renderPillGroup('curriculum-pills', opts.curricula || []);
       renderPillGroup('school-pills', opts.schools || ['Kindy', 'Primary', 'Secondary']);
-      renderPillGroup('ability-group-pills', opts.ability_groups || ['Mixed Ability', 'Essential', 'Advanced', 'Inclusion']);
-      renderPillGroup('gender-pills', opts.genders || ['Male', 'Female', 'Mixed']);
 
       // Subject is school-filtered; store raw + run filter for currently-set school.
       SUBJECTS_RAW = opts.subjects || [];

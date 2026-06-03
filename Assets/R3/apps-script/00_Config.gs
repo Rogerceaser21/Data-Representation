@@ -10,19 +10,15 @@
  * tabs, and writes the SHEET_ID into script properties.
  */
 
-const SHEET_NAME_SUBMISSIONS     = 'Submissions';
-const SHEET_NAME_TEACHERS        = 'Teachers';
-const SHEET_NAME_INSPECTORS      = 'Inspectors';
-const SHEET_NAME_CURRICULUM      = 'Curriculum';
-const SHEET_NAME_SUBJECTS        = 'Subjects';
-const SHEET_NAME_ABILITY_GROUPS  = 'AbilityGroups';
-const SHEET_NAME_GENDERS         = 'Genders';
+const SHEET_NAME_SUBMISSIONS = 'Submissions';
+const SHEET_NAME_TEACHERS    = 'Teachers';
+const SHEET_NAME_INSPECTORS  = 'Inspectors';
+const SHEET_NAME_CURRICULUM  = 'Curriculum';
+const SHEET_NAME_SUBJECTS    = 'Subjects';
 
-const SEED_INSPECTORS      = ['Dave Richards', 'Hayden Ryan', 'Brooke Pickett'];
-const SEED_CURRICULUM      = ['Australian', 'Ministry'];
-const SEED_SUBJECTS        = ['Maths', 'English', 'Science', 'Arabic', 'Islamic'];
-const SEED_ABILITY_GROUPS  = ['Mixed Ability', 'Essential', 'Advanced', 'Inclusion'];
-const SEED_GENDERS         = ['Male', 'Female', 'Mixed'];
+const SEED_INSPECTORS = ['Dave Richards', 'Hayden Ryan', 'Brooke Pickett'];
+const SEED_CURRICULUM = ['Australian', 'Ministry'];
+const SEED_SUBJECTS   = ['Maths', 'English', 'Science', 'Arabic', 'Islamic'];
 
 /**
  * The 6 AIS staff Google Workspace Groups that contain potential R3 observees.

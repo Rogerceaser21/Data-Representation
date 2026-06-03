@@ -60,13 +60,11 @@ function getDropdownOptions() {
   const subjectsResult = readSubjectsTabRich(ss);
 
   return {
-    teachers:        readTeachersTab(ss),
-    inspectors:      readSingleColumnTab(ss, SHEET_NAME_INSPECTORS),
-    curricula:       readSingleColumnTab(ss, SHEET_NAME_CURRICULUM),
-    subjects:        subjectsResult.subjects,
-    schools:         subjectsResult.schools,
-    ability_groups:  readSingleColumnTab(ss, SHEET_NAME_ABILITY_GROUPS),
-    genders:         readSingleColumnTab(ss, SHEET_NAME_GENDERS)
+    teachers:   readTeachersTab(ss),
+    inspectors: readSingleColumnTab(ss, SHEET_NAME_INSPECTORS),
+    curricula:  readSingleColumnTab(ss, SHEET_NAME_CURRICULUM),
+    subjects:   subjectsResult.subjects,
+    schools:    subjectsResult.schools
   };
 }
 
