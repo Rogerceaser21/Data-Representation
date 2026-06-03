@@ -76,7 +76,7 @@ function getR3Columns() {
     judgementCols.push('j_' + cat + '_c');
   });
 
-  const tail = ['summary_strengths', 'summary_weakness', 'observer_notes'];
+  const tail = ['summary_strengths', 'summary_weakness', 'observer_notes', 'school'];
 
   return header.concat(judgementCols, tail);
 }

@@ -57,13 +57,56 @@ function getRecordById(id) {
 
 function getDropdownOptions() {
   const ss = SpreadsheetApp.openById(getSheetId());
+  const subjectsResult = readSubjectsTabRich(ss);
 
   return {
     teachers:   readTeachersTab(ss),
     inspectors: readSingleColumnTab(ss, SHEET_NAME_INSPECTORS),
     curricula:  readSingleColumnTab(ss, SHEET_NAME_CURRICULUM),
-    subjects:   readSingleColumnTab(ss, SHEET_NAME_SUBJECTS)
+    subjects:   subjectsResult.subjects,
+    schools:    subjectsResult.schools
   };
+}
+
+/**
+ * Subjects tab schema: header row A1='Subject', B1='Yes/No', C1='Kindy',
+ * D1='Primary', E1='Secondary'. Each subject row has A=name, B=TRUE/FALSE
+ * (active), C/D/E=TRUE/FALSE (per school).
+ *
+ * Returns { subjects: [{name, active, kindy, primary, secondary}], schools: ['Kindy','Primary','Secondary'] }
+ * Schools list is read from the header row so the form auto-matches Sheet renames.
+ */
+function readSubjectsTabRich(ss) {
+  const sheet = ss.getSheetByName(SHEET_NAME_SUBJECTS);
+  if (!sheet || sheet.getLastRow() < 2) {
+    return { subjects: [], schools: ['Kindy', 'Primary', 'Secondary'] };
+  }
+  const lastRow = sheet.getLastRow();
+  const values = sheet.getRange(1, 1, lastRow, 5).getValues();
+  const header = values[0];
+  const schools = [
+    String(header[2] || 'Kindy').trim(),
+    String(header[3] || 'Primary').trim(),
+    String(header[4] || 'Secondary').trim()
+  ];
+  const isTruthy = function(v) {
+    if (v === true) return true;
+    var s = String(v).trim().toLowerCase();
+    return s === 'true' || s === 'yes' || s === 'y' || s === '1';
+  };
+  const subjects = [];
+  for (var r = 1; r < values.length; r++) {
+    var name = String(values[r][0] || '').trim();
+    if (!name) continue;
+    subjects.push({
+      name: name,
+      active:    isTruthy(values[r][1]),
+      kindy:     isTruthy(values[r][2]),
+      primary:   isTruthy(values[r][3]),
+      secondary: isTruthy(values[r][4])
+    });
+  }
+  return { subjects: subjects, schools: schools };
 }
 
 function readSingleColumnTab(ss, tabName) {

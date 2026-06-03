@@ -1245,8 +1245,9 @@ textarea.long-text:focus { border-color: var(--rate-success); }
         <input type="hidden" name="curriculum" id="curriculum" value="">
       </div>
       <div class="info-cell">
-        <label for="subject" class="required-field">Subject</label>
-        <select id="subject" name="subject" placeholder="Tap to browse subjects, or type to search…" required></select>
+        <label class="required-field">School</label>
+        <div class="pill-group pill-group-inline" data-name="school" id="school-pills"></div>
+        <input type="hidden" name="school" id="school" value="">
       </div>
 
       <div class="info-cell">
@@ -1258,8 +1259,8 @@ textarea.long-text:focus { border-color: var(--rate-success); }
         <input id="duration" name="duration" type="text" placeholder="e.g. 45 min">
       </div>
       <div class="info-cell">
-        <label for="room_number">Room Number</label>
-        <input id="room_number" name="room_number" type="text" placeholder="e.g. 12B">
+        <label for="subject" class="required-field">Subject</label>
+        <select id="subject" name="subject" placeholder="Select School first" required></select>
       </div>
 
       <div class="info-cell">
@@ -1267,12 +1268,12 @@ textarea.long-text:focus { border-color: var(--rate-success); }
         <input id="grade_class" name="grade_class" type="text" placeholder="e.g. Grade 6A">
       </div>
       <div class="info-cell">
-        <label for="time_in">Time In</label>
-        <input id="time_in" name="time_in" type="time">
+        <label for="room_number">Room Number</label>
+        <input id="room_number" name="room_number" type="text" placeholder="e.g. 12B">
       </div>
       <div class="info-cell">
-        <label for="time_out">Time Out</label>
-        <input id="time_out" name="time_out" type="time">
+        <label for="time_in">Time In</label>
+        <input id="time_in" name="time_in" type="time">
       </div>
 
       <div class="info-cell">
@@ -1283,7 +1284,10 @@ textarea.long-text:focus { border-color: var(--rate-success); }
         <label for="gender">Gender (M / F / Mix)</label>
         <input id="gender" name="gender" type="text" placeholder="e.g. Mix">
       </div>
-      <div class="info-cell info-cell-spacer" aria-hidden="true"></div>
+      <div class="info-cell">
+        <label for="time_out">Time Out</label>
+        <input id="time_out" name="time_out" type="time">
+      </div>
 
       <div class="info-cell info-cell-full">
         <label for="support_teachers_cas">Support Teachers / CAs</label>
@@ -1546,7 +1550,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.23</a></span>
+    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.24</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -1681,6 +1685,8 @@ textarea.long-text:focus { border-color: var(--rate-success); }
     // Reset Tom Select instances so the visible chrome matches the cleared values (v0.19).
     Object.values(tomSelects).forEach(ts => { ts.clear(true); });
     try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    // v0.24: school just cleared; let Subject revert to disabled state.
+    if (typeof refreshSubjectOptions === 'function') refreshSubjectOptions();
     showSaved();
     updateSubmitState();
   });
@@ -1692,7 +1698,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
 
   /* === Cloud submit + lock + closed-record viewer ================== */
   const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbx3efKiQzs2MSwESEuNBCceXr5FqBCXuk1IgSzPFbOVgLSc3fvXy40e8V9lhw_KH0z2nQ/exec';
-  const REQUIRED_FIELDS = ['teacher', 'inspector', 'curriculum', 'subject', 'date'];
+  const REQUIRED_FIELDS = ['teacher', 'inspector', 'curriculum', 'school', 'subject', 'date'];
 
   function updateSubmitState() {
     const btn = document.getElementById('btn-submit');
@@ -1703,7 +1709,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
     });
     btn.classList.toggle('disabled', !allFilled);
     btn.disabled = !allFilled;
-    btn.title = allFilled ? 'Save and lock this R3 evidence form' : 'Fill Teacher / Inspector / Curriculum / Subject / Date to enable saving';
+    btn.title = allFilled ? 'Save and lock this R3 evidence form' : 'Fill Teacher / Inspector / Curriculum / School / Subject / Date to enable saving';
   }
   FORM.addEventListener('input', updateSubmitState);
   FORM.addEventListener('change', updateSubmitState);
@@ -1775,6 +1781,9 @@ textarea.long-text:focus { border-color: var(--rate-success); }
       delete submitBtn.dataset.locked;
     }
     try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    // v0.24: school just got cleared by the reset loop above; let Subject
+    // reflect that (back to disabled "Select School first" state).
+    if (typeof refreshSubjectOptions === 'function') refreshSubjectOptions();
     updateSubmitState();
   }
 
@@ -1866,8 +1875,13 @@ textarea.long-text:focus { border-color: var(--rate-success); }
       });
 
       syncSingleSelectVisuals();
-      // Push restored values into every Tom Select instance so the chrome matches (v0.19+).
+      // v0.24: Subject is school-filtered. Refresh its options based on the
+      // now-set school value BEFORE pushing other Tom Select values, so the
+      // saved Subject can be re-selected from the correct filtered list.
+      refreshSubjectOptions();
+      // Push restored values into every other Tom Select instance.
       Object.entries(tomSelects).forEach(([name, ts]) => {
+        if (name === 'subject') return; // handled by refreshSubjectOptions
         const sel = document.getElementById(name);
         if (ts && sel && sel.value) ts.setValue(sel.value, true);
       });
@@ -2022,15 +2036,13 @@ textarea.long-text:focus { border-color: var(--rate-success); }
     if (pending) ts.setValue(pending, true);   // silent: don't re-fire onChange
   }
 
-  // Render the Curriculum pill buttons from the loaded options list.
-  function renderCurriculumPills(values) {
-    const group = document.getElementById('curriculum-pills');
+  // Helper to render a pill-group from a dynamic value list (Curriculum + School).
+  function renderPillGroup(elementId, values) {
+    const group = document.getElementById(elementId);
     if (!group) return;
     group.innerHTML = (values || []).map(v =>
       '<button type="button" class="pill" data-value="' + HTML_ESCAPE(v) + '">' + HTML_ESCAPE(v) + '</button>'
     ).join('');
-    // setupSingleSelectGroups already attached a delegated click listener
-    // to .pill-group at init, so newly-added pills work without rewiring.
     syncSingleSelectVisuals();
   }
 
@@ -2060,7 +2072,55 @@ textarea.long-text:focus { border-color: var(--rate-success); }
     });
   }
 
-  // Load Inspectors / Curriculum / Subjects / Teachers from the backend.
+  // v0.24: school-aware Subject. SUBJECTS_RAW holds the full {name, active,
+  // kindy, primary, secondary} list from the Sheet. refreshSubjectOptions
+  // filters that list by the currently-selected School and feeds the result
+  // into the Subject Tom Select, preserving the prior pick if it still
+  // qualifies (auto-clears otherwise).
+  let SUBJECTS_RAW = [];
+
+  function refreshSubjectOptions() {
+    const ts = tomSelects.subject;
+    if (!ts) return;
+    const schoolInput = document.querySelector('input[name="school"]');
+    const school = schoolInput ? String(schoolInput.value || '').trim() : '';
+
+    // Current/prior subject value: check Tom Select, then underlying <select>, then localStorage.
+    const subjectSelect = document.getElementById('subject');
+    const prior = ts.getValue()
+      || (subjectSelect ? subjectSelect.value : '')
+      || readRestoredFromLocalStorage('subject');
+
+    if (!school) {
+      ts.clearOptions();
+      ts.refreshOptions(false);
+      ts.disable();
+      ts.settings.placeholder = 'Select School first';
+      if (ts.control_input) ts.control_input.setAttribute('placeholder', 'Select School first');
+      ts.clear(true);
+      if (typeof ts.inputState === 'function') ts.inputState();
+      return;
+    }
+
+    const key = school.toLowerCase();   // 'kindy' | 'primary' | 'secondary'
+    const filtered = SUBJECTS_RAW.filter(s => s.active && s[key]);
+
+    ts.clearOptions();
+    ts.addOptions(filtered.map(s => ({ value: s.name, text: s.name })));
+    ts.refreshOptions(false);
+    ts.enable();
+    ts.settings.placeholder = PLACEHOLDERS.subject;
+    if (ts.control_input) ts.control_input.setAttribute('placeholder', PLACEHOLDERS.subject);
+
+    if (prior && filtered.find(s => s.name === prior)) {
+      ts.setValue(prior, true);
+    } else if (prior) {
+      ts.clear(true);    // prior subject not valid for new school
+    }
+    if (typeof ts.inputState === 'function') ts.inputState();
+  }
+
+  // Load Inspectors / Curriculum / Subjects / Schools / Teachers from the backend.
   async function loadDropdownOptions() {
     setSearchableLoadingState(true);
     try {
@@ -2071,8 +2131,13 @@ textarea.long-text:focus { border-color: var(--rate-success); }
 
       populateTomSelect('teacher', (opts.teachers || []).map(t => ({ value: t.email, text: t.name })));
       populateTomSelect('inspector', (opts.inspectors || []).map(s => ({ value: s, text: s })));
-      populateTomSelect('subject', (opts.subjects || []).map(s => ({ value: s, text: s })));
-      renderCurriculumPills(opts.curricula || []);
+      renderPillGroup('curriculum-pills', opts.curricula || []);
+      renderPillGroup('school-pills', opts.schools || ['Kindy', 'Primary', 'Secondary']);
+
+      // Subject is school-filtered; store raw + run filter for currently-set school.
+      SUBJECTS_RAW = opts.subjects || [];
+      refreshSubjectOptions();
+
       setSearchableLoadingState(false);
     } catch (err) {
       setSearchableLoadingState(false);
@@ -2084,6 +2149,11 @@ textarea.long-text:focus { border-color: var(--rate-success); }
   setupSingleSelectGroups();
   initTomSelects();              // wraps Teacher/Inspector/Subject + 6 number pickers
   syncSingleSelectVisuals();
+  // School-aware Subject: refresh Subject options whenever School value changes.
+  (function wireSchoolToSubject() {
+    const schoolInput = document.querySelector('input[name="school"]');
+    if (schoolInput) schoolInput.addEventListener('change', refreshSubjectOptions);
+  })();
   loadDropdownOptions();
 
   // Keyboard convenience: Cmd/Ctrl + P → uses print path (browser default already does this, no override needed)
