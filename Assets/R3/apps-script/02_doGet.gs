@@ -79,11 +79,29 @@ function getDropdownOptions() {
 
   return {
     teachers:   readTeachersTab(ss),
-    inspectors: readSingleColumnTab(ss, SHEET_NAME_INSPECTORS),
+    inspectors: readInspectorsTab(ss).map(function(i) { return i.name; }),
     curricula:  readSingleColumnTab(ss, SHEET_NAME_CURRICULUM),
     subjects:   subjectsResult.subjects,
     schools:    subjectsResult.schools
   };
+}
+
+/**
+ * Normalises a string so it can't break a CSS selector when Tom Select
+ * uses it as a `[data-value="..."]` lookup. Substitutes straight ASCII
+ * apostrophe + double quote with their typographic curly equivalents.
+ *
+ * U+2019 (right single quotation mark) and U+201D (right double) are
+ * visually nearly identical to U+0027 and U+0022 but carry no special
+ * meaning to CSS / HTML / JS string parsers.
+ *
+ * Discovered in v0.31 after a teacher row "Sana'a Albqa'een" tripped
+ * iOS Safari's selector engine inside Tom Select.
+ */
+function safeForSelector(s) {
+  return String(s == null ? '' : s)
+    .replace(/'/g, '’')
+    .replace(/"/g, '”');
 }
 
 /**
@@ -114,7 +132,7 @@ function readSubjectsTabRich(ss) {
   };
   const subjects = [];
   for (var r = 1; r < values.length; r++) {
-    var name = String(values[r][0] || '').trim();
+    var name = safeForSelector(String(values[r][0] || '').trim());
     if (!name) continue;
     subjects.push({
       name: name,
@@ -124,14 +142,50 @@ function readSubjectsTabRich(ss) {
       secondary: isTruthy(values[r][4])
     });
   }
-  return { subjects: subjects, schools: schools };
+  return { subjects: subjects, schools: schools.map(safeForSelector) };
 }
 
 function readSingleColumnTab(ss, tabName) {
   const sheet = ss.getSheetByName(tabName);
   if (!sheet || sheet.getLastRow() < 2) return [];
   const values = sheet.getRange(2, 1, sheet.getLastRow() - 1, 1).getValues();
-  return values.map(function(r) { return String(r[0]).trim(); }).filter(function(s) { return s.length > 0; });
+  return values
+    .map(function(r) { return safeForSelector(String(r[0]).trim()); })
+    .filter(function(s) { return s.length > 0; });
+}
+
+/**
+ * Inspectors tab schema (v0.31): [name, email]. Email is optional per
+ * row; if blank, the inspector won't receive a submission copy.
+ */
+function readInspectorsTab(ss) {
+  const sheet = ss.getSheetByName(SHEET_NAME_INSPECTORS);
+  if (!sheet || sheet.getLastRow() < 2) return [];
+  const values = sheet.getRange(2, 1, sheet.getLastRow() - 1, 2).getValues();
+  return values
+    .map(function(r) {
+      return {
+        name:  safeForSelector(String(r[0] || '').trim()),
+        email: String(r[1] || '').trim()
+      };
+    })
+    .filter(function(i) { return i.name.length > 0; });
+}
+
+/**
+ * Looks up an inspector's email by display name. Returns '' if no
+ * matching row, or the row has no email set. Comparison is normalised
+ * (same safeForSelector pass) so a submitted name with a curly
+ * apostrophe matches a Sheet row with a straight one.
+ */
+function lookupInspectorEmail(ss, name) {
+  const want = safeForSelector(String(name || '').trim()).toLowerCase();
+  if (!want) return '';
+  const rows = readInspectorsTab(ss);
+  for (var i = 0; i < rows.length; i++) {
+    if (rows[i].name.toLowerCase() === want) return rows[i].email;
+  }
+  return '';
 }
 
 /**
@@ -144,6 +198,6 @@ function readTeachersTab(ss) {
   if (!sheet || sheet.getLastRow() < 2) return [];
   const values = sheet.getRange(2, 1, sheet.getLastRow() - 1, 1).getValues();
   return values
-    .map(function(r) { return { name: String(r[0]).trim() }; })
+    .map(function(r) { return { name: safeForSelector(String(r[0]).trim()) }; })
     .filter(function(t) { return t.name.length > 0; });
 }

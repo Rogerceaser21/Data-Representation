@@ -1200,9 +1200,104 @@ textarea.long-text:focus { border-color: var(--rate-success); }
   }
 }
 
+/* === Loading overlay (v0.31) ====================================== */
+.form-loading {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(239, 236, 226, 0.55);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+          backdrop-filter: blur(14px) saturate(140%);
+  transition: opacity 320ms ease, visibility 320ms ease;
+  opacity: 1;
+  visibility: visible;
+}
+:root[data-theme="dark"] .form-loading {
+  background: rgba(10, 13, 31, 0.55);
+}
+.form-loading.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.form-loading-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  padding: 32px 44px;
+  background: rgba(255, 255, 255, 0.42);
+  border: 1px solid var(--rule);
+  border-radius: 18px;
+  box-shadow: 0 24px 48px -20px rgba(20, 54, 66, 0.22);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+          backdrop-filter: blur(22px) saturate(160%);
+  position: relative;
+  overflow: hidden;
+}
+:root[data-theme="dark"] .form-loading-card {
+  background: rgba(17, 22, 46, 0.5);
+  box-shadow: 0 24px 48px -20px rgba(0, 0, 0, 0.55);
+}
+.form-loading-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--ais-red, #EF343A), var(--ais-yellow), #1257FF);
+  opacity: 0.85;
+}
+.form-loading-spinner {
+  color: var(--ais-yellow);
+  display: block;
+  filter: drop-shadow(0 4px 10px rgba(255, 186, 20, 0.35));
+}
+.form-loading-spinner .ring-spin {
+  transform-origin: 32px 32px;
+  animation: form-loading-spin 1.05s linear infinite;
+}
+@keyframes form-loading-spin {
+  to { transform: rotate(360deg); }
+}
+.form-loading-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+}
+.form-loading-label .dot {
+  width: 0.4em;
+  height: 0.4em;
+  border-radius: 50%;
+  background: var(--ais-yellow);
+  box-shadow: 0 0 8px var(--ais-yellow);
+  animation: form-loading-pulse 1.4s ease-in-out infinite;
+}
+@keyframes form-loading-pulse {
+  0%, 100% { opacity: 0.35; transform: scale(0.85); }
+  50%      { opacity: 1;    transform: scale(1.1); }
+}
+
 </style>
 </head>
 <body>
+
+<div class="form-loading" id="form-loading" role="status" aria-live="polite" aria-label="Loading form">
+  <div class="form-loading-card">
+    <svg class="form-loading-spinner" viewBox="0 0 64 64" width="56" height="56" aria-hidden="true">
+      <circle cx="32" cy="32" r="26" fill="none" stroke="currentColor" stroke-opacity="0.18" stroke-width="5"/>
+      <circle class="ring-spin" cx="32" cy="32" r="26" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-dasharray="50 200"/>
+    </svg>
+    <div class="form-loading-label"><span class="dot"></span>Preparing form</div>
+  </div>
+</div>
 
 <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle light or dark theme" title="Toggle light / dark theme">
   <svg class="icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -1571,7 +1666,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.30</a></span>
+    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.31</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -2199,10 +2294,17 @@ textarea.long-text:focus { border-color: var(--rate-success); }
       refreshSubjectOptions();
 
       setSearchableLoadingState(false);
+      hideLoadingOverlay();
     } catch (err) {
       setSearchableLoadingState(false);
+      hideLoadingOverlay();
       showToast('Could not load dropdown options: ' + (err.message || err), 'error');
     }
+  }
+
+  function hideLoadingOverlay() {
+    const el = document.getElementById('form-loading');
+    if (el) el.classList.add('is-hidden');
   }
 
   // Init the R3-specific UI after the rest of the form's setup has run.

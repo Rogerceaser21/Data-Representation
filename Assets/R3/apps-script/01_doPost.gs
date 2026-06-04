@@ -55,7 +55,7 @@ function doPost(e) {
     sheet.appendRow(row);
 
     try {
-      sendSubmissionEmail(recordId, recordToken, submittedAt, data);
+      sendSubmissionEmail(ss, recordId, recordToken, submittedAt, data);
     } catch (mailErr) {
       Logger.log('Email send failed for ' + recordId + ': ' + mailErr.message);
     }
@@ -85,10 +85,12 @@ function generateRecordToken() {
 }
 
 /**
- * Sends a simple HTML email copy of the submission to BACKUP_EMAIL_TO,
- * with the locked-record URL (id + token) front and centre.
+ * Sends a single HTML email copy of the submission to BACKUP_EMAIL_TO,
+ * CCing the selected inspector (if their row in the Inspectors tab has
+ * an email in column B). Locked-record URL (id + token) is front and
+ * centre in the body so admin and inspector share the same record.
  */
-function sendSubmissionEmail(recordId, recordToken, submittedAt, data) {
+function sendSubmissionEmail(ss, recordId, recordToken, submittedAt, data) {
   const lockedUrl = FORM_PUBLIC_URL +
                     '?id=' + encodeURIComponent(recordId) +
                     '&token=' + encodeURIComponent(recordToken);
@@ -98,12 +100,18 @@ function sendSubmissionEmail(recordId, recordToken, submittedAt, data) {
 
   const htmlBody = buildSubmissionHtml(recordId, lockedUrl, submittedAt, data);
 
-  MailApp.sendEmail({
+  const inspectorEmail = lookupInspectorEmail(ss, data.inspector);
+  const opts = {
     to: BACKUP_EMAIL_TO,
     subject: subject,
     htmlBody: htmlBody,
     name: 'AIS R3 Evidence'
-  });
+  };
+  if (inspectorEmail && inspectorEmail.indexOf('@') > -1) {
+    opts.cc = inspectorEmail;
+  }
+
+  MailApp.sendEmail(opts);
 }
 
 function buildSubmissionHtml(recordId, lockedUrl, submittedAt, data) {
