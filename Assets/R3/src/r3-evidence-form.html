@@ -1724,7 +1724,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.33</a></span>
+    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.34</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -1810,10 +1810,31 @@ textarea.long-text:focus { border-color: var(--rate-success); }
         if (key) data[key] = el.value;
       }
     });
+    // v0.34: teacher / inspector / subject Tom Selects store opaque indices
+    // (t0, i0, s0…) as values. Persist the display TEXT so a future load can
+    // restore by name even if option order has shifted.
+    translateOpaqueTomSelectsToText(data);
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
       showSaved();
     } catch (e) {}
+  }
+
+  /**
+   * For each opaque-keyed Tom Select (teacher / inspector / subject), replace
+   * the opaque value already captured in `data` with the option's display
+   * text. Used by saveForm() and submitForm() so localStorage and the Sheet
+   * both see the human-readable name, not "t0".
+   */
+  function translateOpaqueTomSelectsToText(data) {
+    ['teacher', 'inspector', 'subject'].forEach(name => {
+      const ts = tomSelects[name];
+      if (!ts) return;
+      const v = ts.getValue();
+      if (v && ts.options[v]) data[name] = ts.options[v].text;
+      else if (data[name] && ts.options[data[name]]) data[name] = ts.options[data[name]].text;
+      else data[name] = '';
+    });
   }
   function loadForm() {
     let data;
@@ -1990,6 +2011,10 @@ textarea.long-text:focus { border-color: var(--rate-success); }
         if (key) data[key] = el.value;
       }
     });
+    // v0.34: teacher / inspector / subject Tom Selects have opaque indices as
+    // values. Translate back to display TEXT so the Sheet stores the actual
+    // teacher / inspector / subject name (and the email reads cleanly).
+    translateOpaqueTomSelectsToText(data);
 
     btn.disabled = true;
     const prevText = btn.textContent;
@@ -2053,8 +2078,23 @@ textarea.long-text:focus { border-color: var(--rate-success); }
         for (const cand of candidates) {
           const el = FORM.querySelector('[name="' + CSS.escape(cand) + '"]') || document.getElementById(cand);
           if (el) {
-            if (el.type === 'date') el.value = toDateInput(value);
-            else el.value = value;
+            if (el.type === 'date') {
+              el.value = toDateInput(value);
+            } else if (el.tagName === 'SELECT' && ['teacher', 'inspector', 'subject'].includes(cand)) {
+              // v0.34: opaque-keyed Tom Selects. The Sheet stores the display
+              // text (e.g. "Alisja De Bruyn"); the option value is "t0".
+              // Stash text in dataset.pendingValue so populateTomSelect picks
+              // it up if options are still in flight, AND try a direct text →
+              // value lookup in case options have already landed.
+              el.dataset.pendingValue = String(value);
+              const ts = tomSelects[cand];
+              if (ts) {
+                const match = Object.values(ts.options).find(o => o.text === String(value));
+                if (match) ts.setValue(match.value, true);
+              }
+            } else {
+              el.value = value;
+            }
             // Selects need a change event to refresh the button-trigger display (v0.15).
             if (el.tagName === 'SELECT') el.dispatchEvent(new Event('change', { bubbles: true }));
             break;
@@ -2067,9 +2107,11 @@ textarea.long-text:focus { border-color: var(--rate-success); }
       // now-set school value BEFORE pushing other Tom Select values, so the
       // saved Subject can be re-selected from the correct filtered list.
       refreshSubjectOptions();
-      // Push restored values into every other Tom Select instance.
+      // Push restored values into every other Tom Select instance. Teacher /
+      // inspector / subject are opaque-keyed (v0.34) and were already restored
+      // by the text-match path above, so they're skipped here.
       Object.entries(tomSelects).forEach(([name, ts]) => {
-        if (name === 'subject') return; // handled by refreshSubjectOptions
+        if (['teacher', 'inspector', 'subject'].includes(name)) return;
         const sel = document.getElementById(name);
         if (ts && sel && sel.value) ts.setValue(sel.value, true);
       });
@@ -2242,11 +2284,21 @@ textarea.long-text:focus { border-color: var(--rate-success); }
   function populateTomSelect(name, items) {
     const ts = tomSelects[name];
     if (!ts) return;
-    const pending = ts.getValue() || readRestoredFromLocalStorage(name);
+    // v0.34: opaque-keyed Tom Selects (teacher / inspector / subject) store
+    // an index like "t0" as the value, never user-data, to avoid iOS WebKit
+    // CSS-selector bugs in Tom Select internals. Pending state is therefore
+    // resolved by display TEXT (which the underlying Sheet and localStorage
+    // hold), not by raw value.
+    const curVal = ts.getValue();
+    const curText = curVal && ts.options[curVal] ? ts.options[curVal].text : '';
+    const pendingText = curText || readRestoredFromLocalStorage(name);
     ts.clearOptions();
     ts.addOptions(items);
     ts.refreshOptions(false);
-    if (pending) ts.setValue(pending, true);   // silent: don't re-fire onChange
+    if (pendingText) {
+      const match = Object.values(ts.options).find(o => o.text === pendingText);
+      if (match) ts.setValue(match.value, true);
+    }
   }
 
   // Helper to render a pill-group from a dynamic value list (Curriculum + School).
@@ -2298,10 +2350,13 @@ textarea.long-text:focus { border-color: var(--rate-success); }
     const schoolInput = document.querySelector('input[name="school"]');
     const school = schoolInput ? String(schoolInput.value || '').trim() : '';
 
-    // Current/prior subject value: check Tom Select, then underlying <select>, then localStorage.
+    // v0.34: subject is opaque-keyed too. Prior selection is tracked by TEXT
+    // so a school-switch reflows options without losing the user's pick.
+    const curVal = ts.getValue();
+    const curText = curVal && ts.options[curVal] ? ts.options[curVal].text : '';
     const subjectSelect = document.getElementById('subject');
-    const prior = ts.getValue()
-      || (subjectSelect ? subjectSelect.value : '')
+    const priorText = curText
+      || (subjectSelect ? (subjectSelect.dataset.pendingValue || '') : '')
       || readRestoredFromLocalStorage('subject');
 
     if (!school) {
@@ -2319,16 +2374,16 @@ textarea.long-text:focus { border-color: var(--rate-success); }
     const filtered = SUBJECTS_RAW.filter(s => s.active && s[key]);
 
     ts.clearOptions();
-    ts.addOptions(filtered.map(s => ({ value: s.name, text: s.name })));
+    ts.addOptions(filtered.map((s, i) => ({ value: 's' + i, text: s.name })));
     ts.refreshOptions(false);
     ts.enable();
     ts.settings.placeholder = PLACEHOLDERS.subject;
     if (ts.control_input) ts.control_input.setAttribute('placeholder', PLACEHOLDERS.subject);
 
-    if (prior && filtered.find(s => s.name === prior)) {
-      ts.setValue(prior, true);
-    } else if (prior) {
-      ts.clear(true);    // prior subject not valid for new school
+    if (priorText) {
+      const match = Object.values(ts.options).find(o => o.text === priorText);
+      if (match) ts.setValue(match.value, true);
+      else ts.clear(true);
     }
     if (typeof ts.inputState === 'function') ts.inputState();
   }
@@ -2342,8 +2397,12 @@ textarea.long-text:focus { border-color: var(--rate-success); }
       if (!result.success) throw new Error(result.error || 'Could not load options');
       const opts = result.options || {};
 
-      populateTomSelect('teacher', (opts.teachers || []).map(t => ({ value: t.name, text: t.name })));
-      populateTomSelect('inspector', (opts.inspectors || []).map(s => ({ value: s, text: s })));
+      // v0.34: opaque indices as Tom Select VALUE — never put user-data
+      // strings into option values, because Tom Select internally builds CSS
+      // selectors from them and iOS WebKit throws a SyntaxError on unescaped
+      // chars (NBSP, ZWSP, U+2028/9, control chars) that addSlashes misses.
+      populateTomSelect('teacher',   (opts.teachers   || []).map((t, i) => ({ value: 't' + i, text: t.name })));
+      populateTomSelect('inspector', (opts.inspectors || []).map((s, i) => ({ value: 'i' + i, text: s })));
       renderPillGroup('curriculum-pills', opts.curricula || []);
       renderPillGroup('school-pills', opts.schools || ['Kindy', 'Primary', 'Secondary']);
 
