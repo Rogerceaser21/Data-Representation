@@ -43,6 +43,9 @@ function doPost(e) {
     const recordToken = generateRecordToken();
 
     data.record_token = recordToken;
+    // v0.32: compute duration server-side from time_in / time_out (HH:MM).
+    // Frontend no longer ships a duration field; override anything passed.
+    data.duration = computeDurationMinutes(data.time_in, data.time_out);
 
     const row = columns.map(function(col) {
       if (col === 'record_id') return recordId;
@@ -82,6 +85,28 @@ function generateR3RecordId(iso) {
  */
 function generateRecordToken() {
   return (Utilities.getUuid() + Utilities.getUuid()).replace(/-/g, '').slice(0, 32);
+}
+
+/**
+ * Returns the duration in whole minutes between two HH:MM 24-hour time
+ * strings. Empty string if either input is missing or malformed, or if
+ * end <= start (don't try to second-guess a typo).
+ */
+function computeDurationMinutes(timeIn, timeOut) {
+  const m = function(s) {
+    const match = /^(\d{1,2}):(\d{2})$/.exec(String(s || '').trim());
+    if (!match) return null;
+    const h = parseInt(match[1], 10);
+    const mi = parseInt(match[2], 10);
+    if (h < 0 || h > 23 || mi < 0 || mi > 59) return null;
+    return h * 60 + mi;
+  };
+  const a = m(timeIn);
+  const b = m(timeOut);
+  if (a == null || b == null) return '';
+  const diff = b - a;
+  if (diff <= 0) return '';
+  return diff;
 }
 
 /**
