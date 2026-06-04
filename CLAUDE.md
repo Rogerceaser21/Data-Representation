@@ -6,7 +6,7 @@
 
 ## What this is
 
-AIS Sharjah **Teacher Observation showcase system**, pitched 2026-05-21 to principal Steven McLuckie ahead of the early-2027 school review. Currently at **v0.29** with **two parallel HTML forms** wired to **two separate Google Sheets** backed by **two separate Apps Script projects** (both under admin.user@ais.ae):
+AIS Sharjah **Teacher Observation showcase system**, pitched 2026-05-21 to principal Steven McLuckie ahead of the early-2027 school review. Currently at **v0.34** with **two parallel HTML forms** wired to **two separate Google Sheets** backed by **two separate Apps Script projects** (both under admin.user@ais.ae):
 
 1. **Lesson Observation form**, internal AIS template, 4 sections, 36 S/U criteria, signatures, OTP aligned
 2. **R3 Evidence form**, SPEA / governance template, single-select Evidence Type, 10 judgements on a 1-6 scale, searchable teacher dropdown sourced from 6 staff Workspace Groups
@@ -35,20 +35,20 @@ Data-Representation/                          github.com/Rogerceaser21/Data-Repr
 │   ├── Lesson Observation Form/
 │   │   └── lesson-observation-form.html      THE Lesson Observation form (moved here in v0.10)
 │   └── R3/
-│       ├── r3-evidence-form.html             ENCRYPTED output (StatiCrypt, v0.29) · what teachers / GitHub Pages serves
-│       ├── src/r3-evidence-form.html         MASTER source · edit this
-│       ├── password-template.html            AIS-themed StatiCrypt gate (dark / light, AIS yellow accent)
+│       ├── r3-evidence-form.html             ENCRYPTED output (StatiCrypt) · what teachers / GitHub Pages serves
+│       ├── src/r3-evidence-form.html         MASTER source · edit this · v0.34 opaque-keyed Tom Selects
+│       ├── password-template.html            AIS-themed StatiCrypt gate (dark / light, AIS yellow, gate prewarm)
 │       ├── encrypt.sh                        build script · runs StatiCrypt with password "ais2026ais"
 │       ├── .staticrypt.json                  encryption salt (safe to commit)
 │       ├── lib/                              vendored Tom Select (loads after decrypt)
 │       ├── Google file links.md              quick-access Sheet + Apps Script + Gmail links
-│       ├── README.md                         R3-specific deploy workflow
+│       ├── README.md                         R3-specific deploy workflow + v0.30-v0.34 changelog
 │       ├── R3 Evidence Form Template.docx    source template from SPEA
 │       ├── apps-script/                      R3 backend (clasp, admin.user)
 │       │   ├── .clasp.json                   scriptId 1BYxWpSsqs-48AKnWH4BUQonAKHqDcY6VbiWA1SNbhBZT0QgDzLUatgRn
 │       │   ├── 00_Config.gs                  getSheetId() via PropertiesService + getR3Columns() 48-col schema + BACKUP_EMAIL_TO + FORM_PUBLIC_URL
-│       │   ├── 01_doPost.gs                  append row, generate record_token, send email-on-submit (HTML body + locked URL)
-│       │   ├── 02_doGet.gs                   ?id=AIS-R3-...&token=... (token required) or ?action=options
+│       │   ├── 01_doPost.gs                  append row, generate record_token, auto-compute duration (v0.32), email-on-submit + CC inspector (v0.31), Link-only URL (v0.33)
+│       │   ├── 02_doGet.gs                   ?id=AIS-R3-...&token=... · safeForSelector + CacheService 5-min TTL + clearOptionsCache (v0.31, v0.33)
 │       │   ├── 03_helpers.gs                 jsonOut, forceAuth, bootstrap (creates Sheet + tabs + seeds + stores SHEET_ID)
 │       │   ├── 04_TeacherLoader.gs           pulls staff from 6 Workspace Groups via Admin SDK (recurses nested groups)
 │       │   └── appsscript.json               webapp + AdminDirectory advanced service + admin.directory.* + script.send_mail scopes
@@ -114,6 +114,7 @@ Two parallel pipelines, both running under admin.user@ais.ae:
 8. **The redirect stub at `lesson-observation-form.html` (root) must be preserved.** It catches old URLs (`/lesson-observation-form.html?id=AIS-OBS-...`) and forwards to the new path. Removing it 404s any reference shared before the v0.10 move.
 9. **R3 master / encrypted split (v0.29).** Edit `Assets/R3/src/r3-evidence-form.html`. Run `Assets/R3/encrypt.sh` from anywhere; it regenerates `Assets/R3/r3-evidence-form.html` (the StatiCrypt-encrypted output GitHub Pages serves). Never hand-edit the encrypted output. School-wide gate password is `ais2026ais` (hardcoded in `encrypt.sh`; rotate by editing + re-encrypting).
 10. **R3 locked-record viewing requires a token.** From v0.29 the URL must be `?id=AIS-R3-...&token=<32-hex>`. The token is generated in `01_doPost.gs` per submission and is included in the backup email to `admin.user@ais.ae`. Without the token, the doGet returns "Record not found". Pre-v0.29 test records have no token and are not viewable.
+11. **Never put user-data strings into Tom Select option `value` (v0.34 iOS WebKit fix).** Tom Select v2.6.1's internal `addSlashes` only escapes `\ " '` and does NOT escape NBSP, ZWSP, U+2028/9, control chars, or other CSS-meaningful chars. iOS WebKit's strict selector parser throws `SyntaxError: The string did not match the expected pattern` from the resulting malformed selectors, blanking the dropdowns. StatiCrypt's `document.write` aggravates this by triggering stricter post-load parsing. **Rule:** teacher / inspector / subject (any Tom Select fed user-controlled strings) must use **opaque indices** as `value` (e.g. `t0`, `i0`, `s0`...) and put the human-readable name in `text`. Translate `value` back to `text` via `tomSelects[name].options[value].text` at submit + save time so the Sheet still stores names. See `src/r3-evidence-form.html` `populateTomSelect`, `refreshSubjectOptions`, `submitForm`, `saveForm`, `loadClosedRecord` for the pattern.
 
 ---
 
@@ -142,9 +143,18 @@ Both Apps Script projects and both Sheets run as **`admin.user@ais.ae`** (Super 
 
 1. Edit `.gs` files
 2. `cd <correct apps-script folder> && clasp push --force` (clasp must be logged in as admin.user@ais.ae)
-3. `clasp create-deployment --description "..."` returns the new `/exec` URL
-4. **If the URL changed:** update the matching `WEB_APP_URL` constant in the corresponding form HTML and ship
-5. **First-time deploys or new scopes:** open the script in the browser editor, run `forceAuth` (and `bootstrap` + `buildTeacherSheet` for R3), click through OAuth consent. CLI cannot trigger this.
+3. **Redeploy in place** (URL stays stable): `clasp redeploy <deployment-id> -d "vX.Y summary"`. The R3 deployment id is `AKfycbx3efKiQzs2MSwESEuNBCceXr5FqBCXuk1IgSzPFbOVgLSc3fvXy40e8V9lhw_KH0z2nQ`. If you must create a brand-new deployment (`clasp create-deployment ...`), update the matching `WEB_APP_URL` in the form HTML and re-encrypt R3.
+4. **First-time deploys or new scopes:** open the script in the browser editor, run `forceAuth` (and `bootstrap` + `buildTeacherSheet` for R3), click through OAuth consent. CLI cannot trigger this.
+
+### Cache invalidation (R3 only, since v0.33)
+
+`Assets/R3/apps-script/02_doGet.gs` `getDropdownOptions()` is wrapped in `CacheService` with a 5-minute TTL. If you edit the Teachers / Inspectors / Curriculum / Subjects tabs and need the form to see the change before the TTL expires:
+
+1. Open the R3 Apps Script editor (link in `Assets/R3/Google file links.md`).
+2. Pick `clearOptionsCache` from the function dropdown.
+3. Run.
+
+Otherwise the form serves the cached options until natural expiry.
 
 ---
 
@@ -183,15 +193,17 @@ Once Igor has weighed a concern and made a call, **execute**; don't re-raise the
 | Web App `/exec` | `https://script.google.com/macros/s/AKfycbw8b_yMyCg1cW63q4d6SDxOKRLeFFv7rwywCIAh-y4bY3ZUUxhKrpYOmkZXAODTeDI3/exec` |
 | Seed record | `AIS-OBS-20241112-1430` (Ben Hyde observing Mr Igor, 2024-11-12) |
 | **R3 Evidence** ||
-| Live form (StatiCrypt-gated, v0.29) | https://rogerceaser21.github.io/Data-Representation/Assets/R3/r3-evidence-form.html |
+| Live form (StatiCrypt-gated) | https://rogerceaser21.github.io/Data-Representation/Assets/R3/r3-evidence-form.html |
 | Access password | `ais2026ais` (edit + re-encrypt to rotate) |
 | Master source | `Assets/R3/src/r3-evidence-form.html` |
 | Encrypt build | `Assets/R3/encrypt.sh` |
+| Apps Script deployment id | `AKfycbx3efKiQzs2MSwESEuNBCceXr5FqBCXuk1IgSzPFbOVgLSc3fvXy40e8V9lhw_KH0z2nQ` (use with `clasp redeploy`) |
+| Cache invalidation | run `clearOptionsCache` from the Apps Script editor |
 | Google asset links | [`Assets/R3/Google file links.md`](Assets/R3/Google%20file%20links.md) |
 | Sheet | https://docs.google.com/spreadsheets/d/1V1Nb8hTWN-FpDps2Q_-F0TBWBFnPHVBW_sicWk8XVKo/edit |
 | Apps Script | scriptId `1BYxWpSsqs-48AKnWH4BUQonAKHqDcY6VbiWA1SNbhBZT0QgDzLUatgRn` (admin.user) |
 | Web App `/exec` | `https://script.google.com/macros/s/AKfycbx3efKiQzs2MSwESEuNBCceXr5FqBCXuk1IgSzPFbOVgLSc3fvXy40e8V9lhw_KH0z2nQ/exec` |
-| Backup email mailbox | `admin.user@ais.ae` (auto-label `R3 Submissions` via Gmail filter) |
+| Backup email mailbox | `admin.user@ais.ae` · CC to selected inspector (from `Inspectors!B` column) · auto-label `R3 Submissions` via Gmail filter |
 | Source template | `Assets/R3/R3 Evidence Form Template.docx` |
 | **Lesson Observation rollback (pre-v0.9, decommission ~2026-06-07)** ||
 | Apps Script | scriptId `1_7so0rIf1guEYc8AkEPj6f2-yDerR3aH4tItFYDemf7E_UdcrtbWky_e` (igorsbasketball@gmail.com) |
