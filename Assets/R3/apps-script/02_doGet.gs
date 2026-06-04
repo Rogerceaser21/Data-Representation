@@ -21,7 +21,7 @@ function doGet(e) {
     }
 
     if (params.id) {
-      return jsonOut(getRecordById(params.id));
+      return jsonOut(getRecordById(params.id, params.token));
     }
 
     return jsonOut({
@@ -34,25 +34,43 @@ function doGet(e) {
   }
 }
 
-function getRecordById(id) {
+/**
+ * Returns a locked record. v0.29: a record_token URL parameter is required;
+ * it must match the token stored in the Sheet for that record. Without a
+ * matching token the response is a generic "not found" so an attacker can't
+ * distinguish "wrong token" from "no such id".
+ *
+ * Pre-v0.29 records have no token in their row, so they are not viewable via
+ * this endpoint at all (acceptable: those were test submissions per Igor).
+ */
+function getRecordById(id, token) {
   const ss = SpreadsheetApp.openById(getSheetId());
   const sheet = ss.getSheetByName(SHEET_NAME_SUBMISSIONS);
   if (!sheet || sheet.getLastRow() < 2) {
-    return { success: false, error: 'No submissions yet' };
+    return { success: false, error: 'Record not found' };
   }
   const values = sheet.getDataRange().getValues();
   const headers = values[0];
   const idCol = headers.indexOf('record_id');
+  const tokenCol = headers.indexOf('record_token');
   if (idCol < 0) return { success: false, error: 'Schema mismatch · record_id column missing' };
 
   for (var r = 1; r < values.length; r++) {
     if (String(values[r][idCol]) === String(id)) {
+      const storedToken = tokenCol >= 0 ? String(values[r][tokenCol] || '').trim() : '';
+      const givenToken = String(token || '').trim();
+      if (!storedToken || !givenToken || storedToken !== givenToken) {
+        return { success: false, error: 'Record not found' };
+      }
       const record = {};
-      headers.forEach(function(h, j) { record[h] = values[r][j]; });
+      headers.forEach(function(h, j) {
+        if (h === 'record_token') return;
+        record[h] = values[r][j];
+      });
       return { success: true, data: record };
     }
   }
-  return { success: false, error: 'Record not found · id=' + id };
+  return { success: false, error: 'Record not found' };
 }
 
 function getDropdownOptions() {

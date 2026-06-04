@@ -6,7 +6,7 @@
 
 ## What this is
 
-AIS Sharjah **Teacher Observation showcase system**, pitched 2026-05-21 to principal Steven McLuckie ahead of the early-2027 school review. Currently at **v0.10** with **two parallel HTML forms** wired to **two separate Google Sheets** backed by **two separate Apps Script projects** (both under admin.user@ais.ae):
+AIS Sharjah **Teacher Observation showcase system**, pitched 2026-05-21 to principal Steven McLuckie ahead of the early-2027 school review. Currently at **v0.29** with **two parallel HTML forms** wired to **two separate Google Sheets** backed by **two separate Apps Script projects** (both under admin.user@ais.ae):
 
 1. **Lesson Observation form**, internal AIS template, 4 sections, 36 S/U criteria, signatures, OTP aligned
 2. **R3 Evidence form**, SPEA / governance template, single-select Evidence Type, 10 judgements on a 1-6 scale, searchable teacher dropdown sourced from 6 staff Workspace Groups
@@ -35,16 +35,23 @@ Data-Representation/                          github.com/Rogerceaser21/Data-Repr
 │   ├── Lesson Observation Form/
 │   │   └── lesson-observation-form.html      THE Lesson Observation form (moved here in v0.10)
 │   └── R3/
-│       ├── r3-evidence-form.html             R3 Evidence form (v0.10, new)
+│       ├── r3-evidence-form.html             ENCRYPTED output (StatiCrypt, v0.29) · what teachers / GitHub Pages serves
+│       ├── src/r3-evidence-form.html         MASTER source · edit this
+│       ├── password-template.html            AIS-themed StatiCrypt gate (dark / light, AIS yellow accent)
+│       ├── encrypt.sh                        build script · runs StatiCrypt with password "ais2026ais"
+│       ├── .staticrypt.json                  encryption salt (safe to commit)
+│       ├── lib/                              vendored Tom Select (loads after decrypt)
+│       ├── Google file links.md              quick-access Sheet + Apps Script + Gmail links
+│       ├── README.md                         R3-specific deploy workflow
 │       ├── R3 Evidence Form Template.docx    source template from SPEA
 │       ├── apps-script/                      R3 backend (clasp, admin.user)
 │       │   ├── .clasp.json                   scriptId 1BYxWpSsqs-48AKnWH4BUQonAKHqDcY6VbiWA1SNbhBZT0QgDzLUatgRn
-│       │   ├── 00_Config.gs                  getSheetId() via PropertiesService + getR3Columns() 45-col schema
-│       │   ├── 01_doPost.gs                  append row, generates AIS-R3-YYYYMMDD-HHMM
-│       │   ├── 02_doGet.gs                   ?id=AIS-R3-... or ?action=options (returns dropdown bundle)
+│       │   ├── 00_Config.gs                  getSheetId() via PropertiesService + getR3Columns() 48-col schema + BACKUP_EMAIL_TO + FORM_PUBLIC_URL
+│       │   ├── 01_doPost.gs                  append row, generate record_token, send email-on-submit (HTML body + locked URL)
+│       │   ├── 02_doGet.gs                   ?id=AIS-R3-...&token=... (token required) or ?action=options
 │       │   ├── 03_helpers.gs                 jsonOut, forceAuth, bootstrap (creates Sheet + tabs + seeds + stores SHEET_ID)
 │       │   ├── 04_TeacherLoader.gs           pulls staff from 6 Workspace Groups via Admin SDK (recurses nested groups)
-│       │   └── appsscript.json               webapp + AdminDirectory advanced service + admin.directory.* scopes
+│       │   └── appsscript.json               webapp + AdminDirectory advanced service + admin.directory.* + script.send_mail scopes
 │       └── 2026-05-28_email_R3-Data...md     correspondence record (R3 kickoff email to Dave, CC Leon + Steve)
 ├── SPEA Data Report/                         worked-example source docs (Jo Mare Kruger portrait, OTP, probation form)
 ├── .planning/
@@ -95,16 +102,18 @@ Two parallel pipelines, both running under admin.user@ais.ae:
 
 ## Hard rules · do not break
 
-1. **Sheet column order is load-bearing for both Sheets.** `apps-script/00_Config.gs` `getColumns()` (Lesson Obs, 80+ cols) and `Assets/R3/apps-script/00_Config.gs` `getR3Columns()` (R3, 45 cols) define schemas auto-created on first POST. Existing rows are positional. *Append* new columns at the end if needed. Never reorder or insert in the middle.
+1. **Sheet column order is load-bearing for both Sheets.** `apps-script/00_Config.gs` `getColumns()` (Lesson Obs, 80+ cols) and `Assets/R3/apps-script/00_Config.gs` `getR3Columns()` (R3, 48 cols, last is `record_token`) define schemas auto-created on first POST. Existing rows are positional. *Append* new columns at the end if needed. Never reorder or insert in the middle.
 2. **Record ID formats are `AIS-OBS-YYYYMMDD-HHMM` and `AIS-R3-YYYYMMDD-HHMM`.** Generated server-side. Changing the format breaks the closed-record-viewer URL pattern for every existing record.
 3. **`WEB_APP_URL` constants must match the deployed `/exec` URL for each form.** If you `clasp deploy` a new version that gets a new `/exec` URL, update the matching constant in the form HTML and ship.
    - Lesson Observation: `Assets/Lesson Observation Form/lesson-observation-form.html`, search for `const WEB_APP_URL`
-   - R3: `Assets/R3/r3-evidence-form.html`, search for `const WEB_APP_URL`
-4. **Repo stays private** until ratings are real OR the deck is StatiCrypt-encrypted like the sibling `sample-student-report`. Real teacher names sit next to fabricated ratings.
+   - R3 master: `Assets/R3/src/r3-evidence-form.html` (the encrypted output at `Assets/R3/r3-evidence-form.html` is regenerated from this)
+4. **Repo stays private** until ratings are real OR the form is StatiCrypt-encrypted (R3 form is, from v0.29). Real teacher names sit next to fabricated ratings.
 5. **Don't commit the `.docx` file's noise diffs.** `SPEA Data Report/Lesson Observation - Igor- 12_11.docx` flutters by a byte every time Word touches it. Skip unless content actually changed.
-6. **Every push bumps the visible version label AND tags.** Bump version in: cover term-tag, every masthead `.school` text, P5 floor, version-badge element, AND both form footers. Commit msg starts `vX.Y · summary`. `git tag vX.Y` after the commit. `git push origin main --tags`.
-7. **R3 reference tab schemas are load-bearing.** The R3 form reads Inspectors / Curriculum / Subjects / Teachers from named tabs via `?action=options`. Single-column tabs assume header row + data rows; Teachers tab uses `[email, name]`. The form's `setupSearchableTeacher` + `loadDropdownOptions` break silently if the tab schemas shift.
+6. **Every push bumps the visible version label AND tags.** Bump version in: cover term-tag, every masthead `.school` text, P5 floor, version-badge element, AND both form footers (R3 footer lives in the **master** at `Assets/R3/src/r3-evidence-form.html`). Commit msg starts `vX.Y · summary`. `git tag vX.Y` after the commit. `git push origin main --tags`.
+7. **R3 reference tab schemas are load-bearing.** The R3 form reads Inspectors / Curriculum / Subjects / Teachers from named tabs via `?action=options`. Single-column tabs assume header row + data rows; Teachers tab uses column A = name only (v0.28). The form's `setupSearchableTeacher` + `loadDropdownOptions` break silently if the tab schemas shift.
 8. **The redirect stub at `lesson-observation-form.html` (root) must be preserved.** It catches old URLs (`/lesson-observation-form.html?id=AIS-OBS-...`) and forwards to the new path. Removing it 404s any reference shared before the v0.10 move.
+9. **R3 master / encrypted split (v0.29).** Edit `Assets/R3/src/r3-evidence-form.html`. Run `Assets/R3/encrypt.sh` from anywhere; it regenerates `Assets/R3/r3-evidence-form.html` (the StatiCrypt-encrypted output GitHub Pages serves). Never hand-edit the encrypted output. School-wide gate password is `ais2026ais` (hardcoded in `encrypt.sh`; rotate by editing + re-encrypting).
+10. **R3 locked-record viewing requires a token.** From v0.29 the URL must be `?id=AIS-R3-...&token=<32-hex>`. The token is generated in `01_doPost.gs` per submission and is included in the backup email to `admin.user@ais.ae`. Without the token, the doGet returns "Record not found". Pre-v0.29 test records have no token and are not viewable.
 
 ---
 
@@ -122,11 +131,12 @@ Both Apps Script projects and both Sheets run as **`admin.user@ais.ae`** (Super 
 
 ### HTML changes (`index.html` or either form)
 
-1. Edit master, bump version labels everywhere (see hard rule 6)
-2. `git add -p && git commit -m "vX.Y · ..."`
-3. `git tag vX.Y && git push origin main --tags`
-4. **Pages auto-rebuild has been flaky.** If changes don't appear after ~2 min, force a rebuild: `gh api -X POST repos/Rogerceaser21/Data-Representation/pages/builds`
-5. For large pushes (touching the docx template or full forms), Git push may fail with `HTTP 400`. Fix: `git config http.postBuffer 524288000` and retry.
+1. Edit master, bump version labels everywhere (see hard rule 6). For R3 the master is `Assets/R3/src/r3-evidence-form.html`.
+2. **R3 only:** run `Assets/R3/encrypt.sh` to regenerate the encrypted `Assets/R3/r3-evidence-form.html`. Lesson Observation is not encrypted; skip this step.
+3. `git add -p && git commit -m "vX.Y · ..."`
+4. `git tag vX.Y && git push origin main --tags`
+5. **Pages auto-rebuild has been flaky.** If changes don't appear after ~2 min, force a rebuild: `gh api -X POST repos/Rogerceaser21/Data-Representation/pages/builds`
+6. For large pushes (touching the docx template or full forms), Git push may fail with `HTTP 400`. Fix: `git config http.postBuffer 524288000` and retry.
 
 ### Apps Script changes (either `apps-script/*.gs` or `Assets/R3/apps-script/*.gs`)
 
@@ -173,10 +183,15 @@ Once Igor has weighed a concern and made a call, **execute**; don't re-raise the
 | Web App `/exec` | `https://script.google.com/macros/s/AKfycbw8b_yMyCg1cW63q4d6SDxOKRLeFFv7rwywCIAh-y4bY3ZUUxhKrpYOmkZXAODTeDI3/exec` |
 | Seed record | `AIS-OBS-20241112-1430` (Ben Hyde observing Mr Igor, 2024-11-12) |
 | **R3 Evidence** ||
-| Live form | https://rogerceaser21.github.io/Data-Representation/Assets/R3/r3-evidence-form.html |
+| Live form (StatiCrypt-gated, v0.29) | https://rogerceaser21.github.io/Data-Representation/Assets/R3/r3-evidence-form.html |
+| Access password | `ais2026ais` (edit + re-encrypt to rotate) |
+| Master source | `Assets/R3/src/r3-evidence-form.html` |
+| Encrypt build | `Assets/R3/encrypt.sh` |
+| Google asset links | [`Assets/R3/Google file links.md`](Assets/R3/Google%20file%20links.md) |
 | Sheet | https://docs.google.com/spreadsheets/d/1V1Nb8hTWN-FpDps2Q_-F0TBWBFnPHVBW_sicWk8XVKo/edit |
 | Apps Script | scriptId `1BYxWpSsqs-48AKnWH4BUQonAKHqDcY6VbiWA1SNbhBZT0QgDzLUatgRn` (admin.user) |
 | Web App `/exec` | `https://script.google.com/macros/s/AKfycbx3efKiQzs2MSwESEuNBCceXr5FqBCXuk1IgSzPFbOVgLSc3fvXy40e8V9lhw_KH0z2nQ/exec` |
+| Backup email mailbox | `admin.user@ais.ae` (auto-label `R3 Submissions` via Gmail filter) |
 | Source template | `Assets/R3/R3 Evidence Form Template.docx` |
 | **Lesson Observation rollback (pre-v0.9, decommission ~2026-06-07)** ||
 | Apps Script | scriptId `1_7so0rIf1guEYc8AkEPj6f2-yDerR3aH4tItFYDemf7E_UdcrtbWky_e` (igorsbasketball@gmail.com) |

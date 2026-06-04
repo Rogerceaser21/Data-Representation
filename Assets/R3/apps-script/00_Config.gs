@@ -76,7 +76,19 @@ function getR3Columns() {
     judgementCols.push('j_' + cat + '_c');
   });
 
-  const tail = ['summary_strengths', 'summary_weakness', 'observer_notes', 'school'];
+  const tail = ['summary_strengths', 'summary_weakness', 'observer_notes', 'school', 'record_token'];
 
   return header.concat(judgementCols, tail);
 }
+
+/**
+ * Mailbox that receives an email-on-submit copy of every record, plus the
+ * locked-record URL with token. Acts as the off-Sheet backup (v0.29).
+ */
+const BACKUP_EMAIL_TO = 'admin.user@ais.ae';
+
+/**
+ * Public URL where the encrypted form is served. Used to construct the
+ * locked-record URL in the email body. No trailing query string.
+ */
+const FORM_PUBLIC_URL = 'https://rogerceaser21.github.io/Data-Representation/Assets/R3/r3-evidence-form.html';
