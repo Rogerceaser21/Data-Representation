@@ -189,8 +189,8 @@ function buildSubmissionHtml(recordId, lockedUrl, submittedAt, data) {
   html += '    </div>';
   html += '    <div style="padding:24px 28px;">';
   html += '      <div style="background:#fff8e1;border:1px solid #FFBA14;border-radius:8px;padding:16px;margin-bottom:20px;">';
-  html += '        <div style="font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:#8a6d00;font-weight:700;margin-bottom:6px;">Locked record URL · forward to teacher</div>';
-  html += '        <a href="' + esc(lockedUrl) + '" style="color:#143642;font-size:13px;word-break:break-all;text-decoration:underline;">' + esc(lockedUrl) + '</a>';
+  html += '        <div style="font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:#8a6d00;font-weight:700;margin-bottom:6px;">Locked record</div>';
+  html += '        <div style="font-size:14px;color:#143642;">Open the locked record: <a href="' + esc(lockedUrl) + '" style="color:#143642;font-weight:700;text-decoration:underline;">Link</a></div>';
   html += '      </div>';
   html += '      <table style="width:100%;border-collapse:collapse;">';
 

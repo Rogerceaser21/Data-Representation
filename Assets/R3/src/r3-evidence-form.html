@@ -851,7 +851,7 @@ body.is-locked .action-btn.new { display: inline-flex; }
    info-grid). Collapses to stacked on narrow viewports. */
 .summary-with-timeout {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 5fr 1fr;
   gap: clamp(0.8rem, 1.6vw, 1.4rem);
   align-items: start;
 }
@@ -1395,9 +1395,13 @@ textarea.long-text:focus { border-color: var(--rate-success); }
   <section class="form-section">
     <div class="info-grid info-grid-r3">
 
-      <div class="info-cell info-cell-span-2">
+      <div class="info-cell">
         <label for="teacher" class="required-field">Teacher</label>
-        <select id="teacher" name="teacher" placeholder="Tap to browse staff, or type to search…" required></select>
+        <select id="teacher" name="teacher" placeholder="Tap to browse staff…" required></select>
+      </div>
+      <div class="info-cell">
+        <label for="support_teachers_cas">Support Teachers / CAs</label>
+        <input id="support_teachers_cas" name="support_teachers_cas" type="text" placeholder="Names…">
       </div>
       <div class="info-cell">
         <label for="time_in" class="required-field">Time In</label>
@@ -1454,11 +1458,6 @@ textarea.long-text:focus { border-color: var(--rate-success); }
           <button type="button" class="pill" data-value="Mixed">Mixed</button>
         </div>
         <input type="hidden" name="gender" id="gender" value="">
-      </div>
-
-      <div class="info-cell info-cell-full">
-        <label for="support_teachers_cas">Support Teachers / CAs</label>
-        <input id="support_teachers_cas" name="support_teachers_cas" type="text" placeholder="Names…">
       </div>
 
       <div class="info-cell">
@@ -1725,7 +1724,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.32</a></span>
+    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.33</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>

@@ -73,17 +73,43 @@ function getRecordById(id, token) {
   return { success: false, error: 'Record not found' };
 }
 
+/**
+ * v0.33: wrap the multi-tab read in CacheService. First call takes the
+ * usual 4-5s to read sheets; subsequent calls return from in-memory cache
+ * in ~100-200ms. Cache TTL = 5 minutes, plenty fresh for staff rosters
+ * that change rarely. Run clearOptionsCache() from the editor after a
+ * Sheet edit if you need the form to see the change immediately.
+ */
+const OPTIONS_CACHE_KEY = 'R3_OPTIONS_v1';
+const OPTIONS_CACHE_TTL = 300;
+
 function getDropdownOptions() {
+  const cache = CacheService.getScriptCache();
+  const cached = cache.get(OPTIONS_CACHE_KEY);
+  if (cached) {
+    try { return JSON.parse(cached); } catch (e) { /* fall through, refresh */ }
+  }
+
   const ss = SpreadsheetApp.openById(getSheetId());
   const subjectsResult = readSubjectsTabRich(ss);
 
-  return {
+  const fresh = {
     teachers:   readTeachersTab(ss),
     inspectors: readInspectorsTab(ss).map(function(i) { return i.name; }),
     curricula:  readSingleColumnTab(ss, SHEET_NAME_CURRICULUM),
     subjects:   subjectsResult.subjects,
     schools:    subjectsResult.schools
   };
+
+  try { cache.put(OPTIONS_CACHE_KEY, JSON.stringify(fresh), OPTIONS_CACHE_TTL); } catch (e) {}
+  return fresh;
+}
+
+/** Clears the dropdown options cache. Run from the editor after a Sheet edit
+ *  if you can't wait 5 minutes for natural expiry. */
+function clearOptionsCache() {
+  CacheService.getScriptCache().remove(OPTIONS_CACHE_KEY);
+  return 'cleared';
 }
 
 /**
