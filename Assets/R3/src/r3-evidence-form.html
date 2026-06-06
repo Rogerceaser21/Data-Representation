@@ -1775,7 +1775,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.36</a></span>
+    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.37</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -2440,33 +2440,77 @@ textarea.long-text:focus { border-color: var(--rate-success); }
   }
 
   // Load Inspectors / Curriculum / Subjects / Schools / Teachers from the backend.
-  async function loadDropdownOptions() {
-    setSearchableLoadingState(true);
+  //
+  // v0.37: resilient against the "stale iPad tab woke from suspension and the
+  // fetch hangs forever" failure. Each attempt is capped at 7s via
+  // AbortSignal.timeout; if it stalls or errors we silently retry behind the
+  // existing loading overlay (no error UI ever shown to the user). Attempts
+  // keep going with a short backoff so a cold Apps Script runtime or a
+  // resumed-tab stall recovers on its own.
+  const OPTIONS_FETCH_TIMEOUT_MS = 7000;
+  const OPTIONS_RETRY_DELAY_MS = 600;
+
+  async function fetchOptionsOnce() {
+    // AbortController + setTimeout aborts the fetch if it stalls past the cap,
+    // turning a silent hang into a catchable rejection. Using AbortController
+    // (iOS 12.2+) rather than AbortSignal.timeout (iOS 16+ only) so older
+    // school iPads are covered too.
+    const controller = new AbortController();
+    const timer = setTimeout(function () { controller.abort(); }, OPTIONS_FETCH_TIMEOUT_MS);
     try {
-      const resp = await fetch(WEB_APP_URL + '?action=options', { redirect: 'follow' });
+      const resp = await fetch(WEB_APP_URL + '?action=options', {
+        redirect: 'follow',
+        signal: controller.signal
+      });
       const result = await resp.json();
       if (!result.success) throw new Error(result.error || 'Could not load options');
-      const opts = result.options || {};
+      return result.options || {};
+    } finally {
+      clearTimeout(timer);
+    }
+  }
 
-      // v0.34: opaque indices as Tom Select VALUE — never put user-data
-      // strings into option values, because Tom Select internally builds CSS
-      // selectors from them and iOS WebKit throws a SyntaxError on unescaped
-      // chars (NBSP, ZWSP, U+2028/9, control chars) that addSlashes misses.
-      populateTomSelect('teacher',   (opts.teachers   || []).map((t, i) => ({ value: 't' + i, text: t.name })));
-      populateTomSelect('inspector', (opts.inspectors || []).map((s, i) => ({ value: 'i' + i, text: s })));
-      renderPillGroup('curriculum-pills', opts.curricula || []);
-      renderPillGroup('school-pills', opts.schools || ['Kindy', 'Primary', 'Secondary']);
+  function applyDropdownOptions(opts) {
+    // v0.34: opaque indices as Tom Select VALUE — never put user-data
+    // strings into option values, because Tom Select internally builds CSS
+    // selectors from them and iOS WebKit throws a SyntaxError on unescaped
+    // chars (NBSP, ZWSP, U+2028/9, control chars) that addSlashes misses.
+    populateTomSelect('teacher',   (opts.teachers   || []).map((t, i) => ({ value: 't' + i, text: t.name })));
+    populateTomSelect('inspector', (opts.inspectors || []).map((s, i) => ({ value: 'i' + i, text: s })));
+    renderPillGroup('curriculum-pills', opts.curricula || []);
+    renderPillGroup('school-pills', opts.schools || ['Kindy', 'Primary', 'Secondary']);
 
-      // Subject is school-filtered; store raw + run filter for currently-set school.
-      SUBJECTS_RAW = opts.subjects || [];
-      refreshSubjectOptions();
+    // Subject is school-filtered; store raw + run filter for currently-set school.
+    SUBJECTS_RAW = opts.subjects || [];
+    refreshSubjectOptions();
+  }
 
-      setSearchableLoadingState(false);
-      hideLoadingOverlay();
-    } catch (err) {
-      setSearchableLoadingState(false);
-      hideLoadingOverlay();
-      showToast('Could not load dropdown options: ' + (err.message || err), 'error');
+  async function loadDropdownOptions() {
+    setSearchableLoadingState(true);
+    // Keep retrying behind the overlay. No visible error: the user only ever
+    // sees the loading state, then the populated form.
+    for (var attempt = 1; ; attempt++) {
+      try {
+        const opts = await fetchOptionsOnce();
+        applyDropdownOptions(opts);
+        setSearchableLoadingState(false);
+        hideLoadingOverlay();
+        return;
+      } catch (err) {
+        // Stall, timeout, or error: pause briefly, then try again. Cap the
+        // run at a sane number of attempts so we don't spin the CPU forever
+        // if the backend is genuinely down; the overlay stays up meanwhile.
+        if (attempt >= 8) {
+          // Last resort for a wedged/suspended tab: reload once to get a clean
+          // execution context. The ?_r guard stops an infinite reload loop.
+          if (location.search.indexOf('_r=') === -1) {
+            const sep = location.search ? '&' : '?';
+            location.replace(location.href + sep + '_r=1');
+          }
+          return;
+        }
+        await new Promise(r => setTimeout(r, OPTIONS_RETRY_DELAY_MS));
+      }
     }
   }
 
@@ -2474,6 +2518,14 @@ textarea.long-text:focus { border-color: var(--rate-success); }
     const el = document.getElementById('form-loading');
     if (el) el.classList.add('is-hidden');
   }
+
+  // v0.37: when iOS restores this tab from a long suspension (back/forward
+  // cache), the page's JS context can be stale and a fresh fetch may hang.
+  // event.persisted === true means we were restored from bfcache, so reload
+  // to a clean context before the user notices anything.
+  window.addEventListener('pageshow', function (event) {
+    if (event.persisted) location.reload();
+  });
 
   // Init the R3-specific UI after the rest of the form's setup has run.
   setupSingleSelectGroups();
