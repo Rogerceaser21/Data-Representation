@@ -1136,40 +1136,49 @@ form.is-locked .pill { pointer-events: none; opacity: 0.7; }
   margin-right: 0.15em;
 }
 
-/* Proportion guide (v0.35): wording-to-percentage reference under the
-   judgements table. Read-only; matches the minimalist .judgement-legend
-   treatment (muted text, thin top rule, no boxed card). */
-.proportion-guide {
-  margin: 1.1rem 0 0 0;
-  padding-top: 0.9rem;
-  border-top: 1px solid var(--rule);
-}
-.proportion-guide .pg-label {
-  font-size: var(--small);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  font-weight: 700;
-  color: var(--paper-mid);
-  margin: 0 0 0.6rem 0;
-}
-.proportion-guide .pg-grid {
+/* Judgement key (v0.36): 6-column scale reference under the Judgements
+   heading. Each cell ties a number to its quality label, proportion band
+   and percentage range. Uses the form's existing tokens; reflows on narrow
+   viewports so each number stays paired with its band. */
+.judgement-key {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
-  gap: 0.35rem 1.4rem;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.5rem;
+  margin: 0 0 1rem 0;
 }
-.proportion-guide .pg-item {
-  font-size: var(--small);
-  color: var(--paper-mid);
+.jk-cell {
   display: flex;
-  justify-content: space-between;
-  gap: 0.6em;
-  padding: 0.1rem 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  text-align: center;
+  padding: 0.6rem 0.4rem;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--row-tint);
 }
-.proportion-guide .pg-item .pg-term {
-  color: var(--paper);
-  font-weight: 700;
+.jk-num {
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 6px;
+  background: var(--ais-yellow);
+  color: #143642;
+  font-weight: 800;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
-.proportion-guide .pg-item .pg-range { white-space: nowrap; }
+.jk-quality { font-weight: 700; color: var(--paper); font-size: var(--small); line-height: 1.2; }
+.jk-term { color: var(--paper-mid); font-size: var(--small); line-height: 1.2; }
+.jk-range { color: var(--paper-mid); font-size: var(--small); line-height: 1.2; white-space: nowrap; }
+
+@media (max-width: 680px) {
+  .judgement-key { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 380px) {
+  .judgement-key { grid-template-columns: repeat(2, 1fr); }
+}
 
 /* Judgement table column widths */
 .judgement-table col.c-crit { width: 32%; }
@@ -1565,7 +1574,14 @@ textarea.long-text:focus { border-color: var(--rate-success); }
        ============================================ -->
   <section class="form-section">
     <h2 class="section-title">Judgements</h2>
-    <p class="judgement-legend"><strong>1</strong> Outstanding &middot; <strong>2</strong> Very Good &middot; <strong>3</strong> Good &middot; <strong>4</strong> Acceptable &middot; <strong>5</strong> Weak &middot; <strong>6</strong> Very Weak</p>
+    <div class="judgement-key">
+      <div class="jk-cell"><span class="jk-num">1</span><span class="jk-quality">Outstanding</span><span class="jk-term">Almost All</span><span class="jk-range">Over 90%</span></div>
+      <div class="jk-cell"><span class="jk-num">2</span><span class="jk-quality">Very Good</span><span class="jk-term">Most</span><span class="jk-range">75% - 90%</span></div>
+      <div class="jk-cell"><span class="jk-num">3</span><span class="jk-quality">Good</span><span class="jk-term">Large Majority</span><span class="jk-range">61% - 74%</span></div>
+      <div class="jk-cell"><span class="jk-num">4</span><span class="jk-quality">Acceptable</span><span class="jk-term">Majority</span><span class="jk-range">50% - 60%</span></div>
+      <div class="jk-cell"><span class="jk-num">5</span><span class="jk-quality">Weak</span><span class="jk-term">Large Minority</span><span class="jk-range">31% - 49%</span></div>
+      <div class="jk-cell"><span class="jk-num">6</span><span class="jk-quality">Very Weak</span><span class="jk-term">Minority</span><span class="jk-range">0% - 30%</span></div>
+    </div>
     <table class="criteria-table judgement-table">
       <colgroup>
         <col class="c-crit">
@@ -1732,19 +1748,6 @@ textarea.long-text:focus { border-color: var(--rate-success); }
         </tr>
       </tbody>
     </table>
-
-    <div class="proportion-guide">
-      <p class="pg-label">Proportion guide</p>
-      <div class="pg-grid">
-        <div class="pg-item"><span class="pg-term">Almost All</span><span class="pg-range">Greater than 90%</span></div>
-        <div class="pg-item"><span class="pg-term">Most</span><span class="pg-range">75% - 90%</span></div>
-        <div class="pg-item"><span class="pg-term">Large Majority</span><span class="pg-range">61% - 74%</span></div>
-        <div class="pg-item"><span class="pg-term">Majority</span><span class="pg-range">50% - 60%</span></div>
-        <div class="pg-item"><span class="pg-term">Large Minority</span><span class="pg-range">31% - 49%</span></div>
-        <div class="pg-item"><span class="pg-term">Minority</span><span class="pg-range">16% - 30%</span></div>
-        <div class="pg-item"><span class="pg-term">Few</span><span class="pg-range">Up to 15%</span></div>
-      </div>
-    </div>
   </section>
 
   <!-- ============================================
@@ -1772,7 +1775,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.35</a></span>
+    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.36</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
