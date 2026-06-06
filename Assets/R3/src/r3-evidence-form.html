@@ -1136,6 +1136,41 @@ form.is-locked .pill { pointer-events: none; opacity: 0.7; }
   margin-right: 0.15em;
 }
 
+/* Proportion guide (v0.35): wording-to-percentage reference under the
+   judgements table. Read-only; matches the minimalist .judgement-legend
+   treatment (muted text, thin top rule, no boxed card). */
+.proportion-guide {
+  margin: 1.1rem 0 0 0;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--rule);
+}
+.proportion-guide .pg-label {
+  font-size: var(--small);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--paper-mid);
+  margin: 0 0 0.6rem 0;
+}
+.proportion-guide .pg-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+  gap: 0.35rem 1.4rem;
+}
+.proportion-guide .pg-item {
+  font-size: var(--small);
+  color: var(--paper-mid);
+  display: flex;
+  justify-content: space-between;
+  gap: 0.6em;
+  padding: 0.1rem 0;
+}
+.proportion-guide .pg-item .pg-term {
+  color: var(--paper);
+  font-weight: 700;
+}
+.proportion-guide .pg-item .pg-range { white-space: nowrap; }
+
 /* Judgement table column widths */
 .judgement-table col.c-crit { width: 32%; }
 .judgement-table col.c-judge { width: 30%; }
@@ -1697,6 +1732,19 @@ textarea.long-text:focus { border-color: var(--rate-success); }
         </tr>
       </tbody>
     </table>
+
+    <div class="proportion-guide">
+      <p class="pg-label">Proportion guide</p>
+      <div class="pg-grid">
+        <div class="pg-item"><span class="pg-term">Almost All</span><span class="pg-range">Greater than 90%</span></div>
+        <div class="pg-item"><span class="pg-term">Most</span><span class="pg-range">75% - 90%</span></div>
+        <div class="pg-item"><span class="pg-term">Large Majority</span><span class="pg-range">61% - 74%</span></div>
+        <div class="pg-item"><span class="pg-term">Majority</span><span class="pg-range">50% - 60%</span></div>
+        <div class="pg-item"><span class="pg-term">Large Minority</span><span class="pg-range">31% - 49%</span></div>
+        <div class="pg-item"><span class="pg-term">Minority</span><span class="pg-range">16% - 30%</span></div>
+        <div class="pg-item"><span class="pg-term">Few</span><span class="pg-range">Up to 15%</span></div>
+      </div>
+    </div>
   </section>
 
   <!-- ============================================
@@ -1724,7 +1772,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.34</a></span>
+    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.35</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
