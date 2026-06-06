@@ -6,7 +6,7 @@
 
 ## What this is
 
-AIS Sharjah **Teacher Observation showcase system**, pitched 2026-05-21 to principal Steven McLuckie ahead of the early-2027 school review. Currently at **v0.34** with **two parallel HTML forms** wired to **two separate Google Sheets** backed by **two separate Apps Script projects** (both under admin.user@ais.ae):
+AIS Sharjah **Teacher Observation showcase system**, pitched 2026-05-21 to principal Steven McLuckie ahead of the early-2027 school review. Currently at **v0.37** with **two parallel HTML forms** wired to **two separate Google Sheets** backed by **two separate Apps Script projects** (both under admin.user@ais.ae):
 
 1. **Lesson Observation form**, internal AIS template, 4 sections, 36 S/U criteria, signatures, OTP aligned
 2. **R3 Evidence form**, SPEA / governance template, single-select Evidence Type, 10 judgements on a 1-6 scale, searchable teacher dropdown sourced from 6 staff Workspace Groups
@@ -32,11 +32,12 @@ Data-Representation/                          github.com/Rogerceaser21/Data-Repr
 │   └── appsscript.json                       webapp: ANYONE_ANONYMOUS, USER_DEPLOYING
 ├── Assets/
 │   ├── brand/AIS Logo/                       AIS White.png + AIS Navy.png (only runtime brand assets)
+│   ├── brand/email-signature-primary.png     Igor's primary-school email signature banner (Pages-hosted for the R3 inspector email)
 │   ├── Lesson Observation Form/
 │   │   └── lesson-observation-form.html      THE Lesson Observation form (moved here in v0.10)
 │   └── R3/
 │       ├── r3-evidence-form.html             ENCRYPTED output (StatiCrypt) · what teachers / GitHub Pages serves
-│       ├── src/r3-evidence-form.html         MASTER source · edit this · v0.34 opaque-keyed Tom Selects
+│       ├── src/r3-evidence-form.html         MASTER source · edit this · v0.34 opaque-keyed Tom Selects, v0.37 resilient options fetch
 │       ├── password-template.html            AIS-themed StatiCrypt gate (dark / light, AIS yellow, gate prewarm)
 │       ├── encrypt.sh                        build script · runs StatiCrypt with password "ais2026ais"
 │       ├── .staticrypt.json                  encryption salt (safe to commit)
@@ -115,6 +116,7 @@ Two parallel pipelines, both running under admin.user@ais.ae:
 9. **R3 master / encrypted split (v0.29).** Edit `Assets/R3/src/r3-evidence-form.html`. Run `Assets/R3/encrypt.sh` from anywhere; it regenerates `Assets/R3/r3-evidence-form.html` (the StatiCrypt-encrypted output GitHub Pages serves). Never hand-edit the encrypted output. School-wide gate password is `ais2026ais` (hardcoded in `encrypt.sh`; rotate by editing + re-encrypting).
 10. **R3 locked-record viewing requires a token.** From v0.29 the URL must be `?id=AIS-R3-...&token=<32-hex>`. The token is generated in `01_doPost.gs` per submission and is included in the backup email to `admin.user@ais.ae`. Without the token, the doGet returns "Record not found". Pre-v0.29 test records have no token and are not viewable.
 11. **Never put user-data strings into Tom Select option `value` (v0.34 iOS WebKit fix).** Tom Select v2.6.1's internal `addSlashes` only escapes `\ " '` and does NOT escape NBSP, ZWSP, U+2028/9, control chars, or other CSS-meaningful chars. iOS WebKit's strict selector parser throws `SyntaxError: The string did not match the expected pattern` from the resulting malformed selectors, blanking the dropdowns. StatiCrypt's `document.write` aggravates this by triggering stricter post-load parsing. **Rule:** teacher / inspector / subject (any Tom Select fed user-controlled strings) must use **opaque indices** as `value` (e.g. `t0`, `i0`, `s0`...) and put the human-readable name in `text`. Translate `value` back to `text` via `tomSelects[name].options[value].text` at submit + save time so the Sheet still stores names. See `src/r3-evidence-form.html` `populateTomSelect`, `refreshSubjectOptions`, `submitForm`, `saveForm`, `loadClosedRecord` for the pattern.
+12. **Stakeholders must never see an error or a stuck spinner (v0.37).** The R3 form is used by the school's most senior staff; Igor's absolute rule is "no error UI, ever." The dropdown options fetch in `src/r3-evidence-form.html` `loadDropdownOptions()` therefore: caps each attempt at 7s via `AbortController`+`setTimeout` (NOT `AbortSignal.timeout`, which is iOS 16+ only), silently retries behind the existing frosted overlay (no toast, no error text), reloads once as a last resort (guarded by a `?_r=1` flag against loops), and reloads on `pageshow` when `event.persisted` is true (a stale iOS tab restored from bfcache, the documented cause of the "stuck on loading" hang). When changing this code path, preserve all four behaviours: timeout, silent retry, bfcache reload, guarded last-resort reload. Never surface a visible failure state to the user.
 
 ---
 

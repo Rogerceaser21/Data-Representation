@@ -2,7 +2,7 @@
 
 Digital R3 evidence form for SPEA / governance observations at AIS Sharjah. Same architecture as the lesson observation form: HTML submits to an Apps Script web app, which appends a row to a Google Sheet, and emails an HTML backup copy with a per-record locked-view URL to `admin.user@ais.ae` and the selected inspector.
 
-Currently at **v0.34**. From v0.29 the live form is **password-gated with StatiCrypt** and locked records require a per-record token. From v0.34 Tom Select uses **opaque indices** as option values to sidestep an iOS WebKit bug that was blanking dropdowns on iPad Safari + iPad Chrome.
+Currently at **v0.37**. From v0.29 the live form is **password-gated with StatiCrypt** and locked records require a per-record token. From v0.34 Tom Select uses **opaque indices** as option values to sidestep an iOS WebKit bug that was blanking dropdowns on iPad Safari + iPad Chrome. From v0.37 the options fetch is self-healing (silent timeout + retry + stale-tab reload) so the loading spinner can never hang for a stakeholder.
 
 ## Live URL + access password
 
@@ -14,7 +14,7 @@ Currently at **v0.34**. From v0.29 the live form is **password-gated with StatiC
 
 Google file links: see [Google file links.md](Google%20file%20links.md).
 
-## Folder layout (v0.34)
+## Folder layout (v0.37)
 
 ```
 Assets/R3/
@@ -72,7 +72,7 @@ Set up once in Gmail UI on the `admin.user@ais.ae` mailbox so submission emails 
 
 After the first deploy with the `script.send_mail` scope, open the script in the browser editor and run `forceAuth` once to grant the email permission.
 
-## Changelog · v0.30-v0.34
+## Changelog · v0.30-v0.37
 
 | Tag | What changed |
 |---|---|
@@ -81,11 +81,14 @@ After the first deploy with the `script.send_mail` scope, open the script in the
 | v0.32 | Form layout reflow: Teacher (span-2) + Time In on row 1; drop Duration field from UI; Room Number moves to row 3 col 2; Ability Group + Gender Mix move to row 4. Time In + Time Out now mandatory. Time Out moved to bottom, beside Summary of Weakness. Auto-compute duration server-side in `01_doPost.gs` as integer minutes. iPad date/time inputs get a visible dashed underline so users see a tap target. |
 | v0.33 | `CacheService` wraps `getDropdownOptions()` with 5-min TTL; `clearOptionsCache` helper added. Row 1 reflows to Teacher \| Support Teachers / CAs \| Time In (3 equal-width cells). Time Out width shrunk to ~1/6 of form. Email locked-URL callout drops "FORWARD TO TEACHER" and hides the raw URL behind a clean "Link" anchor. |
 | v0.34 | iOS WebKit DOMException "The string did not match the expected pattern" fixed by using **opaque indices** (`t0`, `i0`, `s0`...) as Tom Select option values for teacher / inspector / subject. Display text holds the human name. `submitForm` + `saveForm` translate value → text before write so the Sheet still stores names. `loadClosedRecord` + `populateTomSelect` look up options by text for restoring saved state. **See hard rule 11 in `../../CLAUDE.md`.** |
+| v0.35 | Proportion-band guide added as a separate block under the judgements table. Superseded by v0.36, do not reference. |
+| v0.36 | Proportion bands fused into the 1-6 judgement key under the Judgements heading: a 6-column key showing number + quality label + proportion term + percentage range. 6 = Minority = 0%-30%. The 7th band ("Few") is dropped since it does not fit a 6-point scale. |
+| v0.37 | Self-healing options fetch so the loading spinner can never hang for a stakeholder. Each fetch attempt is capped at 7s (`AbortController` + `setTimeout`, iOS 12.2+ safe), then silently retries behind the frosted overlay with no error UI; reloads once as a guarded last resort (`?_r=1`); and reloads on `pageshow` when restored from bfcache (the stale-iOS-tab cause of the earlier stuck-on-loading hang). **See hard rule 12 in `../../CLAUDE.md`.** |
 
 ## Full project context
 
 See `../../CLAUDE.md` (project root) for:
 - Architecture diagram (forms ↔ Apps Script ↔ Sheets)
 - All IDs (scriptId, /exec URL, Sheet IDs)
-- Hard rules (column schema is load-bearing, record ID format, opaque Tom Select values)
+- Hard rules (column schema is load-bearing, record ID format, opaque Tom Select values, no-error-UI resilience)
 - Identity / auth context (everything under admin.user@ais.ae)
