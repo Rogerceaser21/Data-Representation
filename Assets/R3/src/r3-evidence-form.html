@@ -786,7 +786,7 @@ body.is-locked .action-btn.new { display: inline-flex; }
     color: #143642 !important;
     padding: 0 !important;
   }
-  .theme-toggle, .action-bar, .form-footer .save-status, .form-footer a { display: none !important; }
+  .theme-toggle, .action-bar, .form-footer .save-status, .form-footer a, .float-link { display: none !important; }
   .form-container {
     max-width: 100%;
     border: none;
@@ -1304,6 +1304,49 @@ textarea.long-text:focus { border-color: var(--rate-success); }
   }
 }
 
+/* Floating link buttons (v0.38): Agenda (left) + Check Teacher (right).
+   Fixed so they float independently of the form; open in a new tab so an
+   inspector mid-form never loses entries. Only on the form, never on the
+   StatiCrypt gate (separate file). */
+.float-link {
+  position: fixed;
+  top: clamp(0.7rem, 1.4vw, 1.2rem);
+  z-index: 100;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  padding: 0.5rem 0.95rem;
+  border-radius: 999px;
+  border: 1px solid var(--rule);
+  background: var(--surface-mid);
+  color: var(--paper-dim);
+  font-family: var(--body-font);
+  font-size: clamp(0.72rem, 1.4vw, 0.85rem);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(6px);
+          backdrop-filter: blur(6px);
+  box-shadow: 0 4px 14px -6px rgba(20, 54, 66, 0.25);
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+.float-link:hover {
+  border-color: var(--ais-yellow);
+  color: var(--paper);
+  transform: translateY(-1px);
+}
+.float-link .fl-icon { width: 1.05em; height: 1.05em; display: block; flex-shrink: 0; }
+.float-link.agenda { left: clamp(0.7rem, 1.4vw, 1.2rem); }
+.float-link.check  { right: clamp(3.4rem, 6vw, 4.4rem); }   /* clears the theme toggle */
+@media (max-width: 560px) {
+  .float-link { font-size: 0.68rem; padding: 0.38rem 0.66rem; gap: 0.35em; }
+  .float-link.check { right: clamp(2.9rem, 13vw, 3.4rem); }
+}
+@media (hover: none) {
+  .float-link:hover { border-color: var(--rule); color: var(--paper-dim); transform: none; }
+}
+
 /* === Loading overlay (v0.31) ====================================== */
 .form-loading {
   position: fixed;
@@ -1412,6 +1455,24 @@ textarea.long-text:focus { border-color: var(--rate-success); }
     <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
   </svg>
 </button>
+
+<!-- Floating quick-links (v0.38). Open in a new tab so form entries are kept. -->
+<a class="float-link agenda" href="https://docs.google.com/document/d/1CeO6AHhRx7_JhyskIw7m-i-gwpSMzaQMkO0Q-gddTag/edit?tab=t.0" target="_blank" rel="noopener" title="Open the inspection agenda">
+  <svg class="fl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M9 2h6a2 2 0 0 1 2 2v0H7v0a2 2 0 0 1 2-2z"/>
+    <path d="M7 4H6a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1"/>
+    <path d="M9 11h6M9 15h4"/>
+  </svg>
+  <span>Agenda</span>
+</a>
+<a class="float-link check" href="https://docs.google.com/spreadsheets/d/1V1Nb8hTWN-FpDps2Q_-F0TBWBFnPHVBW_sicWk8XVKo/edit#gid=1743616402" target="_blank" rel="noopener" title="See which teachers have been observed">
+  <svg class="fl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M3.5 7l2 2 3-3"/>
+    <path d="M3.5 17l2 2 3-3"/>
+    <path d="M13 7h8M13 17h8"/>
+  </svg>
+  <span>Check Teacher</span>
+</a>
 
 <form class="form-container" id="r3-form" autocomplete="on" novalidate>
   <!-- Submitted / closed-record banner (hidden until submit success or ?id=... fetched) -->
@@ -1775,7 +1836,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.37</a></span>
+    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.38</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
