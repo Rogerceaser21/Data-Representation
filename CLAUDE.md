@@ -6,7 +6,7 @@
 
 ## What this is
 
-AIS Sharjah **Teacher Observation showcase system**, pitched 2026-05-21 to principal Steven McLuckie ahead of the early-2027 school review. Currently at **v0.37** with **two parallel HTML forms** wired to **two separate Google Sheets** backed by **two separate Apps Script projects** (both under admin.user@ais.ae):
+AIS Sharjah **Teacher Observation showcase system**, pitched 2026-05-21 to principal Steven McLuckie ahead of the early-2027 school review. Currently at **v0.44** with **two parallel HTML forms** (plus an ungated teacher viewer generated from the R3 master) wired to **two separate Google Sheets** backed by **two separate Apps Script projects** (both under admin.user@ais.ae):
 
 1. **Lesson Observation form**, internal AIS template, 4 sections, 36 S/U criteria, signatures, OTP aligned
 2. **R3 Evidence form**, SPEA / governance template, single-select Evidence Type, 10 judgements on a 1-6 scale, searchable teacher dropdown sourced from 6 staff Workspace Groups
@@ -118,6 +118,7 @@ Two parallel pipelines, both running under admin.user@ais.ae:
 10. **R3 locked-record viewing requires a token.** From v0.29 the URL must be `?id=AIS-R3-...&token=<32-hex>`. The token is generated in `01_doPost.gs` per submission and is included in the backup email to `admin.user@ais.ae`. Without the token, the doGet returns "Record not found". Pre-v0.29 test records have no token and are not viewable.
 11. **Never put user-data strings into Tom Select option `value` (v0.34 iOS WebKit fix).** Tom Select v2.6.1's internal `addSlashes` only escapes `\ " '` and does NOT escape NBSP, ZWSP, U+2028/9, control chars, or other CSS-meaningful chars. iOS WebKit's strict selector parser throws `SyntaxError: The string did not match the expected pattern` from the resulting malformed selectors, blanking the dropdowns. StatiCrypt's `document.write` aggravates this by triggering stricter post-load parsing. **Rule:** teacher / inspector / subject (any Tom Select fed user-controlled strings) must use **opaque indices** as `value` (e.g. `t0`, `i0`, `s0`...) and put the human-readable name in `text`. Translate `value` back to `text` via `tomSelects[name].options[value].text` at submit + save time so the Sheet still stores names. See `src/r3-evidence-form.html` `populateTomSelect`, `refreshSubjectOptions`, `submitForm`, `saveForm`, `loadClosedRecord` for the pattern.
 12. **Stakeholders must never see an error or a stuck spinner (v0.37).** The R3 form is used by the school's most senior staff; Igor's absolute rule is "no error UI, ever." The dropdown options fetch in `src/r3-evidence-form.html` `loadDropdownOptions()` therefore: caps each attempt at 7s via `AbortController`+`setTimeout` (NOT `AbortSignal.timeout`, which is iOS 16+ only), silently retries behind the existing frosted overlay (no toast, no error text), reloads once as a last resort (guarded by a `?_r=1` flag against loops), and reloads on `pageshow` when `event.persisted` is true (a stale iOS tab restored from bfcache, the documented cause of the "stuck on loading" hang). When changing this code path, preserve all four behaviours: timeout, silent retry, bfcache reload, guarded last-resort reload. Never surface a visible failure state to the user.
+13. **Record views never write the localStorage draft (v0.44).** `loadClosedRecord` fires `change` events while populating fields; the debounced autosave must not capture them, or the viewed record silently overwrites the shared draft (both the viewer and the gated form share the GitHub Pages origin). `saveForm` bails when `CLOSED_RECORD_VIEW` is true (viewer build via `window.R3_VIEWER`, or `?id` in the URL); the draft key is `ais-r3-form-v2` (v1 was polluted and is deleted on load). Preserve this guard when touching autosave or the closed-record path.
 
 ---
 
@@ -136,7 +137,7 @@ Both Apps Script projects and both Sheets run as **`admin.user@ais.ae`** (Super 
 ### HTML changes (`index.html` or either form)
 
 1. Edit master, bump version labels everywhere (see hard rule 6). For R3 the master is `Assets/R3/src/r3-evidence-form.html`.
-2. **R3 only:** run `Assets/R3/encrypt.sh` to regenerate the encrypted `Assets/R3/r3-evidence-form.html`. Lesson Observation is not encrypted; skip this step.
+2. **R3 only:** run `Assets/R3/encrypt.sh`; it regenerates BOTH `Assets/R3/r3-evidence-form.html` (encrypted) and the ungated teacher viewer `Assets/R3/r3-record.html`. Lesson Observation is not encrypted; skip this step.
 3. `git add -p && git commit -m "vX.Y · ..."`
 4. `git tag vX.Y && git push origin main --tags`
 5. **Pages auto-rebuild has been flaky.** If changes don't appear after ~2 min, force a rebuild: `gh api -X POST repos/Rogerceaser21/Data-Representation/pages/builds`

@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Handoff Brief · Data-Representation · v0.12 broken</title>
+<style>
+  :root {
+    --bg: #fafaf7;
+    --panel: #ffffff;
+    --ink: #143642;
+    --ink-dim: #3a4f59;
+    --ink-faint: #6b7e85;
+    --rule: rgba(20, 54, 66, 0.14);
+    --rule-soft: rgba(20, 54, 66, 0.07);
+    --bad: #c0392b;
+    --bad-bg: #fdf2f0;
+    --good: #2ea15a;
+    --good-bg: #f1faf3;
+    --warn: #b07a10;
+    --warn-bg: #fdf6e7;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    line-height: 1.55;
+    padding: clamp(1.2rem, 3vw, 3rem) clamp(1rem, 3vw, 2rem);
+  }
+  main {
+    max-width: 980px;
+    margin: 0 auto;
+  }
+  header.doc-head {
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+  }
+  header.doc-head h1 {
+    font-size: clamp(1.6rem, 3vw, 2.3rem);
+    margin: 0 0 0.5rem 0;
+    letter-spacing: -0.01em;
+  }
+  header.doc-head .meta {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: var(--ink-dim);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  h2 {
+    font-size: clamp(1.2rem, 2vw, 1.5rem);
+    margin: 2.4rem 0 0.7rem 0;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--rule);
+    letter-spacing: -0.005em;
+  }
+  h3 {
+    font-size: 1.1rem;
+    margin: 1.6rem 0 0.5rem 0;
+    color: var(--ink-dim);
+  }
+  h4 {
+    font-size: 0.95rem;
+    margin: 1.2rem 0 0.4rem 0;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+  }
+  p { margin: 0.6rem 0; }
+  code {
+    font-family: var(--mono);
+    font-size: 0.88em;
+    background: var(--rule-soft);
+    padding: 0.1em 0.4em;
+    border-radius: 3px;
+  }
+  pre {
+    background: #1f2933;
+    color: #f5f7fa;
+    padding: 0.9rem 1.1rem;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+  pre code { background: transparent; padding: 0; color: inherit; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.8rem 0;
+    font-size: 0.92rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 0.5rem 0.7rem;
+    border-bottom: 1px solid var(--rule-soft);
+    vertical-align: top;
+  }
+  th {
+    background: var(--rule-soft);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ink-dim);
+  }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 1.1rem 1.3rem;
+    margin: 1rem 0;
+  }
+  .panel.bad {
+    background: var(--bad-bg);
+    border-color: var(--bad);
+  }
+  .panel.bad .label { color: var(--bad); }
+  .panel.good {
+    background: var(--good-bg);
+    border-color: var(--good);
+  }
+  .panel.good .label { color: var(--good); }
+  .panel.warn {
+    background: var(--warn-bg);
+    border-color: var(--warn);
+  }
+  .panel.warn .label { color: var(--warn); }
+  .label {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.4rem;
+  }
+  figure {
+    margin: 1.2rem 0 1.8rem 0;
+    padding: 0;
+  }
+  figure img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    display: block;
+    box-shadow: 0 8px 24px -12px rgba(20, 54, 66, 0.2);
+  }
+  figcaption {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--ink-dim);
+    font-style: italic;
+  }
+  figcaption strong {
+    font-style: normal;
+    color: var(--ink);
+  }
+  ul, ol { margin: 0.5rem 0; padding-left: 1.4rem; }
+  li { margin: 0.25rem 0; }
+  .callout-unclear {
+    background: #fdf6e7;
+    border-left: 3px solid var(--warn);
+    padding: 0.4rem 0.8rem;
+    margin: 0.6rem 0;
+    font-size: 0.9rem;
+    border-radius: 3px;
+  }
+  .callout-unclear::before {
+    content: "[UNCLEAR · ASK IGOR] ";
+    color: var(--warn);
+    font-weight: 700;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+  }
+  .toc {
+    background: var(--rule-soft);
+    padding: 0.9rem 1.2rem;
+    border-radius: 6px;
+    margin-bottom: 2rem;
+  }
+  .toc a { color: var(--ink); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  .toc ol { columns: 2; column-gap: 1.5rem; margin: 0; }
+  .key-fact { display: grid; grid-template-columns: 200px 1fr; gap: 0.5rem; padding: 0.3rem 0; border-bottom: 1px dashed var(--rule-soft); }
+  .key-fact:last-child { border-bottom: none; }
+  .key-fact .k { font-weight: 600; color: var(--ink-dim); }
+  .key-fact .v { font-family: var(--mono); font-size: 0.88rem; }
+  a { color: #1257ff; }
+</style>
+</head>
+<body>
+<main>
+
+<header class="doc-head">
+  <h1>Handoff Brief · Data-Representation deck</h1>
+  <div class="meta">
+    <span>Project: AIS Sharjah teacher observation system</span>
+    <span>Date: 2026-05-29</span>
+    <span>Written by: Claude (Opus 4.7), the agent that broke v0.11 and v0.12</span>
+    <span>For: the next agent, in a fresh session via Claude Code desktop</span>
+  </div>
+</header>
+
+<div class="panel bad">
+  <div class="label">tl;dr · please read this first</div>
+  <p>The deck currently shipped to production (<code>v0.12</code>, commit <code>26c842b</code>, live at <a href="https://rogerceaser21.github.io/Data-Representation/">rogerceaser21.github.io/Data-Representation/</a>) is <strong>visually broken</strong> on MacBook at 100% zoom. Slides 3 and 4 have overlapping text and content rendered on top of page chrome. Slide 1 has a separate distortion problem (massive title, masthead overlapping itself, bio cut by footer). The fix Igor is shipping to principal Steven McLuckie next week is currently NOT presentable.</p>
+  <p>Two attempts (v0.11 + v0.12) were made to fix an original silent-clipping bug on slides 3 and 4. Both attempts produced fixes that pass headless-Chrome diagnostics but FAIL in real Chrome on Igor's MacBook. Igor lost confidence in the prior agent's judgment and is handing off to a fresh session.</p>
+  <p><strong>You are explicitly being asked NOT to propose how to fix this.</strong> Document, observe, ask questions, get aligned with Igor before you touch any code. Bad past-agent took shortcuts with verification (used headless Chrome at viewport sizes that masked the real-Chrome problem) and shipped two consecutive broken versions.</p>
+</div>
+
+<div class="toc">
+  <strong>Contents</strong>
+  <ol>
+    <li><a href="#what-works">What works (do NOT touch)</a></li>
+    <li><a href="#what-broke">What is broken (visual evidence)</a></li>
+    <li><a href="#timeline">Bug timeline · v0.10 to v0.12</a></li>
+    <li><a href="#architecture">Architecture · files, IDs, deploy chain</a></li>
+    <li><a href="#what-was-tried">What was tried and why each attempt failed</a></li>
+    <li><a href="#existing-docs">Existing docs and memory the prior agent left behind</a></li>
+    <li><a href="#open-questions">Open questions and unknowns</a></li>
+  </ol>
+</div>
+
+<h2 id="what-works">1. What works · do NOT touch</h2>
+
+<div class="panel good">
+  <div class="label">these are not the bug</div>
+  <ul>
+    <li><strong>Lesson Observation form</strong> at <code>Assets/Lesson Observation Form/lesson-observation-form.html</code>. Submit + lock + closed-record viewer all working. Wired to admin.user@ais.ae Apps Script (scriptId <code>1wfwv-3le3lMFeiV6E_hghRQ3F2kAiInNaNlnQbipx4bLMFH9N0yRKXEL</code>) writing to Sheet <code>1KKgHe42JnRe5iA8iODRrh3UZHD93szZSDatQylivoAc</code>. Tested end to end yesterday at v0.10.</li>
+    <li><strong>R3 Evidence form</strong> at <code>Assets/R3/r3-evidence-form.html</code>. Same architecture; new Sheet (<code>1V1Nb8hTWN-FpDps2Q_-F0TBWBFnPHVBW_sicWk8XVKo</code>) with 277 teachers loaded from staff Workspace Groups. Submit + GET round-trip verified at v0.10.</li>
+    <li><strong>The redirect stub</strong> at the old root <code>lesson-observation-form.html</code> path that forwards to the moved form. Don't delete it.</li>
+    <li><strong>PDF export</strong> (the SAVE AS PDF button). v0.12's print CSS captures all slides expanded to full content. Verified via headless Chrome <code>--print-to-pdf</code>. A copy is at <code>images/deck-pdf-export-works.pdf</code> for reference. All 6 teachers visible on slide 4, all 8 categories with pill rows on slide 3 in the PDF.</li>
+    <li><strong>Apps Script backends, both Sheets, the staff-groups teacher loader.</strong> Server-side untouched by v0.11/v0.12.</li>
+  </ul>
+</div>
+
+<p>The bug is specifically about <strong>on-screen rendering of certain slides at MacBook viewport sizes</strong>. Nothing else needs fixing.</p>
+
+<h2 id="what-broke">2. What is broken · visual evidence</h2>
+
+<p>All screenshots below taken from the live URL at <code>https://rogerceaser21.github.io/Data-Representation/</code>, captured via headless Chrome at viewport <code>1440x800</code> (approximates Igor's MacBook at 100% zoom, accounting for browser UI chrome).</p>
+
+<h3>2a. Slide 4 (Department dashboard) at v0.12 · BROKEN</h3>
+
+<figure>
+  <img src="images/04-slide4-department-dashboard-top-v012.png" alt="Slide 4 top view at v0.12, MacBook viewport, broken state">
+  <figcaption><strong>Slide 4 top, v0.12 LIVE.</strong> The 6-teacher matrix overflows. Only Jo Mare Kruger, Curtis All, and Deena AbuGeras (partial) visible. A fade gradient hints content is below. Looks OK at this scroll position but watch what happens when scrolled.</figcaption>
+</figure>
+
+<figure>
+  <img src="images/05-slide4-department-dashboard-bottom-v012.png" alt="Slide 4 scrolled to bottom at v0.12, broken overlap">
+  <figcaption><strong>Slide 4 scrolled to bottom, v0.12 LIVE.</strong> Now Lana Mosleh, Gina Hanlon, Hani Asad are visible. BUT the matrix legend ("Outstanding · Very Good · Not assessed"), the matrix categories strip ("01 SPEA · 02 Walkthroughs · 03 Probation..."), and the slide floor footer ("GRADE 6 · PRIMARY DEPARTMENT · 2025/2026" + "AUSTRALIAN INTERNATIONAL SCHOOL SHARJAH") all overlap the teacher rows. The BACK/NEXT navigation buttons obscure the last row. <strong>This is the worst of the bugs.</strong></figcaption>
+</figure>
+
+<h3>2b. Slide 3 (Teacher dashboard) at v0.12 · less broken but not right</h3>
+
+<figure>
+  <img src="images/02-slide3-teacher-dashboard-top-v012.png" alt="Slide 3 top view at v0.12">
+  <figcaption><strong>Slide 3 top, v0.12 LIVE.</strong> Donut chart + first 5 category cards visible. Pill rows (Lesson plan / R3 form / etc.) ARE rendering inside the cards now, but the donut crops at its sides because the column is narrower than v0.10's design assumed.</figcaption>
+</figure>
+
+<figure>
+  <img src="images/03-slide3-teacher-dashboard-bottom-v012.png" alt="Slide 3 scrolled to bottom at v0.12">
+  <figcaption><strong>Slide 3 scrolled to bottom, v0.12 LIVE.</strong> Categories 02 to 08 visible with their pill rows. The donut + overall stats are now scrolled out of view (acceptable but breaks the side-by-side dashboard pedagogy that was the design intent).</figcaption>
+</figure>
+
+<h3>2c. Slide 1 (Teacher profile cover) at v0.12 · DIFFERENT bug</h3>
+
+<figure>
+  <img src="images/01-slide1-cover-v012.png" alt="Slide 1 cover at v0.12">
+  <figcaption><strong>Slide 1, v0.12 LIVE.</strong> When captured via headless Chrome at 1440x800 this looks OK. BUT when Igor opens the same URL in real Chrome on his MacBook at 100% zoom, the screenshot he pasted shows a MASSIVE distortion: the "TEACHER PROFILE" eyebrow text overlaps the "AUSTRALIAN INTERNATIONAL SCHOOL · SHARJAH" masthead line; the "Jo Mare Kruger" title is huge relative to viewport; the HPE and Technology line at the bottom of the bio is cut off by the floor footer.</figcaption>
+</figure>
+
+<div class="callout-unclear">
+  The slide-1 distortion does NOT reproduce in headless Chrome at 1440x800. This suggests either (a) Igor's real viewport is different from what we assumed (smaller, narrower, portrait, or zoomed differently), (b) the bug is triggered by something headless Chrome doesn't have (system font availability, real DPI, real text rendering), or (c) a CSS rule fires at a specific viewport range we haven't tested. <strong>The next agent must ask Igor to share his real-Chrome viewport size via "Inspect → console → window.innerWidth, window.innerHeight, devicePixelRatio, document.documentElement.clientWidth" before trying to diagnose slide 1.</strong>
+</div>
+
+<h3>2d. Comparison · how slide 4 looked at v0.11 baseline (also broken, differently)</h3>
+
+<figure>
+  <img src="images/00-slide4-v011-baseline-broken.png" alt="Slide 4 at v0.11 baseline · only 2 teachers visible">
+  <figcaption><strong>Slide 4 v0.11 LIVE (the state before v0.12 attempt).</strong> Only Jo Mare Kruger and Curtis All visible. Other 4 teachers silently clipped, no fade hint, no indication content was missing. This was the ORIGINAL bug Igor reported at v0.10 / v0.11.</figcaption>
+</figure>
+
+<h2 id="timeline">3. Bug timeline · v0.10 to v0.12</h2>
+
+<table>
+  <thead><tr><th>Version</th><th>Commit</th><th>Date</th><th>What happened</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><code>v0.10</code></td>
+      <td><code>d70c8c4</code></td>
+      <td>2026-05-28</td>
+      <td>R3 Evidence Form + Lesson Observation reorg shipped. Forms and backend work end to end. Deck slides 3 + 4 silently clip content at 100% zoom (Igor spots this on 2026-05-29).</td>
+    </tr>
+    <tr>
+      <td><code>v0.11</code></td>
+      <td><code>935e2e6</code></td>
+      <td>2026-05-29</td>
+      <td>First fix attempt. Added a "universal overflow safety net" (CSS <code>.has-overflow</code> + JS observer using <code>ResizeObserver</code>). Bumped versions, pushed, headless Chrome at 1440x900 said it worked. <strong>It didn't.</strong> Observer's <code>scrollHeight</code> reading was defeated by inner <code>overflow: hidden</code> on <code>.cat-card</code> and <code>.matrix-wrap</code> which silently clip content before <code>.slide-content</code> can measure it. Observer reported "no overflow" even though content was clipped.</td>
+    </tr>
+    <tr>
+      <td><code>v0.12</code></td>
+      <td><code>26c842b</code></td>
+      <td>2026-05-29</td>
+      <td>Second fix attempt. Removed the inner <code>overflow: hidden</code> on <code>.cat-card</code> and <code>.matrix-wrap</code>. Observer now correctly detects overflow (e.g., slide 4 reports 254px overflow at 1440x780). BUT removing inner clipping caused the content to render at its natural height beyond its flex-allocated bounds, visually OVERLAPPING the floor footer, matrix legend, page chrome, BACK/NEXT buttons. <strong>Looks worse than v0.11.</strong> Igor's screenshots show the catastrophe.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>The root layout problem (so the next agent understands the constraint)</h3>
+
+<p>The deck uses <code>display: flex; flex-direction: column</code> on every <code>.slide</code> and <code>.slide-content</code>. Inner data containers (<code>.matrix-wrap</code> for slide 4, <code>.dashboard-grid</code> for slide 3) are <code>flex: 1</code> so they fill the slide's remaining height. This gives a polished "matrix fills the slide" look when content fits.</p>
+
+<p>When content density exceeds the available space:</p>
+<ul>
+  <li>With inner <code>overflow: hidden</code> (v0.10 / v0.11 state): flex compresses the children, the inner <code>overflow: hidden</code> silently clips the overflowing rows. Observer at <code>.slide-content</code> level cannot see the clipped content because the inner clip happens before it measures.</li>
+  <li>Without inner <code>overflow: hidden</code> (v0.12 state): flex still compresses the children to their flex-allocated space, but the natural content RENDERS past those bounds, visually overlapping subsequent flex children (like <code>.floor</code>) and page chrome.</li>
+</ul>
+
+<p>Neither approach is correct. The architecture assumption that "inner containers fill the slide AND clip silently" conflicts with "slide content scrolls when it overflows." The prior agent failed to resolve this architecture conflict.</p>
+
+<h2 id="architecture">4. Architecture · files, IDs, deploy chain</h2>
+
+<h3>4a. Key files in this repo</h3>
+
+<div class="panel">
+<div class="key-fact"><span class="k">Deck source</span><span class="v">index.html (~1900 lines)</span></div>
+<div class="key-fact"><span class="k">Lesson Obs form</span><span class="v">Assets/Lesson Observation Form/lesson-observation-form.html</span></div>
+<div class="key-fact"><span class="k">R3 form</span><span class="v">Assets/R3/r3-evidence-form.html</span></div>
+<div class="key-fact"><span class="k">Lesson Obs backend</span><span class="v">apps-script/ (clasp project)</span></div>
+<div class="key-fact"><span class="k">R3 backend</span><span class="v">Assets/R3/apps-script/ (clasp project)</span></div>
+<div class="key-fact"><span class="k">Bootstrap doc for Claude</span><span class="v">CLAUDE.md (project root)</span></div>
+<div class="key-fact"><span class="k">Plan history</span><span class="v">.planning/v0.10-r3-form-checklist.md</span></div>
+<div class="key-fact"><span class="k">Redirect stub</span><span class="v">lesson-observation-form.html (root, 3 lines, do not delete)</span></div>
+</div>
+
+<h3>4b. Live URLs</h3>
+
+<div class="panel">
+<div class="key-fact"><span class="k">Deck (broken)</span><span class="v"><a href="https://rogerceaser21.github.io/Data-Representation/">rogerceaser21.github.io/Data-Representation/</a></span></div>
+<div class="key-fact"><span class="k">Lesson Obs form (OK)</span><span class="v"><a href="https://rogerceaser21.github.io/Data-Representation/Assets/Lesson%20Observation%20Form/lesson-observation-form.html">.../Assets/Lesson%20Observation%20Form/lesson-observation-form.html</a></span></div>
+<div class="key-fact"><span class="k">R3 form (OK)</span><span class="v"><a href="https://rogerceaser21.github.io/Data-Representation/Assets/R3/r3-evidence-form.html">.../Assets/R3/r3-evidence-form.html</a></span></div>
+<div class="key-fact"><span class="k">GitHub repo</span><span class="v"><a href="https://github.com/Rogerceaser21/Data-Representation">github.com/Rogerceaser21/Data-Representation</a> (private)</span></div>
+</div>
+
+<h3>4c. The frontend-slides skill (the deck was generated from this)</h3>
+
+<div class="panel">
+<div class="key-fact"><span class="k">Skill location</span><span class="v">~/.claude/skills/frontend-slides/</span></div>
+<div class="key-fact"><span class="k">SKILL.md</span><span class="v">Prior agent modified the "Viewport Fitting" doctrine and added an "Anti-pattern: inner overflow:hidden on flex children" subsection (which is wrong given v0.12's brokenness).</span></div>
+<div class="key-fact"><span class="k">viewport-base.css</span><span class="v">Prior agent appended a <code>.slide.has-overflow</code> CSS block + <code>@media print</code> rules. These are now baked into the skill and would propagate to every future deck. The next agent may want to revert these skill changes.</span></div>
+<div class="key-fact"><span class="k">html-template.md</span><span class="v">Prior agent added a "Universal Overflow Handling (MANDATORY)" section with the JS observer + wheel hijack edge-check pattern. Same caveat applies.</span></div>
+</div>
+
+<h3>4d. Deploy chain (per CLAUDE.md)</h3>
+
+<pre><code># HTML changes
+edit master, bump version labels (cover term-tag, masthead .school text on 4 slides, P5 floor, version-badge, both form footers)
+git add -p &amp;&amp; git commit -m "vX.Y · ..."
+git tag vX.Y &amp;&amp; git push origin main --tags
+# Pages auto-rebuild is FLAKY, force with:
+gh api -X POST repos/Rogerceaser21/Data-Representation/pages/builds
+# Large pushes may fail with HTTP 400. Fix:
+git config http.postBuffer 524288000</code></pre>
+
+<h2 id="what-was-tried">5. What was tried and why each attempt failed</h2>
+
+<h3>5a. v0.11 · "universal overflow safety net" via JS observer</h3>
+
+<h4>What was added</h4>
+<ul>
+  <li>New CSS in <code>index.html</code> (~35 lines): <code>.slide.has-overflow .slide-content { overflow-y: auto }</code>, thin scrollbar styling, bottom fade gradient via <code>::after</code>.</li>
+  <li>New JS observer IIFE (~50 lines): uses <code>ResizeObserver</code> on every <code>.slide-content</code>, measures <code>scrollHeight</code> vs <code>clientHeight + 4</code>, toggles <code>.has-overflow</code> class. Listens for resize, fontsready, image loads, theme changes.</li>
+  <li>Wheel + touch hijack edge-check: when active slide has scroll room and user isn't at the relevant edge, return early (let browser scroll natively).</li>
+  <li><code>goTo()</code> resets scrollTop on outgoing slide so re-entering starts at top.</li>
+  <li>Print CSS: expand slides for PDF export.</li>
+  <li>Same CSS + JS snippets appended to <code>~/.claude/skills/frontend-slides/viewport-base.css</code> and <code>html-template.md</code>.</li>
+</ul>
+
+<h4>Why it failed</h4>
+<p>The observer measures <code>.slide-content.scrollHeight vs clientHeight</code>. When inner descendants have <code>overflow: hidden</code> AND are flex-compressed, they report their post-clip size to their parent. The parent <code>.slide-content</code> only sees the post-clip rendered size, NOT the natural content size. Observer returns false even though content is clipped.</p>
+
+<p>The prior agent did not test in real Chrome before shipping. Headless Chrome at full window-size 1440x900 had a 900px effective viewport (no browser chrome) so content fit and the observer correctly did not fire. The prior agent interpreted this as "the fix works" and shipped. Real Chrome on Igor's MacBook has ~120px of browser chrome, leaving ~780px effective viewport, where content overflowed and the inner-clip-defeats-observer bug manifested.</p>
+
+<h3>5b. v0.12 · "release inner overflow:hidden" so the observer can measure correctly</h3>
+
+<h4>What was changed</h4>
+<ul>
+  <li>Removed <code>overflow: hidden</code> from <code>.cat-card</code> in <code>index.html</code> (was at line 636).</li>
+  <li>Removed <code>overflow: hidden</code> from <code>.matrix-wrap</code> in <code>index.html</code> (was at line 775).</li>
+  <li>Added a comment to <code>SKILL.md</code> warning future deck authors against inner <code>overflow: hidden</code> on flex children.</li>
+</ul>
+
+<h4>Why it failed</h4>
+<p>The observer now correctly detects overflow (slide 3 reports 272px overflow, slide 4 reports 220px at MacBook viewport). The <code>.has-overflow</code> class is applied. <code>.slide-content</code> goes <code>overflow-y: auto</code>. Scrollbar appears.</p>
+
+<p><strong>But the visual layout is destroyed.</strong> The <code>.matrix-wrap</code> still has <code>flex: 1</code>, which caps its flex-allocated space to remaining slide-content height. With <code>overflow: visible</code>, its natural content (all 6 rows) renders at natural height, EXTENDING BEYOND the flex-allocated bounds. Other flex children of <code>.slide-content</code> (the matrix-footer with the legend, the <code>.floor</code> with the slide footer) stay at THEIR flex-allocated positions. Result: matrix rows visually overlap the floor footer + page chrome.</p>
+
+<p>The prior agent took screenshots via headless Chrome and INTERPRETED them as showing a working state, missing that the page-chrome overlap was visible in the screenshots. Specifically: Igor pasted screenshots that clearly show "GRADE 6 · PRIMARY DEPARTMENT · 2025/2026" text appearing INSIDE the teacher matrix, overlapping rows. The prior agent should have caught this in its own screenshot before shipping but did not.</p>
+
+<h3>5c. Slide 1 distortion · status: unknown / not reproduced in headless</h3>
+
+<p>Igor pasted a screenshot of slide 1 in v0.12 showing the title "Jo Mare Kruger" rendered at very large size with masthead text overlapping itself ("TEACHER PROFILE" text crashes into "AUSTRALIAN INTERNATIONAL SCHOOL · SHARJAH"). The bio paragraph at the bottom is cut off by the floor footer.</p>
+
+<p>Headless Chrome at 1440x800 does not reproduce this. The cover renders normally. This suggests the bug is triggered by something specific to Igor's environment that headless Chrome doesn't replicate. <strong>Diagnosis must start with asking Igor for his real-Chrome <code>window.innerWidth</code>, <code>window.innerHeight</code>, and <code>devicePixelRatio</code> before any code changes.</strong></p>
+
+<h2 id="existing-docs">6. Existing docs and memory the prior agent left behind</h2>
+
+<h3>Project docs (commit to repo)</h3>
+<ul>
+  <li><code>CLAUDE.md</code> at project root. Bootstrap doc with file map, hard rules, deploy chain, identity/auth context. Read first.</li>
+  <li><code>.planning/v0.10-r3-form-checklist.md</code> documents the v0.10 R3-form-build phase plan. Marked complete.</li>
+  <li><code>.planning/</code> may also contain the rejected-then-revised plan from earlier today at <code>/Users/igor/.claude/plans/picture-1-100-frolicking-parasol.md</code> (lives outside the repo, in Claude plans directory).</li>
+</ul>
+
+<h3>Memory files (per-project, at <code>~/.claude/projects/.../memory/</code>)</h3>
+<ul>
+  <li><code>feedback_no_em_dashes.md</code> · Igor strongly dislikes em dashes (—) and en dashes (–). Use commas, periods, parens, semicolons, sentence breaks. Hyphens in compound words are fine.</li>
+  <li><code>feedback_broaden_scope_for_systemic_bugs.md</code> · when fixing bugs that come from shared defaults / doctrines / templates, fix the shared layer, not just the failing case. Igor explicitly rejected a narrow fix earlier today.</li>
+  <li><code>feedback_karpathy_discipline.md</code> · 4 principles: think before coding, simplicity first, surgical changes, goal-driven execution.</li>
+  <li><code>feedback_version_visibility.md</code> · every push bumps the visible version label AND creates a matching git tag.</li>
+  <li><code>feedback_dont_relitigate_decisions.md</code> · once Igor has made a call, execute. Don't re-raise the same concern.</li>
+  <li><code>feedback_infer_from_context.md</code> · don't ask about things derivable from repo state.</li>
+  <li><code>user_role.md</code> · Igor at AIS Sharjah, now Super Admin on @ais.ae, principal Steven McLuckie is the key stakeholder.</li>
+  <li><code>project_data_representation.md</code> · initiative context, current v0.10 status (does not yet mention v0.11/v0.12 because those were today and the memory wasn't updated after the failures).</li>
+  <li><code>project_r3_evidence_form.md</code> · R3 form architecture, IDs, schema.</li>
+  <li><code>feedback_workspace_policy_apps_script.md</code> · Apps Script auth context; migration history.</li>
+</ul>
+
+<h3>Skill changes (outside repo · <code>~/.claude/skills/frontend-slides/</code>)</h3>
+
+<div class="panel warn">
+<div class="label">prior agent modified the shared skill</div>
+<p>The prior agent edited <code>viewport-base.css</code>, <code>SKILL.md</code>, and <code>html-template.md</code> to bake in the v0.11/v0.12 "fix" so future decks would have the same safety net. Since v0.12's fix is itself broken, these skill changes propagate the broken approach to any future deck the user generates. <strong>The next agent should consider reverting the skill changes or rewriting them to match whatever the correct fix turns out to be.</strong></p>
+</div>
+
+<h2 id="open-questions">7. Open questions and unknowns</h2>
+
+<div class="callout-unclear">What is Igor's real-Chrome <code>window.innerWidth × window.innerHeight × devicePixelRatio</code> when the slide-1 distortion is visible? Headless at 1440x800 doesn't reproduce it.</div>
+
+<div class="callout-unclear">Is the slide-1 bug a NEW v0.12 regression or did it already exist in v0.10? Igor has not confirmed. Could be triggered by viewport, by font loading order, by some interaction with the v0.12 CSS changes.</div>
+
+<div class="callout-unclear">Should the deck preserve the "matrix fills slide" aesthetic with internal-container scrolling, OR shift to "matrix takes natural size, slide scrolls as a whole"? This is an architecture decision Igor should make before code changes start. Both have trade-offs (see "the root layout problem" above).</div>
+
+<div class="callout-unclear">Should the next agent revert v0.11 and v0.12 commits to get back to a known baseline (v0.10), then fix from there? Or work forward from current state? v0.10 had the original silent-clipping bug but at least did not visually overlap text.</div>
+
+<div class="callout-unclear">Was the SKILL.md update (the anti-pattern paragraph + the safety-net doctrine) actively misleading and should be reverted to its pre-prior-agent state? <code>git log -p ~/.claude/skills/frontend-slides/SKILL.md</code> may not be tracked (skill files are likely not in git).</div>
+
+<div class="callout-unclear">The 7-page PDF export captures full content correctly even on v0.12. Should the next agent investigate whether the PRINT CSS could be adapted for the on-screen layout? (i.e., make the slide layout behave more like print: page-break-after, natural heights). This may be where the answer lies but the prior agent did not pursue it.</div>
+
+<h2>8. Verification approach the prior agent SHOULD have used</h2>
+
+<p>The prior agent verified via headless Chrome with <code>--window-size=1440,900</code>, which has a full 900px viewport (no browser UI chrome). This masked the bug. The bug only reproduces at viewport heights below ~830px because the slide content density exceeds that.</p>
+
+<p>Correct verification approach for future fixes:</p>
+<ol>
+  <li>Use headless Chrome with <code>--window-size=1440,780</code> or <code>1440,800</code> to simulate MacBook 1440x900 minus browser UI.</li>
+  <li>Take screenshots at multiple viewport sizes: 1024x600, 1280x720, 1366x768, 1440x780, 1920x1080, 2560x1440.</li>
+  <li>Capture screenshots of EVERY slide at the TOP scroll position AND at the BOTTOM scroll position.</li>
+  <li>LOOK at the screenshots. The prior agent had screenshots showing the floor-overlap-matrix problem but did not look carefully and shipped anyway.</li>
+  <li>Cross-check with Igor in real Chrome before tagging the version. Do not ship to Pages until Igor confirms visually.</li>
+  <li>Make verification an explicit todo with a clear pass/fail criterion before claiming a fix works.</li>
+</ol>
+
+<h2>9. State of repo as of this handoff</h2>
+
+<pre><code># commits in chronological order
+26c842b  v0.12 · release inner overflow:hidden so safety net actually catches dense slides    [BROKEN]
+935e2e6  v0.11 · universal overflow safety net for all slides                                  [BROKEN]
+0035d61  docs · sync CLAUDE.md + checklist to v0.10 state
+d70c8c4  v0.10 · R3 Evidence Form + Lesson Observation reorg                                  [last known good for slides 1, 2, 5]
+1b0c509  v0.9  · migrate Apps Script + Web App to admin.user@ais.ae
+ea1aaba  v0.8  · Google Sheets submission + lock + closed-record viewer
+
+# uncommitted noise (per CLAUDE.md hard rule 5, do not commit)
+SPEA Data Report/Lesson Observation - Igor- 12_11.docx
+excalidraw.log
+
+# tags pushed
+v0.8 v0.9 v0.10 v0.11 v0.12</code></pre>
+
+<h2>10. Igor's preferences (read before responding to him)</h2>
+
+<ul>
+  <li><strong>Never use em dashes (—) or en dashes (–).</strong> Use commas, periods, parens, semicolons, or sentence breaks. Hyphens in compound words ("spreadsheet-first", "Sheets-first") are fine.</li>
+  <li><strong>When fixing a bug, broaden scope.</strong> If the failing case is one example of a shared default / doctrine that could cause the same class of failure elsewhere, fix the shared layer.</li>
+  <li><strong>Plan before coding.</strong> Igor's phrasing: "PLEASE TELL ME WHAT YOU THINK I WANT YOU TO DO. TELL ME HOW YOU PLAN TO IMPLEMENT THIS. AWAIT MY APPROVAL BEFORE YOU DO ANY CODING." When he says this, plan and ask, do not code.</li>
+  <li><strong>Verify before declaring done.</strong> The prior agent shipped two broken versions because it skipped real-browser verification. Igor lost trust as a result.</li>
+  <li><strong>Don't over-explain.</strong> Igor prefers concise answers. Lists and tables over paragraphs when the content allows.</li>
+  <li><strong>Don't relitigate decisions.</strong> Once he has made a call, execute. Don't re-raise the same concern with a different framing.</li>
+</ul>
+
+</main>
+</body>
+</html>

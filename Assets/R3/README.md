@@ -72,7 +72,7 @@ Set up once in Gmail UI on the `admin.user@ais.ae` mailbox so submission emails 
 
 After the first deploy with the `script.send_mail` scope, open the script in the browser editor and run `forceAuth` once to grant the email permission.
 
-## Changelog · v0.30-v0.37
+## Changelog · v0.30-v0.44
 
 | Tag | What changed |
 |---|---|
@@ -84,6 +84,13 @@ After the first deploy with the `script.send_mail` scope, open the script in the
 | v0.35 | Proportion-band guide added as a separate block under the judgements table. Superseded by v0.36, do not reference. |
 | v0.36 | Proportion bands fused into the 1-6 judgement key under the Judgements heading: a 6-column key showing number + quality label + proportion term + percentage range. 6 = Minority = 0%-30%. The 7th band ("Few") is dropped since it does not fit a 6-point scale. |
 | v0.37 | Self-healing options fetch so the loading spinner can never hang for a stakeholder. Each fetch attempt is capped at 7s (`AbortController` + `setTimeout`, iOS 12.2+ safe), then silently retries behind the frosted overlay with no error UI; reloads once as a guarded last resort (`?_r=1`); and reloads on `pageshow` when restored from bfcache (the stale-iOS-tab cause of the earlier stuck-on-loading hang). **See hard rule 12 in `../../CLAUDE.md`.** |
+| v0.38 | Floating Agenda (top-left) + Check Teacher (top-right) quick-link pill buttons on the form, `target="_blank"` so entries are kept. |
+| v0.39 | Colour theme toggle moved to bottom-left; Check Teacher mirrors Agenda's inset. |
+| v0.40 | Check Teacher link uses `?gid` for reliable direct-tab landing on the Observed tracker tab. |
+| v0.41 | `02_doGet.gs getRecordById` formats Sheet date/time cells in the spreadsheet timezone (`HH:mm` / `yyyy-MM-dd`). Fixes blank Time in/out on closed-record views and an off-by-one observation date (midnight Dubai rendered via UTC). Redeployed in place @11. |
+| v0.42 | `encrypt.sh` now emits TWO artifacts: the encrypted form AND the ungated teacher viewer `r3-record.html` (master + `window.R3_VIEWER=true`). Viewer is record-link-only (`?id&token`); without a link it holds a calm landing card; no draft restore, no dropdown fetch, no error UI. Teachers never get the gate password. |
+| v0.43 | Inspector-tool hiding (Agenda / Check Teacher / New observation / Reset) rescoped from `body.is-locked` to `body.is-viewer`: `#btn-new` is a locked-state-only button by design, so keying on is-locked removed it for inspectors post-submit. |
+| v0.44 | Record views no longer pollute the shared localStorage draft: `saveForm` bails in any closed-record context (`CLOSED_RECORD_VIEW`); draft key bumped `ais-r3-form-v1` → `v2` (v1 deleted on load). **See hard rule 13 in `../../CLAUDE.md`.** |
 
 ## Full project context
 
