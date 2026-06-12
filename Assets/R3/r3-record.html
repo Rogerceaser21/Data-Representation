@@ -1345,12 +1345,13 @@ textarea.long-text:focus { border-color: var(--rate-success); }
 @media (hover: none) {
   .float-link:hover { border-color: var(--rule); color: var(--paper-dim); transform: none; }
 }
-/* v0.41: the locked (closed-record) view is the copy a teacher sees.
-   Inspector tools have no place there: quick-links, New observation, and
-   Reset (which would wipe the loaded record off the screen). */
-body.is-locked .float-link,
-body.is-locked #btn-new,
-body.is-locked #btn-reset { display: none; }
+/* v0.43: the teacher-viewer build (window.R3_VIEWER → body.is-viewer) hides
+   all inspector tools: quick-links, New observation, and Reset (which would
+   wipe the loaded record off the screen). Scoped to the viewer so inspectors
+   keep their post-submit New observation button on the gated form. */
+body.is-viewer .float-link,
+body.is-viewer #btn-new,
+body.is-viewer #btn-reset { display: none; }
 
 /* === Loading overlay (v0.31) ====================================== */
 .form-loading {
@@ -1841,7 +1842,7 @@ body.is-locked #btn-reset { display: none; }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.42</a></span>
+    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.43</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -2247,6 +2248,7 @@ body.is-locked #btn-reset { display: none; }
   // viewer (r3-record.html). That build only ever shows a record link's locked
   // view; with no ?id the frosted overlay stays up as a calm landing card and
   // nothing loads (no blank form, no dropdown options, no error UI).
+  if (window.R3_VIEWER) document.body.classList.add('is-viewer');
   const VIEWER_LANDING = !!window.R3_VIEWER && !new URLSearchParams(window.location.search).get('id');
   (function checkClosedRecord() {
     if (VIEWER_LANDING) {
