@@ -1842,7 +1842,7 @@ body.is-viewer #btn-reset { display: none; }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.43</a></span>
+    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.44</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -1907,7 +1907,15 @@ body.is-viewer #btn-reset { display: none; }
 
   /* === Persistence (localStorage) ================================= */
   const FORM = document.getElementById('r3-form');
-  const STORAGE_KEY = 'ais-r3-form-v1';
+  // v0.44: key bumped from v1. loadClosedRecord fires change events while
+  // populating, and autosave used to capture them, silently overwriting the
+  // shared draft with whichever record was being VIEWED (viewer and gated
+  // form share this origin). The v1 drafts are therefore polluted on any
+  // machine that opened a record link; orphan them and never save while a
+  // record view is showing (see CLOSED_RECORD_VIEW guard in saveForm).
+  const STORAGE_KEY = 'ais-r3-form-v2';
+  try { localStorage.removeItem('ais-r3-form-v1'); } catch (e) {}
+  const CLOSED_RECORD_VIEW = !!window.R3_VIEWER || new URLSearchParams(window.location.search).has('id');
   const statusEl = document.getElementById('save-status');
   let saveTimer = null;
 
@@ -1919,6 +1927,9 @@ body.is-viewer #btn-reset { display: none; }
   }
 
   function saveForm() {
+    // v0.44: a record view (teacher viewer, or the gated form opened with
+    // ?id) must never persist what it displays as a draft.
+    if (CLOSED_RECORD_VIEW) return;
     const data = {};
     FORM.querySelectorAll('input, textarea, select').forEach(el => {
       if (el.type === 'radio') {
