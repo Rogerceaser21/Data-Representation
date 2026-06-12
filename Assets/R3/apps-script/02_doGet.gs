@@ -62,10 +62,22 @@ function getRecordById(id, token) {
       if (!storedToken || !givenToken || storedToken !== givenToken) {
         return { success: false, error: 'Record not found' };
       }
+      // v0.41: Sheets auto-parses posted values into real date/time cells
+      // ("08:40" → time on the 1899-12-30 epoch; observation_date → midnight
+      // local). Raw Dates JSON-serialise as UTC ISO strings, which the form's
+      // <input type=time> silently rejects (blank Time in/out) and <input
+      // type=date> shifts a day. Format them in the sheet's timezone instead.
+      const tz = ss.getSpreadsheetTimeZone();
       const record = {};
       headers.forEach(function(h, j) {
+        var v = values[r][j];
         if (h === 'record_token') return;
-        record[h] = values[r][j];
+        if (v instanceof Date) {
+          v = v.getFullYear() < 1900
+            ? Utilities.formatDate(v, tz, 'HH:mm')
+            : Utilities.formatDate(v, tz, 'yyyy-MM-dd');
+        }
+        record[h] = v;
       });
       return { success: true, data: record };
     }

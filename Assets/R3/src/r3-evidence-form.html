@@ -1345,6 +1345,12 @@ textarea.long-text:focus { border-color: var(--rate-success); }
 @media (hover: none) {
   .float-link:hover { border-color: var(--rule); color: var(--paper-dim); transform: none; }
 }
+/* v0.41: the locked (closed-record) view is the copy a teacher sees.
+   Inspector tools have no place there: quick-links, New observation, and
+   Reset (which would wipe the loaded record off the screen). */
+body.is-locked .float-link,
+body.is-locked #btn-new,
+body.is-locked #btn-reset { display: none; }
 
 /* === Loading overlay (v0.31) ====================================== */
 .form-loading {
@@ -1835,7 +1841,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.40</a></span>
+    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.41</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
