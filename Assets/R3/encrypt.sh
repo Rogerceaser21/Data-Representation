@@ -49,3 +49,11 @@ mv "$TMP_DIR/r3-evidence-form.html" "$OUTPUT"
 rmdir "$TMP_DIR"
 
 echo "Encrypted to $OUTPUT"
+
+# Teacher viewer (v0.42): the same master, served ungated as r3-record.html.
+# window.R3_VIEWER makes the page record-link-only: without ?id it holds a
+# calm landing card; it never restores drafts or shows a blank form. Access
+# control for a record remains the per-record token enforced by doGet.
+VIEWER="r3-record.html"
+sed 's|<head>|<head><script>window.R3_VIEWER = true;</script>|' "$MASTER" > "$VIEWER"
+echo "Viewer written to $VIEWER"
