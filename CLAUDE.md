@@ -57,7 +57,10 @@ Data-Representation/                          github.com/Rogerceaser21/Data-Repr
 │       └── 2026-05-28_email_R3-Data...md     correspondence record (R3 kickoff email to Dave, CC Leon + Steve)
 ├── SPEA Data Report/                         worked-example source docs (Jo Mare Kruger portrait, OTP, probation form)
 ├── .planning/
-│   └── v0.10-r3-form-checklist.md            multi-phase plan + acceptance criteria + IDs
+│   ├── v0.10-r3-form-checklist.md            multi-phase plan + acceptance criteria + IDs
+│   ├── 2026-06-11-moderation-and-dashboard-plan.md   Jobs 0-3 (Job 0 + Job 1 done)
+│   └── 2026-06-12-dashboard-architecture-DECISIONS.md  AUTHORITATIVE grill record (Q1-Q11) for the Supabase dashboard
+├── dashboard-previews/                        dashboard design concepts · spea-dashboard.html = dashboard-v1 (parked); built from index.html slides 3-4
 ├── README.md                                 STALE (still describes v0.1 pitch only)
 ├── CLAUDE.md                                 this file
 └── .gitignore
