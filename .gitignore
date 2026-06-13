@@ -3,3 +3,7 @@
 .~lock*
 *.tmp
 node_modules/
+
+# Supabase / secrets — never commit env files
+*.env
+.env*
