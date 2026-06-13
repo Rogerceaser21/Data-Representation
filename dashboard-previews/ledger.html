@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AIS · The Ledger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=Newsreader:ital@0;1&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f3eee2; --paper2:#ece5d4; --ink:#15303b; --ink2:#4a5d63; --faint:#9b9277;
+    --gold:#c8941a; --line:rgba(21,48,59,.16);
+    --j1:#1f7a4d; --j2:#4f9d63; --j3:#cf9f1e; --j4:#d27a2c; --j5:#bf4d2d; --j6:#992619;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;overflow-x:hidden}
+  .grain{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+    background:radial-gradient(circle at 18% 12%,rgba(255,255,255,.5),transparent 38%),radial-gradient(circle at 84% 78%,rgba(200,148,26,.05),transparent 45%)}
+  .wrap{position:relative;z-index:1}
+  .masthead{max-width:1180px;margin:0 auto;padding:26px 6vw 0;display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid var(--ink);padding-bottom:14px}
+  .brand{font-family:'Fraunces',serif;font-weight:600;font-size:30px;letter-spacing:.02em}
+  .brand b{color:var(--gold)}
+  .issue{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink2);text-align:right;line-height:1.7}
+  .rainbow{max-width:1180px;margin:0 auto;height:3px;border-radius:2px;
+    background:linear-gradient(90deg,#cf5b4d,#d27a2c,#cf9f1e,#4f9d63,#3a7ca5,#6b5fc0)}
+  .hero{max-width:1180px;margin:0 auto;padding:8vh 6vw 6vh}
+  .eyebrow{font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:26px}
+  h1{font-family:'Fraunces',serif;font-weight:340;font-size:clamp(44px,8.5vw,118px);line-height:.96;letter-spacing:-.02em}
+  h1 .ln{display:block;overflow:hidden}
+  h1 .ln>span{display:inline-block;transform:translateY(110%)}
+  h1 em{font-family:'Newsreader',serif;font-style:italic;font-weight:400;color:var(--gold)}
+  .mark{position:relative;display:inline-block}
+  .mark svg{position:absolute;left:-2%;top:8%;width:104%;height:88%;overflow:visible;pointer-events:none}
+  .mark path{fill:none;stroke:var(--gold);stroke-width:7;stroke-linecap:round;opacity:.5;
+    stroke-dasharray:1000;stroke-dashoffset:1000}
+  .dek{font-family:'Newsreader',serif;font-size:clamp(17px,2vw,23px);color:var(--ink2);max-width:54ch;margin-top:34px;line-height:1.6;font-style:italic}
+  .figures{max-width:1180px;margin:0 auto;padding:2vh 6vw 9vh;display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--line)}
+  .fig{padding:30px 30px 0;border-right:1px solid var(--line)}
+  .fig:last-child{border-right:0}
+  .fig .n{font-family:'Fraunces',serif;font-weight:330;font-size:clamp(48px,7vw,92px);line-height:.9}
+  .fig .n small{font-size:.3em;color:var(--faint)}
+  .fig .c{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink2);margin-top:18px;max-width:24ch}
+  .band{background:var(--ink);color:var(--paper);padding:11vh 0;margin-top:2vh}
+  .band-in{max-width:1180px;margin:0 auto;padding:0 6vw}
+  .band h2{font-family:'Fraunces',serif;font-weight:330;font-size:clamp(28px,4.4vw,58px);letter-spacing:-.01em;color:var(--paper)}
+  .band p{color:#b9c6c2;font-family:'Newsreader',serif;font-style:italic;font-size:18px;margin-top:14px;max-width:50ch}
+  .timeline{display:flex;align-items:flex-end;gap:clamp(8px,2vw,26px);height:38vh;margin-top:7vh}
+  .col{flex:1;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end}
+  .col .b{width:100%;height:0;border-radius:5px 5px 0 0}
+  .col .v{font-family:'Fraunces',serif;font-size:clamp(18px,2.2vw,30px);color:var(--paper);margin-top:14px}
+  .col .s{font-size:11px;letter-spacing:.12em;color:#94a39f;margin-top:4px}
+  .roster{max-width:1180px;margin:0 auto;padding:10vh 6vw}
+  .roster h2{font-family:'Fraunces',serif;font-weight:340;font-size:clamp(26px,4vw,48px)}
+  .row{display:grid;grid-template-columns:1.1fr 1fr auto;align-items:center;gap:20px;padding:26px 0;border-bottom:1px solid var(--line)}
+  .row:first-of-type{border-top:1px solid var(--ink);margin-top:32px}
+  .row .nm{font-family:'Fraunces',serif;font-weight:380;font-size:clamp(20px,2.6vw,30px)}
+  .row .su{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink2)}
+  .row .sc{display:flex;gap:5px}
+  .row .sc i{width:17px;height:17px;border-radius:4px;display:block}
+  .end{max-width:1180px;margin:0 auto;padding:6vh 6vw 14vh;color:var(--ink2);font-family:'Newsreader',serif;font-style:italic;font-size:16px;text-align:center;border-top:1px solid var(--line)}
+  @media(max-width:680px){.figures,.row{grid-template-columns:1fr}.fig{border-right:0;border-bottom:1px solid var(--line);padding-bottom:24px}.row .sc{justify-content:flex-start}}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<div class="wrap">
+  <div class="masthead">
+    <div class="brand">AIS<b>.</b> Observation Ledger</div>
+    <div class="issue">Sharjah · Primary &amp; Secondary<br>Term 3 — Week 12</div>
+  </div>
+  <div class="rainbow"></div>
+
+  <div class="hero">
+    <div class="eyebrow" data-rise>The state of teaching, in evidence</div>
+    <h1>
+      <span class="ln"><span class="r">Eighty-two</span></span>
+      <span class="ln"><span class="r">per cent <em>seen,</em></span></span>
+      <span class="ln"><span class="r">and <span class="mark">counting<svg viewBox="0 0 300 60" preserveAspectRatio="none"><path d="M4 44 C 70 56, 232 56, 296 30" /></svg></span>.</span></span>
+    </h1>
+    <p class="dek" data-rise>A living record of every observation across the school. Not a snapshot for inspection week, a habit. Best score stands; the better of any two judgements is the one that counts.</p>
+  </div>
+
+  <div class="figures">
+    <div class="fig"><div class="n" data-to="118">0<small>/143</small></div><div class="c">teachers observed so far</div></div>
+    <div class="fig"><div class="n" data-to="245">0</div><div class="c">observations on record</div></div>
+    <div class="fig"><div class="n" style="color:var(--j1)" data-to="82">0<small>%</small></div><div class="c">of the school, covered</div></div>
+  </div>
+
+  <div class="band">
+    <div class="band-in">
+      <h2 data-rise>Where the judgements fall</h2>
+      <p data-rise>Six points on the SEAS scale. One is outstanding, six is the concern. This is the school speaking in a single breath.</p>
+      <div class="timeline" id="tl">
+        <div class="col"><div class="b" data-h="35" style="background:var(--j1)"></div><div class="v">182</div><div class="s">1 · Outstanding</div></div>
+        <div class="col"><div class="b" data-h="79" style="background:var(--j2)"></div><div class="v">410</div><div class="s">2 · Very good</div></div>
+        <div class="col"><div class="b" data-h="100" style="background:var(--j3)"></div><div class="v">520</div><div class="s">3 · Good</div></div>
+        <div class="col"><div class="b" data-h="46" style="background:var(--j4)"></div><div class="v">240</div><div class="s">4 · Acceptable</div></div>
+        <div class="col"><div class="b" data-h="19" style="background:var(--j5)"></div><div class="v">96</div><div class="s">5 · Weak</div></div>
+        <div class="col"><div class="b" data-h="7" style="background:var(--j6)"></div><div class="v">31</div><div class="s">6 · Very weak</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="roster">
+    <h2 data-rise>Read by name</h2>
+    <div class="row"><div><div class="nm">Amara Okonkwo</div></div><div class="su">Mathematics · Primary</div>
+      <div class="sc"><i style="background:var(--j2)"></i><i style="background:var(--j1)"></i><i style="background:var(--j1)"></i><i style="background:var(--j2)"></i><i style="background:var(--j1)"></i><i style="background:var(--j2)"></i><i style="background:var(--j2)"></i><i style="background:var(--j1)"></i></div></div>
+    <div class="row"><div><div class="nm">Daniel Whitfield</div></div><div class="su">Visual Arts · Secondary</div>
+      <div class="sc"><i style="background:var(--j3)"></i><i style="background:var(--j3)"></i><i style="background:var(--j2)"></i><i style="background:var(--j2)"></i><i style="background:var(--j3)"></i><i style="background:var(--j2)"></i><i style="background:var(--j3)"></i><i style="background:var(--j2)"></i></div></div>
+    <div class="row"><div><div class="nm">Priya Raman</div></div><div class="su">English · Primary</div>
+      <div class="sc"><i style="background:var(--j2)"></i><i style="background:var(--j3)"></i><i style="background:var(--j2)"></i><i style="background:var(--j2)"></i><i style="background:var(--j2)"></i><i style="background:var(--j3)"></i><i style="background:var(--j3)"></i><i style="background:var(--j2)"></i></div></div>
+  </div>
+
+  <div class="end">The Ledger · one of three concepts for the AIS assessment dashboard</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+gsap.registerPlugin(ScrollTrigger);
+const intro=gsap.timeline({defaults:{ease:'expo.out'}});
+intro.from('.masthead',{y:-30,opacity:0,duration:1})
+     .from('.rainbow',{scaleX:0,transformOrigin:'left',duration:1.1,ease:'power3.inOut'},'-=0.7')
+     .to('.hero h1 .r',{y:'0%',duration:1.3,stagger:0.14},'-=0.5')
+     .to('.mark path',{strokeDashoffset:0,duration:1.1,ease:'power2.inOut'},'-=0.3');
+gsap.utils.toArray('[data-rise]').forEach(el=>{
+  gsap.from(el,{y:30,opacity:0,duration:1,ease:'expo.out',scrollTrigger:{trigger:el,start:'top 88%'}});
+});
+document.querySelectorAll('.n,.fig .n').forEach(el=>{
+  const to=+el.dataset.to, suf=el.querySelector('small')?el.querySelector('small').outerHTML:'';
+  ScrollTrigger.create({trigger:el,start:'top 90%',once:true,onEnter:()=>{
+    gsap.to({v:0},{v:to,duration:1.7,ease:'power2.out',onUpdate:function(){el.innerHTML=Math.round(this.targets()[0].v)+suf}})}});
+});
+gsap.utils.toArray('#tl .b').forEach((b,i)=>{
+  gsap.to(b,{height:b.dataset.h+'%',duration:1.2,ease:'power3.out',delay:i*0.06,scrollTrigger:{trigger:'#tl',start:'top 78%'}});
+});
+gsap.utils.toArray('.row').forEach(r=>{
+  gsap.from(r,{y:26,opacity:0,duration:0.9,ease:'expo.out',scrollTrigger:{trigger:r,start:'top 90%'}});
+  gsap.from(r.querySelectorAll('.sc i'),{scale:0,opacity:0,duration:0.5,stagger:0.05,ease:'back.out(2)',scrollTrigger:{trigger:r,start:'top 86%'}});
+});
+</script>
+</body>
+</html>

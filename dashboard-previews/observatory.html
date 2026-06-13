@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AIS · Observatory</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#07171f; --navy2:#0c2532; --ink:#eaf2f6; --dim:#7e98a6;
+    --gold:#ffc72c; --teal:#5dcaa5;
+    --j1:#2bb37a; --j2:#5dcaa5; --j3:#ffc72c; --j4:#ef9f4a; --j5:#e2614a; --j6:#b8342a;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--navy);color:var(--ink);font-family:'Inter',sans-serif;overflow-x:hidden}
+  #space{position:fixed;inset:0;z-index:0}
+  .veil{position:fixed;inset:0;z-index:1;pointer-events:none;
+    background:radial-gradient(120% 80% at 50% 0%,rgba(7,23,31,0) 40%,rgba(7,23,31,.65) 100%)}
+  .wrap{position:relative;z-index:2}
+  section{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:7vw 8vw;max-width:1200px;margin:0 auto}
+  .kicker{font-size:12px;letter-spacing:.34em;text-transform:uppercase;color:var(--gold);margin-bottom:22px;opacity:0}
+  .swoosh{height:3px;width:140px;border-radius:3px;margin:26px 0 0;
+    background:linear-gradient(90deg,#e24b4a,#f08a3c,#ffc72c,#5dcaa5,#3a8fd0,#7b6cd9);
+    box-shadow:0 0 26px rgba(255,199,44,.5);transform:scaleX(0);transform-origin:left}
+  h1{font-family:'Fraunces',serif;font-weight:340;font-size:clamp(40px,7vw,92px);line-height:1.02;letter-spacing:-.015em}
+  h1 em{font-style:italic;color:var(--gold)}
+  .lead{font-size:clamp(15px,1.6vw,19px);color:var(--dim);max-width:46ch;margin-top:26px;line-height:1.7}
+  .word{display:inline-block;transform:translateY(120%);opacity:0}
+  .word i{font-style:inherit;display:inline-block}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:8vh;border-top:1px solid rgba(255,255,255,.12)}
+  .stat{padding:30px 26px 0;border-right:1px solid rgba(255,255,255,.12)}
+  .stat:last-child{border-right:0}
+  .num{font-family:'Fraunces',serif;font-weight:330;font-size:clamp(46px,6vw,76px);line-height:1}
+  .num small{font-size:.34em;color:var(--dim)}
+  .stat .lbl{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-top:14px}
+  .scrollcue{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);z-index:3;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--dim);animation:bob 2.2s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translate(-50%,0);opacity:.5}50%{transform:translate(-50%,8px);opacity:1}}
+  .sec-h{font-family:'Fraunces',serif;font-weight:340;font-size:clamp(28px,4vw,52px);letter-spacing:-.01em}
+  .sec-sub{color:var(--dim);margin-top:12px;font-size:15px}
+  .profile{display:flex;align-items:flex-end;gap:clamp(10px,2.4vw,30px);height:46vh;margin-top:8vh}
+  .bar{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center}
+  .bar .fill{width:100%;border-radius:6px 6px 0 0;height:0;box-shadow:0 0 30px -4px currentColor}
+  .bar .bn{font-family:'Fraunces',serif;font-size:clamp(20px,2.4vw,34px);margin-top:14px}
+  .bar .bc{font-size:12px;color:var(--dim);margin-top:4px;letter-spacing:.1em}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;margin-top:7vh}
+  .card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:18px;padding:24px 24px 22px;backdrop-filter:blur(8px);opacity:0;transform:translateY(40px)}
+  .card .av{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,#163a4b,#0c2532);border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:18px;color:var(--gold)}
+  .card h3{font-family:'Fraunces',serif;font-weight:380;font-size:23px;margin-top:18px}
+  .card .meta{color:var(--dim);font-size:13px;margin-top:4px}
+  .chips{display:flex;gap:5px;margin-top:18px}
+  .chip{flex:1;height:9px;border-radius:5px;opacity:.92}
+  .foot{padding:8vh 8vw 12vh;text-align:center;color:var(--dim);font-size:13px}
+  .foot .swoosh{margin:0 auto 30px}
+</style>
+</head>
+<body>
+<canvas id="space"></canvas>
+<div class="veil"></div>
+<div class="scrollcue" id="cue">scroll</div>
+
+<div class="wrap">
+  <section id="hero">
+    <div class="kicker" id="k1">AIS Sharjah · Teacher Observation</div>
+    <h1 id="head">
+      <span class="word"><i>245</i></span> <span class="word"><i>observations.</i></span><br>
+      <span class="word"><i>118</i></span> <span class="word"><i>teachers.</i></span><br>
+      <span class="word"><i>One</i></span> <span class="word"><i><em>constellation.</em></i></span>
+    </h1>
+    <div class="swoosh" id="sw1"></div>
+    <p class="lead" id="lead">Every point of light is a teacher this term. The lit ones have been seen. Term 3, Week 12.</p>
+    <div class="stats" id="stats">
+      <div class="stat"><div class="num" data-to="118">0<small>/143</small></div><div class="lbl">Teachers observed</div></div>
+      <div class="stat"><div class="num" data-to="245">0</div><div class="lbl">Observations logged</div></div>
+      <div class="stat"><div class="num" style="color:var(--teal)" data-to="82">0<small>%</small></div><div class="lbl">Coverage to date</div></div>
+    </div>
+  </section>
+
+  <section id="prof">
+    <div class="sec-h">The judgement profile</div>
+    <div class="sec-sub">Best score per criterion, where 1 is outstanding and 6 is the concern. SEAS performance standards.</div>
+    <div class="profile" id="profile">
+      <div class="bar"><div class="fill" data-h="34" style="background:var(--j1);color:var(--j1)"></div><div class="bn">1</div><div class="bc">182</div></div>
+      <div class="bar"><div class="fill" data-h="78" style="background:var(--j2);color:var(--j2)"></div><div class="bn">2</div><div class="bc">410</div></div>
+      <div class="bar"><div class="fill" data-h="100" style="background:var(--j3);color:var(--j3)"></div><div class="bn">3</div><div class="bc">520</div></div>
+      <div class="bar"><div class="fill" data-h="46" style="background:var(--j4);color:var(--j4)"></div><div class="bn">4</div><div class="bc">240</div></div>
+      <div class="bar"><div class="fill" data-h="20" style="background:var(--j5);color:var(--j5)"></div><div class="bn">5</div><div class="bc">96</div></div>
+      <div class="bar"><div class="fill" data-h="8" style="background:var(--j6);color:var(--j6)"></div><div class="bn">6</div><div class="bc">31</div></div>
+    </div>
+  </section>
+
+  <section id="teach">
+    <div class="sec-h">Seen this week</div>
+    <div class="sec-sub">Each teacher's own evidence. Click through, in the real thing, to every note and score.</div>
+    <div class="cards" id="cards">
+      <div class="card"><div class="av">AO</div><h3>Amara Okonkwo</h3><div class="meta">Mathematics · Primary</div>
+        <div class="chips"><span class="chip" style="background:var(--j2)"></span><span class="chip" style="background:var(--j1)"></span><span class="chip" style="background:var(--j1)"></span><span class="chip" style="background:var(--j2)"></span><span class="chip" style="background:var(--j1)"></span><span class="chip" style="background:var(--j2)"></span><span class="chip" style="background:var(--j2)"></span><span class="chip" style="background:var(--j1)"></span></div></div>
+      <div class="card"><div class="av">DW</div><h3>Daniel Whitfield</h3><div class="meta">Visual Arts · Secondary</div>
+        <div class="chips"><span class="chip" style="background:var(--j3)"></span><span class="chip" style="background:var(--j3)"></span><span class="chip" style="background:var(--j2)"></span><span class="chip" style="background:var(--j2)"></span><span class="chip" style="background:var(--j3)"></span><span class="chip" style="background:var(--j2)"></span><span class="chip" style="background:var(--j3)"></span><span class="chip" style="background:var(--j2)"></span></div></div>
+      <div class="card"><div class="av">PR</div><h3>Priya Raman</h3><div class="meta">English · Primary</div>
+        <div class="chips"><span class="chip" style="background:var(--j2)"></span><span class="chip" style="background:var(--j3)"></span><span class="chip" style="background:var(--j2)"></span><span class="chip" style="background:var(--j2)"></span><span class="chip" style="background:var(--j2)"></span><span class="chip" style="background:var(--j3)"></span><span class="chip" style="background:var(--j3)"></span><span class="chip" style="background:var(--j2)"></span></div></div>
+    </div>
+  </section>
+
+  <div class="foot"><div class="swoosh" style="transform:scaleX(1)"></div>Observatory · one of three concepts · AIS Sharjah assessment dashboard</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+/* ---- three.js constellation of teachers ---- */
+const cv=document.getElementById('space');
+const rndr=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});
+rndr.setPixelRatio(Math.min(devicePixelRatio,2));
+const scene=new THREE.Scene();
+const cam=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,0.1,100);
+cam.position.z=26;
+const N=143, OBS=118;
+const geo=new THREE.BufferGeometry();
+const pos=new Float32Array(N*3), col=new Float32Array(N*3), siz=new Float32Array(N);
+const lit=new THREE.Color('#ffd86b'), gold=new THREE.Color('#5dcaa5'), dim=new THREE.Color('#28465a');
+for(let i=0;i<N;i++){
+  const r=9+Math.random()*13, a=Math.random()*Math.PI*2, z=(Math.random()-.5)*16;
+  pos[i*3]=Math.cos(a)*r; pos[i*3+1]=Math.sin(a)*r*0.62; pos[i*3+2]=z;
+  const c=i<OBS?(Math.random()<.5?lit:gold):dim;
+  col[i*3]=c.r; col[i*3+1]=c.g; col[i*3+2]=c.b;
+  siz[i]=i<OBS?(1.7+Math.random()*1.6):0.9;
+}
+geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+geo.setAttribute('color',new THREE.BufferAttribute(col,3));
+geo.setAttribute('size',new THREE.BufferAttribute(siz,1));
+const sprite=(()=>{const c=document.createElement('canvas');c.width=c.height=64;const x=c.getContext('2d');
+  const g=x.createRadialGradient(32,32,0,32,32,32);g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.3,'rgba(255,255,255,.7)');g.addColorStop(1,'rgba(255,255,255,0)');
+  x.fillStyle=g;x.beginPath();x.arc(32,32,32,0,7);x.fill();return new THREE.CanvasTexture(c)})();
+const mat=new THREE.PointsMaterial({size:0.9,map:sprite,vertexColors:true,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,sizeAttenuation:true});
+const stars=new THREE.Points(geo,mat); scene.add(stars);
+const far=new THREE.BufferGeometry(); const fp=new Float32Array(600*3);
+for(let i=0;i<600;i++){fp[i*3]=(Math.random()-.5)*120;fp[i*3+1]=(Math.random()-.5)*80;fp[i*3+2]=-20-Math.random()*40}
+far.setAttribute('position',new THREE.BufferAttribute(fp,3));
+scene.add(new THREE.Points(far,new THREE.PointsMaterial({size:0.18,color:0x9fb6c4,transparent:true,opacity:.5})));
+let mx=0,my=0; addEventListener('mousemove',e=>{mx=(e.clientX/innerWidth-.5);my=(e.clientY/innerHeight-.5)});
+let scrollY=0; addEventListener('scroll',()=>scrollY=pageYOffset);
+function resize(){rndr.setSize(innerWidth,innerHeight);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix()}
+resize(); addEventListener('resize',resize);
+(function loop(t){
+  stars.rotation.z=t*0.00003; stars.rotation.y=t*0.00002+mx*0.4;
+  cam.position.x+=(mx*6-cam.position.x)*0.04; cam.position.y+=(-my*4-cam.position.y)*0.04;
+  cam.position.z=26+scrollY*0.004; cam.lookAt(0,0,0);
+  rndr.render(scene,cam); requestAnimationFrame(loop);
+})(0);
+
+/* ---- GSAP intro + scroll ---- */
+gsap.registerPlugin(ScrollTrigger);
+const tl=gsap.timeline({defaults:{ease:'expo.out'}});
+tl.to('#k1',{opacity:1,duration:1},0.2)
+  .to('.word',{y:'0%',opacity:1,duration:1.3,stagger:0.09},0.3)
+  .to('#sw1',{scaleX:1,duration:1.1,ease:'power3.inOut'},0.9)
+  .to('#lead',{opacity:1,y:0,duration:1},'-=0.6');
+gsap.set('#lead',{y:20});
+document.querySelectorAll('.num').forEach(el=>{
+  const to=+el.dataset.to, suf=el.querySelector('small')?el.querySelector('small').outerHTML:'';
+  ScrollTrigger.create({trigger:el,start:'top 88%',once:true,onEnter:()=>{
+    gsap.to({v:0},{v:to,duration:1.6,ease:'power2.out',onUpdate:function(){el.innerHTML=Math.round(this.targets()[0].v)+suf}})
+  }});
+});
+gsap.utils.toArray('#profile .fill').forEach((f,i)=>{
+  gsap.to(f,{height:f.dataset.h+'%',duration:1.2,ease:'power3.out',delay:i*0.07,
+    scrollTrigger:{trigger:'#profile',start:'top 75%'}});
+});
+gsap.utils.toArray('.card').forEach((c,i)=>{
+  gsap.to(c,{opacity:1,y:0,duration:1,ease:'expo.out',delay:i*0.12,scrollTrigger:{trigger:'#cards',start:'top 80%'}});
+});
+gsap.to('#cue',{opacity:0,scrollTrigger:{trigger:'#prof',start:'top 90%'}});
+gsap.utils.toArray('.sec-h,.sec-sub').forEach(el=>{
+  gsap.from(el,{y:34,opacity:0,duration:1,ease:'expo.out',scrollTrigger:{trigger:el,start:'top 86%'}});
+});
+</script>
+</body>
+</html>

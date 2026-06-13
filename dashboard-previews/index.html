@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AIS Dashboard · Three Concepts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,400&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#15303b;--ink2:#5d6f78;--gold:#c8941a}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#f3eee2;color:var(--ink);font-family:'Inter',sans-serif;min-height:100vh;padding:7vh 6vw}
+  .rainbow{height:3px;width:150px;border-radius:2px;background:linear-gradient(90deg,#cf5b4d,#d27a2c,#cf9f1e,#4f9d63,#3a7ca5,#6b5fc0);margin-bottom:28px}
+  .eye{font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+  h1{font-family:'Fraunces',serif;font-weight:340;font-size:clamp(34px,5.5vw,60px);line-height:1.02;letter-spacing:-.015em;max-width:18ch}
+  h1 em{font-style:italic;color:var(--gold)}
+  p.lead{color:var(--ink2);font-size:16px;max-width:60ch;margin-top:20px;line-height:1.7}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;margin-top:46px}
+  a.card{display:block;text-decoration:none;color:inherit;background:#fff;border:1px solid #e6dfce;border-radius:18px;padding:26px 24px;transition:transform .25s ease,box-shadow .25s ease}
+  a.card:hover{transform:translateY(-4px);box-shadow:0 18px 40px -20px rgba(21,48,59,.35)}
+  .tag{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink2)}
+  .swatch{display:flex;gap:6px;margin:16px 0 18px}
+  .swatch i{width:26px;height:26px;border-radius:8px;display:block}
+  h2{font-family:'Fraunces',serif;font-weight:420;font-size:24px;margin-bottom:6px}
+  .desc{font-size:13.5px;color:var(--ink2);line-height:1.6}
+  .go{margin-top:18px;font-size:13px;font-weight:500;color:var(--gold)}
+  .foot{margin-top:40px;font-size:13px;color:var(--ink2)}
+</style>
+</head>
+<body>
+  <div class="rainbow"></div>
+  <div class="eye">AIS Sharjah · Assessment dashboard</div>
+  <h1>Three ways it could <em>feel</em>.</h1>
+  <p class="lead">Same data, three art directions. Open each, scroll, and let the motion play. Sample numbers and fictional names; the real thing draws from live observations behind login.</p>
+
+  <div class="cards">
+    <a class="card" href="observatory.html">
+      <div class="tag">Concept 01</div>
+      <div class="swatch"><i style="background:#0a1622"></i><i style="background:#ffc72c"></i><i style="background:#5dcaa5"></i></div>
+      <h2>Observatory</h2>
+      <div class="desc">Dark and cinematic. A living three.js constellation of every teacher, editorial type, glowing judgement bars. The governors-in-a-dark-room showpiece.</div>
+      <div class="go">Open concept &rsaquo;</div>
+    </a>
+    <a class="card" href="ledger.html">
+      <div class="tag">Concept 02</div>
+      <div class="swatch"><i style="background:#f3eee2;border:1px solid #e0d8c4"></i><i style="background:#15303b"></i><i style="background:#c8941a"></i></div>
+      <h2>The Ledger</h2>
+      <div class="desc">Editorial paper, alive. Kinetic serif headlines, a marker-sweep on the numbers that matter, read-by-name roster. Prestige and gravitas.</div>
+      <div class="go">Open concept &rsaquo;</div>
+    </a>
+    <a class="card" href="console.html">
+      <div class="tag">Concept 03</div>
+      <div class="swatch"><i style="background:#eef1f4;border:1px solid #dfe3e8"></i><i style="background:#12303d"></i><i style="background:#1f9d6b"></i></div>
+      <h2>The Console</h2>
+      <div class="desc">A premium product. Click Whole school / Primary / Secondary and watch every number, the ring, and the bars morph. The daily driver.</div>
+      <div class="go">Open concept &rsaquo;</div>
+    </a>
+  </div>
+
+  <div class="foot">Pick the feel (or a blend). Then we push it further with real data and full motion.</div>
+</body>
+</html>

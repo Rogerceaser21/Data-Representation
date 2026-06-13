@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AIS · The Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#eef1f4; --panel:#ffffff; --ink:#13242e; --ink2:#5d6f78; --faint:#93a1a8;
+    --navy:#12303d; --gold:#f0b011; --line:#e3e7ec;
+    --j1:#1f9d6b;--j2:#54b27f;--j3:#e8b62e;--j4:#e3923f;--j5:#d4593c;--j6:#a82e22;
+    --shadow:0 1px 2px rgba(19,36,46,.05),0 8px 30px -12px rgba(19,36,46,.18);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased}
+  .app{display:grid;grid-template-columns:230px 1fr;min-height:100vh;max-width:1280px;margin:0 auto}
+  .side{padding:22px 16px;border-right:1px solid var(--line);position:sticky;top:0;height:100vh}
+  .logo{display:flex;align-items:center;gap:10px;padding:6px 10px 22px}
+  .logo .m{width:34px;height:34px;border-radius:10px;background:var(--navy);color:var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:600;font-size:16px}
+  .logo b{font-weight:600;font-size:15px}.logo small{display:block;color:var(--faint);font-size:11px;font-weight:400}
+  .nav a{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;color:var(--ink2);text-decoration:none;font-size:14px;font-weight:500;margin-bottom:2px}
+  .nav a.on{background:var(--panel);color:var(--ink);box-shadow:var(--shadow)}
+  .nav a .d{width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.4}
+  .nav a.on .d{opacity:1;background:var(--gold)}
+  .main{padding:26px 30px 60px;opacity:0}
+  .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+  .top h1{font-family:'Fraunces',serif;font-weight:480;font-size:26px}
+  .top .sub{color:var(--ink2);font-size:13px;margin-top:2px}
+  .seg{display:inline-flex;background:#e4e8ec;border-radius:11px;padding:4px}
+  .seg button{border:0;background:transparent;font:inherit;font-size:13px;font-weight:500;color:var(--ink2);padding:7px 15px;border-radius:8px;cursor:pointer;transition:color .2s}
+  .seg button.on{background:var(--panel);color:var(--ink);box-shadow:var(--shadow)}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px 18px;box-shadow:var(--shadow)}
+  .kpi .lbl{font-size:12px;color:var(--ink2);font-weight:500}
+  .kpi .v{font-family:'Fraunces',serif;font-weight:480;font-size:34px;margin-top:8px;line-height:1}
+  .kpi .v small{font-size:.42em;color:var(--faint)}
+  .kpi .t{font-size:12px;margin-top:8px;color:var(--j1);font-weight:500}
+  .span2{grid-column:span 2}.span4{grid-column:span 4}
+  .ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+  .ch h3{font-size:14px;font-weight:600}.ch span{font-size:12px;color:var(--faint)}
+  .bars{display:flex;align-items:flex-end;gap:14px;height:170px}
+  .bars .col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
+  .bars .bar{width:100%;border-radius:7px 7px 0 0;height:6px}
+  .bars .bl{font-size:13px;color:var(--ink2);margin-top:9px;font-weight:500}
+  .bars .bv{font-size:11px;color:var(--faint);margin-top:2px}
+  .ring-wrap{display:flex;align-items:center;gap:18px}
+  .ring{position:relative;width:128px;height:128px;flex:0 0 auto}
+  .ring svg{transform:rotate(-90deg)}
+  .ring .mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .ring .mid b{font-family:'Fraunces',serif;font-weight:500;font-size:30px}
+  .ring .mid s{font-size:11px;color:var(--ink2);text-decoration:none}
+  .leg div{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--ink2);margin:7px 0}
+  .leg i{width:10px;height:10px;border-radius:3px}
+  .tlist .r{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);cursor:pointer;border-radius:8px;transition:background .15s}
+  .tlist .r:last-child{border-bottom:0}
+  .tlist .r:hover{background:#f6f8fa}
+  .tlist .av{width:36px;height:36px;border-radius:11px;background:#eaf0f1;color:var(--navy);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;flex:0 0 auto}
+  .tlist .nm{font-size:14px;font-weight:500}.tlist .mt{font-size:12px;color:var(--ink2)}
+  .tlist .sc{display:flex;gap:4px;margin-left:auto}.tlist .sc i{width:13px;height:13px;border-radius:4px}
+  .tag{font-size:11px;font-weight:500;padding:3px 9px;border-radius:20px;background:#eef6f1;color:var(--j1)}
+  @media(max-width:820px){.app{grid-template-columns:1fr}.side{display:none}.grid{grid-template-columns:repeat(2,1fr)}.span4{grid-column:span 2}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="logo"><div class="m">A</div><div><b>Console</b><small>AIS observations</small></div></div>
+    <nav class="nav">
+      <a class="on"><span class="d"></span>Coverage</a>
+      <a><span class="d"></span>Quality</a>
+      <a><span class="d"></span>Teachers</a>
+      <a><span class="d"></span>Departments</a>
+      <a><span class="d"></span>SEF · governors</a>
+    </nav>
+  </aside>
+
+  <main class="main" id="main">
+    <div class="top">
+      <div><h1>Coverage</h1><div class="sub">Term 3 · Week 12 · best score stands</div></div>
+      <div class="seg" id="seg">
+        <button class="on" data-k="all">Whole school</button>
+        <button data-k="pri">Primary</button>
+        <button data-k="sec">Secondary</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card kpi"><div class="lbl">Teachers observed</div><div class="v" data-kpi="obs">0<small id="den">/143</small></div><div class="t" id="tr1">▲ on track</div></div>
+      <div class="card kpi"><div class="lbl">Observations</div><div class="v" data-kpi="logs">0</div><div class="t" id="tr2">+38 this week</div></div>
+      <div class="card kpi"><div class="lbl">Coverage</div><div class="v" data-kpi="cov" style="color:var(--j1)">0<small>%</small></div><div class="t">of the cohort</div></div>
+      <div class="card kpi"><div class="lbl">Median judgement</div><div class="v" data-kpi="med">0</div><div class="t" style="color:var(--ink2)">1 best · 6 concern</div></div>
+
+      <div class="card span2">
+        <div class="ch"><h3>Judgement profile</h3><span>best score per criterion</span></div>
+        <div class="bars" id="bars">
+          <div class="col"><div class="bar" style="background:var(--j1)" data-set="35,28,44"></div><div class="bl">1</div><div class="bv">182</div></div>
+          <div class="col"><div class="bar" style="background:var(--j2)" data-set="79,86,68"></div><div class="bl">2</div><div class="bv">410</div></div>
+          <div class="col"><div class="bar" style="background:var(--j3)" data-set="100,100,92"></div><div class="bl">3</div><div class="bv">520</div></div>
+          <div class="col"><div class="bar" style="background:var(--j4)" data-set="46,38,60"></div><div class="bl">4</div><div class="bv">240</div></div>
+          <div class="col"><div class="bar" style="background:var(--j5)" data-set="19,14,30"></div><div class="bl">5</div><div class="bv">96</div></div>
+          <div class="col"><div class="bar" style="background:var(--j6)" data-set="7,4,13"></div><div class="bl">6</div><div class="bv">31</div></div>
+        </div>
+      </div>
+
+      <div class="card span2">
+        <div class="ch"><h3>Observed vs remaining</h3><span id="ringcap">whole school</span></div>
+        <div class="ring-wrap">
+          <div class="ring">
+            <svg width="128" height="128" viewBox="0 0 128 128">
+              <circle cx="64" cy="64" r="54" fill="none" stroke="#e9edf0" stroke-width="15"/>
+              <circle id="ringc" cx="64" cy="64" r="54" fill="none" stroke="var(--j1)" stroke-width="15" stroke-linecap="round" stroke-dasharray="339.3" stroke-dashoffset="339.3"/>
+            </svg>
+            <div class="mid"><b id="ringpct">0%</b><s>covered</s></div>
+          </div>
+          <div class="leg">
+            <div><i style="background:var(--j1)"></i><span id="legobs">observed</span></div>
+            <div><i style="background:#e9edf0"></i><span id="legrem">remaining</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card span4">
+        <div class="ch"><h3>Recently observed</h3><span>click a teacher to open their record</span></div>
+        <div class="tlist" id="tlist">
+          <div class="r"><div class="av">AO</div><div><div class="nm">Amara Okonkwo</div><div class="mt">Mathematics · Primary</div></div><span class="tag">best 1.4</span><div class="sc"><i style="background:var(--j2)"></i><i style="background:var(--j1)"></i><i style="background:var(--j1)"></i><i style="background:var(--j2)"></i><i style="background:var(--j1)"></i><i style="background:var(--j2)"></i><i style="background:var(--j2)"></i><i style="background:var(--j1)"></i></div></div>
+          <div class="r"><div class="av">DW</div><div><div class="nm">Daniel Whitfield</div><div class="mt">Visual Arts · Secondary</div></div><span class="tag" style="background:#fcf3df;color:#9a6a00">best 2.6</span><div class="sc"><i style="background:var(--j3)"></i><i style="background:var(--j3)"></i><i style="background:var(--j2)"></i><i style="background:var(--j2)"></i><i style="background:var(--j3)"></i><i style="background:var(--j2)"></i><i style="background:var(--j3)"></i><i style="background:var(--j2)"></i></div></div>
+          <div class="r"><div class="av">PR</div><div><div class="nm">Priya Raman</div><div class="mt">English · Primary</div></div><span class="tag">best 2.1</span><div class="sc"><i style="background:var(--j2)"></i><i style="background:var(--j3)"></i><i style="background:var(--j2)"></i><i style="background:var(--j2)"></i><i style="background:var(--j2)"></i><i style="background:var(--j3)"></i><i style="background:var(--j3)"></i><i style="background:var(--j2)"></i></div></div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+const DATA={
+  all:{obs:118,den:143,logs:245,cov:82,med:3,col:0,cap:'whole school'},
+  pri:{obs:71,den:84,logs:151,cov:85,med:2,col:1,cap:'primary'},
+  sec:{obs:39,den:47,logs:78,cov:83,med:3,col:2,cap:'secondary'}
+};
+const C=2*Math.PI*54;
+function setNum(sel,to,suf){const el=document.querySelector(sel);
+  gsap.to({v:parseFloat(el.dataset._v||0)},{v:to,duration:1,ease:'power2.out',onUpdate:function(){
+    el.firstChild.nodeValue=Math.round(this.targets()[0].v)+''},onComplete:()=>el.dataset._v=to})}
+function render(k,first){
+  const d=DATA[k];
+  setNum('[data-kpi=obs]',d.obs); document.getElementById('den').textContent='/'+d.den;
+  setNum('[data-kpi=logs]',d.logs); setNum('[data-kpi=cov]',d.cov); setNum('[data-kpi=med]',d.med);
+  gsap.to('#ringc',{strokeDashoffset:C*(1-d.cov/100),duration:1,ease:'power3.out'});
+  gsap.to({v:parseFloat(document.getElementById('ringpct').dataset._v||0)},{v:d.cov,duration:1,ease:'power2.out',
+    onUpdate:function(){const x=Math.round(this.targets()[0].v);document.getElementById('ringpct').textContent=x+'%';document.getElementById('ringpct').dataset._v=x}});
+  document.getElementById('ringcap').textContent=d.cap;
+  document.getElementById('legobs').textContent='observed · '+d.obs;
+  document.getElementById('legrem').textContent='remaining · '+(d.den-d.obs);
+  document.querySelectorAll('#bars .bar').forEach(b=>{
+    const h=b.dataset.set.split(',')[d.col]+'%';
+    gsap.to(b,{height:h,duration:first?1:.7,ease:'power3.out'});
+  });
+}
+gsap.to('#main',{opacity:1,duration:.6});
+gsap.from('.card',{y:24,opacity:0,duration:.8,stagger:.06,ease:'expo.out',delay:.1});
+gsap.from('.side .logo,.nav a',{x:-16,opacity:0,duration:.6,stagger:.05,ease:'expo.out'});
+render('all',true);
+document.querySelectorAll('#seg button').forEach(btn=>btn.addEventListener('click',()=>{
+  document.querySelectorAll('#seg button').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  gsap.fromTo('.grid .card',{scale:.985},{scale:1,duration:.4,ease:'power2.out',stagger:.02});
+  render(btn.dataset.k,false);
+}));
+</script>
+</body>
+</html>
