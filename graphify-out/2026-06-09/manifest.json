@@ -1,0 +1,212 @@
+{
+  ".claude/settings.local.json": {
+    "mtime": 1780056456.3557074,
+    "ast_hash": "569303da0dd65c7e9aac81cca4eaab4a",
+    "semantic_hash": "569303da0dd65c7e9aac81cca4eaab4a"
+  },
+  "Assets/R3/.staticrypt.json": {
+    "mtime": 1780548037.6036825,
+    "ast_hash": "953870f5bdd2a8cdda6f974024363024",
+    "semantic_hash": "953870f5bdd2a8cdda6f974024363024"
+  },
+  "Assets/R3/apps-script/.clasp.json": {
+    "mtime": 1779967626.063248,
+    "ast_hash": "10a544e06e01e3808290f47fc79b3d38",
+    "semantic_hash": "10a544e06e01e3808290f47fc79b3d38"
+  },
+  "Assets/R3/apps-script/appsscript.json": {
+    "mtime": 1780547852.788996,
+    "ast_hash": "6939bc4efaa9040c02e329e9efc9bb12",
+    "semantic_hash": "6939bc4efaa9040c02e329e9efc9bb12"
+  },
+  "Assets/R3/encrypt.sh": {
+    "mtime": 1780548030.8707857,
+    "ast_hash": "61504f75d24dea581e022889d56fc704",
+    "semantic_hash": "61504f75d24dea581e022889d56fc704"
+  },
+  "Assets/R3/lib/tom-select.complete.min.js": {
+    "mtime": 1780413734.7963748,
+    "ast_hash": "9242d15f40fbfe372dcb8ab3e6fb9000",
+    "semantic_hash": "9242d15f40fbfe372dcb8ab3e6fb9000"
+  },
+  "apps-script/.clasp.json": {
+    "mtime": 1779639817.9440086,
+    "ast_hash": "34915cfffc3de052cf11215acfc7e610",
+    "semantic_hash": "34915cfffc3de052cf11215acfc7e610"
+  },
+  "apps-script/appsscript.json": {
+    "mtime": 1779639817.961068,
+    "ast_hash": "dfcd96c58f35883f4af129dc26f9236f",
+    "semantic_hash": "dfcd96c58f35883f4af129dc26f9236f"
+  },
+  ".planning/v0.10-r3-form-checklist.md": {
+    "mtime": 1779969486.177822,
+    "ast_hash": "64cba10913cdc250f027304f8316cf11",
+    "semantic_hash": "64cba10913cdc250f027304f8316cf11"
+  },
+  "Assets/Lesson Observation Form/lesson-observation-form.html": {
+    "mtime": 1780975514.1329572,
+    "ast_hash": "37f0f505c0a6cad59dbea18295bb699d",
+    "semantic_hash": "37f0f505c0a6cad59dbea18295bb699d"
+  },
+  "Assets/R3/2026-05-28_email_R3-Data_to-Dave_cc-Leon-Steve.md": {
+    "mtime": 1779963576.0393586,
+    "ast_hash": "2cdf2eb0df659de330b6a3f89763a183",
+    "semantic_hash": "2cdf2eb0df659de330b6a3f89763a183"
+  },
+  "Assets/R3/Google file links.md": {
+    "mtime": 1780561764.8031077,
+    "ast_hash": "a0ea3ee945013fb83ed9869763211186",
+    "semantic_hash": "a0ea3ee945013fb83ed9869763211186"
+  },
+  "Assets/R3/README.md": {
+    "mtime": 1780747416.0422533,
+    "ast_hash": "02261a008ab3d6320872d9e51effb9a7",
+    "semantic_hash": "02261a008ab3d6320872d9e51effb9a7"
+  },
+  "Assets/R3/r3-evidence-form.html": {
+    "mtime": 1780975525.8542883,
+    "ast_hash": "b1fdd89b15ebf56596d118e88add8fb3",
+    "semantic_hash": "b1fdd89b15ebf56596d118e88add8fb3"
+  },
+  "Assets/R3/src/r3-evidence-form.html": {
+    "mtime": 1780975506.5856872,
+    "ast_hash": "dca8ee138d3df98fc789750040dd85e9",
+    "semantic_hash": "dca8ee138d3df98fc789750040dd85e9"
+  },
+  "CLAUDE.md": {
+    "mtime": 1780747344.5769556,
+    "ast_hash": "b5debc6eebcc6cebb90e3dacd2852e6d",
+    "semantic_hash": "b5debc6eebcc6cebb90e3dacd2852e6d"
+  },
+  "README.md": {
+    "mtime": 1779347133.1319237,
+    "ast_hash": "f100038c4d7689dc16086d906c44ee18",
+    "semantic_hash": "f100038c4d7689dc16086d906c44ee18"
+  },
+  "handoff/handoff-2026-06-02-1151.md": {
+    "mtime": 1780387123.7187507,
+    "ast_hash": "7f5c05166293c66c0ee3aeb058e14f7b",
+    "semantic_hash": "7f5c05166293c66c0ee3aeb058e14f7b"
+  },
+  "handoff/handoff-2026-06-03-1300.md": {
+    "mtime": 1780477296.4039848,
+    "ast_hash": "3360865d0e307f4fc6fd3b3e6684784e",
+    "semantic_hash": "3360865d0e307f4fc6fd3b3e6684784e"
+  },
+  "handoff/handoff-2026-06-06-1015.md": {
+    "mtime": 1780746820.1109684,
+    "ast_hash": "522b081b50f1885a051fa93f7071b258",
+    "semantic_hash": "522b081b50f1885a051fa93f7071b258"
+  },
+  "handoff/handoff.html": {
+    "mtime": 1780387174.7537751,
+    "ast_hash": "3fb89b89ddecc75d7fed8f3fe195644c",
+    "semantic_hash": "3fb89b89ddecc75d7fed8f3fe195644c"
+  },
+  "index.html": {
+    "mtime": 1780289162.0567756,
+    "ast_hash": "1da9d6089f67248356eed5002ef72d64",
+    "semantic_hash": "1da9d6089f67248356eed5002ef72d64"
+  },
+  "lesson-observation-form.html": {
+    "mtime": 1779967360.8431044,
+    "ast_hash": "33710b418d288117cbaaa1f04ab9145b",
+    "semantic_hash": "33710b418d288117cbaaa1f04ab9145b"
+  },
+  "observed_teachers.md": {
+    "mtime": 1780918295.034921,
+    "ast_hash": "3bfe99395903c5a0d297520584dd3389",
+    "semantic_hash": "3bfe99395903c5a0d297520584dd3389"
+  },
+  "selction_picker_plan.md": {
+    "mtime": 1780400653.7119257,
+    "ast_hash": "1b58c76be0bdcac00ad6e3ed9845b0e6",
+    "semantic_hash": "1b58c76be0bdcac00ad6e3ed9845b0e6"
+  },
+  "SPEA Data Report/Form_ Probation Lesson Observation (8).pdf": {
+    "mtime": 1779337443.5109682,
+    "ast_hash": "b400b6581aabbe33b3d52f8a8c874bfa",
+    "semantic_hash": "b400b6581aabbe33b3d52f8a8c874bfa"
+  },
+  "handoff/images/deck-pdf-export-works.pdf": {
+    "mtime": 1780059638.9752712,
+    "ast_hash": "2d716972cc30674ddeaf16363152b58b",
+    "semantic_hash": "2d716972cc30674ddeaf16363152b58b"
+  },
+  "Assets/brand/AIS Logo/AIS Navy.png": {
+    "mtime": 1779344961.2813578,
+    "ast_hash": "fe823a7dad155db8265a92082a373b1a",
+    "semantic_hash": "fe823a7dad155db8265a92082a373b1a"
+  },
+  "Assets/brand/AIS Logo/AIS White.png": {
+    "mtime": 1779344961.2768376,
+    "ast_hash": "39e8b2cfb07620554429a051475509e9",
+    "semantic_hash": "39e8b2cfb07620554429a051475509e9"
+  },
+  "Assets/brand/email-signature-primary.png": {
+    "mtime": 1780564937.570654,
+    "ast_hash": "2771e421d3084ee34cc2bdc32b1d5aab",
+    "semantic_hash": "2771e421d3084ee34cc2bdc32b1d5aab"
+  },
+  "SPEA Data Report/Curtis All.jpg": {
+    "mtime": 1779344186.0,
+    "ast_hash": "b94a7bb2780078431aaa521fabbc72e1",
+    "semantic_hash": "b94a7bb2780078431aaa521fabbc72e1"
+  },
+  "SPEA Data Report/Deena AbuGeras from DB Files.jpg": {
+    "mtime": 1779344260.0,
+    "ast_hash": "92102c51a0e798f10016769122876258",
+    "semantic_hash": "92102c51a0e798f10016769122876258"
+  },
+  "SPEA Data Report/Gina Hanlon from DB Files (1).jpg": {
+    "mtime": 1779344196.0,
+    "ast_hash": "2699a53fa271a7d247da4e3a1e9bf11a",
+    "semantic_hash": "2699a53fa271a7d247da4e3a1e9bf11a"
+  },
+  "SPEA Data Report/Hani Asad - DB Files.jpg": {
+    "mtime": 1779344209.0,
+    "ast_hash": "bf2d8a82e5fad61d9b14ca1485548816",
+    "semantic_hash": "bf2d8a82e5fad61d9b14ca1485548816"
+  },
+  "SPEA Data Report/Jo Mare Kruger from DB Files.jpg": {
+    "mtime": 1779341485.351895,
+    "ast_hash": "2962b47a81e35afc70588889d4794d1c",
+    "semantic_hash": "2962b47a81e35afc70588889d4794d1c"
+  },
+  "SPEA Data Report/Lana Mosleh.jpg": {
+    "mtime": 1779344243.0,
+    "ast_hash": "f6d3890b7102bb176e745d0a78be8ac6",
+    "semantic_hash": "f6d3890b7102bb176e745d0a78be8ac6"
+  },
+  "handoff/images/00-slide4-v011-baseline-broken.png": {
+    "mtime": 1780059638.9687548,
+    "ast_hash": "61bbff68ee466b38d45e85a350078d62",
+    "semantic_hash": "61bbff68ee466b38d45e85a350078d62"
+  },
+  "handoff/images/01-slide1-cover-v012.png": {
+    "mtime": 1780059614.944025,
+    "ast_hash": "992aa8d2850ee2f38766e91f4519f276",
+    "semantic_hash": "992aa8d2850ee2f38766e91f4519f276"
+  },
+  "handoff/images/02-slide3-teacher-dashboard-top-v012.png": {
+    "mtime": 1780059616.6585162,
+    "ast_hash": "db91d14173c3e93b12573cafc451194c",
+    "semantic_hash": "db91d14173c3e93b12573cafc451194c"
+  },
+  "handoff/images/03-slide3-teacher-dashboard-bottom-v012.png": {
+    "mtime": 1780059617.5198798,
+    "ast_hash": "4dab7a4d58e7a5b939be74bef6c32fb3",
+    "semantic_hash": "4dab7a4d58e7a5b939be74bef6c32fb3"
+  },
+  "handoff/images/04-slide4-department-dashboard-top-v012.png": {
+    "mtime": 1780059619.2034602,
+    "ast_hash": "a35b92a700ee6429763b5ee5354c59b9",
+    "semantic_hash": "a35b92a700ee6429763b5ee5354c59b9"
+  },
+  "handoff/images/05-slide4-department-dashboard-bottom-v012.png": {
+    "mtime": 1780059620.085233,
+    "ast_hash": "6b4eaf458764536fb84a27574fa2992c",
+    "semantic_hash": "6b4eaf458764536fb84a27574fa2992c"
+  }
+}
