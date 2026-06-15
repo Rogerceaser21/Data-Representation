@@ -4,12 +4,42 @@
   "graph": {},
   "nodes": [
     {
+      "label": "launch.json",
+      "file_type": "code",
+      "source_file": ".claude/launch.json",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "claude_launch",
+      "community": 30,
+      "norm_label": "launch.json"
+    },
+    {
+      "label": "version",
+      "file_type": "code",
+      "source_file": ".claude/launch.json",
+      "source_location": "L2",
+      "_origin": "ast",
+      "id": "claude_launch_version",
+      "community": 30,
+      "norm_label": "version"
+    },
+    {
+      "label": "configurations",
+      "file_type": "code",
+      "source_file": ".claude/launch.json",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "claude_launch_configurations",
+      "community": 30,
+      "norm_label": "configurations"
+    },
+    {
       "label": "settings.local.json",
       "file_type": "code",
       "source_file": ".claude/settings.local.json",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "claude_settings_local",
+      "id": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_settings_local_json",
       "community": 15,
       "norm_label": "settings.local.json"
     },
@@ -39,7 +69,7 @@
       "source_file": "Assets/R3/.staticrypt.json",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "r3_staticrypt",
+      "id": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_staticrypt_json",
       "community": 17,
       "norm_label": ".staticrypt.json"
     },
@@ -59,7 +89,7 @@
       "source_file": "Assets/R3/apps-script/.clasp.json",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "assets_r3_apps_script_clasp_json_apps_script_clasp",
+      "id": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_apps_script_clasp_json",
       "community": 12,
       "norm_label": ".clasp.json"
     },
@@ -139,7 +169,7 @@
       "source_file": "Assets/R3/apps-script/appsscript.json",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "assets_r3_apps_script_appsscript_json_apps_script_appsscript",
+      "id": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_apps_script_appsscript_json",
       "community": 9,
       "norm_label": "appsscript.json"
     },
@@ -243,7 +273,7 @@
         "kind": "file"
       },
       "_origin": "ast",
-      "id": "r3_encrypt",
+      "id": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_encrypt_sh",
       "community": 16,
       "norm_label": "encrypt.sh"
     },
@@ -888,7 +918,7 @@
       "source_location": "L251",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_search",
-      "community": 2,
+      "community": 3,
       "norm_label": ".search()"
     },
     {
@@ -1338,7 +1368,7 @@
       "source_location": "L364",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_destroy",
-      "community": 2,
+      "community": 3,
       "norm_label": ".destroy()"
     },
     {
@@ -1397,7 +1427,7 @@
       "source_file": "apps-script/.clasp.json",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "apps_script_clasp_json_apps_script_clasp",
+      "id": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_apps_script_clasp_json",
       "community": 11,
       "norm_label": ".clasp.json"
     },
@@ -1477,7 +1507,7 @@
       "source_file": "apps-script/appsscript.json",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "apps_script_appsscript_json_apps_script_appsscript",
+      "id": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_apps_script_appsscript_json",
       "community": 10,
       "norm_label": "appsscript.json"
     },
@@ -1562,60 +1592,12 @@
       "norm_label": "oauthscopes"
     },
     {
-      "label": ".staticrypt.json",
-      "file_type": "code",
-      "source_file": "dashboard/.staticrypt.json",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "dashboard_staticrypt",
-      "community": 37,
-      "norm_label": ".staticrypt.json"
-    },
-    {
-      "label": "salt",
-      "file_type": "code",
-      "source_file": "dashboard/.staticrypt.json",
-      "source_location": "L2",
-      "_origin": "ast",
-      "id": "dashboard_staticrypt_salt",
-      "community": 37,
-      "norm_label": "salt"
-    },
-    {
-      "label": "encrypt.sh",
-      "file_type": "code",
-      "source_file": "dashboard/encrypt.sh",
-      "source_location": "L1",
-      "metadata": {
-        "language": "bash",
-        "kind": "file"
-      },
-      "_origin": "ast",
-      "id": "dashboard_encrypt",
-      "community": 36,
-      "norm_label": "encrypt.sh"
-    },
-    {
-      "label": "encrypt.sh script",
-      "file_type": "code",
-      "source_file": "dashboard/encrypt.sh",
-      "source_location": "L1",
-      "metadata": {
-        "language": "bash",
-        "kind": "bash_entrypoint"
-      },
-      "_origin": "ast",
-      "id": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_dashboard_encrypt_sh__entry",
-      "community": 36,
-      "norm_label": "encrypt.sh script"
-    },
-    {
       "label": "2026-06-11-moderation-and-dashboard-plan.md",
       "file_type": "document",
       "source_file": ".planning/2026-06-11-moderation-and-dashboard-plan.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "planning_2026_06_11_moderation_and_dashboard_plan",
+      "id": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_planning_2026_06_11_moderation_and_dashboard_plan_md",
       "community": 24,
       "norm_label": "2026-06-11-moderation-and-dashboard-plan.md"
     },
@@ -1705,7 +1687,7 @@
       "source_file": ".planning/2026-06-12-dashboard-architecture-DECISIONS.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "planning_2026_06_12_dashboard_architecture_decisions",
+      "id": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_planning_2026_06_12_dashboard_architecture_decisions_md",
       "community": 34,
       "norm_label": "2026-06-12-dashboard-architecture-decisions.md"
     },
@@ -2055,7 +2037,7 @@
       "source_file": ".planning/v0.10-r3-form-checklist.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "planning_v0_10_r3_form_checklist",
+      "id": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_planning_v0_10_r3_form_checklist_md",
       "community": 7,
       "norm_label": "v0.10-r3-form-checklist.md"
     },
@@ -2195,7 +2177,7 @@
       "source_file": "Assets/R3/2026-05-28_email_R3-Data_to-Dave_cc-Leon-Steve.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "r3_2026_05_28_email_r3_data_to_dave_cc_leon_steve",
+      "id": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_2026_05_28_email_r3_data_to_dave_cc_leon_steve_md",
       "community": 29,
       "norm_label": "2026-05-28_email_r3-data_to-dave_cc-leon-steve.md"
     },
@@ -2215,7 +2197,7 @@
       "source_file": "Assets/R3/Google file links.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "r3_google_file_links",
+      "id": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_google_file_links_md",
       "community": 28,
       "norm_label": "google file links.md"
     },
@@ -2275,7 +2257,7 @@
       "source_file": "Assets/R3/README.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "r3_readme",
+      "id": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_readme_md",
       "community": 25,
       "norm_label": "readme.md"
     },
@@ -2413,7 +2395,7 @@
       "label": "File map",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L39",
+      "source_location": "L31",
       "_origin": "ast",
       "id": "claude_file_map",
       "community": 6,
@@ -2423,7 +2405,7 @@
       "label": "How the pieces connect",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L99",
+      "source_location": "L84",
       "_origin": "ast",
       "id": "claude_how_the_pieces_connect",
       "community": 6,
@@ -2433,7 +2415,7 @@
       "label": "Hard rules \u00b7 do not break",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L134",
+      "source_location": "L119",
       "_origin": "ast",
       "id": "claude_hard_rules_do_not_break",
       "community": 6,
@@ -2443,7 +2425,7 @@
       "label": "Identity / auth (current state as of v0.10 \u00b7 2026-05-28)",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L154",
+      "source_location": "L139",
       "_origin": "ast",
       "id": "claude_identity_auth_current_state_as_of_v0_10_2026_05_28",
       "community": 6,
@@ -2453,7 +2435,7 @@
       "label": "Deploy chain",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L164",
+      "source_location": "L149",
       "_origin": "ast",
       "id": "claude_deploy_chain",
       "community": 6,
@@ -2463,7 +2445,7 @@
       "label": "HTML changes (`index.html` or either form)",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L166",
+      "source_location": "L151",
       "_origin": "ast",
       "id": "claude_html_changes_index_html_or_either_form",
       "community": 6,
@@ -2473,7 +2455,7 @@
       "label": "Apps Script changes (either `apps-script/*.gs` or `Assets/R3/apps-script/*.gs`)",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L175",
+      "source_location": "L160",
       "_origin": "ast",
       "id": "claude_apps_script_changes_either_apps_script_gs_or_assets_r3_apps_script_gs",
       "community": 6,
@@ -2483,7 +2465,7 @@
       "label": "Cache invalidation (R3 only, since v0.33)",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L182",
+      "source_location": "L167",
       "_origin": "ast",
       "id": "claude_cache_invalidation_r3_only_since_v0_33",
       "community": 6,
@@ -2493,7 +2475,7 @@
       "label": "Coding discipline (Karpathy guidelines)",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L194",
+      "source_location": "L179",
       "_origin": "ast",
       "id": "claude_coding_discipline_karpathy_guidelines",
       "community": 6,
@@ -2503,7 +2485,7 @@
       "label": "When in doubt",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L205",
+      "source_location": "L190",
       "_origin": "ast",
       "id": "claude_when_in_doubt",
       "community": 6,
@@ -2513,7 +2495,7 @@
       "label": "Related",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L215",
+      "source_location": "L200",
       "_origin": "ast",
       "id": "claude_related",
       "community": 6,
@@ -2525,8 +2507,8 @@
       "source_file": "README.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "readme",
-      "community": 33,
+      "id": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_readme_md",
+      "community": 27,
       "norm_label": "readme.md"
     },
     {
@@ -2535,8 +2517,8 @@
       "source_file": "README.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "readme_data_representation_teacher_observation_pitch",
-      "community": 33,
+      "id": "data_representation_readme_data_representation_teacher_observation_pitch",
+      "community": 27,
       "norm_label": "data-representation \u00b7 teacher observation pitch"
     },
     {
@@ -2545,8 +2527,8 @@
       "source_file": "README.md",
       "source_location": "L7",
       "_origin": "ast",
-      "id": "readme_status",
-      "community": 33,
+      "id": "data_representation_readme_status",
+      "community": 27,
       "norm_label": "status"
     },
     {
@@ -2555,8 +2537,8 @@
       "source_file": "README.md",
       "source_location": "L11",
       "_origin": "ast",
-      "id": "readme_file_map",
-      "community": 33,
+      "id": "data_representation_readme_file_map",
+      "community": 27,
       "norm_label": "file map"
     },
     {
@@ -2565,8 +2547,8 @@
       "source_file": "README.md",
       "source_location": "L26",
       "_origin": "ast",
-      "id": "readme_worked_example",
-      "community": 33,
+      "id": "data_representation_readme_worked_example",
+      "community": 27,
       "norm_label": "worked example"
     },
     {
@@ -2575,8 +2557,8 @@
       "source_file": "README.md",
       "source_location": "L30",
       "_origin": "ast",
-      "id": "readme_rating_scale",
-      "community": 33,
+      "id": "data_representation_readme_rating_scale",
+      "community": 27,
       "norm_label": "rating scale"
     },
     {
@@ -2585,8 +2567,8 @@
       "source_file": "README.md",
       "source_location": "L34",
       "_origin": "ast",
-      "id": "readme_visibility",
-      "community": 33,
+      "id": "data_representation_readme_visibility",
+      "community": 27,
       "norm_label": "visibility"
     },
     {
@@ -2595,49 +2577,49 @@
       "source_file": "README.md",
       "source_location": "L38",
       "_origin": "ast",
-      "id": "readme_related",
-      "community": 33,
+      "id": "data_representation_readme_related",
+      "community": 27,
       "norm_label": "related"
     },
     {
-      "label": "24-25-Primary School OTP - v4_9a2e91ef.md",
+      "label": "24-25-Primary School OTP - v4_27d7ebf0.md",
       "file_type": "document",
-      "source_file": "graphify-out/converted/24-25-Primary School OTP - v4_9a2e91ef.md",
+      "source_file": "graphify-out/converted/24-25-Primary School OTP - v4_27d7ebf0.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "converted_24_25_primary_school_otp_v4_9a2e91ef",
-      "community": 38,
-      "norm_label": "24-25-primary school otp - v4_9a2e91ef.md"
+      "id": "converted_24_25_primary_school_otp_v4_27d7ebf0",
+      "community": 31,
+      "norm_label": "24-25-primary school otp - v4_27d7ebf0.md"
     },
     {
-      "label": "Lesson Observation - Igor- 12_11_28db9ed4.md",
+      "label": "Lesson Observation - Igor- 12_11_d5e4b2a4.md",
       "file_type": "document",
-      "source_file": "graphify-out/converted/Lesson Observation - Igor- 12_11_28db9ed4.md",
+      "source_file": "graphify-out/converted/Lesson Observation - Igor- 12_11_d5e4b2a4.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "converted_lesson_observation_igor_12_11_28db9ed4",
-      "community": 39,
-      "norm_label": "lesson observation - igor- 12_11_28db9ed4.md"
+      "id": "converted_lesson_observation_igor_12_11_d5e4b2a4",
+      "community": 32,
+      "norm_label": "lesson observation - igor- 12_11_d5e4b2a4.md"
     },
     {
-      "label": "R3 Evidence Form Template_d305c079.md",
+      "label": "R3 Evidence Form Template_c92542a5.md",
       "file_type": "document",
-      "source_file": "graphify-out/converted/R3 Evidence Form Template_d305c079.md",
+      "source_file": "graphify-out/converted/R3 Evidence Form Template_c92542a5.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "converted_r3_evidence_form_template_d305c079",
-      "community": 40,
-      "norm_label": "r3 evidence form template_d305c079.md"
+      "id": "converted_r3_evidence_form_template_c92542a5",
+      "community": 33,
+      "norm_label": "r3 evidence form template_c92542a5.md"
     },
     {
-      "label": "Year 6 Lesson Plan_aa91d856.md",
+      "label": "Year 6 Lesson Plan_b540ead1.md",
       "file_type": "document",
-      "source_file": "graphify-out/converted/Year 6 Lesson Plan_aa91d856.md",
+      "source_file": "graphify-out/converted/Year 6 Lesson Plan_b540ead1.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "converted_year_6_lesson_plan_aa91d856",
-      "community": 41,
-      "norm_label": "year 6 lesson plan_aa91d856.md"
+      "id": "converted_year_6_lesson_plan_b540ead1",
+      "community": 36,
+      "norm_label": "year 6 lesson plan_b540ead1.md"
     },
     {
       "label": "handoff-2026-06-02-1151.md",
@@ -2645,7 +2627,7 @@
       "source_file": "handoff/handoff-2026-06-02-1151.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "handoff_handoff_2026_06_02_1151",
+      "id": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_handoff_handoff_2026_06_02_1151_md",
       "community": 14,
       "norm_label": "handoff-2026-06-02-1151.md"
     },
@@ -2755,7 +2737,7 @@
       "source_file": "handoff/handoff-2026-06-03-1300.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "handoff_handoff_2026_06_03_1300",
+      "id": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_handoff_handoff_2026_06_03_1300_md",
       "community": 5,
       "norm_label": "handoff-2026-06-03-1300.md"
     },
@@ -2925,7 +2907,7 @@
       "source_file": "handoff/handoff-2026-06-06-1015.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "handoff_handoff_2026_06_06_1015",
+      "id": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_handoff_handoff_2026_06_06_1015_md",
       "community": 23,
       "norm_label": "handoff-2026-06-06-1015.md"
     },
@@ -3025,7 +3007,7 @@
       "source_file": "handoff/handoff-2026-06-09-1145.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "handoff_handoff_2026_06_09_1145",
+      "id": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_handoff_handoff_2026_06_09_1145_md",
       "community": 21,
       "norm_label": "handoff-2026-06-09-1145.md"
     },
@@ -3135,7 +3117,7 @@
       "source_file": "handoff/handoff-2026-06-11-1710.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "handoff_handoff_2026_06_11_1710",
+      "id": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_handoff_handoff_2026_06_11_1710_md",
       "community": 8,
       "norm_label": "handoff-2026-06-11-1710.md"
     },
@@ -3255,7 +3237,7 @@
       "source_file": "handoff/handoff-2026-06-12-1653.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "handoff_handoff_2026_06_12_1653",
+      "id": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_handoff_handoff_2026_06_12_1653_md",
       "community": 13,
       "norm_label": "handoff-2026-06-12-1653.md"
     },
@@ -3500,382 +3482,12 @@
       "norm_label": "docs synced"
     },
     {
-      "label": "handoff-2026-06-14-2224.md",
-      "file_type": "document",
-      "source_file": "handoff/handoff-2026-06-14-2224.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "handoff_handoff_2026_06_14_2224",
-      "community": 31,
-      "norm_label": "handoff-2026-06-14-2224.md"
-    },
-    {
-      "label": "Handoff \u00b7 Supabase data layer built (R3 in 2 rounds) + Humanities dept; dashboard next",
-      "file_type": "document",
-      "source_file": "handoff/handoff-2026-06-14-2224.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "handoff_handoff_2026_06_14_2224_handoff_supabase_data_layer_built_r3_in_2_rounds_humanities_dept_dashboard_next",
-      "community": 31,
-      "norm_label": "handoff \u00b7 supabase data layer built (r3 in 2 rounds) + humanities dept; dashboard next"
-    },
-    {
-      "label": "Read in this order",
-      "file_type": "document",
-      "source_file": "handoff/handoff-2026-06-14-2224.md",
-      "source_location": "L11",
-      "_origin": "ast",
-      "id": "handoff_handoff_2026_06_14_2224_read_in_this_order",
-      "community": 31,
-      "norm_label": "read in this order"
-    },
-    {
-      "label": "What this session did: built the entire Supabase data layer",
-      "file_type": "document",
-      "source_file": "handoff/handoff-2026-06-14-2224.md",
-      "source_location": "L20",
-      "_origin": "ast",
-      "id": "handoff_handoff_2026_06_14_2224_what_this_session_did_built_the_entire_supabase_data_layer",
-      "community": 31,
-      "norm_label": "what this session did: built the entire supabase data layer"
-    },
-    {
-      "label": "Key corrections Igor insisted on (do not regress)",
-      "file_type": "document",
-      "source_file": "handoff/handoff-2026-06-14-2224.md",
-      "source_location": "L34",
-      "_origin": "ast",
-      "id": "handoff_handoff_2026_06_14_2224_key_corrections_igor_insisted_on_do_not_regress",
-      "community": 31,
-      "norm_label": "key corrections igor insisted on (do not regress)"
-    },
-    {
-      "label": "Open items / immediate next",
-      "file_type": "document",
-      "source_file": "handoff/handoff-2026-06-14-2224.md",
-      "source_location": "L41",
-      "_origin": "ast",
-      "id": "handoff_handoff_2026_06_14_2224_open_items_immediate_next",
-      "community": 31,
-      "norm_label": "open items / immediate next"
-    },
-    {
-      "label": "DB tooling + gotchas",
-      "file_type": "document",
-      "source_file": "handoff/handoff-2026-06-14-2224.md",
-      "source_location": "L46",
-      "_origin": "ast",
-      "id": "handoff_handoff_2026_06_14_2224_db_tooling_gotchas",
-      "community": 31,
-      "norm_label": "db tooling + gotchas"
-    },
-    {
-      "label": "Suggested skills",
-      "file_type": "document",
-      "source_file": "handoff/handoff-2026-06-14-2224.md",
-      "source_location": "L52",
-      "_origin": "ast",
-      "id": "handoff_handoff_2026_06_14_2224_suggested_skills",
-      "community": 31,
-      "norm_label": "suggested skills"
-    },
-    {
-      "label": "Docs synced",
-      "file_type": "document",
-      "source_file": "handoff/handoff-2026-06-14-2224.md",
-      "source_location": "L55",
-      "_origin": "ast",
-      "id": "handoff_handoff_2026_06_14_2224_docs_synced",
-      "community": 31,
-      "norm_label": "docs synced"
-    },
-    {
-      "label": "handoff-2026-06-15-1422.md",
-      "file_type": "document",
-      "source_file": "handoff/handoff-2026-06-15-1422.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "handoff_handoff_2026_06_15_1422",
-      "community": 27,
-      "norm_label": "handoff-2026-06-15-1422.md"
-    },
-    {
-      "label": "Handoff \u00b7 Dashboard design locked (Cinematic + AIS stars + light default) + living spec sheet; build next",
-      "file_type": "document",
-      "source_file": "handoff/handoff-2026-06-15-1422.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "handoff_handoff_2026_06_15_1422_handoff_dashboard_design_locked_cinematic_ais_stars_light_default_living_spec_sheet_build_next",
-      "community": 27,
-      "norm_label": "handoff \u00b7 dashboard design locked (cinematic + ais stars + light default) + living spec sheet; build next"
-    },
-    {
-      "label": "Read in this order",
-      "file_type": "document",
-      "source_file": "handoff/handoff-2026-06-15-1422.md",
-      "source_location": "L12",
-      "_origin": "ast",
-      "id": "handoff_handoff_2026_06_15_1422_read_in_this_order",
-      "community": 27,
-      "norm_label": "read in this order"
-    },
-    {
-      "label": "What this session did",
-      "file_type": "document",
-      "source_file": "handoff/handoff-2026-06-15-1422.md",
-      "source_location": "L23",
-      "_origin": "ast",
-      "id": "handoff_handoff_2026_06_15_1422_what_this_session_did",
-      "community": 27,
-      "norm_label": "what this session did"
-    },
-    {
-      "label": "Files created (committed 915919e, on the branch)",
-      "file_type": "document",
-      "source_file": "handoff/handoff-2026-06-15-1422.md",
-      "source_location": "L36",
-      "_origin": "ast",
-      "id": "handoff_handoff_2026_06_15_1422_files_created_committed_915919e_on_the_branch",
-      "community": 27,
-      "norm_label": "files created (committed 915919e, on the branch)"
-    },
-    {
-      "label": "IMMEDIATE next step: build the dashboard (to Tuesday)",
-      "file_type": "document",
-      "source_file": "handoff/handoff-2026-06-15-1422.md",
-      "source_location": "L42",
-      "_origin": "ast",
-      "id": "handoff_handoff_2026_06_15_1422_immediate_next_step_build_the_dashboard_to_tuesday",
-      "community": 27,
-      "norm_label": "immediate next step: build the dashboard (to tuesday)"
-    },
-    {
-      "label": "Open items",
-      "file_type": "document",
-      "source_file": "handoff/handoff-2026-06-15-1422.md",
-      "source_location": "L50",
-      "_origin": "ast",
-      "id": "handoff_handoff_2026_06_15_1422_open_items",
-      "community": 27,
-      "norm_label": "open items"
-    },
-    {
-      "label": "Gotchas / how-to learned this session",
-      "file_type": "document",
-      "source_file": "handoff/handoff-2026-06-15-1422.md",
-      "source_location": "L56",
-      "_origin": "ast",
-      "id": "handoff_handoff_2026_06_15_1422_gotchas_how_to_learned_this_session",
-      "community": 27,
-      "norm_label": "gotchas / how-to learned this session"
-    },
-    {
-      "label": "Suggested skills",
-      "file_type": "document",
-      "source_file": "handoff/handoff-2026-06-15-1422.md",
-      "source_location": "L63",
-      "_origin": "ast",
-      "id": "handoff_handoff_2026_06_15_1422_suggested_skills",
-      "community": 27,
-      "norm_label": "suggested skills"
-    },
-    {
-      "label": "Docs synced",
-      "file_type": "document",
-      "source_file": "handoff/handoff-2026-06-15-1422.md",
-      "source_location": "L69",
-      "_origin": "ast",
-      "id": "handoff_handoff_2026_06_15_1422_docs_synced",
-      "community": 27,
-      "norm_label": "docs synced"
-    },
-    {
-      "label": "handoff-2026-06-15-2213.md",
-      "file_type": "document",
-      "source_file": "handoff/handoff-2026-06-15-2213.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "handoff_handoff_2026_06_15_2213",
-      "community": 30,
-      "norm_label": "handoff-2026-06-15-2213.md"
-    },
-    {
-      "label": "Handoff \u00b7 Dashboard v0.1 BUILT + DEPLOYED (gated); next = live Supabase + @ais.ae SSO + RLS",
-      "file_type": "document",
-      "source_file": "handoff/handoff-2026-06-15-2213.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "handoff_handoff_2026_06_15_2213_handoff_dashboard_v0_1_built_deployed_gated_next_live_supabase_ais_ae_sso_rls",
-      "community": 30,
-      "norm_label": "handoff \u00b7 dashboard v0.1 built + deployed (gated); next = live supabase + @ais.ae sso + rls"
-    },
-    {
-      "label": "Read in this order",
-      "file_type": "document",
-      "source_file": "handoff/handoff-2026-06-15-2213.md",
-      "source_location": "L12",
-      "_origin": "ast",
-      "id": "handoff_handoff_2026_06_15_2213_read_in_this_order",
-      "community": 30,
-      "norm_label": "read in this order"
-    },
-    {
-      "label": "What this session did",
-      "file_type": "document",
-      "source_file": "handoff/handoff-2026-06-15-2213.md",
-      "source_location": "L21",
-      "_origin": "ast",
-      "id": "handoff_handoff_2026_06_15_2213_what_this_session_did",
-      "community": 30,
-      "norm_label": "what this session did"
-    },
-    {
-      "label": "Current state (all live + verified)",
-      "file_type": "document",
-      "source_file": "handoff/handoff-2026-06-15-2213.md",
-      "source_location": "L27",
-      "_origin": "ast",
-      "id": "handoff_handoff_2026_06_15_2213_current_state_all_live_verified",
-      "community": 30,
-      "norm_label": "current state (all live + verified)"
-    },
-    {
-      "label": "How it is built (the load-bearing facts)",
-      "file_type": "document",
-      "source_file": "handoff/handoff-2026-06-15-2213.md",
-      "source_location": "L32",
-      "_origin": "ast",
-      "id": "handoff_handoff_2026_06_15_2213_how_it_is_built_the_load_bearing_facts",
-      "community": 30,
-      "norm_label": "how it is built (the load-bearing facts)"
-    },
-    {
-      "label": "Open items / immediate next",
-      "file_type": "document",
-      "source_file": "handoff/handoff-2026-06-15-2213.md",
-      "source_location": "L41",
-      "_origin": "ast",
-      "id": "handoff_handoff_2026_06_15_2213_open_items_immediate_next",
-      "community": 30,
-      "norm_label": "open items / immediate next"
-    },
-    {
-      "label": "Gotchas learned this session",
-      "file_type": "document",
-      "source_file": "handoff/handoff-2026-06-15-2213.md",
-      "source_location": "L47",
-      "_origin": "ast",
-      "id": "handoff_handoff_2026_06_15_2213_gotchas_learned_this_session",
-      "community": 30,
-      "norm_label": "gotchas learned this session"
-    },
-    {
-      "label": "Suggested skills",
-      "file_type": "document",
-      "source_file": "handoff/handoff-2026-06-15-2213.md",
-      "source_location": "L55",
-      "_origin": "ast",
-      "id": "handoff_handoff_2026_06_15_2213_suggested_skills",
-      "community": 30,
-      "norm_label": "suggested skills"
-    },
-    {
-      "label": "Docs synced",
-      "file_type": "document",
-      "source_file": "handoff/handoff-2026-06-15-2213.md",
-      "source_location": "L63",
-      "_origin": "ast",
-      "id": "handoff_handoff_2026_06_15_2213_docs_synced",
-      "community": 30,
-      "norm_label": "docs synced"
-    },
-    {
-      "label": "observed_teachers.md",
-      "file_type": "document",
-      "source_file": "observed_teachers.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "observed_teachers",
-      "community": 32,
-      "norm_label": "observed_teachers.md"
-    },
-    {
-      "label": "Phase 2 plan \u00b7 in-form Observed / Not-yet-observed panels",
-      "file_type": "document",
-      "source_file": "observed_teachers.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "observed_teachers_phase_2_plan_in_form_observed_not_yet_observed_panels",
-      "community": 32,
-      "norm_label": "phase 2 plan \u00b7 in-form observed / not-yet-observed panels"
-    },
-    {
-      "label": "Goal",
-      "file_type": "document",
-      "source_file": "observed_teachers.md",
-      "source_location": "L8",
-      "_origin": "ast",
-      "id": "observed_teachers_goal",
-      "community": 32,
-      "norm_label": "goal"
-    },
-    {
-      "label": "Part A \u00b7 Backend (`Assets/R3/apps-script/02_doGet.gs`)",
-      "file_type": "document",
-      "source_file": "observed_teachers.md",
-      "source_location": "L16",
-      "_origin": "ast",
-      "id": "observed_teachers_part_a_backend_assets_r3_apps_script_02_doget_gs",
-      "community": 32,
-      "norm_label": "part a \u00b7 backend (`assets/r3/apps-script/02_doget.gs`)"
-    },
-    {
-      "label": "Part B \u00b7 Form (`Assets/R3/src/r3-evidence-form.html`)",
-      "file_type": "document",
-      "source_file": "observed_teachers.md",
-      "source_location": "L29",
-      "_origin": "ast",
-      "id": "observed_teachers_part_b_form_assets_r3_src_r3_evidence_form_html",
-      "community": 32,
-      "norm_label": "part b \u00b7 form (`assets/r3/src/r3-evidence-form.html`)"
-    },
-    {
-      "label": "Deployment / preview nuance",
-      "file_type": "document",
-      "source_file": "observed_teachers.md",
-      "source_location": "L39",
-      "_origin": "ast",
-      "id": "observed_teachers_deployment_preview_nuance",
-      "community": 32,
-      "norm_label": "deployment / preview nuance"
-    },
-    {
-      "label": "Open decisions",
-      "file_type": "document",
-      "source_file": "observed_teachers.md",
-      "source_location": "L46",
-      "_origin": "ast",
-      "id": "observed_teachers_open_decisions",
-      "community": 32,
-      "norm_label": "open decisions"
-    },
-    {
-      "label": "Confidence notes",
-      "file_type": "document",
-      "source_file": "observed_teachers.md",
-      "source_location": "L53",
-      "_origin": "ast",
-      "id": "observed_teachers_confidence_notes",
-      "community": 32,
-      "norm_label": "confidence notes"
-    },
-    {
       "label": "selction_picker_plan.md",
       "file_type": "document",
       "source_file": "selction_picker_plan.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "selction_picker_plan",
+      "id": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_selction_picker_plan_md",
       "community": 26,
       "norm_label": "selction_picker_plan.md"
     },
@@ -3885,7 +3497,7 @@
       "source_file": "selction_picker_plan.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "selction_picker_plan_deferred_plan_custom_selection_picker_for_the_r3_form",
+      "id": "data_representation_selction_picker_plan_deferred_plan_custom_selection_picker_for_the_r3_form",
       "community": 26,
       "norm_label": "deferred plan \u00b7 custom selection picker for the r3 form"
     },
@@ -3895,7 +3507,7 @@
       "source_file": "selction_picker_plan.md",
       "source_location": "L11",
       "_origin": "ast",
-      "id": "selction_picker_plan_why_this_file_exists",
+      "id": "data_representation_selction_picker_plan_why_this_file_exists",
       "community": 26,
       "norm_label": "why this file exists"
     },
@@ -3905,7 +3517,7 @@
       "source_file": "selction_picker_plan.md",
       "source_location": "L30",
       "_origin": "ast",
-      "id": "selction_picker_plan_failure_history_that_led_here",
+      "id": "data_representation_selction_picker_plan_failure_history_that_led_here",
       "community": 26,
       "norm_label": "failure history that led here"
     },
@@ -3915,7 +3527,7 @@
       "source_file": "selction_picker_plan.md",
       "source_location": "L48",
       "_origin": "ast",
-      "id": "selction_picker_plan_the_architecture_that_works",
+      "id": "data_representation_selction_picker_plan_the_architecture_that_works",
       "community": 26,
       "norm_label": "the architecture that works"
     },
@@ -3925,7 +3537,7 @@
       "source_file": "selction_picker_plan.md",
       "source_location": "L83",
       "_origin": "ast",
-      "id": "selction_picker_plan_behaviour_contract",
+      "id": "data_representation_selction_picker_plan_behaviour_contract",
       "community": 26,
       "norm_label": "behaviour contract"
     },
@@ -3935,7 +3547,7 @@
       "source_file": "selction_picker_plan.md",
       "source_location": "L97",
       "_origin": "ast",
-      "id": "selction_picker_plan_css_sketch",
+      "id": "data_representation_selction_picker_plan_css_sketch",
       "community": 26,
       "norm_label": "css sketch"
     },
@@ -3945,7 +3557,7 @@
       "source_file": "selction_picker_plan.md",
       "source_location": "L128",
       "_origin": "ast",
-      "id": "selction_picker_plan_js_sketch_80_100_lines_for_a_reusable_component",
+      "id": "data_representation_selction_picker_plan_js_sketch_80_100_lines_for_a_reusable_component",
       "community": 26,
       "norm_label": "js sketch (~80-100 lines for a reusable component)"
     },
@@ -3955,7 +3567,7 @@
       "source_file": "selction_picker_plan.md",
       "source_location": "L197",
       "_origin": "ast",
-      "id": "selction_picker_plan_accessibility_checklist_must_pass_before_shipping",
+      "id": "data_representation_selction_picker_plan_accessibility_checklist_must_pass_before_shipping",
       "community": 26,
       "norm_label": "accessibility checklist (must pass before shipping)"
     },
@@ -3965,7 +3577,7 @@
       "source_file": "selction_picker_plan.md",
       "source_location": "L209",
       "_origin": "ast",
-      "id": "selction_picker_plan_when_to_revisit_this_plan",
+      "id": "data_representation_selction_picker_plan_when_to_revisit_this_plan",
       "community": 26,
       "norm_label": "when to revisit this plan"
     },
@@ -3975,7 +3587,7 @@
       "source_file": "selction_picker_plan.md",
       "source_location": "L223",
       "_origin": "ast",
-      "id": "selction_picker_plan_sources_further_reading",
+      "id": "data_representation_selction_picker_plan_sources_further_reading",
       "community": 26,
       "norm_label": "sources / further reading"
     },
@@ -5674,10 +5286,30 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": ".claude/launch.json",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "claude_launch",
+      "target": "claude_launch_configurations",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".claude/launch.json",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "claude_launch",
+      "target": "claude_launch_version",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": ".claude/settings.local.json",
       "source_location": "L2",
       "weight": 1.0,
-      "source": "claude_settings_local",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_settings_local_json",
       "target": "claude_settings_local_permissions",
       "confidence_score": 1.0
     },
@@ -5697,7 +5329,7 @@
       "source_file": "Assets/R3/.staticrypt.json",
       "source_location": "L2",
       "weight": 1.0,
-      "source": "r3_staticrypt",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_staticrypt_json",
       "target": "r3_staticrypt_salt",
       "confidence_score": 1.0
     },
@@ -5707,7 +5339,7 @@
       "source_file": "Assets/R3/apps-script/.clasp.json",
       "source_location": "L14",
       "weight": 1.0,
-      "source": "assets_r3_apps_script_clasp_json_apps_script_clasp",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_apps_script_clasp_json",
       "target": "assets_r3_apps_script_clasp_json_apps_script_clasp_filepushorder",
       "confidence_score": 1.0
     },
@@ -5717,7 +5349,7 @@
       "source_file": "Assets/R3/apps-script/.clasp.json",
       "source_location": "L8",
       "weight": 1.0,
-      "source": "assets_r3_apps_script_clasp_json_apps_script_clasp",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_apps_script_clasp_json",
       "target": "assets_r3_apps_script_clasp_json_apps_script_clasp_htmlextensions",
       "confidence_score": 1.0
     },
@@ -5727,7 +5359,7 @@
       "source_file": "Assets/R3/apps-script/.clasp.json",
       "source_location": "L11",
       "weight": 1.0,
-      "source": "assets_r3_apps_script_clasp_json_apps_script_clasp",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_apps_script_clasp_json",
       "target": "assets_r3_apps_script_clasp_json_apps_script_clasp_jsonextensions",
       "confidence_score": 1.0
     },
@@ -5737,7 +5369,7 @@
       "source_file": "Assets/R3/apps-script/.clasp.json",
       "source_location": "L3",
       "weight": 1.0,
-      "source": "assets_r3_apps_script_clasp_json_apps_script_clasp",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_apps_script_clasp_json",
       "target": "assets_r3_apps_script_clasp_json_apps_script_clasp_rootdir",
       "confidence_score": 1.0
     },
@@ -5747,7 +5379,7 @@
       "source_file": "Assets/R3/apps-script/.clasp.json",
       "source_location": "L4",
       "weight": 1.0,
-      "source": "assets_r3_apps_script_clasp_json_apps_script_clasp",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_apps_script_clasp_json",
       "target": "assets_r3_apps_script_clasp_json_apps_script_clasp_scriptextensions",
       "confidence_score": 1.0
     },
@@ -5757,7 +5389,7 @@
       "source_file": "Assets/R3/apps-script/.clasp.json",
       "source_location": "L2",
       "weight": 1.0,
-      "source": "assets_r3_apps_script_clasp_json_apps_script_clasp",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_apps_script_clasp_json",
       "target": "assets_r3_apps_script_clasp_json_apps_script_clasp_scriptid",
       "confidence_score": 1.0
     },
@@ -5767,7 +5399,7 @@
       "source_file": "Assets/R3/apps-script/.clasp.json",
       "source_location": "L15",
       "weight": 1.0,
-      "source": "assets_r3_apps_script_clasp_json_apps_script_clasp",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_apps_script_clasp_json",
       "target": "assets_r3_apps_script_clasp_json_apps_script_clasp_skipsubdirectories",
       "confidence_score": 1.0
     },
@@ -5777,7 +5409,7 @@
       "source_file": "Assets/R3/apps-script/appsscript.json",
       "source_location": "L3",
       "weight": 1.0,
-      "source": "assets_r3_apps_script_appsscript_json_apps_script_appsscript",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_apps_script_appsscript_json",
       "target": "assets_r3_apps_script_appsscript_json_apps_script_appsscript_dependencies",
       "confidence_score": 1.0
     },
@@ -5787,7 +5419,7 @@
       "source_file": "Assets/R3/apps-script/appsscript.json",
       "source_location": "L12",
       "weight": 1.0,
-      "source": "assets_r3_apps_script_appsscript_json_apps_script_appsscript",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_apps_script_appsscript_json",
       "target": "assets_r3_apps_script_appsscript_json_apps_script_appsscript_exceptionlogging",
       "confidence_score": 1.0
     },
@@ -5797,7 +5429,7 @@
       "source_file": "Assets/R3/apps-script/appsscript.json",
       "source_location": "L18",
       "weight": 1.0,
-      "source": "assets_r3_apps_script_appsscript_json_apps_script_appsscript",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_apps_script_appsscript_json",
       "target": "assets_r3_apps_script_appsscript_json_apps_script_appsscript_oauthscopes",
       "confidence_score": 1.0
     },
@@ -5807,7 +5439,7 @@
       "source_file": "Assets/R3/apps-script/appsscript.json",
       "source_location": "L13",
       "weight": 1.0,
-      "source": "assets_r3_apps_script_appsscript_json_apps_script_appsscript",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_apps_script_appsscript_json",
       "target": "assets_r3_apps_script_appsscript_json_apps_script_appsscript_runtimeversion",
       "confidence_score": 1.0
     },
@@ -5817,7 +5449,7 @@
       "source_file": "Assets/R3/apps-script/appsscript.json",
       "source_location": "L2",
       "weight": 1.0,
-      "source": "assets_r3_apps_script_appsscript_json_apps_script_appsscript",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_apps_script_appsscript_json",
       "target": "assets_r3_apps_script_appsscript_json_apps_script_appsscript_timezone",
       "confidence_score": 1.0
     },
@@ -5827,7 +5459,7 @@
       "source_file": "Assets/R3/apps-script/appsscript.json",
       "source_location": "L14",
       "weight": 1.0,
-      "source": "assets_r3_apps_script_appsscript_json_apps_script_appsscript",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_apps_script_appsscript_json",
       "target": "assets_r3_apps_script_appsscript_json_apps_script_appsscript_webapp",
       "confidence_score": 1.0
     },
@@ -5867,7 +5499,7 @@
       "source_file": "Assets/R3/encrypt.sh",
       "source_location": "L1",
       "weight": 1.0,
-      "source": "r3_encrypt",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_encrypt_sh",
       "target": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_encrypt_sh__entry",
       "confidence_score": 1.0
     },
@@ -9028,7 +8660,7 @@
       "source_file": "apps-script/.clasp.json",
       "source_location": "L14",
       "weight": 1.0,
-      "source": "apps_script_clasp_json_apps_script_clasp",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_apps_script_clasp_json",
       "target": "apps_script_clasp_json_apps_script_clasp_filepushorder",
       "confidence_score": 1.0
     },
@@ -9038,7 +8670,7 @@
       "source_file": "apps-script/.clasp.json",
       "source_location": "L8",
       "weight": 1.0,
-      "source": "apps_script_clasp_json_apps_script_clasp",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_apps_script_clasp_json",
       "target": "apps_script_clasp_json_apps_script_clasp_htmlextensions",
       "confidence_score": 1.0
     },
@@ -9048,7 +8680,7 @@
       "source_file": "apps-script/.clasp.json",
       "source_location": "L11",
       "weight": 1.0,
-      "source": "apps_script_clasp_json_apps_script_clasp",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_apps_script_clasp_json",
       "target": "apps_script_clasp_json_apps_script_clasp_jsonextensions",
       "confidence_score": 1.0
     },
@@ -9058,7 +8690,7 @@
       "source_file": "apps-script/.clasp.json",
       "source_location": "L3",
       "weight": 1.0,
-      "source": "apps_script_clasp_json_apps_script_clasp",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_apps_script_clasp_json",
       "target": "apps_script_clasp_json_apps_script_clasp_rootdir",
       "confidence_score": 1.0
     },
@@ -9068,7 +8700,7 @@
       "source_file": "apps-script/.clasp.json",
       "source_location": "L4",
       "weight": 1.0,
-      "source": "apps_script_clasp_json_apps_script_clasp",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_apps_script_clasp_json",
       "target": "apps_script_clasp_json_apps_script_clasp_scriptextensions",
       "confidence_score": 1.0
     },
@@ -9078,7 +8710,7 @@
       "source_file": "apps-script/.clasp.json",
       "source_location": "L2",
       "weight": 1.0,
-      "source": "apps_script_clasp_json_apps_script_clasp",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_apps_script_clasp_json",
       "target": "apps_script_clasp_json_apps_script_clasp_scriptid",
       "confidence_score": 1.0
     },
@@ -9088,7 +8720,7 @@
       "source_file": "apps-script/.clasp.json",
       "source_location": "L15",
       "weight": 1.0,
-      "source": "apps_script_clasp_json_apps_script_clasp",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_apps_script_clasp_json",
       "target": "apps_script_clasp_json_apps_script_clasp_skipsubdirectories",
       "confidence_score": 1.0
     },
@@ -9098,7 +8730,7 @@
       "source_file": "apps-script/appsscript.json",
       "source_location": "L3",
       "weight": 1.0,
-      "source": "apps_script_appsscript_json_apps_script_appsscript",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_apps_script_appsscript_json",
       "target": "apps_script_appsscript_json_apps_script_appsscript_dependencies",
       "confidence_score": 1.0
     },
@@ -9108,7 +8740,7 @@
       "source_file": "apps-script/appsscript.json",
       "source_location": "L4",
       "weight": 1.0,
-      "source": "apps_script_appsscript_json_apps_script_appsscript",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_apps_script_appsscript_json",
       "target": "apps_script_appsscript_json_apps_script_appsscript_exceptionlogging",
       "confidence_score": 1.0
     },
@@ -9118,7 +8750,7 @@
       "source_file": "apps-script/appsscript.json",
       "source_location": "L10",
       "weight": 1.0,
-      "source": "apps_script_appsscript_json_apps_script_appsscript",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_apps_script_appsscript_json",
       "target": "apps_script_appsscript_json_apps_script_appsscript_oauthscopes",
       "confidence_score": 1.0
     },
@@ -9128,7 +8760,7 @@
       "source_file": "apps-script/appsscript.json",
       "source_location": "L5",
       "weight": 1.0,
-      "source": "apps_script_appsscript_json_apps_script_appsscript",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_apps_script_appsscript_json",
       "target": "apps_script_appsscript_json_apps_script_appsscript_runtimeversion",
       "confidence_score": 1.0
     },
@@ -9138,7 +8770,7 @@
       "source_file": "apps-script/appsscript.json",
       "source_location": "L2",
       "weight": 1.0,
-      "source": "apps_script_appsscript_json_apps_script_appsscript",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_apps_script_appsscript_json",
       "target": "apps_script_appsscript_json_apps_script_appsscript_timezone",
       "confidence_score": 1.0
     },
@@ -9148,7 +8780,7 @@
       "source_file": "apps-script/appsscript.json",
       "source_location": "L6",
       "weight": 1.0,
-      "source": "apps_script_appsscript_json_apps_script_appsscript",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_apps_script_appsscript_json",
       "target": "apps_script_appsscript_json_apps_script_appsscript_webapp",
       "confidence_score": 1.0
     },
@@ -9175,30 +8807,10 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "dashboard/.staticrypt.json",
-      "source_location": "L2",
-      "weight": 1.0,
-      "source": "dashboard_staticrypt",
-      "target": "dashboard_staticrypt_salt",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "dashboard/encrypt.sh",
-      "source_location": "L1",
-      "weight": 1.0,
-      "source": "dashboard_encrypt",
-      "target": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_dashboard_encrypt_sh__entry",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
       "source_file": ".planning/2026-06-11-moderation-and-dashboard-plan.md",
       "source_location": "L1",
       "weight": 1.0,
-      "source": "planning_2026_06_11_moderation_and_dashboard_plan",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_planning_2026_06_11_moderation_and_dashboard_plan_md",
       "target": "planning_2026_06_11_moderation_and_dashboard_plan_next_jobs_moderation_change_dashboards",
       "confidence_score": 1.0
     },
@@ -9278,7 +8890,7 @@
       "source_file": ".planning/2026-06-12-dashboard-architecture-DECISIONS.md",
       "source_location": "L1",
       "weight": 1.0,
-      "source": "planning_2026_06_12_dashboard_architecture_decisions",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_planning_2026_06_12_dashboard_architecture_decisions_md",
       "target": "planning_2026_06_12_dashboard_architecture_decisions_ais_assessment_dashboard_architecture_decision_record",
       "confidence_score": 1.0
     },
@@ -9438,9 +9050,9 @@
       "source_file": ".planning/2026-06-15-dashboard-design-DECISIONS.md",
       "source_location": "L1",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_2026_06_15_dashboard_design_decisions",
-      "target": "planning_2026_06_15_dashboard_design_decisions_ais_observation_dashboard_design_motion_decision_record"
+      "target": "planning_2026_06_15_dashboard_design_decisions_ais_observation_dashboard_design_motion_decision_record",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -9448,9 +9060,9 @@
       "source_file": ".planning/2026-06-15-dashboard-design-DECISIONS.md",
       "source_location": "L70",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_2026_06_15_dashboard_design_decisions_ais_observation_dashboard_design_motion_decision_record",
-      "target": "planning_2026_06_15_dashboard_design_decisions_artifacts_all_under_dashboard_previews_keep_all"
+      "target": "planning_2026_06_15_dashboard_design_decisions_artifacts_all_under_dashboard_previews_keep_all",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -9458,9 +9070,9 @@
       "source_file": ".planning/2026-06-15-dashboard-design-DECISIONS.md",
       "source_location": "L61",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_2026_06_15_dashboard_design_decisions_ais_observation_dashboard_design_motion_decision_record",
-      "target": "planning_2026_06_15_dashboard_design_decisions_build_plan_to_tuesday"
+      "target": "planning_2026_06_15_dashboard_design_decisions_build_plan_to_tuesday",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -9468,9 +9080,9 @@
       "source_file": ".planning/2026-06-15-dashboard-design-DECISIONS.md",
       "source_location": "L9",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_2026_06_15_dashboard_design_decisions_ais_observation_dashboard_design_motion_decision_record",
-      "target": "planning_2026_06_15_dashboard_design_decisions_how_we_got_here_so_the_next_agent_does_not_repeat_it"
+      "target": "planning_2026_06_15_dashboard_design_decisions_how_we_got_here_so_the_next_agent_does_not_repeat_it",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -9478,9 +9090,9 @@
       "source_file": ".planning/2026-06-15-dashboard-design-DECISIONS.md",
       "source_location": "L14",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_2026_06_15_dashboard_design_decisions_ais_observation_dashboard_design_motion_decision_record",
-      "target": "planning_2026_06_15_dashboard_design_decisions_locked_design_decisions"
+      "target": "planning_2026_06_15_dashboard_design_decisions_locked_design_decisions",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -9488,9 +9100,9 @@
       "source_file": ".planning/2026-06-15-dashboard-design-DECISIONS.md",
       "source_location": "L75",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_2026_06_15_dashboard_design_decisions_ais_observation_dashboard_design_motion_decision_record",
-      "target": "planning_2026_06_15_dashboard_design_decisions_standing_rules_carried_in"
+      "target": "planning_2026_06_15_dashboard_design_decisions_standing_rules_carried_in",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -9498,9 +9110,9 @@
       "source_file": ".planning/2026-06-15-dashboard-design-DECISIONS.md",
       "source_location": "L56",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_2026_06_15_dashboard_design_decisions_locked_design_decisions",
-      "target": "planning_2026_06_15_dashboard_design_decisions_attendance_governance_metric_only"
+      "target": "planning_2026_06_15_dashboard_design_decisions_attendance_governance_metric_only",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -9508,9 +9120,9 @@
       "source_file": ".planning/2026-06-15-dashboard-design-DECISIONS.md",
       "source_location": "L52",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_2026_06_15_dashboard_design_decisions_locked_design_decisions",
-      "target": "planning_2026_06_15_dashboard_design_decisions_boards_priority"
+      "target": "planning_2026_06_15_dashboard_design_decisions_boards_priority",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -9518,9 +9130,9 @@
       "source_file": ".planning/2026-06-15-dashboard-design-DECISIONS.md",
       "source_location": "L39",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_2026_06_15_dashboard_design_decisions_locked_design_decisions",
-      "target": "planning_2026_06_15_dashboard_design_decisions_centerpieces"
+      "target": "planning_2026_06_15_dashboard_design_decisions_centerpieces",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -9528,9 +9140,9 @@
       "source_file": ".planning/2026-06-15-dashboard-design-DECISIONS.md",
       "source_location": "L49",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_2026_06_15_dashboard_design_decisions_locked_design_decisions",
-      "target": "planning_2026_06_15_dashboard_design_decisions_density_charts"
+      "target": "planning_2026_06_15_dashboard_design_decisions_density_charts",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -9538,9 +9150,9 @@
       "source_file": ".planning/2026-06-15-dashboard-design-DECISIONS.md",
       "source_location": "L16",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_2026_06_15_dashboard_design_decisions_locked_design_decisions",
-      "target": "planning_2026_06_15_dashboard_design_decisions_direction_cinematic"
+      "target": "planning_2026_06_15_dashboard_design_decisions_direction_cinematic",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -9548,9 +9160,9 @@
       "source_file": ".planning/2026-06-15-dashboard-design-DECISIONS.md",
       "source_location": "L30",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_2026_06_15_dashboard_design_decisions_locked_design_decisions",
-      "target": "planning_2026_06_15_dashboard_design_decisions_entry_fusion"
+      "target": "planning_2026_06_15_dashboard_design_decisions_entry_fusion",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -9558,9 +9170,9 @@
       "source_file": ".planning/2026-06-15-dashboard-design-DECISIONS.md",
       "source_location": "L33",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_2026_06_15_dashboard_design_decisions_locked_design_decisions",
-      "target": "planning_2026_06_15_dashboard_design_decisions_motion_grammar_shared_element_flip"
+      "target": "planning_2026_06_15_dashboard_design_decisions_motion_grammar_shared_element_flip",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -9568,9 +9180,9 @@
       "source_file": ".planning/2026-06-15-dashboard-design-DECISIONS.md",
       "source_location": "L46",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_2026_06_15_dashboard_design_decisions_locked_design_decisions",
-      "target": "planning_2026_06_15_dashboard_design_decisions_navigation_shell"
+      "target": "planning_2026_06_15_dashboard_design_decisions_navigation_shell",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -9578,9 +9190,9 @@
       "source_file": ".planning/2026-06-15-dashboard-design-DECISIONS.md",
       "source_location": "L36",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_2026_06_15_dashboard_design_decisions_locked_design_decisions",
-      "target": "planning_2026_06_15_dashboard_design_decisions_rating_language_official_6_point_seas_scale"
+      "target": "planning_2026_06_15_dashboard_design_decisions_rating_language_official_6_point_seas_scale",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -9588,9 +9200,9 @@
       "source_file": ".planning/2026-06-15-dashboard-design-DECISIONS.md",
       "source_location": "L22",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_2026_06_15_dashboard_design_decisions_locked_design_decisions",
-      "target": "planning_2026_06_15_dashboard_design_decisions_signature_backdrop_an_ais_star_field"
+      "target": "planning_2026_06_15_dashboard_design_decisions_signature_backdrop_an_ais_star_field",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -9598,9 +9210,9 @@
       "source_file": ".planning/2026-06-15-dashboard-design-DECISIONS.md",
       "source_location": "L19",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_2026_06_15_dashboard_design_decisions_locked_design_decisions",
-      "target": "planning_2026_06_15_dashboard_design_decisions_theme_light_default"
+      "target": "planning_2026_06_15_dashboard_design_decisions_theme_light_default",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -9608,7 +9220,7 @@
       "source_file": ".planning/v0.10-r3-form-checklist.md",
       "source_location": "L1",
       "weight": 1.0,
-      "source": "planning_v0_10_r3_form_checklist",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_planning_v0_10_r3_form_checklist_md",
       "target": "planning_v0_10_r3_form_checklist_v0_10_r3_evidence_form_build_lesson_observation_reorg",
       "confidence_score": 1.0
     },
@@ -9738,7 +9350,7 @@
       "source_file": "Assets/R3/2026-05-28_email_R3-Data_to-Dave_cc-Leon-Steve.md",
       "source_location": "L10",
       "weight": 1.0,
-      "source": "r3_2026_05_28_email_r3_data_to_dave_cc_leon_steve",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_2026_05_28_email_r3_data_to_dave_cc_leon_steve_md",
       "target": "r3_2026_05_28_email_r3_data_to_dave_cc_leon_steve_r3_data",
       "confidence_score": 1.0
     },
@@ -9748,7 +9360,7 @@
       "source_file": "Assets/R3/Google file links.md",
       "source_location": "L1",
       "weight": 1.0,
-      "source": "r3_google_file_links",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_google_file_links_md",
       "target": "r3_google_file_links_r3_evidence_google_file_links",
       "confidence_score": 1.0
     },
@@ -9798,7 +9410,7 @@
       "source_file": "Assets/R3/README.md",
       "source_location": "L1",
       "weight": 1.0,
-      "source": "r3_readme",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_readme_md",
       "target": "r3_readme_r3_evidence_form",
       "confidence_score": 1.0
     },
@@ -9908,9 +9520,9 @@
       "source_file": "CLAUDE.md",
       "source_location": "L20",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "claude_claude_md_data_representation",
-      "target": "claude_dashboard_build_supabase_active_workstream_separate_from_the_forms_deck"
+      "target": "claude_dashboard_build_supabase_active_workstream_separate_from_the_forms_deck",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10028,8 +9640,8 @@
       "source_file": "README.md",
       "source_location": "L1",
       "weight": 1.0,
-      "source": "readme",
-      "target": "readme_data_representation_teacher_observation_pitch",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_readme_md",
+      "target": "data_representation_readme_data_representation_teacher_observation_pitch",
       "confidence_score": 1.0
     },
     {
@@ -10038,8 +9650,8 @@
       "source_file": "README.md",
       "source_location": "L11",
       "weight": 1.0,
-      "source": "readme_data_representation_teacher_observation_pitch",
-      "target": "readme_file_map",
+      "source": "data_representation_readme_data_representation_teacher_observation_pitch",
+      "target": "data_representation_readme_file_map",
       "confidence_score": 1.0
     },
     {
@@ -10048,8 +9660,8 @@
       "source_file": "README.md",
       "source_location": "L30",
       "weight": 1.0,
-      "source": "readme_data_representation_teacher_observation_pitch",
-      "target": "readme_rating_scale",
+      "source": "data_representation_readme_data_representation_teacher_observation_pitch",
+      "target": "data_representation_readme_rating_scale",
       "confidence_score": 1.0
     },
     {
@@ -10058,8 +9670,8 @@
       "source_file": "README.md",
       "source_location": "L38",
       "weight": 1.0,
-      "source": "readme_data_representation_teacher_observation_pitch",
-      "target": "readme_related",
+      "source": "data_representation_readme_data_representation_teacher_observation_pitch",
+      "target": "data_representation_readme_related",
       "confidence_score": 1.0
     },
     {
@@ -10068,8 +9680,8 @@
       "source_file": "README.md",
       "source_location": "L7",
       "weight": 1.0,
-      "source": "readme_data_representation_teacher_observation_pitch",
-      "target": "readme_status",
+      "source": "data_representation_readme_data_representation_teacher_observation_pitch",
+      "target": "data_representation_readme_status",
       "confidence_score": 1.0
     },
     {
@@ -10078,8 +9690,8 @@
       "source_file": "README.md",
       "source_location": "L34",
       "weight": 1.0,
-      "source": "readme_data_representation_teacher_observation_pitch",
-      "target": "readme_visibility",
+      "source": "data_representation_readme_data_representation_teacher_observation_pitch",
+      "target": "data_representation_readme_visibility",
       "confidence_score": 1.0
     },
     {
@@ -10088,8 +9700,8 @@
       "source_file": "README.md",
       "source_location": "L26",
       "weight": 1.0,
-      "source": "readme_data_representation_teacher_observation_pitch",
-      "target": "readme_worked_example",
+      "source": "data_representation_readme_data_representation_teacher_observation_pitch",
+      "target": "data_representation_readme_worked_example",
       "confidence_score": 1.0
     },
     {
@@ -10098,7 +9710,7 @@
       "source_file": "handoff/handoff-2026-06-02-1151.md",
       "source_location": "L1",
       "weight": 1.0,
-      "source": "handoff_handoff_2026_06_02_1151",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_handoff_handoff_2026_06_02_1151_md",
       "target": "handoff_handoff_2026_06_02_1151_handoff_data_representation_deck_next_session",
       "confidence_score": 1.0
     },
@@ -10198,7 +9810,7 @@
       "source_file": "handoff/handoff-2026-06-03-1300.md",
       "source_location": "L1",
       "weight": 1.0,
-      "source": "handoff_handoff_2026_06_03_1300",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_handoff_handoff_2026_06_03_1300_md",
       "target": "handoff_handoff_2026_06_03_1300_handoff_data_representation_r3_evidence_form",
       "confidence_score": 1.0
     },
@@ -10358,7 +9970,7 @@
       "source_file": "handoff/handoff-2026-06-06-1015.md",
       "source_location": "L1",
       "weight": 1.0,
-      "source": "handoff_handoff_2026_06_06_1015",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_handoff_handoff_2026_06_06_1015_md",
       "target": "handoff_handoff_2026_06_06_1015_handoff_data_representation_r3_evidence_form",
       "confidence_score": 1.0
     },
@@ -10448,7 +10060,7 @@
       "source_file": "handoff/handoff-2026-06-09-1145.md",
       "source_location": "L1",
       "weight": 1.0,
-      "source": "handoff_handoff_2026_06_09_1145",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_handoff_handoff_2026_06_09_1145_md",
       "target": "handoff_handoff_2026_06_09_1145_handoff_data_representation_r3_evidence_live_inspection_week",
       "confidence_score": 1.0
     },
@@ -10548,7 +10160,7 @@
       "source_file": "handoff/handoff-2026-06-11-1710.md",
       "source_location": "L1",
       "weight": 1.0,
-      "source": "handoff_handoff_2026_06_11_1710",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_handoff_handoff_2026_06_11_1710_md",
       "target": "handoff_handoff_2026_06_11_1710_handoff_r3_inspector_note_backfill_moderation_dashboard_prep",
       "confidence_score": 1.0
     },
@@ -10658,7 +10270,7 @@
       "source_file": "handoff/handoff-2026-06-12-1653.md",
       "source_location": "L1",
       "weight": 1.0,
-      "source": "handoff_handoff_2026_06_12_1653",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_handoff_handoff_2026_06_12_1653_md",
       "target": "handoff_handoff_2026_06_12_1653_handoff_job_0_shipped_v0_41_v0_44_dashboard_architecture_grilling_resume_at_q7",
       "confidence_score": 1.0
     },
@@ -10885,341 +10497,11 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "handoff/handoff-2026-06-14-2224.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "source": "handoff_handoff_2026_06_14_2224",
-      "target": "handoff_handoff_2026_06_14_2224_handoff_supabase_data_layer_built_r3_in_2_rounds_humanities_dept_dashboard_next",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "handoff/handoff-2026-06-14-2224.md",
-      "source_location": "L46",
-      "weight": 1.0,
-      "source": "handoff_handoff_2026_06_14_2224_handoff_supabase_data_layer_built_r3_in_2_rounds_humanities_dept_dashboard_next",
-      "target": "handoff_handoff_2026_06_14_2224_db_tooling_gotchas",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "handoff/handoff-2026-06-14-2224.md",
-      "source_location": "L55",
-      "weight": 1.0,
-      "source": "handoff_handoff_2026_06_14_2224_handoff_supabase_data_layer_built_r3_in_2_rounds_humanities_dept_dashboard_next",
-      "target": "handoff_handoff_2026_06_14_2224_docs_synced",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "handoff/handoff-2026-06-14-2224.md",
-      "source_location": "L34",
-      "weight": 1.0,
-      "source": "handoff_handoff_2026_06_14_2224_handoff_supabase_data_layer_built_r3_in_2_rounds_humanities_dept_dashboard_next",
-      "target": "handoff_handoff_2026_06_14_2224_key_corrections_igor_insisted_on_do_not_regress",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "handoff/handoff-2026-06-14-2224.md",
-      "source_location": "L41",
-      "weight": 1.0,
-      "source": "handoff_handoff_2026_06_14_2224_handoff_supabase_data_layer_built_r3_in_2_rounds_humanities_dept_dashboard_next",
-      "target": "handoff_handoff_2026_06_14_2224_open_items_immediate_next",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "handoff/handoff-2026-06-14-2224.md",
-      "source_location": "L11",
-      "weight": 1.0,
-      "source": "handoff_handoff_2026_06_14_2224_handoff_supabase_data_layer_built_r3_in_2_rounds_humanities_dept_dashboard_next",
-      "target": "handoff_handoff_2026_06_14_2224_read_in_this_order",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "handoff/handoff-2026-06-14-2224.md",
-      "source_location": "L52",
-      "weight": 1.0,
-      "source": "handoff_handoff_2026_06_14_2224_handoff_supabase_data_layer_built_r3_in_2_rounds_humanities_dept_dashboard_next",
-      "target": "handoff_handoff_2026_06_14_2224_suggested_skills",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "handoff/handoff-2026-06-14-2224.md",
-      "source_location": "L20",
-      "weight": 1.0,
-      "source": "handoff_handoff_2026_06_14_2224_handoff_supabase_data_layer_built_r3_in_2_rounds_humanities_dept_dashboard_next",
-      "target": "handoff_handoff_2026_06_14_2224_what_this_session_did_built_the_entire_supabase_data_layer",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "handoff/handoff-2026-06-15-1422.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "source": "handoff_handoff_2026_06_15_1422",
-      "target": "handoff_handoff_2026_06_15_1422_handoff_dashboard_design_locked_cinematic_ais_stars_light_default_living_spec_sheet_build_next",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "handoff/handoff-2026-06-15-1422.md",
-      "source_location": "L69",
-      "weight": 1.0,
-      "source": "handoff_handoff_2026_06_15_1422_handoff_dashboard_design_locked_cinematic_ais_stars_light_default_living_spec_sheet_build_next",
-      "target": "handoff_handoff_2026_06_15_1422_docs_synced",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "handoff/handoff-2026-06-15-1422.md",
-      "source_location": "L36",
-      "weight": 1.0,
-      "source": "handoff_handoff_2026_06_15_1422_handoff_dashboard_design_locked_cinematic_ais_stars_light_default_living_spec_sheet_build_next",
-      "target": "handoff_handoff_2026_06_15_1422_files_created_committed_915919e_on_the_branch",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "handoff/handoff-2026-06-15-1422.md",
-      "source_location": "L56",
-      "weight": 1.0,
-      "source": "handoff_handoff_2026_06_15_1422_handoff_dashboard_design_locked_cinematic_ais_stars_light_default_living_spec_sheet_build_next",
-      "target": "handoff_handoff_2026_06_15_1422_gotchas_how_to_learned_this_session",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "handoff/handoff-2026-06-15-1422.md",
-      "source_location": "L42",
-      "weight": 1.0,
-      "source": "handoff_handoff_2026_06_15_1422_handoff_dashboard_design_locked_cinematic_ais_stars_light_default_living_spec_sheet_build_next",
-      "target": "handoff_handoff_2026_06_15_1422_immediate_next_step_build_the_dashboard_to_tuesday",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "handoff/handoff-2026-06-15-1422.md",
-      "source_location": "L50",
-      "weight": 1.0,
-      "source": "handoff_handoff_2026_06_15_1422_handoff_dashboard_design_locked_cinematic_ais_stars_light_default_living_spec_sheet_build_next",
-      "target": "handoff_handoff_2026_06_15_1422_open_items",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "handoff/handoff-2026-06-15-1422.md",
-      "source_location": "L12",
-      "weight": 1.0,
-      "source": "handoff_handoff_2026_06_15_1422_handoff_dashboard_design_locked_cinematic_ais_stars_light_default_living_spec_sheet_build_next",
-      "target": "handoff_handoff_2026_06_15_1422_read_in_this_order",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "handoff/handoff-2026-06-15-1422.md",
-      "source_location": "L63",
-      "weight": 1.0,
-      "source": "handoff_handoff_2026_06_15_1422_handoff_dashboard_design_locked_cinematic_ais_stars_light_default_living_spec_sheet_build_next",
-      "target": "handoff_handoff_2026_06_15_1422_suggested_skills",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "handoff/handoff-2026-06-15-1422.md",
-      "source_location": "L23",
-      "weight": 1.0,
-      "source": "handoff_handoff_2026_06_15_1422_handoff_dashboard_design_locked_cinematic_ais_stars_light_default_living_spec_sheet_build_next",
-      "target": "handoff_handoff_2026_06_15_1422_what_this_session_did",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "handoff/handoff-2026-06-15-2213.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "source": "handoff_handoff_2026_06_15_2213",
-      "target": "handoff_handoff_2026_06_15_2213_handoff_dashboard_v0_1_built_deployed_gated_next_live_supabase_ais_ae_sso_rls",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "handoff/handoff-2026-06-15-2213.md",
-      "source_location": "L27",
-      "weight": 1.0,
-      "source": "handoff_handoff_2026_06_15_2213_handoff_dashboard_v0_1_built_deployed_gated_next_live_supabase_ais_ae_sso_rls",
-      "target": "handoff_handoff_2026_06_15_2213_current_state_all_live_verified",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "handoff/handoff-2026-06-15-2213.md",
-      "source_location": "L63",
-      "weight": 1.0,
-      "source": "handoff_handoff_2026_06_15_2213_handoff_dashboard_v0_1_built_deployed_gated_next_live_supabase_ais_ae_sso_rls",
-      "target": "handoff_handoff_2026_06_15_2213_docs_synced",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "handoff/handoff-2026-06-15-2213.md",
-      "source_location": "L47",
-      "weight": 1.0,
-      "source": "handoff_handoff_2026_06_15_2213_handoff_dashboard_v0_1_built_deployed_gated_next_live_supabase_ais_ae_sso_rls",
-      "target": "handoff_handoff_2026_06_15_2213_gotchas_learned_this_session",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "handoff/handoff-2026-06-15-2213.md",
-      "source_location": "L32",
-      "weight": 1.0,
-      "source": "handoff_handoff_2026_06_15_2213_handoff_dashboard_v0_1_built_deployed_gated_next_live_supabase_ais_ae_sso_rls",
-      "target": "handoff_handoff_2026_06_15_2213_how_it_is_built_the_load_bearing_facts",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "handoff/handoff-2026-06-15-2213.md",
-      "source_location": "L41",
-      "weight": 1.0,
-      "source": "handoff_handoff_2026_06_15_2213_handoff_dashboard_v0_1_built_deployed_gated_next_live_supabase_ais_ae_sso_rls",
-      "target": "handoff_handoff_2026_06_15_2213_open_items_immediate_next",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "handoff/handoff-2026-06-15-2213.md",
-      "source_location": "L12",
-      "weight": 1.0,
-      "source": "handoff_handoff_2026_06_15_2213_handoff_dashboard_v0_1_built_deployed_gated_next_live_supabase_ais_ae_sso_rls",
-      "target": "handoff_handoff_2026_06_15_2213_read_in_this_order",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "handoff/handoff-2026-06-15-2213.md",
-      "source_location": "L55",
-      "weight": 1.0,
-      "source": "handoff_handoff_2026_06_15_2213_handoff_dashboard_v0_1_built_deployed_gated_next_live_supabase_ais_ae_sso_rls",
-      "target": "handoff_handoff_2026_06_15_2213_suggested_skills",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "handoff/handoff-2026-06-15-2213.md",
-      "source_location": "L21",
-      "weight": 1.0,
-      "source": "handoff_handoff_2026_06_15_2213_handoff_dashboard_v0_1_built_deployed_gated_next_live_supabase_ais_ae_sso_rls",
-      "target": "handoff_handoff_2026_06_15_2213_what_this_session_did",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "observed_teachers.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "source": "observed_teachers",
-      "target": "observed_teachers_phase_2_plan_in_form_observed_not_yet_observed_panels",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "observed_teachers.md",
-      "source_location": "L53",
-      "weight": 1.0,
-      "source": "observed_teachers_phase_2_plan_in_form_observed_not_yet_observed_panels",
-      "target": "observed_teachers_confidence_notes",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "observed_teachers.md",
-      "source_location": "L39",
-      "weight": 1.0,
-      "source": "observed_teachers_phase_2_plan_in_form_observed_not_yet_observed_panels",
-      "target": "observed_teachers_deployment_preview_nuance",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "observed_teachers.md",
-      "source_location": "L8",
-      "weight": 1.0,
-      "source": "observed_teachers_phase_2_plan_in_form_observed_not_yet_observed_panels",
-      "target": "observed_teachers_goal",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "observed_teachers.md",
-      "source_location": "L46",
-      "weight": 1.0,
-      "source": "observed_teachers_phase_2_plan_in_form_observed_not_yet_observed_panels",
-      "target": "observed_teachers_open_decisions",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "observed_teachers.md",
-      "source_location": "L16",
-      "weight": 1.0,
-      "source": "observed_teachers_phase_2_plan_in_form_observed_not_yet_observed_panels",
-      "target": "observed_teachers_part_a_backend_assets_r3_apps_script_02_doget_gs",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "observed_teachers.md",
-      "source_location": "L29",
-      "weight": 1.0,
-      "source": "observed_teachers_phase_2_plan_in_form_observed_not_yet_observed_panels",
-      "target": "observed_teachers_part_b_form_assets_r3_src_r3_evidence_form_html",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
       "source_file": "selction_picker_plan.md",
       "source_location": "L1",
       "weight": 1.0,
-      "source": "selction_picker_plan",
-      "target": "selction_picker_plan_deferred_plan_custom_selection_picker_for_the_r3_form",
+      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_selction_picker_plan_md",
+      "target": "data_representation_selction_picker_plan_deferred_plan_custom_selection_picker_for_the_r3_form",
       "confidence_score": 1.0
     },
     {
@@ -11228,8 +10510,8 @@
       "source_file": "selction_picker_plan.md",
       "source_location": "L30",
       "weight": 1.0,
-      "source": "selction_picker_plan_deferred_plan_custom_selection_picker_for_the_r3_form",
-      "target": "selction_picker_plan_failure_history_that_led_here",
+      "source": "data_representation_selction_picker_plan_deferred_plan_custom_selection_picker_for_the_r3_form",
+      "target": "data_representation_selction_picker_plan_failure_history_that_led_here",
       "confidence_score": 1.0
     },
     {
@@ -11238,8 +10520,8 @@
       "source_file": "selction_picker_plan.md",
       "source_location": "L223",
       "weight": 1.0,
-      "source": "selction_picker_plan_deferred_plan_custom_selection_picker_for_the_r3_form",
-      "target": "selction_picker_plan_sources_further_reading",
+      "source": "data_representation_selction_picker_plan_deferred_plan_custom_selection_picker_for_the_r3_form",
+      "target": "data_representation_selction_picker_plan_sources_further_reading",
       "confidence_score": 1.0
     },
     {
@@ -11248,8 +10530,8 @@
       "source_file": "selction_picker_plan.md",
       "source_location": "L48",
       "weight": 1.0,
-      "source": "selction_picker_plan_deferred_plan_custom_selection_picker_for_the_r3_form",
-      "target": "selction_picker_plan_the_architecture_that_works",
+      "source": "data_representation_selction_picker_plan_deferred_plan_custom_selection_picker_for_the_r3_form",
+      "target": "data_representation_selction_picker_plan_the_architecture_that_works",
       "confidence_score": 1.0
     },
     {
@@ -11258,8 +10540,8 @@
       "source_file": "selction_picker_plan.md",
       "source_location": "L209",
       "weight": 1.0,
-      "source": "selction_picker_plan_deferred_plan_custom_selection_picker_for_the_r3_form",
-      "target": "selction_picker_plan_when_to_revisit_this_plan",
+      "source": "data_representation_selction_picker_plan_deferred_plan_custom_selection_picker_for_the_r3_form",
+      "target": "data_representation_selction_picker_plan_when_to_revisit_this_plan",
       "confidence_score": 1.0
     },
     {
@@ -11268,8 +10550,8 @@
       "source_file": "selction_picker_plan.md",
       "source_location": "L11",
       "weight": 1.0,
-      "source": "selction_picker_plan_deferred_plan_custom_selection_picker_for_the_r3_form",
-      "target": "selction_picker_plan_why_this_file_exists",
+      "source": "data_representation_selction_picker_plan_deferred_plan_custom_selection_picker_for_the_r3_form",
+      "target": "data_representation_selction_picker_plan_why_this_file_exists",
       "confidence_score": 1.0
     },
     {
@@ -11278,8 +10560,8 @@
       "source_file": "selction_picker_plan.md",
       "source_location": "L197",
       "weight": 1.0,
-      "source": "selction_picker_plan_the_architecture_that_works",
-      "target": "selction_picker_plan_accessibility_checklist_must_pass_before_shipping",
+      "source": "data_representation_selction_picker_plan_the_architecture_that_works",
+      "target": "data_representation_selction_picker_plan_accessibility_checklist_must_pass_before_shipping",
       "confidence_score": 1.0
     },
     {
@@ -11288,8 +10570,8 @@
       "source_file": "selction_picker_plan.md",
       "source_location": "L83",
       "weight": 1.0,
-      "source": "selction_picker_plan_the_architecture_that_works",
-      "target": "selction_picker_plan_behaviour_contract",
+      "source": "data_representation_selction_picker_plan_the_architecture_that_works",
+      "target": "data_representation_selction_picker_plan_behaviour_contract",
       "confidence_score": 1.0
     },
     {
@@ -11298,8 +10580,8 @@
       "source_file": "selction_picker_plan.md",
       "source_location": "L97",
       "weight": 1.0,
-      "source": "selction_picker_plan_the_architecture_that_works",
-      "target": "selction_picker_plan_css_sketch",
+      "source": "data_representation_selction_picker_plan_the_architecture_that_works",
+      "target": "data_representation_selction_picker_plan_css_sketch",
       "confidence_score": 1.0
     },
     {
@@ -11308,8 +10590,8 @@
       "source_file": "selction_picker_plan.md",
       "source_location": "L128",
       "weight": 1.0,
-      "source": "selction_picker_plan_the_architecture_that_works",
-      "target": "selction_picker_plan_js_sketch_80_100_lines_for_a_reusable_component",
+      "source": "data_representation_selction_picker_plan_the_architecture_that_works",
+      "target": "data_representation_selction_picker_plan_js_sketch_80_100_lines_for_a_reusable_component",
       "confidence_score": 1.0
     },
     {
@@ -13644,5 +12926,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "e10dbc6770603ca6e442fd0bef79e199ef7aff44"
+  "built_at_commit": "915919e15bd96b0fd7916ac6a8e97cb4139c2eab"
 }
