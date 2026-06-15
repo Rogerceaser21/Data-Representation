@@ -7,3 +7,11 @@ node_modules/
 # Supabase / secrets — never commit env files
 *.env
 .env*
+
+# Dashboard governance snapshot: real teacher names + ratings in cleartext.
+# Must never reach GitHub Pages (it would sit publicly readable and defeat the
+# StatiCrypt gate). The deployed dashboard/index.html inlines it ENCRYPTED.
+# Regenerate locally: node ~/AIS-Data-Dashboard/db/export_snapshot.mjs <path>/dashboard/data.js
+dashboard/data.js
+dashboard/.build/
+dashboard/.staticrypt-out/
