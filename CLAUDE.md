@@ -17,6 +17,17 @@ Live: https://rogerceaser21.github.io/Data-Representation/
 
 ---
 
+## Dashboard build (Supabase) · active workstream, separate from the forms/deck
+
+A role-based **Supabase-backed dashboard** is being built to aggregate all teacher-assessment data for the principal, governors, and the SEF/SEAS review. It is not the forms and not the deck.
+- Architecture (data, auth, schema, boards, attendance): `.planning/2026-06-12-dashboard-architecture-DECISIONS.md`
+- Design + motion (Cinematic, LIGHT default, AIS star-field, 6-point SEAS scale, Spectrum/Arc/matrix): `.planning/2026-06-15-dashboard-design-DECISIONS.md`
+- Living spec, open in a browser: `dashboard-previews/design-spec.html`
+- Current DB + decision state: memory `project_dashboard_architecture.md`. Supabase ref `rfbetrcevtmisknndpgg`; tooling + creds at `~/AIS-Data-Dashboard/` (never echo secrets).
+- Latest status: newest doc in `handoff/`.
+
+---
+
 ## File map
 
 ```
