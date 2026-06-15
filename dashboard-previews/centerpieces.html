@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AIS . Centerpiece options</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --display:'Lora',Georgia,serif; --body:'Inter',system-ui,sans-serif;
+  --bg:#efece2; --panel:#f8f6ef; --panel-2:#fdfcf7;
+  --ink:#143642; --ink-dim:#3a4f59; --ink-mid:#6b7e85; --ink-faint:#9aa6ac;
+  --line:rgba(20,54,66,.16); --line-soft:rgba(20,54,66,.08);
+  --ais-yellow:#E6A21A; --shadow:rgba(20,54,66,.12);
+  --track:rgba(20,54,66,.10); --na:rgba(20,54,66,.20);
+  --logo:url('assets/ais-navy.png');
+}
+:root[data-theme="dark"]{
+  --display:'Source Serif 4',Georgia,serif; --body:'Source Sans 3',system-ui,sans-serif;
+  --bg:#07091c; --panel:#11162e; --panel-2:#151b38;
+  --ink:#f2efe6; --ink-dim:#cdd0e0; --ink-mid:#9ea3bf; --ink-faint:#6c7290;
+  --line:rgba(255,255,255,.12); --line-soft:rgba(255,255,255,.06);
+  --ais-yellow:#FFBA14; --shadow:rgba(0,0,0,.4);
+  --track:rgba(255,255,255,.10); --na:rgba(255,255,255,.18);
+  --logo:url('assets/ais-white.png');
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--body);background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;transition:background .5s,color .5s;min-height:100vh}
+.wrap{max-width:1180px;margin:0 auto;padding:0 clamp(16px,3vw,34px) 70px}
+
+/* top bar */
+.bar{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:20px 0 16px;border-bottom:1px solid var(--line);position:sticky;top:0;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);z-index:10}
+.brand{display:flex;align-items:center;gap:13px}
+.brand .lg{width:38px;height:38px;background:var(--logo) center/contain no-repeat}
+.brand .t{font-family:var(--display);font-weight:600;font-size:17px;letter-spacing:-.01em;line-height:1.1}
+.brand .t small{display:block;font-family:var(--body);font-weight:600;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-mid);margin-top:2px}
+.controls{display:flex;align-items:center;gap:10px}
+.btn{font:inherit;font-size:13px;font-weight:600;color:var(--ink-dim);background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 14px;cursor:pointer;transition:border-color .2s,color .2s}
+.btn:hover{border-color:var(--ais-yellow);color:var(--ink)}
+
+/* head */
+.head{margin:28px 0 6px}
+.eyebrow{display:flex;align-items:center;gap:11px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-mid);font-weight:600}
+.eyebrow .stripe{width:28px;height:3px;border-radius:2px;background:linear-gradient(90deg,#1e7a3f,#3CBB6C,#9DB93C,#F0A52E,#E67637,#D8392B)}
+h1{font-family:var(--display);font-weight:600;font-size:clamp(26px,3.6vw,40px);letter-spacing:-.015em;line-height:1.05;margin-top:8px}
+h1 em{font-style:italic;color:var(--ink-dim)}
+.lede{font-size:14.5px;color:var(--ink-dim);max-width:62ch;margin-top:10px;line-height:1.5}
+
+/* subject card */
+.subject{display:flex;align-items:center;gap:14px;margin:20px 0 6px;padding:12px 16px;background:var(--panel);border:1px solid var(--line);border-radius:14px;width:fit-content}
+.subject img{width:46px;height:46px;border-radius:11px;object-fit:cover;object-position:50% 26%;border:1px solid var(--line)}
+.subject .nm{font-family:var(--display);font-weight:600;font-size:16px}
+.subject .sb{font-size:12px;color:var(--ink-mid);margin-top:1px}
+.subject .ov{margin-left:8px;padding-left:16px;border-left:1px solid var(--line);text-align:left}
+.subject .ov .l{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-mid)}
+.subject .ov .v{font-family:var(--display);font-style:italic;font-weight:600;font-size:18px;line-height:1.1;margin-top:1px}
+
+/* scale legend */
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 4px}
+.legend .g{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ink-dim);padding:5px 11px;border:1px solid var(--line-soft);border-radius:30px}
+.legend .sw{width:11px;height:11px;border-radius:50%}
+
+/* grid */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,2vw,22px);margin-top:22px}
+.opt{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px 22px 18px;position:relative;overflow:hidden}
+.opt::before{content:"";position:absolute;left:0;top:0;right:0;height:3px;background:linear-gradient(90deg,#1e7a3f,#3CBB6C,#9DB93C,#F0A52E,#E67637,#D8392B);opacity:.85}
+.opt .lab{display:flex;align-items:baseline;gap:10px}
+.opt .lab .ix{font-family:var(--display);font-style:italic;font-weight:600;font-size:15px;color:var(--ink-faint)}
+.opt h3{font-family:var(--display);font-weight:600;font-size:19px;letter-spacing:-.01em}
+.opt .desc{font-size:12.5px;color:var(--ink-mid);margin-top:5px;line-height:1.45;min-height:34px}
+.stage{display:flex;align-items:center;justify-content:center;margin-top:6px;min-height:268px}
+svg{display:block;overflow:visible}
+.tag{display:inline-block;margin-top:6px;font-size:11px;font-weight:600;letter-spacing:.04em;color:var(--ink-faint);text-transform:uppercase}
+
+/* spectrum specifics */
+.spec-wrap{width:100%;padding:6px 4px}
+.spec-overall{text-align:center;margin-bottom:26px}
+.spec-overall .l{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-mid)}
+.spec-overall .v{font-family:var(--display);font-weight:600;font-size:34px;line-height:1.05;letter-spacing:-.01em}
+
+/* tooltip */
+#tip{position:fixed;pointer-events:none;z-index:50;background:var(--ink);color:var(--bg);font-size:12px;font-weight:600;padding:6px 10px;border-radius:8px;opacity:0;transform:translate(-50%,-130%);transition:opacity .12s;white-space:nowrap;box-shadow:0 8px 24px -10px var(--shadow)}
+#tip .r{font-weight:500;opacity:.8}
+
+.foot{margin-top:34px;padding-top:18px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-faint);line-height:1.5}
+@media(max-width:820px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="bar">
+    <div class="brand"><span class="lg"></span><span class="t">Centerpiece options<small>AIS Sharjah . Observation Dashboard</small></span></div>
+    <div class="controls">
+      <button class="btn" id="replay">Replay motion</button>
+      <button class="btn" id="theme">Dark</button>
+    </div>
+  </div>
+
+  <div class="head">
+    <div class="eyebrow"><span class="stripe"></span>Pick the object that carries the boards</div>
+    <h1>One teacher, one judgement, <em>four ways</em></h1>
+    <p class="lede">Each centerpiece shows the same thing: the overall outcome (best evidence wins) plus the spread across observation types, on the official 6-point SEAS scale. Hover any segment, petal, or dot to read it. Same data throughout, so the only variable is the shape.</p>
+  </div>
+
+  <div class="subject">
+    <img src="assets/jo-mare.jpg" alt="">
+    <div><div class="nm">Jo Mare Kruger</div><div class="sb">Grade 6A . Primary</div></div>
+    <div class="ov"><div class="l">Overall</div><div class="v" id="ovWord">Very Good</div></div>
+  </div>
+
+  <div class="legend" id="legend"></div>
+
+  <div class="grid">
+    <div class="opt">
+      <div class="lab"><span class="ix">01</span><h3>The Arc</h3></div>
+      <div class="desc">A clean dial. The scale itself runs green to red, the fill sweeps along it to the overall, the eight types ride the rim as dots. No gaps, nothing to disconnect.</div>
+      <div class="stage"><svg id="svgArc" viewBox="0 0 240 240" width="240" height="240"></svg></div>
+      <span class="tag">Calm . familiar . legible at a glance</span>
+    </div>
+
+    <div class="opt">
+      <div class="lab"><span class="ix">02</span><h3>The Spectrum</h3></div>
+      <div class="desc">The 6-point scale laid flat, green to red. The overall sits as a flag, every observation drops onto the bar so range is obvious.</div>
+      <div class="stage"><div class="spec-wrap"><div class="spec-overall"><div class="l">Overall</div><div class="v" id="specV">Very Good</div></div><svg id="svgSpec" viewBox="0 0 440 150" width="100%" height="150" preserveAspectRatio="xMidYMid meet"></svg></div></div>
+      <span class="tag">Editorial . most legible . governor-friendly</span>
+    </div>
+
+    <div class="opt">
+      <div class="lab"><span class="ix">03</span><h3>The Bloom</h3></div>
+      <div class="desc">Each observation type is a petal radiating from the hub, longer and greener is better. Distinctive, and the strengths read instantly. Holding this one for OTP.</div>
+      <div class="stage"><svg id="svgBloom" viewBox="0 0 240 240" width="240" height="240"></svg></div>
+      <span class="tag">Signature . premium . reserved for OTP</span>
+    </div>
+
+    <div class="opt">
+      <div class="lab"><span class="ix">04</span><h3>The Ring</h3></div>
+      <div class="desc">Your V1 donut, rebuilt the right way: real arcs, even gaps, a true centre. The family you started with, de-wonked.</div>
+      <div class="stage"><svg id="svgRing" viewBox="0 0 240 240" width="240" height="240"></svg></div>
+      <span class="tag">V1 lineage . cleaned up . parked</span>
+    </div>
+  </div>
+
+  <div class="foot">These are just the centerpiece object in isolation. The Spectrum is going on the R3 board, the Arc stays as an option, the Bloom is held for OTP. Whichever carries a board, it morphs between boards (school gauge flies into a teacher, a matrix row flies out into this), per the transition grammar we locked.</div>
+</div>
+
+<div id="tip"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+/* ---------- shared data + scale ---------- */
+const RAMP={1:'#1e7a3f',2:'#3CBB6C',3:'#9DB93C',4:'#F0A52E',5:'#E67637',6:'#D8392B'};
+const WORD={1:'Outstanding',2:'Very Good',3:'Good',4:'Acceptable',5:'Weak',6:'Very Weak'};
+const TYPES=[
+  {k:'R3 Evidence',r:2},
+  {k:'Learning Walk',r:3},
+  {k:'Lesson Observation',r:2},
+  {k:'Probation Review',r:'na'},
+  {k:'ESCM Profile',r:3},
+  {k:'OTP / APR',r:4},
+  {k:'Book Look',r:3},
+  {k:'Student Voice',r:2},
+];
+const rated=TYPES.filter(t=>t.r!=='na').map(t=>t.r);
+const OVERALL=Math.min(...rated);                 // best evidence wins, 1 is best
+const col=r=>r==='na'?getCss('--na'):RAMP[r];
+function getCss(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+const NS='http://www.w3.org/2000/svg';
+const frac=r=>r==='na'?0:(6-r)/5;                 // 1 -> 1.0 (full/good), 6 -> 0
+const tip=document.getElementById('tip');
+function showTip(e,t){tip.innerHTML=t.k+' <span class="r">'+(t.r==='na'?'Not assessed':WORD[t.r])+'</span>';tip.style.left=e.clientX+'px';tip.style.top=e.clientY+'px';tip.style.opacity=1}
+function hideTip(){tip.style.opacity=0}
+function el(tag,attrs){const n=document.createElementNS(NS,tag);for(const k in attrs)n.setAttribute(k,attrs[k]);return n}
+function pol(cx,cy,r,deg){const a=(deg-90)*Math.PI/180;return{x:cx+r*Math.cos(a),y:cy+r*Math.sin(a)}}
+function arcPath(cx,cy,r,a0,a1){const s=pol(cx,cy,r,a1),e=pol(cx,cy,r,a0);const big=(a1-a0)<=180?0:1;return`M ${s.x} ${s.y} A ${r} ${r} 0 ${big} 0 ${e.x} ${e.y}`}
+/* ramp interpolation, so a stroke can follow the 6-point scale */
+function lerp(a,b,t){return a+(b-a)*t}
+function h2r(h){h=h.replace('#','');return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]}
+function rampAt(pos){pos=Math.max(1,Math.min(6,pos));const lo=Math.floor(pos),hi=Math.min(6,lo+1),t=pos-lo;const a=h2r(RAMP[lo]),b=h2r(RAMP[hi]);return`rgb(${Math.round(lerp(a[0],b[0],t))},${Math.round(lerp(a[1],b[1],t))},${Math.round(lerp(a[2],b[2],t))})`}
+/* a rounded petal: a capsule, rounded at both ends, emanating from behind the hub */
+function petalPath(cx,cy,A,inner,len,W){const hw=W/2,ar=(A-90)*Math.PI/180;
+  const ax=Math.cos(ar),ay=Math.sin(ar),px=-ay,py=ax;
+  const ic={x:cx+ax*inner,y:cy+ay*inner},oc={x:cx+ax*(inner+len),y:cy+ay*(inner+len)};
+  const iL={x:ic.x+px*hw,y:ic.y+py*hw},iR={x:ic.x-px*hw,y:ic.y-py*hw};
+  const oL={x:oc.x+px*hw,y:oc.y+py*hw},oR={x:oc.x-px*hw,y:oc.y-py*hw};
+  return`M ${iL.x} ${iL.y} L ${oL.x} ${oL.y} A ${hw} ${hw} 0 0 0 ${oR.x} ${oR.y} L ${iR.x} ${iR.y} A ${hw} ${hw} 0 0 0 ${iL.x} ${iL.y} Z`}
+
+document.getElementById('ovWord').textContent=WORD[OVERALL];
+document.getElementById('specV').textContent=WORD[OVERALL];
+document.getElementById('ovWord').style.color=RAMP[OVERALL];
+document.getElementById('specV').style.color=RAMP[OVERALL];
+
+/* legend */
+(function(){const L=document.getElementById('legend');let h='';for(let r=1;r<=6;r++)h+=`<span class="g"><span class="sw" style="background:${RAMP[r]}"></span>${WORD[r]}</span>`;h+=`<span class="g"><span class="sw" style="background:transparent;border:1px dashed var(--na)"></span>Not assessed</span>`;L.innerHTML=h})();
+
+/* ---------- 01 The Arc ---------- */
+function buildArc(){const s=document.getElementById('svgArc');s.innerHTML='';const cx=120,cy=128,r=80,A0=135,SWEEP=270,sw=14,N=48;
+  const ang=p=>A0+SWEEP*p;
+  const seg=(p0,p1,color,op,cls)=>{const path=el('path',{d:arcPath(cx,cy,r,ang(p0),ang(p1)+0.6),fill:'none',stroke:color,'stroke-width':sw,'stroke-linecap':'butt',opacity:op});if(cls)path.setAttribute('class',cls);s.appendChild(path);return path};
+  // faint full ramp track, the scale itself green to red
+  for(let i=0;i<N;i++){const p0=i/N,p1=(i+1)/N;seg(p0,p1,rampAt(6-5*((p0+p1)/2)),.24)}
+  // bright ramp fill up to the overall, colour follows the scale not a flat green
+  const fO=frac(OVERALL),M=Math.max(1,Math.round(N*fO));
+  for(let i=0;i<M;i++){const p0=i/N,p1=(i+1)/N;seg(p0,p1,rampAt(6-5*((p0+p1)/2)),1,'arcfill')}
+  // per-type dots just outside the rim
+  TYPES.forEach(t=>{const p=pol(cx,cy,r+16,ang(frac(t.r)));const c=el('circle',{cx:p.x,cy:p.y,r:5.5,fill:col(t.r),stroke:getCss('--panel'),'stroke-width':2.5,class:'arcdot'});if(t.r==='na'){c.setAttribute('fill','transparent');c.setAttribute('stroke',getCss('--na'));c.setAttribute('stroke-dasharray','2 2')}
+    c.addEventListener('mousemove',e=>showTip(e,t));c.addEventListener('mouseleave',hideTip);s.appendChild(c)});
+  // centre label
+  const tl=el('text',{x:cx,y:cy-6,'text-anchor':'middle','font-size':11,fill:getCss('--ink-mid'),'letter-spacing':2,style:'text-transform:uppercase;font-family:var(--body);font-weight:600'});tl.textContent='Overall';s.appendChild(tl);
+  const tv=el('text',{x:cx,y:cy+20,'text-anchor':'middle','font-size':25,fill:RAMP[OVERALL],style:'font-family:var(--display);font-weight:600;font-style:italic'});tv.textContent=WORD[OVERALL];s.appendChild(tv);
+  const tf=el('text',{x:cx,y:cy+40,'text-anchor':'middle','font-size':10.5,fill:getCss('--ink-faint'),style:'font-family:var(--body)'});tf.textContent='best of '+rated.length+' observations';s.appendChild(tf);
+}
+
+/* ---------- 02 The Spectrum ---------- */
+function buildSpec(){const s=document.getElementById('svgSpec');s.innerHTML='';const x0=24,x1=416,y=58,h=18;const span=x1-x0;
+  const gid='specgrad';const defs=el('defs',{});const lg=el('linearGradient',{id:gid,x1:'0',x2:'1'});
+  for(let i=1;i<=6;i++){lg.appendChild(el('stop',{offset:((i-1)/5*100)+'%','stop-color':RAMP[i]}))}defs.appendChild(lg);s.appendChild(defs);
+  s.appendChild(el('rect',{x:x0,y,width:span,height:h,rx:h/2,fill:`url(#${gid})`,opacity:.92}));
+  const px=r=>x0+span*((r-0.5)/6);                  // centre of a rating band
+  // segment labels, pushed well below the bar so the flag has clear air
+  for(let i=1;i<=6;i++){const t=el('text',{x:px(i),y:y+h+34,'text-anchor':'middle','font-size':9.5,fill:getCss('--ink-mid'),style:'font-family:var(--body);font-weight:600;letter-spacing:.04em'});t.textContent=['Outstanding','Very Good','Good','Acceptable','Weak','Very Weak'][i-1];s.appendChild(t)}
+  // type dots above the bar, stacked by occurrence
+  const seen={};TYPES.filter(t=>t.r!=='na').forEach(t=>{seen[t.r]=(seen[t.r]||0)+1;const lvl=seen[t.r];const c=el('circle',{cx:px(t.r),cy:y-12-(lvl-1)*14,r:6,fill:col(t.r),stroke:getCss('--panel'),'stroke-width':2,class:'specdot'});
+    c.addEventListener('mousemove',e=>showTip(e,t));c.addEventListener('mouseleave',hideTip);s.appendChild(c)});
+  // overall flag sitting in the gap below the bar, clear of the labels
+  const ox=px(OVERALL);const fl=el('path',{d:`M ${ox} ${y+h+2} l -6 11 l 12 0 z`,fill:RAMP[OVERALL],class:'specflag'});s.appendChild(fl);
+  // not-assessed note
+  const na=TYPES.filter(t=>t.r==='na');if(na.length){const t=el('text',{x:x0,y:y-46,'font-size':10.5,fill:getCss('--ink-faint'),style:'font-family:var(--body)'});t.textContent=na.length+' not assessed';s.appendChild(t)}
+}
+
+/* ---------- 03 The Bloom ---------- */
+function buildBloom(){const s=document.getElementById('svgBloom');s.innerHTML='';const cx=120,cy=120,inner=6,W=26,n=TYPES.length;
+  TYPES.forEach((t,i)=>{const A=i*(360/n);const len=t.r==='na'?30:34+40*frac(t.r);
+    const path=el('path',{d:petalPath(cx,cy,A,inner,len,W),fill:col(t.r),stroke:getCss('--panel'),'stroke-width':1.5,'stroke-linejoin':'round',class:'petal'});
+    if(t.r==='na'){path.setAttribute('fill','none');path.setAttribute('stroke',getCss('--na'));path.setAttribute('stroke-dasharray','3 4');path.setAttribute('opacity','.75')}
+    path.addEventListener('mousemove',e=>showTip(e,t));path.addEventListener('mouseleave',hideTip);s.appendChild(path)});
+  // hub sits on top, petals emanate from behind it
+  s.appendChild(el('circle',{cx,cy,r:33,fill:getCss('--panel-2'),stroke:getCss('--line'),'stroke-width':1,class:'hub'}));
+  const tv=el('text',{x:cx,y:cy-1,'text-anchor':'middle','font-size':12,fill:RAMP[OVERALL],style:'font-family:var(--display);font-weight:600;font-style:italic'});tv.textContent=WORD[OVERALL];s.appendChild(tv);
+  const tl=el('text',{x:cx,y:cy+13,'text-anchor':'middle','font-size':7.5,fill:getCss('--ink-mid'),style:'font-family:var(--body);font-weight:600;letter-spacing:1.5px;text-transform:uppercase'});tl.textContent='Overall';s.appendChild(tl);
+}
+
+/* ---------- 04 The Ring (fixed donut) ---------- */
+function buildRing(){const s=document.getElementById('svgRing');s.innerHTML='';const cx=120,cy=120,r=84,n=TYPES.length,seg=360/n,gap=7;
+  const segs=[];TYPES.forEach((t,i)=>{const a0=i*seg+gap/2,a1=(i+1)*seg-gap/2;
+    const path=el('path',{d:arcPath(cx,cy,r,a0,a1),fill:'none',stroke:col(t.r),'stroke-width':18,'stroke-linecap':'round',class:'ringseg'});
+    if(t.r==='na'){path.setAttribute('stroke',getCss('--na'));path.setAttribute('stroke-dasharray','1 5')}
+    path.addEventListener('mousemove',e=>showTip(e,t));path.addEventListener('mouseleave',hideTip);s.appendChild(path);segs.push(path)});
+  const tl=el('text',{x:cx,y:cy-8,'text-anchor':'middle','font-size':10.5,fill:getCss('--ink-mid'),style:'text-transform:uppercase;font-family:var(--body);font-weight:600;letter-spacing:2px'});tl.textContent='Overall';s.appendChild(tl);
+  const tv=el('text',{x:cx,y:cy+16,'text-anchor':'middle','font-size':22,fill:RAMP[OVERALL],style:'font-family:var(--display);font-weight:600;font-style:italic'});tv.textContent=WORD[OVERALL];s.appendChild(tv);
+  const tf=el('text',{x:cx,y:cy+36,'text-anchor':'middle','font-size':10,fill:getCss('--ink-faint'),style:'font-family:var(--body)'});tf.textContent=rated.length+' of '+TYPES.length+' rated';s.appendChild(tf);
+  return segs;
+}
+
+/* ---------- animate ---------- */
+function drawPath(p,dur,delay){const len=p.getTotalLength();p.style.strokeDasharray=len;p.style.strokeDashoffset=len;gsap.to(p.style,{strokeDashoffset:0,duration:dur,delay:delay,ease:'power2.out'})}
+let ring;
+function render(){buildArc();buildSpec();buildBloom();ring=buildRing()}
+function animateAll(){
+  // arc: sweep the ramp fill in, then pop the dots
+  gsap.fromTo('#svgArc .arcfill',{opacity:0},{opacity:1,duration:.5,stagger:.012,ease:'power1.out'});
+  gsap.fromTo('#svgArc .arcdot',{scale:0,transformOrigin:'center'},{scale:1,duration:.45,stagger:.05,delay:.5,ease:'back.out(2)'});
+  gsap.fromTo('#svgArc text',{opacity:0},{opacity:1,duration:.5,delay:.5});
+  // spectrum
+  gsap.fromTo('#svgSpec rect',{scaleX:0,transformOrigin:'left center'},{scaleX:1,duration:.8,ease:'power3.out'});
+  gsap.fromTo('#svgSpec .specdot',{scale:0,transformOrigin:'center'},{scale:1,duration:.45,stagger:.06,delay:.45,ease:'back.out(2)'});
+  gsap.fromTo('#svgSpec .specflag',{opacity:0,y:6},{opacity:1,y:0,duration:.5,delay:.7});
+  gsap.fromTo('.spec-overall',{opacity:0,y:8},{opacity:1,y:0,duration:.5,delay:.2});
+  // bloom: petals grow out from the centre, then the hub settles
+  gsap.fromTo('#svgBloom .petal',{scale:0},{scale:1,duration:.6,stagger:.06,ease:'back.out(1.7)',svgOrigin:'120 120'});
+  gsap.fromTo('#svgBloom .hub, #svgBloom text',{opacity:0,scale:.7,transformOrigin:'center'},{opacity:1,scale:1,duration:.5,delay:.55,ease:'back.out(1.6)'});
+  // ring
+  ring.forEach((p,i)=>drawPath(p,.55,.1+i*.06));
+  gsap.fromTo('#svgRing text',{opacity:0},{opacity:1,duration:.5,delay:.6});
+}
+render();animateAll();
+
+/* ---------- theme + replay ---------- */
+const tb=document.getElementById('theme');
+function applyTheme(t){document.documentElement.setAttribute('data-theme',t);tb.textContent=t==='dark'?'Light':'Dark';render();animateAll();try{localStorage.setItem('ais-cp-theme',t)}catch(e){}}
+tb.onclick=()=>applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');
+document.getElementById('replay').onclick=()=>{render();animateAll()};
+(function(){let s;try{s=localStorage.getItem('ais-cp-theme')}catch(e){}if(s&&s!=='light')applyTheme(s)})();
+</script>
+</body>
+</html>

@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="paper">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AIS Sharjah · Observation Record · The Broadsheet</title>
+<script>
+/* Prime the reveal: hide the staggered furniture from first paint, but
+   guarantee it returns even if GSAP fails to load or its timeline stalls. */
+document.documentElement.classList.add('preload');
+function revealAll(){
+  var h=document.documentElement;if(!h.classList.contains('preload'))return;
+  h.classList.remove('preload');
+  if(window.gsap){gsap.set('.rv',{clearProps:'opacity,transform'});}
+  document.querySelectorAll('.rv').forEach(function(e){e.style.opacity='1';e.style.transform='none';});
+}
+/* hard safety net: whatever happens, the page is never blank past 1.4s */
+window.addEventListener('load',function(){setTimeout(revealAll,1400);});
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,600&family=Archivo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   THE BROADSHEET  ·  editorial governance instrument
+   Cream paper default · navy ink · hairline rules · tabular numerals
+   ============================================================ */
+:root{
+  --masthead:'Playfair Display',Georgia,'Times New Roman',serif;
+  --text:'Source Serif 4',Georgia,'Times New Roman',serif;
+  --label:'Archivo','Helvetica Neue',Arial,sans-serif;
+
+  /* PAPER (default) ---------------------------------------- */
+  --paper:#f4f0e6;            /* stock */
+  --paper-2:#efeadc;          /* slightly toned column wash */
+  --paper-3:#e9e3d3;          /* ruled-table tint */
+  --ink:#16233a;              /* navy ink */
+  --ink-2:#33405a;            /* secondary ink */
+  --ink-3:#5d6880;            /* tertiary / captions */
+  --ink-4:#8c93a4;            /* faint */
+  --rule:#16233a;             /* full-strength hairline */
+  --rule-soft:rgba(22,35,58,0.26);
+  --rule-faint:rgba(22,35,58,0.13);
+  --accent:#E8A317;           /* AIS yellow, slightly inked for print feel */
+  --accent-ink:#16233a;
+
+  /* rating ramp · green to amber (paper-tuned, print-credible) */
+  --rate-o:#1f6a3a;           /* Outstanding  deep green */
+  --rate-v:#3f9a55;           /* Very Good    green */
+  --rate-s:#c98a1c;           /* Sound        amber */
+  --rate-na:#b3ac99;          /* Not Assessed faint */
+  --rate-o-ink:#163f27;
+  --grain:0.05;
+
+  --page:#ece6d7;             /* margin outside the sheet */
+  --sheet-shadow:rgba(22,35,58,0.13);
+}
+:root[data-theme="evening"]{
+  /* EVENING EDITION (dark) -------------------------------- */
+  --paper:#10141f;
+  --paper-2:#141926;
+  --paper-3:#191f2e;
+  --ink:#ece4d2;              /* warm ivory ink */
+  --ink-2:#c3bca9;
+  --ink-3:#938d7d;
+  --ink-4:#6b6657;
+  --rule:#ece4d2;
+  --rule-soft:rgba(236,228,210,0.24);
+  --rule-faint:rgba(236,228,210,0.12);
+  --accent:#FFBA14;
+  --accent-ink:#10141f;
+
+  --rate-o:#33b061;
+  --rate-v:#52c47b;
+  --rate-s:#e2a233;
+  --rate-na:#4d5468;
+  --rate-o-ink:#bdf0cf;
+  --grain:0.07;
+
+  --page:#0a0d16;
+  --sheet-shadow:rgba(0,0,0,0.5);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--text);
+  background:var(--page);
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  font-feature-settings:"onum" 1,"pnum" 1,"kern" 1,"liga" 1;
+  transition:background .55s ease,color .55s ease;
+  min-height:100vh;
+}
+/* numerals that behave like a ledger: tabular + old-style where it reads as print */
+.tnum{font-feature-settings:"tnum" 1,"lnum" 1,"kern" 1}
+
+/* THE SHEET ------------------------------------------------- */
+.sheet{
+  position:relative;
+  max-width:1180px;
+  margin:0 auto;
+  background:var(--paper);
+  box-shadow:0 1px 0 var(--rule-faint),0 22px 60px -34px var(--sheet-shadow);
+  transition:background .55s ease;
+}
+/* paper grain + a faint vertical centre gutter, like a folded broadsheet */
+.sheet::before{
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity:var(--grain);mix-blend-mode:multiply;
+}
+:root[data-theme="evening"] .sheet::before{mix-blend-mode:screen}
+.inner{position:relative;z-index:1;padding:0 clamp(18px,4.2vw,64px)}
+
+/* ============ FOLIO BAR (running head) ==================== */
+.folio{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:12px 0 9px;border-bottom:1px solid var(--rule);
+  font-family:var(--label);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:600;
+  position:sticky;top:0;z-index:30;
+  background:color-mix(in srgb,var(--paper) 93%,transparent);
+  backdrop-filter:blur(8px);
+}
+.folio .L{display:flex;align-items:center;gap:14px}
+.folio .price{color:var(--ink-2)}
+.folio .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block;margin:0 2px 1px}
+.folio .R{display:flex;align-items:center;gap:14px}
+.folio .vol{color:var(--ink-4)}
+/* evening-edition toggle, set like a tiny paper control */
+.edition{
+  display:inline-flex;align-items:center;gap:7px;border:1px solid var(--rule-soft);
+  padding:4px 9px;cursor:pointer;background:transparent;color:var(--ink-2);
+  font-family:var(--label);font-size:10px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;
+  transition:border-color .2s,color .2s;
+}
+.edition:hover{border-color:var(--rule)}
+.edition svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.7}
+.edition .sun{display:none}
+:root[data-theme="evening"] .edition .moon{display:none}
+:root[data-theme="evening"] .edition .sun{display:block}
+.edition .lbl::after{content:"Evening edition"}
+:root[data-theme="evening"] .edition .lbl::after{content:"Morning edition"}
+
+/* ============ MASTHEAD (nameplate) ======================= */
+.masthead{padding:20px 0 0;text-align:center;position:relative}
+.masthead .plate{display:flex;align-items:center;justify-content:center;gap:clamp(12px,2.2vw,28px);max-width:100%}
+.masthead .logo{height:clamp(30px,4vw,50px);width:auto;display:block;flex:0 0 auto}
+.masthead h1{
+  font-family:var(--masthead);font-weight:800;
+  /* sized so the full nameplate sits on one line within the sheet at every width */
+  font-size:clamp(26px,6.3vw,72px);line-height:.92;letter-spacing:-.02em;
+  color:var(--ink);white-space:nowrap;min-width:0;
+}
+.masthead h1 .amp{font-style:italic;font-weight:500}
+.masthead .estd{
+  font-family:var(--label);font-size:10px;letter-spacing:.34em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:600;writing-mode:vertical-rl;flex:0 0 auto;
+}
+.masthead .estd.r{transform:rotate(180deg)}
+/* on narrow columns the flanking date-flags would crowd the nameplate; retire them */
+@media(max-width:560px){.masthead .estd{display:none}.masthead h1{white-space:normal}}
+/* the rule that draws across on load */
+.rule-draw{position:relative;height:3px;margin:16px 0 0}
+.rule-draw .thick{position:absolute;left:50%;top:0;width:0;height:3px;background:var(--rule);transform:translateX(-50%)}
+.rule-hair{height:1px;background:var(--rule);margin-top:3px;transform:scaleX(0);transform-origin:center}
+
+.edline{
+  display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;
+  padding:10px 0 0;font-family:var(--label);font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--ink-2);font-weight:600;
+}
+.edline .sep{width:4px;height:4px;border-radius:50%;background:var(--accent)}
+
+/* ============ SECTION TABS (role switch as paper sections) = */
+.sections{
+  display:flex;align-items:stretch;justify-content:center;gap:0;margin-top:14px;
+  border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);
+}
+.sections button{
+  position:relative;border:0;background:transparent;cursor:pointer;
+  font-family:var(--label);font-weight:700;font-size:12px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--ink-3);padding:11px clamp(14px,3vw,34px);
+  transition:color .25s;
+}
+.sections button+button{border-left:1px solid var(--rule-faint)}
+.sections button .sec-n{font-size:9.5px;color:var(--ink-4);display:block;letter-spacing:.18em;margin-bottom:3px}
+.sections button:hover{color:var(--ink)}
+.sections button.on{color:var(--ink)}
+.sections button.on::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:3px;background:var(--accent)}
+
+/* ============ DECK (sub-headline strip) ================== */
+.kicker{
+  font-family:var(--label);font-size:11px;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:700;display:flex;align-items:center;gap:10px;margin:26px 0 7px;
+}
+.kicker .no{color:var(--accent-ink);background:var(--accent);padding:1px 7px 2px;font-weight:800;letter-spacing:.08em}
+:root[data-theme="evening"] .kicker .no{color:var(--accent-ink)}
+.headline{
+  font-family:var(--masthead);font-weight:700;font-size:clamp(27px,4.4vw,50px);
+  line-height:1.02;letter-spacing:-.012em;color:var(--ink);max-width:18ch;
+}
+.headline em{font-style:italic;font-weight:600}
+.standfirst{
+  font-family:var(--text);font-size:clamp(13.5px,1.5vw,16px);font-style:italic;color:var(--ink-2);
+  max-width:62ch;margin-top:9px;line-height:1.5;
+}
+.byline{
+  font-family:var(--label);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-4);
+  font-weight:600;margin-top:7px;
+}
+
+.view{display:none}
+.view.on{display:block}
+
+/* ============ TEACHER VIEW ============================== */
+/* contributor row (teacher selector) set like an index of names */
+.contrib-lead{
+  font-family:var(--label);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-4);
+  font-weight:600;margin:18px 0 8px;display:flex;align-items:center;gap:9px;
+}
+.contrib-lead::after{content:"";flex:1;height:1px;background:var(--rule-faint)}
+.contrib{display:flex;flex-wrap:wrap;gap:0;border-top:1px solid var(--rule-faint);border-bottom:1px solid var(--rule-faint)}
+.tname{
+  display:flex;align-items:center;gap:9px;padding:9px 16px 9px 0;margin-right:16px;cursor:pointer;
+  border-bottom:2px solid transparent;transition:border-color .2s;position:relative;
+}
+.tname img{width:30px;height:30px;border-radius:50%;object-fit:cover;object-position:50% 26%;filter:grayscale(1) contrast(1.04);transition:filter .25s}
+.tname .nm{font-family:var(--text);font-weight:600;font-size:14.5px;color:var(--ink-3);transition:color .2s}
+.tname:hover .nm{color:var(--ink)}
+.tname:hover img{filter:grayscale(0.35) contrast(1.02)}
+.tname.on{border-bottom-color:var(--accent)}
+.tname.on .nm{color:var(--ink)}
+.tname.on img{filter:none}
+
+/* the spread: portrait column | dial | ratings ledger */
+.spread{
+  display:grid;grid-template-columns:minmax(0,0.92fr) minmax(0,1.28fr);
+  gap:clamp(20px,3.2vw,48px);margin-top:22px;
+  border-top:2px solid var(--rule);padding-top:22px;
+}
+@media(max-width:840px){.spread{grid-template-columns:1fr;gap:26px}}
+
+/* left: portrait + radial instrument */
+.portcol{position:relative}
+.portcol::after{content:"";position:absolute;top:0;right:calc(clamp(20px,3.2vw,48px)*-0.5);bottom:0;width:1px;background:var(--rule-faint)}
+@media(max-width:840px){.portcol::after{display:none}}
+.portframe{position:relative;width:100%;max-width:230px}
+.portframe img{width:100%;display:block;filter:grayscale(1) contrast(1.05) brightness(1.02);border:1px solid var(--rule)}
+.portframe .cap{
+  font-family:var(--label);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-4);
+  font-weight:600;margin-top:6px;line-height:1.5;
+}
+.portframe .cap b{color:var(--ink-2);font-weight:700}
+
+/* radial instrument: hairline dial, sits under portrait */
+.dial-wrap{margin-top:24px;display:flex;align-items:center;gap:18px}
+.dial{position:relative;width:128px;height:128px;flex:0 0 auto}
+.dial svg{width:100%;height:100%;transform:rotate(-90deg)}
+.dial .center{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+}
+.dial .center .v{font-family:var(--masthead);font-weight:700;font-size:30px;line-height:1;color:var(--ink)}
+.dial .center .l{font-family:var(--label);font-size:8.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-4);font-weight:600;margin-top:3px}
+.dial-read .verdict{font-family:var(--masthead);font-style:italic;font-weight:600;font-size:clamp(20px,2.5vw,27px);line-height:1.05;color:var(--rate-o)}
+.dial-read .verdict.v{color:var(--rate-v)}.dial-read .verdict.s{color:var(--rate-s)}.dial-read .verdict.na{color:var(--ink-3)}
+.dial-read .sub{font-family:var(--label);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin-top:6px}
+.dial-read .frac{font-family:var(--text);font-style:italic;font-size:13px;color:var(--ink-3);margin-top:8px;line-height:1.4;max-width:22ch}
+
+/* pull quote, editorial flourish */
+.pullquote{
+  margin-top:26px;padding:16px 0 4px;border-top:1px solid var(--rule-faint);
+  font-family:var(--masthead);font-style:italic;font-weight:500;font-size:clamp(16px,1.9vw,21px);
+  line-height:1.32;color:var(--ink);position:relative;
+}
+.pullquote::first-letter{}
+.pullquote .mark{font-family:var(--masthead);font-size:2.1em;line-height:0;color:var(--accent);vertical-align:-0.35em;margin-right:.04em;font-weight:800}
+.pullquote .attr{display:block;font-family:var(--label);font-style:normal;font-weight:600;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-4);margin-top:10px}
+
+/* right: ratings ledger (finely ruled table, drop cap intro) */
+.ledger-intro{font-family:var(--text);font-size:14.5px;line-height:1.6;color:var(--ink-2);margin-bottom:4px}
+.ledger-intro .dropcap{
+  float:left;font-family:var(--masthead);font-weight:800;font-size:58px;line-height:.74;
+  margin:6px 11px 0 0;color:var(--ink);
+}
+.ledger{margin-top:14px;border-top:2px solid var(--rule)}
+.lrow{
+  display:grid;grid-template-columns:2.1rem 1fr auto;align-items:baseline;gap:14px;
+  padding:11px 2px;border-bottom:1px solid var(--rule-faint);position:relative;
+}
+.lrow:last-child{border-bottom:0}
+.lrow .ln{font-family:var(--masthead);font-style:italic;font-weight:600;font-size:17px;color:var(--ink-4)}
+.lrow .lc{min-width:0}
+.lrow .lc .t{font-family:var(--text);font-weight:600;font-size:clamp(14.5px,1.55vw,17px);color:var(--ink);line-height:1.2}
+.lrow .lc .d{font-family:var(--label);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-4);font-weight:600;margin-top:3px}
+/* the rating set as a small-caps label with a leading rule swatch, ledger style */
+.verd{display:inline-flex;align-items:center;gap:9px;font-family:var(--label);font-weight:700;font-size:11px;letter-spacing:.13em;text-transform:uppercase;white-space:nowrap}
+.verd .swatch{width:22px;height:8px;flex:0 0 auto}
+.verd.o{color:var(--rate-o-ink)}.verd.o .swatch{background:var(--rate-o)}
+.verd.v{color:var(--rate-v)}.verd.v .swatch{background:var(--rate-v)}
+.verd.s{color:var(--rate-s)}.verd.s .swatch{background:var(--rate-s)}
+.verd.na{color:var(--ink-4)}.verd.na .swatch{background:transparent;border:1px solid var(--rule-soft);height:8px}
+:root[data-theme="evening"] .verd.o{color:var(--rate-o-ink)}
+/* leader dots between category and verdict, like a contents page */
+.lrow .leader{position:absolute;left:0;right:0;bottom:9px;border-bottom:1px dotted var(--rule-faint);z-index:0;opacity:0}
+
+/* ============ DEPARTMENT VIEW (league table) ============ */
+.standings-head{
+  display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  margin-top:24px;border-top:2px solid var(--rule);padding-top:10px;
+}
+.standings-head .ttl{font-family:var(--label);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-2);font-weight:700}
+.standings-head .note{font-family:var(--text);font-style:italic;font-size:12.5px;color:var(--ink-3)}
+
+/* the four summary figures, set as a ruled statistics line */
+.figrow{display:grid;grid-template-columns:repeat(4,1fr);margin-top:14px;border-top:1px solid var(--rule-faint);border-bottom:1px solid var(--rule)}
+.fig{padding:14px clamp(8px,1.4vw,18px);border-left:1px solid var(--rule-faint)}
+.fig:first-child{border-left:0}
+.fig .n{font-family:var(--masthead);font-weight:700;font-size:clamp(28px,3.7vw,42px);line-height:.95;color:var(--ink)}
+.fig .n .suf{font-size:.5em;font-weight:600;color:var(--ink-3);margin-left:1px}
+.fig .l{font-family:var(--label);font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-2);font-weight:700;margin-top:8px}
+.fig .s{font-family:var(--text);font-style:italic;font-size:11.5px;color:var(--ink-4);margin-top:2px}
+
+/* league table: rows of teachers, columns 01..08, ruled */
+.league{margin-top:18px;border-top:2px solid var(--rule)}
+.lg-row{
+  display:grid;
+  grid-template-columns:minmax(9.5rem,1.7fr) repeat(8,minmax(0,1fr)) minmax(6.5rem,1.15fr);
+  align-items:center;gap:4px;padding:0 2px;border-bottom:1px solid var(--rule-faint);min-height:46px;
+}
+.lg-row:last-child{border-bottom:0}
+.lg-row.head{border-bottom:1.5px solid var(--rule);min-height:0;padding:7px 2px}
+.lg-row.head span{font-family:var(--label);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);font-weight:700;text-align:center}
+.lg-row.head .nm-h{text-align:left}
+.lg-row.head .ov-h{text-align:right;padding-right:2px}
+.lg-cell-name{display:flex;align-items:center;gap:11px;min-width:0}
+.lg-cell-name .rank{font-family:var(--masthead);font-style:italic;font-weight:600;font-size:14px;color:var(--ink-4);width:1.1em;flex:0 0 auto}
+.lg-cell-name .av{width:30px;height:30px;border-radius:50%;overflow:hidden;border:1px solid var(--rule-soft);flex:0 0 auto}
+.lg-cell-name .av img{width:100%;height:100%;object-fit:cover;object-position:50% 26%;filter:grayscale(1) contrast(1.04)}
+.lg-cell-name .nm{font-family:var(--text);font-weight:600;font-size:14.5px;color:var(--ink);line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lg-cell-name .sb{font-family:var(--label);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-4);font-weight:600}
+/* rating mark in the matrix: a small ruled tick-bar, not a dot, to keep it print-like */
+.mk{width:20px;height:10px;margin:0 auto;transform:scaleY(0);transform-origin:center}
+.mk.o{background:var(--rate-o)}.mk.v{background:var(--rate-v)}.mk.s{background:var(--rate-s)}
+.mk.na{background:transparent;border-bottom:1px solid var(--rule-soft);height:1px;transform:scaleX(0)}
+.lg-overall{justify-self:end;padding-right:2px}
+.lg-overall .verd{font-size:10.5px}
+
+/* matrix legend, set as a footnote line */
+.foot-note{
+  display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-top:14px;padding-top:10px;
+  border-top:1px solid var(--rule-faint);
+  font-family:var(--text);font-size:12px;color:var(--ink-3);
+}
+.foot-note .g{display:flex;align-items:center;gap:7px}
+.foot-note .g .sw{width:16px;height:8px}
+.foot-note .key{margin-left:auto;font-family:var(--label);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-4);font-weight:600}
+
+/* ============ ADMINISTRATION VIEW (statistics block) ==== */
+.admin-filter{display:flex;gap:0;margin:18px 0 4px;border-top:1px solid var(--rule-faint);border-bottom:1px solid var(--rule-faint)}
+.admin-filter button{
+  border:0;background:transparent;cursor:pointer;font-family:var(--label);font-weight:700;font-size:10.5px;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--ink-4);padding:10px 16px;transition:color .2s;position:relative;
+}
+.admin-filter button+button{border-left:1px solid var(--rule-faint)}
+.admin-filter button:hover{color:var(--ink-2)}
+.admin-filter button.on{color:var(--ink)}
+.admin-filter button.on::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--accent)}
+
+/* the two-column statistics spread */
+.stats{display:grid;grid-template-columns:1.18fr 1fr;gap:clamp(22px,3.4vw,52px);margin-top:20px;border-top:2px solid var(--rule);padding-top:20px}
+@media(max-width:840px){.stats{grid-template-columns:1fr;gap:30px}}
+.stats .col-rule{position:relative}
+.stats .col-rule::after{content:"";position:absolute;top:0;right:calc(clamp(22px,3.4vw,52px)*-0.5);bottom:0;width:1px;background:var(--rule-faint)}
+@media(max-width:840px){.stats .col-rule::after{display:none}}
+.col-head{font-family:var(--label);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-2);font-weight:700}
+.col-sub{font-family:var(--text);font-style:italic;font-size:12.5px;color:var(--ink-4);margin-top:3px;margin-bottom:12px}
+
+/* department standings as a ruled rank table with inline rule-bar */
+.dept-tbl{border-top:1.5px solid var(--rule)}
+.dept-r{display:grid;grid-template-columns:1.3rem 1fr 3.1rem;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--rule-faint)}
+.dept-r:last-child{border-bottom:0}
+.dept-r .rk{font-family:var(--masthead);font-style:italic;font-weight:600;font-size:15px;color:var(--ink-4)}
+.dept-r .body{min-width:0}
+.dept-r .dn{font-family:var(--text);font-weight:600;font-size:14.5px;color:var(--ink)}
+.dept-r .bar{height:6px;margin-top:6px;background:var(--paper-3);position:relative;overflow:hidden}
+.dept-r .bar i{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--rate-o)}
+.dept-r .pc{font-family:var(--masthead);font-weight:700;font-size:18px;color:var(--ink);text-align:right}
+.dept-r .pc .suf{font-size:.6em;color:var(--ink-3);font-weight:600}
+
+/* judgement spread as a ledger of ruled horizontal bars */
+.spread-tbl{border-top:1.5px solid var(--rule)}
+.sp-r{display:grid;grid-template-columns:1.4rem 1fr 2.6rem;align-items:center;gap:13px;padding:10px 0;border-bottom:1px solid var(--rule-faint)}
+.sp-r:last-child{border-bottom:0}
+.sp-r .sb{font-family:var(--masthead);font-style:italic;font-weight:600;font-size:15px;color:var(--ink-4)}
+.sp-r .track{height:11px;background:var(--paper-3);position:relative;overflow:hidden}
+.sp-r .track i{position:absolute;left:0;top:0;bottom:0;width:0}
+.sp-r .ct{font-family:var(--masthead);font-weight:700;font-size:15px;color:var(--ink);text-align:right}
+
+/* ============ COLOPHON (footer) ========================= */
+.colophon{
+  margin-top:40px;border-top:1px solid var(--rule);padding:14px 0 32px;
+  display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  font-family:var(--label);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-4);font-weight:600;
+}
+.colophon .c-mid{font-family:var(--text);font-style:italic;letter-spacing:0;text-transform:none;font-size:12px;color:var(--ink-3)}
+
+/* reveal helper · hidden ONLY while the page is priming, so a stalled
+   or interrupted animation can never leave the spread blank (governance
+   artifact: no stuck or empty state, ever). */
+html.preload .rv{opacity:0}
+@media(prefers-reduced-motion:reduce){html.preload .rv{opacity:1}}
+</style>
+</head>
+<body>
+<div class="sheet">
+<div class="inner">
+
+  <!-- FOLIO / running head -->
+  <div class="folio">
+    <div class="L">
+      <span>AIS Sharjah</span>
+      <span class="dot"></span>
+      <span class="price">Observation Record</span>
+    </div>
+    <div class="R">
+      <span class="vol tnum">Vol. III &middot; No. 27</span>
+      <button class="edition" id="edition" aria-label="Toggle edition">
+        <svg class="moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <span class="lbl"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- MASTHEAD -->
+  <div class="masthead">
+    <div class="plate">
+      <span class="estd">Est. 2008</span>
+      <img class="logo" id="logo" src="assets/ais-navy.png" alt="AIS">
+      <h1>The Observation Record</h1>
+      <span class="estd r">SEAS Review</span>
+    </div>
+    <div class="rule-draw">
+      <span class="thick" id="ruleThick"></span>
+      <div class="rule-hair" id="ruleHair"></div>
+    </div>
+    <div class="edline rv" id="edline">
+      <span>AIS Sharjah</span><span class="sep"></span>
+      <span>Teacher Observation &amp; Judgement</span><span class="sep"></span>
+      <span class="tnum">Term 3, 2025 / 26</span>
+    </div>
+  </div>
+
+  <!-- SECTION TABS = role switch -->
+  <div class="sections" id="sections">
+    <button class="on" data-v="teacher"><span class="sec-n">Section I</span>Teacher</button>
+    <button data-v="dept"><span class="sec-n">Section II</span>Department</button>
+    <button data-v="admin"><span class="sec-n">Section III</span>Administration</button>
+  </div>
+
+  <!-- ===================== TEACHER ===================== -->
+  <section class="view on" id="v-teacher">
+    <div class="kicker rv"><span class="no">I</span><span id="t-grade">Grade 6 &middot; Primary Phase</span></div>
+    <h1 class="headline rv">A teacher, <em>observed</em>.</h1>
+    <p class="standfirst rv">The cumulative judgement across all eight observation instruments for the current inspection cycle, set out instrument by instrument, with the best standing score carried as the headline verdict.</p>
+    <div class="byline rv">Compiled by the Observation Office &middot; AIS Sharjah</div>
+
+    <div class="contrib-lead rv">In this edition</div>
+    <div class="contrib rv" id="contrib"></div>
+
+    <div class="spread">
+      <!-- left column: portrait, dial, pull quote -->
+      <div class="portcol">
+        <div class="portframe">
+          <img id="t-photo" src="assets/jo-mare.jpg" alt="">
+          <div class="cap"><b id="t-capname">Jo Mare Kruger</b><br><span id="t-caprole">Grade 6A &middot; Homeroom</span></div>
+        </div>
+
+        <div class="dial-wrap">
+          <div class="dial">
+            <svg viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="44" fill="none" stroke="var(--rule-faint)" stroke-width="1.4"></circle>
+              <circle cx="50" cy="50" r="44" fill="none" stroke="var(--rate-o)" stroke-width="3"
+                      stroke-linecap="butt" id="dialArc"
+                      stroke-dasharray="276.46" stroke-dashoffset="276.46"></circle>
+            </svg>
+            <div class="center">
+              <span class="v tnum" id="dialPct">0</span>
+              <span class="l">Index</span>
+            </div>
+          </div>
+          <div class="dial-read">
+            <div class="verdict" id="t-verdict">Outstanding</div>
+            <div class="sub" id="t-subverdict">Headline standing</div>
+            <div class="frac tnum" id="t-frac">6 of 8 instruments returned a judgement</div>
+          </div>
+        </div>
+
+        <blockquote class="pullquote rv">
+          <span class="mark">&ldquo;</span><span id="t-quote">Evidence is consistent and the standing is secure across the instruments observed this cycle.</span>
+          <span class="attr">Standing summary &middot; current cycle</span>
+        </blockquote>
+      </div>
+
+      <!-- right column: ratings ledger -->
+      <div class="ledgercol">
+        <p class="ledger-intro rv"><span class="dropcap">E</span>ach observation instrument is recorded below in the order it appears on the inspection schedule. The verdict shown is the standing judgement on the SPEA scale, from Outstanding through Very Good and Sound; instruments returned for context only are marked Not Assessed.</p>
+        <div class="ledger" id="ledger"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== DEPARTMENT ===================== -->
+  <section class="view" id="v-dept">
+    <div class="kicker rv"><span class="no">II</span>Grade 6 &middot; Primary Phase</div>
+    <h1 class="headline rv">The department, <em>in standings</em>.</h1>
+    <p class="standfirst rv">Every Grade 6 homeroom teacher set against the eight observation instruments, read as a league table. Marks denote the standing judgement; the final column carries each teacher's headline verdict.</p>
+
+    <div class="figrow rv" id="figrow">
+      <div class="fig"><div class="n tnum" data-n="6">0</div><div class="l">Teachers</div><div class="s">Grade 6 cohort, full time</div></div>
+      <div class="fig"><div class="n tnum" data-n="73" data-suf="%">0</div><div class="l">Outstanding cells</div><div class="s">Across all instruments</div></div>
+      <div class="fig"><div class="n tnum" data-n="21" data-suf="%">0</div><div class="l">Very Good</div><div class="s">Strong cycle, no flags</div></div>
+      <div class="fig"><div class="n tnum" data-n="48">0</div><div class="l">Observation events</div><div class="s">Logged this year</div></div>
+    </div>
+
+    <div class="standings-head rv">
+      <span class="ttl">League table &middot; teacher by instrument</span>
+      <span class="note">Best standing score carried as the verdict.</span>
+    </div>
+    <div class="league" id="league"></div>
+
+    <div class="foot-note rv">
+      <span class="g"><span class="sw" style="background:var(--rate-o)"></span>Outstanding</span>
+      <span class="g"><span class="sw" style="background:var(--rate-v)"></span>Very Good</span>
+      <span class="g"><span class="sw" style="background:var(--rate-s)"></span>Sound</span>
+      <span class="g"><span class="sw" style="background:transparent;border-bottom:1px solid var(--rule-soft);height:1px;align-self:center"></span>Not assessed</span>
+      <span class="key">01 SPEA &middot; 02 Walkthrough &middot; 03 Probation &middot; 04 Lesson &middot; 05 ESCM &middot; 06 OTP / APR &middot; 07 Notes &middot; 08 Files</span>
+    </div>
+  </section>
+
+  <!-- ===================== ADMINISTRATION ===================== -->
+  <section class="view" id="v-admin">
+    <div class="kicker rv"><span class="no">III</span>Whole school &middot; all phases</div>
+    <h1 class="headline rv">The school, <em>in figures</em>.</h1>
+    <p class="standfirst rv">Observation coverage and standing across the whole school, with department standings and the spread of judgements set out as broadsheet statistics. Select a phase to refile the figures.</p>
+
+    <div class="admin-filter rv" id="afilter">
+      <button class="on" data-f="all">Whole school</button>
+      <button data-f="pri">Primary</button>
+      <button data-f="sec">Secondary</button>
+      <button data-f="kin">Kindergarten</button>
+    </div>
+
+    <div class="figrow rv" id="afig">
+      <div class="fig"><div class="n tnum" data-kpi="t">0</div><div class="l">Teachers</div><div class="s">across the school</div></div>
+      <div class="fig"><div class="n tnum" data-kpi="c" data-suf="%">0</div><div class="l">Coverage</div><div class="s">observed at least once</div></div>
+      <div class="fig"><div class="n tnum" data-kpi="e">0</div><div class="l">Observation events</div><div class="s">this academic year</div></div>
+      <div class="fig"><div class="n tnum" data-kpi="o" data-suf="%">0</div><div class="l">At or above</div><div class="s">Outstanding + Very Good</div></div>
+    </div>
+
+    <div class="stats">
+      <div class="col-rule">
+        <div class="col-head">By department</div>
+        <div class="col-sub">Share of cells at or above expectation. Ranked; select a phase to refile.</div>
+        <div class="dept-tbl" id="deptlist"></div>
+      </div>
+      <div>
+        <div class="col-head">Judgement spread</div>
+        <div class="col-sub">All instruments, all teachers; best score stands. Band 1 highest.</div>
+        <div class="spread-tbl" id="adminbars"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COLOPHON -->
+  <div class="colophon">
+    <span>AIS Sharjah &middot; Observation Office</span>
+    <span class="c-mid">Live concept. Sample figures and portraits shown for layout; verdicts on the SPEA scale.</span>
+    <span class="tnum">Printed Term 3 &middot; 2025 / 26</span>
+  </div>
+
+</div><!-- /inner -->
+</div><!-- /sheet -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+/* ============================================================
+   DATA  ·  identical to V1 (do not alter)
+   ============================================================ */
+const CATS=["SPEA Observations","Walkthroughs","Probationary Observations","Lesson Observations","Classroom Profiling ESCM","OTP & APR (Self-Assessment)","Additional Notes & Attachments","File Attachments"];
+const RATE={o:'Outstanding',v:'Very Good',s:'Sound',na:'Not Assessed'};
+const TEACHERS=[
+  {name:'Jo Mare Kruger',grade:'Grade 6A · Homeroom',photo:'jo-mare.jpg',r:['o','v','o','o','o','v','na','na']},
+  {name:'Curtis All',grade:'Grade 6B · Homeroom',photo:'curtis.jpg',r:['o','o','v','o','o','o','na','na']},
+  {name:'Deena AbuGeras',grade:'Grade 6C · Homeroom',photo:'deena.jpg',r:['v','o','o','v','v','o','na','na']},
+  {name:'Lana Mosleh',grade:'Grade 6D · Homeroom',photo:'lana.jpg',r:['o','o','o','o','o','o','na','na']},
+  {name:'Gina Hanlon',grade:'Grade 6E · Homeroom',photo:'gina.jpg',r:['v','v','o','o','s','v','na','na']},
+  {name:'Hani Asad',grade:'Grade 6F · Homeroom',photo:'hani.jpg',r:['o','o','v','o','o','o','na','na']},
+];
+const ADMIN={
+  all:{t:143,c:82,e:486,o:71,depts:[['Primary · grade levels',86],['Secondary · Humanities',74],['Secondary · Science',81],['Secondary · Arts',69],['Kindy',88]],bars:[182,410,520,240,96,31]},
+  pri:{t:84,c:85,e:268,o:78,depts:[['Grade 4',88],['Grade 5',84],['Grade 6',90],['Grade 3',79],['Grade 2',83]],bars:[120,250,300,120,40,10]},
+  sec:{t:47,c:83,e:172,o:64,depts:[['Humanities',74],['Science',81],['Arts',69],['Mathematics',77],['Languages',72]],bars:[48,130,170,95,44,18]},
+  kin:{t:12,c:88,e:46,o:80,depts:[['KG1',86],['KG2',90],['FS',84]],bars:[14,30,50,25,12,3]}
+};
+
+const order={o:0,v:1,s:2,na:3};
+function overall(r){const rated=r.filter(x=>x!=='na');const best=rated.slice().sort((a,b)=>order[a]-order[b]);return best[0]||'na'}
+function getC(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+
+/* index score for the dial: weighted standing, 0..100, tabular reading */
+function indexScore(r){
+  const w={o:100,v:80,s:55,na:null};
+  const vals=r.map(x=>w[x]).filter(x=>x!==null);
+  if(!vals.length)return 0;
+  return Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);
+}
+const DASH=2*Math.PI*44; /* dial circumference, r=44 */
+
+/* ============================================================
+   TEACHER VIEW
+   ============================================================ */
+let curT=0;
+function buildContrib(){
+  const el=document.getElementById('contrib');el.innerHTML='';
+  TEACHERS.forEach((t,i)=>{
+    const b=document.createElement('div');b.className='tname'+(i===curT?' on':'');
+    const first=t.name.split(' ')[0],last=t.name.split(' ').slice(-1)[0];
+    b.innerHTML=`<img src="assets/${t.photo}" alt=""><span class="nm">${first} ${last}</span>`;
+    b.onclick=()=>{curT=i;buildContrib();renderTeacher(true)};
+    el.appendChild(b);
+  });
+}
+const QUOTES={
+  o:'Evidence is consistent and the standing is secure across the instruments observed this cycle.',
+  v:'A strong and steady cycle, with judgements sitting comfortably above expectation throughout.',
+  s:'A sound cycle overall, with clear evidence on record and room noted to press toward the next band.',
+  na:'Instruments are recorded for context this cycle; a headline standing is not yet returned.'
+};
+function renderTeacher(animate){
+  const t=TEACHERS[curT];
+  const ov=overall(t.r);
+  const ratedN=t.r.filter(x=>x!=='na').length;
+  const score=indexScore(t.r);
+
+  document.getElementById('t-photo').src='assets/'+t.photo;
+  document.getElementById('t-capname').textContent=t.name;
+  document.getElementById('t-caprole').textContent=t.grade;
+  document.getElementById('t-grade').innerHTML=t.grade.split('·')[0].trim()+' &middot; Primary Phase';
+
+  const vd=document.getElementById('t-verdict');
+  vd.textContent=RATE[ov];vd.className='verdict '+ov;
+  document.getElementById('t-frac').textContent=ratedN+' of 8 instruments returned a judgement';
+  document.getElementById('t-quote').textContent=QUOTES[ov];
+
+  /* dial */
+  const arc=document.getElementById('dialArc');
+  arc.style.stroke=ov==='o'?getC('--rate-o'):ov==='v'?getC('--rate-v'):ov==='s'?getC('--rate-s'):getC('--rate-na');
+  const pctEl=document.getElementById('dialPct');
+  if(animate){
+    gsap.fromTo(arc,{strokeDashoffset:DASH},{strokeDashoffset:DASH*(1-score/100),duration:1.15,ease:'power2.inOut'});
+    gsap.fromTo({v:0},{v:0},{v:score,duration:1.05,ease:'power2.out',onUpdate:function(){pctEl.textContent=Math.round(this.targets()[0].v)}});
+  }else{
+    arc.style.strokeDashoffset=DASH*(1-score/100);
+    pctEl.textContent=score;
+  }
+
+  /* ratings ledger */
+  const lg=document.getElementById('ledger');lg.innerHTML='';
+  CATS.forEach((c,i)=>{
+    const v=t.r[i];
+    const row=document.createElement('div');row.className='lrow';
+    row.innerHTML=
+      `<span class="ln tnum">${String(i+1).padStart(2,'0')}</span>`+
+      `<div class="lc"><div class="t">${c}</div><div class="d">${v==='na'?'Provided for context':'Evidence on record'}</div></div>`+
+      `<span class="verd ${v}"><span class="swatch"></span>${RATE[v]}</span>`;
+    lg.appendChild(row);
+  });
+
+  if(animate){
+    gsap.killTweensOf('#ledger .lrow');
+    gsap.fromTo('#ledger .lrow',{y:10,opacity:0},{y:0,opacity:1,duration:.42,stagger:.045,ease:'power2.out'});
+    gsap.fromTo('.dial-read .verdict',{opacity:0,y:8},{opacity:1,y:0,duration:.5,ease:'power2.out',delay:.15});
+  }
+}
+
+/* ============================================================
+   DEPARTMENT · league table
+   ============================================================ */
+function buildLeague(animate){
+  const m=document.getElementById('league');
+  let head=`<div class="lg-row head"><span class="nm-h">Teacher</span>`;
+  for(let i=1;i<=8;i++)head+=`<span title="${CATS[i-1]}">${String(i).padStart(2,'0')}</span>`;
+  head+=`<span class="ov-h">Verdict</span></div>`;
+
+  let rows='';
+  TEACHERS.forEach((t,idx)=>{
+    const ov=overall(t.r);
+    rows+=`<div class="lg-row"><div class="lg-cell-name"><span class="rank tnum">${idx+1}</span>`+
+          `<div class="av"><img src="assets/${t.photo}" alt=""></div>`+
+          `<div><div class="nm">${t.name}</div><div class="sb">${t.grade.replace('· ','')}</div></div></div>`;
+    t.r.forEach(v=>rows+=`<span class="mk ${v}"></span>`);
+    rows+=`<span class="lg-overall"><span class="verd ${ov}"><span class="swatch"></span>${RATE[ov]}</span></span></div>`;
+  });
+  m.innerHTML=head+rows;
+
+  if(animate){
+    gsap.killTweensOf('#league .lg-row, #league .mk');
+    gsap.fromTo('#league .lg-row:not(.head)',{y:12,opacity:0},{y:0,opacity:1,duration:.45,stagger:.06,ease:'power2.out'});
+    gsap.fromTo('#league .mk.na',{scaleX:0},{scaleX:1,duration:.4,stagger:{each:.01,from:'start'},ease:'power2.out',delay:.28});
+    gsap.fromTo('#league .mk:not(.na)',{scaleY:0},{scaleY:1,duration:.42,stagger:{each:.012,from:'start'},ease:'power3.out',delay:.28});
+  }else{
+    gsap.set('#league .mk:not(.na)',{scaleY:1});
+    gsap.set('#league .mk.na',{scaleX:1});
+  }
+}
+
+/* ============================================================
+   ADMINISTRATION · statistics block
+   ============================================================ */
+let curF='all';
+function renderAdmin(animate){
+  const d=ADMIN[curF];
+  setNum('[data-kpi=t]',d.t);setNum('[data-kpi=c]',d.c);setNum('[data-kpi=e]',d.e);setNum('[data-kpi=o]',d.o);
+
+  /* department standings, ranked */
+  const ranked=d.depts.slice().sort((a,b)=>b[1]-a[1]);
+  const dl=document.getElementById('deptlist');
+  dl.innerHTML=ranked.map(([n,p],i)=>
+    `<div class="dept-r"><span class="rk tnum">${i+1}</span>`+
+    `<div class="body"><div class="dn">${n}</div><div class="bar"><i data-w="${p}"></i></div></div>`+
+    `<div class="pc tnum">${p}<span class="suf">%</span></div></div>`).join('');
+  gsap.fromTo('#deptlist .bar i',{width:'0%'},{width:(i,el)=>el.dataset.w+'%',duration:1.05,ease:'power3.out',stagger:.07});
+
+  /* judgement spread, ledger bars · band 1 highest */
+  const max=Math.max(...d.bars);
+  const cols=[getC('--rate-o'),getC('--rate-v'),getC('--rate-s'),'#d98a3a','#c25a36','#9a3526'];
+  const ab=document.getElementById('adminbars');
+  ab.innerHTML=d.bars.map((v,i)=>
+    `<div class="sp-r"><span class="sb tnum">${i+1}</span>`+
+    `<div class="track"><i style="background:${cols[i]}" data-w="${Math.round(v/max*100)}"></i></div>`+
+    `<div class="ct tnum">${v}</div></div>`).join('');
+  gsap.fromTo('#adminbars .track i',{width:'0%'},{width:(i,el)=>el.dataset.w+'%',duration:.95,ease:'power3.out',stagger:.06});
+}
+
+/* ticker-style number set, ledger numerals */
+function setNum(sel,to){
+  const el=document.querySelector(sel);const suf=el.dataset.suf||'';
+  const from=parseFloat(el.dataset._v||0);
+  gsap.to({v:from},{v:to,duration:1.05,ease:'power2.out',
+    onUpdate:function(){el.innerHTML=Math.round(this.targets()[0].v)+(suf?`<span class="suf">${suf}</span>`:'')},
+    onComplete:()=>el.dataset._v=to});
+}
+function animFigures(scope){
+  document.querySelectorAll(scope+' .n[data-n]').forEach(el=>{
+    const to=+el.dataset.n,suf=el.dataset.suf||'';
+    gsap.to({v:0},{v:to,duration:1.15,ease:'power2.out',
+      onUpdate:function(){el.innerHTML=Math.round(this.targets()[0].v)+(suf?`<span class="suf">${suf}</span>`:'')}});
+  });
+  gsap.fromTo(scope+' .fig',{y:12,opacity:0},{y:0,opacity:1,duration:.5,stagger:.06,ease:'power2.out'});
+}
+
+/* ============================================================
+   SECTION (view) switching
+   ============================================================ */
+function show(v){
+  document.querySelectorAll('.sections button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
+  document.querySelectorAll('.view').forEach(s=>s.classList.remove('on'));
+  const sec=document.getElementById('v-'+v);sec.classList.add('on');
+  /* reveal the editorial furniture (kicker/headline/standfirst) like type settling */
+  gsap.fromTo(sec.querySelectorAll('.rv'),{y:14,opacity:0},{y:0,opacity:1,duration:.5,stagger:.05,ease:'power2.out'});
+
+  if(v==='teacher')renderTeacher(true);
+  if(v==='dept'){
+    document.querySelectorAll('#v-dept .n[data-n]').forEach(e=>{e.dataset._v=0;e.textContent='0'});
+    animFigures('#v-dept');buildLeague(true);
+  }
+  if(v==='admin'){
+    document.querySelectorAll('#v-admin .n[data-kpi]').forEach(e=>{e.dataset._v=0;e.textContent='0'});
+    renderAdmin(true);
+  }
+}
+
+document.getElementById('sections').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(b&&b.dataset.v)show(b.dataset.v);
+});
+document.getElementById('afilter').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b||!b.dataset.f)return;
+  curF=b.dataset.f;
+  document.querySelectorAll('#afilter button').forEach(x=>x.classList.toggle('on',x===b));
+  renderAdmin(true);
+});
+
+/* ============================================================
+   EDITION (theme) toggle  ·  paper <-> evening
+   ============================================================ */
+const logo=document.getElementById('logo');
+function applyEdition(t){
+  document.documentElement.setAttribute('data-theme',t);
+  /* paper uses navy logo; evening uses white logo */
+  logo.src=t==='evening'?'assets/ais-white.png':'assets/ais-navy.png';
+  const cur=document.querySelector('.sections button.on').dataset.v;
+  /* re-tint marks/arcs that read CSS vars, without re-animating */
+  if(cur==='teacher')renderTeacher(false);
+  if(cur==='dept')buildLeague(false);
+  if(cur==='admin'){
+    /* recolour the spread bars to the edition ramp */
+    const d=ADMIN[curF];const max=Math.max(...d.bars);
+    const cols=[getC('--rate-o'),getC('--rate-v'),getC('--rate-s'),'#d98a3a','#c25a36','#9a3526'];
+    document.querySelectorAll('#adminbars .sp-r').forEach((row,i)=>{
+      const bar=row.querySelector('i');if(bar)bar.style.background=cols[i];
+    });
+  }
+  try{localStorage.setItem('ais-broadsheet-edition',t)}catch(e){}
+}
+document.getElementById('edition').onclick=()=>
+  applyEdition(document.documentElement.getAttribute('data-theme')==='evening'?'paper':'evening');
+
+/* ============================================================
+   BOOT  ·  masthead rule draws, then the page sets
+   ============================================================ */
+(function(){
+  let s;try{s=localStorage.getItem('ais-broadsheet-edition')}catch(e){}
+  applyEdition(s||'paper');
+})();
+
+buildContrib();
+
+const reduceMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+if(reduceMotion){
+  /* honour reduced motion: set the masthead rule, show everything, no choreography */
+  gsap.set('#ruleThick',{width:'100%'});gsap.set('#ruleHair',{scaleX:1});
+  revealAll();
+  renderTeacher(false);
+}else{
+  /* opening sequence: rule draws across, edition line + furniture set, then teacher renders.
+     preload comes off first so the spread is already painted; GSAP only choreographs it in.
+     onComplete (and the head-script safety net) guarantee nothing is ever left hidden. */
+  document.documentElement.classList.remove('preload');
+  const tl=gsap.timeline({onComplete:revealAll});
+  tl.to('#ruleThick',{width:'100%',duration:.75,ease:'power3.inOut'})
+    .to('#ruleHair',{scaleX:1,duration:.6,ease:'power2.out'},'-=0.45')
+    .fromTo('#edline',{opacity:0,y:8},{opacity:1,y:0,duration:.5,ease:'power2.out'},'-=0.3')
+    .fromTo('#v-teacher .rv:not(#edline)',{opacity:0,y:14},{opacity:1,y:0,duration:.5,stagger:.05,ease:'power2.out'},'-=0.25')
+    .add(()=>renderTeacher(true),'-=0.2');
+}
+</script>
+</body>
+</html>
