@@ -20,11 +20,19 @@ Live: https://rogerceaser21.github.io/Data-Representation/
 ## Dashboard build (Supabase) · active workstream, separate from the forms/deck
 
 A role-based **Supabase-backed dashboard** is being built to aggregate all teacher-assessment data for the principal, governors, and the SEF/SEAS review. It is not the forms and not the deck.
+- **v0.1 BUILT + DEPLOYED (gated) 2026-06-15** in `dashboard/` (tag `dash-v0.1`). Live, StatiCrypt-gated (password `ais2026ais`): https://rogerceaser21.github.io/Data-Representation/dashboard/ . Coverage board + Teacher drill-down + Settings; Cinematic shell, light default + dark, AIS star-field. Login-less for the demo; @ais.ae SSO + RLS is the next step.
 - Architecture (data, auth, schema, boards, attendance): `.planning/2026-06-12-dashboard-architecture-DECISIONS.md`
 - Design + motion (Cinematic, LIGHT default, AIS star-field, 6-point SEAS scale, Spectrum/Arc/matrix): `.planning/2026-06-15-dashboard-design-DECISIONS.md`
 - Living spec, open in a browser: `dashboard-previews/design-spec.html`
 - Current DB + decision state: memory `project_dashboard_architecture.md`. Supabase ref `rfbetrcevtmisknndpgg`; tooling + creds at `~/AIS-Data-Dashboard/` (never echo secrets).
 - Latest status: newest doc in `handoff/`.
+
+**Dashboard build chain + hard rules (see also memory):**
+- Master = `dashboard/src/index.html` (edit this). Reads only `window.__AIS_DATA`, so the later live-Supabase swap is one spot.
+- Data = baked snapshot. Regenerate: `node ~/AIS-Data-Dashboard/db/export_snapshot.mjs "<repo>/dashboard/data.js"`. **`dashboard/data.js` is GITIGNORED on purpose**, it holds real teacher names + ratings in cleartext and must never reach Pages.
+- Deploy = `./dashboard/encrypt.sh` (inlines data.js ENCRYPTED into `dashboard/index.html` via StatiCrypt, password `ais2026ais`). Never hand-edit `dashboard/index.html`; it is generated. Then commit + push main + force a Pages rebuild.
+- All dashboard motion is enhancement only (final state applies without requestAnimationFrame): preserve this so a frozen ticker (hidden/bfcached tab, which StatiCrypt's document.write makes likely) never strands the title card or content.
+- The gate is SOFT: the password is publicly fetchable via served files (CLAUDE.md, both encrypt.sh). Treat the URL as soft-gated for a controlled demo, not secure; real access control is the planned SSO + RLS.
 
 ---
 
@@ -71,6 +79,13 @@ Data-Representation/                          github.com/Rogerceaser21/Data-Repr
 │   ├── v0.10-r3-form-checklist.md            multi-phase plan + acceptance criteria + IDs
 │   ├── 2026-06-11-moderation-and-dashboard-plan.md   Jobs 0-3 (Job 0 + Job 1 done)
 │   └── 2026-06-12-dashboard-architecture-DECISIONS.md  AUTHORITATIVE grill record (Q1-Q11) for the Supabase dashboard
+├── dashboard/                                 LIVE gated dashboard v0.1 (tag dash-v0.1)
+│   ├── index.html                             ENCRYPTED deploy artifact (StatiCrypt, data inlined) · generated, never hand-edit
+│   ├── src/index.html                         MASTER · edit this · Cinematic Coverage + Teacher drill-down + Settings
+│   ├── data.js                                GITIGNORED baked Supabase snapshot (window.__AIS_DATA) · real names+ratings, never to Pages
+│   ├── encrypt.sh                             build · inlines data.js ENCRYPTED into index.html (password ais2026ais)
+│   ├── password-template.html                 AIS-themed StatiCrypt gate (re-themed from R3)
+│   └── assets/                                ais-white.png + ais-navy.png (public, non-sensitive)
 ├── dashboard-previews/                        dashboard design concepts · spea-dashboard.html = dashboard-v1 (parked); built from index.html slides 3-4
 ├── README.md                                 STALE (still describes v0.1 pitch only)
 ├── CLAUDE.md                                 this file
