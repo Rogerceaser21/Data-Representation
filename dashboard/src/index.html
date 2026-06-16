@@ -501,15 +501,17 @@ function buildArc(t,scopeVal){const s=byId('svgArc');s.innerHTML='';const cx=120
    as the top Spectrum. A skill dot (has a code) is SKILL-coloured; a whole-observation dot (the
    All card) is score-coloured, like the top Spectrum. The flag (overall) is score-coloured. */
 let _gid=0;
-function buildObsRamp(svg,items,avg){svg.innerHTML='';const R=RAMP(),x0=26,x1=514,y=52,h=18,span=x1-x0,gid='og'+(++_gid);
+function buildObsRamp(svg,items,avg,opts){opts=opts||{};svg.innerHTML='';const R=RAMP(),x0=26,x1=514,span=x1-x0,h=18,gid='og'+(++_gid);
+  const tall=!!opts.tall,y=tall?104:52,GAP=tall?18:14; // the All card is 'tall' so a selected dot's ring has room
   const defs=el('defs',{}),lg=el('linearGradient',{id:gid,x1:'0',x2:'1'});for(let i=1;i<=6;i++)lg.appendChild(el('stop',{offset:((i-1)/5*100)+'%','stop-color':R[i]}));defs.appendChild(lg);svg.appendChild(defs);
   const bar=el('rect',{x:x0,y,width:span,height:h,rx:h/2,fill:'url(#'+gid+')',opacity:.95});svg.appendChild(bar);
   const px=v=>x0+span*((v-0.5)/6),seen={},dots=[];
   for(let i=1;i<=6;i++){const tx=el('text',{x:px(i),y:y+h+30,'text-anchor':'middle','font-size':9,fill:gc('--ink-mid'),style:'font-family:var(--body);font-weight:600'});tx.textContent=SCALE_WORDS[i-1];svg.appendChild(tx);}
-  items.forEach(it=>{const x=px(it.score);const k=Math.round(x/13);const stk=seen[k]=(seen[k]||0)+1;
-    const c=el('circle',{cx:x,cy:y-12-(stk-1)*14,r:6,fill:it.code?skillCol(it.code):rampAt(it.score),stroke:gc('--bg'),'stroke-width':2});svg.appendChild(c);dots.push(c);});
+  items.forEach(it=>{const x=px(it.score);const k=Math.round(x/13);const stk=seen[k]=(seen[k]||0)+1;const cy=y-12-(stk-1)*GAP;
+    if(opts.selIdx!=null&&it.idx===opts.selIdx)svg.appendChild(el('circle',{cx:x,cy,r:9,fill:'none',stroke:SEL_COLOR,'stroke-width':2.2}));
+    const c=el('circle',{cx:x,cy,r:6,fill:it.code?skillCol(it.code):rampAt(it.score),stroke:gc('--bg'),'stroke-width':2});svg.appendChild(c);dots.push(c);});
   let flag=null;if(avg!=null){flag=el('path',{d:`M ${px(avg)} ${y+h+2} l -6 11 l 12 0 z`,fill:rampAt(avg)});svg.appendChild(flag);}
-  if(window.gsap){gsap.fromTo(bar,{scaleX:0,transformOrigin:'left center'},{scaleX:1,duration:.6,ease:'power3.out',immediateRender:false});
+  if(window.gsap&&!opts.noAnim){gsap.fromTo(bar,{scaleX:0,transformOrigin:'left center'},{scaleX:1,duration:.6,ease:'power3.out',immediateRender:false});
     gsap.fromTo(dots,{scale:0,transformOrigin:'center'},{scale:1,duration:.4,stagger:.05,delay:.2,ease:'back.out(2)',immediateRender:false});
     if(flag)gsap.fromTo(flag,{opacity:0,y:5},{opacity:1,y:0,duration:.45,delay:.4,immediateRender:false});
     settle([bar,...dots,flag].filter(Boolean),1200);}
@@ -520,7 +522,7 @@ function monthYear(date){if(!date)return '';const p=String(date).split('-');retu
 function obsList(t){const out=[];
   // All observations: one dot per OBSERVATION at its score (best skill), so the flag (their
   // average) sits dead-centre between them and is congruent with the top Spectrum.
-  out.push({key:'all',all:true,who:'All observations',sub:t.n_obs+' observation'+(t.n_obs===1?'':'s'),items:t.observations.map(o=>({label:o.assessor||'Inspector',score:obsScore(o)})).filter(it=>it.score!=null),avg:teacherAvg(t)});
+  out.push({key:'all',all:true,who:'All observations',sub:t.n_obs+' observation'+(t.n_obs===1?'':'s'),items:t.observations.map((o,i)=>({label:o.assessor||'Inspector',score:obsScore(o),idx:i})).filter(it=>it.score!=null),avg:teacherAvg(t)});
   t.observations.forEach((o,i)=>{
     out.push({key:i,who:o.assessor||'Inspector',obs:o,items:Object.entries(o.scores||{}).map(([code,score])=>({code,label:CRIT_LABEL[code]||code,score})),avg:obsScore(o)});});
   return out;}
@@ -531,7 +533,7 @@ function renderObsList(t){const host=byId('obslist');host.innerHTML='';
       const legend=it.items.length?'<div class="olegend">'+it.items.map(j=>`<span><i style="background:${j.code?skillCol(j.code):rampAt(j.score)}"></i>${j.label} <b>${wordOf(j.score)}</b></span>`).join('')+'</div>':'';
       card.innerHTML=`<div class="otop"><div class="owho">${it.who}<small>${it.sub}</small></div>`+
         `<div class="oavg"><div class="lab">Average of observations</div><div class="w" style="color:${colOf(it.avg)}">${wordOf(it.avg)}</div></div></div>`+
-        (it.items.length?'<svg class="oramp" viewBox="0 0 540 140" width="100%" height="150" preserveAspectRatio="xMidYMid meet"></svg>':'')+legend;
+        (it.items.length?'<svg class="oramp" viewBox="0 0 540 165" width="100%" height="165" preserveAspectRatio="xMidYMid meet"></svg>':'')+legend;
     }else{
       const o=it.obs||{};
       const skills=it.items.length?'<div class="oskills">'+it.items.map(j=>`<span><i style="background:${skillCol(j.code)}"></i>${j.label} <b>${wordOf(j.score)}</b></span>`).join('')+'</div>':'<div class="ona">No judgements recorded in this session.</div>';
@@ -541,7 +543,7 @@ function renderObsList(t){const host=byId('obslist');host.innerHTML='';
         (it.items.length?'<div class="oramp-r"><svg class="oramp" viewBox="0 0 540 140" width="100%" height="150" preserveAspectRatio="xMidYMid meet"></svg></div>':'');
     }
     card.onclick=()=>selectObs(t,it.key);host.appendChild(card);
-    const svg=card.querySelector('.oramp');if(svg&&it.items.length)buildObsRamp(svg,it.items,it.avg);});
+    const svg=card.querySelector('.oramp');if(svg&&it.items.length)buildObsRamp(svg,it.items,it.avg,it.all?{tall:true,selIdx:(selectedObs==='all'?null:+selectedObs)}:{});});
 }
 function selectObs(t,key){selectedObs=key;
   document.querySelectorAll('#obslist .ocard').forEach(c=>c.classList.toggle('sel',String(c.dataset.key)===String(key)));
@@ -551,6 +553,10 @@ function selectObs(t,key){selectedObs=key;
   const ov=byId('tOverall');ov.textContent=wordOf(scopeVal);ov.style.color=colOf(scopeVal);
   byId('tScopeLabel').textContent=label;
   buildArc(t,scopeVal);buildSpec(t,scopeVal,selIdx);
+  // reflect the selection in the All-observations card (ring its matching session dot)
+  const allSvg=document.querySelector('#obslist .ocard.all .oramp');
+  if(allSvg){const ai=t.observations.map((o,i)=>({label:o.assessor||'Inspector',score:obsScore(o),idx:i})).filter(it=>it.score!=null);
+    buildObsRamp(allSvg,ai,teacherAvg(t),{tall:true,selIdx:(key==='all'?null:+key),noAnim:true});}
 }
 function renderTeacher(t){
   byId('tName').textContent=t.name;
