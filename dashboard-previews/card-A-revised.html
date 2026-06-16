@@ -31,7 +31,7 @@ html,body{min-height:100%}
 body{font-family:var(--body);background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;transition:background .6s,color .6s;line-height:1.4}
 .bgwash{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(1200px 700px at 80% -10%,color-mix(in srgb,var(--b) 16%,transparent),transparent 60%),radial-gradient(900px 600px at 0% 100%,color-mix(in srgb,var(--g) 12%,transparent),transparent 55%)}
 :root[data-theme="light"] .bgwash{opacity:.5}
-.wrap{position:relative;z-index:2;max-width:880px;margin:0 auto;padding:0 clamp(14px,3.5vw,30px) 90px}
+.wrap{position:relative;z-index:2;max-width:1180px;margin:0 auto;padding:0 clamp(14px,3.5vw,34px) 90px}
 svg{display:block;overflow:visible}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.001s!important;transition-duration:.001s!important}}
 
@@ -66,7 +66,17 @@ h1 em{font-style:italic;color:var(--y)}
 .cardtop{padding:15px 18px 12px}
 .topcols{display:grid;grid-template-columns:1.55fr 1fr;gap:26px;align-items:start}
 @media(max-width:680px){.topcols{grid-template-columns:1fr;gap:14px}}
-.colttl{font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-mid);font-weight:700;margin-bottom:9px}
+/* each column's title is a toggle (same chevron as Observation notes); rows start collapsed */
+.colhdr{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;background:transparent;border:0;padding:0 0 2px;cursor:pointer;font:inherit;text-align:left}
+.colttl{font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-mid);font-weight:700}
+.colhdr:hover .colttl{color:var(--ink)}
+.chev2{width:12px;height:12px;color:var(--ink-mid);transition:transform .42s cubic-bezier(.4,0,.2,1);flex:none}
+.chev2 path{stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.col.open .chev2{transform:rotate(180deg)}
+.colbody{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s cubic-bezier(.4,0,.2,1)}
+.col.open .colbody{grid-template-rows:1fr}
+.colbody-in{overflow:hidden;min-height:0}
+.colbody-in .drow:first-child{margin-top:8px}
 /* both columns share one row rhythm; the only difference is the skill swatch on the right */
 .drow{display:grid;align-items:center;min-height:25px;gap:10px}
 .col.inspection .drow{grid-template-columns:72px 1fr}
@@ -202,6 +212,7 @@ function buildRamp(svg,items,flagVal,opts){opts=opts||{};svg.innerHTML='';const 
 function settle(t,ms){setTimeout(()=>{try{if(window.gsap){gsap.killTweensOf(t);gsap.set(t,{clearProps:'all'})}}catch(e){}},ms||1000)}
 
 const CHEV='<svg class="chev" viewBox="0 0 16 16"><path d="M3 6l5 5 5-5"/></svg>';
+const CHEV2='<svg class="chev2" viewBox="0 0 16 16"><path d="M3 6l5 5 5-5"/></svg>';
 const EXT='<svg viewBox="0 0 16 16"><path d="M6 3H3v10h10v-3M9 3h4v4M13 3L7 9"/></svg>';
 
 function render(){
@@ -222,12 +233,14 @@ function render(){
   // session cards
   OBS.forEach(o=>{
     const skill=o.scores.slice().sort((a,b)=>a.score-b.score);
-    const insp=`<div class="col inspection"><div class="colttl">Inspection details</div>
+    const insp=`<div class="col inspection"><button class="colhdr" type="button"><span class="colttl">Inspection details</span>${CHEV2}</button>
+      <div class="colbody"><div class="colbody-in">
       <div class="drow"><span class="dn">Inspector</span><span class="dv">${o.inspector} . ${o.monthYear}</span></div>
       <div class="drow"><span class="dn">Subject</span><span class="dv">${o.subject}</span></div>
-      <div class="drow"><span class="dn">Area</span><span class="dv">${o.area}</span></div></div>`;
-    const sk=`<div class="col skills"><div class="colttl">Skills observed</div>`+skill.map(s=>
-      `<div class="drow"><span class="dn">${CRIT_LABEL[s.code]}</span><span class="dv">${wordOf(s.score)}</span><i class="sw" style="background:${skillCol(s.code)}"></i></div>`).join('')+`</div>`;
+      <div class="drow"><span class="dn">Area</span><span class="dv">${o.area}</span></div></div></div></div>`;
+    const sk=`<div class="col skills"><button class="colhdr" type="button"><span class="colttl">Skills observed</span>${CHEV2}</button>
+      <div class="colbody"><div class="colbody-in">`+skill.map(s=>
+      `<div class="drow"><span class="dn">${CRIT_LABEL[s.code]}</span><span class="dv">${wordOf(s.score)}</span><i class="sw" style="background:${skillCol(s.code)}"></i></div>`).join('')+`</div></div></div>`;
     const r3=(o.round==='jun')?`<a class="exp-r3" target="_blank" rel="noopener" href="../Assets/R3/r3-record.html" title="Live, this opens the record with its token in a new tab">${EXT}Open the R3 record</a>`:`<span></span>`;
     const card=document.createElement('div');card.className='card session';card.dataset.key=o.idx;
     card.innerHTML=`<div class="cardtop"><div class="topcols">${insp}${sk}</div>
@@ -243,6 +256,7 @@ function render(){
     buildRamp(card.querySelector('.cardtop .ramp'),o.scores.map(s=>({code:s.code,score:s.score})),obsBest(o),{x0:26,x1:534,y:44,gap:13,labelDy:26});
     card.querySelector('.expbtn').onclick=e=>{e.stopPropagation();card.classList.toggle('open');};
     const r3el=card.querySelector('.exp-r3');if(r3el)r3el.onclick=e=>e.stopPropagation();
+    card.querySelectorAll('.col .colhdr').forEach(h=>h.onclick=e=>{e.stopPropagation();h.closest('.col').classList.toggle('open');});
     card.querySelector('.cardtop').onclick=()=>select(o.idx);
     card.querySelector('.exp-name').onclick=()=>select(o.idx);
   });
