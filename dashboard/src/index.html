@@ -120,7 +120,7 @@ h2.big em{font-style:italic;color:var(--y);text-shadow:var(--glow) color-mix(in 
 .flt{font:inherit;font-size:12px;font-weight:600;color:var(--ink-dim);background:var(--panel-2);border:1px solid var(--edge);border-radius:12px;padding:9px 14px;cursor:pointer;transition:.2s}
 .flt.on{border-color:var(--y);color:var(--ink);background:color-mix(in srgb,var(--y) 12%,var(--panel-2))}
 .tlist{max-height:560px;overflow:auto;border-radius:12px;border:1px solid var(--edge-soft)}
-.trow{display:grid;grid-template-columns:1fr auto auto;align-items:center;gap:14px;padding:11px 15px;cursor:pointer;border-bottom:1px solid var(--edge-soft);transition:background .15s}
+.trow{display:grid;grid-template-columns:1fr auto;align-items:center;gap:14px;padding:11px 15px;cursor:pointer;border-bottom:1px solid var(--edge-soft);transition:background .15s}
 .trow:last-child{border-bottom:0}
 .trow:hover{background:color-mix(in srgb,var(--y) 8%,transparent)}
 .trow .nm{font-weight:600;font-size:14px}
@@ -146,18 +146,24 @@ h2.big em{font-style:italic;color:var(--y);text-shadow:var(--glow) color-mix(in 
 .spec-over .l{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-mid);font-weight:700}
 .spec-over .v{font-family:var(--display);font-style:italic;font-weight:600;font-size:26px;line-height:1.05}
 svg{display:block;overflow:visible}
-.profile{display:flex;flex-direction:column;gap:8px}
-.prow{display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--edge-soft)}
-.prow:last-child{border-bottom:0}
-.prow .pl{font-size:13px;font-weight:600}
-.prow .pl small{display:block;font-size:10.5px;color:var(--ink-faint);font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin-top:1px}
-.hist{display:flex;flex-direction:column;gap:0}
-.hrow{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:13px;padding:11px 0;border-bottom:1px solid var(--edge-soft)}
-.hrow:last-child{border-bottom:0}
-.hrow .hd{font-size:12.5px;color:var(--ink-dim);font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
-.hrow .hi{font-size:12.5px;color:var(--ink);font-weight:600}
-.hrow .hi small{display:block;font-size:11px;color:var(--ink-faint);font-weight:500;margin-top:1px}
-.dot6{width:13px;height:13px;border-radius:50%;flex:none}
+/* observations list (full-width, selectable; each card shows every judgement on the scale) */
+.obslist{display:flex;flex-direction:column;gap:10px}
+.ocard{border:1px solid var(--edge-soft);border-radius:14px;padding:13px 16px 15px;cursor:pointer;transition:border-color .15s,background .15s;background:var(--panel-2)}
+.ocard:hover{border-color:color-mix(in srgb,var(--y) 45%,var(--edge))}
+.ocard.sel{border-color:var(--y);box-shadow:inset 0 0 0 1px var(--y)}
+.ocard.all{background:color-mix(in srgb,var(--y) 7%,var(--panel-2))}
+.otop{display:flex;align-items:center;gap:14px}
+.otop .owho{font-weight:700;font-size:14.5px;line-height:1.15}
+.otop .owho small{display:block;font-size:11.5px;color:var(--ink-faint);font-weight:600;margin-top:2px}
+.otop .oavg{margin-left:auto;text-align:right;white-space:nowrap}
+.otop .oavg .lab{font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-mid);font-weight:700}
+.otop .oavg .w{font-family:var(--display);font-style:italic;font-weight:600;font-size:19px;line-height:1.2}
+.oramp{margin-top:10px}
+.olegend{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:9px}
+.olegend span{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:var(--ink-dim)}
+.olegend span i{width:9px;height:9px;border-radius:3px;flex:none}
+.olegend span b{color:var(--ink);font-weight:700}
+.ona{font-size:12px;color:var(--ink-faint);font-style:italic;margin-top:8px}
 
 /* ===== settings ===== */
 .toggle{display:flex;align-items:center;gap:13px;cursor:pointer}
@@ -270,13 +276,13 @@ svg{display:block;overflow:visible}
           <h2 id="tName">.</h2>
           <div class="meta" id="tMeta">.</div>
         </div>
-        <div class="bigj"><div class="l">Overall . best evidence</div><div class="v" id="tOverall">.</div></div>
+        <div class="bigj"><div class="l" id="tScopeLabel">Overall</div><div class="v" id="tOverall">.</div></div>
       </div>
     </div>
 
     <div class="tcard" style="margin-top:14px">
       <div class="panel">
-        <div class="ey">The Spectrum . every observation on the 6-point scale</div>
+        <div class="ey">The Spectrum . each observation's average on the 6-point scale</div>
         <div class="cpstage"><div style="width:100%"><svg id="svgSpec" viewBox="0 0 460 140" width="100%" height="150" preserveAspectRatio="xMidYMid meet"></svg></div></div>
       </div>
       <div class="panel">
@@ -285,15 +291,9 @@ svg{display:block;overflow:visible}
       </div>
     </div>
 
-    <div class="grid cols-3" style="margin-top:14px">
-      <div class="panel">
-        <div class="ey">Judgement profile . best per standard</div>
-        <div class="profile" id="profile"></div>
-      </div>
-      <div class="panel span2">
-        <div class="ey">Observation history</div>
-        <div class="hist" id="hist"></div>
-      </div>
+    <div class="panel" style="margin-top:14px">
+      <div class="ey">Observations . select all, or a single session</div>
+      <div class="obslist" id="obslist"></div>
     </div>
   </section>
 
@@ -424,10 +424,8 @@ function renderTlist(){
   let rows=D.teachers.filter(t=>t.name.toLowerCase().includes(q));
   if(fltNoobs)rows=rows.filter(t=>!t.observed);
   rows.forEach(t=>{const row=document.createElement('div');row.className='trow';row.dataset.id=t.id;
-    const j=t.overall;
-    const chip=j==null?`<span class="tchip na">Not assessed</span>`:`<span class="tchip" style="background:${RAMP()[j]}">${WORD[j]}</span>`;
     const sub=t.dept?` <small>${t.dept}${t.dept_role==='head'?' . head':''}</small>`:(t.section?` <small>${t.section}</small>`:'');
-    row.innerHTML=`<div class="nm">${t.name}${sub}</div><div class="ob">${t.n_obs?t.n_obs+(t.n_obs===1?' obs':' obs'):'none'}</div>${chip}`;
+    row.innerHTML=`<div class="nm">${t.name}${sub}</div><div class="ob">${t.n_obs?t.n_obs+(t.n_obs===1?' observation':' observations'):'none'}</div>`;
     row.onclick=()=>openTeacher(t.id,row);
     host.appendChild(row);});
   if(!rows.length)host.innerHTML='<div style="padding:18px;color:var(--ink-faint);font-size:13px">No teachers match.</div>';
@@ -435,66 +433,96 @@ function renderTlist(){
 function renderCoverage(){renderStats();renderRing();renderDist();renderSpread();renderNoobs();renderTlist();}
 function animateStats(){document.querySelectorAll('#statgrid .v').forEach(n=>countUp(n,+n.dataset.to,1.1));}
 
-/* ============================================================= TEACHER */
-function buildSpec(t){const s=byId('svgSpec');s.innerHTML='';const R=RAMP(),x0=26,x1=434,y=52,h=18,span=x1-x0;
+/* ============================================================= TEACHER (averages)
+   Every score here is an AVERAGE, never the best. obsAverage = mean of the judgements
+   in one session; teacherAvg = mean of those session averages (average of averages). */
+const CRIT_LABEL={};D.criteria.forEach(c=>CRIT_LABEL[c.code]=c.label);
+function obsAverage(o){const v=Object.values(o.scores||{});return v.length?v.reduce((a,b)=>a+b,0)/v.length:null;}
+function teacherAvg(t){const a=t.observations.map(obsAverage).filter(v=>v!=null);return a.length?a.reduce((x,y)=>x+y,0)/a.length:null;}
+function criterionAverages(t){const acc={};t.observations.forEach(o=>{for(const[c,s]of Object.entries(o.scores||{}))(acc[c]=acc[c]||[]).push(s);});const out={};for(const c in acc)out[c]=acc[c].reduce((a,b)=>a+b,0)/acc[c].length;return out;}
+function wordOf(v){return v==null?'Not assessed':WORD[Math.min(6,Math.max(1,Math.round(v)))];}
+function colOf(v){return v==null?gc('--na'):rampAt(v);}
+let selectedObs='all';
+
+/* Spectrum: one dot per observation at its AVERAGE; the flag marks the selected scope */
+function buildSpec(t,scopeVal,selIdx){const s=byId('svgSpec');s.innerHTML='';const R=RAMP(),x0=26,x1=434,y=52,h=18,span=x1-x0;
   const defs=el('defs',{}),lg=el('linearGradient',{id:'sg',x1:'0',x2:'1'});for(let i=1;i<=6;i++)lg.appendChild(el('stop',{offset:((i-1)/5*100)+'%','stop-color':R[i]}));defs.appendChild(lg);s.appendChild(defs);
   s.appendChild(el('rect',{x:x0,y,width:span,height:h,rx:h/2,fill:'url(#sg)',opacity:.95}));
-  const px=r=>x0+span*((r-0.5)/6);
+  const px=v=>x0+span*((v-0.5)/6);
   for(let i=1;i<=6;i++){const tx=el('text',{x:px(i),y:y+h+30,'text-anchor':'middle','font-size':9,fill:gc('--ink-mid'),style:'font-family:var(--body);font-weight:600'});tx.textContent=SCALE_WORDS[i-1];s.appendChild(tx)}
-  const seen={};
-  t.observations.filter(o=>o.overall!=null).forEach((o,i)=>{seen[o.overall]=(seen[o.overall]||0)+1;
-    const cy=y-12-(seen[o.overall]-1)*14;
-    const c=el('circle',{cx:px(o.overall),cy,r:6,fill:col(o.overall),stroke:gc('--bg'),'stroke-width':2});
+  const avgs=t.observations.map(obsAverage),seen={};
+  t.observations.forEach((o,i)=>{const v=avgs[i];if(v==null)return;const k=Math.round(px(v)/13);const stk=seen[k]=(seen[k]||0)+1;const cy=y-12-(stk-1)*14;const sel=(selIdx!=null&&i===selIdx);
+    const c=el('circle',{cx:px(v),cy,r:sel?7.5:6,fill:rampAt(v),stroke:sel?gc('--y'):gc('--bg'),'stroke-width':sel?3:2});
     s.appendChild(c);
-    if(window.gsap)gsap.fromTo(c,{attr:{opacity:0,cy:y-2}},{attr:{opacity:1,cy},duration:.5,delay:.25+i*.06,ease:'back.out(2)',immediateRender:false});});
-  if(t.overall!=null){const ox=px(t.overall);const fl=el('path',{d:`M ${ox} ${y+h+2} l -6 11 l 12 0 z`,fill:R[t.overall]});s.appendChild(fl);
-    if(window.gsap)gsap.fromTo(fl,{attr:{opacity:0}},{attr:{opacity:1},duration:.5,delay:.5,immediateRender:false});}
+    if(window.gsap)gsap.fromTo(c,{attr:{opacity:0,cy:y-2}},{attr:{opacity:1,cy},duration:.5,delay:.2+i*.05,ease:'back.out(2)',immediateRender:false});});
+  if(scopeVal!=null){const ox=px(scopeVal);const fl=el('path',{d:`M ${ox} ${y+h+2} l -6 11 l 12 0 z`,fill:rampAt(scopeVal)});s.appendChild(fl);
+    if(window.gsap)gsap.fromTo(fl,{attr:{opacity:0}},{attr:{opacity:1},duration:.5,delay:.45,immediateRender:false});}
 }
-function buildArc(t){const s=byId('svgArc');s.innerHTML='';const cx=120,cy=120,r=80,A0=135,SW=270,sw=14,N=48;const ov=t.overall;
+/* Gauge: continuous fill + colour to the selected scope's value (an average, never best) */
+function buildArc(t,scopeVal){const s=byId('svgArc');s.innerHTML='';const cx=120,cy=120,r=80,A0=135,SW=270,sw=14,N=48;const ov=scopeVal;
   const ang=p=>A0+SW*p,seg=(p0,p1,c,o)=>{const path=el('path',{d:arcP(cx,cy,r,ang(p0),ang(p1)+0.6),fill:'none',stroke:c,'stroke-width':sw,opacity:o});s.appendChild(path);return path};
   for(let i=0;i<N;i++){const a=i/N,b=(i+1)/N;seg(a,b,rampAt(6-5*((a+b)/2)),.2)}
   if(ov!=null){const M=Math.max(1,Math.round(N*frac(ov)));const fills=[];for(let i=0;i<M;i++){const a=i/N,b=(i+1)/N;fills.push(seg(a,b,rampAt(6-5*((a+b)/2)),1));}
     if(window.gsap)fills.forEach((p,i)=>gsap.fromTo(p,{attr:{opacity:0}},{attr:{opacity:1},duration:.03,delay:.3+i*.012,immediateRender:false}));}
-  t.observations.filter(o=>o.overall!=null).forEach(o=>{const p=pol(cx,cy,r+16,ang(frac(o.overall)));const c=el('circle',{cx:p.x,cy:p.y,r:4.5,fill:col(o.overall),stroke:gc('--bg'),'stroke-width':2.5});s.appendChild(c);});
+  t.observations.map(obsAverage).filter(v=>v!=null).forEach(v=>{const p=pol(cx,cy,r+16,ang(frac(v)));s.appendChild(el('circle',{cx:p.x,cy:p.y,r:4.5,fill:rampAt(v),stroke:gc('--bg'),'stroke-width':2.5}));});
   const a=el('text',{x:cx,y:cy-6,'text-anchor':'middle','font-size':10.5,fill:gc('--ink-mid'),style:'font-family:var(--body);font-weight:700;letter-spacing:1.5px;text-transform:uppercase'});a.textContent='Overall';s.appendChild(a);
-  const b=el('text',{x:cx,y:cy+20,'text-anchor':'middle','font-size':ov==null?16:22,fill:ov==null?gc('--ink-mid'):RAMP()[ov],style:'font-family:var(--display);font-weight:600;font-style:italic'});b.textContent=ov==null?'Not assessed':WORD[ov];s.appendChild(b);
+  const b=el('text',{x:cx,y:cy+20,'text-anchor':'middle','font-size':ov==null?16:21,fill:ov==null?gc('--ink-mid'):rampAt(ov),style:'font-family:var(--display);font-weight:600;font-style:italic'});b.textContent=wordOf(ov);s.appendChild(b);
 }
-function renderProfile(t){
-  const host=byId('profile');host.innerHTML='';
-  const crit=D.criteria.filter(c=>D.quality.by_criterion[c.code].n>0); // only standards with evidence anywhere
-  crit.forEach(c=>{const v=t.best[c.code];const row=document.createElement('div');row.className='prow';
-    const chip=v==null?`<span class="tchip na">Not assessed</span>`:`<span class="tchip" style="background:${RAMP()[v]}">${WORD[v]}</span>`;
-    row.innerHTML=`<div class="pl">${c.label}<small>${c.strand||''}</small></div>${chip}`;host.appendChild(row);});
+/* per-card scale strip: a dot per judgement at its score, plus the card's average flag */
+let _gid=0;
+function buildObsRamp(svg,items,avg){svg.innerHTML='';const R=RAMP(),x0=14,x1=586,y=30,h=12,span=x1-x0,gid='og'+(++_gid);
+  const defs=el('defs',{}),lg=el('linearGradient',{id:gid,x1:'0',x2:'1'});for(let i=1;i<=6;i++)lg.appendChild(el('stop',{offset:((i-1)/5*100)+'%','stop-color':R[i]}));defs.appendChild(lg);svg.appendChild(defs);
+  svg.appendChild(el('rect',{x:x0,y,width:span,height:h,rx:h/2,fill:'url(#'+gid+')',opacity:.9}));
+  const px=v=>x0+span*((v-0.5)/6),seen={};
+  items.forEach(it=>{const x=px(it.score);const k=Math.round(x/13);const stk=seen[k]=(seen[k]||0)+1;
+    svg.appendChild(el('circle',{cx:x,cy:y-6-(stk-1)*11,r:5.5,fill:rampAt(it.score),stroke:gc('--bg'),'stroke-width':2}));});
+  if(avg!=null)svg.appendChild(el('path',{d:`M ${px(avg)} ${y+h+2} l -6 10 l 12 0 z`,fill:rampAt(avg)}));
 }
-function renderHist(t){
-  const host=byId('hist');host.innerHTML='';
-  if(!t.observations.length){host.innerHTML='<div style="padding:8px 0;color:var(--ink-faint);font-size:13px">No observations recorded this term.</div>';return;}
-  t.observations.forEach(o=>{const row=document.createElement('div');row.className='hrow';
-    const word=o.overall==null?'Not assessed':WORD[o.overall];
-    const ref=(o.record_id&&o.record_id.startsWith('AIS'))?' . '+o.record_id:'';
-    row.innerHTML=`<span class="dot6" style="background:${col(o.overall)}"></span>`+
-      `<div class="hi">${o.assessor||'Inspector'}<small>${o.round}${ref}</small></div>`+
-      `<div class="hd">${o.date||''} . <b style="color:${col(o.overall)}">${word}</b></div>`;
-    host.appendChild(row);});
+/* the selectable list: All observations on top (default), then one card per session */
+function obsList(t){const out=[],cAvg=criterionAverages(t);
+  out.push({key:'all',all:true,who:'All observations',sub:t.n_obs+' observation'+(t.n_obs===1?'':'s'),items:D.criteria.filter(c=>cAvg[c.code]!=null).map(c=>({label:c.label,score:cAvg[c.code]})),avg:teacherAvg(t)});
+  t.observations.forEach((o,i)=>{const ref=(o.record_id&&o.record_id.startsWith('AIS'))?' . '+o.record_id:'';
+    out.push({key:i,who:o.assessor||'Inspector',sub:(o.date||'')+' . '+o.round+ref,items:Object.entries(o.scores||{}).map(([code,score])=>({label:CRIT_LABEL[code]||code,score})),avg:obsAverage(o)});});
+  return out;}
+function renderObsList(t){const host=byId('obslist');host.innerHTML='';
+  obsList(t).forEach(it=>{const card=document.createElement('div');
+    card.className='ocard'+(it.all?' all':'')+(String(it.key)===String(selectedObs)?' sel':'');card.dataset.key=it.key;
+    const legend=it.items.length?'<div class="olegend">'+it.items.map(j=>`<span><i style="background:${rampAt(j.score)}"></i>${j.label} <b>${wordOf(j.score)}</b></span>`).join('')+'</div>':'<div class="ona">No judgements recorded in this session.</div>';
+    card.innerHTML=`<div class="otop"><div class="owho">${it.who}<small>${it.sub}</small></div>`+
+      `<div class="oavg"><div class="lab">${it.all?'Average of averages':'Session average'}</div><div class="w" style="color:${colOf(it.avg)}">${wordOf(it.avg)}</div></div></div>`+
+      (it.items.length?'<svg class="oramp" viewBox="0 0 600 56" width="100%" height="54" preserveAspectRatio="xMidYMid meet"></svg>':'')+legend;
+    card.onclick=()=>selectObs(t,it.key);host.appendChild(card);
+    if(it.items.length)buildObsRamp(card.querySelector('.oramp'),it.items,it.avg);});
+}
+function selectObs(t,key){selectedObs=key;
+  document.querySelectorAll('#obslist .ocard').forEach(c=>c.classList.toggle('sel',String(c.dataset.key)===String(key)));
+  let scopeVal,selIdx=null,label;
+  if(key==='all'){scopeVal=teacherAvg(t);label='Overall . all observations';}
+  else{selIdx=+key;const o=t.observations[selIdx];scopeVal=obsAverage(o);label='Session . '+(o.assessor||'Inspector')+(o.date?' . '+o.date:'');}
+  const ov=byId('tOverall');ov.textContent=wordOf(scopeVal);ov.style.color=colOf(scopeVal);
+  byId('tScopeLabel').textContent=label;
+  buildArc(t,scopeVal);buildSpec(t,scopeVal,selIdx);
 }
 function renderTeacher(t){
   byId('tName').textContent=t.name;
-  const bits=[];bits.push(t.n_obs+(t.n_obs===1?' observation':' observations'));
+  const bits=[t.n_obs+(t.n_obs===1?' observation':' observations')];
   if(t.dept)bits.push(t.dept+(t.dept_role==='head'?' (head)':''));
   if(t.section)bits.push(t.section);
   bits.push('June '+t.n_june+' . February '+t.n_feb);
   byId('tMeta').textContent=bits.join('  .  ');
-  const ov=byId('tOverall');ov.textContent=t.overall==null?'Not assessed':WORD[t.overall];ov.style.color=t.overall==null?gc('--ink-mid'):RAMP()[t.overall];
-  buildSpec(t);buildArc(t);renderProfile(t);renderHist(t);
+  selectedObs='all';renderObsList(t);selectObs(t,'all');
 }
 
 /* ============================================================= router + FLIP */
 const views={coverage:'v-coverage',teacher:'v-teacher',settings:'v-settings'};
 let current='coverage';
 function setPill(b){document.querySelectorAll('.pill').forEach(p=>p.classList.toggle('on',p.dataset.board===b));}
-/* panel reveal as pure enhancement: default state is visible (CSS opacity 1); immediateRender:false
-   means a frozen ticker never strands a panel at opacity 0. */
-function reveal(sel,stagger){if(!window.gsap)return;gsap.fromTo(sel,{y:18,opacity:0},{y:0,opacity:1,duration:.5,stagger:stagger||.05,ease:'power3.out',immediateRender:false});}
+/* panel reveal as pure enhancement: we animate MOVEMENT only, never opacity, so a tab whose
+   RAF freezes mid-tween (backgrounded / bfcache) is left fully visible, only slightly offset. */
+/* after a reveal/FLIP, kill the tween (so a briefly-resuming RAF can't re-apply a frozen
+   mid-tween transform) and clear gsap's inline props, leaving the element at its natural place. */
+function settle(sel,ms){setTimeout(()=>{try{if(window.gsap){gsap.killTweensOf(sel);gsap.set(sel,{clearProps:'all'});}}catch(e){}},ms||1000);}
+function reveal(sel,stagger){if(!window.gsap)return;gsap.fromTo(sel,{y:18},{y:0,duration:.5,stagger:stagger||.05,ease:'power3.out',immediateRender:false});settle(sel);}
 function showBoard(b,opts={}){
   if(b===current&&!opts.force)return;
   Object.entries(views).forEach(([k,id])=>byId(id).hidden=(k!==b));
@@ -513,8 +541,9 @@ function openTeacher(id,rowEl){
   if(window.gsap&&first){const last=target.getBoundingClientRect();
     const dx=first.left-last.left,dy=first.top-last.top,sc=Math.min(2,first.height/last.height);
     gsap.set(target,{transformOrigin:'left top'});
-    gsap.fromTo(target,{x:dx,y:dy,scale:sc||1,opacity:.2},{x:0,y:0,scale:1,opacity:1,duration:.6,ease:'power3.inOut'});
-    gsap.fromTo('#v-teacher .panel',{y:22,opacity:0},{y:0,opacity:1,duration:.55,stagger:.07,delay:.12,ease:'power3.out',immediateRender:false});
+    gsap.fromTo(target,{x:dx,y:dy,scale:sc||1},{x:0,y:0,scale:1,duration:.6,ease:'power3.inOut',immediateRender:false});
+    gsap.fromTo('#v-teacher .panel',{y:22},{y:0,duration:.55,stagger:.07,delay:.12,ease:'power3.out',immediateRender:false});
+    settle(target);settle('#v-teacher .panel');
   } else { reveal('#v-teacher .panel',.06); }
   window.scrollTo({top:0,behavior:'smooth'});
 }
