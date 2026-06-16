@@ -1,16 +1,16 @@
-# Graph Report - Data-Representation  (2026-06-16)
+# Graph Report - Data-Representation  (2026-06-15)
 
 ## Corpus Check
-- 38 files · ~369,126 words
+- 35 files · ~364,911 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 567 nodes · 817 edges · 45 communities (35 shown, 10 thin omitted)
-- Extraction: 94% EXTRACTED · 5% INFERRED · 1% AMBIGUOUS · INFERRED: 44 edges (avg confidence: 0.87)
+- 526 nodes · 779 edges · 42 communities (32 shown, 10 thin omitted)
+- Extraction: 94% EXTRACTED · 6% INFERRED · 1% AMBIGUOUS · INFERRED: 44 edges (avg confidence: 0.87)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `1715f438`
+- Built from commit: `e10dbc67`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -53,9 +53,6 @@
 - [[_COMMUNITY_Community 35|Community 35]]
 - [[_COMMUNITY_Community 36|Community 36]]
 - [[_COMMUNITY_Community 37|Community 37]]
-- [[_COMMUNITY_Community 42|Community 42]]
-- [[_COMMUNITY_Community 43|Community 43]]
-- [[_COMMUNITY_Community 44|Community 44]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `ce` - 97 edges
@@ -84,23 +81,23 @@
 ## Import Cycles
 - None detected.
 
-## Communities (45 total, 10 thin omitted)
+## Communities (42 total, 10 thin omitted)
 
 ### Community 0 - "AIS Observation Forms & Scripts"
 Cohesion: 0.07
-Nodes (61): admin.user@ais.ae (Super Admin Identity), Lesson Obs Apps Script Config (00_Config.gs), Lesson Obs Apps Script doGet (02_doGet.gs), Lesson Obs Apps Script doPost (01_doPost.gs), R3 Apps Script Config (00_Config.gs), R3 Apps Script doGet (02_doGet.gs), R3 Apps Script doPost (01_doPost.gs), R3 Apps Script TeacherLoader (04_TeacherLoader.gs) (+53 more)
+Nodes (60): admin.user@ais.ae (Super Admin Identity), Lesson Obs Apps Script Config (00_Config.gs), Lesson Obs Apps Script doGet (02_doGet.gs), Lesson Obs Apps Script doPost (01_doPost.gs), R3 Apps Script Config (00_Config.gs), R3 Apps Script doGet (02_doGet.gs), R3 Apps Script doPost (01_doPost.gs), R3 Apps Script TeacherLoader (04_TeacherLoader.gs) (+52 more)
 
 ### Community 1 - "TomSelect Core API"
 Cohesion: 0.05
 Nodes (49): Lesson Observation - Igor 12/11, Classroom Management (Observation), Curriculum Development (Observation), DigiTech Subject, Interpersonal Relationships (Observation), Ben Hyde (Observer / DHOS), Mr Igor (Teacher), Teaching & Learning (Observation) (+41 more)
 
 ### Community 2 - "Pitch Deck Build & Bugs"
-Cohesion: 0.14
+Cohesion: 0.13
 Nodes (4): C, e(), le(), t
 
 ### Community 4 - "TomSelect Item Selection"
-Cohesion: 0.26
-Nodes (17): Deck Slides Overflow/Clipping Bug (v0.11-v0.12), Deck PDF Export (working reference), Handoff Brief Deck v0.12 Broken (2026-05-29), Screenshot: Slide 1 Cover v0.12 (title/masthead distortion), Screenshot: Slide 3 Teacher Dashboard Bottom v0.12 (all 8 categories), Screenshot: Slide 3 Teacher Dashboard Top v0.12 (donut + categories), Screenshot: Slide 4 Department Dashboard Bottom v0.12 (footer overlap bug), Screenshot: Slide 4 Department Dashboard Top v0.12 (3 teachers, overlap) (+9 more)
+Cohesion: 0.24
+Nodes (18): Deck Slides Overflow/Clipping Bug (v0.11-v0.12), Deck PDF Export (working reference), GitHub Pages Deployment, Handoff Brief Deck v0.12 Broken (2026-05-29), Screenshot: Slide 1 Cover v0.12 (title/masthead distortion), Screenshot: Slide 3 Teacher Dashboard Bottom v0.12 (all 8 categories), Screenshot: Slide 3 Teacher Dashboard Top v0.12 (donut + categories), Screenshot: Slide 4 Department Dashboard Bottom v0.12 (footer overlap bug) (+10 more)
 
 ### Community 5 - "Lesson Obs Script Manifest"
 Cohesion: 0.12
@@ -198,18 +195,6 @@ Nodes (16): AIS Assessment Dashboard · Architecture Decision Record, Locked dec
 Cohesion: 0.15
 Nodes (12): 1. Job 1 DONE (Observed tab AVERAGE → BEST), 2. Dashboard design exploration, 3. Grilling COMPLETE (Q1-Q11), Build/tooling gotchas learned, Docs synced, Handoff · Job 1 shipped + dashboard concepts + grilling COMPLETE (next: Supabase build), Hard-won rules (carry forward), IMMEDIATE NEXT STEP: the Supabase build (steps 1-2 of Q11) (+4 more)
 
-### Community 42 - "Community 42"
-Cohesion: 0.10
-Nodes (20): One-shot attempt (no loop), One-shot attempt (no loop), One-shot attempt (no loop), One-shot attempt (no loop), Same task through the loop, Same task through the loop, Same task through the loop, Same task through the loop (+12 more)
-
-### Community 43 - "Community 43"
-Cohesion: 0.20
-Nodes (9): Core Loop, Data analysis, Domain-specific patterns, Fable Mode, Long-running / multi-session tasks, Research / knowledge work, Software engineering, What this skill doesn't do (+1 more)
-
-### Community 44 - "Community 44"
-Cohesion: 0.20
-Nodes (9): Docs synced, Gotchas / how-to (saved to memory [[feedback_batch_and_verify_efficiently]]), Handoff · Dashboard Teacher page iterated to dash-v0.6 (best-skill-wins scoring, session-card redesign, subject/area, animations), Open / next, Other load-bearing facts added this session, Read in this order, Suggested skills, The FINAL scoring model (do not regress, Igor reversed once to get here) (+1 more)
-
 ## Ambiguous Edges - Review These
 - `Teacher Observation Pitch Deck (index.html)` → `Curtis All Portrait`  [AMBIGUOUS]
   SPEA Data Report/Curtis All.jpg · relation: conceptually_related_to
@@ -223,7 +208,7 @@ Nodes (9): Docs synced, Gotchas / how-to (saved to memory [[feedback_batch_and_v
   SPEA Data Report/Lana Mosleh.jpg · relation: conceptually_related_to
 
 ## Knowledge Gaps
-- **284 isolated node(s):** `allow`, `salt`, `scriptId`, `rootDir`, `scriptExtensions` (+279 more)
+- **253 isolated node(s):** `allow`, `salt`, `scriptId`, `rootDir`, `scriptExtensions` (+248 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **10 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -241,6 +226,6 @@ _Questions this graph is uniquely positioned to answer:_
 - **What is the exact relationship between `Teacher Observation Pitch Deck (index.html)` and `Lana Mosleh Portrait`?**
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
 - **Why does `ce` connect `TomSelect Plugin Hooks` to `Pitch Deck Build & Bugs`?**
-  _High betweenness centrality (0.032) - this node is a cross-community bridge._
+  _High betweenness centrality (0.038) - this node is a cross-community bridge._
 - **Why does `R3 Evidence Form Master Source` connect `AIS Observation Forms & Scripts` to `TomSelect Item Selection`?**
-  _High betweenness centrality (0.007) - this node is a cross-community bridge._
+  _High betweenness centrality (0.008) - this node is a cross-community bridge._

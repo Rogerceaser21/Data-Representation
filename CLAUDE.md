@@ -20,7 +20,7 @@ Live: https://rogerceaser21.github.io/Data-Representation/
 ## Dashboard build (Supabase) · active workstream, separate from the forms/deck
 
 A role-based **Supabase-backed dashboard** is being built to aggregate all teacher-assessment data for the principal, governors, and the SEF/SEAS review. It is not the forms and not the deck.
-- **v0.1 BUILT + DEPLOYED (gated) 2026-06-15** in `dashboard/` (tag `dash-v0.1`). Live, StatiCrypt-gated (password `ais2026ais`): https://rogerceaser21.github.io/Data-Representation/dashboard/ . Coverage board + Teacher drill-down + Settings; Cinematic shell, light default + dark, AIS star-field. Login-less for the demo; @ais.ae SSO + RLS is the next step.
+- **BUILT + DEPLOYED (gated), iterated to v0.6 (2026-06-16)** in `dashboard/` (tag `dash-v0.6`). Live, StatiCrypt-gated (password `ais2026ais`): https://rogerceaser21.github.io/Data-Representation/dashboard/ . Coverage board + Teacher drill-down + Settings; Cinematic shell, light default + dark, AIS star-field. **Scoring (final, do not regress): per observation = best skill (MIN); teacher overall = the average of those per-observation scores** (sessions 6,6,5,5 -> 5.5). Login-less for the demo; @ais.ae SSO + RLS is the next step.
 - Architecture (data, auth, schema, boards, attendance): `.planning/2026-06-12-dashboard-architecture-DECISIONS.md`
 - Design + motion (Cinematic, LIGHT default, AIS star-field, 6-point SEAS scale, Spectrum/Arc/matrix): `.planning/2026-06-15-dashboard-design-DECISIONS.md`
 - Living spec, open in a browser: `dashboard-previews/design-spec.html`
