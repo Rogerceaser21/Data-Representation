@@ -164,19 +164,51 @@ svg{display:block;overflow:visible}
 .olegend span{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:var(--ink-dim)}
 .olegend span i{width:9px;height:9px;border-radius:3px;flex:none}
 .olegend span b{color:var(--ink);font-weight:700}
-/* session card: left info column (inspector, subject, area, stacked skills) + ramp bottom-right */
-.ocard.session{display:grid;grid-template-columns:minmax(220px,300px) 1fr;gap:24px;align-items:end}
-.oinfo{align-self:start;min-width:0}
-.oline{font-size:13px;color:var(--ink-dim);line-height:1.5;margin-bottom:2px}
-.oline .lab{color:var(--ink-mid);font-weight:600}
-.oline b{color:var(--ink);font-weight:700}
-.oskills{display:flex;flex-direction:column;gap:6px;margin-top:11px}
-.oskills span{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--ink-dim)}
-.oskills span i{width:11px;height:11px;border-radius:4px;flex:none}
-.oskills span b{color:var(--ink);font-weight:700}
-.oramp-r{align-self:end;min-width:0}
+/* session card: two collapsible titled columns, a full-width spectrum, a condensed action bar */
+.ocard.session{display:block;padding:0;overflow:hidden}
+.octop{padding:15px 18px 12px}
+.otopcols{display:grid;grid-template-columns:1.55fr 1fr;gap:26px;align-items:start}
+@media(max-width:680px){.otopcols{grid-template-columns:1fr;gap:14px}}
+/* each column title is a toggle (same chevron as Observation notes); rows start collapsed for a condensed card */
+.ocolhdr{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;background:transparent;border:0;padding:0 0 2px;cursor:pointer;font:inherit;text-align:left}
+.ocolttl{font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-mid);font-weight:700}
+.ocolhdr:hover .ocolttl{color:var(--ink)}
+.ochev{width:12px;height:12px;color:var(--ink-mid);transition:transform .42s cubic-bezier(.4,0,.2,1);flex:none}
+.ochev path{stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.ocol.open .ochev{transform:rotate(180deg)}
+.ocolbody{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s cubic-bezier(.4,0,.2,1)}
+.ocol.open .ocolbody{grid-template-rows:1fr}
+.ocolbody-in{overflow:hidden;min-height:0}
+.ocolbody-in .odrow:first-child{margin-top:8px}
+.odrow{display:grid;align-items:center;min-height:25px;gap:10px}
+.ocol.inspection .odrow{grid-template-columns:72px 1fr}
+.ocol.skills .odrow{grid-template-columns:1fr auto auto}
+.odn{font-size:13px;color:var(--ink-dim);font-weight:500}
+.odv{font-size:13px;color:var(--ink);font-weight:600}
+.ocol.skills .odv{font-weight:700;text-align:right}
+.osw{width:11px;height:11px;border-radius:4px;flex:none}
+.orampfull{margin-top:10px}
+.orampfull .oramp{width:100%;height:auto;margin-top:0}
+.oexprow{border-top:1px solid var(--edge-soft);display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;padding:0 16px}
+.oexpname{justify-self:start;display:flex;align-items:center;gap:8px;font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:-.01em}
+.oexpname .oacc{width:3px;height:15px;border-radius:2px;background:linear-gradient(180deg,var(--y),var(--g));flex:none}
+.oexpbtn{justify-self:center;display:inline-flex;align-items:center;gap:8px;font:inherit;font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-mid);background:transparent;border:0;padding:11px 6px;cursor:pointer;transition:color .2s}
+.oexpbtn:hover{color:var(--ink)}
+.oexpchev{width:13px;height:13px;transition:transform .42s cubic-bezier(.4,0,.2,1)}
+.oexpchev path{stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.ocard.session.open .oexpchev{transform:rotate(180deg)}
+.oexpr3{justify-self:end;display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:var(--ink-dim);text-decoration:none;cursor:pointer;transition:color .2s}
+.oexpr3:hover{color:var(--y)}
+.oexpr3 svg{width:13px;height:13px}
+.oexpr3 svg path{stroke:var(--y);stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.oexppanel{display:grid;grid-template-rows:0fr;transition:grid-template-rows .42s cubic-bezier(.4,0,.2,1)}
+.ocard.session.open .oexppanel{grid-template-rows:1fr}
+.oexppanel-in{overflow:hidden;min-height:0}
+.oexpbody{padding:14px 18px 18px;display:flex;flex-direction:column;gap:13px;border-top:1px solid var(--edge-soft)}
+.ofield .ofl{font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-mid);font-weight:700;margin-bottom:5px}
+.ofield p{font-size:13px;color:var(--ink-dim);line-height:1.62;max-width:74ch;white-space:pre-wrap}
 .ona{font-size:12px;color:var(--ink-faint);font-style:italic;margin-top:8px}
-@media(max-width:760px){.ocard.session{grid-template-columns:1fr;gap:8px}}
+@media(max-width:680px){.oexprow{grid-template-columns:1fr;gap:2px;padding:8px 16px;justify-items:start}.oexpbtn,.oexpr3{justify-self:start}}
 
 /* ===== settings ===== */
 .toggle{display:flex;align-items:center;gap:13px;cursor:pointer}
@@ -198,6 +230,11 @@ svg{display:block;overflow:visible}
 
 .foot{margin-top:34px;padding-top:18px;border-top:1px solid var(--edge);font-size:11.5px;color:var(--ink-faint);line-height:1.6;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
 .badge{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-mid);border:1px solid var(--edge);border-radius:30px;padding:4px 10px}
+.vhist{display:flex;flex-direction:column}
+.vrow{display:grid;grid-template-columns:52px 1fr;gap:14px;align-items:baseline;padding:10px 0;border-top:1px solid var(--edge-soft)}
+.vrow:first-child{border-top:0}
+.vtag{font-family:var(--display);font-style:italic;font-weight:600;font-size:15px;color:var(--y)}
+.vnote{font-size:12.5px;color:var(--ink-dim);line-height:1.55}
 </style>
 </head>
 <body>
@@ -340,11 +377,23 @@ svg{display:block;overflow:visible}
         <p class="subtle" style="margin-top:14px;line-height:1.6">These choices are saved to this browser, so the field can be calm for a governor session and lively for a launch.</p>
       </div>
     </div>
+    <div class="panel" style="margin-top:14px">
+      <div class="ey">Build history</div>
+      <div class="vhist">
+        <div class="vrow"><span class="vtag">v0.7</span><span class="vnote">Observation card redesign: collapsible Inspection and Skills sections, full-width Spectrum, a condensed action bar (teacher name, Observation Notes, and a link to the locked R3 record), and an expander revealing notes, strengths, and areas to develop.</span></div>
+        <div class="vrow"><span class="vtag">v0.6</span><span class="vnote">All-observations card reflects the selected session.</span></div>
+        <div class="vrow"><span class="vtag">v0.5</span><span class="vnote">Session-card redesign with subject and subject area, purple selection ring, restored animations.</span></div>
+        <div class="vrow"><span class="vtag">v0.4</span><span class="vnote">Best skill wins per observation; teacher overall is the average of those per-observation scores.</span></div>
+        <div class="vrow"><span class="vtag">v0.3</span><span class="vnote">Card ramps match the Spectrum, with one colour per skill.</span></div>
+        <div class="vrow"><span class="vtag">v0.2</span><span class="vnote">Per-session scoring and a dynamic observations list.</span></div>
+        <div class="vrow"><span class="vtag">v0.1</span><span class="vnote">First Cinematic build: Coverage board and Teacher drill-down, StatiCrypt-gated.</span></div>
+      </div>
+    </div>
   </section>
 
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.1</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.7</span></span>
   </div>
 </div>
 
@@ -455,6 +504,11 @@ const CRIT_LABEL={};D.criteria.forEach(c=>CRIT_LABEL[c.code]=c.label);
 const SKILL_COLOR={r3_01:'#2563EB',r3_02:'#0D9488',r3_03:'#7C3AED',r3_04:'#C026D3',r3_05:'#4338CA',r3_06:'#0891B2',r3_07:'#DB2777',r3_08:'#0284C7',r3_09:'#475569',r3_10:'#78716C'};
 const skillCol=code=>SKILL_COLOR[code]||'#64748B';
 const SEL_COLOR='#8B5CF6'; // purple ring for the selected observation, distinct from the green->red scale
+/* small inline icons (chevrons + external link) and an HTML escaper for free-text record fields */
+const OCHEV='<svg class="ochev" viewBox="0 0 16 16"><path d="M3 6l5 5 5-5"/></svg>';
+const OEXPCHEV='<svg class="oexpchev" viewBox="0 0 16 16"><path d="M3 6l5 5 5-5"/></svg>';
+const OEXT='<svg viewBox="0 0 16 16"><path d="M6 3H3v10h10v-3M9 3h4v4M13 3L7 9"/></svg>';
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 /* Per observation the BEST skill wins (lower is better, so MIN): that single best IS the
    observation's score (6 and 5 -> 5). The teacher overall = the AVERAGE of those per-observation
    scores. So a teacher with sessions scoring 6,6,5,5 has an overall of 5.5. */
@@ -501,12 +555,12 @@ function buildArc(t,scopeVal){const s=byId('svgArc');s.innerHTML='';const cx=120
    as the top Spectrum. A skill dot (has a code) is SKILL-coloured; a whole-observation dot (the
    All card) is score-coloured, like the top Spectrum. The flag (overall) is score-coloured. */
 let _gid=0;
-function buildObsRamp(svg,items,avg,opts){opts=opts||{};svg.innerHTML='';const R=RAMP(),x0=26,x1=514,span=x1-x0,h=18,gid='og'+(++_gid);
-  const tall=!!opts.tall,y=tall?104:52,GAP=tall?18:14; // the All card is 'tall' so a selected dot's ring has room
+function buildObsRamp(svg,items,avg,opts){opts=opts||{};svg.innerHTML='';const R=RAMP(),x0=opts.x0!=null?opts.x0:26,x1=opts.x1!=null?opts.x1:514,span=x1-x0,h=18,gid='og'+(++_gid);
+  const tall=!!opts.tall,y=opts.y!=null?opts.y:(tall?104:52),GAP=opts.gap!=null?opts.gap:(tall?18:14),labelDy=opts.labelDy!=null?opts.labelDy:30; // All card is 'tall'; session ramps pass a flatter y/gap for the full-width strip
   const defs=el('defs',{}),lg=el('linearGradient',{id:gid,x1:'0',x2:'1'});for(let i=1;i<=6;i++)lg.appendChild(el('stop',{offset:((i-1)/5*100)+'%','stop-color':R[i]}));defs.appendChild(lg);svg.appendChild(defs);
   const bar=el('rect',{x:x0,y,width:span,height:h,rx:h/2,fill:'url(#'+gid+')',opacity:.95});svg.appendChild(bar);
   const px=v=>x0+span*((v-0.5)/6),seen={},dots=[];
-  for(let i=1;i<=6;i++){const tx=el('text',{x:px(i),y:y+h+30,'text-anchor':'middle','font-size':9,fill:gc('--ink-mid'),style:'font-family:var(--body);font-weight:600'});tx.textContent=SCALE_WORDS[i-1];svg.appendChild(tx);}
+  for(let i=1;i<=6;i++){const tx=el('text',{x:px(i),y:y+h+labelDy,'text-anchor':'middle','font-size':9,fill:gc('--ink-mid'),style:'font-family:var(--body);font-weight:600'});tx.textContent=SCALE_WORDS[i-1];svg.appendChild(tx);}
   items.forEach(it=>{const x=px(it.score);const k=Math.round(x/13);const stk=seen[k]=(seen[k]||0)+1;const cy=y-12-(stk-1)*GAP;
     if(opts.selIdx!=null&&it.idx===opts.selIdx)svg.appendChild(el('circle',{cx:x,cy,r:9,fill:'none',stroke:SEL_COLOR,'stroke-width':2.2}));
     const c=el('circle',{cx:x,cy,r:6,fill:it.code?skillCol(it.code):rampAt(it.score),stroke:gc('--bg'),'stroke-width':2});svg.appendChild(c);dots.push(c);});
@@ -536,14 +590,29 @@ function renderObsList(t){const host=byId('obslist');host.innerHTML='';
         (it.items.length?'<svg class="oramp" viewBox="0 0 540 165" width="100%" height="165" preserveAspectRatio="xMidYMid meet"></svg>':'')+legend;
     }else{
       const o=it.obs||{};
-      const skills=it.items.length?'<div class="oskills">'+it.items.map(j=>`<span><i style="background:${skillCol(j.code)}"></i>${j.label} <b>${wordOf(j.score)}</b></span>`).join('')+'</div>':'<div class="ona">No judgements recorded in this session.</div>';
-      const subj=o.subject?`<div class="oline"><span class="lab">Subject Taught -</span> <b>${o.subject}</b></div>`:'';
-      const area=o.subject_area?`<div class="oline"><span class="lab">Subject Area -</span> <b>${o.subject_area}</b></div>`:'';
-      card.innerHTML=`<div class="oinfo"><div class="oline"><span class="lab">Inspector</span> <b>${it.who}</b> ${monthYear(o.date)}</div>${subj}${area}${skills}</div>`+
-        (it.items.length?'<div class="oramp-r"><svg class="oramp" viewBox="0 0 540 140" width="100%" height="150" preserveAspectRatio="xMidYMid meet"></svg></div>':'');
+      const insp=`<div class="ocol inspection"><button class="ocolhdr" type="button"><span class="ocolttl">Inspection details</span>${OCHEV}</button><div class="ocolbody"><div class="ocolbody-in">`+
+        `<div class="odrow"><span class="odn">Inspector</span><span class="odv">${esc(it.who)}${o.date?' . '+monthYear(o.date):''}</span></div>`+
+        (o.subject?`<div class="odrow"><span class="odn">Subject</span><span class="odv">${esc(o.subject)}</span></div>`:'')+
+        (o.subject_area?`<div class="odrow"><span class="odn">Area</span><span class="odv">${esc(o.subject_area)}</span></div>`:'')+
+        `</div></div></div>`;
+      const sk=it.items.length?(`<div class="ocol skills"><button class="ocolhdr" type="button"><span class="ocolttl">Skills observed</span>${OCHEV}</button><div class="ocolbody"><div class="ocolbody-in">`+
+        it.items.map(j=>`<div class="odrow"><span class="odn">${esc(j.label)}</span><span class="odv">${wordOf(j.score)}</span><i class="osw" style="background:${skillCol(j.code)}"></i></div>`).join('')+`</div></div></div>`)
+        :`<div class="ocol skills"><div class="ocolttl">Skills observed</div><div class="ona">No judgements recorded.</div></div>`;
+      const ramp=it.items.length?`<div class="orampfull"><svg class="oramp" viewBox="0 0 560 96" width="100%" preserveAspectRatio="xMidYMid meet"></svg></div>`:'';
+      const r3=(o.token&&o.record_id)?`<a class="oexpr3" target="_blank" rel="noopener" href="../Assets/R3/r3-record.html?id=${encodeURIComponent(o.record_id)}&token=${encodeURIComponent(o.token)}">${OEXT}Open the R3 record</a>`:'<span></span>';
+      const fields=[o.notes?`<div class="ofield"><div class="ofl">Observation notes</div><p>${esc(o.notes)}</p></div>`:'',o.strengths?`<div class="ofield"><div class="ofl">Strengths</div><p>${esc(o.strengths)}</p></div>`:'',o.weakness?`<div class="ofield"><div class="ofl">Areas to develop</div><p>${esc(o.weakness)}</p></div>`:''].join('');
+      const exp=fields?`<div class="oexppanel"><div class="oexppanel-in"><div class="oexpbody">${fields}</div></div></div>`:'';
+      card.innerHTML=`<div class="octop"><div class="otopcols">${insp}${sk}</div>${ramp}</div>`+
+        `<div class="oexprow"><div class="oexpname"><span class="oacc"></span>${esc(t.name)}</div><button class="oexpbtn" type="button">Observation notes ${OEXPCHEV}</button>${r3}</div>${exp}`;
     }
     card.onclick=()=>selectObs(t,it.key);host.appendChild(card);
-    const svg=card.querySelector('.oramp');if(svg&&it.items.length)buildObsRamp(svg,it.items,it.avg,it.all?{tall:true,selIdx:(selectedObs==='all'?null:+selectedObs)}:{});});
+    const svg=card.querySelector('.oramp');
+    if(svg&&it.items.length)buildObsRamp(svg,it.items,it.avg,it.all?{tall:true,selIdx:(selectedObs==='all'?null:+selectedObs)}:{x0:26,x1:534,y:44,gap:13,labelDy:26});
+    if(!it.all){const eb=card.querySelector('.oexpbtn');if(eb)eb.onclick=e=>{e.stopPropagation();card.classList.toggle('open');};
+      const r3a=card.querySelector('a.oexpr3');if(r3a)r3a.onclick=e=>e.stopPropagation();
+      card.querySelectorAll('.ocol .ocolhdr').forEach(h=>h.onclick=e=>{e.stopPropagation();h.closest('.ocol').classList.toggle('open');});
+    }
+  });
 }
 function selectObs(t,key){selectedObs=key;
   document.querySelectorAll('#obslist .ocard').forEach(c=>c.classList.toggle('sel',String(c.dataset.key)===String(key)));
@@ -556,7 +625,7 @@ function selectObs(t,key){selectedObs=key;
   // reflect the selection in the All-observations card (ring its matching session dot)
   const allSvg=document.querySelector('#obslist .ocard.all .oramp');
   if(allSvg){const ai=t.observations.map((o,i)=>({label:o.assessor||'Inspector',score:obsScore(o),idx:i})).filter(it=>it.score!=null);
-    buildObsRamp(allSvg,ai,teacherAvg(t),{tall:true,selIdx:(key==='all'?null:+key),noAnim:true});}
+    buildObsRamp(allSvg,ai,teacherAvg(t),{tall:true,selIdx:(key==='all'?null:+key)});}
 }
 function renderTeacher(t){
   byId('tName').textContent=t.name;
