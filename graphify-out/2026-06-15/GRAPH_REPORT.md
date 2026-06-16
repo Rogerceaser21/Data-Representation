@@ -1,16 +1,16 @@
-# Graph Report - Data-Representation  (2026-06-15)
+# Graph Report - nice-mendeleev-cefc07  (2026-06-15)
 
 ## Corpus Check
-- 35 files · ~364,911 words
+- 30 files · ~307,665 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 526 nodes · 779 edges · 42 communities (32 shown, 10 thin omitted)
-- Extraction: 94% EXTRACTED · 6% INFERRED · 1% AMBIGUOUS · INFERRED: 44 edges (avg confidence: 0.87)
+- 488 nodes · 746 edges · 37 communities (28 shown, 9 thin omitted)
+- Extraction: 93% EXTRACTED · 6% INFERRED · 1% AMBIGUOUS · INFERRED: 44 edges (avg confidence: 0.87)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `e10dbc67`
+- Built from commit: `915919e1`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -46,13 +46,8 @@
 - [[_COMMUNITY_Community 28|Community 28]]
 - [[_COMMUNITY_Community 29|Community 29]]
 - [[_COMMUNITY_Community 30|Community 30]]
-- [[_COMMUNITY_Community 31|Community 31]]
-- [[_COMMUNITY_Community 32|Community 32]]
-- [[_COMMUNITY_Community 33|Community 33]]
 - [[_COMMUNITY_Community 34|Community 34]]
 - [[_COMMUNITY_Community 35|Community 35]]
-- [[_COMMUNITY_Community 36|Community 36]]
-- [[_COMMUNITY_Community 37|Community 37]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `ce` - 97 edges
@@ -81,7 +76,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (42 total, 10 thin omitted)
+## Communities (37 total, 9 thin omitted)
 
 ### Community 0 - "AIS Observation Forms & Scripts"
 Cohesion: 0.07
@@ -92,7 +87,7 @@ Cohesion: 0.05
 Nodes (49): Lesson Observation - Igor 12/11, Classroom Management (Observation), Curriculum Development (Observation), DigiTech Subject, Interpersonal Relationships (Observation), Ben Hyde (Observer / DHOS), Mr Igor (Teacher), Teaching & Learning (Observation) (+41 more)
 
 ### Community 2 - "Pitch Deck Build & Bugs"
-Cohesion: 0.13
+Cohesion: 0.14
 Nodes (4): C, e(), le(), t
 
 ### Community 4 - "TomSelect Item Selection"
@@ -164,28 +159,12 @@ Cohesion: 0.18
 Nodes (10): Accessibility checklist (must pass before shipping), Behaviour contract, CSS sketch, Deferred plan · custom selection picker for the R3 form, Failure history that led here, JS sketch (~80-100 lines for a reusable component), Sources / further reading, The architecture that works (+2 more)
 
 ### Community 27 - "Community 27"
-Cohesion: 0.20
-Nodes (9): Docs synced, Files created (committed 915919e, on the branch), Gotchas / how-to learned this session, Handoff · Dashboard design locked (Cinematic + AIS stars + light default) + living spec sheet; build next, IMMEDIATE next step: build the dashboard (to Tuesday), Open items, Read in this order, Suggested skills (+1 more)
+Cohesion: 0.25
+Nodes (7): Data-Representation · Teacher Observation Pitch, File map, Rating scale, Related, Status, Visibility, Worked example
 
 ### Community 28 - "Community 28"
 Cohesion: 0.33
 Nodes (5): Backup mail filter (one-time Gmail setup), Force-refresh the dropdowns after a Sheet edit, R3 Evidence · Google file links, Related, Sheet tabs (quick jump)
-
-### Community 30 - "Community 30"
-Cohesion: 0.20
-Nodes (9): Current state (all live + verified), Docs synced, Gotchas learned this session, Handoff · Dashboard v0.1 BUILT + DEPLOYED (gated); next = live Supabase + @ais.ae SSO + RLS, How it is built (the load-bearing facts), Open items / immediate next, Read in this order, Suggested skills (+1 more)
-
-### Community 31 - "Community 31"
-Cohesion: 0.22
-Nodes (8): DB tooling + gotchas, Docs synced, Handoff · Supabase data layer built (R3 in 2 rounds) + Humanities dept; dashboard next, Key corrections Igor insisted on (do not regress), Open items / immediate next, Read in this order, Suggested skills, What this session did: built the entire Supabase data layer
-
-### Community 32 - "Community 32"
-Cohesion: 0.25
-Nodes (7): Confidence notes, Deployment / preview nuance, Goal, Open decisions, Part A · Backend (`Assets/R3/apps-script/02_doGet.gs`), Part B · Form (`Assets/R3/src/r3-evidence-form.html`), Phase 2 plan · in-form Observed / Not-yet-observed panels
-
-### Community 33 - "Community 33"
-Cohesion: 0.25
-Nodes (7): Data-Representation · Teacher Observation Pitch, File map, Rating scale, Related, Status, Visibility, Worked example
 
 ### Community 34 - "Community 34"
 Cohesion: 0.12
@@ -208,9 +187,9 @@ Nodes (12): 1. Job 1 DONE (Observed tab AVERAGE → BEST), 2. Dashboard design e
   SPEA Data Report/Lana Mosleh.jpg · relation: conceptually_related_to
 
 ## Knowledge Gaps
-- **253 isolated node(s):** `allow`, `salt`, `scriptId`, `rootDir`, `scriptExtensions` (+248 more)
+- **224 isolated node(s):** `version`, `configurations`, `allow`, `salt`, `scriptId` (+219 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **10 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **9 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
@@ -226,6 +205,6 @@ _Questions this graph is uniquely positioned to answer:_
 - **What is the exact relationship between `Teacher Observation Pitch Deck (index.html)` and `Lana Mosleh Portrait`?**
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
 - **Why does `ce` connect `TomSelect Plugin Hooks` to `Pitch Deck Build & Bugs`?**
-  _High betweenness centrality (0.038) - this node is a cross-community bridge._
+  _High betweenness centrality (0.044) - this node is a cross-community bridge._
 - **Why does `R3 Evidence Form Master Source` connect `AIS Observation Forms & Scripts` to `TomSelect Item Selection`?**
-  _High betweenness centrality (0.008) - this node is a cross-community bridge._
+  _High betweenness centrality (0.009) - this node is a cross-community bridge._
