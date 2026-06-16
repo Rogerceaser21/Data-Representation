@@ -282,7 +282,7 @@ svg{display:block;overflow:visible}
 
     <div class="tcard" style="margin-top:14px">
       <div class="panel">
-        <div class="ey">The Spectrum . each observation's average on the 6-point scale</div>
+        <div class="ey">The Spectrum . each observation's score on the 6-point scale</div>
         <div class="cpstage"><div style="width:100%"><svg id="svgSpec" viewBox="0 0 460 140" width="100%" height="150" preserveAspectRatio="xMidYMid meet"></svg></div></div>
       </div>
       <div class="panel">
@@ -433,48 +433,47 @@ function renderTlist(){
 function renderCoverage(){renderStats();renderRing();renderDist();renderSpread();renderNoobs();renderTlist();}
 function animateStats(){document.querySelectorAll('#statgrid .v').forEach(n=>countUp(n,+n.dataset.to,1.1));}
 
-/* ============================================================= TEACHER (averages)
-   Every score here is an AVERAGE, never the best. obsAverage = mean of the judgements
-   in one session; teacherAvg = mean of those session averages (average of averages). */
+/* ============================================================= TEACHER (scoring)
+   Per observation the best skill wins (obsScore = MIN of that session's judgements);
+   the teacher overall (teacherAvg) = the AVERAGE of those per-observation scores. */
 const CRIT_LABEL={};D.criteria.forEach(c=>CRIT_LABEL[c.code]=c.label);
 /* one fixed, distinct colour per skill so each is recognisable; cool tones to contrast the
    green->red ramp. On a card ramp the DOT colour tells you the skill, its position tells the score. */
 const SKILL_COLOR={r3_01:'#2563EB',r3_02:'#0D9488',r3_03:'#7C3AED',r3_04:'#C026D3',r3_05:'#4338CA',r3_06:'#0891B2',r3_07:'#DB2777',r3_08:'#0284C7',r3_09:'#475569',r3_10:'#78716C'};
 const skillCol=code=>SKILL_COLOR[code]||'#64748B';
-function obsAverage(o){const v=Object.values(o.scores||{});return v.length?v.reduce((a,b)=>a+b,0)/v.length:null;}
-function teacherAvg(t){const a=t.observations.map(obsAverage).filter(v=>v!=null);return a.length?a.reduce((x,y)=>x+y,0)/a.length:null;}
-function criterionAverages(t){const acc={};t.observations.forEach(o=>{for(const[c,s]of Object.entries(o.scores||{}))(acc[c]=acc[c]||[]).push(s);});const out={};for(const c in acc)out[c]=acc[c].reduce((a,b)=>a+b,0)/acc[c].length;return out;}
+/* Per observation the BEST skill wins (lower is better, so MIN): that single best IS the
+   observation's score (6 and 5 -> 5). The teacher overall = the AVERAGE of those per-observation
+   scores. So a teacher with sessions scoring 6,6,5,5 has an overall of 5.5. */
+function obsScore(o){const v=Object.values(o.scores||{});return v.length?Math.min(...v):null;}
+function teacherAvg(t){const a=t.observations.map(obsScore).filter(v=>v!=null);return a.length?a.reduce((x,y)=>x+y,0)/a.length:null;}
 function wordOf(v){return v==null?'Not assessed':WORD[Math.min(6,Math.max(1,Math.round(v)))];}
 function colOf(v){return v==null?gc('--na'):rampAt(v);}
 let selectedObs='all';
 
-/* Spectrum: one dot per observation at its AVERAGE; the flag marks the selected scope */
+/* Spectrum: one dot per observation at its SCORE (best skill); the flag marks the selected scope */
 function buildSpec(t,scopeVal,selIdx){const s=byId('svgSpec');s.innerHTML='';const R=RAMP(),x0=26,x1=434,y=52,h=18,span=x1-x0;
   const defs=el('defs',{}),lg=el('linearGradient',{id:'sg',x1:'0',x2:'1'});for(let i=1;i<=6;i++)lg.appendChild(el('stop',{offset:((i-1)/5*100)+'%','stop-color':R[i]}));defs.appendChild(lg);s.appendChild(defs);
   s.appendChild(el('rect',{x:x0,y,width:span,height:h,rx:h/2,fill:'url(#sg)',opacity:.95}));
   const px=v=>x0+span*((v-0.5)/6);
   for(let i=1;i<=6;i++){const tx=el('text',{x:px(i),y:y+h+30,'text-anchor':'middle','font-size':9,fill:gc('--ink-mid'),style:'font-family:var(--body);font-weight:600'});tx.textContent=SCALE_WORDS[i-1];s.appendChild(tx)}
-  const avgs=t.observations.map(obsAverage),seen={};
+  const avgs=t.observations.map(obsScore),seen={};
   t.observations.forEach((o,i)=>{const v=avgs[i];if(v==null)return;const k=Math.round(px(v)/13);const stk=seen[k]=(seen[k]||0)+1;const cy=y-12-(stk-1)*14;const sel=(selIdx!=null&&i===selIdx);
     const c=el('circle',{cx:px(v),cy,r:sel?7.5:6,fill:rampAt(v),stroke:sel?gc('--y'):gc('--bg'),'stroke-width':sel?3:2});
-    s.appendChild(c);
-    if(window.gsap)gsap.fromTo(c,{attr:{opacity:0,cy:y-2}},{attr:{opacity:1,cy},duration:.5,delay:.2+i*.05,ease:'back.out(2)',immediateRender:false});});
-  if(scopeVal!=null){const ox=px(scopeVal);const fl=el('path',{d:`M ${ox} ${y+h+2} l -6 11 l 12 0 z`,fill:rampAt(scopeVal)});s.appendChild(fl);
-    if(window.gsap)gsap.fromTo(fl,{attr:{opacity:0}},{attr:{opacity:1},duration:.5,delay:.45,immediateRender:false});}
+    s.appendChild(c);});
+  if(scopeVal!=null){const ox=px(scopeVal);s.appendChild(el('path',{d:`M ${ox} ${y+h+2} l -6 11 l 12 0 z`,fill:rampAt(scopeVal)}));}
 }
-/* Gauge: continuous fill + colour to the selected scope's value (an average, never best) */
+/* Gauge: continuous fill + colour to the selected scope's value (overall = average of the per-observation best scores) */
 function buildArc(t,scopeVal){const s=byId('svgArc');s.innerHTML='';const cx=120,cy=120,r=80,A0=135,SW=270,sw=14,N=48;const ov=scopeVal;
   const ang=p=>A0+SW*p,seg=(p0,p1,c,o)=>{const path=el('path',{d:arcP(cx,cy,r,ang(p0),ang(p1)+0.6),fill:'none',stroke:c,'stroke-width':sw,opacity:o});s.appendChild(path);return path};
   for(let i=0;i<N;i++){const a=i/N,b=(i+1)/N;seg(a,b,rampAt(6-5*((a+b)/2)),.2)}
-  if(ov!=null){const M=Math.max(1,Math.round(N*frac(ov)));const fills=[];for(let i=0;i<M;i++){const a=i/N,b=(i+1)/N;fills.push(seg(a,b,rampAt(6-5*((a+b)/2)),1));}
-    if(window.gsap)fills.forEach((p,i)=>gsap.fromTo(p,{attr:{opacity:0}},{attr:{opacity:1},duration:.03,delay:.3+i*.012,immediateRender:false}));}
-  t.observations.map(obsAverage).filter(v=>v!=null).forEach(v=>{const p=pol(cx,cy,r+16,ang(frac(v)));s.appendChild(el('circle',{cx:p.x,cy:p.y,r:4.5,fill:rampAt(v),stroke:gc('--bg'),'stroke-width':2.5}));});
+  if(ov!=null){const M=Math.max(1,Math.round(N*frac(ov)));for(let i=0;i<M;i++){const a=i/N,b=(i+1)/N;seg(a,b,rampAt(6-5*((a+b)/2)),1);}}
+  t.observations.map(obsScore).filter(v=>v!=null).forEach(v=>{const p=pol(cx,cy,r+16,ang(frac(v)));s.appendChild(el('circle',{cx:p.x,cy:p.y,r:4.5,fill:rampAt(v),stroke:gc('--bg'),'stroke-width':2.5}));});
   const a=el('text',{x:cx,y:cy-6,'text-anchor':'middle','font-size':10.5,fill:gc('--ink-mid'),style:'font-family:var(--body);font-weight:700;letter-spacing:1.5px;text-transform:uppercase'});a.textContent='Overall';s.appendChild(a);
   const b=el('text',{x:cx,y:cy+20,'text-anchor':'middle','font-size':ov==null?16:21,fill:ov==null?gc('--ink-mid'):rampAt(ov),style:'font-family:var(--display);font-weight:600;font-style:italic'});b.textContent=wordOf(ov);s.appendChild(b);
 }
 /* per-card scale strip: same bar thickness, dot size, stacking, scale labels and flag geometry
-   as the top Spectrum (rendered to the same vertical scale), so a value lands in the same place
-   relative to the scale. Dots are SKILL-coloured; the flag (overall) stays score-coloured. */
+   as the top Spectrum. A skill dot (has a code) is SKILL-coloured; a whole-observation dot (the
+   All card) is score-coloured, like the top Spectrum. The flag (overall) is score-coloured. */
 let _gid=0;
 function buildObsRamp(svg,items,avg){svg.innerHTML='';const R=RAMP(),x0=26,x1=514,y=52,h=18,span=x1-x0,gid='og'+(++_gid);
   const defs=el('defs',{}),lg=el('linearGradient',{id:gid,x1:'0',x2:'1'});for(let i=1;i<=6;i++)lg.appendChild(el('stop',{offset:((i-1)/5*100)+'%','stop-color':R[i]}));defs.appendChild(lg);svg.appendChild(defs);
@@ -482,21 +481,23 @@ function buildObsRamp(svg,items,avg){svg.innerHTML='';const R=RAMP(),x0=26,x1=51
   const px=v=>x0+span*((v-0.5)/6),seen={};
   for(let i=1;i<=6;i++){const tx=el('text',{x:px(i),y:y+h+30,'text-anchor':'middle','font-size':9,fill:gc('--ink-mid'),style:'font-family:var(--body);font-weight:600'});tx.textContent=SCALE_WORDS[i-1];svg.appendChild(tx);}
   items.forEach(it=>{const x=px(it.score);const k=Math.round(x/13);const stk=seen[k]=(seen[k]||0)+1;
-    svg.appendChild(el('circle',{cx:x,cy:y-12-(stk-1)*14,r:6,fill:skillCol(it.code),stroke:gc('--bg'),'stroke-width':2}));});
+    svg.appendChild(el('circle',{cx:x,cy:y-12-(stk-1)*14,r:6,fill:it.code?skillCol(it.code):rampAt(it.score),stroke:gc('--bg'),'stroke-width':2}));});
   if(avg!=null)svg.appendChild(el('path',{d:`M ${px(avg)} ${y+h+2} l -6 11 l 12 0 z`,fill:rampAt(avg)}));
 }
 /* the selectable list: All observations on top (default), then one card per session */
-function obsList(t){const out=[],cAvg=criterionAverages(t);
-  out.push({key:'all',all:true,who:'All observations',sub:t.n_obs+' observation'+(t.n_obs===1?'':'s'),items:D.criteria.filter(c=>cAvg[c.code]!=null).map(c=>({code:c.code,label:c.label,score:cAvg[c.code]})),avg:teacherAvg(t)});
+function obsList(t){const out=[];
+  // All observations: one dot per OBSERVATION at its score (best skill), so the flag (their
+  // average) sits dead-centre between them and is congruent with the top Spectrum.
+  out.push({key:'all',all:true,who:'All observations',sub:t.n_obs+' observation'+(t.n_obs===1?'':'s'),items:t.observations.map(o=>({label:o.assessor||'Inspector',score:obsScore(o)})).filter(it=>it.score!=null),avg:teacherAvg(t)});
   t.observations.forEach((o,i)=>{const ref=(o.record_id&&o.record_id.startsWith('AIS'))?' . '+o.record_id:'';
-    out.push({key:i,who:o.assessor||'Inspector',sub:(o.date||'')+' . '+o.round+ref,items:Object.entries(o.scores||{}).map(([code,score])=>({code,label:CRIT_LABEL[code]||code,score})),avg:obsAverage(o)});});
+    out.push({key:i,who:o.assessor||'Inspector',sub:(o.date||'')+' . '+o.round+ref,items:Object.entries(o.scores||{}).map(([code,score])=>({code,label:CRIT_LABEL[code]||code,score})),avg:obsScore(o)});});
   return out;}
 function renderObsList(t){const host=byId('obslist');host.innerHTML='';
   obsList(t).forEach(it=>{const card=document.createElement('div');
     card.className='ocard'+(it.all?' all':'')+(String(it.key)===String(selectedObs)?' sel':'');card.dataset.key=it.key;
-    const legend=it.items.length?'<div class="olegend">'+it.items.map(j=>`<span><i style="background:${skillCol(j.code)}"></i>${j.label} <b>${wordOf(j.score)}</b></span>`).join('')+'</div>':'<div class="ona">No judgements recorded in this session.</div>';
+    const legend=it.items.length?'<div class="olegend">'+it.items.map(j=>`<span><i style="background:${j.code?skillCol(j.code):rampAt(j.score)}"></i>${j.label} <b>${wordOf(j.score)}</b></span>`).join('')+'</div>':'<div class="ona">No judgements recorded in this session.</div>';
     card.innerHTML=`<div class="otop"><div class="owho">${it.who}<small>${it.sub}</small></div>`+
-      `<div class="oavg"><div class="lab">${it.all?'Average of averages':'Session average'}</div><div class="w" style="color:${colOf(it.avg)}">${wordOf(it.avg)}</div></div></div>`+
+      `<div class="oavg"><div class="lab">${it.all?'Average of observations':'Session score (best skill)'}</div><div class="w" style="color:${colOf(it.avg)}">${wordOf(it.avg)}</div></div></div>`+
       (it.items.length?'<svg class="oramp" viewBox="0 0 540 140" width="100%" height="150" preserveAspectRatio="xMidYMid meet"></svg>':'')+legend;
     card.onclick=()=>selectObs(t,it.key);host.appendChild(card);
     if(it.items.length)buildObsRamp(card.querySelector('.oramp'),it.items,it.avg);});
@@ -505,7 +506,7 @@ function selectObs(t,key){selectedObs=key;
   document.querySelectorAll('#obslist .ocard').forEach(c=>c.classList.toggle('sel',String(c.dataset.key)===String(key)));
   let scopeVal,selIdx=null,label;
   if(key==='all'){scopeVal=teacherAvg(t);label='Overall . all observations';}
-  else{selIdx=+key;const o=t.observations[selIdx];scopeVal=obsAverage(o);label='Session . '+(o.assessor||'Inspector')+(o.date?' . '+o.date:'');}
+  else{selIdx=+key;const o=t.observations[selIdx];scopeVal=obsScore(o);label='Session . '+(o.assessor||'Inspector')+(o.date?' . '+o.date:'');}
   const ov=byId('tOverall');ov.textContent=wordOf(scopeVal);ov.style.color=colOf(scopeVal);
   byId('tScopeLabel').textContent=label;
   buildArc(t,scopeVal);buildSpec(t,scopeVal,selIdx);
