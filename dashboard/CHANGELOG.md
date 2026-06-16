@@ -5,6 +5,12 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.8 . 2026-06-16
+- Card refinements (no data change). Clicking anywhere on a card now selects it (the chevrons and links no longer swallow the click).
+- The Inspection details and Skills observed arrows sit beside their titles (not far-right), gently bob to signal they open, and open BOTH columns together; the Observation Notes toggle stays independent.
+- The session-card Spectrum is now a full-width HTML/CSS bar at a fixed thin height (a width-scaled SVG was magnifying it), with the judgement words at the Observation Notes text size; the gradient uses the theme ramp variables so it reflows on theme change.
+- The Inspection details and Skills observed headers now match the Observation Notes header size.
+
 ## v0.7 . 2026-06-16
 - Observation card redesign (Option A, "Ledger"), built from the agreed preview in `dashboard-previews/card-A-revised.html`.
 - Top of each session card is now two titled, collapsible columns: Inspection details (inspector, subject, area) and Skills observed (each skill with its word and colour swatch on the right). Both start collapsed for a condensed card.

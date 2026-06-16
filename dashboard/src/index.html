@@ -170,14 +170,17 @@ svg{display:block;overflow:visible}
 .otopcols{display:grid;grid-template-columns:1.55fr 1fr;gap:26px;align-items:start}
 @media(max-width:680px){.otopcols{grid-template-columns:1fr;gap:14px}}
 /* each column title is a toggle (same chevron as Observation notes); rows start collapsed for a condensed card */
-.ocolhdr{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;background:transparent;border:0;padding:0 0 2px;cursor:pointer;font:inherit;text-align:left}
-.ocolttl{font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-mid);font-weight:700}
+.ocolhdr{display:flex;align-items:center;justify-content:flex-start;gap:6px;width:100%;background:transparent;border:0;padding:0 0 2px;cursor:pointer;font:inherit;text-align:left}
+.ocolttl{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-mid);font-weight:700}
 .ocolhdr:hover .ocolttl{color:var(--ink)}
+.ochevw{display:inline-flex;animation:chevbob 1.9s ease-in-out infinite}
 .ochev{width:12px;height:12px;color:var(--ink-mid);transition:transform .42s cubic-bezier(.4,0,.2,1);flex:none}
 .ochev path{stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
-.ocol.open .ochev{transform:rotate(180deg)}
+.otopcols.open .ochev{transform:rotate(180deg)}
 .ocolbody{display:grid;grid-template-rows:0fr;transition:grid-template-rows .4s cubic-bezier(.4,0,.2,1)}
-.ocol.open .ocolbody{grid-template-rows:1fr}
+.otopcols.open .ocolbody{grid-template-rows:1fr}
+@keyframes chevbob{0%,100%{transform:translateY(0)}50%{transform:translateY(2.6px)}}
+@media(prefers-reduced-motion:reduce){.ochevw{animation:none}}
 .ocolbody-in{overflow:hidden;min-height:0}
 .ocolbody-in .odrow:first-child{margin-top:8px}
 .odrow{display:grid;align-items:center;min-height:25px;gap:10px}
@@ -189,6 +192,13 @@ svg{display:block;overflow:visible}
 .osw{width:11px;height:11px;border-radius:4px;flex:none}
 .orampfull{margin-top:10px}
 .orampfull .oramp{width:100%;height:auto;margin-top:0}
+/* full-width thin spectrum (HTML/CSS so thickness + word size are pixel-controlled, not magnified by width) */
+.osplot{position:relative;height:62px}
+.osbar{position:absolute;left:0;right:0;top:34px;height:16px;border-radius:8px;background:linear-gradient(90deg,var(--r1),var(--r2),var(--r3),var(--r4),var(--r5),var(--r6));opacity:.97}
+.osd{position:absolute;width:13px;height:13px;margin-left:-6.5px;border-radius:50%;border:2px solid var(--bg);box-sizing:border-box}
+.osflag{position:absolute;top:52px;margin-left:-6px;width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid var(--ink)}
+.oswords{display:grid;grid-template-columns:repeat(6,1fr);margin-top:5px}
+.oswords span{text-align:center;font-size:10.5px;font-weight:600;color:var(--ink-mid)}
 .oexprow{border-top:1px solid var(--edge-soft);display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;padding:0 16px}
 .oexpname{justify-self:start;display:flex;align-items:center;gap:8px;font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:-.01em}
 .oexpname .oacc{width:3px;height:15px;border-radius:2px;background:linear-gradient(180deg,var(--y),var(--g));flex:none}
@@ -380,6 +390,7 @@ svg{display:block;overflow:visible}
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
       <div class="vhist">
+        <div class="vrow"><span class="vtag">v0.8</span><span class="vnote">Card refinements: any click on a card selects it; the Inspection and Skills arrows sit beside their titles, gently animate, and open both columns together; the Spectrum is slimmer and full width with judgement words at the body text size; the section headers match the Observation Notes header.</span></div>
         <div class="vrow"><span class="vtag">v0.7</span><span class="vnote">Observation card redesign: collapsible Inspection and Skills sections, full-width Spectrum, a condensed action bar (teacher name, Observation Notes, and a link to the locked R3 record), and an expander revealing notes, strengths, and areas to develop.</span></div>
         <div class="vrow"><span class="vtag">v0.6</span><span class="vnote">All-observations card reflects the selected session.</span></div>
         <div class="vrow"><span class="vtag">v0.5</span><span class="vnote">Session-card redesign with subject and subject area, purple selection ring, restored animations.</span></div>
@@ -393,7 +404,7 @@ svg{display:block;overflow:visible}
 
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.7</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.8</span></span>
   </div>
 </div>
 
@@ -505,8 +516,8 @@ const SKILL_COLOR={r3_01:'#2563EB',r3_02:'#0D9488',r3_03:'#7C3AED',r3_04:'#C026D
 const skillCol=code=>SKILL_COLOR[code]||'#64748B';
 const SEL_COLOR='#8B5CF6'; // purple ring for the selected observation, distinct from the green->red scale
 /* small inline icons (chevrons + external link) and an HTML escaper for free-text record fields */
-const OCHEV='<svg class="ochev" viewBox="0 0 16 16"><path d="M3 6l5 5 5-5"/></svg>';
-const OEXPCHEV='<svg class="oexpchev" viewBox="0 0 16 16"><path d="M3 6l5 5 5-5"/></svg>';
+const OCHEV='<span class="ochevw"><svg class="ochev" viewBox="0 0 16 16"><path d="M3 6l5 5 5-5"/></svg></span>';
+const OEXPCHEV='<span class="ochevw"><svg class="oexpchev" viewBox="0 0 16 16"><path d="M3 6l5 5 5-5"/></svg></span>';
 const OEXT='<svg viewBox="0 0 16 16"><path d="M6 3H3v10h10v-3M9 3h4v4M13 3L7 9"/></svg>';
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 /* Per observation the BEST skill wins (lower is better, so MIN): that single best IS the
@@ -570,6 +581,21 @@ function buildObsRamp(svg,items,avg,opts){opts=opts||{};svg.innerHTML='';const R
     if(flag)gsap.fromTo(flag,{opacity:0,y:5},{opacity:1,y:0,duration:.45,delay:.4,immediateRender:false});
     settle([bar,...dots,flag].filter(Boolean),1200);}
 }
+/* session-card spectrum, full-width HTML/CSS: a thin bar that fills the card at a fixed pixel
+   height (a width-scaled SVG magnifies and reads as fat), dots + flag placed by percent, words at
+   the Observation Notes size. The gradient uses the theme ramp vars so it reflows on theme change. */
+function specHTML(items,flagVal){const pct=v=>(Math.max(1,Math.min(6,v))-0.5)/6*100;const seen={};let dots='';
+  items.slice().sort((a,b)=>a.score-b.score).forEach(it=>{const p=pct(it.score);const k=Math.round(p/2.4);const stk=seen[k]=(seen[k]||0)+1;const top=14-(stk-1)*14;
+    dots+=`<span class="osd" style="left:${p.toFixed(2)}%;top:${top}px;background:${it.code?skillCol(it.code):rampAt(it.score)}"></span>`;});
+  const flag=flagVal!=null?`<span class="osflag" style="left:${pct(flagVal).toFixed(2)}%;border-top-color:${rampAt(flagVal)}"></span>`:'';
+  const words='<div class="oswords">'+SCALE_WORDS.map(w=>`<span>${w}</span>`).join('')+'</div>';
+  return `<div class="ospec"><div class="osplot"><div class="osbar"></div>${dots}${flag}</div>${words}</div>`;}
+function animSpec(el){if(!window.gsap)return;const bar=el.querySelector('.osbar'),dots=el.querySelectorAll('.osd'),flag=el.querySelector('.osflag');
+  gsap.fromTo(bar,{scaleX:0,transformOrigin:'left center'},{scaleX:1,duration:.6,ease:'power3.out',immediateRender:false});
+  gsap.fromTo(dots,{scale:0,transformOrigin:'center'},{scale:1,duration:.42,stagger:.05,delay:.18,ease:'back.out(2)',immediateRender:false});
+  if(flag)gsap.fromTo(flag,{opacity:0,y:4},{opacity:1,y:0,duration:.45,delay:.4,immediateRender:false});
+  // settle WITHOUT clearProps:'all' (that wipes the dots' inline left/top); clear only the animated props
+  const fin=[bar,...dots,flag].filter(Boolean);setTimeout(()=>{try{gsap.killTweensOf(fin);gsap.set(fin,{clearProps:'transform,opacity'});}catch(e){}},1200);}
 /* the selectable list: All observations on top (default), then one card per session */
 const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
 function monthYear(date){if(!date)return '';const p=String(date).split('-');return (MONTHS[(+p[1])-1]||'')+' '+(p[0]||'').slice(2);}
@@ -598,7 +624,7 @@ function renderObsList(t){const host=byId('obslist');host.innerHTML='';
       const sk=it.items.length?(`<div class="ocol skills"><button class="ocolhdr" type="button"><span class="ocolttl">Skills observed</span>${OCHEV}</button><div class="ocolbody"><div class="ocolbody-in">`+
         it.items.map(j=>`<div class="odrow"><span class="odn">${esc(j.label)}</span><span class="odv">${wordOf(j.score)}</span><i class="osw" style="background:${skillCol(j.code)}"></i></div>`).join('')+`</div></div></div>`)
         :`<div class="ocol skills"><div class="ocolttl">Skills observed</div><div class="ona">No judgements recorded.</div></div>`;
-      const ramp=it.items.length?`<div class="orampfull"><svg class="oramp" viewBox="0 0 560 96" width="100%" preserveAspectRatio="xMidYMid meet"></svg></div>`:'';
+      const ramp=it.items.length?`<div class="orampfull">${specHTML(it.items,it.avg)}</div>`:'';
       const r3=(o.token&&o.record_id)?`<a class="oexpr3" target="_blank" rel="noopener" href="../Assets/R3/r3-record.html?id=${encodeURIComponent(o.record_id)}&token=${encodeURIComponent(o.token)}">${OEXT}Open the R3 record</a>`:'<span></span>';
       const fields=[o.notes?`<div class="ofield"><div class="ofl">Observation notes</div><p>${esc(o.notes)}</p></div>`:'',o.strengths?`<div class="ofield"><div class="ofl">Strengths</div><p>${esc(o.strengths)}</p></div>`:'',o.weakness?`<div class="ofield"><div class="ofl">Areas to develop</div><p>${esc(o.weakness)}</p></div>`:''].join('');
       const exp=fields?`<div class="oexppanel"><div class="oexppanel-in"><div class="oexpbody">${fields}</div></div></div>`:'';
@@ -606,11 +632,12 @@ function renderObsList(t){const host=byId('obslist');host.innerHTML='';
         `<div class="oexprow"><div class="oexpname"><span class="oacc"></span>${esc(t.name)}</div><button class="oexpbtn" type="button">Observation notes ${OEXPCHEV}</button>${r3}</div>${exp}`;
     }
     card.onclick=()=>selectObs(t,it.key);host.appendChild(card);
-    const svg=card.querySelector('.oramp');
-    if(svg&&it.items.length)buildObsRamp(svg,it.items,it.avg,it.all?{tall:true,selIdx:(selectedObs==='all'?null:+selectedObs)}:{x0:26,x1:534,y:44,gap:13,labelDy:26});
-    if(!it.all){const eb=card.querySelector('.oexpbtn');if(eb)eb.onclick=e=>{e.stopPropagation();card.classList.toggle('open');};
-      const r3a=card.querySelector('a.oexpr3');if(r3a)r3a.onclick=e=>e.stopPropagation();
-      card.querySelectorAll('.ocol .ocolhdr').forEach(h=>h.onclick=e=>{e.stopPropagation();h.closest('.ocol').classList.toggle('open');});
+    if(it.all){const svg=card.querySelector('.oramp');if(svg&&it.items.length)buildObsRamp(svg,it.items,it.avg,{tall:true,selIdx:(selectedObs==='all'?null:+selectedObs)});}
+    else{const sp=card.querySelector('.ospec');if(sp&&it.items.length)animSpec(sp);
+      // every click on the card selects it: the handlers below do NOT stop propagation, so the click bubbles to card.onclick
+      const eb=card.querySelector('.oexpbtn');if(eb)eb.onclick=()=>card.classList.toggle('open');
+      const cols=card.querySelector('.otopcols');
+      card.querySelectorAll('.ocol .ocolhdr').forEach(h=>h.onclick=()=>{if(cols)cols.classList.toggle('open');});
     }
   });
 }
