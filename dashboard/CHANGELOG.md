@@ -5,6 +5,10 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.10 . 2026-06-17
+- All-observations card cleanup: removed the inspector legend and the "Average of observations" word; the Student Progress label is now bold and the gauge is pulled up beside the Spectrum.
+- Freeze bug fixed properly. The previous GSAP-from-invisible entrances (plus the `finalizeViz` rescue) could still strand the Spectrum dots and the gauge blank after the tab was backgrounded (opening the R3 record in a new tab) or bfcached. The Spectrum (`.ospec`/`.osbar`) and gauge (`#svgArc`) entrances are now CSS keyframe animations on a resting-visible base: CSS animations run on the real-time document timeline (not requestAnimationFrame), so they always complete to the final visible state whether or not the tab was ever painted. Removed `animSpec`, `finalizeViz`, and the dead `.olegend`/`.oavg` CSS.
+
 ## v0.9 . 2026-06-17
 - Merged the three top graphs into the All-observations card. The two top centerpiece cards (The Spectrum, Overall gauge) are removed.
 - The Spectrum and the old All-observations bar showed the same data (one dot per observation at its best-skill score); they are now a single full-width HTML/CSS Spectrum inside the All-observations card, stretched the full card width with the judgement words at the individual-card size.
