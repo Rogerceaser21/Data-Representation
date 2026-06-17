@@ -1842,7 +1842,7 @@ body.is-viewer #btn-reset { display: none; }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.44</a></span>
+    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.45</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -1993,7 +1993,10 @@ body.is-viewer #btn-reset { display: none; }
 
   // v0.42: the teacher-viewer build (r3-record.html) must never restore a
   // local draft over the record it is about to show.
-  if (!window.R3_VIEWER) loadForm();
+  // v0.45: broaden the guard to ANY record view (CLOSED_RECORD_VIEW also covers
+  // the gated editable form opened with ?id), so a draft can never sit under a
+  // loaded record. Normal editable-form use (no ?id) still restores the draft.
+  if (!CLOSED_RECORD_VIEW) loadForm();
 
   /* === Action buttons ============================================ */
   document.getElementById('btn-reset').addEventListener('click', () => {
@@ -2176,13 +2179,38 @@ body.is-viewer #btn-reset { display: none; }
   document.getElementById('btn-submit').addEventListener('click', submitForm);
 
   // === Closed-record viewer ============================================
+  // v0.45: resilient record fetch, mirroring loadDropdownOptions. The old single
+  // fetch (no timeout, no retry) surfaced "Could not load record" whenever a cold
+  // Apps Script runtime or a resumed-tab stall made the first request hang or
+  // hiccup. Now each attempt is capped at 9s via AbortController (NOT
+  // AbortSignal.timeout, iOS 16+ only) and transient failures retry silently
+  // behind the loading toast. A parsed JSON answer is definitive: success:false
+  // (genuine bad id/token) is shown once and not retried.
+  async function fetchRecordOnce(url) {
+    const controller = new AbortController();
+    const timer = setTimeout(function () { controller.abort(); }, 9000);
+    try {
+      const resp = await fetch(url, { redirect: 'follow', signal: controller.signal });
+      return await resp.json();
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
   async function loadClosedRecord(id, token) {
     showToast('Loading record ' + id + '…');
+    const url = WEB_APP_URL + '?id=' + encodeURIComponent(id) +
+                (token ? '&token=' + encodeURIComponent(token) : '');
+    let result = null;
+    for (var attempt = 1; attempt <= 6; attempt++) {
+      try { result = await fetchRecordOnce(url); break; }          // definitive JSON → stop
+      catch (e) {                                                   // stall/timeout/parse → retry quietly
+        if (attempt >= 6) break;
+        await new Promise(function (r) { setTimeout(r, 800); });
+      }
+    }
     try {
-      const url = WEB_APP_URL + '?id=' + encodeURIComponent(id) +
-                  (token ? '&token=' + encodeURIComponent(token) : '');
-      const resp = await fetch(url, { redirect: 'follow' });
-      const result = await resp.json();
+      if (!result) { showToast('Still loading record… please check your connection', 'error'); return; }
       if (!result.success) throw new Error(result.error || 'Record not found');
 
       const rec = result.data;
@@ -2417,6 +2445,11 @@ body.is-viewer #btn-reset { display: none; }
     // loadForm runs before Tom Select inits; without matching options the
     // underlying <select> drops the restored value. So we read it back from
     // localStorage when populating options and re-apply via setValue().
+    // v0.45: in any record view (CLOSED_RECORD_VIEW) the localStorage draft must
+    // NEVER feed a Tom Select, or a stale draft (e.g. a half-filled form) bleeds
+    // its teacher/inspector over the record being viewed. The record's own value
+    // arrives via dataset.pendingValue instead (set by loadClosedRecord).
+    if (CLOSED_RECORD_VIEW) return '';
     try {
       const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
       return data[name] || '';
@@ -2431,9 +2464,15 @@ body.is-viewer #btn-reset { display: none; }
     // CSS-selector bugs in Tom Select internals. Pending state is therefore
     // resolved by display TEXT (which the underlying Sheet and localStorage
     // hold), not by raw value.
+    // v0.45: prefer dataset.pendingValue (the record's teacher/inspector text,
+    // set by loadClosedRecord) over the draft, mirroring refreshSubjectOptions.
+    // This is what makes Teacher/Inspector resolve when the staff options land
+    // AFTER the record fetch (the race that left them blank, or showed a draft).
     const curVal = ts.getValue();
     const curText = curVal && ts.options[curVal] ? ts.options[curVal].text : '';
-    const pendingText = curText || readRestoredFromLocalStorage(name);
+    const selEl = document.getElementById(name);
+    const recordPending = selEl ? (selEl.dataset.pendingValue || '') : '';
+    const pendingText = curText || recordPending || readRestoredFromLocalStorage(name);
     ts.clearOptions();
     ts.addOptions(items);
     ts.refreshOptions(false);
