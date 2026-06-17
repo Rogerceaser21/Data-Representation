@@ -5,6 +5,14 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.9 . 2026-06-17
+- Merged the three top graphs into the All-observations card. The two top centerpiece cards (The Spectrum, Overall gauge) are removed.
+- The Spectrum and the old All-observations bar showed the same data (one dot per observation at its best-skill score); they are now a single full-width HTML/CSS Spectrum inside the All-observations card, stretched the full card width with the judgement words at the individual-card size.
+- The gauge is renamed Student Progress and now shows ONLY the Progress judgement (criterion r3_02): the rim dots are each observation's Progress score and the fill/word is the teacher-wide average. It is built once and always reads all observations; it does not recalculate when a single session is selected.
+- Selecting a session still rings its dot on the merged Spectrum (data and flag unchanged); the gauge is untouched.
+- Freeze fix: the gauge and the spectrums animate their content in from invisible, so a backgrounded or bfcached tab (for example after opening the R3 record in a new tab) used to strand them blank. A pageshow/visibilitychange `finalizeViz` now forces the final visible state on restore.
+- Individual session cards are unchanged.
+
 ## v0.8 . 2026-06-16
 - Card refinements (no data change). Clicking anywhere on a card now selects it (the chevrons and links no longer swallow the click).
 - The Inspection details and Skills observed arrows sit beside their titles (not far-right), gently bob to signal they open, and open BOTH columns together; the Observation Notes toggle stays independent.

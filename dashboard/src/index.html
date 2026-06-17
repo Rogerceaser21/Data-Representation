@@ -130,8 +130,6 @@ h2.big em{font-style:italic;color:var(--y);text-shadow:var(--glow) color-mix(in 
 .tchip.na{color:var(--ink-mid);background:var(--na)!important}
 
 /* ===== teacher drill-down ===== */
-.tcard{display:grid;grid-template-columns:1.1fr 1fr;gap:14px}
-@media(max-width:900px){.tcard{grid-template-columns:1fr}}
 .thead{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
 .thead .who{margin-right:auto}
 .thead .who h2{font-family:var(--display);font-weight:600;font-size:clamp(24px,3.4vw,38px);line-height:1.02;letter-spacing:-.01em}
@@ -141,7 +139,6 @@ h2.big em{font-style:italic;color:var(--y);text-shadow:var(--glow) color-mix(in 
 .bigj .v{font-family:var(--display);font-style:italic;font-weight:600;font-size:clamp(22px,3vw,34px);line-height:1.05}
 .back{font:inherit;font-size:12.5px;font-weight:600;color:var(--ink-dim);background:var(--panel);border:1px solid var(--edge);border-radius:30px;padding:8px 15px;cursor:pointer;transition:.2s}
 .back:hover{border-color:var(--y);color:var(--ink)}
-.cpstage{display:flex;align-items:center;justify-content:center;min-height:200px}
 .spec-over{text-align:center;margin-bottom:14px}
 .spec-over .l{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-mid);font-weight:700}
 .spec-over .v{font-family:var(--display);font-style:italic;font-weight:600;font-size:26px;line-height:1.05}
@@ -159,7 +156,6 @@ svg{display:block;overflow:visible}
 .otop .oavg{margin-left:auto;text-align:right;white-space:nowrap}
 .otop .oavg .lab{font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-mid);font-weight:700}
 .otop .oavg .w{font-family:var(--display);font-style:italic;font-weight:600;font-size:19px;line-height:1.2}
-.oramp{margin-top:10px}
 .olegend{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:9px}
 .olegend span{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:var(--ink-dim)}
 .olegend span i{width:9px;height:9px;border-radius:3px;flex:none}
@@ -191,7 +187,6 @@ svg{display:block;overflow:visible}
 .ocol.skills .odv{font-weight:700;text-align:right}
 .osw{width:11px;height:11px;border-radius:4px;flex:none}
 .orampfull{margin-top:10px}
-.orampfull .oramp{width:100%;height:auto;margin-top:0}
 /* full-width thin spectrum (HTML/CSS so thickness + word size are pixel-controlled, not magnified by width) */
 .osplot{position:relative;height:62px}
 .osbar{position:absolute;left:0;right:0;top:34px;height:16px;border-radius:8px;background:linear-gradient(90deg,var(--r1),var(--r2),var(--r3),var(--r4),var(--r5),var(--r6));opacity:.97}
@@ -199,6 +194,12 @@ svg{display:block;overflow:visible}
 .osflag{position:absolute;top:52px;margin-left:-6px;width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid var(--ink)}
 .oswords{display:grid;grid-template-columns:repeat(6,1fr);margin-top:5px}
 .oswords span{text-align:center;font-size:10.5px;font-weight:600;color:var(--ink-mid)}
+.osd.seldot{box-shadow:0 0 0 2.5px #8B5CF6;z-index:2}
+/* All-observations card: merged Spectrum (left) + Student Progress gauge (right) */
+.allmain{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;margin-top:12px}
+@media(max-width:760px){.allmain{grid-template-columns:1fr;gap:6px}}
+.allgauge{display:flex;flex-direction:column;align-items:center;gap:2px}
+.allgauge .ey{margin:0 0 2px}
 .oexprow{border-top:1px solid var(--edge-soft);display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;padding:0 16px}
 .oexpname{justify-self:start;display:flex;align-items:center;gap:8px;font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:-.01em}
 .oexpname .oacc{width:3px;height:15px;border-radius:2px;background:linear-gradient(180deg,var(--y),var(--g));flex:none}
@@ -340,17 +341,6 @@ svg{display:block;overflow:visible}
       </div>
     </div>
 
-    <div class="tcard" style="margin-top:14px">
-      <div class="panel">
-        <div class="ey">The Spectrum . each observation's score on the 6-point scale</div>
-        <div class="cpstage"><div style="width:100%"><svg id="svgSpec" viewBox="0 0 460 165" width="100%" height="165" preserveAspectRatio="xMidYMid meet"></svg></div></div>
-      </div>
-      <div class="panel">
-        <div class="ey">Overall gauge</div>
-        <div class="cpstage"><svg id="svgArc" viewBox="0 0 240 210" width="230" height="200"></svg></div>
-      </div>
-    </div>
-
     <div class="panel" style="margin-top:14px">
       <div class="ey">Observations . select all, or a single session</div>
       <div class="obslist" id="obslist"></div>
@@ -390,6 +380,7 @@ svg{display:block;overflow:visible}
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
       <div class="vhist">
+        <div class="vrow"><span class="vtag">v0.9</span><span class="vnote">The two top centerpieces are gone. The Spectrum and the All-observations bar (which showed the same data) are now one full-width Spectrum inside the All-observations card, with a Student Progress gauge beside it. The gauge shows only the Progress judgement and always reads all observations. Selecting a session rings its dot on the Spectrum. A pageshow/visibilitychange finalize stops the gauge and spectrums from being stranded blank after the tab is backgrounded or restored.</span></div>
         <div class="vrow"><span class="vtag">v0.8</span><span class="vnote">Card refinements: any click on a card selects it; the Inspection and Skills arrows sit beside their titles, gently animate, and open both columns together; the Spectrum is slimmer and full width with judgement words at the body text size; the section headers match the Observation Notes header.</span></div>
         <div class="vrow"><span class="vtag">v0.7</span><span class="vnote">Observation card redesign: collapsible Inspection and Skills sections, full-width Spectrum, a condensed action bar (teacher name, Observation Notes, and a link to the locked R3 record), and an expander revealing notes, strengths, and areas to develop.</span></div>
         <div class="vrow"><span class="vtag">v0.6</span><span class="vnote">All-observations card reflects the selected session.</span></div>
@@ -404,7 +395,7 @@ svg{display:block;overflow:visible}
 
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.8</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.9</span></span>
   </div>
 </div>
 
@@ -514,7 +505,6 @@ const CRIT_LABEL={};D.criteria.forEach(c=>CRIT_LABEL[c.code]=c.label);
    green->red ramp. On a card ramp the DOT colour tells you the skill, its position tells the score. */
 const SKILL_COLOR={r3_01:'#2563EB',r3_02:'#0D9488',r3_03:'#7C3AED',r3_04:'#C026D3',r3_05:'#4338CA',r3_06:'#0891B2',r3_07:'#DB2777',r3_08:'#0284C7',r3_09:'#475569',r3_10:'#78716C'};
 const skillCol=code=>SKILL_COLOR[code]||'#64748B';
-const SEL_COLOR='#8B5CF6'; // purple ring for the selected observation, distinct from the green->red scale
 /* small inline icons (chevrons + external link) and an HTML escaper for free-text record fields */
 const OCHEV='<span class="ochevw"><svg class="ochev" viewBox="0 0 16 16"><path d="M3 6l5 5 5-5"/></svg></span>';
 const OEXPCHEV='<span class="ochevw"><svg class="oexpchev" viewBox="0 0 16 16"><path d="M3 6l5 5 5-5"/></svg></span>';
@@ -525,68 +515,39 @@ function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','
    scores. So a teacher with sessions scoring 6,6,5,5 has an overall of 5.5. */
 function obsScore(o){const v=Object.values(o.scores||{});return v.length?Math.min(...v):null;}
 function teacherAvg(t){const a=t.observations.map(obsScore).filter(v=>v!=null);return a.length?a.reduce((x,y)=>x+y,0)/a.length:null;}
+/* Student Progress = the 'Progress' judgement only (criterion r3_02), never the best-skill overall.
+   The gauge always shows the teacher-wide average of these; it does NOT recalc on session select. */
+function progScore(o){const v=(o.scores||{}).r3_02;return v==null?null:v;}
+function progAvg(t){const a=t.observations.map(progScore).filter(v=>v!=null);return a.length?a.reduce((x,y)=>x+y,0)/a.length:null;}
 function wordOf(v){return v==null?'Not assessed':WORD[Math.min(6,Math.max(1,Math.round(v)))];}
 function colOf(v){return v==null?gc('--na'):rampAt(v);}
 let selectedObs='all';
 
-/* Spectrum: one dot per observation at its SCORE (best skill); flag = selected scope; the selected
-   observation gets a purple halo ring (distinct from the green->red scale). Motion = centerpieces
-   grammar (bar sweeps in, dots pop, flag rises), with a settle so a frozen tab never strands it. */
-function buildSpec(t,scopeVal,selIdx){const s=byId('svgSpec');s.innerHTML='';const R=RAMP(),x0=26,x1=434,y=104,h=18,span=x1-x0,GAP=18;
-  const defs=el('defs',{}),lg=el('linearGradient',{id:'sg',x1:'0',x2:'1'});for(let i=1;i<=6;i++)lg.appendChild(el('stop',{offset:((i-1)/5*100)+'%','stop-color':R[i]}));defs.appendChild(lg);s.appendChild(defs);
-  const bar=el('rect',{x:x0,y,width:span,height:h,rx:h/2,fill:'url(#sg)',opacity:.95});s.appendChild(bar);
-  const px=v=>x0+span*((v-0.5)/6);
-  for(let i=1;i<=6;i++){const tx=el('text',{x:px(i),y:y+h+30,'text-anchor':'middle','font-size':9,fill:gc('--ink-mid'),style:'font-family:var(--body);font-weight:600'});tx.textContent=SCALE_WORDS[i-1];s.appendChild(tx)}
-  const avgs=t.observations.map(obsScore),seen={},dots=[];
-  t.observations.forEach((o,i)=>{const v=avgs[i];if(v==null)return;const k=Math.round(px(v)/13);const stk=seen[k]=(seen[k]||0)+1;const cy=y-14-(stk-1)*GAP;const sel=(selIdx!=null&&i===selIdx);
-    if(sel)s.appendChild(el('circle',{cx:px(v),cy,r:9,fill:'none',stroke:SEL_COLOR,'stroke-width':2.2}));
-    const c=el('circle',{cx:px(v),cy,r:6,fill:rampAt(v),stroke:gc('--bg'),'stroke-width':2});s.appendChild(c);dots.push(c);});
-  let flag=null;
-  if(scopeVal!=null){const ox=px(scopeVal);flag=el('path',{d:`M ${ox} ${y+h+2} l -6 11 l 12 0 z`,fill:rampAt(scopeVal)});s.appendChild(flag);}
-  if(window.gsap){gsap.fromTo(bar,{scaleX:0,transformOrigin:'left center'},{scaleX:1,duration:.7,ease:'power3.out',immediateRender:false});
-    gsap.fromTo(dots,{scale:0,transformOrigin:'center'},{scale:1,duration:.45,stagger:.05,delay:.35,ease:'back.out(2)',immediateRender:false});
-    if(flag)gsap.fromTo(flag,{opacity:0,y:6},{opacity:1,y:0,duration:.5,delay:.6,immediateRender:false});
-    settle('#svgSpec *',1300);}
-}
-/* Gauge: continuous fill + colour to the selected scope's value (overall = average of the per-observation best scores) */
-function buildArc(t,scopeVal){const s=byId('svgArc');s.innerHTML='';const cx=120,cy=120,r=80,A0=135,SW=270,sw=14,N=48;const ov=scopeVal;
+/* Student Progress gauge: continuous fill + colour to the teacher-wide AVERAGE of the Progress
+   judgement (r3_02) only. Built once per teacher render; never rebuilt on session select, so it
+   always reads ALL. Rim dots = each observation's Progress score. Motion is enhancement only and a
+   pageshow/visibilitychange finalize (finalizeViz) restores the final state after a frozen tab. */
+function buildArc(t){const s=byId('svgArc');if(!s)return;s.innerHTML='';const cx=120,cy=120,r=80,A0=135,SW=270,sw=14,N=48;const ov=progAvg(t);
   const ang=p=>A0+SW*p,seg=(p0,p1,c,o,cls)=>{const path=el('path',{d:arcP(cx,cy,r,ang(p0),ang(p1)+0.6),fill:'none',stroke:c,'stroke-width':sw,opacity:o});if(cls)path.setAttribute('class',cls);s.appendChild(path);return path};
   for(let i=0;i<N;i++){const a=i/N,b=(i+1)/N;seg(a,b,rampAt(6-5*((a+b)/2)),.2)}
   const fills=[];
   if(ov!=null){const M=Math.max(1,Math.round(N*frac(ov)));for(let i=0;i<M;i++){const a=i/N,b=(i+1)/N;fills.push(seg(a,b,rampAt(6-5*((a+b)/2)),1,'arcfill'));}}
-  const dots=[];t.observations.map(obsScore).filter(v=>v!=null).forEach(v=>{const p=pol(cx,cy,r+16,ang(frac(v)));const c=el('circle',{cx:p.x,cy:p.y,r:4.5,fill:rampAt(v),stroke:gc('--bg'),'stroke-width':2.5});s.appendChild(c);dots.push(c);});
-  const a=el('text',{x:cx,y:cy-6,'text-anchor':'middle','font-size':10.5,fill:gc('--ink-mid'),style:'font-family:var(--body);font-weight:700;letter-spacing:1.5px;text-transform:uppercase'});a.textContent='Overall';s.appendChild(a);
-  const b=el('text',{x:cx,y:cy+20,'text-anchor':'middle','font-size':ov==null?16:21,fill:ov==null?gc('--ink-mid'):rampAt(ov),style:'font-family:var(--display);font-weight:600;font-style:italic'});b.textContent=wordOf(ov);s.appendChild(b);
+  const dots=[];t.observations.map(progScore).filter(v=>v!=null).forEach(v=>{const p=pol(cx,cy,r+16,ang(frac(v)));const c=el('circle',{cx:p.x,cy:p.y,r:4.5,fill:rampAt(v),stroke:gc('--bg'),'stroke-width':2.5});s.appendChild(c);dots.push(c);});
+  const b=el('text',{x:cx,y:cy+8,'text-anchor':'middle','font-size':ov==null?16:22,fill:ov==null?gc('--ink-mid'):rampAt(ov),style:'font-family:var(--display);font-weight:600;font-style:italic'});b.textContent=wordOf(ov);s.appendChild(b);
   if(window.gsap){gsap.fromTo(fills,{opacity:0},{opacity:1,duration:.5,stagger:.012,ease:'power1.out',immediateRender:false});
     gsap.fromTo(dots,{scale:0,transformOrigin:'center'},{scale:1,duration:.45,stagger:.05,delay:.45,ease:'back.out(2)',immediateRender:false});
-    gsap.fromTo([a,b],{opacity:0},{opacity:1,duration:.5,delay:.4,immediateRender:false});
+    gsap.fromTo(b,{opacity:0},{opacity:1,duration:.5,delay:.4,immediateRender:false});
     settle('#svgArc *',1300);}
 }
-/* per-card scale strip: same bar thickness, dot size, stacking, scale labels and flag geometry
-   as the top Spectrum. A skill dot (has a code) is SKILL-coloured; a whole-observation dot (the
-   All card) is score-coloured, like the top Spectrum. The flag (overall) is score-coloured. */
-let _gid=0;
-function buildObsRamp(svg,items,avg,opts){opts=opts||{};svg.innerHTML='';const R=RAMP(),x0=opts.x0!=null?opts.x0:26,x1=opts.x1!=null?opts.x1:514,span=x1-x0,h=18,gid='og'+(++_gid);
-  const tall=!!opts.tall,y=opts.y!=null?opts.y:(tall?104:52),GAP=opts.gap!=null?opts.gap:(tall?18:14),labelDy=opts.labelDy!=null?opts.labelDy:30; // All card is 'tall'; session ramps pass a flatter y/gap for the full-width strip
-  const defs=el('defs',{}),lg=el('linearGradient',{id:gid,x1:'0',x2:'1'});for(let i=1;i<=6;i++)lg.appendChild(el('stop',{offset:((i-1)/5*100)+'%','stop-color':R[i]}));defs.appendChild(lg);svg.appendChild(defs);
-  const bar=el('rect',{x:x0,y,width:span,height:h,rx:h/2,fill:'url(#'+gid+')',opacity:.95});svg.appendChild(bar);
-  const px=v=>x0+span*((v-0.5)/6),seen={},dots=[];
-  for(let i=1;i<=6;i++){const tx=el('text',{x:px(i),y:y+h+labelDy,'text-anchor':'middle','font-size':9,fill:gc('--ink-mid'),style:'font-family:var(--body);font-weight:600'});tx.textContent=SCALE_WORDS[i-1];svg.appendChild(tx);}
-  items.forEach(it=>{const x=px(it.score);const k=Math.round(x/13);const stk=seen[k]=(seen[k]||0)+1;const cy=y-12-(stk-1)*GAP;
-    if(opts.selIdx!=null&&it.idx===opts.selIdx)svg.appendChild(el('circle',{cx:x,cy,r:9,fill:'none',stroke:SEL_COLOR,'stroke-width':2.2}));
-    const c=el('circle',{cx:x,cy,r:6,fill:it.code?skillCol(it.code):rampAt(it.score),stroke:gc('--bg'),'stroke-width':2});svg.appendChild(c);dots.push(c);});
-  let flag=null;if(avg!=null){flag=el('path',{d:`M ${px(avg)} ${y+h+2} l -6 11 l 12 0 z`,fill:rampAt(avg)});svg.appendChild(flag);}
-  if(window.gsap&&!opts.noAnim){gsap.fromTo(bar,{scaleX:0,transformOrigin:'left center'},{scaleX:1,duration:.6,ease:'power3.out',immediateRender:false});
-    gsap.fromTo(dots,{scale:0,transformOrigin:'center'},{scale:1,duration:.4,stagger:.05,delay:.2,ease:'back.out(2)',immediateRender:false});
-    if(flag)gsap.fromTo(flag,{opacity:0,y:5},{opacity:1,y:0,duration:.45,delay:.4,immediateRender:false});
-    settle([bar,...dots,flag].filter(Boolean),1200);}
-}
-/* session-card spectrum, full-width HTML/CSS: a thin bar that fills the card at a fixed pixel
-   height (a width-scaled SVG magnifies and reads as fat), dots + flag placed by percent, words at
-   the Observation Notes size. The gradient uses the theme ramp vars so it reflows on theme change. */
-function specHTML(items,flagVal){const pct=v=>(Math.max(1,Math.min(6,v))-0.5)/6*100;const seen={};let dots='';
+/* full-width HTML/CSS spectrum, shared by the session cards and the merged All-observations card:
+   a thin bar that fills its container at a fixed pixel height (a width-scaled SVG magnifies and
+   reads as fat), dots + flag placed by percent, words at the Observation Notes size. The gradient
+   uses the theme ramp vars so it reflows on theme change. selIdx (All card only) rings the selected
+   observation's dot; session items have no idx, so they pass through unringed. */
+function specHTML(items,flagVal,selIdx){const pct=v=>(Math.max(1,Math.min(6,v))-0.5)/6*100;const seen={};let dots='';
   items.slice().sort((a,b)=>a.score-b.score).forEach(it=>{const p=pct(it.score);const k=Math.round(p/2.4);const stk=seen[k]=(seen[k]||0)+1;const top=14-(stk-1)*14;
-    dots+=`<span class="osd" style="left:${p.toFixed(2)}%;top:${top}px;background:${it.code?skillCol(it.code):rampAt(it.score)}"></span>`;});
+    const ring=(selIdx!=null&&it.idx===selIdx)?' seldot':'';
+    dots+=`<span class="osd${ring}" style="left:${p.toFixed(2)}%;top:${top}px;background:${it.code?skillCol(it.code):rampAt(it.score)}"></span>`;});
   const flag=flagVal!=null?`<span class="osflag" style="left:${pct(flagVal).toFixed(2)}%;border-top-color:${rampAt(flagVal)}"></span>`:'';
   const words='<div class="oswords">'+SCALE_WORDS.map(w=>`<span>${w}</span>`).join('')+'</div>';
   return `<div class="ospec"><div class="osplot"><div class="osbar"></div>${dots}${flag}</div>${words}</div>`;}
@@ -611,9 +572,11 @@ function renderObsList(t){const host=byId('obslist');host.innerHTML='';
     card.className='ocard '+(it.all?'all':'session')+(String(it.key)===String(selectedObs)?' sel':'');card.dataset.key=it.key;
     if(it.all){
       const legend=it.items.length?'<div class="olegend">'+it.items.map(j=>`<span><i style="background:${j.code?skillCol(j.code):rampAt(j.score)}"></i>${j.label} <b>${wordOf(j.score)}</b></span>`).join('')+'</div>':'';
+      const aspec=it.items.length?`<div class="orampfull">${specHTML(it.items,it.avg,(selectedObs==='all'?null:+selectedObs))}</div>`:'';
+      const gauge=`<div class="allgauge"><div class="ey">Student Progress</div><svg id="svgArc" viewBox="0 0 240 200" width="220" height="186"></svg></div>`;
       card.innerHTML=`<div class="otop"><div class="owho">${it.who}<small>${it.sub}</small></div>`+
         `<div class="oavg"><div class="lab">Average of observations</div><div class="w" style="color:${colOf(it.avg)}">${wordOf(it.avg)}</div></div></div>`+
-        (it.items.length?'<svg class="oramp" viewBox="0 0 540 165" width="100%" height="165" preserveAspectRatio="xMidYMid meet"></svg>':'')+legend;
+        `<div class="allmain"><div class="allleft">${aspec}${legend}</div>${gauge}</div>`;
     }else{
       const o=it.obs||{};
       const insp=`<div class="ocol inspection"><button class="ocolhdr" type="button"><span class="ocolttl">Inspection details</span>${OCHEV}</button><div class="ocolbody"><div class="ocolbody-in">`+
@@ -632,7 +595,7 @@ function renderObsList(t){const host=byId('obslist');host.innerHTML='';
         `<div class="oexprow"><div class="oexpname"><span class="oacc"></span>${esc(t.name)}</div><button class="oexpbtn" type="button">Observation notes ${OEXPCHEV}</button>${r3}</div>${exp}`;
     }
     card.onclick=()=>selectObs(t,it.key);host.appendChild(card);
-    if(it.all){const svg=card.querySelector('.oramp');if(svg&&it.items.length)buildObsRamp(svg,it.items,it.avg,{tall:true,selIdx:(selectedObs==='all'?null:+selectedObs)});}
+    if(it.all){const sp=card.querySelector('.ospec');if(sp&&it.items.length)animSpec(sp);}
     else{const sp=card.querySelector('.ospec');if(sp&&it.items.length)animSpec(sp);
       // every click on the card selects it: the handlers below do NOT stop propagation, so the click bubbles to card.onclick
       const eb=card.querySelector('.oexpbtn');if(eb)eb.onclick=()=>card.classList.toggle('open');
@@ -643,16 +606,17 @@ function renderObsList(t){const host=byId('obslist');host.innerHTML='';
 }
 function selectObs(t,key){selectedObs=key;
   document.querySelectorAll('#obslist .ocard').forEach(c=>c.classList.toggle('sel',String(c.dataset.key)===String(key)));
-  let scopeVal,selIdx=null,label;
+  let scopeVal,label;
   if(key==='all'){scopeVal=teacherAvg(t);label='Overall . all observations';}
-  else{selIdx=+key;const o=t.observations[selIdx];scopeVal=obsScore(o);label='Session . '+(o.assessor||'Inspector')+(o.date?' . '+o.date:'');}
+  else{const o=t.observations[+key];scopeVal=obsScore(o);label='Session . '+(o.assessor||'Inspector')+(o.date?' . '+o.date:'');}
   const ov=byId('tOverall');ov.textContent=wordOf(scopeVal);ov.style.color=colOf(scopeVal);
   byId('tScopeLabel').textContent=label;
-  buildArc(t,scopeVal);buildSpec(t,scopeVal,selIdx);
-  // reflect the selection in the All-observations card (ring its matching session dot)
-  const allSvg=document.querySelector('#obslist .ocard.all .oramp');
-  if(allSvg){const ai=t.observations.map((o,i)=>({label:o.assessor||'Inspector',score:obsScore(o),idx:i})).filter(it=>it.score!=null);
-    buildObsRamp(allSvg,ai,teacherAvg(t),{tall:true,selIdx:(key==='all'?null:+key)});}
+  // ring the selected session's dot on the merged All-card Spectrum (data + flag unchanged; the
+  // Student Progress gauge is a sibling and is NOT touched, so it always reads ALL).
+  const host=document.querySelector('#obslist .ocard.all .orampfull');
+  if(host){const ai=t.observations.map((o,i)=>({label:o.assessor||'Inspector',score:obsScore(o),idx:i})).filter(it=>it.score!=null);
+    host.innerHTML=specHTML(ai,teacherAvg(t),(key==='all'?null:+key));
+    const sp=host.querySelector('.ospec');if(sp)animSpec(sp);}
 }
 function renderTeacher(t){
   byId('tName').textContent=t.name;
@@ -661,7 +625,7 @@ function renderTeacher(t){
   if(t.section)bits.push(t.section);
   bits.push('June '+t.n_june+' . February '+t.n_feb);
   byId('tMeta').textContent=bits.join('  .  ');
-  selectedObs='all';renderObsList(t);selectObs(t,'all');
+  selectedObs='all';renderObsList(t);buildArc(t);selectObs(t,'all');
 }
 
 /* ============================================================= router + FLIP */
@@ -673,6 +637,14 @@ function setPill(b){document.querySelectorAll('.pill').forEach(p=>p.classList.to
 /* after a reveal/FLIP, kill the tween (so a briefly-resuming RAF can't re-apply a frozen
    mid-tween transform) and clear gsap's inline props, leaving the element at its natural place. */
 function settle(sel,ms){setTimeout(()=>{try{if(window.gsap){gsap.killTweensOf(sel);gsap.set(sel,{clearProps:'all'});}}catch(e){}},ms||1000);}
+/* Freeze-proofing: the gauge + spectrums animate their content in from invisible (scale/opacity).
+   When the tab is backgrounded (opening the R3 record in a new tab) or bfcached, the rAF ticker AND
+   the settle() setTimeout freeze, so the tweens never finish and the content is stranded invisible.
+   On restore, force every animated viz element to its final state (the base DOM is already drawn at
+   final, so clearing transform/opacity reveals it). Covers the gauge and every full-width spectrum. */
+function finalizeViz(){if(!window.gsap)return;const sel='#svgArc rect,#svgArc circle,#svgArc path,#svgArc text,.ospec .osbar,.ospec .osd,.ospec .osflag';try{gsap.killTweensOf(sel);gsap.set(sel,{clearProps:'transform,opacity'});}catch(e){}}
+window.addEventListener('pageshow',e=>{if(e.persisted)finalizeViz();});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)finalizeViz();});
 function reveal(sel,stagger){if(!window.gsap)return;gsap.fromTo(sel,{y:18},{y:0,duration:.5,stagger:stagger||.05,ease:'power3.out',immediateRender:false});settle(sel);}
 function showBoard(b,opts={}){
   if(b===current&&!opts.force)return;
