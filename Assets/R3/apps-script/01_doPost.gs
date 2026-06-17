@@ -69,6 +69,11 @@ function doPost(e) {
   }
 }
 
+// v0.46: include SECONDS. The old minute-resolution id collided when two
+// observations were submitted in the same minute (live inspection week produced
+// 17 such collisions). Lookups now key on the unique record_token so collisions
+// are no longer load-bearing, but a unique-per-second id keeps the human-readable
+// label clean and avoids two records ever showing the same "Record ID".
 function generateR3RecordId(iso) {
   const d = iso ? new Date(iso) : new Date();
   const pad = function(n) { return String(n).padStart(2, '0'); };
@@ -76,7 +81,8 @@ function generateR3RecordId(iso) {
                       pad(d.getMonth() + 1) +
                       pad(d.getDate()) + '-' +
                       pad(d.getHours()) +
-                      pad(d.getMinutes());
+                      pad(d.getMinutes()) +
+                      pad(d.getSeconds());
 }
 
 /**

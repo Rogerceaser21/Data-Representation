@@ -20,7 +20,9 @@ function doGet(e) {
       return jsonOut({ success: true, options: getDropdownOptions() });
     }
 
-    if (params.id) {
+    // v0.46: a record is fetched by its UNIQUE record_token. Accept either a
+    // legacy ?id=...&token=... link or a token-only ?token=... link.
+    if (params.token || params.id) {
       return jsonOut(getRecordById(params.id, params.token));
     }
 
@@ -43,6 +45,17 @@ function doGet(e) {
  * Pre-v0.29 records have no token in their row, so they are not viewable via
  * this endpoint at all (acceptable: those were test submissions per Igor).
  */
+// v0.46: look the record up by its UNIQUE record_token, NOT by record_id.
+// record_id is minute-resolution (AIS-R3-YYYYMMDD-HHMM) and COLLIDES for
+// submissions made in the same minute (17 such collisions during live inspection
+// week). The old id-first scan returned the first twin and then failed its token
+// check, so every later twin reported "Record not found" forever. The token (two
+// concatenated UUIDs) is the real key, is unique per submission, and is already
+// on every link; `id` is now just a display label and is ignored for matching.
+// Security is unchanged: a record is only returned for an exact token match
+// (hard rule 10), and a non-match returns the same generic "Record not found".
+// Found by header NAME, so the record_token column's position is irrelevant
+// (hard rule 1: never reorder the sheet).
 function getRecordById(id, token) {
   const ss = SpreadsheetApp.openById(getSheetId());
   const sheet = ss.getSheetByName(SHEET_NAME_SUBMISSIONS);
@@ -51,36 +64,33 @@ function getRecordById(id, token) {
   }
   const values = sheet.getDataRange().getValues();
   const headers = values[0];
-  const idCol = headers.indexOf('record_id');
   const tokenCol = headers.indexOf('record_token');
-  if (idCol < 0) return { success: false, error: 'Schema mismatch · record_id column missing' };
+  const givenToken = String(token || '').trim();
+  if (!givenToken || tokenCol < 0) {
+    return { success: false, error: 'Record not found' };
+  }
 
   for (var r = 1; r < values.length; r++) {
-    if (String(values[r][idCol]) === String(id)) {
-      const storedToken = tokenCol >= 0 ? String(values[r][tokenCol] || '').trim() : '';
-      const givenToken = String(token || '').trim();
-      if (!storedToken || !givenToken || storedToken !== givenToken) {
-        return { success: false, error: 'Record not found' };
+    if (String(values[r][tokenCol] || '').trim() !== givenToken) continue;
+    // matched by token — build and return this row
+    // v0.41: Sheets auto-parses posted values into real date/time cells
+    // ("08:40" → time on the 1899-12-30 epoch; observation_date → midnight
+    // local). Raw Dates JSON-serialise as UTC ISO strings, which the form's
+    // <input type=time> silently rejects (blank Time in/out) and <input
+    // type=date> shifts a day. Format them in the sheet's timezone instead.
+    const tz = ss.getSpreadsheetTimeZone();
+    const record = {};
+    headers.forEach(function(h, j) {
+      var v = values[r][j];
+      if (h === 'record_token') return;
+      if (v instanceof Date) {
+        v = v.getFullYear() < 1900
+          ? Utilities.formatDate(v, tz, 'HH:mm')
+          : Utilities.formatDate(v, tz, 'yyyy-MM-dd');
       }
-      // v0.41: Sheets auto-parses posted values into real date/time cells
-      // ("08:40" → time on the 1899-12-30 epoch; observation_date → midnight
-      // local). Raw Dates JSON-serialise as UTC ISO strings, which the form's
-      // <input type=time> silently rejects (blank Time in/out) and <input
-      // type=date> shifts a day. Format them in the sheet's timezone instead.
-      const tz = ss.getSpreadsheetTimeZone();
-      const record = {};
-      headers.forEach(function(h, j) {
-        var v = values[r][j];
-        if (h === 'record_token') return;
-        if (v instanceof Date) {
-          v = v.getFullYear() < 1900
-            ? Utilities.formatDate(v, tz, 'HH:mm')
-            : Utilities.formatDate(v, tz, 'yyyy-MM-dd');
-        }
-        record[h] = v;
-      });
-      return { success: true, data: record };
-    }
+      record[h] = v;
+    });
+    return { success: true, data: record };
   }
   return { success: false, error: 'Record not found' };
 }
