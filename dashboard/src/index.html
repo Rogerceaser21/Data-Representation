@@ -201,6 +201,17 @@ svg{display:block;overflow:visible}
 .oswords{display:grid;grid-template-columns:repeat(6,1fr);margin-top:5px}
 .oswords span{text-align:center;font-size:10.5px;font-weight:600;color:var(--ink-mid)}
 .osd.seldot{box-shadow:0 0 0 2.5px #8B5CF6;z-index:2}
+/* All-observations Spectrum, segmented variant (Option B): the 6-point scale rendered as SEAS
+   cards (the same .rc card as the design-spec ramp). Dots float above the card row, the average
+   triangle below; card colours use the ramp vars so they reflow on theme change. */
+.osseg .osdots{position:relative;height:30px;overflow:visible}
+.osseg .osramp{display:flex;gap:7px}
+.osseg .osramp .rc{flex:1;min-width:0;border:1px solid var(--edge);border-radius:12px;overflow:hidden;background:var(--panel-2)}
+.osseg .osramp .rc .sw{height:30px}
+.osseg .osramp .rc .lb{padding:6px 4px;text-align:center;font-size:11px;font-weight:600;color:var(--ink-dim);line-height:1.15}
+.osseg .osramp .rc .lb b{display:block;color:var(--ink);font-size:11.5px;font-family:var(--display)}
+.osseg .osflagrow{position:relative;height:14px;margin-top:3px}
+.osseg .osflagrow .osflag{top:0}
 /* All-observations card: Student Progress gauge (left) | merged Spectrum (centre) | Teaching
    gauge (right). align-items:center vertically centres the Spectrum block and both gauges on a
    shared line. The Spectrum's .ospec block-centre ~= the bar centre (dots stack ABOVE the bar as
@@ -393,6 +404,7 @@ svg{display:block;overflow:visible}
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
       <div class="vhist">
+        <div class="vrow"><span class="vtag">v0.14</span><span class="vnote">All-observations Spectrum restyled as the SEAS scale: the smooth gradient bar is replaced by six SEAS cards (colour swatch + judgement word + number, centred), one per point. The observation dots still float above and the average triangle below. Only the All-observations card changed; the per-session cards keep the smooth gradient bar.</span></div>
         <div class="vrow"><span class="vtag">v0.13</span><span class="vnote">All-observations card is now symmetric: the Student Progress gauge sits to the left of the Spectrum and a new Teaching gauge to the right, with three matched headers (Student Progress | All observations | Teaching) above their columns. The Teaching gauge is an exact horizontal mirror of Student Progress (gap opens left, fills clockwise) and shows only the Teaching judgement (criterion r3_05) as the teacher-wide average, always reading all observations, just like Student Progress.</span></div>
         <div class="vrow"><span class="vtag">v0.12</span><span class="vnote">Spectrum average marker now points up at the bar (it was pointing down, away from the scale) and is 25% larger, so the teacher-wide average reads as a clear pointer to its position on the scale.</span></div>
         <div class="vrow"><span class="vtag">v0.11</span><span class="vnote">All-observations card balanced: "All observations" and "Student Progress" are now matched bold headers; the Student Progress gauge sits up and its circle centre lines up with the middle of the Spectrum bar (independent of how many dots stack), and the card is trimmed to only the height it needs.</span></div>
@@ -412,7 +424,7 @@ svg{display:block;overflow:visible}
 
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.13</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.14</span></span>
   </div>
 </div>
 
@@ -561,11 +573,16 @@ function buildArc(t,svgId,scoreFn,avgFn,mirror){const s=byId(svgId);if(!s)return
    reads as fat), dots + flag placed by percent, words at the Observation Notes size. The gradient
    uses the theme ramp vars so it reflows on theme change. selIdx (All card only) rings the selected
    observation's dot; session items have no idx, so they pass through unringed. */
-function specHTML(items,flagVal,selIdx){const pct=v=>(Math.max(1,Math.min(6,v))-0.5)/6*100;const seen={};let dots='';
+function specHTML(items,flagVal,selIdx,segmented){const pct=v=>(Math.max(1,Math.min(6,v))-0.5)/6*100;const seen={};let dots='';
   items.slice().sort((a,b)=>a.score-b.score).forEach(it=>{const p=pct(it.score);const k=Math.round(p/2.4);const stk=seen[k]=(seen[k]||0)+1;const top=14-(stk-1)*14;
     const ring=(selIdx!=null&&it.idx===selIdx)?' seldot':'';
     dots+=`<span class="osd${ring}" style="left:${p.toFixed(2)}%;top:${top}px;background:${it.code?skillCol(it.code):rampAt(it.score)}"></span>`;});
   const flag=flagVal!=null?`<span class="osflag" style="left:${pct(flagVal).toFixed(2)}%;border-bottom-color:${rampAt(flagVal)}"></span>`:'';
+  // segmented (All-observations card): the 6-point scale as SEAS cards (colour swatch + word +
+  // number per point), dots floated above and the average triangle below. The session cards keep
+  // the smooth gradient bar below.
+  if(segmented){const cards=SCALE_WORDS.map((w,i)=>`<div class="rc"><div class="sw" style="background:var(--r${i+1})"></div><div class="lb"><b>${w}</b>${i+1}</div></div>`).join('');
+    return `<div class="ospec osseg"><div class="osdots">${dots}</div><div class="osramp">${cards}</div><div class="osflagrow">${flag}</div></div>`;}
   const words='<div class="oswords">'+SCALE_WORDS.map(w=>`<span>${w}</span>`).join('')+'</div>';
   return `<div class="ospec"><div class="osplot"><div class="osbar"></div>${dots}${flag}</div>${words}</div>`;}
 /* the selectable list: All observations on top (default), then one card per session */
@@ -582,7 +599,7 @@ function renderObsList(t){const host=byId('obslist');host.innerHTML='';
   obsList(t).forEach(it=>{const card=document.createElement('div');
     card.className='ocard '+(it.all?'all':'session')+(String(it.key)===String(selectedObs)?' sel':'');card.dataset.key=it.key;
     if(it.all){
-      const aspec=it.items.length?`<div class="orampfull">${specHTML(it.items,it.avg,(selectedObs==='all'?null:+selectedObs))}</div>`:'';
+      const aspec=it.items.length?`<div class="orampfull">${specHTML(it.items,it.avg,(selectedObs==='all'?null:+selectedObs),true)}</div>`:'';
       // Each gauge viewBox is cropped + centred on the circle (cy=120) so the SVG's vertical
       // middle IS the circle's middle; with .allmain align-items:center that lines up with the
       // Spectrum bar's middle. The titles (Student Progress | All observations | Teaching) are
@@ -629,7 +646,7 @@ function selectObs(t,key){selectedObs=key;
   // Student Progress gauge is a sibling and is NOT touched, so it always reads ALL).
   const host=document.querySelector('#obslist .ocard.all .orampfull');
   if(host){const ai=t.observations.map((o,i)=>({label:o.assessor||'Inspector',score:obsScore(o),idx:i})).filter(it=>it.score!=null);
-    host.innerHTML=specHTML(ai,teacherAvg(t),(key==='all'?null:+key));}  // re-render re-triggers the CSS .ospec entrance
+    host.innerHTML=specHTML(ai,teacherAvg(t),(key==='all'?null:+key),true);}  // re-render re-triggers the CSS .ospec entrance
 }
 function renderTeacher(t){
   byId('tName').textContent=t.name;

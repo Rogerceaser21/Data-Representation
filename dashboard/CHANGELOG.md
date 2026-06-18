@@ -5,6 +5,12 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.14 . 2026-06-18
+- All-observations Spectrum restyled as the official SEAS scale (Option B). The single smooth gradient bar is replaced by six SEAS cards, the same `.rc` card used by the design-spec ramp: a colour swatch (`--r1..--r6`) over the judgement word + number, centred, one card per scale point. The observation dots still float ABOVE the card row and the teacher-average triangle below, pointing up.
+- Scoped to the All-observations card only via a new `segmented` flag on the shared `specHTML(items, flagVal, selIdx, segmented)`; passed `true` from both the initial All render and the on-select re-render. The per-session cards pass nothing and keep the smooth gradient bar, so nothing else changed.
+- Card colours use the ramp CSS vars, so they reflow on theme toggle (the All card rebuilds via renderTeacher). Entrance stays CSS-only (`.ospec` specin), so the freeze-safety rule holds.
+- Rollback: the previous look is tagged `dash-v0.13`.
+
 ## v0.13 . 2026-06-18
 - All-observations card made symmetric. The Student Progress gauge moved to the LEFT of the Spectrum and a new Teaching gauge added to the RIGHT, so the card reads [Student Progress | Spectrum | Teaching]. Three matched `.ey-bold` headers now sit one per column (Student Progress | All observations | Teaching); both grids share `196px 1fr 196px` columns so each title sits above its column, and the gauge centres still line up with the Spectrum bar (align-items:center).
 - Teaching gauge = the "Teaching" judgement only (criterion `r3_05`), teacher-wide average, always reads ALL, never recalced on session select (identical rule to Student Progress). Rim dots = each observation's Teaching score, centre word = the average.
