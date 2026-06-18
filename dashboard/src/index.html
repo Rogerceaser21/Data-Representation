@@ -193,7 +193,7 @@ svg{display:block;overflow:visible}
 .ospec .osbar{animation:barsweep .6s cubic-bezier(.22,1,.36,1)}
 @media(prefers-reduced-motion:reduce){.ospec,.ospec .osbar,#svgArc{animation:none}}
 .osd{position:absolute;width:13px;height:13px;margin-left:-6.5px;border-radius:50%;border:2px solid var(--bg);box-sizing:border-box}
-.osflag{position:absolute;top:52px;margin-left:-6px;width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid var(--ink)}
+.osflag{position:absolute;top:52px;margin-left:-7.5px;width:0;height:0;border-left:7.5px solid transparent;border-right:7.5px solid transparent;border-bottom:10px solid var(--ink)}
 .oswords{display:grid;grid-template-columns:repeat(6,1fr);margin-top:5px}
 .oswords span{text-align:center;font-size:10.5px;font-weight:600;color:var(--ink-mid)}
 .osd.seldot{box-shadow:0 0 0 2.5px #8B5CF6;z-index:2}
@@ -390,6 +390,7 @@ svg{display:block;overflow:visible}
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
       <div class="vhist">
+        <div class="vrow"><span class="vtag">v0.12</span><span class="vnote">Spectrum average marker now points up at the bar (it was pointing down, away from the scale) and is 25% larger, so the teacher-wide average reads as a clear pointer to its position on the scale.</span></div>
         <div class="vrow"><span class="vtag">v0.11</span><span class="vnote">All-observations card balanced: "All observations" and "Student Progress" are now matched bold headers; the Student Progress gauge sits up and its circle centre lines up with the middle of the Spectrum bar (independent of how many dots stack), and the card is trimmed to only the height it needs.</span></div>
         <div class="vrow"><span class="vtag">v0.10</span><span class="vnote">All-observations card tidied: the legend and the Average-of-observations word are removed, the Student Progress label is bold, and the gauge sits up beside the Spectrum. Freeze fix done properly: the Spectrum and gauge entrances are now CSS animations on a resting-visible base (real-time timeline, not requestAnimationFrame), so a backgrounded or restored tab can no longer leave the dots or gauge blank.</span></div>
         <div class="vrow"><span class="vtag">v0.9</span><span class="vnote">The two top centerpieces are gone. The Spectrum and the All-observations bar (which showed the same data) are now one full-width Spectrum inside the All-observations card, with a Student Progress gauge beside it. The gauge shows only the Progress judgement and always reads all observations. Selecting a session rings its dot on the Spectrum. A pageshow/visibilitychange finalize stops the gauge and spectrums from being stranded blank after the tab is backgrounded or restored.</span></div>
@@ -407,7 +408,7 @@ svg{display:block;overflow:visible}
 
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.11</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.12</span></span>
   </div>
 </div>
 
@@ -556,7 +557,7 @@ function specHTML(items,flagVal,selIdx){const pct=v=>(Math.max(1,Math.min(6,v))-
   items.slice().sort((a,b)=>a.score-b.score).forEach(it=>{const p=pct(it.score);const k=Math.round(p/2.4);const stk=seen[k]=(seen[k]||0)+1;const top=14-(stk-1)*14;
     const ring=(selIdx!=null&&it.idx===selIdx)?' seldot':'';
     dots+=`<span class="osd${ring}" style="left:${p.toFixed(2)}%;top:${top}px;background:${it.code?skillCol(it.code):rampAt(it.score)}"></span>`;});
-  const flag=flagVal!=null?`<span class="osflag" style="left:${pct(flagVal).toFixed(2)}%;border-top-color:${rampAt(flagVal)}"></span>`:'';
+  const flag=flagVal!=null?`<span class="osflag" style="left:${pct(flagVal).toFixed(2)}%;border-bottom-color:${rampAt(flagVal)}"></span>`:'';
   const words='<div class="oswords">'+SCALE_WORDS.map(w=>`<span>${w}</span>`).join('')+'</div>';
   return `<div class="ospec"><div class="osplot"><div class="osbar"></div>${dots}${flag}</div>${words}</div>`;}
 /* the selectable list: All observations on top (default), then one card per session */

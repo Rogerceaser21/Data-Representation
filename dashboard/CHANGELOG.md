@@ -5,6 +5,9 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.12 . 2026-06-18
+- Spectrum average marker (`.osflag`) fixed. It was a CSS triangle built with a solid `border-top`, which points DOWN (away from the bar, into empty space below the scale). Swapped to a solid `border-bottom` so it points UP at the bar, marking the teacher-wide average's position on the scale (and the inline ramp colour moved from `border-top-color` to `border-bottom-color` in `specHTML` so it stays score-coloured). Also enlarged 25% (6px->7.5px sides, 8px->10px height; `margin-left` -6px->-7.5px to keep it centred). One shared engine, so every Spectrum (session cards + All-observations card) is fixed at once.
+
 ## v0.11 . 2026-06-17
 - All-observations card rebalanced. "All observations" and "Student Progress" are now two matched bold headers (`.ey-bold`) for congruency.
 - The Student Progress gauge is pulled up and vertically centred so its circle's middle lines up with the middle of the Spectrum bar. The gauge `viewBox` is cropped+centred on the circle, and `.allmain` uses `align-items:center`; because the Spectrum dots are absolutely positioned they never move the bar, so the alignment holds regardless of how many dots stack.
