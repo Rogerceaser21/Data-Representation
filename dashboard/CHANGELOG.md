@@ -5,6 +5,15 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.19 . 2026-06-18
+- R3 Obs is now a fan-out dropdown menu of observation LEVELS (front-end only; only Teacher Level is wired to data):
+  - **Teacher Level** -> the existing teacher search + list/detail (unchanged behaviour).
+  - **Grade / Department Level** -> a styled placeholder panel (note: assigned grades/departments to be connected later).
+  - **School Level** -> expands inline to **Kindy, Lower Primary, Upper Primary, Whole Primary, Secondary**; each lands on the placeholder panel naming the segment.
+- The R3 Obs button (`#r3ObsBtn`, now with a caret) stays visible in every Observations state as the menu trigger. Menu (`#obsMenu`) opens on click with a staggered reveal, School expands `#subSchool` inline (accordion), and it closes on selection or outside-click. New placeholder panel `#obsPlaceholder` (`phKick`/`phTitle`/`phNote`).
+- `obsView` generalised to `'hub' | 'teacher' | 'placeholder'`; helpers `setObsMenu`, `showPlaceholder`, `enterTeacherLevel`. The `[hidden]` global rule (v0.18) keeps the menu/sub-list hide reliable. No new URLs: sub-levels stay in-page under the `#teachers` hash.
+- Rollback: `dash-v0.18`.
+
 ## v0.18 . 2026-06-18
 - Fixed the Observations search. Root cause: `.search{display:flex}` overrode the `hidden` attribute on `#tsearchWrap`, so the search bar showed in the hub state (before R3 Obs was clicked) where `obsView` is still `'hub'` and the list is hidden, making it look like search did nothing. Fix: a global `[hidden]{display:none!important}` so the attribute always wins. Now hub shows only the R3 Obs button; entering it shows the search + list and typing filters.
 - Added hash routing so each tab has its own URL: Observations = `#teachers`, Settings = `#settings`, Coverage = no hash (default). `showBoard` calls `syncHash`; a `hashchange` listener handles deep links and browser back/forward; on load the board named in the hash is opened after the entry sequence. The link now changes and is bookmarkable/refresh-safe. (A pure no-`#` path would need a separate built page or a 404 redirect on static Pages; hash chosen by Igor.)

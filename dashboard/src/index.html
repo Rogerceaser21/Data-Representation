@@ -53,6 +53,18 @@ body{font-family:var(--body);background:var(--bg);color:var(--ink);-webkit-font-
 .obshead .search{flex:1;min-width:200px;max-width:520px}
 .obsbtn{font:inherit;font-size:13.5px;font-weight:700;color:var(--ink);background:var(--panel-2);border:1px solid var(--edge);border-radius:12px;padding:9px 16px;cursor:pointer;transition:.2s;box-shadow:0 2px 10px -4px var(--shadow)}
 .obsbtn:hover{border-color:var(--y);transform:translateY(-1px)}
+.obsbtn .car{font-size:11px;color:var(--ink-mid);margin-left:3px}
+/* R3 Obs fan-out menu: levels (Teacher / Grade-Department / School), School expands inline */
+.obsmenuwrap{position:relative}
+.obsmenu{position:absolute;top:calc(100% + 7px);left:0;z-index:40;min-width:248px;display:flex;flex-direction:column;gap:2px;background:var(--panel-2);border:1px solid var(--edge);border-radius:14px;padding:6px;box-shadow:0 22px 60px -30px var(--shadow);backdrop-filter:blur(8px)}
+.obsmi{font:inherit;font-size:13.5px;font-weight:600;color:var(--ink);background:transparent;border:0;border-radius:9px;padding:10px 12px;text-align:left;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;transition:.15s}
+.obsmi:hover{background:var(--panel)}
+.obsmi .car{font-size:11px;color:var(--ink-mid)}
+.obssub{display:flex;flex-direction:column;gap:2px;margin:0 0 4px 8px;padding-left:8px;border-left:2px solid var(--edge-soft)}
+.obsmi2{font:inherit;font-size:13px;font-weight:600;color:var(--ink-dim);background:transparent;border:0;border-radius:8px;padding:8px 12px;text-align:left;cursor:pointer;transition:.15s}
+.obsmi2:hover{background:var(--panel);color:var(--ink)}
+.phtitle{font-family:var(--display);font-weight:600;font-size:clamp(22px,3vw,32px);letter-spacing:-.01em;margin-top:6px}
+.phnote{font-size:13px;color:var(--ink-mid);margin-top:10px;line-height:1.5}
 .ctrls{display:flex;align-items:center;gap:8px}
 .tg{display:inline-flex;align-items:center;gap:8px;font:inherit;font-size:12.5px;font-weight:600;color:var(--ink-dim);background:var(--panel);border:1px solid var(--edge);border-radius:30px;padding:8px 13px;cursor:pointer;transition:.2s}
 .tg:hover{border-color:var(--y);color:var(--ink)}
@@ -352,7 +364,21 @@ svg{display:block;overflow:visible}
     <div class="head">
       <div class="obshead">
         <span class="kick"><span class="stripe"></span>Observations</span>
-        <button class="obsbtn" id="r3ObsBtn">R3 Obs</button>
+        <div class="obsmenuwrap">
+          <button class="obsbtn" id="r3ObsBtn">R3 Obs <span class="car">&#9662;</span></button>
+          <div class="obsmenu" id="obsMenu" hidden>
+            <button class="obsmi" data-act="teacher">Teacher Level</button>
+            <button class="obsmi" data-act="placeholder" data-kick="Grade / Department Level" data-title="Grade / Department" data-note="Your assigned grades and departments will appear here once the data is connected.">Grade / Department Level</button>
+            <button class="obsmi" data-sub="school">School Level <span class="car">&#9656;</span></button>
+            <div class="obssub" id="subSchool" hidden>
+              <button class="obsmi2" data-act="placeholder" data-kick="School Level" data-title="Kindy" data-note="This scope will be connected to data later.">Kindy</button>
+              <button class="obsmi2" data-act="placeholder" data-kick="School Level" data-title="Lower Primary" data-note="This scope will be connected to data later.">Lower Primary</button>
+              <button class="obsmi2" data-act="placeholder" data-kick="School Level" data-title="Upper Primary" data-note="This scope will be connected to data later.">Upper Primary</button>
+              <button class="obsmi2" data-act="placeholder" data-kick="School Level" data-title="Whole Primary" data-note="This scope will be connected to data later.">Whole Primary</button>
+              <button class="obsmi2" data-act="placeholder" data-kick="School Level" data-title="Secondary" data-note="This scope will be connected to data later.">Secondary</button>
+            </div>
+          </div>
+        </div>
         <div class="search" id="tsearchWrap" hidden><span style="color:var(--ink-faint)">Search</span><input id="tsearch" placeholder="type a name..."></div>
         <button class="flt" id="fltNoobs" hidden>Not yet observed</button>
       </div>
@@ -380,6 +406,13 @@ svg{display:block;overflow:visible}
         <div class="ey">Observations . select all, or a single session</div>
         <div class="obslist" id="obslist"></div>
       </div>
+    </div>
+
+    <!-- Grade/Department + School Level land here for now (front-end only, no data yet) -->
+    <div class="panel" id="obsPlaceholder" hidden>
+      <div class="ey" id="phKick">Scope</div>
+      <h2 class="phtitle" id="phTitle">.</h2>
+      <div class="phnote" id="phNote">.</div>
     </div>
   </section>
 
@@ -416,6 +449,7 @@ svg{display:block;overflow:visible}
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
       <div class="vhist">
+        <div class="vrow"><span class="vtag">v0.19</span><span class="vnote">R3 Obs is now a fan-out menu of observation levels: Teacher Level (the working teacher search), Grade / Department Level, and School Level (which expands to Kindy, Lower Primary, Upper Primary, Whole Primary, Secondary). Teacher Level works as before; the other levels land on a styled placeholder for now (front-end only, to be connected to data later). The R3 Obs button stays as the menu trigger in every state.</span></div>
         <div class="vrow"><span class="vtag">v0.18</span><span class="vnote">Fixed the search: the search bar was leaking into the hub state (a class display rule was overriding the hidden attribute), so it appeared before R3 Obs was clicked and filtered a list that was not shown. Now the hidden attribute always wins, so the hub shows only R3 Obs and the search filters once you enter it. Each tab now has its own URL too: Observations is /#teachers, Settings is /#settings, Coverage is the default; the link changes, is bookmarkable, and back/forward work.</span></div>
         <div class="vrow"><span class="vtag">v0.17</span><span class="vnote">Observations tab tightened: the R3 Obs button and the teacher search now sit inline on the "Observations" header line (whichever state is active) instead of stacked in their own panels, reclaiming the wasted space. The coloured A / B index letters were removed from the Coverage and Observations tabs (and the redundant R3 from the button), and the kicks are now just "Coverage" and "Observations".</span></div>
         <div class="vrow"><span class="vtag">v0.16</span><span class="vnote">The Teacher tab is now the Observations tab, a small workflow. It opens on a hub with an "R3 Obs" button; clicking it shows the teacher search (moved off the Coverage page). No observation detail shows until a teacher is picked, after which only the search bar stays at the top with the selected teacher's detail below. Typing again re-shows the list to switch teacher. Back returns to Coverage.</span></div>
@@ -440,7 +474,7 @@ svg{display:block;overflow:visible}
 
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.18</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.19</span></span>
   </div>
 </div>
 
@@ -679,20 +713,27 @@ function renderTeacher(t){
 /* ============================================================= router + FLIP */
 const views={coverage:'v-coverage',teacher:'v-teacher',settings:'v-settings'};
 let current='coverage';
-/* Observations tab is a 3-state workflow: 'hub' (the R3 Obs button) -> 'work' (search a teacher,
-   then view their detail). layoutObs() shows the right blocks: in 'work', the detail replaces the
-   teacher list once a teacher is picked (selectedId set + search empty), leaving just the search
-   bar above it; typing re-shows the list so you can switch teacher. */
+/* Observations tab: the R3 Obs button fans out a menu of levels. obsView is the chosen level:
+   'hub' (nothing picked yet) | 'teacher' (search + list/detail, the only data-wired level) |
+   'placeholder' (Grade/Department or a School Level segment, front-end only for now). The R3 Obs
+   button stays visible in every state as the menu trigger. */
 let obsView='hub';
-function layoutObs(){const work=obsView==='work';
-  byId('r3ObsBtn').hidden=work;                 // hub: R3 Obs button on the head line
-  byId('tsearchWrap').hidden=!work;             // work: the search bar on the head line
+function layoutObs(){const teacher=obsView==='teacher';
+  byId('r3ObsBtn').hidden=false;                // always the menu trigger
+  byId('tsearchWrap').hidden=!teacher;          // teacher level: the search bar on the head line
   const q=(byId('tsearch').value||'').trim();
-  const viewing=work&&selectedId!=null&&q==='';
-  byId('fltNoobs').hidden=!work||viewing;       // filter only while browsing the list
-  byId('obsListCard').hidden=!work||viewing;
-  byId('obsDetail').hidden=!viewing;}
+  const viewing=teacher&&selectedId!=null&&q==='';
+  byId('fltNoobs').hidden=!teacher||viewing;    // filter only while browsing the list
+  byId('obsListCard').hidden=!teacher||viewing;
+  byId('obsDetail').hidden=!viewing;
+  byId('obsPlaceholder').hidden=obsView!=='placeholder';}
 function setObs(v){obsView=v;layoutObs();}
+function setObsMenu(open){byId('obsMenu').hidden=!open;if(!open)byId('subSchool').hidden=true;}
+function showPlaceholder(kick,title,note){setObs('placeholder');
+  byId('phKick').textContent=kick;byId('phTitle').textContent=title;byId('phNote').textContent=note||'';
+  reveal('#obsPlaceholder',0);window.scrollTo({top:0,behavior:'smooth'});}
+function enterTeacherLevel(){selectedId=null;byId('tsearch').value='';fltNoobs=false;byId('fltNoobs').classList.remove('on');
+  setObs('teacher');renderTlist();reveal('#obsListCard',0);}
 function setPill(b){document.querySelectorAll('.pill').forEach(p=>p.classList.toggle('on',p.dataset.board===b));}
 /* panel reveal as pure enhancement: we animate MOVEMENT only, never opacity, so a tab whose
    RAF freezes mid-tween (backgrounded / bfcache) is left fully visible, only slightly offset. */
@@ -716,7 +757,7 @@ function showBoard(b,opts={}){
   Object.entries(views).forEach(([k,id])=>byId(id).hidden=(k!==b));
   setPill(b);current=b;syncHash(b);
   if(b==='coverage'){renderCoverage();animateStats();reveal('#v-coverage .panel',.04);}
-  if(b==='teacher'){selectedId=null;byId('tsearch').value='';fltNoobs=false;byId('fltNoobs').classList.remove('on');setObs('hub');reveal('#v-teacher .panel',.06);}
+  if(b==='teacher'){selectedId=null;byId('tsearch').value='';fltNoobs=false;byId('fltNoobs').classList.remove('on');setObsMenu(false);setObs('hub');reveal('#v-teacher .panel',.06);}
   if(b==='settings')reveal('#v-settings .panel',.08);
   if(b!=='teacher'&&!opts.force)window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -799,7 +840,12 @@ document.querySelectorAll('.pill').forEach(p=>p.onclick=()=>showBoard(p.dataset.
 byId('backBtn').onclick=()=>showBoard('coverage');
 /* browser back/forward + deep links: route to the board named in the hash */
 addEventListener('hashchange',()=>{const b=slugBoard[location.hash.slice(1)]||'coverage';if(b!==current)showBoard(b);});
-byId('r3ObsBtn').onclick=()=>{setObs('work');renderTlist();reveal('#obsListCard',0);};
+byId('r3ObsBtn').onclick=e=>{e.stopPropagation();const open=byId('obsMenu').hidden;setObsMenu(open);if(open)reveal('#obsMenu .obsmi',.05);};
+byId('obsMenu').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;e.stopPropagation();
+  if(b.dataset.sub==='school'){const s=byId('subSchool');s.hidden=!s.hidden;if(!s.hidden)reveal('#subSchool .obsmi2',.04);return;}
+  if(b.dataset.act==='teacher'){setObsMenu(false);enterTeacherLevel();return;}
+  if(b.dataset.act==='placeholder'){setObsMenu(false);showPlaceholder(b.dataset.kick,b.dataset.title,b.dataset.note);return;}});
+document.addEventListener('click',()=>setObsMenu(false));   // click anywhere else closes the menu
 byId('tsearch').addEventListener('input',()=>{renderTlist();layoutObs();});
 byId('fltNoobs').onclick=()=>{fltNoobs=!fltNoobs;byId('fltNoobs').classList.toggle('on',fltNoobs);renderTlist();};
 
