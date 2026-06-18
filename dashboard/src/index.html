@@ -454,6 +454,7 @@ svg{display:block;overflow:visible}
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
       <div class="vhist">
+        <div class="vrow"><span class="vtag">v0.21</span><span class="vnote">Dashboard now reads LIVE from Supabase. It paints the baked snapshot first (instant + offline fallback), then upgrades to live data via a read-only Supabase RPC and re-renders, so edits in Supabase show on refresh. Login-less for now (the password gate is the soft lock); proper @ais.ae sign-in comes later. If Supabase is unreachable it silently stays on the baked snapshot.</span></div>
         <div class="vrow"><span class="vtag">v0.20</span><span class="vnote">Masthead cleaned up: the Stars and theme buttons were removed from the top bar (both still live in Settings). A floating light/dark toggle, the same round sun/moon button as the R3 form, now sits in the top-right corner and is always available.</span></div>
         <div class="vrow"><span class="vtag">v0.19</span><span class="vnote">R3 Obs is now a fan-out menu of observation levels: Teacher Level (the working teacher search), Grade / Department Level, and School Level (which expands to Kindy, Lower Primary, Upper Primary, Whole Primary, Secondary). Teacher Level works as before; the other levels land on a styled placeholder for now (front-end only, to be connected to data later). The R3 Obs button stays as the menu trigger in every state.</span></div>
         <div class="vrow"><span class="vtag">v0.18</span><span class="vnote">Fixed the search: the search bar was leaking into the hub state (a class display rule was overriding the hidden attribute), so it appeared before R3 Obs was clicked and filtered a list that was not shown. Now the hidden attribute always wins, so the hub shows only R3 Obs and the search filters once you enter it. Each tab now has its own URL too: Observations is /#teachers, Settings is /#settings, Coverage is the default; the link changes, is bookmarkable, and back/forward work.</span></div>
@@ -480,7 +481,7 @@ svg{display:block;overflow:visible}
 
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.20</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.21</span></span>
   </div>
 </div>
 
@@ -489,8 +490,11 @@ svg{display:block;overflow:visible}
 <script src="data.js"></script>
 <script>
 /* ============================================================= data + helpers */
-const D = window.__AIS_DATA;
-const WORD = D.scale;
+/* D starts as the baked snapshot (data.js fallback); loadLive() upgrades it to live Supabase data
+   on boot when reachable. let (not const) so the live fetch can swap it; deriveFromD() re-derives
+   the values computed from D after a swap. */
+let D = window.__AIS_DATA;
+let WORD = D.scale;
 function gc(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
 const RAMP=()=>({1:gc('--r1'),2:gc('--r2'),3:gc('--r3'),4:gc('--r4'),5:gc('--r5'),6:gc('--r6')});
 const NS='http://www.w3.org/2000/svg';
@@ -502,7 +506,7 @@ function arcP(cx,cy,r,a0,a1,sweep){const s=pol(cx,cy,r,a1),e=pol(cx,cy,r,a0);con
 function h2r(h){h=h.replace('#','');if(h.length===3)h=h.split('').map(c=>c+c).join('');return[parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]}
 function lerp(a,b,t){return a+(b-a)*t}
 function rampAt(p){const R=RAMP();p=Math.max(1,Math.min(6,p));const lo=Math.floor(p),hi=Math.min(6,lo+1),t=p-lo,a=h2r(R[lo]),b=h2r(R[hi]);return`rgb(${Math.round(lerp(a[0],b[0],t))},${Math.round(lerp(a[1],b[1],t))},${Math.round(lerp(a[2],b[2],t))})`}
-const SCALE_WORDS=[1,2,3,4,5,6].map(i=>WORD[i]);
+let SCALE_WORDS=[1,2,3,4,5,6].map(i=>WORD[i]);
 const byId=id=>document.getElementById(id);
 
 /* default selected teacher = the most-observed one (never an empty page) */
@@ -585,7 +589,7 @@ function animateStats(){document.querySelectorAll('#statgrid .v').forEach(n=>cou
 /* ============================================================= TEACHER (scoring)
    Per observation the best skill wins (obsScore = MIN of that session's judgements);
    the teacher overall (teacherAvg) = the AVERAGE of those per-observation scores. */
-const CRIT_LABEL={};D.criteria.forEach(c=>CRIT_LABEL[c.code]=c.label);
+let CRIT_LABEL={};D.criteria.forEach(c=>CRIT_LABEL[c.code]=c.label);
 /* one fixed, distinct colour per skill so each is recognisable; cool tones to contrast the
    green->red ramp. On a card ramp the DOT colour tells you the skill, its position tells the score. */
 const SKILL_COLOR={r3_01:'#2563EB',r3_02:'#0D9488',r3_03:'#7C3AED',r3_04:'#C026D3',r3_05:'#4338CA',r3_06:'#0891B2',r3_07:'#DB2777',r3_08:'#0284C7',r3_09:'#475569',r3_10:'#78716C'};
@@ -878,7 +882,79 @@ function runEntry(){
   setTimeout(revealUI,2600);                      // hard floor: hold then dissolve
   entry.addEventListener('click',revealUI);       // tap to skip
 }
+
+/* ============================================================= live Supabase read (Option A)
+   The dashboard paints the baked data.js snapshot first (instant + offline fallback), then this
+   upgrades window.__AIS_DATA to live Supabase data via the get_raw_snapshot RPC and re-renders.
+   Anon/publishable key + a SECURITY DEFINER RPC behind the StatiCrypt gate (soft lock). If the
+   fetch fails/times out, we silently stay on the baked snapshot. The shaping below mirrors
+   db/export_snapshot.mjs exactly so live and baked produce the identical __AIS_DATA shape. */
+const SB_URL='https://rfbetrcevtmisknndpgg.supabase.co', SB_KEY='sb_publishable_shin2gZ5-pARRc-cLDd5lQ_YAOacR72';
+const AREA_MAP={"Arabic Language (MINISTRY)": "Arabic", "Arabic Studies": "Arabic", "Arabic Studies For Non Arabs": "Arabic NA", "Business and Economics": "Humanities", "Business Studies": "Humanities", "Creative Arts": "Arts", "Digital Art and Design": "Arts", "Drama": "Arts", "English": "English", "English (Advanced)": "English", "English (Essential)": "English", "Film TV and Media": "Arts", "Humanities": "Humanities", "Humanities (Essential)": "Humanities", "Islamic Studies": "Islamic", "Islamic Studies (MINISTRY)": "Islamic", "Islamic Studies For Arabs": "Islamic", "Islamic Studies For Non Arabs": "Islamic", "Mathematics": "Mathematics", "Mathematics (Advanced)": "Mathematics", "Mathematics (Essential)": "Mathematics", "Moral Education": "Social Studies", "Moral Education For Arabs": "Social Studies", "Moral Education For Non Arabs": "Social Studies", "Music": "Arts", "Psychology": "Sciences", "QCE Arabic": "Arabic", "QCE Biology": "Sciences", "QCE Business": "Humanities", "QCE Business Studies": "Humanities", "QCE Chemistry": "Sciences", "QCE Drama In Practice": "Arts", "QCE Economics": "Humanities", "QCE Essential English": "English", "QCE Essential Mathematics": "Mathematics", "QCE Film Television and New Media": "Arts", "QCE Film TV and Media": "Arts", "QCE General English": "English", "QCE General Mathematics": "Mathematics", "QCE Mathematical Methods": "Mathematics", "QCE Media Arts In Practice": "Arts", "QCE Music In Practice": "Arts", "QCE Physics": "Sciences", "QCE Psychology": "Sciences", "QCE Science In Practice (BCP)": "Sciences", "QCE Tourism": "Humanities", "QCE Visual Art": "Arts", "QCE Visual Arts In Practice": "Arts", "Science": "Sciences", "Science (Advanced)": "Sciences", "Science (Essential)": "Sciences", "Science In Practice": "Sciences", "Social Studies": "Social Studies", "Social Studies For Arabs": "Social Studies", "Social Studies For Non Arabs": "Social Studies", "Visual Art": "Arts"};
+const AREAS=['Mathematics','English','Sciences','Arabic','Arabic NA','Islamic','Social Studies','Humanities','Arts'];
+const AREA_FALLBACK={Math:'Mathematics',Maths:'Mathematics',Science:'Sciences',Social:'Social Studies',ANA:'Arabic NA',PE:'',Technology:'',Languages:'',CircleTime:'','Kindy (holistic Development)':''};
+function resolveArea(subj){if(!subj)return '';const s=subj.trim();if(AREA_MAP[s])return AREA_MAP[s];if(AREAS.includes(s))return s;if(AREA_FALLBACK[s]!=null)return AREA_FALLBACK[s];const low=s.toLowerCase();
+  if(low.includes('math'))return 'Mathematics';if(low.includes('scien'))return 'Sciences';if(low.includes('islam'))return 'Islamic';if(low.includes('arab'))return 'Arabic';if(low.includes('english'))return 'English';if(low.includes('human'))return 'Humanities';if(low.includes('social'))return 'Social Studies';if(low.includes('art'))return 'Arts';return '';}
+function shapeSnapshot(raw){
+  const SCALE={1:'Outstanding',2:'Very Good',3:'Good',4:'Acceptable',5:'Weak',6:'Very Weak'};
+  const criteria=raw.criteria.map(c=>({code:c.code,label:c.label,strand:c.sef_strand,sort:c.sort_order}));
+  const inspectors=raw.inspectors.slice();
+  const teacherRows=raw.teachers,assessmentRows=raw.assessments,scoreRows=raw.scores;
+  const obsScores=new Map();
+  for(const r of scoreRows){if(!obsScores.has(r.assessment_id))obsScores.set(r.assessment_id,{});obsScores.get(r.assessment_id)[r.code]=r.score;}
+  const tById=new Map();
+  for(const r of teacherRows){if(!tById.has(r.id))tById.set(r.id,{id:r.id,name:r.full_name,section:r.section||null,dept:r.dept||null,dept_role:r.dept_role||null,observations:[]});}
+  const fmtDate=d=>d?new Date(d).toISOString().slice(0,10):null;
+  for(const a of assessmentRows){if(!a.teacher_id||!tById.has(a.teacher_id))continue;
+    const scores=obsScores.get(a.id)||{};const vals=Object.values(scores);const overall=vals.length?Math.min(...vals):null;
+    tById.get(a.teacher_id).observations.push({id:a.id,record_id:a.record_id,date:fmtDate(a.occurred_on),round:a.round,type:a.type,
+      source:a.source||null,assessor:a.assessor||null,subject:a.subject||null,subject_area:resolveArea(a.subject)||null,
+      token:a.source==='r3_sheet'?(a.source_ref||null):null,notes:a.notes||null,strengths:a.strengths||null,weakness:a.weakness||null,overall,scores});}
+  const teachers=[];
+  for(const t of tById.values()){
+    const obs=t.observations.sort((x,y)=>(y.date||'').localeCompare(x.date||''));
+    const n_obs=obs.length,n_june=obs.filter(o=>o.round==='R3 June 26').length,n_feb=obs.filter(o=>o.round==='R3 February 26').length;
+    const best={};for(const o of obs)for(const[code,sc]of Object.entries(o.scores)){if(best[code]==null||sc<best[code])best[code]=sc;}
+    const overalls=obs.map(o=>o.overall).filter(v=>v!=null);const overall=overalls.length?Math.min(...overalls):null;
+    teachers.push({id:t.id,name:t.name,section:t.section,dept:t.dept,dept_role:t.dept_role,observed:n_obs>0,n_obs,n_june,n_feb,overall,best,observations:obs});}
+  teachers.sort((a,b)=>a.name.localeCompare(b.name));
+  const distMap={};for(const t of teachers)distMap[t.n_obs]=(distMap[t.n_obs]||0)+1;
+  const maxN=Math.max(...teachers.map(t=>t.n_obs));
+  const distribution=[];for(let n=0;n<=maxN;n++)distribution.push({n,teachers:distMap[n]||0});
+  const not_observed_names=teachers.filter(t=>!t.observed).map(t=>t.name);
+  const coverage={total_teachers:teachers.length,observed:teachers.filter(t=>t.observed).length,not_observed:not_observed_names.length,
+    total_observations:assessmentRows.filter(a=>a.teacher_id&&tById.has(a.teacher_id)).length,
+    by_round:{'R3 June 26':assessmentRows.filter(a=>a.round==='R3 June 26').length,'R3 February 26':assessmentRows.filter(a=>a.round==='R3 February 26').length},
+    distribution,not_observed_names};
+  const qdist={1:0,2:0,3:0,4:0,5:0,6:0};const byCrit={};
+  for(const c of criteria)byCrit[c.code]={1:0,2:0,3:0,4:0,5:0,6:0,n:0};
+  for(const r of scoreRows){if(r.score>=1&&r.score<=6){qdist[r.score]++;if(byCrit[r.code]){byCrit[r.code][r.score]++;byCrit[r.code].n++;}}}
+  const quality={distribution:qdist,by_criterion:byCrit};
+  const deptMap=new Map();
+  for(const r of teacherRows){if(!r.dept)continue;if(!deptMap.has(r.dept))deptMap.set(r.dept,{name:r.dept,head:null,members:[]});const d=deptMap.get(r.dept);if(r.dept_role==='head')d.head=r.full_name;else d.members.push(r.full_name);}
+  const departments=[...deptMap.values()];
+  return {generated_on:new Date().toISOString().slice(0,16).replace('T',' ')+' UTC',school:'AIS Sharjah',rounds:['R3 June 26','R3 February 26'],scale:SCALE,criteria,inspectors,departments,coverage,quality,teachers};
+}
+function deriveFromD(){WORD=D.scale;SCALE_WORDS=[1,2,3,4,5,6].map(i=>WORD[i]);CRIT_LABEL={};D.criteria.forEach(c=>CRIT_LABEL[c.code]=c.label);
+  selectedId=D.teachers.slice().sort((a,b)=>b.n_obs-a.n_obs)[0].id;}
+async function loadLive(){
+  if(!SB_URL||SB_URL.indexOf('http')!==0)return;                       // not configured -> stay baked
+  try{
+    const ctrl=new AbortController();const to=setTimeout(()=>ctrl.abort(),7000);
+    const r=await fetch(SB_URL.replace(/\/+$/,'')+'/rest/v1/rpc/get_raw_snapshot',
+      {method:'POST',headers:{apikey:SB_KEY,Authorization:'Bearer '+SB_KEY,'Content-Type':'application/json'},body:'{}',signal:ctrl.signal});
+    clearTimeout(to);
+    if(!r.ok)return;
+    const raw=await r.json();
+    if(!raw||!Array.isArray(raw.teachers)||!raw.teachers.length||!Array.isArray(raw.assessments))return;
+    const shaped=shapeSnapshot(raw);
+    window.__AIS_DATA=shaped;D=shaped;deriveFromD();                    // swap baked -> live
+    if(current==='coverage'){renderCoverage();animateStats();}          // re-render whatever is showing
+    else if(current==='teacher'&&!byId('obsDetail').hidden&&selectedId!=null)renderTeacher(teacherById(selectedId));
+  }catch(e){/* offline / blocked / timeout -> keep the baked snapshot, no error UI */}
+}
 runEntry();
+loadLive();
 </script>
 </body>
 </html>

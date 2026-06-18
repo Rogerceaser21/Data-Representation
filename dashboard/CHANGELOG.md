@@ -5,6 +5,14 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.21 . 2026-06-18
+- **Dashboard now reads live from Supabase (Option A: anon read, login-less; the StatiCrypt gate stays as the soft lock).** It paints the baked `data.js` snapshot first (instant + offline fallback), then `loadLive()` upgrades `window.__AIS_DATA` to live data and re-renders the current view. Edits in Supabase now show on refresh.
+- New Postgres RPC `public.get_raw_snapshot()` (`db/migrate_03_dashboard_rpc.sql`, SECURITY DEFINER, EXECUTE granted to `anon`/`authenticated`) returns the five raw query results that `export_snapshot.mjs` pulls. The browser runs the SAME shaping (`shapeSnapshot`, ported verbatim incl. `resolveArea` + inlined area map) into the identical `__AIS_DATA` shape. Validated: live vs baked match exactly on coverage, quality, scores, departments, criteria, inspectors, names, ids, tokens; the only delta is observation dates, which the baked snapshot had shifted 1 day early via an export timezone artifact, the live read is correct.
+- `D`/`WORD`/`SCALE_WORDS`/`CRIT_LABEL` made reassignable; `deriveFromD()` re-derives them after the live swap. Fetch is guarded (7s `AbortController` timeout, shape/length checks, try/catch); any failure silently keeps the baked snapshot, no error UI.
+- `data.js` is KEPT as the encrypted fallback (not rebuilt). Auth/RLS: tables stay RLS-on; only the definer RPC is exposed to anon. Supabase URL + publishable key live in the master (client-safe) and ship inside the StatiCrypt-encrypted page.
+- Next: @ais.ae sign-in + per-role RLS; the R3 form dual-write (Sheet + Supabase) so submissions land live.
+- Rollback: `dash-v0.20` (and the RPC can be dropped; the dashboard falls back to baked automatically if the RPC is gone).
+
 ## v0.20 . 2026-06-18
 - Masthead controls removed: the "Stars" and "Dark"/theme buttons are deleted from the top bar (the `.ctrls` block). Both toggles remain in Settings (`#starsToggle`, `#themeToggle`) and still work.
 - Added a floating light/dark toggle modelled on the R3 form: a round sun (light) / moon (dark) icon button (`.themeico` / `#themeFloat`) fixed in the **top-right** corner, z-index 50 (above the masthead, below the entry splash). Same SVG icons and theme-swap behaviour as R3.
