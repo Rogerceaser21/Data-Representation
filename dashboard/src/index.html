@@ -70,6 +70,7 @@ body{font-family:var(--body);background:var(--bg);color:var(--ink);-webkit-font-
 #entry .es{font-size:13.5px;color:var(--ink-dim)}
 
 /* ===== generic ===== */
+[hidden]{display:none!important}   /* the attribute must always win, even over class display (e.g. .search is display:flex) */
 .view{margin-top:22px}
 .view[hidden]{display:none}
 .head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-bottom:18px}
@@ -415,6 +416,7 @@ svg{display:block;overflow:visible}
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
       <div class="vhist">
+        <div class="vrow"><span class="vtag">v0.18</span><span class="vnote">Fixed the search: the search bar was leaking into the hub state (a class display rule was overriding the hidden attribute), so it appeared before R3 Obs was clicked and filtered a list that was not shown. Now the hidden attribute always wins, so the hub shows only R3 Obs and the search filters once you enter it. Each tab now has its own URL too: Observations is /#teachers, Settings is /#settings, Coverage is the default; the link changes, is bookmarkable, and back/forward work.</span></div>
         <div class="vrow"><span class="vtag">v0.17</span><span class="vnote">Observations tab tightened: the R3 Obs button and the teacher search now sit inline on the "Observations" header line (whichever state is active) instead of stacked in their own panels, reclaiming the wasted space. The coloured A / B index letters were removed from the Coverage and Observations tabs (and the redundant R3 from the button), and the kicks are now just "Coverage" and "Observations".</span></div>
         <div class="vrow"><span class="vtag">v0.16</span><span class="vnote">The Teacher tab is now the Observations tab, a small workflow. It opens on a hub with an "R3 Obs" button; clicking it shows the teacher search (moved off the Coverage page). No observation detail shows until a teacher is picked, after which only the search bar stays at the top with the selected teacher's detail below. Typing again re-shows the list to switch teacher. Back returns to Coverage.</span></div>
         <div class="vrow"><span class="vtag">v0.15</span><span class="vnote">All-observations SEAS bar refined: the six cards are now joined into one seamless bar (no gaps or dividers), the numbers are dropped (words only), and the bar bottom-aligns with the gauge circles so it never sits below them. The observation dots now reserve real height above the bar, so the card grows to hold tall dot stacks instead of overlapping the headers.</span></div>
@@ -438,7 +440,7 @@ svg{display:block;overflow:visible}
 
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.17</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.18</span></span>
   </div>
 </div>
 
@@ -702,10 +704,17 @@ function settle(sel,ms){setTimeout(()=>{try{if(window.gsap){gsap.killTweensOf(se
    therefore complete on their own whether or not the tab was ever painted. A backgrounded/bfcached
    tab can no longer strand them blank, which the old GSAP-from-invisible entrance + finalizeViz did. */
 function reveal(sel,stagger){if(!window.gsap)return;gsap.fromTo(sel,{y:18},{y:0,duration:.5,stagger:stagger||.05,ease:'power3.out',immediateRender:false});settle(sel);}
+/* hash routing: each tab gets its own URL so the link changes and is bookmarkable/refresh-safe.
+   coverage = no hash (default), Observations = #teachers, Settings = #settings. */
+const boardSlug={coverage:'',teacher:'teachers',settings:'settings'};
+const slugBoard={'':'coverage',coverage:'coverage',teachers:'teacher',settings:'settings'};
+function syncHash(b){const slug=boardSlug[b]||'';
+  if(slug){if(location.hash.slice(1)!==slug)location.hash=slug;}
+  else if(location.hash){history.replaceState(null,'',location.pathname+location.search);}}
 function showBoard(b,opts={}){
   if(b===current&&!opts.force)return;
   Object.entries(views).forEach(([k,id])=>byId(id).hidden=(k!==b));
-  setPill(b);current=b;
+  setPill(b);current=b;syncHash(b);
   if(b==='coverage'){renderCoverage();animateStats();reveal('#v-coverage .panel',.04);}
   if(b==='teacher'){selectedId=null;byId('tsearch').value='';fltNoobs=false;byId('fltNoobs').classList.remove('on');setObs('hub');reveal('#v-teacher .panel',.06);}
   if(b==='settings')reveal('#v-settings .panel',.08);
@@ -788,6 +797,8 @@ byId('starsToggle').onclick=sBtn.onclick;
 /* board rail */
 document.querySelectorAll('.pill').forEach(p=>p.onclick=()=>showBoard(p.dataset.board));
 byId('backBtn').onclick=()=>showBoard('coverage');
+/* browser back/forward + deep links: route to the board named in the hash */
+addEventListener('hashchange',()=>{const b=slugBoard[location.hash.slice(1)]||'coverage';if(b!==current)showBoard(b);});
 byId('r3ObsBtn').onclick=()=>{setObs('work');renderTlist();reveal('#obsListCard',0);};
 byId('tsearch').addEventListener('input',()=>{renderTlist();layoutObs();});
 byId('fltNoobs').onclick=()=>{fltNoobs=!fltNoobs;byId('fltNoobs').classList.toggle('on',fltNoobs);renderTlist();};
@@ -806,6 +817,8 @@ function runEntry(){
     setTimeout(()=>{entry.style.display='none';},750);
     animateStats();
     reveal('.mast',0);reveal('#v-coverage .head',0);reveal('#v-coverage .panel',.05);
+    const initB=slugBoard[location.hash.slice(1)]||'coverage';   // deep-link: open the board in the URL
+    if(initB!=='coverage')showBoard(initB,{force:true});
   };
   if(window.gsap){                               // polish the title card itself
     gsap.fromTo('#entry .crest',{scale:.7,opacity:0},{scale:1,opacity:1,duration:.7,ease:'power3.out',immediateRender:false});

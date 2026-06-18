@@ -5,6 +5,11 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.18 . 2026-06-18
+- Fixed the Observations search. Root cause: `.search{display:flex}` overrode the `hidden` attribute on `#tsearchWrap`, so the search bar showed in the hub state (before R3 Obs was clicked) where `obsView` is still `'hub'` and the list is hidden, making it look like search did nothing. Fix: a global `[hidden]{display:none!important}` so the attribute always wins. Now hub shows only the R3 Obs button; entering it shows the search + list and typing filters.
+- Added hash routing so each tab has its own URL: Observations = `#teachers`, Settings = `#settings`, Coverage = no hash (default). `showBoard` calls `syncHash`; a `hashchange` listener handles deep links and browser back/forward; on load the board named in the hash is opened after the entry sequence. The link now changes and is bookmarkable/refresh-safe. (A pure no-`#` path would need a separate built page or a 404 redirect on static Pages; hash chosen by Igor.)
+- Rollback: `dash-v0.17`.
+
 ## v0.17 . 2026-06-18
 - Observations tab tightened to one line. The R3 Obs button (hub) and the teacher search bar + "Not yet observed" filter (work) now live inline in the `.head` next to the "Observations" kick, in a new `.obshead` flex cluster, instead of each sitting in its own stacked panel. Only the active state's control shows; the list / detail render below. `#obsHub` and `#obsSearchCard` panels removed; `#obsListCard` (just the list) + `#obsDetail` remain. `layoutObs` retargeted to `#r3ObsBtn` / `#tsearchWrap` / `#fltNoobs` / `#obsListCard` / `#obsDetail`.
 - Removed the coloured index letters: the yellow `A` / `B` (`.ix`) on the Coverage and Observations pills, and the redundant yellow `R3` on the R3 Obs button (it still reads "R3 Obs"). The kicks are simplified from "Board A . Coverage" / "Board B . Observations" to "Coverage" / "Observations" (Settings already plain). The now-dead `.pill .ix` rule was removed.
