@@ -5,6 +5,12 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.20 . 2026-06-18
+- Masthead controls removed: the "Stars" and "Dark"/theme buttons are deleted from the top bar (the `.ctrls` block). Both toggles remain in Settings (`#starsToggle`, `#themeToggle`) and still work.
+- Added a floating light/dark toggle modelled on the R3 form: a round sun (light) / moon (dark) icon button (`.themeico` / `#themeFloat`) fixed in the **top-right** corner, z-index 50 (above the masthead, below the entry splash). Same SVG icons and theme-swap behaviour as R3.
+- JS: dropped the masthead-button references; `toggleTheme` is wired to both the floating button and the Settings switch; `applyStars` wired to the Settings stars switch; removed the old `themeBtn.textContent` line (the floating icon swaps via CSS, the Settings `#themeName` label still updates). Removed the dead `.ctrls` / `.tg` CSS.
+- Rollback: `dash-v0.19`.
+
 ## v0.19 . 2026-06-18
 - R3 Obs is now a fan-out dropdown menu of observation LEVELS (front-end only; only Teacher Level is wired to data):
   - **Teacher Level** -> the existing teacher search + list/detail (unchanged behaviour).

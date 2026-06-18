@@ -65,11 +65,14 @@ body{font-family:var(--body);background:var(--bg);color:var(--ink);-webkit-font-
 .obsmi2:hover{background:var(--panel);color:var(--ink)}
 .phtitle{font-family:var(--display);font-weight:600;font-size:clamp(22px,3vw,32px);letter-spacing:-.01em;margin-top:6px}
 .phnote{font-size:13px;color:var(--ink-mid);margin-top:10px;line-height:1.5}
-.ctrls{display:flex;align-items:center;gap:8px}
-.tg{display:inline-flex;align-items:center;gap:8px;font:inherit;font-size:12.5px;font-weight:600;color:var(--ink-dim);background:var(--panel);border:1px solid var(--edge);border-radius:30px;padding:8px 13px;cursor:pointer;transition:.2s}
-.tg:hover{border-color:var(--y);color:var(--ink)}
-.tg .dot{width:8px;height:8px;border-radius:50%;background:var(--g);box-shadow:0 0 8px var(--g)}
-:root[data-stars="off"] .tg.stars .dot{background:var(--ink-faint);box-shadow:none}
+/* floating light/dark toggle, R3-form style: a round sun (light) / moon (dark) button, top-right */
+.themeico{position:fixed;top:clamp(.7rem,1.4vw,1.2rem);right:clamp(.7rem,1.4vw,1.2rem);z-index:50;width:clamp(2rem,2.4vw,2.4rem);height:clamp(2rem,2.4vw,2.4rem);border-radius:50%;border:1px solid var(--edge);background:var(--panel-2);color:var(--ink-dim);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;transition:background .2s,color .2s,border-color .2s,transform .2s;backdrop-filter:blur(6px)}
+.themeico:hover{background:var(--panel);color:var(--ink);border-color:var(--y);transform:scale(1.06)}
+.themeico .icon{width:1.05em;height:1.05em;display:block}
+.themeico .icon-sun{display:block}
+.themeico .icon-moon{display:none}
+:root[data-theme="dark"] .themeico .icon-sun{display:none}
+:root[data-theme="dark"] .themeico .icon-moon{display:block}
 
 /* ===== entry title-card ===== */
 #entry{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;background:radial-gradient(900px 600px at 50% 40%,var(--bg-2),var(--bg));text-align:center;padding:24px;transition:opacity .7s ease}
@@ -312,11 +315,13 @@ svg{display:block;overflow:visible}
       <button class="pill" data-board="teacher">Observations</button>
       <button class="pill" data-board="settings">Settings</button>
     </nav>
-    <div class="ctrls">
-      <button class="tg stars" id="starsBtn"><span class="dot"></span>Stars</button>
-      <button class="tg" id="themeBtn">Dark</button>
-    </div>
   </header>
+
+  <!-- floating light/dark toggle (R3-form style), top-right; Settings keeps its own theme + stars switches -->
+  <button class="themeico" id="themeFloat" type="button" aria-label="Toggle light or dark theme" title="Toggle light / dark theme">
+    <svg class="icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    <svg class="icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+  </button>
 
   <!-- ============ COVERAGE ============ -->
   <section class="view" id="v-coverage">
@@ -449,6 +454,7 @@ svg{display:block;overflow:visible}
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
       <div class="vhist">
+        <div class="vrow"><span class="vtag">v0.20</span><span class="vnote">Masthead cleaned up: the Stars and theme buttons were removed from the top bar (both still live in Settings). A floating light/dark toggle, the same round sun/moon button as the R3 form, now sits in the top-right corner and is always available.</span></div>
         <div class="vrow"><span class="vtag">v0.19</span><span class="vnote">R3 Obs is now a fan-out menu of observation levels: Teacher Level (the working teacher search), Grade / Department Level, and School Level (which expands to Kindy, Lower Primary, Upper Primary, Whole Primary, Secondary). Teacher Level works as before; the other levels land on a styled placeholder for now (front-end only, to be connected to data later). The R3 Obs button stays as the menu trigger in every state.</span></div>
         <div class="vrow"><span class="vtag">v0.18</span><span class="vnote">Fixed the search: the search bar was leaking into the hub state (a class display rule was overriding the hidden attribute), so it appeared before R3 Obs was clicked and filtered a list that was not shown. Now the hidden attribute always wins, so the hub shows only R3 Obs and the search filters once you enter it. Each tab now has its own URL too: Observations is /#teachers, Settings is /#settings, Coverage is the default; the link changes, is bookmarkable, and back/forward work.</span></div>
         <div class="vrow"><span class="vtag">v0.17</span><span class="vnote">Observations tab tightened: the R3 Obs button and the teacher search now sit inline on the "Observations" header line (whichever state is active) instead of stacked in their own panels, reclaiming the wasted space. The coloured A / B index letters were removed from the Coverage and Observations tabs (and the redundant R3 from the button), and the kicks are now just "Coverage" and "Observations".</span></div>
@@ -474,7 +480,7 @@ svg{display:block;overflow:visible}
 
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.19</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.20</span></span>
   </div>
 </div>
 
@@ -819,20 +825,18 @@ if(window.THREE){initStars();initStarSliders();}
 document.addEventListener('visibilitychange',()=>{if(document.hidden)starsOff();else if(document.documentElement.getAttribute('data-stars')==='on')starsOn()});
 
 /* ============================================================= toggles */
-const tBtn=byId('themeBtn'),sBtn=byId('starsBtn');
 function applyTheme(t){document.documentElement.setAttribute('data-theme',t);
-  tBtn.textContent=t==='dark'?'Light':'Dark';
-  byId('themeName').textContent=t==='dark'?'Dark':'Light';
+  byId('themeName').textContent=t==='dark'?'Dark':'Light';   // Settings label; the floating icon swaps via CSS
   if(window.THREE)applyStarStyle();
   // re-tint any visible svg shapes that read CSS vars at build time
   if(current==='coverage'){renderRing();renderSpread();renderDist();}
   if(current==='teacher'&&!byId('obsDetail').hidden&&selectedId!=null)renderTeacher(teacherById(selectedId));
   try{localStorage.setItem('ais-dash-theme',t)}catch(e){}}
-tBtn.onclick=()=>applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');
-byId('themeToggle').onclick=tBtn.onclick;
+function toggleTheme(){applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');}
+byId('themeFloat').onclick=toggleTheme;     // floating top-right button
+byId('themeToggle').onclick=toggleTheme;    // Settings switch
 function applyStars(on){document.documentElement.setAttribute('data-stars',on?'on':'off');if(on)starsOn();else starsOff();}
-sBtn.onclick=()=>applyStars(document.documentElement.getAttribute('data-stars')!=='on');
-byId('starsToggle').onclick=sBtn.onclick;
+byId('starsToggle').onclick=()=>applyStars(document.documentElement.getAttribute('data-stars')!=='on');  // Settings switch
 (function(){let s;try{s=localStorage.getItem('ais-dash-theme')}catch(e){}applyTheme(s||'light');})();
 
 /* board rail */
