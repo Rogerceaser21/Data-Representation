@@ -5,6 +5,11 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.13 . 2026-06-18
+- All-observations card made symmetric. The Student Progress gauge moved to the LEFT of the Spectrum and a new Teaching gauge added to the RIGHT, so the card reads [Student Progress | Spectrum | Teaching]. Three matched `.ey-bold` headers now sit one per column (Student Progress | All observations | Teaching); both grids share `196px 1fr 196px` columns so each title sits above its column, and the gauge centres still line up with the Spectrum bar (align-items:center).
+- Teaching gauge = the "Teaching" judgement only (criterion `r3_05`), teacher-wide average, always reads ALL, never recalced on session select (identical rule to Student Progress). Rim dots = each observation's Teaching score, centre word = the average.
+- Teaching is an exact horizontal mirror of Student Progress: gap opens LEFT and it fills clockwise (Student opens right, anticlockwise). `buildArc` is now generic (`buildArc(t, svgId, scoreFn, avgFn, mirror)`); mirror flips the start angle (135->225) and sweep (270->-270) and the arc sweep-flag, reflecting the whole drawing about x=120 (verified numerically) while the centre word stays upright. `arcP` gained an optional sweep-flag arg (default 0, so the rest of the gauge is unchanged).
+
 ## v0.12 . 2026-06-18
 - Spectrum average marker (`.osflag`) fixed. It was a CSS triangle built with a solid `border-top`, which points DOWN (away from the bar, into empty space below the scale). Swapped to a solid `border-bottom` so it points UP at the bar, marking the teacher-wide average's position on the scale (and the inline ramp colour moved from `border-top-color` to `border-bottom-color` in `specHTML` so it stays score-coloured). Also enlarged 25% (6px->7.5px sides, 8px->10px height; `margin-left` -6px->-7.5px to keep it centred). One shared engine, so every Spectrum (session cards + All-observations card) is fixed at once.
 
