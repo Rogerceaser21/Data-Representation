@@ -5,6 +5,12 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.17 . 2026-06-18
+- Observations tab tightened to one line. The R3 Obs button (hub) and the teacher search bar + "Not yet observed" filter (work) now live inline in the `.head` next to the "Observations" kick, in a new `.obshead` flex cluster, instead of each sitting in its own stacked panel. Only the active state's control shows; the list / detail render below. `#obsHub` and `#obsSearchCard` panels removed; `#obsListCard` (just the list) + `#obsDetail` remain. `layoutObs` retargeted to `#r3ObsBtn` / `#tsearchWrap` / `#fltNoobs` / `#obsListCard` / `#obsDetail`.
+- Removed the coloured index letters: the yellow `A` / `B` (`.ix`) on the Coverage and Observations pills, and the redundant yellow `R3` on the R3 Obs button (it still reads "R3 Obs"). The kicks are simplified from "Board A . Coverage" / "Board B . Observations" to "Coverage" / "Observations" (Settings already plain). The now-dead `.pill .ix` rule was removed.
+- No navigation change: the Observations tab was already a same-page view switch (single HTML, sections toggled); the URL never changes.
+- Rollback: `dash-v0.16`.
+
 ## v0.16 . 2026-06-18
 - The "Teacher" tab is renamed "Observations" and turned into a 3-state workflow (internal board key stays `teacher`).
   - **Hub:** opening the tab lands on a hub card with a single "R3 Obs" button (room for more observation systems later).
