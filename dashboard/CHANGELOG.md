@@ -5,6 +5,15 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.16 . 2026-06-18
+- The "Teacher" tab is renamed "Observations" and turned into a 3-state workflow (internal board key stays `teacher`).
+  - **Hub:** opening the tab lands on a hub card with a single "R3 Obs" button (room for more observation systems later).
+  - **Search:** clicking R3 Obs reveals the teacher search card, which is MOVED off the Coverage page into here (Coverage is now overview-only: stats, ring, distribution, spread, not-yet-observed). No teacher detail shows yet.
+  - **Detail:** picking a teacher hides the list and keeps only the search bar at the top, with the selected teacher's drill-down (the former Teacher page) below it. Typing in the search again re-shows the list so you can switch teacher; the "Not yet observed" filter and the list only appear while browsing.
+  - Back returns to Coverage from any state.
+- Implementation: new `obsView` ('hub'|'work') + `layoutObs()` toggles `#obsHub` / `#obsSearchCard` / `#obsDetail`; `showBoard('teacher')` resets to the hub and clears the selection; `openTeacher` now transitions the sub-state (no board switch) and keeps the FLIP name animation; `renderTlist` removed from the Coverage render and theme-toggle paths, with the teacher re-render guarded to the detail state.
+- Rollback: `dash-v0.15`.
+
 ## v0.15 . 2026-06-18
 - All-observations SEAS bar refined per Igor. The six cards are now JOINED into one seamless bar: `.osseg .osramp` is a single rounded, bordered, `overflow:hidden` container and each `.rc` is a borderless `flex:1` swatch+label that butts against its neighbours (no gaps, no dividers). The numbers are removed (word only).
 - The observation dots now reserve REAL height instead of overflowing: `specHTML` computes the tallest same-score stack (`maxStk`) and sets `.osdots` height inline (`16 + (maxStk-1)*14`px); dots are bottom-anchored (`bottom:(stk-1)*14px`) just above the bar and stack upward. So the All card GROWS to hold a tall stack rather than bleeding over the "All observations / N observations" headers.

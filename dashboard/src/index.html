@@ -48,6 +48,11 @@ body{font-family:var(--body);background:var(--bg);color:var(--ink);-webkit-font-
 .pill:hover{color:var(--ink)}
 .pill.on{background:var(--panel-2);color:var(--ink);box-shadow:0 2px 10px -4px var(--shadow)}
 .pill .ix{font-family:var(--display);font-style:italic;color:var(--y);margin-right:7px}
+/* Observations hub: the landing of the Observations tab, one button per observation system */
+.obshub{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.obsbtn{font:inherit;font-size:15px;font-weight:700;color:var(--ink);background:var(--panel-2);border:1px solid var(--edge);border-radius:14px;padding:14px 22px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:.2s;box-shadow:0 2px 10px -4px var(--shadow)}
+.obsbtn:hover{border-color:var(--y);transform:translateY(-1px)}
+.obsbtn .ix{font-family:var(--display);font-style:italic;color:var(--y);font-size:16px}
 .ctrls{display:flex;align-items:center;gap:8px}
 .tg{display:inline-flex;align-items:center;gap:8px;font:inherit;font-size:12.5px;font-weight:600;color:var(--ink-dim);background:var(--panel);border:1px solid var(--edge);border-radius:30px;padding:8px 13px;cursor:pointer;transition:.2s}
 .tg:hover{border-color:var(--y);color:var(--ink)}
@@ -291,7 +296,7 @@ svg{display:block;overflow:visible}
     <div class="brand"><span class="lg"></span><span class="t">Observation Dashboard<small>AIS Sharjah</small></span></div>
     <nav class="rail">
       <button class="pill on" data-board="coverage"><span class="ix">A</span>Coverage</button>
-      <button class="pill" data-board="teacher"><span class="ix">B</span>Teacher</button>
+      <button class="pill" data-board="teacher"><span class="ix">B</span>Observations</button>
       <button class="pill" data-board="settings">Settings</button>
     </nav>
     <div class="ctrls">
@@ -338,38 +343,49 @@ svg{display:block;overflow:visible}
       </div>
     </div>
 
-    <div class="panel" style="margin-top:14px">
+  </section>
+
+  <!-- ============ OBSERVATIONS (was Teacher) ============ -->
+  <section class="view" id="v-teacher" hidden>
+    <div class="head">
+      <div>
+        <span class="kick"><span class="stripe"></span>Board B . Observations</span>
+      </div>
+      <button class="back" id="backBtn">Back to Coverage</button>
+    </div>
+
+    <!-- landing hub: choose an observation system -->
+    <div class="panel obshub" id="obsHub">
+      <div class="ey" style="margin:0;align-self:center">Observation systems</div>
+      <button class="obsbtn" id="r3ObsBtn"><span class="ix">R3</span>R3 Obs</button>
+    </div>
+
+    <!-- search card (moved here from Coverage): pick a teacher -->
+    <div class="panel" id="obsSearchCard" hidden>
       <div class="tbar">
-        <div class="ey" style="margin:0;align-self:center">Teachers</div>
+        <div class="ey" id="obsTeachersLabel" style="margin:0;align-self:center">Teachers</div>
         <div class="search"><span style="color:var(--ink-faint)">Search</span><input id="tsearch" placeholder="type a name..."></div>
         <button class="flt" id="fltNoobs">Not yet observed</button>
       </div>
       <div class="tlist" id="tlist"></div>
     </div>
-  </section>
 
-  <!-- ============ TEACHER ============ -->
-  <section class="view" id="v-teacher" hidden>
-    <div class="head">
-      <div>
-        <span class="kick"><span class="stripe"></span>Board B . Teacher</span>
-      </div>
-      <button class="back" id="backBtn">Back to Coverage</button>
-    </div>
-
-    <div class="panel">
-      <div class="thead">
-        <div class="who">
-          <h2 id="tName">.</h2>
-          <div class="meta" id="tMeta">.</div>
+    <!-- selected teacher's observation detail (the former Teacher page) -->
+    <div id="obsDetail" hidden>
+      <div class="panel" style="margin-top:14px">
+        <div class="thead">
+          <div class="who">
+            <h2 id="tName">.</h2>
+            <div class="meta" id="tMeta">.</div>
+          </div>
+          <div class="bigj"><div class="l" id="tScopeLabel">Overall</div><div class="v" id="tOverall">.</div></div>
         </div>
-        <div class="bigj"><div class="l" id="tScopeLabel">Overall</div><div class="v" id="tOverall">.</div></div>
       </div>
-    </div>
 
-    <div class="panel" style="margin-top:14px">
-      <div class="ey">Observations . select all, or a single session</div>
-      <div class="obslist" id="obslist"></div>
+      <div class="panel" style="margin-top:14px">
+        <div class="ey">Observations . select all, or a single session</div>
+        <div class="obslist" id="obslist"></div>
+      </div>
     </div>
   </section>
 
@@ -406,6 +422,7 @@ svg{display:block;overflow:visible}
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
       <div class="vhist">
+        <div class="vrow"><span class="vtag">v0.16</span><span class="vnote">The Teacher tab is now the Observations tab, a small workflow. It opens on a hub with an "R3 Obs" button; clicking it shows the teacher search (moved off the Coverage page). No observation detail shows until a teacher is picked, after which only the search bar stays at the top with the selected teacher's detail below. Typing again re-shows the list to switch teacher. Back returns to Coverage.</span></div>
         <div class="vrow"><span class="vtag">v0.15</span><span class="vnote">All-observations SEAS bar refined: the six cards are now joined into one seamless bar (no gaps or dividers), the numbers are dropped (words only), and the bar bottom-aligns with the gauge circles so it never sits below them. The observation dots now reserve real height above the bar, so the card grows to hold tall dot stacks instead of overlapping the headers.</span></div>
         <div class="vrow"><span class="vtag">v0.14</span><span class="vnote">All-observations Spectrum restyled as the SEAS scale: the smooth gradient bar is replaced by six SEAS cards (colour swatch + judgement word + number, centred), one per point. The observation dots still float above and the average triangle below. Only the All-observations card changed; the per-session cards keep the smooth gradient bar.</span></div>
         <div class="vrow"><span class="vtag">v0.13</span><span class="vnote">All-observations card is now symmetric: the Student Progress gauge sits to the left of the Spectrum and a new Teaching gauge to the right, with three matched headers (Student Progress | All observations | Teaching) above their columns. The Teaching gauge is an exact horizontal mirror of Student Progress (gap opens left, fills clockwise) and shows only the Teaching judgement (criterion r3_05) as the teacher-wide average, always reading all observations, just like Student Progress.</span></div>
@@ -427,7 +444,7 @@ svg{display:block;overflow:visible}
 
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.15</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.16</span></span>
   </div>
 </div>
 
@@ -526,7 +543,7 @@ function renderTlist(){
     host.appendChild(row);});
   if(!rows.length)host.innerHTML='<div style="padding:18px;color:var(--ink-faint);font-size:13px">No teachers match.</div>';
 }
-function renderCoverage(){renderStats();renderRing();renderDist();renderSpread();renderNoobs();renderTlist();}
+function renderCoverage(){renderStats();renderRing();renderDist();renderSpread();renderNoobs();}
 function animateStats(){document.querySelectorAll('#statgrid .v').forEach(n=>countUp(n,+n.dataset.to,1.1));}
 
 /* ============================================================= TEACHER (scoring)
@@ -666,6 +683,21 @@ function renderTeacher(t){
 /* ============================================================= router + FLIP */
 const views={coverage:'v-coverage',teacher:'v-teacher',settings:'v-settings'};
 let current='coverage';
+/* Observations tab is a 3-state workflow: 'hub' (the R3 Obs button) -> 'work' (search a teacher,
+   then view their detail). layoutObs() shows the right blocks: in 'work', the detail replaces the
+   teacher list once a teacher is picked (selectedId set + search empty), leaving just the search
+   bar above it; typing re-shows the list so you can switch teacher. */
+let obsView='hub';
+function layoutObs(){const work=obsView==='work';
+  byId('obsHub').hidden=work;
+  byId('obsSearchCard').hidden=!work;
+  const q=(byId('tsearch').value||'').trim();
+  const viewing=work&&selectedId!=null&&q==='';
+  byId('obsDetail').hidden=!viewing;
+  byId('tlist').hidden=viewing;
+  byId('fltNoobs').hidden=viewing;
+  byId('obsTeachersLabel').hidden=viewing;}
+function setObs(v){obsView=v;layoutObs();}
 function setPill(b){document.querySelectorAll('.pill').forEach(p=>p.classList.toggle('on',p.dataset.board===b));}
 /* panel reveal as pure enhancement: we animate MOVEMENT only, never opacity, so a tab whose
    RAF freezes mid-tween (backgrounded / bfcache) is left fully visible, only slightly offset. */
@@ -682,23 +714,26 @@ function showBoard(b,opts={}){
   Object.entries(views).forEach(([k,id])=>byId(id).hidden=(k!==b));
   setPill(b);current=b;
   if(b==='coverage'){renderCoverage();animateStats();reveal('#v-coverage .panel',.04);}
-  if(b==='teacher'){renderTeacher(teacherById(selectedId));if(!opts.flip)reveal('#v-teacher .panel',.06);}
+  if(b==='teacher'){selectedId=null;byId('tsearch').value='';fltNoobs=false;byId('fltNoobs').classList.remove('on');setObs('hub');reveal('#v-teacher .panel',.06);}
   if(b==='settings')reveal('#v-settings .panel',.08);
   if(b!=='teacher'&&!opts.force)window.scrollTo({top:0,behavior:'smooth'});
 }
+/* pick a teacher from the search list -> show their detail (we're already in the Observations view) */
 function openTeacher(id,rowEl){
   selectedId=id;
   const first=rowEl?rowEl.querySelector('.nm').getBoundingClientRect():null;
-  showBoard('teacher',{flip:true});
+  byId('tsearch').value='';                 // empty search -> layoutObs shows the detail
+  renderTeacher(teacherById(id));
+  layoutObs();
   // FLIP: fly the clicked name into the teacher header
   const target=byId('tName');
   if(window.gsap&&first){const last=target.getBoundingClientRect();
     const dx=first.left-last.left,dy=first.top-last.top,sc=Math.min(2,first.height/last.height);
     gsap.set(target,{transformOrigin:'left top'});
     gsap.fromTo(target,{x:dx,y:dy,scale:sc||1},{x:0,y:0,scale:1,duration:.6,ease:'power3.inOut',immediateRender:false});
-    gsap.fromTo('#v-teacher .panel',{y:22},{y:0,duration:.55,stagger:.07,delay:.12,ease:'power3.out',immediateRender:false});
-    settle(target);settle('#v-teacher .panel');
-  } else { reveal('#v-teacher .panel',.06); }
+    gsap.fromTo('#obsDetail .panel',{y:22},{y:0,duration:.55,stagger:.07,delay:.12,ease:'power3.out',immediateRender:false});
+    settle(target);settle('#obsDetail .panel');
+  } else { reveal('#obsDetail .panel',.06); }
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -747,8 +782,8 @@ function applyTheme(t){document.documentElement.setAttribute('data-theme',t);
   byId('themeName').textContent=t==='dark'?'Dark':'Light';
   if(window.THREE)applyStarStyle();
   // re-tint any visible svg shapes that read CSS vars at build time
-  if(current==='coverage'){renderRing();renderSpread();renderDist();renderTlist();}
-  if(current==='teacher')renderTeacher(teacherById(selectedId));
+  if(current==='coverage'){renderRing();renderSpread();renderDist();}
+  if(current==='teacher'&&!byId('obsDetail').hidden&&selectedId!=null)renderTeacher(teacherById(selectedId));
   try{localStorage.setItem('ais-dash-theme',t)}catch(e){}}
 tBtn.onclick=()=>applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');
 byId('themeToggle').onclick=tBtn.onclick;
@@ -760,7 +795,8 @@ byId('starsToggle').onclick=sBtn.onclick;
 /* board rail */
 document.querySelectorAll('.pill').forEach(p=>p.onclick=()=>showBoard(p.dataset.board));
 byId('backBtn').onclick=()=>showBoard('coverage');
-byId('tsearch').addEventListener('input',renderTlist);
+byId('r3ObsBtn').onclick=()=>{setObs('work');renderTlist();reveal('#obsSearchCard',0);};
+byId('tsearch').addEventListener('input',()=>{renderTlist();layoutObs();});
 byId('fltNoobs').onclick=()=>{fltNoobs=!fltNoobs;byId('fltNoobs').classList.toggle('on',fltNoobs);renderTlist();};
 
 /* ============================================================= entry sequence */
