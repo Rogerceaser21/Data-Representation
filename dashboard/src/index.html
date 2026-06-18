@@ -201,24 +201,26 @@ svg{display:block;overflow:visible}
 .oswords{display:grid;grid-template-columns:repeat(6,1fr);margin-top:5px}
 .oswords span{text-align:center;font-size:10.5px;font-weight:600;color:var(--ink-mid)}
 .osd.seldot{box-shadow:0 0 0 2.5px #8B5CF6;z-index:2}
-/* All-observations Spectrum, segmented variant (Option B): the 6-point scale rendered as SEAS
-   cards (the same .rc card as the design-spec ramp). Dots float above the card row, the average
-   triangle below; card colours use the ramp vars so they reflow on theme change. */
-.osseg .osdots{position:relative;height:30px;overflow:visible}
-.osseg .osramp{display:flex;gap:7px}
-.osseg .osramp .rc{flex:1;min-width:0;border:1px solid var(--edge);border-radius:12px;overflow:hidden;background:var(--panel-2)}
+/* All-observations Spectrum, segmented variant (Option B): the 6-point scale rendered as ONE
+   seamless bar, the six colour swatches butted together (no gaps, no dividers) inside a single
+   rounded bordered container, the judgement word centred under each (no numbers). The observation
+   dots sit ABOVE the bar in a column whose height is set inline per the tallest same-score stack
+   (so the card GROWS to hold them instead of bleeding over the headers); they are bottom-anchored
+   just above the bar. The bar bottom-aligns with the gauges (see .allmain align-items:end) so the
+   line never drops below the gauge circles. Colours use the ramp vars so they reflow on theme. */
+.osseg .osdots{position:relative;margin-bottom:3px}   /* height set inline per max dot stack */
+.osseg .osramp{display:flex;border:1px solid var(--edge);border-radius:12px;overflow:hidden;background:var(--panel-2)}
+.osseg .osramp .rc{flex:1;min-width:0}
 .osseg .osramp .rc .sw{height:30px}
-.osseg .osramp .rc .lb{padding:6px 4px;text-align:center;font-size:11px;font-weight:600;color:var(--ink-dim);line-height:1.15}
-.osseg .osramp .rc .lb b{display:block;color:var(--ink);font-size:11.5px;font-family:var(--display)}
+.osseg .osramp .rc .lb{padding:6px 4px;text-align:center;font-size:11.5px;font-weight:600;color:var(--ink);font-family:var(--display);line-height:1.15}
 .osseg .osflagrow{position:relative;height:14px;margin-top:3px}
 .osseg .osflagrow .osflag{top:0}
 /* All-observations card: Student Progress gauge (left) | merged Spectrum (centre) | Teaching
-   gauge (right). align-items:center vertically centres the Spectrum block and both gauges on a
-   shared line. The Spectrum's .ospec block-centre ~= the bar centre (dots stack ABOVE the bar as
-   absolutely positioned elements, so they never shift the bar), and each gauge viewBox is cropped
-   so the circle centre is the SVG centre -> circle middle lines up with the bar middle, dot count
-   irrelevant. */
-.allmain{display:grid;grid-template-columns:196px 1fr 196px;gap:24px;align-items:center;margin-top:12px}
+   gauge (right). align-items:end bottom-aligns the Spectrum block and both gauges on a shared
+   baseline, so the segmented bar (which sits at the bottom of its block, dots reserved above it)
+   never drops below the gauge circles. When many dots stack the Spectrum column grows taller and
+   the card grows with it; the gauges bottom-align to the same baseline. */
+.allmain{display:grid;grid-template-columns:196px 1fr 196px;gap:24px;align-items:end;margin-top:12px}
 @media(max-width:760px){.allhead{grid-template-columns:1fr;gap:6px;text-align:center}.allmain{grid-template-columns:1fr;gap:10px;justify-items:center}}
 .allleft .orampfull{margin-top:0}        /* drop the session-card offset so centring is exact */
 .allgauge{display:flex;align-items:center;justify-content:center}
@@ -404,6 +406,7 @@ svg{display:block;overflow:visible}
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
       <div class="vhist">
+        <div class="vrow"><span class="vtag">v0.15</span><span class="vnote">All-observations SEAS bar refined: the six cards are now joined into one seamless bar (no gaps or dividers), the numbers are dropped (words only), and the bar bottom-aligns with the gauge circles so it never sits below them. The observation dots now reserve real height above the bar, so the card grows to hold tall dot stacks instead of overlapping the headers.</span></div>
         <div class="vrow"><span class="vtag">v0.14</span><span class="vnote">All-observations Spectrum restyled as the SEAS scale: the smooth gradient bar is replaced by six SEAS cards (colour swatch + judgement word + number, centred), one per point. The observation dots still float above and the average triangle below. Only the All-observations card changed; the per-session cards keep the smooth gradient bar.</span></div>
         <div class="vrow"><span class="vtag">v0.13</span><span class="vnote">All-observations card is now symmetric: the Student Progress gauge sits to the left of the Spectrum and a new Teaching gauge to the right, with three matched headers (Student Progress | All observations | Teaching) above their columns. The Teaching gauge is an exact horizontal mirror of Student Progress (gap opens left, fills clockwise) and shows only the Teaching judgement (criterion r3_05) as the teacher-wide average, always reading all observations, just like Student Progress.</span></div>
         <div class="vrow"><span class="vtag">v0.12</span><span class="vnote">Spectrum average marker now points up at the bar (it was pointing down, away from the scale) and is 25% larger, so the teacher-wide average reads as a clear pointer to its position on the scale.</span></div>
@@ -424,7 +427,7 @@ svg{display:block;overflow:visible}
 
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.14</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.15</span></span>
   </div>
 </div>
 
@@ -573,16 +576,18 @@ function buildArc(t,svgId,scoreFn,avgFn,mirror){const s=byId(svgId);if(!s)return
    reads as fat), dots + flag placed by percent, words at the Observation Notes size. The gradient
    uses the theme ramp vars so it reflows on theme change. selIdx (All card only) rings the selected
    observation's dot; session items have no idx, so they pass through unringed. */
-function specHTML(items,flagVal,selIdx,segmented){const pct=v=>(Math.max(1,Math.min(6,v))-0.5)/6*100;const seen={};let dots='';
-  items.slice().sort((a,b)=>a.score-b.score).forEach(it=>{const p=pct(it.score);const k=Math.round(p/2.4);const stk=seen[k]=(seen[k]||0)+1;const top=14-(stk-1)*14;
-    const ring=(selIdx!=null&&it.idx===selIdx)?' seldot':'';
-    dots+=`<span class="osd${ring}" style="left:${p.toFixed(2)}%;top:${top}px;background:${it.code?skillCol(it.code):rampAt(it.score)}"></span>`;});
+function specHTML(items,flagVal,selIdx,segmented){const pct=v=>(Math.max(1,Math.min(6,v))-0.5)/6*100;
+  const seen={};let maxStk=1;
+  const dotData=items.slice().sort((a,b)=>a.score-b.score).map(it=>{const p=pct(it.score);const k=Math.round(p/2.4);const stk=seen[k]=(seen[k]||0)+1;if(stk>maxStk)maxStk=stk;const ring=(selIdx!=null&&it.idx===selIdx)?' seldot':'';const col=it.code?skillCol(it.code):rampAt(it.score);return{p,stk,ring,col};});
   const flag=flagVal!=null?`<span class="osflag" style="left:${pct(flagVal).toFixed(2)}%;border-bottom-color:${rampAt(flagVal)}"></span>`:'';
-  // segmented (All-observations card): the 6-point scale as SEAS cards (colour swatch + word +
-  // number per point), dots floated above and the average triangle below. The session cards keep
-  // the smooth gradient bar below.
-  if(segmented){const cards=SCALE_WORDS.map((w,i)=>`<div class="rc"><div class="sw" style="background:var(--r${i+1})"></div><div class="lb"><b>${w}</b>${i+1}</div></div>`).join('');
-    return `<div class="ospec osseg"><div class="osdots">${dots}</div><div class="osramp">${cards}</div><div class="osflagrow">${flag}</div></div>`;}
+  // segmented (All-observations card): the 6-point scale as ONE seamless bar (colour swatch + word
+  // per point, no numbers). The dots reserve real height (so the card grows instead of bleeding
+  // over the headers) and are bottom-anchored just above the bar; the average triangle sits below.
+  if(segmented){const dotsH=16+(maxStk-1)*14;
+    const dots=dotData.map(d=>`<span class="osd${d.ring}" style="left:${d.p.toFixed(2)}%;bottom:${(d.stk-1)*14}px;background:${d.col}"></span>`).join('');
+    const cards=SCALE_WORDS.map((w,i)=>`<div class="rc"><div class="sw" style="background:var(--r${i+1})"></div><div class="lb">${w}</div></div>`).join('');
+    return `<div class="ospec osseg"><div class="osdots" style="height:${dotsH}px">${dots}</div><div class="osramp">${cards}</div><div class="osflagrow">${flag}</div></div>`;}
+  const dots=dotData.map(d=>`<span class="osd${d.ring}" style="left:${d.p.toFixed(2)}%;top:${14-(d.stk-1)*14}px;background:${d.col}"></span>`).join('');
   const words='<div class="oswords">'+SCALE_WORDS.map(w=>`<span>${w}</span>`).join('')+'</div>';
   return `<div class="ospec"><div class="osplot"><div class="osbar"></div>${dots}${flag}</div>${words}</div>`;}
 /* the selectable list: All observations on top (default), then one card per session */

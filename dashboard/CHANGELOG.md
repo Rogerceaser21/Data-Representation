@@ -5,6 +5,13 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.15 . 2026-06-18
+- All-observations SEAS bar refined per Igor. The six cards are now JOINED into one seamless bar: `.osseg .osramp` is a single rounded, bordered, `overflow:hidden` container and each `.rc` is a borderless `flex:1` swatch+label that butts against its neighbours (no gaps, no dividers). The numbers are removed (word only).
+- The observation dots now reserve REAL height instead of overflowing: `specHTML` computes the tallest same-score stack (`maxStk`) and sets `.osdots` height inline (`16 + (maxStk-1)*14`px); dots are bottom-anchored (`bottom:(stk-1)*14px`) just above the bar and stack upward. So the All card GROWS to hold a tall stack rather than bleeding over the "All observations / N observations" headers.
+- The bar is bottom-aligned: `.allmain` switched `align-items:center -> end`, so the segmented bar and both gauges share a baseline and the bar never drops below the gauge circles (Igor's constraint). Gauges bottom-align to the same line.
+- Scope unchanged: still only the All-observations card (the `segmented` branch). Per-session cards keep the smooth gradient bar and centre-stacked dots.
+- Rollback: `dash-v0.14` (cards with gaps + numbers), `dash-v0.13` (smooth gradient bar).
+
 ## v0.14 . 2026-06-18
 - All-observations Spectrum restyled as the official SEAS scale (Option B). The single smooth gradient bar is replaced by six SEAS cards, the same `.rc` card used by the design-spec ramp: a colour swatch (`--r1..--r6`) over the judgement word + number, centred, one card per scale point. The observation dots still float ABOVE the card row and the teacher-average triangle below, pointing up.
 - Scoped to the All-observations card only via a new `segmented` flag on the shared `specHTML(items, flagVal, selIdx, segmented)`; passed `true` from both the initial All render and the on-select re-render. The per-session cards pass nothing and keep the smooth gradient bar, so nothing else changed.
