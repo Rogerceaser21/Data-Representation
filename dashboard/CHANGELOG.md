@@ -5,6 +5,14 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.23 . 2026-06-19
+- **Data accuracy fix: the Snapshot now counts distinct LESSONS, not raw form submissions.** During the June inspection week most lessons were co-observed by two inspectors who each filed a form (plus a few accidental resubmissions), so the raw 167 rows over-counted real lessons. `snapAgg()` now collapses a teacher's June submissions into lessons by **teacher + date + normalised subject** (the resolved subject area, folding variants like "Music" / "QCE Music In Practice"), resolving each judgement by **best score wins (min)** across co-observers.
+- **Corrected figures** (verified against Supabase and the source Sheet): whole sweep **109 lessons / 103 teachers** (was 167); Primary & Kindy **47 / 45** (was 68); Secondary **62 / 58** (was 99). Progress distribution per lesson: PK `2,9,13,15,3,0`; Secondary `6,12,12,20,4,4`, so **Secondary Very Weak = 4** (the v0.22 board showed 8, which was 4 lessons each filed by two inspectors) and Outstanding = 6. Average progress and teacher counts are unchanged (best-per-teacher is invariant to duplicates): PK 3.19, Secondary 3.24, overall 3.22.
+- The insight copy numbers were corrected to the deduped basis (lesson counts, Very Weak 4, Outstanding 6, evidence-base note counts) with the qualitative findings kept.
+- **Scope:** the dedupe is isolated to the Snapshot (`snapAgg` + a `lessonSubjKey` helper). It only READS `D.teachers[].observations` and never mutates them, so the **Observations board is untouched** and still shows every individual submission, and Coverage is unchanged. Fixed a load-order bug: gated the initial `applyTheme` render (`snapReady`) because `snapAgg` now uses `resolveArea`, a const defined lower in the file.
+- Retrieval stays Supabase-first (`get_raw_snapshot`); the dedupe runs identically on live and the baked fallback.
+- Rollback: `dash-v0.22`.
+
 ## v0.22 . 2026-06-19
 - **New Snapshot board, now the landing view** (`#v-snapshot`, first nav pill, default no-hash route; Coverage moves to `#coverage`). A governance "at a glance" picture of the June R3 sweep (`SNAP_ROUND='R3 June 26'`), scoped to that round only.
 - **Phase toggle: Primary & Kindy | Secondary | Compare** (`#phaseTabs`, `snapPhase`). A persistent "Whole June sweep" band shows the overall lessons/teachers/average progress; each phase view adds its own lessons observed, teachers seen, average progress, a ramp gauge, and a six-point progress distribution histogram, plus "What is working" and "Where to focus next" summaries with bullets and **three insights for each**. Compare puts the two phases side by side with a **diverging distribution chart** and three cross-phase insights.

@@ -579,6 +579,7 @@ svg{display:block;overflow:visible}
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
       <div class="vhist">
+        <div class="vrow"><span class="vtag">v0.23</span><span class="vnote">Snapshot now counts distinct LESSONS, not form submissions. Most June lessons were co-observed by two inspectors who each filed a form, so the raw rows (167) double-counted; the Snapshot now collapses submissions into lessons (teacher, date, subject) with the best score winning, giving 109 lessons (Primary and Kindy 47, Secondary 62) and four Very Weak progress lessons. Average ratings and teacher counts are unchanged. The Observations board is untouched and still shows every individual submission.</span></div>
         <div class="vrow"><span class="vtag">v0.22</span><span class="vnote">New Snapshot board, now the landing view. A governance "at a glance" picture of the June R3 sweep with a Primary and Kindy / Secondary / Compare toggle. Each phase shows lessons observed, teachers seen, average progress (best evidence per teacher) on a ramp gauge and a six-point distribution, a What is working and Where to focus next summary, and three insights for each drawn from the inspectors' written evidence. Compare puts the two phases side by side with a diverging distribution chart. Teacher subschool (section) is now populated in Supabase from the staff register, so the split is live data, not hard-coded.</span></div>
         <div class="vrow"><span class="vtag">v0.21</span><span class="vnote">Dashboard now reads LIVE from Supabase. It paints the baked snapshot first (instant + offline fallback), then upgrades to live data via a read-only Supabase RPC and re-renders, so edits in Supabase show on refresh. Login-less for now (the password gate is the soft lock); proper @ais.ae sign-in comes later. If Supabase is unreachable it silently stays on the baked snapshot.</span></div>
         <div class="vrow"><span class="vtag">v0.20</span><span class="vnote">Masthead cleaned up: the Stars and theme buttons were removed from the top bar (both still live in Settings). A floating light/dark toggle, the same round sun/moon button as the R3 form, now sits in the top-right corner and is always available.</span></div>
@@ -607,7 +608,7 @@ svg{display:block;overflow:visible}
 
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.22</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.23</span></span>
   </div>
 </div>
 
@@ -855,21 +856,31 @@ function renderTeacher(t){
 const SNAP_ROUND='R3 June 26';                              // the only round the Snapshot reports
 const phaseOf=s=>s==='secondary'?'secondary':'primary_kindy'; // primary/kindy/nursery/null -> Primary & Kindy
 const PHASE_LABEL={primary_kindy:'Primary & Kindy',secondary:'Secondary'};
-/* per-phase June aggregates: lessons, distinct teachers, the per-lesson Progress (r3_02)
-   distribution, and the average progress taken as the BEST rating per teacher (best evidence wins,
-   the house principle) then averaged across teachers. phase 'all' = the whole sweep. */
+/* per-phase June aggregates, counted as distinct LESSONS (not raw form submissions). Most lessons
+   that week were co-observed by two inspectors who each filed a form, so submissions are collapsed
+   into lessons by teacher + date + normalised subject (the resolved subject AREA, which folds
+   variants like "Music" / "QCE Music In Practice"); a co-observed lesson's score is the BEST (min)
+   across its submissions (best evidence wins, the house rule). Average progress = the best rating
+   per teacher then averaged across teachers. phase 'all' = the whole sweep.
+   ISOLATED to the Snapshot: this READS D.teachers[].observations but never mutates them, so the
+   Observations board (which renders every individual submission) stays exactly as it is. */
+function lessonSubjKey(o){const a=(typeof resolveArea==='function')?resolveArea(o.subject):'';return a||((o.subject||'').toLowerCase().trim()||'?');}
 function snapAgg(phase){
-  let lessons=0;const teacherSet=new Set();const dist={1:0,2:0,3:0,4:0,5:0,6:0};const bestByT={};
+  const dist={1:0,2:0,3:0,4:0,5:0,6:0};const teacherSet=new Set();const bestByT={};let lessons=0;
   for(const t of D.teachers){
     if(phase!=='all'&&phaseOf(t.section)!==phase)continue;
-    let seen=false;
+    const byLesson=Object.create(null);let seen=false;   // key: date|normSubject -> best (min) progress (or null)
     for(const o of t.observations){
       if(o.round!==SNAP_ROUND)continue;
-      lessons++;seen=true;
+      seen=true;
+      const k=(o.date||'')+'|'+lessonSubjKey(o);
+      if(!(k in byLesson))byLesson[k]=null;
       const p=(o.scores||{}).r3_02;
-      if(p!=null&&p>=1&&p<=6){dist[p]++;if(bestByT[t.id]==null||p<bestByT[t.id])bestByT[t.id]=p;}
+      if(p!=null&&p>=1&&p<=6&&(byLesson[k]==null||p<byLesson[k]))byLesson[k]=p;   // best score wins across co-observers
     }
     if(seen)teacherSet.add(t.id);
+    for(const k in byLesson){lessons++;const p=byLesson[k];
+      if(p!=null){dist[p]++;if(bestByT[t.id]==null||p<bestByT[t.id])bestByT[t.id]=p;}}
   }
   const bests=Object.values(bestByT);
   const avgBest=bests.length?bests.reduce((a,b)=>a+b,0)/bests.length:null;
@@ -878,30 +889,31 @@ function snapAgg(phase){
 /* narrative synthesis of the round's free-text evidence (strengths + areas to develop), per phase */
 const NARR={
   primary_kindy:{
-    strengths:{evidence:'Drawn from 59 strength notes across 68 lessons.',
+    strengths:{evidence:'Drawn from the written evidence on 42 of 47 lessons.',
       summary:'Calm, well-routined classrooms with strong relationships and visible scaffolds, so children know exactly what to do.',
       bullets:['Routines, relationships and behaviour for learning are consistently strong','Clear instructions; children know what is expected and follow it','Differentiation and scaffolds in place (sentence stems, helping words, checklists)','Purposeful questioning and turn-and-talk dialogue','Activating prior knowledge and modelling with gradual release'],
-      insights:['Self-assessment is the quiet star. Where children used checklists or self-monitoring they paced themselves and progress was visible to the inspector; it shows up in only a handful of classes, so it is a small, copyable practice with room to spread.','The strength is consistency, not peaks. Almost every lesson clears a solid bar and none was rated Weak at the bottom, so quality here is broad and dependable rather than reliant on a few stars.','Establishing each child’s starting point is already a strength in Science, and it is the single most useful move to export to the subjects where it is the most common gap.']},
-    develop:{evidence:'Drawn from 60 development notes across 68 lessons.',
+      insights:['Self-assessment is the quiet star. Where children used checklists or self-monitoring they paced themselves and progress was visible to the inspector; it shows up in only a handful of classes, so it is a small, copyable practice with room to spread.','The strength is consistency, not peaks. Almost every lesson clears a solid bar, with no lesson rated Very Weak and only three at Weak, so quality here is broad and dependable rather than reliant on a few stars.','Establishing each child’s starting point is already a strength in Science, and it is the single most useful move to export to the subjects where it is the most common gap.']},
+    develop:{evidence:'Drawn from the written evidence on 40 of 47 lessons.',
       summary:'Progress is capped at the top more than it is missing at the bottom; the dominant need is stretching the most able.',
       bullets:['Extend and challenge the more able; too many capable children repeat what they can already do','Move beyond one task for all; undifferentiated tasks limit progress for some groups','Intervene earlier and more deliberately with the middle and lower groups','Reduce teacher talk in places and hand more of the thinking to children','Reclaim lost time at set-up and for early finishers'],
-      insights:['The ceiling, not the floor, is the issue. Around 24 development notes ask for more challenge while almost none ask for behaviour or engagement fixes, so moving Acceptable to Good here is about raising the top.','One root cause links several fixes: a check for understanding surfaces a gap, then the whole class receives the same next step anyway. The shift needed is reactive teaching becoming responsive, not more planning.','Some Acceptable ratings reflect lesson type, not teaching. Assessment-style lessons recur with "hard to see progress in a single lesson", so the headline average slightly understates the teaching on show.']}
+      insights:['The ceiling, not the floor, is the issue. Challenge for the most able is the dominant development note (about 20 of the 40), while almost none mention behaviour or engagement (just one), so moving Acceptable to Good here is about raising the top, not rescuing the bottom.','One root cause links several fixes: a check for understanding surfaces a gap, then the whole class receives the same next step anyway. The shift needed is reactive teaching becoming responsive, not more planning.','Some Acceptable ratings reflect lesson type, not teaching. Assessment-style lessons recur with "hard to see progress in a single lesson", so the headline average slightly understates the teaching on show.']}
   },
   secondary:{
-    strengths:{evidence:'Drawn from 93 strength notes across 99 lessons.',
+    strengths:{evidence:'Drawn from the written evidence on all 62 lessons.',
       summary:'Collaboration, dialogue and higher-order questioning, with students who can talk confidently about their own learning.',
       bullets:['Collaboration, dialogue and discussion (turn-and-talk, peer review)','High engagement and on-task investment','Effective, higher-order questioning','Clear instructions and expectations','Individualised goals with visible next steps'],
-      insights:['Secondary has a real top end: nine lessons reached Outstanding for progress, more than Primary, so the phase has exemplars to learn from in-house rather than from outside.','Students can articulate their own learning because individualised goals and next steps recur as a strength; this is the foundation any group-work fix can build on.','The strengths are remarkably consistent across very different subjects (Islamic, English, Arts and Science all share clarity, questioning and engagement), so the phase has a shared professional language to build on.']},
-    develop:{evidence:'Drawn from 88 development notes across 99 lessons.',
-      summary:'More polarised than Primary; the most common single fix is giving group work real structure and accountability.',
-      bullets:['Give group work structure, roles and accountability (the most common fix)','Make student-to-student dialogue purposeful, not just present','Stretch high-achievers further, especially in Islamic and Arabic','Targeted intervention for a small group of lower-attainers','Make progress visible and evidenced in books and within the lesson'],
-      insights:['Group work is the most praised and the most penalised practice at once; the swing factor is structure, not collaboration. Around 26 notes ask for roles and accountability against about 30 praising collaboration, so one planning routine would move many lessons.','The challenge gap runs in opposite directions by subject: Islamic and Arabic are asked to stretch the top while English, Humanities and Science are asked to lift the tail, so a single school-wide differentiation target would miss both.','The weak end is short and nameable, not diffuse. The eight Very Weak progress ratings trace to a handful of concrete situations (off-task or unsupervised pockets, a named student making no visible progress), so the tail is a fixable checklist rather than a broad quality problem.']}
+      insights:['Secondary has a real top end: six lessons reached Outstanding for progress, three times Primary\'s two, so the phase has exemplars to learn from in-house rather than from outside.','Students can articulate their own learning because individualised goals and next steps recur as a strength; this is the foundation any group-work fix can build on.','The strengths are remarkably consistent across very different subjects (Islamic, English, Arts and Science all share clarity, questioning and engagement), so the phase has a shared professional language to build on.']},
+    develop:{evidence:'Drawn from the written evidence on 56 of 62 lessons.',
+      summary:'More polarised than Primary; a leading fix is giving group work real structure and accountability.',
+      bullets:['Give group work structure, roles and accountability (a leading fix)','Make student-to-student dialogue purposeful, not just present','Stretch high-achievers further, especially in Islamic and Arabic','Targeted intervention for a small group of lower-attainers','Make progress visible and evidenced in books and within the lesson'],
+      insights:['Group work sits on both sides of the ledger at once: collaboration and dialogue lead the strengths (about 23 of the 62 lessons), yet giving group work clear roles and accountability is a leading fix. The swing factor is structure, not collaboration, so one planning routine would move many lessons.','The challenge gap runs in opposite directions by subject: Islamic and Arabic are asked to stretch the top while English, Humanities and Science are asked to lift the tail, so a single school-wide differentiation target would miss both.','The weak end is short and specific, not diffuse. There are four Very Weak progress lessons, and each is a single lesson that two inspectors independently both rated Very Weak, so the tail is a concrete, fixable shortlist rather than a broad quality problem.']}
   },
-  compare:['Same average, different shape. Both phases land on Good (Primary and Kindy 3.2, Secondary 3.2), but Secondary is polarised, with nine Outstanding lessons and eight Very Weak, while Primary and Kindy has no lesson below Weak and clusters tightly in the Good to Acceptable band. Read the averages alone and they look identical; read the spread and they call for different moves.','The same ceiling effect appears in both phases: the calmest, most individualised lessons are the ones where the able are not extended or progress is hardest to see. Across both, the biggest single development theme is challenge for the most able, not remediation, which points to raising the top rather than rescuing the bottom.','Effort should land in different places. Primary and Kindy will gain most from a shared "plan from each child’s starting point" and self-assessment routine; Secondary will gain most from a group-work structure routine and from closing a short list of named weak-progress hotspots. Neither needs a behaviour or engagement drive, both already score those as strengths.']
+  compare:['Same average, different shape. Both phases land on Good (Primary and Kindy 3.2, Secondary 3.2), but Secondary is polarised, with six Outstanding lessons and four Very Weak, while Primary and Kindy has none rated Very Weak and clusters tightly in the Good to Acceptable band. Read the averages alone and they look identical; read the spread and they call for different moves.','The same ceiling effect appears in both phases: the calmest, most individualised lessons are the ones where the able are not extended or progress is hardest to see. Across both, the biggest single development theme is challenge for the most able, not remediation, which points to raising the top rather than rescuing the bottom.','Effort should land in different places. Primary and Kindy will gain most from a shared "plan from each child’s starting point" and self-assessment routine; Secondary will gain most from a group-work structure routine and from closing a short, concrete list of weak-progress lessons. Neither needs a behaviour or engagement drive, both already score those as strengths.']
 };
 const I_CHECK='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.6l3.4 3.4L13 4.6"/></svg>';
 const I_ARROW='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11L11 5M6.2 5H11v4.8"/></svg>';
 let snapPhase='primary_kindy';
+let snapReady=false;   // snapAgg uses resolveArea (a const defined lower in the file); gate the pre-init applyTheme render until runEntry, after that const exists
 function statTile(c){const d=document.createElement('div');d.className='panel stat'+(c.cls?' '+c.cls:'');
   const v=c.word!=null?`<div class="v" style="color:${c.col}">${esc(c.word)}</div>`:`<div class="v" data-to="${c.v}">${c.v}</div>`;
   d.innerHTML=v+`<div class="l">${esc(c.l)}</div><div class="s">${esc(c.s)}</div>`;return d;}
@@ -1090,7 +1102,7 @@ function applyTheme(t){document.documentElement.setAttribute('data-theme',t);
   byId('themeName').textContent=t==='dark'?'Dark':'Light';   // Settings label; the floating icon swaps via CSS
   if(window.THREE)applyStarStyle();
   // re-tint any visible svg shapes that read CSS vars at build time
-  if(current==='snapshot')renderSnapshot();
+  if(current==='snapshot'&&snapReady)renderSnapshot();
   if(current==='coverage'){renderRing();renderSpread();renderDist();}
   if(current==='teacher'&&!byId('obsDetail').hidden&&selectedId!=null)renderTeacher(teacherById(selectedId));
   try{localStorage.setItem('ais-dash-theme',t)}catch(e){}}
@@ -1120,7 +1132,7 @@ byId('fltNoobs').onclick=()=>{fltNoobs=!fltNoobs;byId('fltNoobs').classList.togg
 
 /* ============================================================= entry sequence */
 function runEntry(){
-  renderSnapshot();
+  snapReady=true;renderSnapshot();
   const entry=byId('entry');
   let done=false;
   // The reveal is driven by setTimeout (fires even when RAF is frozen, e.g. a tab
