@@ -216,7 +216,7 @@ svg{display:block;overflow:visible}
 @keyframes vizfade{from{opacity:0}to{opacity:1}}
 .ospec{animation:specin .5s ease}
 .ospec .osbar{animation:barsweep .6s cubic-bezier(.22,1,.36,1)}
-@media(prefers-reduced-motion:reduce){.ospec,.ospec .osbar,#svgArc,#svgArcT{animation:none}}
+@media(prefers-reduced-motion:reduce){.ospec,.ospec .osbar,#svgArc,#svgArcT,.snapgauge{animation:none}}
 .osd{position:absolute;width:13px;height:13px;margin-left:-6.5px;border-radius:50%;border:2px solid var(--bg);box-sizing:border-box}
 .osflag{position:absolute;top:52px;margin-left:-7.5px;width:0;height:0;border-left:7.5px solid transparent;border-right:7.5px solid transparent;border-bottom:10px solid var(--ink)}
 .oswords{display:grid;grid-template-columns:repeat(6,1fr);margin-top:5px}
@@ -246,7 +246,7 @@ svg{display:block;overflow:visible}
 .allleft .orampfull{margin-top:0}        /* drop the session-card offset so centring is exact */
 .allgauge{display:flex;align-items:center;justify-content:center}
 .ey-bold{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);font-weight:800;line-height:1.15}
-#svgArc,#svgArcT{animation:vizfade .5s ease}
+#svgArc,#svgArcT,.snapgauge{animation:vizfade .5s ease}
 .oexprow{border-top:1px solid var(--edge-soft);display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;padding:0 16px}
 .oexpname{justify-self:start;display:flex;align-items:center;gap:8px;font-family:var(--display);font-weight:600;font-size:15px;letter-spacing:-.01em}
 .oexpname .oacc{width:3px;height:15px;border-radius:2px;background:linear-gradient(180deg,var(--y),var(--g));flex:none}
@@ -293,6 +293,72 @@ svg{display:block;overflow:visible}
 .vrow:first-child{border-top:0}
 .vtag{font-family:var(--display);font-style:italic;font-weight:600;font-size:15px;color:var(--y)}
 .vnote{font-size:12.5px;color:var(--ink-dim);line-height:1.55}
+
+/* ===== snapshot board ===== */
+.cols-2{grid-template-columns:repeat(2,1fr)}
+@media(max-width:760px){.cols-2{grid-template-columns:1fr}}
+.snapsub{font-size:13.5px;color:var(--ink-mid);margin-top:11px;line-height:1.55;max-width:74ch}
+/* whole-sweep context band */
+.sweepband{display:flex;align-items:center;gap:13px;margin:22px 0 13px;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-mid);font-weight:700}
+.sweepband i{flex:1;height:1px;background:linear-gradient(90deg,var(--edge),transparent)}
+/* phase toggle */
+.phasetabs{display:inline-flex;gap:6px;background:var(--panel);border:1px solid var(--edge-soft);border-radius:30px;padding:5px;margin:6px 0 2px}
+.ptab{font:inherit;font-size:13.5px;font-weight:600;color:var(--ink-mid);background:transparent;border:0;border-radius:24px;padding:9px 20px;cursor:pointer;transition:.2s;white-space:nowrap}
+.ptab:hover{color:var(--ink)}
+.ptab.on{background:var(--panel-2);color:var(--ink);box-shadow:0 2px 12px -5px var(--shadow)}
+.ptab.on[data-phase="compare"]{color:var(--y)}
+.phsec{margin-top:8px}
+/* progress panel: gauge + histogram */
+.progmain{display:grid;grid-template-columns:208px 1fr;gap:26px;align-items:center}
+@media(max-width:680px){.progmain{grid-template-columns:1fr;gap:14px;justify-items:center}}
+.gauge-cap{text-align:center;margin-top:-6px}
+.gauge-cap .gv{font-family:var(--display);font-style:italic;font-weight:600;font-size:15px;color:var(--ink)}
+.gauge-cap .gl{font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-mid);font-weight:700;margin-top:3px}
+.histo{display:flex;align-items:flex-end;gap:12px;height:190px;width:100%}
+.hbar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
+.hbar .hc{font-family:var(--display);font-weight:600;font-size:16px;color:var(--ink);font-variant-numeric:tabular-nums;margin-bottom:7px}
+.hbar .hb{width:100%;max-width:60px;border-radius:8px 8px 0 0;min-height:3px;height:0;transition:height 1.05s cubic-bezier(.2,.8,.2,1);box-shadow:0 6px 22px -12px var(--shadow)}
+.hbar .hw{font-size:10px;font-weight:600;color:var(--ink-mid);margin-top:9px;text-align:center;line-height:1.2;letter-spacing:.01em}
+/* strengths / develop columns */
+.swhead{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.swdot{width:11px;height:11px;border-radius:50%;flex:none;box-shadow:0 0 0 4px color-mix(in srgb,currentColor 16%,transparent)}
+.swhead b{font-family:var(--display);font-weight:600;font-size:18px;letter-spacing:-.01em;color:var(--ink)}
+.swev{font-size:10.5px;color:var(--ink-faint);font-weight:600;letter-spacing:.02em;margin-bottom:13px}
+.swsum{font-size:13px;color:var(--ink-dim);line-height:1.6;margin-bottom:15px;padding-bottom:14px;border-bottom:1px solid var(--edge-soft)}
+.blist{display:flex;flex-direction:column;gap:11px}
+.brow{display:grid;grid-template-columns:18px 1fr;gap:10px;align-items:start;font-size:13px;color:var(--ink-dim);line-height:1.5}
+.brow .bm{margin-top:1px;flex:none;display:block}
+.brow .bm svg{width:15px;height:15px;display:block}
+/* insights */
+.insgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:26px}
+@media(max-width:760px){.insgrid{grid-template-columns:1fr}}
+.inscol .ey{margin-bottom:13px}
+.icard{position:relative;padding:15px 18px 15px 50px;border:1px solid var(--edge);border-radius:14px;background:var(--panel-2);margin-bottom:11px;transition:transform .2s,border-color .2s,box-shadow .2s}
+.icard:last-child{margin-bottom:0}
+.icard:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--y) 42%,var(--edge));box-shadow:0 18px 44px -30px var(--shadow)}
+.icard .inum{position:absolute;left:16px;top:12px;font-family:var(--display);font-style:italic;font-weight:600;font-size:23px;line-height:1;color:var(--g)}
+.icard.dev .inum{color:var(--r5)}
+.icard p{font-size:12.5px;line-height:1.62;color:var(--ink-dim)}
+/* compare: side-by-side + diverging distribution */
+.cmpcard{text-align:center}
+.cmpcard .cl{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;margin-bottom:14px}
+.cmpcard.pk .cl{color:var(--b)}
+.cmpcard.sec .cl{color:var(--y)}
+.cmpstat{display:flex;justify-content:space-around;gap:10px}
+.cmpstat .cs .cv{font-family:var(--display);font-weight:600;font-size:clamp(24px,3.4vw,32px);line-height:1;font-variant-numeric:tabular-nums}
+.cmpstat .cs .ck{font-size:10px;color:var(--ink-mid);font-weight:600;margin-top:7px;letter-spacing:.04em}
+.divlabels{display:grid;grid-template-columns:1fr 120px 1fr;margin:4px 0 10px}
+.divlabels span{font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--ink-mid)}
+.divlabels .dlL{text-align:right}.divlabels .dlR{text-align:left}
+.divchart{display:flex;flex-direction:column;gap:9px}
+.divrow{display:grid;grid-template-columns:1fr 120px 1fr;align-items:center}
+.divL{display:flex;justify-content:flex-end;align-items:center;gap:9px}
+.divR{display:flex;justify-content:flex-start;align-items:center;gap:9px}
+.divbar{height:19px;width:0;transition:width 1.05s cubic-bezier(.2,.8,.2,1);min-width:2px}
+.divL .divbar{border-radius:7px 0 0 7px}
+.divR .divbar{border-radius:0 7px 7px 0}
+.divn{font-size:12.5px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.divword{text-align:center;font-size:10.5px;font-weight:700;color:var(--ink-dim);font-family:var(--display)}
 </style>
 </head>
 <body>
@@ -311,7 +377,8 @@ svg{display:block;overflow:visible}
   <header class="mast">
     <div class="brand"><span class="lg"></span><span class="t">Observation Dashboard<small>AIS Sharjah</small></span></div>
     <nav class="rail">
-      <button class="pill on" data-board="coverage">Coverage</button>
+      <button class="pill on" data-board="snapshot">Snapshot</button>
+      <button class="pill" data-board="coverage">Coverage</button>
       <button class="pill" data-board="teacher">Observations</button>
       <button class="pill" data-board="settings">Settings</button>
     </nav>
@@ -323,8 +390,66 @@ svg{display:block;overflow:visible}
     <svg class="icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
   </button>
 
+  <!-- ============ SNAPSHOT (June R3 sweep) ============ -->
+  <section class="view" id="v-snapshot">
+    <div class="head">
+      <div>
+        <span class="kick"><span class="stripe"></span>Snapshot</span>
+        <h2 class="big">The June <em>R3</em> picture.</h2>
+        <div class="snapsub" id="snapIntro"></div>
+      </div>
+      <span class="subtle" id="snap-asof"></span>
+    </div>
+
+    <!-- whole-sweep context band (always visible) -->
+    <div class="sweepband"><span>Whole June sweep</span><i></i></div>
+    <div class="grid cols-3" id="snapHero"></div>
+
+    <!-- phase toggle -->
+    <div class="phasetabs" id="phaseTabs">
+      <button class="ptab on" data-phase="primary_kindy">Primary &amp; Kindy</button>
+      <button class="ptab" data-phase="secondary">Secondary</button>
+      <button class="ptab" data-phase="compare">Compare</button>
+    </div>
+
+    <!-- single-phase view -->
+    <div id="snapPhase" class="phsec">
+      <div class="head" style="margin:16px 0 2px"><div><span class="kick"><span class="stripe"></span><span id="phName">Primary &amp; Kindy</span></span></div></div>
+      <div class="grid cols-3" id="snapPhaseStats"></div>
+      <div class="panel" style="margin-top:14px">
+        <div class="ey">Student progress . best evidence per teacher</div>
+        <div class="progmain">
+          <div>
+            <div class="allgauge"><svg class="snapgauge" id="snapGauge" viewBox="0 20 240 200" width="208" height="173"></svg></div>
+            <div class="gauge-cap"><div class="gv" id="gaugeWord">.</div><div class="gl">average progress</div></div>
+          </div>
+          <div class="histo" id="snapHisto"></div>
+        </div>
+      </div>
+      <div class="grid cols-2" id="snapSW" style="margin-top:14px"></div>
+      <div class="panel" style="margin-top:14px">
+        <div class="ey">Insights . what the evidence reveals</div>
+        <div class="insgrid" id="snapInsights"></div>
+      </div>
+    </div>
+
+    <!-- compare view -->
+    <div id="snapCompare" class="phsec" hidden>
+      <div class="grid cols-2" id="cmpTop" style="margin-top:16px"></div>
+      <div class="panel" style="margin-top:14px">
+        <div class="ey">Progress distribution . Primary &amp; Kindy against Secondary</div>
+        <div class="divlabels"><span class="dlL" style="color:var(--b)">Primary &amp; Kindy</span><span></span><span class="dlR" style="color:var(--y)">Secondary</span></div>
+        <div class="divchart" id="divChart"></div>
+      </div>
+      <div class="panel" style="margin-top:14px">
+        <div class="ey">Insights . drawing the two together</div>
+        <div id="cmpInsights"></div>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ COVERAGE ============ -->
-  <section class="view" id="v-coverage">
+  <section class="view" id="v-coverage" hidden>
     <div class="head">
       <div>
         <span class="kick"><span class="stripe"></span>Coverage</span>
@@ -454,6 +579,7 @@ svg{display:block;overflow:visible}
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
       <div class="vhist">
+        <div class="vrow"><span class="vtag">v0.22</span><span class="vnote">New Snapshot board, now the landing view. A governance "at a glance" picture of the June R3 sweep with a Primary and Kindy / Secondary / Compare toggle. Each phase shows lessons observed, teachers seen, average progress (best evidence per teacher) on a ramp gauge and a six-point distribution, a What is working and Where to focus next summary, and three insights for each drawn from the inspectors' written evidence. Compare puts the two phases side by side with a diverging distribution chart. Teacher subschool (section) is now populated in Supabase from the staff register, so the split is live data, not hard-coded.</span></div>
         <div class="vrow"><span class="vtag">v0.21</span><span class="vnote">Dashboard now reads LIVE from Supabase. It paints the baked snapshot first (instant + offline fallback), then upgrades to live data via a read-only Supabase RPC and re-renders, so edits in Supabase show on refresh. Login-less for now (the password gate is the soft lock); proper @ais.ae sign-in comes later. If Supabase is unreachable it silently stays on the baked snapshot.</span></div>
         <div class="vrow"><span class="vtag">v0.20</span><span class="vnote">Masthead cleaned up: the Stars and theme buttons were removed from the top bar (both still live in Settings). A floating light/dark toggle, the same round sun/moon button as the R3 form, now sits in the top-right corner and is always available.</span></div>
         <div class="vrow"><span class="vtag">v0.19</span><span class="vnote">R3 Obs is now a fan-out menu of observation levels: Teacher Level (the working teacher search), Grade / Department Level, and School Level (which expands to Kindy, Lower Primary, Upper Primary, Whole Primary, Secondary). Teacher Level works as before; the other levels land on a styled placeholder for now (front-end only, to be connected to data later). The R3 Obs button stays as the menu trigger in every state.</span></div>
@@ -481,7 +607,7 @@ svg{display:block;overflow:visible}
 
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.21</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.22</span></span>
   </div>
 </div>
 
@@ -720,9 +846,139 @@ function renderTeacher(t){
   selectedObs='all';renderObsList(t);buildArc(t,'svgArc',progScore,progAvg,false);buildArc(t,'svgArcT',teachScore,teachAvg,true);selectObs(t,'all');
 }
 
+/* ============================================================= SNAPSHOT (the June R3 sweep)
+   A governance "at a glance" board, scoped to the Week 11 / June round only. Three views via the
+   phase toggle: Primary & Kindy, Secondary, and Compare. Every number is computed LIVE from D
+   (so it tracks the baked snapshot AND the live Supabase swap); the narrative copy below is the
+   human synthesis of the inspectors' free-text strengths/areas-to-develop for the round.
+   Australian English, no em/en dashes (see house rules). */
+const SNAP_ROUND='R3 June 26';                              // the only round the Snapshot reports
+const phaseOf=s=>s==='secondary'?'secondary':'primary_kindy'; // primary/kindy/nursery/null -> Primary & Kindy
+const PHASE_LABEL={primary_kindy:'Primary & Kindy',secondary:'Secondary'};
+/* per-phase June aggregates: lessons, distinct teachers, the per-lesson Progress (r3_02)
+   distribution, and the average progress taken as the BEST rating per teacher (best evidence wins,
+   the house principle) then averaged across teachers. phase 'all' = the whole sweep. */
+function snapAgg(phase){
+  let lessons=0;const teacherSet=new Set();const dist={1:0,2:0,3:0,4:0,5:0,6:0};const bestByT={};
+  for(const t of D.teachers){
+    if(phase!=='all'&&phaseOf(t.section)!==phase)continue;
+    let seen=false;
+    for(const o of t.observations){
+      if(o.round!==SNAP_ROUND)continue;
+      lessons++;seen=true;
+      const p=(o.scores||{}).r3_02;
+      if(p!=null&&p>=1&&p<=6){dist[p]++;if(bestByT[t.id]==null||p<bestByT[t.id])bestByT[t.id]=p;}
+    }
+    if(seen)teacherSet.add(t.id);
+  }
+  const bests=Object.values(bestByT);
+  const avgBest=bests.length?bests.reduce((a,b)=>a+b,0)/bests.length:null;
+  return {phase,lessons,teachers:teacherSet.size,dist,avgBest};
+}
+/* narrative synthesis of the round's free-text evidence (strengths + areas to develop), per phase */
+const NARR={
+  primary_kindy:{
+    strengths:{evidence:'Drawn from 59 strength notes across 68 lessons.',
+      summary:'Calm, well-routined classrooms with strong relationships and visible scaffolds, so children know exactly what to do.',
+      bullets:['Routines, relationships and behaviour for learning are consistently strong','Clear instructions; children know what is expected and follow it','Differentiation and scaffolds in place (sentence stems, helping words, checklists)','Purposeful questioning and turn-and-talk dialogue','Activating prior knowledge and modelling with gradual release'],
+      insights:['Self-assessment is the quiet star. Where children used checklists or self-monitoring they paced themselves and progress was visible to the inspector; it shows up in only a handful of classes, so it is a small, copyable practice with room to spread.','The strength is consistency, not peaks. Almost every lesson clears a solid bar and none was rated Weak at the bottom, so quality here is broad and dependable rather than reliant on a few stars.','Establishing each child’s starting point is already a strength in Science, and it is the single most useful move to export to the subjects where it is the most common gap.']},
+    develop:{evidence:'Drawn from 60 development notes across 68 lessons.',
+      summary:'Progress is capped at the top more than it is missing at the bottom; the dominant need is stretching the most able.',
+      bullets:['Extend and challenge the more able; too many capable children repeat what they can already do','Move beyond one task for all; undifferentiated tasks limit progress for some groups','Intervene earlier and more deliberately with the middle and lower groups','Reduce teacher talk in places and hand more of the thinking to children','Reclaim lost time at set-up and for early finishers'],
+      insights:['The ceiling, not the floor, is the issue. Around 24 development notes ask for more challenge while almost none ask for behaviour or engagement fixes, so moving Acceptable to Good here is about raising the top.','One root cause links several fixes: a check for understanding surfaces a gap, then the whole class receives the same next step anyway. The shift needed is reactive teaching becoming responsive, not more planning.','Some Acceptable ratings reflect lesson type, not teaching. Assessment-style lessons recur with "hard to see progress in a single lesson", so the headline average slightly understates the teaching on show.']}
+  },
+  secondary:{
+    strengths:{evidence:'Drawn from 93 strength notes across 99 lessons.',
+      summary:'Collaboration, dialogue and higher-order questioning, with students who can talk confidently about their own learning.',
+      bullets:['Collaboration, dialogue and discussion (turn-and-talk, peer review)','High engagement and on-task investment','Effective, higher-order questioning','Clear instructions and expectations','Individualised goals with visible next steps'],
+      insights:['Secondary has a real top end: nine lessons reached Outstanding for progress, more than Primary, so the phase has exemplars to learn from in-house rather than from outside.','Students can articulate their own learning because individualised goals and next steps recur as a strength; this is the foundation any group-work fix can build on.','The strengths are remarkably consistent across very different subjects (Islamic, English, Arts and Science all share clarity, questioning and engagement), so the phase has a shared professional language to build on.']},
+    develop:{evidence:'Drawn from 88 development notes across 99 lessons.',
+      summary:'More polarised than Primary; the most common single fix is giving group work real structure and accountability.',
+      bullets:['Give group work structure, roles and accountability (the most common fix)','Make student-to-student dialogue purposeful, not just present','Stretch high-achievers further, especially in Islamic and Arabic','Targeted intervention for a small group of lower-attainers','Make progress visible and evidenced in books and within the lesson'],
+      insights:['Group work is the most praised and the most penalised practice at once; the swing factor is structure, not collaboration. Around 26 notes ask for roles and accountability against about 30 praising collaboration, so one planning routine would move many lessons.','The challenge gap runs in opposite directions by subject: Islamic and Arabic are asked to stretch the top while English, Humanities and Science are asked to lift the tail, so a single school-wide differentiation target would miss both.','The weak end is short and nameable, not diffuse. The eight Very Weak progress ratings trace to a handful of concrete situations (off-task or unsupervised pockets, a named student making no visible progress), so the tail is a fixable checklist rather than a broad quality problem.']}
+  },
+  compare:['Same average, different shape. Both phases land on Good (Primary and Kindy 3.2, Secondary 3.2), but Secondary is polarised, with nine Outstanding lessons and eight Very Weak, while Primary and Kindy has no lesson below Weak and clusters tightly in the Good to Acceptable band. Read the averages alone and they look identical; read the spread and they call for different moves.','The same ceiling effect appears in both phases: the calmest, most individualised lessons are the ones where the able are not extended or progress is hardest to see. Across both, the biggest single development theme is challenge for the most able, not remediation, which points to raising the top rather than rescuing the bottom.','Effort should land in different places. Primary and Kindy will gain most from a shared "plan from each child’s starting point" and self-assessment routine; Secondary will gain most from a group-work structure routine and from closing a short list of named weak-progress hotspots. Neither needs a behaviour or engagement drive, both already score those as strengths.']
+};
+const I_CHECK='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.6l3.4 3.4L13 4.6"/></svg>';
+const I_ARROW='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11L11 5M6.2 5H11v4.8"/></svg>';
+let snapPhase='primary_kindy';
+function statTile(c){const d=document.createElement('div');d.className='panel stat'+(c.cls?' '+c.cls:'');
+  const v=c.word!=null?`<div class="v" style="color:${c.col}">${esc(c.word)}</div>`:`<div class="v" data-to="${c.v}">${c.v}</div>`;
+  d.innerHTML=v+`<div class="l">${esc(c.l)}</div><div class="s">${esc(c.s)}</div>`;return d;}
+/* value gauge: ramp track + fill to the average + centre word. Drawn at FINAL state (no GSAP);
+   the only motion is the CSS .snapgauge fade (document timeline), so a frozen tab never strands it. */
+function buildValueArc(svgId,avg){const s=byId(svgId);if(!s)return;s.innerHTML='';
+  const cx=120,cy=120,r=80,sw=15,N=48,A0=135,SW=270;
+  const ang=p=>A0+SW*p,seg=(p0,p1,c,o)=>s.appendChild(el('path',{d:arcP(cx,cy,r,ang(p0),ang(p1)+0.6,0),fill:'none',stroke:c,'stroke-width':sw,opacity:o,'stroke-linecap':'butt'}));
+  for(let i=0;i<N;i++){const a=i/N,b=(i+1)/N;seg(a,b,rampAt(6-5*((a+b)/2)),.18)}
+  if(avg!=null){const M=Math.max(1,Math.round(N*frac(avg)));for(let i=0;i<M;i++){const a=i/N,b=(i+1)/N;seg(a,b,rampAt(6-5*((a+b)/2)),1)}}
+  const w=el('text',{x:cx,y:cy+8,'text-anchor':'middle','font-size':avg==null?16:23,fill:avg==null?gc('--ink-mid'):rampAt(avg),style:'font-family:var(--display);font-weight:600;font-style:italic'});w.textContent=wordOf(avg);s.appendChild(w);}
+function renderHisto(dist){const host=byId('snapHisto');host.innerHTML='';const R=RAMP();
+  const max=Math.max(1,...[1,2,3,4,5,6].map(i=>dist[i]));
+  for(let i=1;i<=6;i++){const c=dist[i],col=document.createElement('div');col.className='hbar';
+    col.innerHTML=`<div class="hc">${c}</div><div class="hb" style="background:${R[i]}"></div><div class="hw">${WORD[i]}</div>`;
+    host.appendChild(col);const bar=col.querySelector('.hb');bar.style.transitionDelay=((i-1)*.05)+'s';
+    void bar.offsetWidth;bar.style.height=Math.round(c/max*126)+'px';}  // px height + reflow: final state applies without rAF
+}
+function swPanel(kind,data){const p=document.createElement('div');p.className='panel';const isS=kind==='strength';
+  const col=isS?'var(--g)':'var(--r5)',title=isS?'What is working':'Where to focus next',mark=isS?I_CHECK:I_ARROW;
+  p.innerHTML=`<div class="swhead" style="color:${col}"><span class="swdot" style="background:${col}"></span><b>${title}</b></div>`+
+    `<div class="swev">${esc(data.evidence)}</div><div class="swsum">${esc(data.summary)}</div>`+
+    `<div class="blist">${data.bullets.map(b=>`<div class="brow"><span class="bm" style="color:${col}">${mark}</span><span>${esc(b)}</span></div>`).join('')}</div>`;
+  return p;}
+function insCol(title,arr,dev){const c=document.createElement('div');c.className='inscol';
+  c.innerHTML=`<div class="ey">${esc(title)}</div>`+arr.map((t,i)=>`<div class="icard${dev?' dev':''}"><span class="inum">${i+1}</span><p>${esc(t)}</p></div>`).join('');
+  return c;}
+function renderPhase(phase){const a=snapAgg(phase),N=NARR[phase];
+  byId('phName').textContent=PHASE_LABEL[phase];
+  const sg=byId('snapPhaseStats');sg.innerHTML='';
+  [{v:a.lessons,l:'Lessons observed',s:PHASE_LABEL[phase],cls:'accent'},
+   {v:a.teachers,l:'Teachers seen',s:'in this phase'},
+   {word:wordOf(a.avgBest),col:colOf(a.avgBest),l:'Average progress',s:a.avgBest!=null?a.avgBest.toFixed(1)+' of 6':'not assessed'}].forEach(c=>sg.appendChild(statTile(c)));
+  buildValueArc('snapGauge',a.avgBest);
+  byId('gaugeWord').textContent=a.avgBest!=null?a.avgBest.toFixed(1)+' of 6':'n/a';
+  renderHisto(a.dist);
+  const sw=byId('snapSW');sw.innerHTML='';sw.appendChild(swPanel('strength',N.strengths));sw.appendChild(swPanel('develop',N.develop));
+  const ins=byId('snapInsights');ins.innerHTML='';ins.appendChild(insCol('Strengths',N.strengths.insights,false));ins.appendChild(insCol('Areas to develop',N.develop.insights,true));
+}
+function cmpCard(cls,label,a){return `<div class="panel cmpcard ${cls}"><div class="cl">${label}</div><div class="cmpstat">`+
+  `<div class="cs"><div class="cv" data-to="${a.lessons}">${a.lessons}</div><div class="ck">lessons</div></div>`+
+  `<div class="cs"><div class="cv" data-to="${a.teachers}">${a.teachers}</div><div class="ck">teachers</div></div>`+
+  `<div class="cs"><div class="cv" style="color:${colOf(a.avgBest)}">${wordOf(a.avgBest)}</div><div class="ck">avg progress</div></div></div></div>`;}
+function renderDiv(pk,se){const host=byId('divChart');host.innerHTML='';const R=RAMP();
+  const max=Math.max(1,...[1,2,3,4,5,6].flatMap(i=>[pk[i],se[i]]));
+  for(let i=1;i<=6;i++){const row=document.createElement('div');row.className='divrow';
+    row.innerHTML=`<div class="divL"><span class="divn">${pk[i]}</span><span class="divbar" style="background:${R[i]}" data-w="${(pk[i]/max*100).toFixed(2)}"></span></div>`+
+      `<div class="divword">${WORD[i]}</div>`+
+      `<div class="divR"><span class="divbar" style="background:${R[i]}" data-w="${(se[i]/max*100).toFixed(2)}"></span><span class="divn">${se[i]}</span></div>`;
+    host.appendChild(row);}
+  void host.offsetWidth;host.querySelectorAll('.divbar').forEach((b,k)=>{b.style.transitionDelay=(Math.floor(k/2)*.05)+'s';b.style.width=b.dataset.w+'%';});
+}
+function renderCompare(){const pk=snapAgg('primary_kindy'),se=snapAgg('secondary');
+  byId('cmpTop').innerHTML=cmpCard('pk','Primary & Kindy',pk)+cmpCard('sec','Secondary',se);
+  renderDiv(pk.dist,se.dist);
+  byId('cmpInsights').innerHTML=NARR.compare.map((t,i)=>`<div class="icard"><span class="inum" style="color:var(--y)">${i+1}</span><p>${esc(t)}</p></div>`).join('');
+}
+function renderSnapshot(){
+  byId('snap-asof').textContent='Snapshot '+D.generated_on;
+  const all=snapAgg('all');
+  byId('snapIntro').textContent=all.lessons+' lessons observed across '+all.teachers+' teachers in the June R3 sweep. Switch between Primary and Kindy, Secondary, or compare the two.';
+  const g=byId('snapHero');g.innerHTML='';
+  [{v:all.lessons,l:'Lessons observed',s:'whole June sweep',cls:'accent'},
+   {v:all.teachers,l:'Teachers seen',s:'at least once in June'},
+   {word:wordOf(all.avgBest),col:colOf(all.avgBest),l:'Average progress',s:'best evidence per teacher'}].forEach(c=>g.appendChild(statTile(c)));
+  const compare=snapPhase==='compare';
+  byId('snapPhase').hidden=compare;byId('snapCompare').hidden=!compare;
+  if(compare)renderCompare();else renderPhase(snapPhase);
+  document.querySelectorAll('#phaseTabs .ptab').forEach(b=>b.classList.toggle('on',b.dataset.phase===snapPhase));
+}
+function applyCounts(scope){if(!scope||!window.gsap)return;scope.querySelectorAll('[data-to]').forEach(n=>{if(n.offsetParent!==null)countUp(n,+n.dataset.to,1.1);});}
+function snapReveal(){reveal('#v-snapshot .head',0);reveal('#snapHero .panel',.05);reveal('#phaseTabs',0);
+  reveal((snapPhase==='compare'?'#snapCompare':'#snapPhase')+' .panel',.06);applyCounts(byId('v-snapshot'));}
+
 /* ============================================================= router + FLIP */
-const views={coverage:'v-coverage',teacher:'v-teacher',settings:'v-settings'};
-let current='coverage';
+const views={snapshot:'v-snapshot',coverage:'v-coverage',teacher:'v-teacher',settings:'v-settings'};
+let current='snapshot';
 /* Observations tab: the R3 Obs button fans out a menu of levels. obsView is the chosen level:
    'hub' (nothing picked yet) | 'teacher' (search + list/detail, the only data-wired level) |
    'placeholder' (Grade/Department or a School Level segment, front-end only for now). The R3 Obs
@@ -757,8 +1013,8 @@ function settle(sel,ms){setTimeout(()=>{try{if(window.gsap){gsap.killTweensOf(se
 function reveal(sel,stagger){if(!window.gsap)return;gsap.fromTo(sel,{y:18},{y:0,duration:.5,stagger:stagger||.05,ease:'power3.out',immediateRender:false});settle(sel);}
 /* hash routing: each tab gets its own URL so the link changes and is bookmarkable/refresh-safe.
    coverage = no hash (default), Observations = #teachers, Settings = #settings. */
-const boardSlug={coverage:'',teacher:'teachers',settings:'settings'};
-const slugBoard={'':'coverage',coverage:'coverage',teachers:'teacher',settings:'settings'};
+const boardSlug={snapshot:'',coverage:'coverage',teacher:'teachers',settings:'settings'};
+const slugBoard={'':'snapshot',snapshot:'snapshot',coverage:'coverage',teachers:'teacher',settings:'settings'};
 function syncHash(b){const slug=boardSlug[b]||'';
   if(slug){if(location.hash.slice(1)!==slug)location.hash=slug;}
   else if(location.hash){history.replaceState(null,'',location.pathname+location.search);}}
@@ -766,6 +1022,7 @@ function showBoard(b,opts={}){
   if(b===current&&!opts.force)return;
   Object.entries(views).forEach(([k,id])=>byId(id).hidden=(k!==b));
   setPill(b);current=b;syncHash(b);
+  if(b==='snapshot'){renderSnapshot();snapReveal();}
   if(b==='coverage'){renderCoverage();animateStats();reveal('#v-coverage .panel',.04);}
   if(b==='teacher'){selectedId=null;byId('tsearch').value='';fltNoobs=false;byId('fltNoobs').classList.remove('on');setObsMenu(false);setObs('hub');reveal('#v-teacher .panel',.06);}
   if(b==='settings')reveal('#v-settings .panel',.08);
@@ -833,6 +1090,7 @@ function applyTheme(t){document.documentElement.setAttribute('data-theme',t);
   byId('themeName').textContent=t==='dark'?'Dark':'Light';   // Settings label; the floating icon swaps via CSS
   if(window.THREE)applyStarStyle();
   // re-tint any visible svg shapes that read CSS vars at build time
+  if(current==='snapshot')renderSnapshot();
   if(current==='coverage'){renderRing();renderSpread();renderDist();}
   if(current==='teacher'&&!byId('obsDetail').hidden&&selectedId!=null)renderTeacher(teacherById(selectedId));
   try{localStorage.setItem('ais-dash-theme',t)}catch(e){}}
@@ -845,6 +1103,9 @@ byId('starsToggle').onclick=()=>applyStars(document.documentElement.getAttribute
 
 /* board rail */
 document.querySelectorAll('.pill').forEach(p=>p.onclick=()=>showBoard(p.dataset.board));
+/* snapshot phase toggle: Primary & Kindy | Secondary | Compare */
+document.querySelectorAll('#phaseTabs .ptab').forEach(b=>b.onclick=()=>{snapPhase=b.dataset.phase;renderSnapshot();
+  reveal((snapPhase==='compare'?'#snapCompare':'#snapPhase')+' .panel',.06);applyCounts(byId('v-snapshot'));});
 byId('backBtn').onclick=()=>showBoard('coverage');
 /* browser back/forward + deep links: route to the board named in the hash */
 addEventListener('hashchange',()=>{const b=slugBoard[location.hash.slice(1)]||'coverage';if(b!==current)showBoard(b);});
@@ -859,7 +1120,7 @@ byId('fltNoobs').onclick=()=>{fltNoobs=!fltNoobs;byId('fltNoobs').classList.togg
 
 /* ============================================================= entry sequence */
 function runEntry(){
-  renderCoverage();
+  renderSnapshot();
   const entry=byId('entry');
   let done=false;
   // The reveal is driven by setTimeout (fires even when RAF is frozen, e.g. a tab
@@ -869,10 +1130,9 @@ function runEntry(){
     if(done)return;done=true;
     entry.classList.add('gone');                 // CSS opacity transition
     setTimeout(()=>{entry.style.display='none';},750);
-    animateStats();
-    reveal('.mast',0);reveal('#v-coverage .head',0);reveal('#v-coverage .panel',.05);
-    const initB=slugBoard[location.hash.slice(1)]||'coverage';   // deep-link: open the board in the URL
-    if(initB!=='coverage')showBoard(initB,{force:true});
+    reveal('.mast',0);snapReveal();
+    const initB=slugBoard[location.hash.slice(1)]||'snapshot';   // deep-link: open the board in the URL
+    if(initB!=='snapshot')showBoard(initB,{force:true});
   };
   if(window.gsap){                               // polish the title card itself
     gsap.fromTo('#entry .crest',{scale:.7,opacity:0},{scale:1,opacity:1,duration:.7,ease:'power3.out',immediateRender:false});
@@ -949,7 +1209,8 @@ async function loadLive(){
     if(!raw||!Array.isArray(raw.teachers)||!raw.teachers.length||!Array.isArray(raw.assessments))return;
     const shaped=shapeSnapshot(raw);
     window.__AIS_DATA=shaped;D=shaped;deriveFromD();                    // swap baked -> live
-    if(current==='coverage'){renderCoverage();animateStats();}          // re-render whatever is showing
+    if(current==='snapshot')renderSnapshot();                           // re-render whatever is showing
+    else if(current==='coverage'){renderCoverage();animateStats();}
     else if(current==='teacher'&&!byId('obsDetail').hidden&&selectedId!=null)renderTeacher(teacherById(selectedId));
   }catch(e){/* offline / blocked / timeout -> keep the baked snapshot, no error UI */}
 }
