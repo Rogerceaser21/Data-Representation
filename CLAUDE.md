@@ -6,7 +6,7 @@
 
 ## What this is
 
-AIS Sharjah **Teacher Observation showcase system**, pitched 2026-05-21 to principal Steven McLuckie ahead of the early-2027 school review. Currently at **v0.48** with **two parallel HTML forms** (plus an ungated teacher viewer generated from the R3 master) wired to **two separate Google Sheets** backed by **two separate Apps Script projects** (both under admin.user@ais.ae). **v0.47 added the R3 -> Supabase dual-write bridge**: every R3 submission now lands in BOTH the Google Sheet (source of truth) AND the dashboard's Supabase, plus a password-gated admin Settings cog on the R3 form that sets the current inspection Round (see hard rule 14).
+AIS Sharjah **Teacher Observation showcase system**, pitched 2026-05-21 to principal Steven McLuckie ahead of the early-2027 school review. Currently at **v0.49** with **two parallel HTML forms** (plus an ungated teacher viewer generated from the R3 master) wired to **two separate Google Sheets** backed by **two separate Apps Script projects** (both under admin.user@ais.ae). **v0.47 added the R3 -> Supabase dual-write bridge**: every R3 submission now lands in BOTH the Google Sheet (source of truth) AND the dashboard's Supabase, plus a password-gated admin Settings cog on the R3 form that sets the current inspection Round (see hard rule 14).
 
 1. **Lesson Observation form**, internal AIS template, 4 sections, 36 S/U criteria, signatures, OTP aligned
 2. **R3 Evidence form**, SPEA / governance template, single-select Evidence Type, 10 judgements on a 1-6 scale, searchable teacher dropdown sourced from 6 staff Workspace Groups

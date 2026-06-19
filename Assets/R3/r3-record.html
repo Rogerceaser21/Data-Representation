@@ -1383,58 +1383,121 @@ body.is-viewer #btn-reset { display: none; }
 .cog-btn .icon { width: 1.05em; height: 1.05em; display: block; }
 body.is-viewer .cog-btn { display: none; }
 
+/* v0.49: restyled to the form's own design tokens (card-bg / paper ink / AIS
+   accents / serif display font), mirroring the eyebrow, labels, inputs and
+   action buttons used everywhere else. The earlier build used non-existent vars
+   (--ink, --paper-2) and painted the card with --paper (the navy INK colour),
+   so it rendered as illegible navy-on-navy. */
 .admin-modal {
   position: fixed; inset: 0; z-index: 10000;
   display: none; align-items: center; justify-content: center;
-  background: rgba(20, 54, 66, 0.42);
-  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  background: rgba(10, 13, 31, 0.5);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+          backdrop-filter: blur(10px) saturate(140%);
   padding: 1.2rem;
 }
 .admin-modal.open { display: flex; }
 .admin-card {
-  width: min(420px, 100%);
-  background: var(--paper);
-  border: 1px solid var(--rule);
-  border-radius: 14px;
-  box-shadow: 0 24px 60px -22px rgba(20, 54, 66, 0.5);
-  padding: 1.5rem 1.6rem;
-  color: var(--ink);
+  position: relative;
+  overflow: hidden;
+  width: min(430px, 100%);
+  background: var(--card-bg);
+  border: 1px solid var(--navy-edge);
+  border-radius: clamp(0.8rem, 1.4vw, 1.1rem);
+  box-shadow: var(--shadow-card);
+  padding: clamp(1.5rem, 2.4vw, 1.9rem);
+  color: var(--paper);
 }
-.admin-card h2 {
-  margin: 0 0 0.2rem; font-size: 1.04rem; font-weight: 650;
-  letter-spacing: 0.01em;
+/* signature AIS gradient top-bar, same as the form masthead */
+.admin-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--ais-red), var(--ais-yellow), var(--rate-success));
 }
 .admin-card .admin-eyebrow {
-  font-size: 0.66rem; letter-spacing: 0.22em; text-transform: uppercase;
-  color: var(--paper-dim); font-weight: 700; margin-bottom: 0.6rem; display: block;
+  font-family: var(--body-font);
+  font-size: var(--label);
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--ais-red);
+  display: inline-flex; align-items: center; gap: 0.7em;
+  margin-bottom: 0.85rem;
+}
+.admin-card .admin-eyebrow::before {
+  content: '';
+  width: clamp(1.6rem, 2.4vw, 2.1rem); height: 3px; border-radius: 2px;
+  background: linear-gradient(90deg, var(--ais-red), var(--ais-yellow), var(--rate-success));
+}
+.admin-card h2 {
+  font-family: var(--display-font);
+  font-weight: 700;
+  font-size: clamp(1.3rem, 2.1vw, 1.6rem);
+  line-height: 1.08;
+  letter-spacing: -0.012em;
+  color: var(--paper);
+  margin: 0 0 0.2rem;
 }
 .admin-card label {
-  display: block; font-size: 0.78rem; font-weight: 600;
-  color: var(--paper-dim); margin: 0.9rem 0 0.3rem;
+  display: block;
+  font-family: var(--body-font);
+  font-size: var(--label);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--paper-mid);
+  margin: 1.1rem 0 0.4rem;
 }
 .admin-card input {
   width: 100%; box-sizing: border-box;
-  padding: 0.55rem 0.7rem; font-size: 0.92rem;
-  border: 1px solid var(--rule); border-radius: 8px;
-  background: var(--paper-2, var(--paper)); color: var(--ink);
+  font-family: var(--display-font);
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  color: var(--paper);
+  background: var(--row-tint);
+  border: 1px solid var(--rule);
+  border-radius: clamp(0.45rem, 0.8vw, 0.6rem);
+  padding: 0.6rem 0.8rem;
+  outline: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
 }
-.admin-card input:focus { outline: none; border-color: var(--rate-success, #2a9d6f); }
-.admin-row { display: flex; gap: 0.5rem; margin-top: 1.1rem; }
+.admin-card input::placeholder { color: var(--paper-faint); font-style: italic; }
+.admin-card input:focus { border-color: var(--rate-success); background: var(--card-bg); }
+.admin-row { display: flex; gap: 0.6rem; margin-top: 1.3rem; }
+/* base = primary (green) action; .ghost = secondary outline. Mirrors .action-btn. */
 .admin-btn {
-  flex: 1; padding: 0.55rem 0.8rem; font-size: 0.85rem; font-weight: 650;
-  border-radius: 8px; cursor: pointer; border: 1px solid var(--ink);
-  background: var(--ink); color: var(--paper);
-  transition: opacity 140ms ease;
+  flex: 1;
+  cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--body-font);
+  font-size: clamp(0.7rem, 0.92vw, 0.82rem);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 0.65em 1.1em;
+  border-radius: 999px;
+  border: 1px solid var(--rate-success-deep);
+  background: var(--rate-success);
+  color: #fff;
+  box-shadow: 0 10px 24px -10px rgba(46, 161, 90, 0.45);
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
-.admin-btn.ghost { background: transparent; color: var(--ink); }
-.admin-btn:hover { opacity: 0.86; }
-.admin-btn:disabled { opacity: 0.45; cursor: default; }
+.admin-btn:hover { background: var(--rate-success-deep); transform: translateY(-1px); }
+.admin-btn.ghost {
+  background: var(--card-bg);
+  border-color: var(--rule);
+  color: var(--paper-dim);
+  box-shadow: none;
+}
+.admin-btn.ghost:hover { color: var(--paper); border-color: var(--paper-mid); background: var(--surface-mid); }
+.admin-btn:disabled { opacity: 0.45; cursor: default; transform: none; }
 .admin-status {
-  min-height: 1.1rem; margin-top: 0.8rem;
-  font-size: 0.8rem; color: var(--paper-dim);
+  min-height: 1.1rem; margin-top: 0.9rem;
+  font-family: var(--body-font);
+  font-size: var(--small);
+  color: var(--paper-mid);
 }
-.admin-status.ok { color: var(--rate-success, #2a9d6f); }
-.admin-status.bad { color: var(--rate-danger, #c0492f); }
+.admin-status.ok { color: var(--rate-success); font-weight: 600; }
+.admin-status.bad { color: var(--ais-red); font-weight: 600; }
 .admin-step[hidden] { display: none; }
 
 /* === Loading overlay (v0.31) ====================================== */
@@ -1964,7 +2027,7 @@ body.is-viewer .cog-btn { display: none; }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.48</a></span>
+    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.49</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
