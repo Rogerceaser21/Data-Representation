@@ -678,7 +678,8 @@ body.is-locked .action-btn.new { display: inline-flex; }
 .theme-toggle {
   position: fixed;
   bottom: clamp(0.7rem, 1.4vw, 1.2rem);
-  left: clamp(0.7rem, 1.4vw, 1.2rem);
+  /* v0.48: shifted right of the admin cog (which now holds the corner) */
+  left: calc(clamp(0.7rem, 1.4vw, 1.2rem) + clamp(2rem, 2.4vw, 2.4rem) + 0.5rem);
   z-index: 100;
   width: clamp(2rem, 2.4vw, 2.4rem);
   height: clamp(2rem, 2.4vw, 2.4rem);
@@ -1354,22 +1355,31 @@ body.is-viewer #btn-new,
 body.is-viewer #btn-reset { display: none; }
 
 /* === Admin settings (v0.47): discreet cog + password-gated panel ==== */
+/* v0.48: cog moved to the bottom-LEFT corner, matched to the theme toggle (which
+   shifts right to sit beside it) so the two circular controls read as a pair. */
 .cog-btn {
   position: fixed;
   bottom: clamp(0.7rem, 1.4vw, 1.2rem);
-  right: clamp(0.7rem, 1.4vw, 1.2rem);
-  z-index: 60;
-  width: 2.1rem; height: 2.1rem;
-  display: flex; align-items: center; justify-content: center;
-  border-radius: 999px;
+  left: clamp(0.7rem, 1.4vw, 1.2rem);
+  z-index: 100;
+  width: clamp(2rem, 2.4vw, 2.4rem);
+  height: clamp(2rem, 2.4vw, 2.4rem);
+  border-radius: 50%;
   border: 1px solid var(--rule);
-  background: var(--paper);
+  background: var(--surface-mid);
   color: var(--paper-dim);
-  cursor: pointer;
-  opacity: 0.45;
-  transition: opacity 160ms ease, color 160ms ease, border-color 160ms ease;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; padding: 0;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  -webkit-backdrop-filter: blur(6px);
+          backdrop-filter: blur(6px);
 }
-.cog-btn:hover { opacity: 1; color: var(--ink); border-color: var(--ink); }
+.cog-btn:hover {
+  background: var(--surface-strong);
+  color: var(--paper);
+  border-color: var(--rate-success);
+  transform: scale(1.06);
+}
 .cog-btn .icon { width: 1.05em; height: 1.05em; display: block; }
 body.is-viewer .cog-btn { display: none; }
 
@@ -1954,7 +1964,7 @@ body.is-viewer .cog-btn { display: none; }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.47</a></span>
+    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.48</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
