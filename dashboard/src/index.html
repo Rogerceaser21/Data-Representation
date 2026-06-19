@@ -359,6 +359,63 @@ svg{display:block;overflow:visible}
 .divR .divbar{border-radius:0 7px 7px 0}
 .divn{font-size:12.5px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
 .divword{text-align:center;font-size:10.5px;font-weight:700;color:var(--ink-dim);font-family:var(--display)}
+
+/* ===== snapshot STORY view ===== */
+.snaptools{display:flex;flex-direction:column;align-items:flex-end;gap:9px}
+.viewtabs{display:inline-flex;gap:4px;background:var(--panel);border:1px solid var(--edge-soft);border-radius:24px;padding:4px}
+.vtab{font:inherit;font-size:12px;font-weight:600;color:var(--ink-mid);background:transparent;border:0;border-radius:20px;padding:6px 15px;cursor:pointer;transition:.2s}
+.vtab:hover{color:var(--ink)}
+.vtab.on{background:var(--panel-2);color:var(--ink);box-shadow:0 2px 10px -5px var(--shadow)}
+#snapStory{margin-top:14px}
+.stage{position:relative;border:1px solid var(--edge);border-radius:22px;background:var(--panel);backdrop-filter:blur(7px);box-shadow:0 30px 70px -50px var(--shadow);overflow:hidden;min-height:clamp(440px,58vh,640px)}
+.beat{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:clamp(20px,3.2vw,42px);overflow:auto;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .55s ease,visibility .55s}
+.beat.col-top{justify-content:flex-start}
+.beat.on{opacity:1;visibility:visible;pointer-events:auto}
+.beat-k{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-mid);font-weight:700;margin-bottom:14px}
+.beat-h{font-family:var(--display);font-weight:600;font-size:clamp(25px,4.2vw,44px);line-height:1.05;letter-spacing:-.02em;max-width:22ch}
+.beat-h em{font-style:italic;color:var(--y);text-shadow:var(--glow) color-mix(in srgb,var(--y) 55%,transparent)}
+.beat-sub{font-size:14.5px;color:var(--ink-dim);margin-top:15px;line-height:1.6;max-width:58ch}
+/* scale beat: two animated motifs */
+.scalewrap{display:grid;grid-template-columns:1fr 1fr;gap:clamp(18px,4vw,46px);align-items:end;margin-top:10px}
+@media(max-width:680px){.scalewrap{grid-template-columns:1fr;gap:26px}}
+.motif{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px}
+.motif svg{width:100%;max-width:300px;height:auto;overflow:visible}
+.big-n{font-family:var(--display);font-weight:600;font-size:clamp(40px,7vw,70px);line-height:1;font-variant-numeric:tabular-nums}
+.big-n.teach{color:var(--b)}
+.big-n.obs{color:var(--y);text-shadow:var(--glow) color-mix(in srgb,var(--y) 50%,transparent)}
+.motif .ml{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-mid);font-weight:700}
+.gly{transform-box:fill-box;transform-origin:center}
+.odot,.iris,.pupil{transform-box:fill-box;transform-origin:center}
+/* progress beat */
+.pbeat{display:grid;grid-template-columns:230px 1fr;gap:clamp(18px,4vw,40px);align-items:center;margin-top:8px}
+@media(max-width:680px){.pbeat{grid-template-columns:1fr;justify-items:center;gap:16px}}
+/* list / insight beats */
+.bl-list{display:flex;flex-direction:column;gap:11px;margin-top:16px;max-width:66ch}
+.bl-row{display:grid;grid-template-columns:22px 1fr;gap:12px;align-items:start;font-size:15px;line-height:1.5;color:var(--ink-dim)}
+.bl-row .bm{margin-top:1px}.bl-row .bm svg{width:16px;height:16px;display:block}
+.bl-ins{display:flex;flex-direction:column;gap:10px;margin-top:18px;max-width:72ch}
+.bi{position:relative;padding:13px 16px 13px 46px;border:1px solid var(--edge);border-radius:13px;background:var(--panel-2)}
+.bi .bn{position:absolute;left:15px;top:11px;font-family:var(--display);font-style:italic;font-weight:600;font-size:21px;color:var(--g)}
+.bi.dev .bn{color:var(--r5)}
+.bi p{font-size:13px;line-height:1.56;color:var(--ink-dim)}
+/* story controls */
+.storyctl{display:flex;align-items:center;gap:12px;margin-top:14px;padding:9px 14px;background:var(--panel);border:1px solid var(--edge-soft);border-radius:30px;backdrop-filter:blur(6px)}
+.sbtn{font:inherit;font-size:16px;font-weight:700;color:var(--ink-dim);background:var(--panel-2);border:1px solid var(--edge);border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.2s;flex:none;line-height:1;padding:0}
+.sbtn:hover{border-color:var(--y);color:var(--ink);transform:translateY(-1px)}
+.sbtn.wide{width:auto;border-radius:30px;padding:0 18px;height:38px;font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-left:auto}
+.sbtn.play .ico{display:block;width:0;height:0;border-left:12px solid currentColor;border-top:7px solid transparent;border-bottom:7px solid transparent;margin-left:3px}
+.storyctl.playing .sbtn.play .ico{border:0;width:11px;height:13px;margin:0;border-left:3.5px solid currentColor;border-right:3.5px solid currentColor;box-sizing:border-box}
+.sdots{display:flex;align-items:center;gap:9px}
+.sdot{width:8px;height:8px;border-radius:50%;background:var(--edge);cursor:pointer;transition:.25s;border:0;padding:0}
+.sdot.on{background:var(--y);transform:scale(1.3);box-shadow:0 0 10px color-mix(in srgb,var(--y) 60%,transparent)}
+/* present (full screen) */
+#v-snapshot.present .stage{position:fixed;inset:0;z-index:80;border-radius:0;min-height:100vh;border:0}
+#v-snapshot.present .storyctl{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:81;margin:0}
+#v-snapshot.present .head,#v-snapshot.present #phaseTabs,#v-snapshot.present #snapDetail{display:none}
+body.presenting .mast,body.presenting .themeico{display:none}
+/* autoplay toggle in Settings */
+#autoplayToggle.on .sw{background:var(--g)}
+#autoplayToggle.on .sw::after{left:23px}
 </style>
 </head>
 <body>
@@ -398,19 +455,39 @@ svg{display:block;overflow:visible}
         <h2 class="big">The June <em>R3</em> picture.</h2>
         <div class="snapsub" id="snapIntro"></div>
       </div>
-      <span class="subtle" id="snap-asof"></span>
+      <div class="snaptools">
+        <div class="viewtabs" id="viewTabs">
+          <button class="vtab on" data-view="story">Story</button>
+          <button class="vtab" data-view="detail">Detail</button>
+        </div>
+        <span class="subtle" id="snap-asof"></span>
+      </div>
     </div>
 
-    <!-- whole-sweep context band (always visible) -->
-    <div class="sweepband"><span>Whole June sweep</span><i></i></div>
-    <div class="grid cols-3" id="snapHero"></div>
-
-    <!-- phase toggle -->
+    <!-- shared phase toggle (drives both Story and Detail) -->
     <div class="phasetabs" id="phaseTabs">
       <button class="ptab on" data-phase="primary_kindy">Primary &amp; Kindy</button>
       <button class="ptab" data-phase="secondary">Secondary</button>
       <button class="ptab" data-phase="compare">Compare</button>
     </div>
+
+    <!-- STORY view (animated narrative, default) -->
+    <div id="snapStory">
+      <div class="stage" id="storyStage"></div>
+      <div class="storyctl" id="storyCtl">
+        <button class="sbtn" id="sPrev" type="button" aria-label="Previous beat">&#8249;</button>
+        <button class="sbtn play" id="sPlay" type="button" aria-label="Play or pause"><span class="ico"></span></button>
+        <button class="sbtn" id="sNext" type="button" aria-label="Next beat">&#8250;</button>
+        <div class="sdots" id="sDots"></div>
+        <button class="sbtn wide" id="sPresent" type="button">Present</button>
+      </div>
+    </div>
+
+    <!-- DETAIL view (the v1 cards, one click away) -->
+    <div id="snapDetail" hidden>
+    <!-- whole-sweep context band -->
+    <div class="sweepband"><span>Whole June sweep</span><i></i></div>
+    <div class="grid cols-3" id="snapHero"></div>
 
     <!-- single-phase view -->
     <div id="snapPhase" class="phsec">
@@ -446,6 +523,7 @@ svg{display:block;overflow:visible}
         <div id="cmpInsights"></div>
       </div>
     </div>
+    </div><!-- /#snapDetail -->
   </section>
 
   <!-- ============ COVERAGE ============ -->
@@ -573,12 +651,17 @@ svg{display:block;overflow:visible}
           <span class="sw" id="themeSw"></span>
           <span class="tl"><b id="themeName">Light</b><span>Paper by default, dark a tap away.</span></span>
         </label>
+        <label class="toggle" id="autoplayToggle" style="margin-top:16px">
+          <span class="sw"></span>
+          <span class="tl"><b>Auto-play the Snapshot story</b><span>Let it advance on its own; off means you step it yourself.</span></span>
+        </label>
         <p class="subtle" style="margin-top:14px;line-height:1.6">These choices are saved to this browser, so the field can be calm for a governor session and lively for a launch.</p>
       </div>
     </div>
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
       <div class="vhist">
+        <div class="vrow"><span class="vtag">v0.24</span><span class="vnote">The Snapshot now opens on an animated Story view, the new landing page. It plays the June picture beat by beat (cover, the teachers and lessons seen drawn as illustrations, progress on the gauge and distribution, what is working, where to focus, and the insights), one after another. It auto-plays and can be paused, stepped with the arrows, turned off completely (Settings), or shown full screen with Present. The original card view is one click away as Detail. Coverage and Observations are unchanged.</span></div>
         <div class="vrow"><span class="vtag">v0.23</span><span class="vnote">Snapshot now counts distinct LESSONS, not form submissions. Most June lessons were co-observed by two inspectors who each filed a form, so the raw rows (167) double-counted; the Snapshot now collapses submissions into lessons (teacher, date, subject) with the best score winning, giving 109 lessons (Primary and Kindy 47, Secondary 62) and four Very Weak progress lessons. Average ratings and teacher counts are unchanged. The Observations board is untouched and still shows every individual submission.</span></div>
         <div class="vrow"><span class="vtag">v0.22</span><span class="vnote">New Snapshot board, now the landing view. A governance "at a glance" picture of the June R3 sweep with a Primary and Kindy / Secondary / Compare toggle. Each phase shows lessons observed, teachers seen, average progress (best evidence per teacher) on a ramp gauge and a six-point distribution, a What is working and Where to focus next summary, and three insights for each drawn from the inspectors' written evidence. Compare puts the two phases side by side with a diverging distribution chart. Teacher subschool (section) is now populated in Supabase from the staff register, so the split is live data, not hard-coded.</span></div>
         <div class="vrow"><span class="vtag">v0.21</span><span class="vnote">Dashboard now reads LIVE from Supabase. It paints the baked snapshot first (instant + offline fallback), then upgrades to live data via a read-only Supabase RPC and re-renders, so edits in Supabase show on refresh. Login-less for now (the password gate is the soft lock); proper @ais.ae sign-in comes later. If Supabase is unreachable it silently stays on the baked snapshot.</span></div>
@@ -608,7 +691,7 @@ svg{display:block;overflow:visible}
 
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.23</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.24</span></span>
   </div>
 </div>
 
@@ -913,6 +996,8 @@ const NARR={
 const I_CHECK='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.6l3.4 3.4L13 4.6"/></svg>';
 const I_ARROW='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11L11 5M6.2 5H11v4.8"/></svg>';
 let snapPhase='primary_kindy';
+let snapView='story';   // 'story' (animated narrative, default) | 'detail' (the v1 cards)
+let snapStarted=false;  // becomes true once the entry title-card has dissolved, so the story plays in view, not behind the splash
 let snapReady=false;   // snapAgg uses resolveArea (a const defined lower in the file); gate the pre-init applyTheme render until runEntry, after that const exists
 function statTile(c){const d=document.createElement('div');d.className='panel stat'+(c.cls?' '+c.cls:'');
   const v=c.word!=null?`<div class="v" style="color:${c.col}">${esc(c.word)}</div>`:`<div class="v" data-to="${c.v}">${c.v}</div>`;
@@ -925,7 +1010,7 @@ function buildValueArc(svgId,avg){const s=byId(svgId);if(!s)return;s.innerHTML='
   for(let i=0;i<N;i++){const a=i/N,b=(i+1)/N;seg(a,b,rampAt(6-5*((a+b)/2)),.18)}
   if(avg!=null){const M=Math.max(1,Math.round(N*frac(avg)));for(let i=0;i<M;i++){const a=i/N,b=(i+1)/N;seg(a,b,rampAt(6-5*((a+b)/2)),1)}}
   const w=el('text',{x:cx,y:cy+8,'text-anchor':'middle','font-size':avg==null?16:23,fill:avg==null?gc('--ink-mid'):rampAt(avg),style:'font-family:var(--display);font-weight:600;font-style:italic'});w.textContent=wordOf(avg);s.appendChild(w);}
-function renderHisto(dist){const host=byId('snapHisto');host.innerHTML='';const R=RAMP();
+function renderHisto(dist,hostId){const host=byId(hostId||'snapHisto');host.innerHTML='';const R=RAMP();
   const max=Math.max(1,...[1,2,3,4,5,6].map(i=>dist[i]));
   for(let i=1;i<=6;i++){const c=dist[i],col=document.createElement('div');col.className='hbar';
     col.innerHTML=`<div class="hc">${c}</div><div class="hb" style="background:${R[i]}"></div><div class="hw">${WORD[i]}</div>`;
@@ -957,7 +1042,7 @@ function cmpCard(cls,label,a){return `<div class="panel cmpcard ${cls}"><div cla
   `<div class="cs"><div class="cv" data-to="${a.lessons}">${a.lessons}</div><div class="ck">lessons</div></div>`+
   `<div class="cs"><div class="cv" data-to="${a.teachers}">${a.teachers}</div><div class="ck">teachers</div></div>`+
   `<div class="cs"><div class="cv" style="color:${colOf(a.avgBest)}">${wordOf(a.avgBest)}</div><div class="ck">avg progress</div></div></div></div>`;}
-function renderDiv(pk,se){const host=byId('divChart');host.innerHTML='';const R=RAMP();
+function renderDiv(pk,se,hostId){const host=byId(hostId||'divChart');host.innerHTML='';const R=RAMP();
   const max=Math.max(1,...[1,2,3,4,5,6].flatMap(i=>[pk[i],se[i]]));
   for(let i=1;i<=6;i++){const row=document.createElement('div');row.className='divrow';
     row.innerHTML=`<div class="divL"><span class="divn">${pk[i]}</span><span class="divbar" style="background:${R[i]}" data-w="${(pk[i]/max*100).toFixed(2)}"></span></div>`+
@@ -971,10 +1056,9 @@ function renderCompare(){const pk=snapAgg('primary_kindy'),se=snapAgg('secondary
   renderDiv(pk.dist,se.dist);
   byId('cmpInsights').innerHTML=NARR.compare.map((t,i)=>`<div class="icard"><span class="inum" style="color:var(--y)">${i+1}</span><p>${esc(t)}</p></div>`).join('');
 }
-function renderSnapshot(){
-  byId('snap-asof').textContent='Snapshot '+D.generated_on;
+/* Detail (v1 cards): the original Snapshot, kept one click away behind the Story|Detail toggle. */
+function renderDetail(){
   const all=snapAgg('all');
-  byId('snapIntro').textContent=all.lessons+' lessons observed across '+all.teachers+' teachers in the June R3 sweep. Switch between Primary and Kindy, Secondary, or compare the two.';
   const g=byId('snapHero');g.innerHTML='';
   [{v:all.lessons,l:'Lessons observed',s:'whole June sweep',cls:'accent'},
    {v:all.teachers,l:'Teachers seen',s:'at least once in June'},
@@ -982,11 +1066,107 @@ function renderSnapshot(){
   const compare=snapPhase==='compare';
   byId('snapPhase').hidden=compare;byId('snapCompare').hidden=!compare;
   if(compare)renderCompare();else renderPhase(snapPhase);
+  applyCounts(byId('snapDetail'));
+}
+/* dispatcher: Story (animated narrative, default) or Detail (cards) for the selected phase */
+function renderSnapshot(){
+  byId('snap-asof').textContent='Snapshot '+D.generated_on;
+  const all=snapAgg('all');
+  byId('snapIntro').textContent=all.lessons+' lessons observed across '+all.teachers+' teachers in the June R3 sweep. Story plays the picture beat by beat; Detail is the full card view.';
+  document.querySelectorAll('#viewTabs .vtab').forEach(b=>b.classList.toggle('on',b.dataset.view===snapView));
   document.querySelectorAll('#phaseTabs .ptab').forEach(b=>b.classList.toggle('on',b.dataset.phase===snapPhase));
+  const story=snapView==='story';
+  byId('snapStory').hidden=!story;byId('snapDetail').hidden=story;
+  if(story)renderStory();else{pauseStory();renderDetail();}
 }
 function applyCounts(scope){if(!scope||!window.gsap)return;scope.querySelectorAll('[data-to]').forEach(n=>{if(n.offsetParent!==null)countUp(n,+n.dataset.to,1.1);});}
-function snapReveal(){reveal('#v-snapshot .head',0);reveal('#snapHero .panel',.05);reveal('#phaseTabs',0);
-  reveal((snapPhase==='compare'?'#snapCompare':'#snapPhase')+' .panel',.06);applyCounts(byId('v-snapshot'));}
+function snapReveal(){reveal('#v-snapshot .head',0);reveal('#phaseTabs',0);}
+
+/* ---- STORY: custom SVGs (theme-aware via CSS vars) ---- */
+function teacherSVG(){const cols=8,rows=3,gx=34,gy=40,r=8,acc=['var(--b)','var(--y)','var(--g)','var(--r)'];let g='',k=0;
+  for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){const cx=20+x*gx,cy=18+y*gy,col=(k%5===2)?acc[k%4]:'var(--ink-dim)';
+    g+=`<g class="gly"><circle cx="${cx}" cy="${cy}" r="${r}" fill="${col}"/><path d="M${cx-13} ${cy+25} a13 13 0 0 1 26 0 z" fill="${col}"/></g>`;k++;}
+  return `<svg viewBox="0 0 ${20+(cols-1)*gx+20} ${18+(rows-1)*gy+36}" role="img" aria-label="Teachers observed">${g}</svg>`;}
+function obsSVG(){const cx=150,cy=70;let dots='';const N=16;
+  for(let i=0;i<N;i++){const a=(i/N)*Math.PI*2;dots+=`<circle class="odot" cx="${(cx+Math.cos(a)*120).toFixed(1)}" cy="${(cy+Math.sin(a)*52).toFixed(1)}" r="4.5" fill="var(--y)"/>`;}
+  return `<svg viewBox="0 0 300 150" role="img" aria-label="Lessons observed">${dots}
+    <path class="lens" d="M44 70 Q150 8 256 70 Q150 132 44 70 Z" fill="none" stroke="var(--ink)" stroke-width="3" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
+    <circle class="iris" cx="${cx}" cy="${cy}" r="26" fill="none" stroke="var(--ink)" stroke-width="3"/>
+    <circle class="pupil" cx="${cx}" cy="${cy}" r="12" fill="var(--b)"/></svg>`;}
+
+/* ---- STORY: beats (per phase) ---- */
+function phaseBeats(phase){const a=snapAgg(phase),N=NARR[phase],L=PHASE_LABEL[phase];return [
+  {type:'cover',html:`<div class="beat-k">AIS Sharjah . June R3 sweep</div><div class="beat-h">${esc(L)}: the <em>progress</em> picture</div><div class="beat-sub">A quick look at what we saw across ${esc(L.toLowerCase())} this June, and what it is telling us.</div>`},
+  {type:'scale',html:`<div class="beat-k">What we did</div><div class="scalewrap">
+    <div class="motif"><div class="big-n teach" data-to="${a.teachers}">0</div><div class="ml">Teachers seen</div>${teacherSVG()}</div>
+    <div class="motif"><div class="big-n obs" data-to="${a.lessons}">0</div><div class="ml">Lessons observed</div>${obsSVG()}</div></div>`},
+  {type:'progress',html:`<div class="beat-k">How is progress?</div><div class="pbeat">
+    <div><div class="allgauge"><svg class="snapgauge" id="storyGauge" viewBox="0 20 240 200" width="220" height="183"></svg></div><div class="gauge-cap"><div class="gv">${a.avgBest!=null?a.avgBest.toFixed(1)+' of 6':'n/a'}</div><div class="gl">average progress</div></div></div>
+    <div><div class="beat-h" style="font-size:clamp(20px,3vw,30px)">Overall, progress is <em>${esc(wordOf(a.avgBest))}</em>.</div><div class="histo" id="storyHisto" style="margin-top:16px"></div></div></div>`},
+  {type:'list',html:`<div class="beat-k" style="color:var(--g)">What is working</div><div class="beat-h" style="font-size:clamp(18px,2.3vw,25px);max-width:32ch">${esc(N.strengths.summary)}</div>
+    <div class="bl-list">${N.strengths.bullets.map(b=>`<div class="bl-row"><span class="bm" style="color:var(--g)">${I_CHECK}</span><span>${esc(b)}</span></div>`).join('')}</div>`},
+  {type:'list',html:`<div class="beat-k" style="color:var(--g)">What is working . the deeper read</div><div class="bl-ins" style="margin-top:6px">${N.strengths.insights.map((t,i)=>`<div class="bi"><span class="bn">${i+1}</span><p>${esc(t)}</p></div>`).join('')}</div>`},
+  {type:'list',html:`<div class="beat-k" style="color:var(--r5)">Where to focus next</div><div class="beat-h" style="font-size:clamp(18px,2.3vw,25px);max-width:32ch">${esc(N.develop.summary)}</div>
+    <div class="bl-list">${N.develop.bullets.map(b=>`<div class="bl-row"><span class="bm" style="color:var(--r5)">${I_ARROW}</span><span>${esc(b)}</span></div>`).join('')}</div>`},
+  {type:'list',html:`<div class="beat-k" style="color:var(--r5)">Where to focus . the deeper read</div><div class="bl-ins" style="margin-top:6px">${N.develop.insights.map((t,i)=>`<div class="bi dev"><span class="bn">${i+1}</span><p>${esc(t)}</p></div>`).join('')}</div>`}
+];}
+function compareBeats(){const pk=snapAgg('primary_kindy'),se=snapAgg('secondary');return [
+  {type:'cover',html:`<div class="beat-k">AIS Sharjah . June R3 sweep</div><div class="beat-h">Primary &amp; Kindy <em>vs</em> Secondary</div><div class="beat-sub">Both average Good for progress. The interesting part is how differently they get there.</div>`},
+  {type:'scale',html:`<div class="beat-k">What we did</div><div class="scalewrap">
+    <div class="motif"><div class="ml" style="color:var(--b)">Primary &amp; Kindy</div><div class="big-n teach" data-to="${pk.teachers}">0</div><div class="ml"><span data-to="${pk.lessons}">0</span> lessons</div>${teacherSVG()}</div>
+    <div class="motif"><div class="ml" style="color:var(--y)">Secondary</div><div class="big-n obs" data-to="${se.teachers}">0</div><div class="ml"><span data-to="${se.lessons}">0</span> lessons</div>${teacherSVG()}</div></div>`},
+  {type:'compdist',html:`<div class="beat-k">Same average, different shape</div>
+    <div class="divlabels" style="margin-top:8px"><span class="dlL" style="color:var(--b)">Primary &amp; Kindy</span><span></span><span class="dlR" style="color:var(--y)">Secondary</span></div>
+    <div class="divchart" id="storyDiv"></div>`},
+  {type:'list',html:`<div class="beat-k">Drawing the two together</div><div class="bl-ins">${NARR.compare.map((t,i)=>`<div class="bi"><span class="bn" style="color:var(--y)">${i+1}</span><p>${esc(t)}</p></div>`).join('')}</div>`}
+];}
+
+/* ---- STORY: slide engine (auto-advance, pause, manual step, off) ---- */
+const BEAT_MS=5400;let beatEls=[],storyIdx=0,storyPlaying=false,storyTimer=null;
+function snapAutoplay(){try{return localStorage.getItem('ais-snap-autoplay')!=='off';}catch(e){return true;}}
+function setSnapAutoplay(on){try{localStorage.setItem('ais-snap-autoplay',on?'on':'off');}catch(e){}}
+function clearStoryTimer(){if(storyTimer){clearTimeout(storyTimer);storyTimer=null;}}
+function setPlayUI(){const c=byId('storyCtl');if(c)c.classList.toggle('playing',storyPlaying);}
+function scheduleNext(){clearStoryTimer();if(!storyPlaying)return;storyTimer=setTimeout(function(){
+  if(storyIdx<beatEls.length-1){gotoBeat(storyIdx+1,true);scheduleNext();}else{storyPlaying=false;setPlayUI();}},BEAT_MS);}
+function playStory(){if(beatEls.length<2)return;if(storyIdx>=beatEls.length-1)gotoBeat(0,true);storyPlaying=true;setPlayUI();scheduleNext();}
+function pauseStory(){storyPlaying=false;clearStoryTimer();setPlayUI();}
+function toggleStoryPlay(){storyPlaying?pauseStory():playStory();}
+function gotoBeat(i,animate){if(!beatEls.length)return;i=Math.max(0,Math.min(beatEls.length-1,i));storyIdx=i;
+  beatEls.forEach((b,j)=>b.classList.toggle('on',j===i));
+  const dz=byId('sDots');if(dz)dz.querySelectorAll('.sdot').forEach((d,j)=>d.classList.toggle('on',j===i));
+  if(animate)animateBeat(beatEls[i]);else finalizeBeat(beatEls[i]);}
+function stepStory(d){pauseStory();gotoBeat(storyIdx+d,true);}
+function buildBeatViz(b){b.querySelectorAll('[data-to]').forEach(n=>n.textContent=n.dataset.to);
+  const t=b.dataset.type;
+  if(t==='progress'){const a=snapAgg(snapPhase);buildValueArc('storyGauge',a.avgBest);renderHisto(a.dist,'storyHisto');}
+  if(t==='compdist'){const pk=snapAgg('primary_kindy'),se=snapAgg('secondary');renderDiv(pk.dist,se.dist,'storyDiv');}}
+function finalizeBeat(b){buildBeatViz(b);}
+function animateBeat(b){buildBeatViz(b);if(!window.gsap)return;const t=b.dataset.type;
+  gsap.fromTo(b.querySelectorAll('.beat-k,.beat-h,.beat-sub'),{y:18,opacity:0,filter:'blur(8px)'},{y:0,opacity:1,filter:'blur(0px)',duration:.7,stagger:.1,ease:'power3.out',immediateRender:false});
+  if(t==='scale'){
+    b.querySelectorAll('[data-to]').forEach(n=>countUp(n,+n.dataset.to,1.3));
+    gsap.fromTo(b.querySelectorAll('.gly'),{scale:0,opacity:0},{scale:1,opacity:1,duration:.5,ease:'back.out(1.8)',stagger:{each:.025,from:'center'},delay:.15,immediateRender:false});
+    gsap.fromTo(b.querySelectorAll('.lens'),{strokeDashoffset:1},{strokeDashoffset:0,duration:1.1,ease:'power2.inOut',delay:.2,immediateRender:false});
+    gsap.fromTo(b.querySelectorAll('.iris,.pupil'),{scale:0,opacity:0},{scale:1,opacity:1,duration:.5,ease:'back.out(1.6)',delay:.7,immediateRender:false});
+    gsap.fromTo(b.querySelectorAll('.odot'),{scale:0,opacity:0},{scale:1,opacity:1,duration:.5,ease:'back.out(2)',stagger:.03,delay:.5,immediateRender:false});}
+  if(t==='progress')gsap.fromTo(b.querySelectorAll('.gauge-cap'),{y:10,opacity:0},{y:0,opacity:1,duration:.6,delay:.45,ease:'power2.out',immediateRender:false});
+  if(t==='list'){
+    gsap.fromTo(b.querySelectorAll('.bl-row'),{x:-16,opacity:0},{x:0,opacity:1,duration:.5,stagger:.07,ease:'power3.out',delay:.25,immediateRender:false});
+    gsap.fromTo(b.querySelectorAll('.bi'),{y:16,opacity:0},{y:0,opacity:1,duration:.55,stagger:.1,ease:'power3.out',delay:.45,immediateRender:false});}
+  settle(b.querySelectorAll('.gly,.lens,.iris,.pupil,.odot,.bl-row,.bi,.beat-k,.beat-h,.beat-sub,.gauge-cap'),1700);}
+function renderStory(){
+  const stage=byId('storyStage');if(!stage)return;stage.innerHTML='';
+  const beats=(snapPhase==='compare')?compareBeats():phaseBeats(snapPhase);
+  beats.forEach(bt=>{const d=document.createElement('div');d.className='beat'+((bt.type==='list'||bt.type==='compdist')?' col-top':'');d.dataset.type=bt.type;d.innerHTML=bt.html;stage.appendChild(d);});
+  beatEls=[...stage.querySelectorAll('.beat')];
+  const dz=byId('sDots');dz.innerHTML=beatEls.map((b,i)=>`<button class="sdot" type="button" data-i="${i}" aria-label="Beat ${i+1}"></button>`).join('');
+  dz.querySelectorAll('.sdot').forEach(d=>d.onclick=()=>{pauseStory();gotoBeat(+d.dataset.i,true);});
+  storyIdx=0;
+  if(snapStarted&&snapAutoplay()){gotoBeat(0,true);playStory();}else{gotoBeat(0,false);storyPlaying=false;setPlayUI();}}
+function beginStory(){if(current==='snapshot'&&snapView==='story'){if(snapAutoplay()){gotoBeat(0,true);playStory();}else gotoBeat(0,false);}}
+function togglePresent(){const v=byId('v-snapshot'),on=!v.classList.contains('present');v.classList.toggle('present',on);document.body.classList.toggle('presenting',on);}
+function exitPresent(){byId('v-snapshot').classList.remove('present');document.body.classList.remove('presenting');}
 
 /* ============================================================= router + FLIP */
 const views={snapshot:'v-snapshot',coverage:'v-coverage',teacher:'v-teacher',settings:'v-settings'};
@@ -1032,6 +1212,7 @@ function syncHash(b){const slug=boardSlug[b]||'';
   else if(location.hash){history.replaceState(null,'',location.pathname+location.search);}}
 function showBoard(b,opts={}){
   if(b===current&&!opts.force)return;
+  if(current==='snapshot'&&b!=='snapshot'){pauseStory();exitPresent();}   // leaving Snapshot: stop the story + drop full-screen
   Object.entries(views).forEach(([k,id])=>byId(id).hidden=(k!==b));
   setPill(b);current=b;syncHash(b);
   if(b==='snapshot'){renderSnapshot();snapReveal();}
@@ -1115,9 +1296,15 @@ byId('starsToggle').onclick=()=>applyStars(document.documentElement.getAttribute
 
 /* board rail */
 document.querySelectorAll('.pill').forEach(p=>p.onclick=()=>showBoard(p.dataset.board));
-/* snapshot phase toggle: Primary & Kindy | Secondary | Compare */
-document.querySelectorAll('#phaseTabs .ptab').forEach(b=>b.onclick=()=>{snapPhase=b.dataset.phase;renderSnapshot();
-  reveal((snapPhase==='compare'?'#snapCompare':'#snapPhase')+' .panel',.06);applyCounts(byId('v-snapshot'));});
+/* snapshot: view toggle (Story|Detail), phase toggle, story controls + keyboard */
+document.querySelectorAll('#viewTabs .vtab').forEach(b=>b.onclick=()=>{snapView=b.dataset.view;renderSnapshot();reveal('#'+(snapView==='story'?'snapStory':'snapDetail'),0);});
+document.querySelectorAll('#phaseTabs .ptab').forEach(b=>b.onclick=()=>{snapPhase=b.dataset.phase;renderSnapshot();});
+byId('sPlay').onclick=toggleStoryPlay;byId('sPrev').onclick=()=>stepStory(-1);byId('sNext').onclick=()=>stepStory(1);byId('sPresent').onclick=togglePresent;
+addEventListener('keydown',e=>{if(current!=='snapshot'||snapView!=='story')return;
+  if(e.key==='ArrowRight')stepStory(1);else if(e.key==='ArrowLeft')stepStory(-1);else if(e.key===' '){e.preventDefault();toggleStoryPlay();}else if(e.key==='Escape')exitPresent();});
+function syncAutoplayUI(){const t=byId('autoplayToggle');if(t)t.classList.toggle('on',snapAutoplay());}
+byId('autoplayToggle').onclick=()=>{const on=!snapAutoplay();setSnapAutoplay(on);syncAutoplayUI();if(current==='snapshot'&&snapView==='story'){if(on){gotoBeat(storyIdx,true);playStory();}else pauseStory();}};
+syncAutoplayUI();
 byId('backBtn').onclick=()=>showBoard('coverage');
 /* browser back/forward + deep links: route to the board named in the hash */
 addEventListener('hashchange',()=>{const b=slugBoard[location.hash.slice(1)]||'coverage';if(b!==current)showBoard(b);});
@@ -1143,8 +1330,8 @@ function runEntry(){
     entry.classList.add('gone');                 // CSS opacity transition
     setTimeout(()=>{entry.style.display='none';},750);
     reveal('.mast',0);snapReveal();
-    const initB=slugBoard[location.hash.slice(1)]||'snapshot';   // deep-link: open the board in the URL
-    if(initB!=='snapshot')showBoard(initB,{force:true});
+    if(location.hash){history.replaceState(null,'',location.pathname+location.search);}   // login always lands on Snapshot
+    snapStarted=true;beginStory();   // play the story now that the splash has cleared (respects the auto-play setting)
   };
   if(window.gsap){                               // polish the title card itself
     gsap.fromTo('#entry .crest',{scale:.7,opacity:0},{scale:1,opacity:1,duration:.7,ease:'power3.out',immediateRender:false});

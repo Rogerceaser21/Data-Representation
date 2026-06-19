@@ -5,6 +5,15 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.24 . 2026-06-19
+- **New animated Story view, now the Snapshot landing.** A beat-by-beat narrative built to the `look-cinematic.html` motion grammar (overlapping GSAP timeline, blur-up headings, back.out pops, stroke-dash draw-on, count-ups). Per phase, 7 beats: cover, scale (custom **Teacher** figure-cluster SVG + **Observations** lens SVG, both animated, with count-ups), progress (gauge sweep + distribution), what-is-working bullets, its insights, where-to-focus bullets, its insights. Compare has its own 4 beats ending on the diverging distribution + cross-phase insights.
+- **Auto-play with full control:** plays on its own, with Play/Pause, Prev/Next (and arrow keys), beat dots, a full-screen **Present** mode (Esc to exit), and an **Auto-play on/off** switch in Settings (persisted; off shows the story static and you step it). Space toggles play.
+- **The original cards are preserved as Detail (v1)**, one click away via a Story | Detail toggle. Same data, same phase toggle. Reuses `snapAgg`/`NARR`/`buildValueArc`/`renderHisto`/`renderDiv`.
+- **Login always lands on Snapshot** (stale hash cleared on entry). Leaving Snapshot pauses the story and drops full-screen.
+- **Scope:** all additions are inside the Snapshot view (`#snapStory` + the slide engine). **Coverage and Observations are not touched.** rAF-safe: the active beat is shown via a CSS class at final visible state, entrances are `immediateRender:false` + `settle()`, so a frozen or restored tab never strands a beat; reduced-motion respected; no em/en dashes.
+- Fixed a load-order TDZ (the `snapReady` gate already added in v0.23 covers the new `resolveArea` use).
+- Rollback: `dash-v0.23`.
+
 ## v0.23 . 2026-06-19
 - **Data accuracy fix: the Snapshot now counts distinct LESSONS, not raw form submissions.** During the June inspection week most lessons were co-observed by two inspectors who each filed a form (plus a few accidental resubmissions), so the raw 167 rows over-counted real lessons. `snapAgg()` now collapses a teacher's June submissions into lessons by **teacher + date + normalised subject** (the resolved subject area, folding variants like "Music" / "QCE Music In Practice"), resolving each judgement by **best score wins (min)** across co-observers.
 - **Corrected figures** (verified against Supabase and the source Sheet): whole sweep **109 lessons / 103 teachers** (was 167); Primary & Kindy **47 / 45** (was 68); Secondary **62 / 58** (was 99). Progress distribution per lesson: PK `2,9,13,15,3,0`; Secondary `6,12,12,20,4,4`, so **Secondary Very Weak = 4** (the v0.22 board showed 8, which was 4 lessons each filed by two inspectors) and Outstanding = 6. Average progress and teacher counts are unchanged (best-per-teacher is invariant to duplicates): PK 3.19, Secondary 3.24, overall 3.22.
