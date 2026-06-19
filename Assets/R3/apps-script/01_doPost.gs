@@ -63,6 +63,14 @@ function doPost(e) {
       Logger.log('Email send failed for ' + recordId + ': ' + mailErr.message);
     }
 
+    // v0.47: dual-write into Supabase (Sheet stays source of truth; failure is
+    // logged + swallowed so the inspector never sees an error). Idempotent on token.
+    try {
+      pushToSupabase(columns, data, recordId, recordToken, submittedAt);
+    } catch (sbErr) {
+      Logger.log('Supabase dual-write failed for ' + recordId + ': ' + sbErr.message);
+    }
+
     return jsonOut({ success: true, id: recordId });
   } catch (err) {
     return jsonOut({ success: false, error: String(err && err.message || err) });

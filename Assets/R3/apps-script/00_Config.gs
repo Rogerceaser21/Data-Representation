@@ -92,3 +92,19 @@ const BACKUP_EMAIL_TO = 'admin.user@ais.ae';
  * locked-record URL in the email body. No trailing query string.
  */
 const FORM_PUBLIC_URL = 'https://rogerceaser21.github.io/Data-Representation/Assets/R3/r3-evidence-form.html';
+
+/**
+ * Supabase dual-write target (v0.47). Every submission is mirrored into the
+ * dashboard's Supabase project via the ingest_r3 RPC, idempotent on record_token.
+ * The project ref/URL is NOT secret (it ships in the dashboard). The service_role
+ * key IS secret: it is read from Script Properties, never hardcoded here.
+ *
+ * One-time setup: Project Settings > Script Properties > add
+ *   SUPABASE_SECRET_KEY = <the service_role / secret key>
+ */
+const SUPABASE_URL = 'https://rfbetrcevtmisknndpgg.supabase.co';
+const INGEST_RPC_PATH = '/rest/v1/rpc/ingest_r3';
+
+function getSupabaseSecret() {
+  return PropertiesService.getScriptProperties().getProperty('SUPABASE_SECRET_KEY');
+}

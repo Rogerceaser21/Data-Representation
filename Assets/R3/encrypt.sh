@@ -54,6 +54,14 @@ echo "Encrypted to $OUTPUT"
 # window.R3_VIEWER makes the page record-link-only: without ?id it holds a
 # calm landing card; it never restores drafts or shows a blank form. Access
 # control for a record remains the per-record token enforced by doGet.
+#
+# v0.47: the viewer is UNENCRYPTED and public, so the Supabase publishable key
+# (which can call get_raw_snapshot = all teacher names + ratings) must NOT ship
+# in it. Blank SB_KEY/SB_URL here; the admin cog is already hidden in the viewer
+# and nothing else in the viewer calls Supabase, so this is inert.
 VIEWER="r3-record.html"
-sed 's|<head>|<head><script>window.R3_VIEWER = true;</script>|' "$MASTER" > "$VIEWER"
+sed -e 's|<head>|<head><script>window.R3_VIEWER = true;</script>|' \
+    -e "s|const SB_KEY = '[^']*';|const SB_KEY = '';|" \
+    -e "s|const SB_URL = '[^']*';|const SB_URL = '';|" \
+    "$MASTER" > "$VIEWER"
 echo "Viewer written to $VIEWER"

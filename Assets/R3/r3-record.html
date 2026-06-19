@@ -1353,6 +1353,80 @@ body.is-viewer .float-link,
 body.is-viewer #btn-new,
 body.is-viewer #btn-reset { display: none; }
 
+/* === Admin settings (v0.47): discreet cog + password-gated panel ==== */
+.cog-btn {
+  position: fixed;
+  bottom: clamp(0.7rem, 1.4vw, 1.2rem);
+  right: clamp(0.7rem, 1.4vw, 1.2rem);
+  z-index: 60;
+  width: 2.1rem; height: 2.1rem;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 999px;
+  border: 1px solid var(--rule);
+  background: var(--paper);
+  color: var(--paper-dim);
+  cursor: pointer;
+  opacity: 0.45;
+  transition: opacity 160ms ease, color 160ms ease, border-color 160ms ease;
+}
+.cog-btn:hover { opacity: 1; color: var(--ink); border-color: var(--ink); }
+.cog-btn .icon { width: 1.05em; height: 1.05em; display: block; }
+body.is-viewer .cog-btn { display: none; }
+
+.admin-modal {
+  position: fixed; inset: 0; z-index: 10000;
+  display: none; align-items: center; justify-content: center;
+  background: rgba(20, 54, 66, 0.42);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  padding: 1.2rem;
+}
+.admin-modal.open { display: flex; }
+.admin-card {
+  width: min(420px, 100%);
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  box-shadow: 0 24px 60px -22px rgba(20, 54, 66, 0.5);
+  padding: 1.5rem 1.6rem;
+  color: var(--ink);
+}
+.admin-card h2 {
+  margin: 0 0 0.2rem; font-size: 1.04rem; font-weight: 650;
+  letter-spacing: 0.01em;
+}
+.admin-card .admin-eyebrow {
+  font-size: 0.66rem; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--paper-dim); font-weight: 700; margin-bottom: 0.6rem; display: block;
+}
+.admin-card label {
+  display: block; font-size: 0.78rem; font-weight: 600;
+  color: var(--paper-dim); margin: 0.9rem 0 0.3rem;
+}
+.admin-card input {
+  width: 100%; box-sizing: border-box;
+  padding: 0.55rem 0.7rem; font-size: 0.92rem;
+  border: 1px solid var(--rule); border-radius: 8px;
+  background: var(--paper-2, var(--paper)); color: var(--ink);
+}
+.admin-card input:focus { outline: none; border-color: var(--rate-success, #2a9d6f); }
+.admin-row { display: flex; gap: 0.5rem; margin-top: 1.1rem; }
+.admin-btn {
+  flex: 1; padding: 0.55rem 0.8rem; font-size: 0.85rem; font-weight: 650;
+  border-radius: 8px; cursor: pointer; border: 1px solid var(--ink);
+  background: var(--ink); color: var(--paper);
+  transition: opacity 140ms ease;
+}
+.admin-btn.ghost { background: transparent; color: var(--ink); }
+.admin-btn:hover { opacity: 0.86; }
+.admin-btn:disabled { opacity: 0.45; cursor: default; }
+.admin-status {
+  min-height: 1.1rem; margin-top: 0.8rem;
+  font-size: 0.8rem; color: var(--paper-dim);
+}
+.admin-status.ok { color: var(--rate-success, #2a9d6f); }
+.admin-status.bad { color: var(--rate-danger, #c0492f); }
+.admin-step[hidden] { display: none; }
+
 /* === Loading overlay (v0.31) ====================================== */
 .form-loading {
   position: fixed;
@@ -1479,6 +1553,44 @@ body.is-viewer #btn-reset { display: none; }
   </svg>
   <span>Check Teacher</span>
 </a>
+
+<!-- Admin settings (v0.47): discreet cog, password-gated. Sets the current
+     inspection Round (and future settings) directly in Supabase. Hidden in the
+     teacher-viewer build. -->
+<button class="cog-btn" id="admin-cog" type="button" aria-label="Admin settings" title="Admin settings">
+  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="3"/>
+    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+  </svg>
+</button>
+
+<div class="admin-modal" id="admin-modal" role="dialog" aria-modal="true" aria-label="Admin settings">
+  <div class="admin-card">
+    <span class="admin-eyebrow">AIS · Admin</span>
+
+    <div class="admin-step" id="admin-step-pw">
+      <h2>Settings</h2>
+      <label for="admin-pw">Administrator password</label>
+      <input type="password" id="admin-pw" autocomplete="off" spellcheck="false" placeholder="Enter password">
+      <div class="admin-row">
+        <button class="admin-btn ghost" type="button" id="admin-cancel">Close</button>
+        <button class="admin-btn" type="button" id="admin-unlock">Unlock</button>
+      </div>
+      <div class="admin-status" id="admin-status-pw"></div>
+    </div>
+
+    <div class="admin-step" id="admin-step-settings" hidden>
+      <h2>Inspection round</h2>
+      <label for="admin-round">Current round (stamped on every new submission)</label>
+      <input type="text" id="admin-round" autocomplete="off" spellcheck="false" placeholder="e.g. R3 June 26">
+      <div class="admin-row">
+        <button class="admin-btn ghost" type="button" id="admin-done">Close</button>
+        <button class="admin-btn" type="button" id="admin-save">Save</button>
+      </div>
+      <div class="admin-status" id="admin-status-settings"></div>
+    </div>
+  </div>
+</div>
 
 <form class="form-container" id="r3-form" autocomplete="on" novalidate>
   <!-- Submitted / closed-record banner (hidden until submit success or ?id=... fetched) -->
@@ -1842,7 +1954,7 @@ body.is-viewer #btn-reset { display: none; }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.46</a></span>
+    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.47</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -2023,6 +2135,95 @@ body.is-viewer #btn-reset { display: none; }
     if (!confirm('Start a new R3 evidence form? The locked record stays in the Sheet.')) return;
     window.location.href = window.location.pathname;
   });
+
+  /* === Admin settings (v0.47): password-gated round editor ========== */
+  // Supabase config (publishable/anon key, client-safe; ships inside the
+  // StatiCrypt-encrypted page). Injected at build time, never committed cleartext.
+  const SB_URL = '';
+  const SB_KEY = '';
+
+  async function sbRpc(fn, body) {
+    const resp = await fetch(SB_URL + '/rest/v1/rpc/' + fn, {
+      method: 'POST',
+      headers: {
+        'apikey': SB_KEY,
+        'Authorization': 'Bearer ' + SB_KEY,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body || {})
+    });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    return resp.json();
+  }
+
+  (function setupAdmin() {
+    const cog      = document.getElementById('admin-cog');
+    const modal    = document.getElementById('admin-modal');
+    if (!cog || !modal) return;
+    const stepPw   = document.getElementById('admin-step-pw');
+    const stepSet  = document.getElementById('admin-step-settings');
+    const pwInput  = document.getElementById('admin-pw');
+    const roundIn  = document.getElementById('admin-round');
+    const statusPw = document.getElementById('admin-status-pw');
+    const statusSet= document.getElementById('admin-status-settings');
+    let adminPw = '';   // held only while the modal is unlocked
+
+    const setStatus = (el, msg, kind) => {
+      el.textContent = msg || '';
+      el.classList.remove('ok', 'bad');
+      if (kind) el.classList.add(kind);
+    };
+    const open = () => {
+      adminPw = '';
+      pwInput.value = ''; roundIn.value = '';
+      setStatus(statusPw, ''); setStatus(statusSet, '');
+      stepPw.hidden = false; stepSet.hidden = true;
+      modal.classList.add('open');
+      setTimeout(() => pwInput.focus(), 40);
+    };
+    const close = () => { adminPw = ''; pwInput.value = ''; modal.classList.remove('open'); };
+
+    cog.addEventListener('click', open);
+    document.getElementById('admin-cancel').addEventListener('click', close);
+    document.getElementById('admin-done').addEventListener('click', close);
+    modal.addEventListener('click', (e) => { if (e.target === modal) close(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('open')) close(); });
+
+    async function unlock() {
+      const pw = pwInput.value.trim();
+      if (!pw) { setStatus(statusPw, 'Enter the password.', 'bad'); return; }
+      setStatus(statusPw, 'Checking…');
+      try {
+        const ok = await sbRpc('verify_admin_password', { p_password: pw });
+        if (ok !== true) { setStatus(statusPw, 'Incorrect password.', 'bad'); return; }
+        adminPw = pw;
+        let round = '';
+        try { round = await sbRpc('get_current_round'); } catch (e) {}
+        roundIn.value = round || '';
+        stepPw.hidden = true; stepSet.hidden = false;
+        setStatus(statusPw, '');
+        setTimeout(() => roundIn.focus(), 40);
+      } catch (e) {
+        setStatus(statusPw, 'Could not reach the server. Try again.', 'bad');
+      }
+    }
+    async function save() {
+      const val = roundIn.value.trim();
+      if (!val) { setStatus(statusSet, 'Enter a round label.', 'bad'); return; }
+      setStatus(statusSet, 'Saving…');
+      try {
+        const res = await sbRpc('admin_set_setting', { p_password: adminPw, p_key: 'current_round', p_value: val });
+        if (res && res.success) setStatus(statusSet, 'Saved. New submissions now use “' + val + '”.', 'ok');
+        else setStatus(statusSet, (res && res.error) ? res.error : 'Could not save.', 'bad');
+      } catch (e) {
+        setStatus(statusSet, 'Could not reach the server. Try again.', 'bad');
+      }
+    }
+    document.getElementById('admin-unlock').addEventListener('click', unlock);
+    document.getElementById('admin-save').addEventListener('click', save);
+    pwInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); unlock(); } });
+    roundIn.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); save(); } });
+  })();
 
   /* === Cloud submit + lock + closed-record viewer ================== */
   const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbx3efKiQzs2MSwESEuNBCceXr5FqBCXuk1IgSzPFbOVgLSc3fvXy40e8V9lhw_KH0z2nQ/exec';
