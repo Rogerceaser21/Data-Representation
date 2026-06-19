@@ -5,6 +5,13 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.25 . 2026-06-20
+- **Story rebuilt so the animation tells the story with the data, not illustrations.** Removed the hand-drawn SVGs (the teacher cluster and the eye/lens). The hero motion is now a **SEAS dot-sort**: each lesson is a dot that flies in (CSS keyframes, rAF-safe) and sorts onto the six-point rating scale by colour, beside the gauge sweep. The numbers beat is big count-ups; the cover uses a generated AIS-toned image (`assets/snapshot-cover.jpg`).
+- **Uses ONLY the V1 (Detail) wording + stats.** Removed all invented narration ("How is progress?", "What we did", "the progress picture", etc.). Beats now carry the V1 labels verbatim: "Student progress . best evidence per teacher", "What is working" + its evidence line + summary + bullets + "Insights . what the evidence reveals", "Where to focus next", "Progress distribution . Primary & Kindy against Secondary", "Insights . drawing the two together".
+- Beats per phase: cover, numbers (count-ups), student progress (dot-sort + gauge), what-is-working bullets, its insights, where-to-focus bullets, its insights. Compare: cover, numbers (PK vs Secondary cards), distribution (diverging), insights.
+- Controls unchanged: auto-play with play/pause, prev/next + arrows, beat dots, full-screen Present, Settings auto-play on/off. Detail (v1) one click away. Coverage and Observations untouched. Both themes; no console errors.
+- Rollback: `dash-v0.24`.
+
 ## v0.24 . 2026-06-19
 - **New animated Story view, now the Snapshot landing.** A beat-by-beat narrative built to the `look-cinematic.html` motion grammar (overlapping GSAP timeline, blur-up headings, back.out pops, stroke-dash draw-on, count-ups). Per phase, 7 beats: cover, scale (custom **Teacher** figure-cluster SVG + **Observations** lens SVG, both animated, with count-ups), progress (gauge sweep + distribution), what-is-working bullets, its insights, where-to-focus bullets, its insights. Compare has its own 4 beats ending on the diverging distribution + cross-phase insights.
 - **Auto-play with full control:** plays on its own, with Play/Pause, Prev/Next (and arrow keys), beat dots, a full-screen **Present** mode (Esc to exit), and an **Auto-play on/off** switch in Settings (persisted; off shows the story static and you step it). Space toggles play.
