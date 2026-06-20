@@ -81,13 +81,14 @@ Data-Representation/                          github.com/Rogerceaser21/Data-Repr
 │   ├── v0.10-r3-form-checklist.md            multi-phase plan + acceptance criteria + IDs
 │   ├── 2026-06-11-moderation-and-dashboard-plan.md   Jobs 0-3 (Job 0 + Job 1 done)
 │   └── 2026-06-12-dashboard-architecture-DECISIONS.md  AUTHORITATIVE grill record (Q1-Q11) for the Supabase dashboard
-├── dashboard/                                 LIVE gated dashboard v0.1 (tag dash-v0.1)
+├── dashboard/                                 LIVE gated dashboard, Snapshot landing (tag dash-v0.25)
 │   ├── index.html                             ENCRYPTED deploy artifact (StatiCrypt, data inlined) · generated, never hand-edit
-│   ├── src/index.html                         MASTER · edit this · Cinematic Coverage + Teacher drill-down + Settings
+│   ├── src/index.html                         MASTER · edit this · Snapshot (Story + Detail) + Coverage + Observations + Settings
 │   ├── data.js                                GITIGNORED baked Supabase snapshot (window.__AIS_DATA) · real names+ratings, never to Pages
 │   ├── encrypt.sh                             build · inlines data.js ENCRYPTED into index.html (password ais2026ais)
 │   ├── password-template.html                 AIS-themed StatiCrypt gate (re-themed from R3)
-│   └── assets/                                ais-white.png + ais-navy.png (public, non-sensitive)
+│   ├── CHANGELOG.md                           per-release changelog (every dash-vX.Y)
+│   └── assets/                                ais-white.png + ais-navy.png + snapshot-cover.jpg (public, non-sensitive)
 ├── dashboard-previews/                        dashboard design concepts · spea-dashboard.html = dashboard-v1 (parked); built from index.html slides 3-4
 ├── README.md                                 STALE (still describes v0.1 pitch only)
 ├── CLAUDE.md                                 this file
