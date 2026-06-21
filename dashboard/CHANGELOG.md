@@ -5,6 +5,14 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.26 . 2026-06-21
+- **Snapshot Story rebuilt to the new illustrated design** (Igor's Claude-design rework, stitched into the master and wired to live data). The cover is a navy classroom scene (a teacher presenting a rising chart to two children while an observer takes notes), each headline number carries a recoloured pencil motif (open book, teacher, rising chart), and the What is working / Where to focus / insight beats gain a quiet margin figure (student writing, raised hand, observer with clipboard). Drifting motes and a per-beat progress bar were added, and the big presenter-intent beat headers are colour-coded (blue for numbers and progress, green for strengths, terracotta for focus).
+- **Every number is live from Supabase.** The standalone's frozen `AGG` was removed; the beats read the existing `snapAgg(phase)` (deduped lessons, teachers, average, distribution) and the existing `NARR`, so figures track Supabase on each load and the wording is unchanged from the Detail (v1) view. The data visuals (the SEAS dot-sort, the gauge, the diverging chart) are kept.
+- **Font flash fix:** the Google Fonts link was switched from `display=swap` to `display=block`, so the serif headlines lay out once at final size instead of swapping in from the fallback (the slides 4 and 6 reflow).
+- **Scope:** all changes are inside the Snapshot Story. The Detail (v1) view, Coverage and Observations are untouched. The gauge stays freeze-safe (final-state draw plus CSS fade, not a from-empty GSAP sweep). Verified in both themes, all three phases, all beats, no console errors.
+- Note: this is a WIP checkpoint. Further design changes are queued (Igor, for 2026-06-22), and moving the insight TEXT itself into Supabase (vs the baked `NARR`) is a deliberate next step, not done here.
+- Rollback: `dash-v0.25`.
+
 ## v0.25 . 2026-06-20
 - **Story rebuilt so the animation tells the story with the data, not illustrations.** Removed the hand-drawn SVGs (the teacher cluster and the eye/lens). The hero motion is now a **SEAS dot-sort**: each lesson is a dot that flies in (CSS keyframes, rAF-safe) and sorts onto the six-point rating scale by colour, beside the gauge sweep. The numbers beat is big count-ups; the cover uses a generated AIS-toned image (`assets/snapshot-cover.jpg`).
 - **Uses ONLY the V1 (Detail) wording + stats.** Removed all invented narration ("How is progress?", "What we did", "the progress picture", etc.). Beats now carry the V1 labels verbatim: "Student progress . best evidence per teacher", "What is working" + its evidence line + summary + bullets + "Insights . what the evidence reveals", "Where to focus next", "Progress distribution . Primary & Kindy against Secondary", "Insights . drawing the two together".

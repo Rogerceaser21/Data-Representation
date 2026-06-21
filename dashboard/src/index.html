@@ -6,7 +6,7 @@
 <title>AIS Observation Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,500;1,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,500;1,600&display=block" rel="stylesheet">
 <style>
 :root{
   --display:'Fraunces',Georgia,serif; --body:'Sora',system-ui,sans-serif;
@@ -367,37 +367,83 @@ svg{display:block;overflow:visible}
 .vtab:hover{color:var(--ink)}
 .vtab.on{background:var(--panel-2);color:var(--ink);box-shadow:0 2px 10px -5px var(--shadow)}
 #snapStory{margin-top:14px}
-.stage{position:relative;border:1px solid var(--edge);border-radius:22px;background:var(--panel);backdrop-filter:blur(7px);box-shadow:0 30px 70px -50px var(--shadow);overflow:hidden;min-height:clamp(440px,58vh,640px)}
-.beat{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:clamp(20px,3.2vw,42px);overflow:auto;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .55s ease,visibility .55s}
-.beat.col-top{justify-content:flex-start}
+.stage{position:relative;border:1px solid var(--edge);border-radius:22px;background:var(--panel);backdrop-filter:blur(7px);box-shadow:0 30px 70px -50px var(--shadow);overflow:hidden;min-height:clamp(460px,60vh,640px)}
+.beat{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:clamp(22px,3.4vw,46px);overflow:hidden;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .6s ease,visibility .6s}
+.beat.col-top{justify-content:flex-start;overflow:auto}
 .beat.on{opacity:1;visibility:visible;pointer-events:auto}
-.beat-k{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-mid);font-weight:700;margin-bottom:14px}
-.beat-h{font-family:var(--display);font-weight:600;font-size:clamp(25px,4.2vw,44px);line-height:1.05;letter-spacing:-.02em;max-width:22ch}
+.beat-k{font-size:clamp(20px,3vw,30px);letter-spacing:.12em;text-transform:uppercase;color:var(--b);font-weight:700;margin-bottom:20px;position:relative;z-index:2;line-height:1.12}
+.beat-h{font-family:var(--display);font-weight:600;font-size:clamp(24px,4vw,42px);line-height:1.06;letter-spacing:-.02em;max-width:24ch;position:relative;z-index:2}
 .beat-h em{font-style:italic;color:var(--y);text-shadow:var(--glow) color-mix(in srgb,var(--y) 55%,transparent)}
-.beat-sub{font-size:14.5px;color:var(--ink-dim);margin-top:15px;line-height:1.6;max-width:58ch}
-/* scale beat: two animated motifs */
-.scalewrap{display:grid;grid-template-columns:1fr 1fr;gap:clamp(18px,4vw,46px);align-items:end;margin-top:10px}
-@media(max-width:680px){.scalewrap{grid-template-columns:1fr;gap:26px}}
-.motif{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px}
-.motif svg{width:100%;max-width:300px;height:auto;overflow:visible}
-.big-n{font-family:var(--display);font-weight:600;font-size:clamp(40px,7vw,70px);line-height:1;font-variant-numeric:tabular-nums}
-.big-n.teach{color:var(--b)}
-.big-n.obs{color:var(--y);text-shadow:var(--glow) color-mix(in srgb,var(--y) 50%,transparent)}
-.motif .ml{font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-mid);font-weight:700}
-.gly{transform-box:fill-box;transform-origin:center}
-.odot,.iris,.pupil{transform-box:fill-box;transform-origin:center}
-/* progress beat */
-.pbeat{display:grid;grid-template-columns:230px 1fr;gap:clamp(18px,4vw,40px);align-items:center;margin-top:8px}
-@media(max-width:680px){.pbeat{grid-template-columns:1fr;justify-items:center;gap:16px}}
-/* list / insight beats */
-.bl-list{display:flex;flex-direction:column;gap:11px;margin-top:16px;max-width:66ch}
-.bl-row{display:grid;grid-template-columns:22px 1fr;gap:12px;align-items:start;font-size:15px;line-height:1.5;color:var(--ink-dim)}
-.bl-row .bm{margin-top:1px}.bl-row .bm svg{width:16px;height:16px;display:block}
-.bl-ins{display:flex;flex-direction:column;gap:10px;margin-top:18px;max-width:72ch}
-.bi{position:relative;padding:13px 16px 13px 46px;border:1px solid var(--edge);border-radius:13px;background:var(--panel-2)}
-.bi .bn{position:absolute;left:15px;top:11px;font-family:var(--display);font-style:italic;font-weight:600;font-size:21px;color:var(--g)}
+.beat-ev{font-size:15px;color:var(--ink-mid);font-weight:600;letter-spacing:.02em;margin:4px 0 16px;position:relative;z-index:2}
+/* ambient drifting motes */
+.motes{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.mote{position:absolute;border-radius:50%;background:var(--ink-mid);opacity:0;animation:moteDrift linear infinite}
+@keyframes moteDrift{0%{opacity:0;transform:translateY(20px)}12%{opacity:.16}88%{opacity:.16}100%{opacity:0;transform:translateY(-60px)}}
+/* cover (navy classroom scene) */
+.beat[data-type="cover"]{padding:0;justify-content:flex-start;background:radial-gradient(1100px 700px at 72% 8%,#16224a,#0a1430 60%,#070d22)}
+.coverstars{position:absolute;inset:0;z-index:0}
+.coverscene{position:absolute;right:clamp(2px,0.8vw,12px);bottom:0;width:45%;height:82%;z-index:1;object-fit:contain;object-position:bottom right;filter:brightness(1.55) saturate(1.05) drop-shadow(0 1px 2px rgba(255,255,255,.25));pointer-events:none}
+.beat[data-type="cover"].on .coverscene{animation:coverFloat 9s ease-in-out infinite}
+@keyframes coverFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.coverwrap{position:relative;z-index:3;height:100%;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(26px,5vw,60px);max-width:64ch}
+.coverfoot{position:relative;z-index:3}
+.coverk{font-size:11.5px;letter-spacing:.24em;text-transform:uppercase;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:16px}
+.coverh{font-family:var(--display);font-weight:600;font-size:clamp(34px,7vw,68px);line-height:1.0;letter-spacing:-.025em;color:#fff}
+.coverh em{font-style:italic;color:var(--y);text-shadow:0 0 30px color-mix(in srgb,var(--y) 60%,transparent)}
+.covsub{color:rgba(255,255,255,.82);font-size:clamp(15px,2vw,20px);letter-spacing:.01em;font-weight:500}
+.covstripe{width:56px;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--y),var(--g),var(--b));margin-top:16px;transform-origin:left}
+.twk{transform-box:fill-box;transform-origin:center}
+.beat.on .twk{animation:twk 3.4s ease-in-out infinite}
+@keyframes twk{0%,100%{opacity:.5;transform:scale(.85)}50%{opacity:1;transform:scale(1.15)}}
+/* numbers beat (pencil PNG motifs) */
+.numgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,3vw,42px);margin-top:clamp(14px,3vh,30px);align-items:end;position:relative;z-index:2}
+@media(max-width:680px){.numgrid{grid-template-columns:1fr;gap:22px}}
+.numtile{text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px}
+.nmotif{width:auto;height:77px;max-width:128px;object-fit:contain;margin-bottom:6px}
+.nmotif.tall{height:98px;margin-bottom:2px}
+.beat.on .nmotif{animation:nmRise .8s cubic-bezier(.2,.8,.2,1) both}
+@keyframes nmRise{from{opacity:0;transform:translateY(14px) scale(.92)}to{opacity:1;transform:none}}
+.big-n{font-family:var(--display);font-weight:600;line-height:.95;font-variant-numeric:tabular-nums;font-size:clamp(48px,9vw,92px)}
+.big-n.word{font-size:clamp(32px,6vw,58px);font-style:italic}
+.numtile .ml{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-mid);font-weight:700;margin-top:6px}
+/* progress beat (gauge + SEAS dot-sort). .allgauge/.snapgauge/.gauge-cap are shared with Detail, defined above */
+.pbeat{display:grid;grid-template-columns:300px 1fr;gap:clamp(18px,4vw,44px);align-items:center;margin-top:10px;position:relative;z-index:2}
+@media(max-width:680px){.pbeat{grid-template-columns:1fr;justify-items:center;gap:18px}}
+#storyStage .gauge-cap{margin-top:-2px}
+#storyStage .gauge-cap .gv{font-size:22px}
+.dsrow{display:flex;align-items:flex-end;justify-content:space-around;gap:6px;width:100%}
+.dscol{display:flex;flex-direction:column;align-items:center}
+.dsstack{position:relative}
+.dsdot{position:absolute;left:0;border-radius:50%;animation:dotfly .85s cubic-bezier(.22,1.4,.36,1) both}
+@keyframes dotfly{from{transform:translate(var(--fx,0),var(--fy,0)) scale(.3);opacity:0}to{transform:none;opacity:1}}
+.dsword{font-size:14px;font-weight:600;color:var(--ink-mid);margin-top:14px;text-align:center;font-family:var(--display);line-height:1.1;max-width:11ch}
+.dscount{font-size:19px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;font-family:var(--display);margin-top:4px}
+/* list / statement + insight beats (margin figure PNGs) */
+.statefig{position:absolute;right:clamp(10px,3vw,40px);bottom:clamp(6px,2vw,24px);width:clamp(170px,24vw,280px);height:auto;object-fit:contain;z-index:0;opacity:.95;pointer-events:none}
+.statefig.figtall{width:clamp(120px,16vw,200px);right:clamp(14px,3vw,48px)}
+.beat.on img.statefig{animation:figRise 1s cubic-bezier(.2,.8,.2,1) both}
+@keyframes figRise{from{opacity:0;transform:translateY(22px)}to{opacity:.95;transform:none}}
+.bl-list{display:flex;flex-direction:column;gap:12px;margin-top:18px;max-width:60ch;position:relative;z-index:2}
+.bl-row{display:grid;grid-template-columns:26px 1fr;gap:14px;align-items:start;font-size:17px;line-height:1.5;color:var(--ink-dim)}
+.bl-row .bm{margin-top:1px}
+.bl-row .bm svg{width:20px;height:20px;display:block}
+.bl-row .bm svg path{stroke-dasharray:34}
+.beat.on .bl-row .bm svg path{animation:drawCheck .5s ease}
+@keyframes drawCheck{from{stroke-dashoffset:34}to{stroke-dashoffset:0}}
+.bl-ins{display:flex;flex-direction:column;gap:16px;margin-top:18px;max-width:90ch;position:relative;z-index:2}
+.bi{position:relative;padding:22px 28px 22px 66px;border:1px solid var(--edge);border-radius:16px;background:var(--panel-2);box-shadow:0 16px 40px -34px var(--shadow)}
+.bi .bn{position:absolute;left:20px;top:18px;font-family:var(--display);font-style:italic;font-weight:600;font-size:32px;color:var(--g);line-height:1}
 .bi.dev .bn{color:var(--r5)}
-.bi p{font-size:13px;line-height:1.56;color:var(--ink-dim)}
+.bi p{font-size:17px;line-height:1.62;color:var(--ink-dim)}
+/* compare beat (.div* diverging chart is shared with Detail, defined above) */
+.cmpgrid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,3vw,34px);margin-top:18px;position:relative;z-index:2}
+@media(max-width:560px){.cmpgrid{grid-template-columns:1fr}}
+.cmpcol{border:1px solid var(--edge);border-radius:16px;padding:clamp(16px,2.5vw,26px);background:var(--panel-2);text-align:center}
+.cmpcol .cl{font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;margin-bottom:14px}
+.cmpr{display:flex;align-items:baseline;justify-content:center;gap:9px;margin:9px 0}
+.cmpr .big-n{font-size:clamp(28px,4.4vw,42px)}
+.cmpr .big-n.word{font-size:clamp(20px,3vw,30px)}
+.cmpr .ml{font-size:11px;color:var(--ink-mid);font-weight:600;letter-spacing:.02em;margin-top:0}
 /* story controls */
 .storyctl{display:flex;align-items:center;gap:12px;margin-top:14px;padding:9px 14px;background:var(--panel);border:1px solid var(--edge-soft);border-radius:30px;backdrop-filter:blur(6px)}
 .sbtn{font:inherit;font-size:16px;font-weight:700;color:var(--ink-dim);background:var(--panel-2);border:1px solid var(--edge);border-radius:50%;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.2s;flex:none;line-height:1;padding:0}
@@ -408,6 +454,7 @@ svg{display:block;overflow:visible}
 .sdots{display:flex;align-items:center;gap:9px}
 .sdot{width:8px;height:8px;border-radius:50%;background:var(--edge);cursor:pointer;transition:.25s;border:0;padding:0}
 .sdot.on{background:var(--y);transform:scale(1.3);box-shadow:0 0 10px color-mix(in srgb,var(--y) 60%,transparent)}
+.progress{position:absolute;left:0;top:0;height:3px;background:linear-gradient(90deg,var(--y),var(--g));width:0;z-index:6;transition:width .25s linear;border-radius:0 3px 3px 0}
 /* present (full screen) */
 #v-snapshot.present .stage{position:fixed;inset:0;z-index:80;border-radius:0;min-height:100vh;border:0}
 #v-snapshot.present .storyctl{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:81;margin:0}
@@ -416,41 +463,7 @@ body.presenting .mast,body.presenting .themeico{display:none}
 /* autoplay toggle in Settings */
 #autoplayToggle.on .sw{background:var(--g)}
 #autoplayToggle.on .sw::after{left:23px}
-/* story: cover image beat */
-.beat[data-type="cover"]{padding:0;justify-content:flex-end}
-.coverart{position:absolute;inset:0;background:#0a1733 url('assets/snapshot-cover.jpg') center/cover no-repeat}
-.coverart::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(8,16,40,.85),rgba(8,16,40,.4) 45%,rgba(8,16,40,0) 78%),linear-gradient(0deg,rgba(8,16,40,.72),transparent 52%)}
-.coverwrap{position:relative;z-index:1;padding:clamp(26px,5vw,62px);max-width:62ch}
-.coverh{color:#fff}
-.coverh em{color:var(--y);text-shadow:0 0 26px color-mix(in srgb,var(--y) 55%,transparent)}
-.coversub{color:rgba(255,255,255,.86);font-size:clamp(15px,2vw,21px);letter-spacing:.02em}
-/* story: numbers beat */
-.numgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,3vw,40px);margin-top:clamp(18px,4vh,40px);align-items:end}
-@media(max-width:680px){.numgrid{grid-template-columns:1fr;gap:18px}}
-.numtile{text-align:center}
-.numtile .big-n{font-size:clamp(46px,9vw,92px);line-height:.95}
-.numtile .big-n.word{font-size:clamp(32px,6vw,60px)}
-.numtile .ml{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-mid);font-weight:700;margin-top:10px}
-.cmpgrid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(14px,3vw,32px);margin-top:18px}
-@media(max-width:560px){.cmpgrid{grid-template-columns:1fr}}
-.cmpcol{border:1px solid var(--edge);border-radius:16px;padding:clamp(16px,2.5vw,26px);background:var(--panel-2)}
-.cmpcol .cl{font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;margin-bottom:12px;text-align:center}
-.cmpr{display:flex;align-items:baseline;justify-content:center;gap:9px;margin:7px 0}
-.cmpr .big-n{font-size:clamp(28px,4.2vw,42px)}
-.cmpr .big-n.word{font-size:clamp(20px,3vw,30px)}
-.cmpr .ml{font-size:11px;color:var(--ink-mid);font-weight:600;letter-spacing:.02em}
-/* story: progress beat (gauge + SEAS dot-sort) */
-.pbeat{display:grid;grid-template-columns:220px 1fr;gap:clamp(18px,4vw,40px);align-items:center;margin-top:8px}
-@media(max-width:680px){.pbeat{grid-template-columns:1fr;justify-items:center;gap:14px}}
-.beat-ev{font-size:10.5px;color:var(--ink-faint);font-weight:600;letter-spacing:.02em;margin:2px 0 12px}
-.dsrow{display:flex;align-items:flex-end;justify-content:space-around;gap:6px;width:100%}
-.dscol{display:flex;flex-direction:column;align-items:center}
-.dsstack{position:relative}
-.dsdot{position:absolute;left:0;border-radius:50%;animation:dotfly .8s cubic-bezier(.22,1,.36,1) both}
-@keyframes dotfly{from{transform:translate(var(--fx,0),var(--fy,0)) scale(.3);opacity:0}to{transform:none;opacity:1}}
-@media(prefers-reduced-motion:reduce){.dsdot{animation:none}}
-.dsword{font-size:10px;font-weight:600;color:var(--ink-mid);margin-top:9px;text-align:center;font-family:var(--display);line-height:1.1;max-width:9ch}
-.dscount{font-size:13px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;font-family:var(--display);margin-top:3px}
+@media(prefers-reduced-motion:reduce){.mote,.dsdot,.twk{animation:none!important}.beat[data-type="cover"].on .coverscene,.beat.on .nmotif,.beat.on img.statefig,.beat.on .bl-row .bm svg path{animation:none!important}.bl-row .bm svg path{stroke-dashoffset:0}}
 </style>
 </head>
 <body>
@@ -696,6 +709,7 @@ body.presenting .mast,body.presenting .themeico{display:none}
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
       <div class="vhist">
+        <div class="vrow"><span class="vtag">v0.26</span><span class="vnote">The Story view was rebuilt to the new illustrated design. The cover is a navy classroom scene, the headline numbers carry pencil motifs (book, teacher, progress), and the What is working, Where to focus and insight beats gain a margin figure, with drifting motes and a per-beat progress bar. Every number still comes live from Supabase (the deduped lessons, teachers, average and distribution) and the wording is unchanged from the Detail view. The data visuals (the dot-sort, gauge and diverging chart) stay. Coverage, Observations and the Detail view are untouched.</span></div>
         <div class="vrow"><span class="vtag">v0.25</span><span class="vnote">The Story was rebuilt so the data itself carries the animation, not decorative pictures. Each lesson is now a dot that flies in and sorts onto the six-point rating scale, the headline numbers count up, the gauge sweeps, and the cover uses a custom AIS image. It uses only the wording and figures from the Detail (v1) view. The hand-drawn graphics were removed.</span></div>
         <div class="vrow"><span class="vtag">v0.24</span><span class="vnote">The Snapshot now opens on an animated Story view, the new landing page. It plays the June picture beat by beat (cover, the teachers and lessons seen drawn as illustrations, progress on the gauge and distribution, what is working, where to focus, and the insights), one after another. It auto-plays and can be paused, stepped with the arrows, turned off completely (Settings), or shown full screen with Present. The original card view is one click away as Detail. Coverage and Observations are unchanged.</span></div>
         <div class="vrow"><span class="vtag">v0.23</span><span class="vnote">Snapshot now counts distinct LESSONS, not form submissions. Most June lessons were co-observed by two inspectors who each filed a form, so the raw rows (167) double-counted; the Snapshot now collapses submissions into lessons (teacher, date, subject) with the best score winning, giving 109 lessons (Primary and Kindy 47, Secondary 62) and four Very Weak progress lessons. Average ratings and teacher counts are unchanged. The Observations board is untouched and still shows every individual submission.</span></div>
@@ -727,7 +741,7 @@ body.presenting .mast,body.presenting .themeico{display:none}
 
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.25</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.26</span></span>
   </div>
 </div>
 
@@ -1123,54 +1137,67 @@ function snapReveal(){reveal('#v-snapshot .head',0);reveal('#phaseTabs',0);}
    on the final visible state. Per-dot scatter origin + delay are inline CSS vars. */
 function renderDotSort(hostId,dist){const host=byId(hostId);if(!host)return;const R=RAMP();
   const counts=[1,2,3,4,5,6].map(i=>dist[i]||0),maxC=Math.max(1,...counts);
-  const H=200,ds=Math.max(7,Math.min(15,Math.floor((H-6)/maxC)-2)),pitch=ds+3;
+  const H=255,ds=Math.max(9,Math.min(20,Math.floor((H-8-4*(maxC-1))/maxC))),pitch=ds+4;
   let cols='';
   counts.forEach((c,idx)=>{const b=idx+1;let dots='';
-    for(let r=0;r<c;r++){const fx=((Math.random()-.5)*300).toFixed(0),fy=(-140-Math.random()*160).toFixed(0),dl=(Math.random()*.55).toFixed(2);
+    for(let r=0;r<c;r++){const fx=((Math.random()-.5)*300).toFixed(0),fy=(-140-Math.random()*160).toFixed(0),dl=(Math.random()*.55+(idx*.04)).toFixed(2);
       dots+=`<span class="dsdot" style="width:${ds}px;height:${ds}px;bottom:${r*pitch}px;background:${R[b]};--fx:${fx}px;--fy:${fy}px;animation-delay:${dl}s"></span>`;}
     cols+=`<div class="dscol"><div class="dsstack" style="height:${H}px;width:${ds}px">${dots}</div><div class="dsword">${esc(WORD[b])}</div><div class="dscount">${c}</div></div>`;});
   host.innerHTML=`<div class="dsrow">${cols}</div>`;}
 
-/* ---- STORY: beats . ONLY the V1 wording + stats, presented as an animated narrative ---- */
+/* ---- STORY: illustration motifs (recoloured pencil PNGs; read on cream + navy, no theme recolor by design) ---- */
+function coverScene(){return `<img class="coverscene" src="assets/story/cover-classroom.png" alt="A teacher presenting a rising chart to two children at desks while an observer takes notes on a clipboard">`;}
+function coverStars(){let s='';for(let i=0;i<46;i++){const x=(Math.random()*100).toFixed(1),y=(Math.random()*70).toFixed(1),r=(Math.random()*1.6+.6).toFixed(1),d=(Math.random()*3.4).toFixed(2);s+=`<circle class="twk" cx="${x}%" cy="${y}%" r="${r}" fill="#fff" style="animation-delay:${d}s"></circle>`;}return `<svg class="coverstars" aria-hidden="true">${s}</svg>`;}
+function nmBook(){return `<img class="nmotif" src="assets/story/icon-book.png" alt="Open book">`;}
+function nmTeacher(){return `<img class="nmotif tall" src="assets/story/icon-teacher.png" alt="Teacher at a board">`;}
+function nmGrowth(){return `<img class="nmotif" src="assets/story/icon-progress.png" alt="Rising progress chart">`;}
+function figWriting(){return `<img class="statefig" src="assets/story/icon-student-writing.png" alt="A student writing at a desk">`;}
+function figReach(){return `<img class="statefig" src="assets/story/icon-student.png" alt="A student with a raised hand at a desk">`;}
+function figObserve(variant){const src=variant==='terra'?'assets/story/icon-observer-terra.png':'assets/story/icon-observer-gold.png';return `<img class="statefig figtall" src="${src}" alt="An observer taking notes on a clipboard">`;}
+function motesHTML(){let s='';for(let i=0;i<14;i++){const x=(Math.random()*100).toFixed(1),sz=(Math.random()*2.4+1.4).toFixed(1),dur=(Math.random()*8+10).toFixed(1),dl=(Math.random()*8).toFixed(1),top=(40+Math.random()*60).toFixed(0);s+=`<span class="mote" style="left:${x}%;top:${top}%;width:${sz}px;height:${sz}px;animation-duration:${dur}s;animation-delay:-${dl}s"></span>`;}return s;}
+
+/* ---- STORY: beats . ONLY the V1 (Detail) wording + stats, presented as an animated narrative ---- */
 function phaseBeats(phase){const a=snapAgg(phase),N=NARR[phase],L=PHASE_LABEL[phase];return [
-  {type:'cover',html:`<div class="coverart"></div><div class="coverwrap"><div class="beat-k" style="color:rgba(255,255,255,.72)">Snapshot . AIS Sharjah</div><div class="beat-h coverh">The June <em>R3</em> picture.</div><div class="beat-sub coversub">${esc(L)}</div></div>`},
+  {type:'cover',html:`${coverStars()}${coverScene()}<div class="coverwrap"><div class="covertop"><div class="coverk">Snapshot . AIS Sharjah</div><div class="coverh">The June <em>R3</em> picture.</div></div><div class="coverfoot"><div class="covsub">${esc(L)}</div><div class="covstripe"></div></div></div>`},
   {type:'numbers',html:`<div class="beat-k">${esc(L)} . June R3 sweep</div><div class="numgrid">
-    <div class="numtile"><div class="big-n" style="color:var(--y)" data-to="${a.lessons}">0</div><div class="ml">Lessons observed</div></div>
-    <div class="numtile"><div class="big-n" data-to="${a.teachers}">0</div><div class="ml">Teachers seen</div></div>
-    <div class="numtile"><div class="big-n word" style="color:${colOf(a.avgBest)}">${esc(wordOf(a.avgBest))}</div><div class="ml">Average progress</div></div></div>`},
+    <div class="numtile">${nmBook()}<div class="big-n" style="color:var(--y)" data-to="${a.lessons}">0</div><div class="ml">Lessons observed</div></div>
+    <div class="numtile">${nmTeacher()}<div class="big-n" data-to="${a.teachers}">0</div><div class="ml">Teachers seen</div></div>
+    <div class="numtile">${nmGrowth()}<div class="big-n word" style="color:${colOf(a.avgBest)}">${esc(wordOf(a.avgBest))}</div><div class="ml">Average progress</div></div></div>`},
   {type:'progress',html:`<div class="beat-k">Student progress . best evidence per teacher</div><div class="pbeat">
-    <div class="pgauge"><div class="allgauge"><svg class="snapgauge" id="storyGauge" viewBox="0 20 240 200" width="208" height="173"></svg></div><div class="gauge-cap"><div class="gv">${a.avgBest!=null?a.avgBest.toFixed(1)+' of 6':'n/a'}</div><div class="gl">average progress</div></div></div>
-    <div class="pdots"><div id="storyDots" class="dotsort"></div></div></div>`},
-  {type:'list',html:`<div class="beat-k" style="color:var(--g)">What is working</div><div class="beat-ev">${esc(N.strengths.evidence)}</div><div class="beat-h" style="font-size:clamp(18px,2.3vw,25px);max-width:34ch">${esc(N.strengths.summary)}</div>
+    <div><div class="allgauge"><svg class="snapgauge" id="storyGauge" viewBox="0 20 240 200" width="290" height="242"></svg></div><div class="gauge-cap"><div class="gv">${a.avgBest!=null?a.avgBest.toFixed(1)+' of 6':'n/a'}</div><div class="gl">average progress</div></div></div>
+    <div><div id="storyDots"></div></div></div>`},
+  {type:'list',extra:figWriting(),html:`<div class="beat-k" style="color:var(--g)">What is working</div><div class="beat-ev">${esc(N.strengths.evidence)}</div><div class="beat-h" style="font-size:clamp(18px,2.3vw,25px);max-width:34ch">${esc(N.strengths.summary)}</div>
     <div class="bl-list">${N.strengths.bullets.map(b=>`<div class="bl-row"><span class="bm" style="color:var(--g)">${I_CHECK}</span><span>${esc(b)}</span></div>`).join('')}</div>`},
-  {type:'list',html:`<div class="beat-k" style="color:var(--g)">Insights . what the evidence reveals</div><div class="beat-ev">Strengths</div><div class="bl-ins" style="margin-top:8px">${N.strengths.insights.map((t,i)=>`<div class="bi"><span class="bn">${i+1}</span><p>${esc(t)}</p></div>`).join('')}</div>`},
-  {type:'list',html:`<div class="beat-k" style="color:var(--r5)">Where to focus next</div><div class="beat-ev">${esc(N.develop.evidence)}</div><div class="beat-h" style="font-size:clamp(18px,2.3vw,25px);max-width:34ch">${esc(N.develop.summary)}</div>
+  {type:'list',extra:figObserve('gold'),html:`<div class="beat-k" style="color:var(--g)">Insights . what the evidence reveals</div><div class="beat-ev">Strengths</div><div class="bl-ins" style="margin-top:8px">${N.strengths.insights.map((t,i)=>`<div class="bi"><span class="bn">${i+1}</span><p>${esc(t)}</p></div>`).join('')}</div>`},
+  {type:'list',extra:figReach(),html:`<div class="beat-k" style="color:var(--r5)">Where to focus next</div><div class="beat-ev">${esc(N.develop.evidence)}</div><div class="beat-h" style="font-size:clamp(18px,2.3vw,25px);max-width:34ch">${esc(N.develop.summary)}</div>
     <div class="bl-list">${N.develop.bullets.map(b=>`<div class="bl-row"><span class="bm" style="color:var(--r5)">${I_ARROW}</span><span>${esc(b)}</span></div>`).join('')}</div>`},
-  {type:'list',html:`<div class="beat-k" style="color:var(--r5)">Insights . what the evidence reveals</div><div class="beat-ev">Areas to develop</div><div class="bl-ins" style="margin-top:8px">${N.develop.insights.map((t,i)=>`<div class="bi dev"><span class="bn">${i+1}</span><p>${esc(t)}</p></div>`).join('')}</div>`}
+  {type:'list',extra:figObserve('terra'),html:`<div class="beat-k" style="color:var(--r5)">Insights . what the evidence reveals</div><div class="beat-ev">Areas to develop</div><div class="bl-ins" style="margin-top:8px">${N.develop.insights.map((t,i)=>`<div class="bi dev"><span class="bn">${i+1}</span><p>${esc(t)}</p></div>`).join('')}</div>`}
 ];}
 function compareBeats(){const pk=snapAgg('primary_kindy'),se=snapAgg('secondary');
   const col=a=>`<div class="cmpr"><span class="big-n" data-to="${a.lessons}">0</span><span class="ml">lessons</span></div><div class="cmpr"><span class="big-n" data-to="${a.teachers}">0</span><span class="ml">teachers</span></div><div class="cmpr"><span class="big-n word" style="color:${colOf(a.avgBest)}">${esc(wordOf(a.avgBest))}</span><span class="ml">avg progress</span></div>`;
   return [
-  {type:'cover',html:`<div class="coverart"></div><div class="coverwrap"><div class="beat-k" style="color:rgba(255,255,255,.72)">Snapshot . AIS Sharjah</div><div class="beat-h coverh">The June <em>R3</em> picture.</div><div class="beat-sub coversub">Primary &amp; Kindy and Secondary</div></div>`},
+  {type:'cover',html:`${coverStars()}${coverScene()}<div class="coverwrap"><div class="covertop"><div class="coverk">Snapshot . AIS Sharjah</div><div class="coverh">The June <em>R3</em> picture.</div></div><div class="coverfoot"><div class="covsub">Primary &amp; Kindy and Secondary</div><div class="covstripe"></div></div></div>`},
   {type:'numbers',html:`<div class="beat-k">June R3 sweep</div><div class="cmpgrid">
     <div class="cmpcol"><div class="cl" style="color:var(--b)">Primary &amp; Kindy</div>${col(pk)}</div>
     <div class="cmpcol"><div class="cl" style="color:var(--y)">Secondary</div>${col(se)}</div></div>`},
   {type:'compdist',html:`<div class="beat-k">Progress distribution . Primary &amp; Kindy against Secondary</div>
     <div class="divlabels" style="margin-top:8px"><span class="dlL" style="color:var(--b)">Primary &amp; Kindy</span><span></span><span class="dlR" style="color:var(--y)">Secondary</span></div>
     <div class="divchart" id="storyDiv"></div>`},
-  {type:'list',html:`<div class="beat-k">Insights . drawing the two together</div><div class="bl-ins">${NARR.compare.map((t,i)=>`<div class="bi"><span class="bn" style="color:var(--y)">${i+1}</span><p>${esc(t)}</p></div>`).join('')}</div>`}
+  {type:'list',extra:figObserve('gold'),html:`<div class="beat-k">Insights . drawing the two together</div><div class="bl-ins">${NARR.compare.map((t,i)=>`<div class="bi"><span class="bn" style="color:var(--y)">${i+1}</span><p>${esc(t)}</p></div>`).join('')}</div>`}
 ];}
 
-/* ---- STORY: slide engine (auto-advance, pause, manual step, off) ---- */
-const BEAT_MS=5400;let beatEls=[],storyIdx=0,storyPlaying=false,storyTimer=null;
+/* ---- STORY: slide engine (auto-advance, pause, manual step, off; per-beat progress bar) ---- */
+const BEAT_MS=6400;let beatEls=[],storyIdx=0,storyPlaying=false,storyTimer=null,progTween=null;
 function snapAutoplay(){try{return localStorage.getItem('ais-snap-autoplay')!=='off';}catch(e){return true;}}
 function setSnapAutoplay(on){try{localStorage.setItem('ais-snap-autoplay',on?'on':'off');}catch(e){}}
-function clearStoryTimer(){if(storyTimer){clearTimeout(storyTimer);storyTimer=null;}}
+function clearStoryTimer(){if(storyTimer){clearTimeout(storyTimer);storyTimer=null;}if(progTween){progTween.kill();progTween=null;}}
 function setPlayUI(){const c=byId('storyCtl');if(c)c.classList.toggle('playing',storyPlaying);}
-function scheduleNext(){clearStoryTimer();if(!storyPlaying)return;storyTimer=setTimeout(function(){
-  if(storyIdx<beatEls.length-1){gotoBeat(storyIdx+1,true);scheduleNext();}else{storyPlaying=false;setPlayUI();}},BEAT_MS);}
+function resetProgress(){const b=byId('progBar');if(b)b.style.width='0%';}
+function runProgress(){const bar=byId('progBar');if(!bar)return;if(!window.gsap){bar.style.width='0%';return;}gsap.set(bar,{width:'0%'});progTween=gsap.to(bar,{width:'100%',duration:BEAT_MS/1000,ease:'none'});}
+function scheduleNext(){clearStoryTimer();if(!storyPlaying)return;runProgress();storyTimer=setTimeout(function(){
+  if(storyIdx<beatEls.length-1){gotoBeat(storyIdx+1,true);scheduleNext();}else{storyPlaying=false;setPlayUI();resetProgress();}},BEAT_MS);}
 function playStory(){if(beatEls.length<2)return;if(storyIdx>=beatEls.length-1)gotoBeat(0,true);storyPlaying=true;setPlayUI();scheduleNext();}
-function pauseStory(){storyPlaying=false;clearStoryTimer();setPlayUI();}
+function pauseStory(){storyPlaying=false;clearStoryTimer();setPlayUI();resetProgress();}
 function toggleStoryPlay(){storyPlaying?pauseStory():playStory();}
 function gotoBeat(i,animate){if(!beatEls.length)return;i=Math.max(0,Math.min(beatEls.length-1,i));storyIdx=i;
   beatEls.forEach((b,j)=>b.classList.toggle('on',j===i));
@@ -1183,19 +1210,21 @@ function buildBeatViz(b){b.querySelectorAll('[data-to]').forEach(n=>n.textConten
   if(t==='compdist'){const pk=snapAgg('primary_kindy'),se=snapAgg('secondary');renderDiv(pk.dist,se.dist,'storyDiv');}}
 function finalizeBeat(b){buildBeatViz(b);}
 function animateBeat(b){buildBeatViz(b);if(!window.gsap)return;const t=b.dataset.type;
-  gsap.fromTo(b.querySelectorAll('.beat-k,.beat-h,.beat-sub,.beat-ev'),{y:18,opacity:0,filter:'blur(8px)'},{y:0,opacity:1,filter:'blur(0px)',duration:.7,stagger:.09,ease:'power3.out',immediateRender:false});
-  if(t==='cover')gsap.fromTo(b.querySelectorAll('.coverart'),{scale:1.08,opacity:0},{scale:1,opacity:1,duration:1.5,ease:'power2.out',immediateRender:false});
-  if(t==='numbers'){b.querySelectorAll('[data-to]').forEach(n=>countUp(n,+n.dataset.to,1.3));
-    gsap.fromTo(b.querySelectorAll('.numtile,.cmpcol'),{y:26,opacity:0,filter:'blur(6px)'},{y:0,opacity:1,filter:'blur(0px)',duration:.7,stagger:.12,ease:'power3.out',immediateRender:false});}
+  gsap.fromTo(b.querySelectorAll('.beat-k,.beat-ev'),{y:14,opacity:0},{y:0,opacity:1,duration:.55,stagger:.08,ease:'power3.out',immediateRender:false});
+  gsap.fromTo(b.querySelectorAll('.beat-h,.coverh,.coverk,.covsub'),{y:22,opacity:0,filter:'blur(8px)'},{y:0,opacity:1,filter:'blur(0px)',duration:.8,stagger:.1,ease:'power3.out',delay:.05,immediateRender:false});
+  if(t==='cover')gsap.fromTo(b.querySelector('.covstripe'),{scaleX:0},{scaleX:1,duration:.7,ease:'power2.out',delay:.55,immediateRender:false});
+  if(t==='numbers'){b.querySelectorAll('[data-to]').forEach(n=>countUp(n,+n.dataset.to,1.4));
+    gsap.fromTo(b.querySelectorAll('.numtile,.cmpcol'),{y:26,opacity:0,filter:'blur(6px)'},{y:0,opacity:1,filter:'blur(0px)',duration:.75,stagger:.13,ease:'power3.out',immediateRender:false});}
   if(t==='list'){
-    gsap.fromTo(b.querySelectorAll('.bl-row'),{x:-16,opacity:0},{x:0,opacity:1,duration:.5,stagger:.07,ease:'power3.out',delay:.2,immediateRender:false});
-    gsap.fromTo(b.querySelectorAll('.bi'),{y:16,opacity:0},{y:0,opacity:1,duration:.55,stagger:.1,ease:'power3.out',delay:.35,immediateRender:false});}
-  /* progress beat: the gauge fades (CSS) and the dot-sort flies in (CSS keyframes) on build; no JS entrance needed */
-  settle(b.querySelectorAll('.numtile,.cmpcol,.bl-row,.bi,.beat-k,.beat-h,.beat-sub,.beat-ev,.coverart'),1800);}
+    gsap.fromTo(b.querySelectorAll('.bl-row'),{x:-16,opacity:0},{x:0,opacity:1,duration:.5,stagger:.08,ease:'power3.out',delay:.22,immediateRender:false});
+    gsap.fromTo(b.querySelectorAll('.bi'),{y:16,opacity:0},{y:0,opacity:1,duration:.55,stagger:.11,ease:'power3.out',delay:.3,immediateRender:false});}
+  /* progress beat: the gauge draws at final state (CSS .snapgauge fade) and the dot-sort flies in (CSS keyframes) on build; no JS entrance to strand */
+  settle(b.querySelectorAll('.numtile,.cmpcol,.bl-row,.bi,.beat-k,.beat-h,.beat-ev,.coverh,.coverk,.covsub,.covstripe'),1900);}
 function renderStory(){
   const stage=byId('storyStage');if(!stage)return;stage.innerHTML='';
   const beats=(snapPhase==='compare')?compareBeats():phaseBeats(snapPhase);
-  beats.forEach(bt=>{const d=document.createElement('div');d.className='beat'+((bt.type==='list'||bt.type==='compdist')?' col-top':'');d.dataset.type=bt.type;d.innerHTML=bt.html;stage.appendChild(d);});
+  beats.forEach(bt=>{const d=document.createElement('div');d.className='beat'+((bt.type==='list'||bt.type==='compdist')?' col-top':'');d.dataset.type=bt.type;d.innerHTML=`<div class="motes">${motesHTML()}</div>`+(bt.extra||'')+bt.html;stage.appendChild(d);});
+  const pb=document.createElement('div');pb.className='progress';pb.id='progBar';stage.appendChild(pb);
   beatEls=[...stage.querySelectorAll('.beat')];
   const dz=byId('sDots');dz.innerHTML=beatEls.map((b,i)=>`<button class="sdot" type="button" data-i="${i}" aria-label="Beat ${i+1}"></button>`).join('');
   dz.querySelectorAll('.sdot').forEach(d=>d.onclick=()=>{pauseStory();gotoBeat(+d.dataset.i,true);});
