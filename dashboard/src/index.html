@@ -709,6 +709,7 @@ body.presenting .mast,body.presenting .themeico{display:none}
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
       <div class="vhist">
+        <div class="vrow"><span class="vtag">v0.27</span><span class="vnote">Fixed two Story bugs with one root cause. The freeze-safety cleanup that runs after each beat was wiping the beat’s custom inline styling, not only the animation leftovers, so the slide 4 and 6 headlines jumped from their small size to the large base size on first load, and the slide 4 to 7 headers reverted from green or terracotta to blue while playing. The cleanup now clears only the animation properties, so the custom size and colour are kept. It was never a font problem. The Observations board, which shares the same cleanup, is unaffected.</span></div>
         <div class="vrow"><span class="vtag">v0.26</span><span class="vnote">The Story view was rebuilt to the new illustrated design. The cover is a navy classroom scene, the headline numbers carry pencil motifs (book, teacher, progress), and the What is working, Where to focus and insight beats gain a margin figure, with drifting motes and a per-beat progress bar. Every number still comes live from Supabase (the deduped lessons, teachers, average and distribution) and the wording is unchanged from the Detail view. The data visuals (the dot-sort, gauge and diverging chart) stay. Coverage, Observations and the Detail view are untouched.</span></div>
         <div class="vrow"><span class="vtag">v0.25</span><span class="vnote">The Story was rebuilt so the data itself carries the animation, not decorative pictures. Each lesson is now a dot that flies in and sorts onto the six-point rating scale, the headline numbers count up, the gauge sweeps, and the cover uses a custom AIS image. It uses only the wording and figures from the Detail (v1) view. The hand-drawn graphics were removed.</span></div>
         <div class="vrow"><span class="vtag">v0.24</span><span class="vnote">The Snapshot now opens on an animated Story view, the new landing page. It plays the June picture beat by beat (cover, the teachers and lessons seen drawn as illustrations, progress on the gauge and distribution, what is working, where to focus, and the insights), one after another. It auto-plays and can be paused, stepped with the arrows, turned off completely (Settings), or shown full screen with Present. The original card view is one click away as Detail. Coverage and Observations are unchanged.</span></div>
@@ -741,7 +742,7 @@ body.presenting .mast,body.presenting .themeico{display:none}
 
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.26</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.27</span></span>
   </div>
 </div>
 
@@ -1263,7 +1264,7 @@ function setPill(b){document.querySelectorAll('.pill').forEach(p=>p.classList.to
    RAF freezes mid-tween (backgrounded / bfcache) is left fully visible, only slightly offset. */
 /* after a reveal/FLIP, kill the tween (so a briefly-resuming RAF can't re-apply a frozen
    mid-tween transform) and clear gsap's inline props, leaving the element at its natural place. */
-function settle(sel,ms){setTimeout(()=>{try{if(window.gsap){gsap.killTweensOf(sel);gsap.set(sel,{clearProps:'all'});}}catch(e){}},ms||1000);}
+function settle(sel,ms){setTimeout(()=>{try{if(window.gsap){gsap.killTweensOf(sel);gsap.set(sel,{clearProps:'transform,opacity,filter'});}}catch(e){}},ms||1000);}  // clear ONLY the props GSAP animates; clearProps:'all' wiped the author inline styles too (beat-h font-size/max-width, beat-k color) -> headline jumped to base size + kicker reverted to base blue ~1.9s after each beat
 /* The gauge + spectrums no longer need a JS freeze-rescue: their entrances are CSS animations on a
    resting-visible base (see .ospec/.osbar/#svgArc), which run on the real-time document timeline and
    therefore complete on their own whether or not the tab was ever painted. A backgrounded/bfcached
