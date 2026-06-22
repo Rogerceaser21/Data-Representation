@@ -5,6 +5,10 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.29 . 2026-06-22
+- **Observer figures resized + teacher motif recoloured to the AIS blue.** The observer illustration on the two Insights beats (slides 5 and 7) is now half its previous size, closer to the teacher motif's scale (`.statefig.figtall` width clamp halved). The teacher motif on the numbers beat used a different blue (#4C82F5) than the headers; it is recoloured to the approved AIS blue #1257FF ("Blue on Star", from the AIS Approved Colours sheet), so the motif and the headers now match and are on-brand. The presenter headers were already #1257FF, so they are unchanged.
+- Rollback: `dash-v0.28`.
+
 ## v0.28 . 2026-06-22
 - **Autoplay now loops.** When the Story reaches the last beat it returns to the first beat and keeps playing, instead of stopping. `scheduleNext()` wraps `storyIdx` to 0 at the end. Pause, step and Present are unchanged.
 - **Fixed blank content after the tab is backgrounded and restored** (the "go away and come back, some data is missing, needs a refresh" bug, the same class as the R3 form's bfcache issue). A backgrounded or bfcached tab can freeze an entrance mid-animation or restore stale, leaving a viz blank. A new restore handler re-renders the CURRENT board at final state on `pageshow` (bfcache restore) and on `visibilitychange` to visible, preserving the open teacher and the story position. No manual refresh needed.

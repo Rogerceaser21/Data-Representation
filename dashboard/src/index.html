@@ -420,7 +420,7 @@ svg{display:block;overflow:visible}
 .dscount{font-size:19px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;font-family:var(--display);margin-top:4px}
 /* list / statement + insight beats (margin figure PNGs) */
 .statefig{position:absolute;right:clamp(10px,3vw,40px);bottom:clamp(6px,2vw,24px);width:clamp(170px,24vw,280px);height:auto;object-fit:contain;z-index:0;opacity:.95;pointer-events:none}
-.statefig.figtall{width:clamp(120px,16vw,200px);right:clamp(14px,3vw,48px)}
+.statefig.figtall{width:clamp(60px,8vw,100px);right:clamp(14px,3vw,48px)}   /* observer figs (slides 5/7) at half size, closer to the teacher motif scale */
 .beat.on img.statefig{animation:figRise 1s cubic-bezier(.2,.8,.2,1) both}
 @keyframes figRise{from{opacity:0;transform:translateY(22px)}to{opacity:.95;transform:none}}
 .bl-list{display:flex;flex-direction:column;gap:12px;margin-top:18px;max-width:60ch;position:relative;z-index:2}
@@ -709,6 +709,7 @@ body.presenting .mast,body.presenting .themeico{display:none}
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
       <div class="vhist">
+        <div class="vrow"><span class="vtag">v0.29</span><span class="vnote">The observer illustration on the two Insights slides (5 and 7) is now half its previous size, closer to the teacher figure on the numbers slide. And the teacher figure, which used a slightly different blue, is recoloured to the approved AIS blue (#1257FF, Blue on Star) so it matches the presenter headers, which were already that blue. Story only.</span></div>
         <div class="vrow"><span class="vtag">v0.28</span><span class="vnote">Autoplay now loops: when the Story reaches the last slide it returns to the first and keeps playing. And fixed blank content after backgrounding the tab and returning (the data-missing, needs-refresh bug, the same as the R3 form): the dashboard now re-renders the current board when the tab is restored, so nothing stays blank and no manual refresh is needed. The open teacher and the story position are kept.</span></div>
         <div class="vrow"><span class="vtag">v0.27</span><span class="vnote">Fixed two Story bugs with one root cause. The freeze-safety cleanup that runs after each beat was wiping the beat’s custom inline styling, not only the animation leftovers, so the slide 4 and 6 headlines jumped from their small size to the large base size on first load, and the slide 4 to 7 headers reverted from green or terracotta to blue while playing. The cleanup now clears only the animation properties, so the custom size and colour are kept. It was never a font problem. The Observations board, which shares the same cleanup, is unaffected.</span></div>
         <div class="vrow"><span class="vtag">v0.26</span><span class="vnote">The Story view was rebuilt to the new illustrated design. The cover is a navy classroom scene, the headline numbers carry pencil motifs (book, teacher, progress), and the What is working, Where to focus and insight beats gain a margin figure, with drifting motes and a per-beat progress bar. Every number still comes live from Supabase (the deduped lessons, teachers, average and distribution) and the wording is unchanged from the Detail view. The data visuals (the dot-sort, gauge and diverging chart) stay. Coverage, Observations and the Detail view are untouched.</span></div>
@@ -743,7 +744,7 @@ body.presenting .mast,body.presenting .themeico{display:none}
 
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.28</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.29</span></span>
   </div>
 </div>
 
