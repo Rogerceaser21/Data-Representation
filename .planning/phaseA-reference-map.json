@@ -1,0 +1,1600 @@
+{
+  "generated": "2026-06-22",
+  "round": "R3 June 26",
+  "data_basis": "Live Supabase get_raw_snapshot equivalent, deduped to lessons mirroring snapAgg() exactly.",
+  "live_numbers": {
+    "primary_kindy": {
+      "lessons": 48,
+      "teachers": 46,
+      "dist": {
+        "1": 2,
+        "2": 9,
+        "3": 13,
+        "4": 16,
+        "5": 3,
+        "6": 0
+      },
+      "avgBest": 3.2093,
+      "strengthsLessons": 43,
+      "weaknessLessons": 41,
+      "notesLessons": 45
+    },
+    "secondary": {
+      "lessons": 62,
+      "teachers": 58,
+      "dist": {
+        "1": 6,
+        "2": 12,
+        "3": 12,
+        "4": 20,
+        "5": 4,
+        "6": 4
+      },
+      "avgBest": 3.2364,
+      "strengthsLessons": 62,
+      "weaknessLessons": 56,
+      "notesLessons": 54
+    },
+    "all": {
+      "lessons": 110,
+      "teachers": 104,
+      "dist": {
+        "1": 8,
+        "2": 21,
+        "3": 25,
+        "4": 36,
+        "5": 7,
+        "6": 4
+      },
+      "avgBest": 3.2245,
+      "strengthsLessons": 105,
+      "weaknessLessons": 97,
+      "notesLessons": 99
+    }
+  },
+  "unlinked_june_rows": 0,
+  "claims": [
+    {
+      "id": "pk_str_summary",
+      "round": "R3 June 26",
+      "phase": "primary_kindy",
+      "section": "strengths",
+      "kind": "summary",
+      "ord": 0,
+      "text": "Calm, well-routined classrooms with strong relationships and visible scaffolds, so children know exactly what to do.",
+      "verdict": "congruent",
+      "method": null,
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "primary_kindy",
+          "section_subject": "Mathematics",
+          "area": "Mathematics",
+          "date": "2026-06-11",
+          "progress": 4,
+          "record_id": "AIS-R3-20260611-1221",
+          "token": "ba4616a8e4c441059ef64465d6a84e1a",
+          "quote": "Learning routines and relationships are excellent. Clarity of instruction is high with students knowing exactly what they need to do"
+        },
+        {
+          "phase": "primary_kindy",
+          "section_subject": "Arabic Studies",
+          "area": "Arabic",
+          "date": "2026-06-10",
+          "progress": 2,
+          "record_id": "AIS-R3-20260610-1027",
+          "token": "a93382aa20b94168baf32c667a434531",
+          "quote": "Clear instructions and expectations established strong classroom routines and enabled students to work confidently and independently"
+        },
+        {
+          "phase": "primary_kindy",
+          "section_subject": "English",
+          "area": "English",
+          "date": "2026-06-10",
+          "progress": 2,
+          "record_id": "AIS-R3-20260610-1224",
+          "token": "7a2316c30a4b4f5d8e13eaf797070ec6",
+          "quote": "Supports/checklists in place that were differentiated for different groups of students. Established routines around marking and feedback"
+        }
+      ]
+    },
+    {
+      "id": "pk_str_evidence",
+      "round": "R3 June 26",
+      "phase": "primary_kindy",
+      "section": "strengths",
+      "kind": "evidence",
+      "ord": 1,
+      "text": "Drawn from the written evidence on 42 of 47 lessons.",
+      "verdict": "flag",
+      "method": "Count of Primary & Kindy lessons (deduped by teacher + date + subject area, best evidence wins) carrying a non-empty written strengths note.",
+      "flag_note": "Live data is now 43 of 48 (the round is still receiving late submissions; the most recent landed 2026-06-22 12:22 for a real 06-08..06-11 lesson). The baked \"42 of 47\" is the frozen 06-19 figure. The Story gauge/distribution already compute live (48 PK lessons), so the prose is the only stale part. Recommend refreshing to \"43 of 48\" or formally freezing the round.",
+      "refs": [
+        {
+          "phase": "primary_kindy",
+          "section_subject": "English",
+          "area": "English",
+          "date": "2026-06-10",
+          "progress": 2,
+          "record_id": "AIS-R3-20260610-1224",
+          "token": "7a2316c30a4b4f5d8e13eaf797070ec6",
+          "quote": "Supports/checklists in place that were differentiated for different groups of students"
+        }
+      ]
+    },
+    {
+      "id": "pk_str_b1",
+      "round": "R3 June 26",
+      "phase": "primary_kindy",
+      "section": "strengths",
+      "kind": "bullet",
+      "ord": 2,
+      "text": "Routines, relationships and behaviour for learning are consistently strong",
+      "verdict": "congruent",
+      "method": null,
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "primary_kindy",
+          "section_subject": "Digital Technologies",
+          "area": null,
+          "date": "2026-06-10",
+          "progress": 4,
+          "record_id": "AIS-R3-20260610-0857",
+          "token": "b6176263ce234ea1878402e62f1bc533",
+          "quote": "Behaviour for learning is highly developed and indicates strong routines and excellent relationships"
+        },
+        {
+          "phase": "primary_kindy",
+          "section_subject": "Mathematics",
+          "area": "Mathematics",
+          "date": "2026-06-11",
+          "progress": 4,
+          "record_id": "AIS-R3-20260611-1221",
+          "token": "ba4616a8e4c441059ef64465d6a84e1a",
+          "quote": "Learning routines and relationships are excellent"
+        }
+      ]
+    },
+    {
+      "id": "pk_str_b2",
+      "round": "R3 June 26",
+      "phase": "primary_kindy",
+      "section": "strengths",
+      "kind": "bullet",
+      "ord": 3,
+      "text": "Clear instructions; children know what is expected and follow it",
+      "verdict": "congruent",
+      "method": null,
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "primary_kindy",
+          "section_subject": "Mathematics",
+          "area": "Mathematics",
+          "date": "2026-06-11",
+          "progress": 4,
+          "record_id": "AIS-R3-20260611-1221",
+          "token": "ba4616a8e4c441059ef64465d6a84e1a",
+          "quote": "students knowing exactly what they need to do and flawlessly following T requests"
+        },
+        {
+          "phase": "primary_kindy",
+          "section_subject": "English",
+          "area": "English",
+          "date": "2026-06-10",
+          "progress": 4,
+          "record_id": "AIS-R3-20260610-1016",
+          "token": "16a0aec5334944538a4a1941c2d77bc9",
+          "quote": "Teacher Clarity is high - students know what is expected of them"
+        }
+      ]
+    },
+    {
+      "id": "pk_str_b3",
+      "round": "R3 June 26",
+      "phase": "primary_kindy",
+      "section": "strengths",
+      "kind": "bullet",
+      "ord": 4,
+      "text": "Differentiation and scaffolds in place (sentence stems, helping words, checklists)",
+      "verdict": "congruent",
+      "method": null,
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "primary_kindy",
+          "section_subject": "Science",
+          "area": "Sciences",
+          "date": "2026-06-09",
+          "progress": 2,
+          "record_id": "AIS-R3-20260609-1402",
+          "token": "8158fcbf5bfb43aa9243da6f2e444017",
+          "quote": "Sentence stems to support lower ability students"
+        },
+        {
+          "phase": "primary_kindy",
+          "section_subject": "Arabic Studies",
+          "area": "Arabic",
+          "date": "2026-06-10",
+          "progress": 4,
+          "record_id": "AIS-R3-20260610-1355",
+          "token": "5a35238c25864ff6b3d183bab3806020",
+          "quote": "one group received TA support, another was provided with helping words"
+        },
+        {
+          "phase": "primary_kindy",
+          "section_subject": "English",
+          "area": "English",
+          "date": "2026-06-10",
+          "progress": 2,
+          "record_id": "AIS-R3-20260610-1224",
+          "token": "7a2316c30a4b4f5d8e13eaf797070ec6",
+          "quote": "Supports/checklists in place that were differentiated for different groups of students"
+        }
+      ]
+    },
+    {
+      "id": "pk_str_b4",
+      "round": "R3 June 26",
+      "phase": "primary_kindy",
+      "section": "strengths",
+      "kind": "bullet",
+      "ord": 5,
+      "text": "Purposeful questioning and turn-and-talk dialogue",
+      "verdict": "congruent",
+      "method": null,
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "primary_kindy",
+          "section_subject": "Arabic Studies For Non Arabs",
+          "area": "Arabic NA",
+          "date": "2026-06-08",
+          "progress": 3,
+          "record_id": "AIS-R3-20260608-1405",
+          "token": "88cf7ac10cde41a782c293c9454759c2",
+          "quote": "The use of role-play, turn-and-talk activities, and follow-up questions increased opportunities for spoken language, discussion, and dialogue"
+        },
+        {
+          "phase": "primary_kindy",
+          "section_subject": "Arabic Studies",
+          "area": "Arabic",
+          "date": "2026-06-10",
+          "progress": 4,
+          "record_id": "AIS-R3-20260622-162232",
+          "token": "7378cb6255494b6c9e20207267b5a096",
+          "quote": "The use of Turn and Talk increased peer discussion, collaboration, and academic dialogue"
+        }
+      ]
+    },
+    {
+      "id": "pk_str_b5",
+      "round": "R3 June 26",
+      "phase": "primary_kindy",
+      "section": "strengths",
+      "kind": "bullet",
+      "ord": 6,
+      "text": "Activating prior knowledge and modelling with gradual release",
+      "verdict": "congruent",
+      "method": null,
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "primary_kindy",
+          "section_subject": "Arabic Studies",
+          "area": "Arabic",
+          "date": "2026-06-11",
+          "progress": 4,
+          "record_id": "AIS-R3-20260611-1216",
+          "token": "0568f8b0bfe446508eb1713e477c777d",
+          "quote": "Modelling with a gradual release of responsibility supported students in moving from guided practice to independent work"
+        },
+        {
+          "phase": "primary_kindy",
+          "section_subject": "Arabic Studies",
+          "area": "Arabic",
+          "date": "2026-06-10",
+          "progress": 4,
+          "record_id": "AIS-R3-20260610-1355",
+          "token": "5a35238c25864ff6b3d183bab3806020",
+          "quote": "Questioning at the beginning of the lesson activated prior knowledge and prepared students well for the writing task"
+        }
+      ]
+    },
+    {
+      "id": "pk_str_i1",
+      "round": "R3 June 26",
+      "phase": "primary_kindy",
+      "section": "strengths",
+      "kind": "insight",
+      "ord": 7,
+      "text": "Self-assessment is the quiet star. Where children used checklists or self-monitoring they paced themselves and progress was visible to the inspector; it shows up in only a handful of classes, so it is a small, copyable practice with room to spread.",
+      "verdict": "congruent",
+      "method": "Self-assessment, self-monitoring checklists or peer review named as a strength in 3 to 4 of the 48 Primary & Kindy lessons (\"a handful\").",
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "primary_kindy",
+          "section_subject": "English",
+          "area": "English",
+          "date": "2026-06-10",
+          "progress": 4,
+          "record_id": "AIS-R3-20260610-1016",
+          "token": "16a0aec5334944538a4a1941c2d77bc9",
+          "quote": "students are provided with a check list that allows them to self assess and continues the communication of high expectations"
+        },
+        {
+          "phase": "primary_kindy",
+          "section_subject": "English",
+          "area": "English",
+          "date": "2026-06-10",
+          "progress": 4,
+          "record_id": "AIS-R3-20260610-1205",
+          "token": "a5d31376021749ec8819a6edf09ef2e3",
+          "quote": "Checklist for students to monitor progress"
+        },
+        {
+          "phase": "primary_kindy",
+          "section_subject": "Mathematics",
+          "area": "Mathematics",
+          "date": "2026-06-11",
+          "progress": 4,
+          "record_id": "AIS-R3-20260611-0900",
+          "token": "2fd55375a9e24c109a89bbd9aa3a44c1",
+          "quote": "Students complete the task and then peer mark their work discussing anything that they don’t agree on"
+        }
+      ]
+    },
+    {
+      "id": "pk_str_i2",
+      "round": "R3 June 26",
+      "phase": "primary_kindy",
+      "section": "strengths",
+      "kind": "insight",
+      "ord": 8,
+      "text": "The strength is consistency, not peaks. Almost every lesson clears a solid bar, with no lesson rated Very Weak and only three at Weak, so quality here is broad and dependable rather than reliant on a few stars.",
+      "verdict": "congruent",
+      "method": "Primary & Kindy progress distribution (deduped lessons): Outstanding 2, Very Good 9, Good 13, Acceptable 16, Weak 3, Very Weak 0. \"No Very Weak and only three at Weak\" matches exactly. The three Weak lessons are referenced.",
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "primary_kindy",
+          "section_subject": "Science",
+          "area": "Sciences",
+          "date": "2026-06-08",
+          "progress": 5,
+          "record_id": "AIS-R3-20260608-1347",
+          "token": "211056a4407e46548472d5b33bba1b8e",
+          "quote": "Teacher knows students well and uses effective strategies to maintain a calm classroom environment"
+        },
+        {
+          "phase": "primary_kindy",
+          "section_subject": "Mathematics",
+          "area": "Mathematics",
+          "date": "2026-06-10",
+          "progress": 5,
+          "record_id": "AIS-R3-20260610-1111",
+          "token": "0cbb24c5ebe24a9e86ea8e423214d5b1",
+          "quote": "Some probing questions to extend students"
+        },
+        {
+          "phase": "primary_kindy",
+          "section_subject": "Mathematics",
+          "area": "Mathematics",
+          "date": "2026-06-08",
+          "progress": 5,
+          "record_id": "AIS-R3-20260608-1141",
+          "token": "527a1579d39443a394458ef30dd12c90",
+          "quote": "The teacher used quick checks for understanding, such as thumbs up/thumbs down, to gauge students’ confidence"
+        }
+      ]
+    },
+    {
+      "id": "pk_str_i3",
+      "round": "R3 June 26",
+      "phase": "primary_kindy",
+      "section": "strengths",
+      "kind": "insight",
+      "ord": 9,
+      "text": "Establishing each child’s starting point is already a strength in Science, and it is the single most useful move to export to the subjects where it is the most common gap.",
+      "verdict": "congruent",
+      "method": "Starting-point establishment appears as a Science strength (PK21); the mirror gap recurs in Arabic development notes asking for tasks \"planned from students’ individual starting points\" (PK15, PK39, PK45).",
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "primary_kindy",
+          "section_subject": "Science",
+          "area": "Sciences",
+          "date": "2026-06-08",
+          "progress": 5,
+          "record_id": "AIS-R3-20260608-1347",
+          "token": "211056a4407e46548472d5b33bba1b8e",
+          "quote": "A starting point of knowledge about the thermometer was established at the beginning of the lesson"
+        },
+        {
+          "phase": "primary_kindy",
+          "section_subject": "Science",
+          "area": "Sciences",
+          "date": "2026-06-08",
+          "progress": 5,
+          "record_id": "AIS-R3-20260608-1347",
+          "token": "c053b3bfc03b4efb86c20e6a8a1cb099",
+          "quote": "Starting point for students effectively established through targeted questioning added to spider diagram"
+        }
+      ]
+    },
+    {
+      "id": "pk_dev_summary",
+      "round": "R3 June 26",
+      "phase": "primary_kindy",
+      "section": "develop",
+      "kind": "summary",
+      "ord": 0,
+      "text": "Progress is capped at the top more than it is missing at the bottom; the dominant need is stretching the most able.",
+      "verdict": "congruent",
+      "method": null,
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "primary_kindy",
+          "section_subject": "Mathematics",
+          "area": "Mathematics",
+          "date": "2026-06-08",
+          "progress": 4,
+          "record_id": "AIS-R3-20260608-1247",
+          "token": "ca28919d7363495cbccb87569b516388",
+          "quote": "Insufficiently challenged"
+        },
+        {
+          "phase": "primary_kindy",
+          "section_subject": "Mathematics",
+          "area": "Mathematics",
+          "date": "2026-06-08",
+          "progress": 5,
+          "record_id": "AIS-R3-20260608-1141",
+          "token": "527a1579d39443a394458ef30dd12c90",
+          "quote": "Higher-attaining students were not consistently challenged, as some repeated tasks they could already complete"
+        },
+        {
+          "phase": "primary_kindy",
+          "section_subject": "Arabic Studies",
+          "area": "Arabic",
+          "date": "2026-06-09",
+          "progress": 2,
+          "record_id": "AIS-R3-20260609-1155",
+          "token": "77b0cf73c2cd487b9dbc1f8a494981c6",
+          "quote": "High-achieving students should be further challenged through extension tasks and deeper questioning"
+        }
+      ]
+    },
+    {
+      "id": "pk_dev_evidence",
+      "round": "R3 June 26",
+      "phase": "primary_kindy",
+      "section": "develop",
+      "kind": "evidence",
+      "ord": 1,
+      "text": "Drawn from the written evidence on 40 of 47 lessons.",
+      "verdict": "flag",
+      "method": "Count of Primary & Kindy lessons (deduped) carrying a non-empty written areas-to-develop note.",
+      "flag_note": "Live data is now 41 of 48 (same late-submission cause as the strengths evidence base). Recommend refreshing to \"41 of 48\" or freezing the round.",
+      "refs": [
+        {
+          "phase": "primary_kindy",
+          "section_subject": "Mathematics",
+          "area": "Mathematics",
+          "date": "2026-06-08",
+          "progress": 5,
+          "record_id": "AIS-R3-20260608-1141",
+          "token": "527a1579d39443a394458ef30dd12c90",
+          "quote": "Providing extension tasks, using these students in class discussion, and increasing accountability"
+        }
+      ]
+    },
+    {
+      "id": "pk_dev_b1",
+      "round": "R3 June 26",
+      "phase": "primary_kindy",
+      "section": "develop",
+      "kind": "bullet",
+      "ord": 2,
+      "text": "Extend and challenge the more able; too many capable children repeat what they can already do",
+      "verdict": "congruent",
+      "method": null,
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "primary_kindy",
+          "section_subject": "Mathematics",
+          "area": "Mathematics",
+          "date": "2026-06-08",
+          "progress": 5,
+          "record_id": "AIS-R3-20260608-1141",
+          "token": "527a1579d39443a394458ef30dd12c90",
+          "quote": "some repeated tasks they could already complete"
+        },
+        {
+          "phase": "primary_kindy",
+          "section_subject": "Mathematics",
+          "area": "Mathematics",
+          "date": "2026-06-11",
+          "progress": 3,
+          "record_id": "AIS-R3-20260611-1154",
+          "token": "2edf508520a344789c1cd7bb7850d377",
+          "quote": "A large minority of students were not challenged to complete a task that they couldn’t already do"
+        }
+      ]
+    },
+    {
+      "id": "pk_dev_b2",
+      "round": "R3 June 26",
+      "phase": "primary_kindy",
+      "section": "develop",
+      "kind": "bullet",
+      "ord": 3,
+      "text": "Move beyond one task for all; undifferentiated tasks limit progress for some groups",
+      "verdict": "congruent",
+      "method": null,
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "primary_kindy",
+          "section_subject": "Mathematics",
+          "area": "Mathematics",
+          "date": "2026-06-11",
+          "progress": 4,
+          "record_id": "AIS-R3-20260611-0900",
+          "token": "2fd55375a9e24c109a89bbd9aa3a44c1",
+          "quote": "All students doing the same task limiting BEP for most groups"
+        },
+        {
+          "phase": "primary_kindy",
+          "section_subject": "Mathematics",
+          "area": "Mathematics",
+          "date": "2026-06-10",
+          "progress": 5,
+          "record_id": "AIS-R3-20260610-1111",
+          "token": "0cbb24c5ebe24a9e86ea8e423214d5b1",
+          "quote": "Undifferentiated activity"
+        }
+      ]
+    },
+    {
+      "id": "pk_dev_b3",
+      "round": "R3 June 26",
+      "phase": "primary_kindy",
+      "section": "develop",
+      "kind": "bullet",
+      "ord": 4,
+      "text": "Intervene earlier and more deliberately with the middle and lower groups",
+      "verdict": "congruent",
+      "method": null,
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "primary_kindy",
+          "section_subject": "Arabic Studies For Non Arabs",
+          "area": "Arabic NA",
+          "date": "2026-06-08",
+          "progress": 3,
+          "record_id": "AIS-R3-20260608-1405",
+          "token": "88cf7ac10cde41a782c293c9454759c2",
+          "quote": "targeted intervention for the middle-attaining group could improve the quality of their work"
+        },
+        {
+          "phase": "primary_kindy",
+          "section_subject": "Arabic Studies",
+          "area": "Arabic",
+          "date": "2026-06-10",
+          "progress": 4,
+          "record_id": "AIS-R3-20260610-1355",
+          "token": "5a35238c25864ff6b3d183bab3806020",
+          "quote": "Some students required additional scaffolding and targeted support to access the learning successfully"
+        }
+      ]
+    },
+    {
+      "id": "pk_dev_b4",
+      "round": "R3 June 26",
+      "phase": "primary_kindy",
+      "section": "develop",
+      "kind": "bullet",
+      "ord": 5,
+      "text": "Reduce teacher talk in places and hand more of the thinking to children",
+      "verdict": "congruent",
+      "method": null,
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "primary_kindy",
+          "section_subject": "English",
+          "area": "English",
+          "date": "2026-06-11",
+          "progress": 4,
+          "record_id": "AIS-R3-20260611-0932",
+          "token": "6b9daa574c91418fa7150f91509d5012",
+          "quote": "Student led discussion Teacher talk"
+        },
+        {
+          "phase": "primary_kindy",
+          "section_subject": "Mathematics",
+          "area": "Mathematics",
+          "date": "2026-06-08",
+          "progress": 3,
+          "record_id": "AIS-R3-20260608-0921",
+          "token": "48520a64bcca4ebc981f1abc31709012",
+          "quote": "Less teacher talk"
+        }
+      ]
+    },
+    {
+      "id": "pk_dev_b5",
+      "round": "R3 June 26",
+      "phase": "primary_kindy",
+      "section": "develop",
+      "kind": "bullet",
+      "ord": 6,
+      "text": "Reclaim lost time at set-up and for early finishers",
+      "verdict": "congruent",
+      "method": null,
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "primary_kindy",
+          "section_subject": "Science",
+          "area": "Sciences",
+          "date": "2026-06-08",
+          "progress": 5,
+          "record_id": "AIS-R3-20260608-1347",
+          "token": "211056a4407e46548472d5b33bba1b8e",
+          "quote": "Resources not prepared and set up prior to the start of the lesson meaning too much time spent by students waiting"
+        },
+        {
+          "phase": "primary_kindy",
+          "section_subject": "Arabic Studies",
+          "area": "Arabic",
+          "date": "2026-06-10",
+          "progress": 2,
+          "record_id": "AIS-R3-20260610-1020",
+          "token": "0737633856894b25a941235c5d4ccf0d",
+          "quote": "Some learning time was lost while students waited for work to be checked"
+        }
+      ]
+    },
+    {
+      "id": "pk_dev_i1",
+      "round": "R3 June 26",
+      "phase": "primary_kindy",
+      "section": "develop",
+      "kind": "insight",
+      "ord": 7,
+      "text": "The ceiling, not the floor, is the issue. Challenge for the most able is the dominant development note (about 20 of the 40), while almost none mention behaviour or engagement (just one), so moving Acceptable to Good here is about raising the top, not rescuing the bottom.",
+      "verdict": "flag",
+      "method": "Challenge / stretch-the-able is the development theme in about 20 of the Primary & Kindy lessons with a written note (19 explicit, ~23 including the closely related \"same task for all caps progress\" notes). Behaviour or engagement as the primary development point: one lesson (PK33).",
+      "flag_note": "The \"about 20\" challenge count is well supported. The contrast holds. But \"(just one)\" understates it slightly on a plain-mention reading: about five PK lessons mention engagement in passing, though only one (PK33) makes it the development point. Behaviour (conduct/disruption) is essentially absent. Also the denominator 40 is now 41 live. Suggest keeping the point; optionally reword \"(just one)\" to \"(only one as the main point)\".",
+      "refs": [
+        {
+          "phase": "primary_kindy",
+          "section_subject": "Mathematics",
+          "area": "Mathematics",
+          "date": "2026-06-08",
+          "progress": 4,
+          "record_id": "AIS-R3-20260608-1247",
+          "token": "ca28919d7363495cbccb87569b516388",
+          "quote": "Insufficiently challenged"
+        },
+        {
+          "phase": "primary_kindy",
+          "section_subject": "Mathematics",
+          "area": "Mathematics",
+          "date": "2026-06-11",
+          "progress": 3,
+          "record_id": "AIS-R3-20260611-1154",
+          "token": "2edf508520a344789c1cd7bb7850d377",
+          "quote": "A large minority of students were not challenged to complete a task that they couldn’t already do"
+        },
+        {
+          "phase": "primary_kindy",
+          "section_subject": "Arabic Studies",
+          "area": "Arabic",
+          "date": "2026-06-11",
+          "progress": null,
+          "record_id": "AIS-R3-20260611-1229",
+          "token": "decc6d162daf4c4294e3dca35e984d44",
+          "quote": "Maintenance of engagement from students is inconsistent"
+        }
+      ]
+    },
+    {
+      "id": "pk_dev_i2",
+      "round": "R3 June 26",
+      "phase": "primary_kindy",
+      "section": "develop",
+      "kind": "insight",
+      "ord": 8,
+      "text": "One root cause links several fixes: a check for understanding surfaces a gap, then the whole class receives the same next step anyway. The shift needed is reactive teaching becoming responsive, not more planning.",
+      "verdict": "congruent",
+      "method": null,
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "primary_kindy",
+          "section_subject": "Mathematics",
+          "area": "Mathematics",
+          "date": "2026-06-11",
+          "progress": 3,
+          "record_id": "AIS-R3-20260611-1154",
+          "token": "2edf508520a344789c1cd7bb7850d377",
+          "quote": "CFU established that student weakness was in missing pattern elements ... T should have adjusted task/teaching to fill this gap in understanding / skill"
+        },
+        {
+          "phase": "primary_kindy",
+          "section_subject": "Mathematics",
+          "area": "Mathematics",
+          "date": "2026-06-08",
+          "progress": 5,
+          "record_id": "AIS-R3-20260608-1141",
+          "token": "99c04d2b85ce45bc9d2f368c6cbbc085",
+          "quote": "Response to students misunderstanding was same for all students. How could this have been more targeted just for those students that needed it"
+        }
+      ]
+    },
+    {
+      "id": "pk_dev_i3",
+      "round": "R3 June 26",
+      "phase": "primary_kindy",
+      "section": "develop",
+      "kind": "insight",
+      "ord": 9,
+      "text": "Some Acceptable ratings reflect lesson type, not teaching. Assessment-style lessons recur with \"hard to see progress in a single lesson\", so the headline average slightly understates the teaching on show.",
+      "verdict": "congruent",
+      "method": null,
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "primary_kindy",
+          "section_subject": "English",
+          "area": "English",
+          "date": "2026-06-10",
+          "progress": 2,
+          "record_id": "AIS-R3-20260610-1224",
+          "token": "7a2316c30a4b4f5d8e13eaf797070ec6",
+          "quote": "Assessment task can be difficult to determine progress within lesson"
+        },
+        {
+          "phase": "primary_kindy",
+          "section_subject": "English",
+          "area": "English",
+          "date": "2026-06-10",
+          "progress": 4,
+          "record_id": "AIS-R3-20260610-1205",
+          "token": "a5d31376021749ec8819a6edf09ef2e3",
+          "quote": "Not the type of lesson to determine progress within a lesson"
+        },
+        {
+          "phase": "primary_kindy",
+          "section_subject": "English",
+          "area": "English",
+          "date": "2026-06-10",
+          "progress": 3,
+          "record_id": "AIS-R3-20260610-0932",
+          "token": "e0f26a78d9eb4dcfb80067d1cde37ce5",
+          "quote": "Assessment lesson. Progress judgement required discussion with students and reflection of books. Not really a weakness"
+        }
+      ]
+    },
+    {
+      "id": "sec_str_summary",
+      "round": "R3 June 26",
+      "phase": "secondary",
+      "section": "strengths",
+      "kind": "summary",
+      "ord": 0,
+      "text": "Collaboration, dialogue and higher-order questioning, with students who can talk confidently about their own learning.",
+      "verdict": "congruent",
+      "method": null,
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "secondary",
+          "section_subject": "Arabic Language (MINISTRY)",
+          "area": "Arabic",
+          "date": "2026-06-11",
+          "progress": 4,
+          "record_id": "AIS-R3-20260611-1148",
+          "token": "10638578c0d14347afa0a0e65b77a8aa",
+          "quote": "Peer discussion and dialogue (Turn & Talk, Peer check & feedback) were effectively used ... The use of follow-up questions deepened students’ understanding"
+        },
+        {
+          "phase": "secondary",
+          "section_subject": "Islamic Studies For Arabs",
+          "area": "Islamic",
+          "date": "2026-06-09",
+          "progress": 2,
+          "record_id": "AIS-R3-20260609-1454",
+          "token": "54f88c310a3c4e30aa0fd2cdda88f580",
+          "quote": "Group work and collaboration encouraged active participation ... higher-order thinking questions deepened students' understanding"
+        },
+        {
+          "phase": "secondary",
+          "section_subject": "Science (Essential)",
+          "area": "Sciences",
+          "date": "2026-06-08",
+          "progress": 4,
+          "record_id": "AIS-R3-20260608-1254",
+          "token": "9a985da6fac74b539921c9fa4e51e711",
+          "quote": "Each student knows what they are working on and why. They understand their next steps"
+        }
+      ]
+    },
+    {
+      "id": "sec_str_evidence",
+      "round": "R3 June 26",
+      "phase": "secondary",
+      "section": "strengths",
+      "kind": "evidence",
+      "ord": 1,
+      "text": "Drawn from the written evidence on all 62 lessons.",
+      "verdict": "congruent",
+      "method": "All 62 deduped Secondary lessons carry a written strengths note. Matches exactly.",
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "secondary",
+          "section_subject": "English",
+          "area": "English",
+          "date": "2026-06-08",
+          "progress": 4,
+          "record_id": "AIS-R3-20260608-0908",
+          "token": "d693289d769f4e0c8e23bcd8ef5d8085",
+          "quote": "Effective questioning promoted higher-order thinking and encouraged meaningful discussions"
+        }
+      ]
+    },
+    {
+      "id": "sec_str_b1",
+      "round": "R3 June 26",
+      "phase": "secondary",
+      "section": "strengths",
+      "kind": "bullet",
+      "ord": 2,
+      "text": "Collaboration, dialogue and discussion (turn-and-talk, peer review)",
+      "verdict": "congruent",
+      "method": null,
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "secondary",
+          "section_subject": "Arabic Studies",
+          "area": "Arabic",
+          "date": "2026-06-11",
+          "progress": 3,
+          "record_id": "AIS-R3-20260611-1106",
+          "token": "53f9f0ffe6dd447ca5668cb649c1c56b",
+          "quote": "High student-student dialogue Student autonomy/pair work is high Ability for students to peer evaluate is high"
+        },
+        {
+          "phase": "secondary",
+          "section_subject": "Social Studies",
+          "area": "Social Studies",
+          "date": "2026-06-09",
+          "progress": 4,
+          "record_id": "AIS-R3-20260609-1327",
+          "token": "1866cfd0e17a4658b759527c13cbbaae",
+          "quote": "Group work provided opportunities for meaningful class discussion and collaboration"
+        }
+      ]
+    },
+    {
+      "id": "sec_str_b2",
+      "round": "R3 June 26",
+      "phase": "secondary",
+      "section": "strengths",
+      "kind": "bullet",
+      "ord": 3,
+      "text": "High engagement and on-task investment",
+      "verdict": "congruent",
+      "method": null,
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "secondary",
+          "section_subject": "QCE General Mathematics",
+          "area": "Mathematics",
+          "date": "2026-06-10",
+          "progress": 4,
+          "record_id": "AIS-R3-20260610-1227",
+          "token": "aa0245e8e9784d41bffd05d6a41206e8",
+          "quote": "Student engagement is high with almost all students actively participating / investing in their learning"
+        },
+        {
+          "phase": "secondary",
+          "section_subject": "QCE Science In Practice (BCP)",
+          "area": "Sciences",
+          "date": "2026-06-09",
+          "progress": 4,
+          "record_id": "AIS-R3-20260609-1003",
+          "token": "264b771c579f42cd8442cfa28a64a8cd",
+          "quote": "Highly engaging task, all students involved"
+        }
+      ]
+    },
+    {
+      "id": "sec_str_b3",
+      "round": "R3 June 26",
+      "phase": "secondary",
+      "section": "strengths",
+      "kind": "bullet",
+      "ord": 4,
+      "text": "Effective, higher-order questioning",
+      "verdict": "congruent",
+      "method": null,
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "secondary",
+          "section_subject": "English",
+          "area": "English",
+          "date": "2026-06-08",
+          "progress": 4,
+          "record_id": "AIS-R3-20260608-0908",
+          "token": "d693289d769f4e0c8e23bcd8ef5d8085",
+          "quote": "Effective questioning promoted higher-order thinking and encouraged meaningful discussions"
+        },
+        {
+          "phase": "secondary",
+          "section_subject": "Islamic Studies For Arabs",
+          "area": "Islamic",
+          "date": "2026-06-08",
+          "progress": 3,
+          "record_id": "AIS-R3-20260608-1122",
+          "token": "7be7766916e44acc8ed6ffef463e3a0e",
+          "quote": "Effective use of follow-up questions challenged students to justify their thinking and extend their responses"
+        }
+      ]
+    },
+    {
+      "id": "sec_str_b4",
+      "round": "R3 June 26",
+      "phase": "secondary",
+      "section": "strengths",
+      "kind": "bullet",
+      "ord": 5,
+      "text": "Clear instructions and expectations",
+      "verdict": "congruent",
+      "method": null,
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "secondary",
+          "section_subject": "English",
+          "area": "English",
+          "date": "2026-06-08",
+          "progress": 4,
+          "record_id": "AIS-R3-20260608-0908",
+          "token": "d693289d769f4e0c8e23bcd8ef5d8085",
+          "quote": "Clear instructions and explicit expectations helped students understand what was required of them"
+        },
+        {
+          "phase": "secondary",
+          "section_subject": "English",
+          "area": "English",
+          "date": "2026-06-09",
+          "progress": 4,
+          "record_id": "AIS-R3-20260609-1100",
+          "token": "c67bdaacdae946c5821374905a614f89",
+          "quote": "Clear instructions and expectations Accountability for group work"
+        }
+      ]
+    },
+    {
+      "id": "sec_str_b5",
+      "round": "R3 June 26",
+      "phase": "secondary",
+      "section": "strengths",
+      "kind": "bullet",
+      "ord": 6,
+      "text": "Individualised goals with visible next steps",
+      "verdict": "congruent",
+      "method": null,
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "secondary",
+          "section_subject": "Science (Essential)",
+          "area": "Sciences",
+          "date": "2026-06-08",
+          "progress": 4,
+          "record_id": "AIS-R3-20260608-1254",
+          "token": "9a985da6fac74b539921c9fa4e51e711",
+          "quote": "Each student knows what they are working on and why. They understand their next steps"
+        },
+        {
+          "phase": "secondary",
+          "section_subject": "Digital Art and Design",
+          "area": "Arts",
+          "date": "2026-06-09",
+          "progress": 4,
+          "record_id": "AIS-R3-20260609-1241",
+          "token": "324156b458ec487a92e3102df697d352",
+          "quote": "Students know where they are up to with their learning and what their next steps are to improve"
+        }
+      ]
+    },
+    {
+      "id": "sec_str_i1",
+      "round": "R3 June 26",
+      "phase": "secondary",
+      "section": "strengths",
+      "kind": "insight",
+      "ord": 7,
+      "text": "Secondary has a real top end: six lessons reached Outstanding for progress, three times Primary's two, so the phase has exemplars to learn from in-house rather than from outside.",
+      "verdict": "congruent",
+      "method": "Secondary lessons at Outstanding (progress = 1): 6. Primary & Kindy: 2. Matches \"six ... three times Primary's two\" exactly.",
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "secondary",
+          "section_subject": "QCE Essential Mathematics",
+          "area": "Mathematics",
+          "date": "2026-06-10",
+          "progress": 1,
+          "record_id": "AIS-R3-20260610-1321",
+          "token": "47fc5e8af12c4539abd96f054bb823db",
+          "quote": "TS dialogue is well focussed to maximise T impact on S progress in the lesson ... allows students to progress on an almost individualised pathway"
+        },
+        {
+          "phase": "secondary",
+          "section_subject": "Visual Art",
+          "area": "Arts",
+          "date": "2026-06-09",
+          "progress": 1,
+          "record_id": "AIS-R3-20260609-1245",
+          "token": "d5d52bde5c5248dd92b51f82e6e63890",
+          "quote": "S-S feedback facilitates BtE progress as part of the creative process ... high levels of creativity, collaboration and support"
+        }
+      ]
+    },
+    {
+      "id": "sec_str_i2",
+      "round": "R3 June 26",
+      "phase": "secondary",
+      "section": "strengths",
+      "kind": "insight",
+      "ord": 8,
+      "text": "Students can articulate their own learning because individualised goals and next steps recur as a strength; this is the foundation any group-work fix can build on.",
+      "verdict": "congruent",
+      "method": null,
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "secondary",
+          "section_subject": "Science (Essential)",
+          "area": "Sciences",
+          "date": "2026-06-08",
+          "progress": 4,
+          "record_id": "AIS-R3-20260608-1254",
+          "token": "9a985da6fac74b539921c9fa4e51e711",
+          "quote": "Each student knows what they are working on and why. They understand their next steps"
+        },
+        {
+          "phase": "secondary",
+          "section_subject": "QCE Tourism",
+          "area": "Humanities",
+          "date": "2026-06-09",
+          "progress": 3,
+          "record_id": "AIS-R3-20260609-0920",
+          "token": "aadf80461eed4b9599d52d3bf088074b",
+          "quote": "Each student had individualized goals based on their feedback they were working towards"
+        }
+      ]
+    },
+    {
+      "id": "sec_str_i3",
+      "round": "R3 June 26",
+      "phase": "secondary",
+      "section": "strengths",
+      "kind": "insight",
+      "ord": 9,
+      "text": "The strengths are remarkably consistent across very different subjects (Islamic, English, Arts and Science all share clarity, questioning and engagement), so the phase has a shared professional language to build on.",
+      "verdict": "congruent",
+      "method": null,
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "secondary",
+          "section_subject": "Islamic Studies For Arabs",
+          "area": "Islamic",
+          "date": "2026-06-08",
+          "progress": 3,
+          "record_id": "AIS-R3-20260608-1122",
+          "token": "7be7766916e44acc8ed6ffef463e3a0e",
+          "quote": "Clear instructions and explicit explanations ensured that students understood ... resulting in purposeful engagement"
+        },
+        {
+          "phase": "secondary",
+          "section_subject": "English",
+          "area": "English",
+          "date": "2026-06-08",
+          "progress": 4,
+          "record_id": "AIS-R3-20260608-0908",
+          "token": "d693289d769f4e0c8e23bcd8ef5d8085",
+          "quote": "Clear instructions and explicit expectations ... Effective questioning promoted higher-order thinking"
+        },
+        {
+          "phase": "secondary",
+          "section_subject": "QCE Physics",
+          "area": "Sciences",
+          "date": "2026-06-10",
+          "progress": 2,
+          "record_id": "AIS-R3-20260610-1432",
+          "token": "1414a24617f64537beba78b9f68a800a",
+          "quote": "Skilled questioning from the teacher to each group of students to highlight their understanding"
+        }
+      ]
+    },
+    {
+      "id": "sec_dev_summary",
+      "round": "R3 June 26",
+      "phase": "secondary",
+      "section": "develop",
+      "kind": "summary",
+      "ord": 0,
+      "text": "More polarised than Primary; a leading fix is giving group work real structure and accountability.",
+      "verdict": "congruent",
+      "method": null,
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "secondary",
+          "section_subject": "English",
+          "area": "English",
+          "date": "2026-06-08",
+          "progress": 4,
+          "record_id": "AIS-R3-20260608-0908",
+          "token": "d693289d769f4e0c8e23bcd8ef5d8085",
+          "quote": "Group work requires a clearer structure and defined roles to ensure that all students contribute equally and remain accountable"
+        },
+        {
+          "phase": "secondary",
+          "section_subject": "Social Studies",
+          "area": "Social Studies",
+          "date": "2026-06-09",
+          "progress": 4,
+          "record_id": "AIS-R3-20260609-1327",
+          "token": "1866cfd0e17a4658b759527c13cbbaae",
+          "quote": "Group work lacked structure and clear roles, which reduced student accountability"
+        }
+      ]
+    },
+    {
+      "id": "sec_dev_evidence",
+      "round": "R3 June 26",
+      "phase": "secondary",
+      "section": "develop",
+      "kind": "evidence",
+      "ord": 1,
+      "text": "Drawn from the written evidence on 56 of 62 lessons.",
+      "verdict": "congruent",
+      "method": "56 of 62 deduped Secondary lessons carry a written areas-to-develop note. Matches exactly.",
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "secondary",
+          "section_subject": "Social Studies",
+          "area": "Social Studies",
+          "date": "2026-06-09",
+          "progress": 4,
+          "record_id": "AIS-R3-20260609-1327",
+          "token": "1866cfd0e17a4658b759527c13cbbaae",
+          "quote": "Clearer time management and pacing were needed"
+        }
+      ]
+    },
+    {
+      "id": "sec_dev_b1",
+      "round": "R3 June 26",
+      "phase": "secondary",
+      "section": "develop",
+      "kind": "bullet",
+      "ord": 2,
+      "text": "Give group work structure, roles and accountability (a leading fix)",
+      "verdict": "congruent",
+      "method": null,
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "secondary",
+          "section_subject": "English",
+          "area": "English",
+          "date": "2026-06-08",
+          "progress": 4,
+          "record_id": "AIS-R3-20260608-0908",
+          "token": "d693289d769f4e0c8e23bcd8ef5d8085",
+          "quote": "Group work requires a clearer structure and defined roles ... Introduce more structured collaborative protocols"
+        },
+        {
+          "phase": "secondary",
+          "section_subject": "English",
+          "area": "English",
+          "date": "2026-06-08",
+          "progress": 2,
+          "record_id": "AIS-R3-20260608-0942",
+          "token": "1104265262d34e3f9c0c0e843a4da989",
+          "quote": "Group work was not fully aligned with the task because the number of students did not match the group roles ... which reduced accountability"
+        }
+      ]
+    },
+    {
+      "id": "sec_dev_b2",
+      "round": "R3 June 26",
+      "phase": "secondary",
+      "section": "develop",
+      "kind": "bullet",
+      "ord": 3,
+      "text": "Make student-to-student dialogue purposeful, not just present",
+      "verdict": "congruent",
+      "method": null,
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "secondary",
+          "section_subject": "QCE Physical Education",
+          "area": null,
+          "date": "2026-06-09",
+          "progress": 3,
+          "record_id": "AIS-R3-20260609-1510",
+          "token": "70d9a4ba16a34113b6ec96edcec9b757",
+          "quote": "S-S dialogue is unstructured and doesn’t offer as much to S progress as students may be capable of"
+        },
+        {
+          "phase": "secondary",
+          "section_subject": "Humanities",
+          "area": "Humanities",
+          "date": "2026-06-08",
+          "progress": 6,
+          "record_id": "AIS-R3-20260608-1225",
+          "token": "3b75d045afb4499686579e00359ff24d",
+          "quote": "Limited use of SS dialogue"
+        }
+      ]
+    },
+    {
+      "id": "sec_dev_b3",
+      "round": "R3 June 26",
+      "phase": "secondary",
+      "section": "develop",
+      "kind": "bullet",
+      "ord": 4,
+      "text": "Stretch high-achievers further, especially in Islamic and Arabic",
+      "verdict": "congruent",
+      "method": null,
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "secondary",
+          "section_subject": "Islamic Studies For Arabs",
+          "area": "Islamic",
+          "date": "2026-06-09",
+          "progress": 2,
+          "record_id": "AIS-R3-20260609-1454",
+          "token": "54f88c310a3c4e30aa0fd2cdda88f580",
+          "quote": "The level of challenge for high-achieving students could be increased ... Additional extension tasks would further stretch their thinking"
+        },
+        {
+          "phase": "secondary",
+          "section_subject": "Arabic Language (MINISTRY)",
+          "area": "Arabic",
+          "date": "2026-06-11",
+          "progress": 4,
+          "record_id": "AIS-R3-20260611-1148",
+          "token": "10638578c0d14347afa0a0e65b77a8aa",
+          "quote": "Greater focus is needed on extending the learning of higher-achieving students to ensure they are consistently challenged"
+        }
+      ]
+    },
+    {
+      "id": "sec_dev_b4",
+      "round": "R3 June 26",
+      "phase": "secondary",
+      "section": "develop",
+      "kind": "bullet",
+      "ord": 5,
+      "text": "Targeted intervention for a small group of lower-attainers",
+      "verdict": "congruent",
+      "method": null,
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "secondary",
+          "section_subject": "Science (Essential)",
+          "area": "Sciences",
+          "date": "2026-06-08",
+          "progress": 4,
+          "record_id": "AIS-R3-20260608-1257",
+          "token": "654ffd523a9842a2aa8ec3c40c6005fe",
+          "quote": "One significant group making no progress More teacher intervention required"
+        },
+        {
+          "phase": "secondary",
+          "section_subject": "QCE Economics",
+          "area": "Humanities",
+          "date": "2026-06-08",
+          "progress": 4,
+          "record_id": "AIS-R3-20260608-1434",
+          "token": "776db628ddd547fdbcaf980c3ab5148d",
+          "quote": "Further support/intervention was required to move more students along with progress"
+        }
+      ]
+    },
+    {
+      "id": "sec_dev_b5",
+      "round": "R3 June 26",
+      "phase": "secondary",
+      "section": "develop",
+      "kind": "bullet",
+      "ord": 6,
+      "text": "Make progress visible and evidenced in books and within the lesson",
+      "verdict": "congruent",
+      "method": null,
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "secondary",
+          "section_subject": "English",
+          "area": "English",
+          "date": "2026-06-08",
+          "progress": 1,
+          "record_id": "AIS-R3-20260608-1105",
+          "token": "1c23e41a80e84b98bc699a6e6be7ab8a",
+          "quote": "Progress evidence is difficult to find. Exercise books do not adequately support/provide evidence for progress in lessons"
+        },
+        {
+          "phase": "secondary",
+          "section_subject": "Mathematics",
+          "area": "Mathematics",
+          "date": "2026-06-08",
+          "progress": 2,
+          "record_id": "AIS-R3-20260608-0927",
+          "token": "6b17a01f36ea40f1b3bec1fd2f7f28dd",
+          "quote": "Difficult to tell if all groups were making BEP"
+        }
+      ]
+    },
+    {
+      "id": "sec_dev_i1",
+      "round": "R3 June 26",
+      "phase": "secondary",
+      "section": "develop",
+      "kind": "insight",
+      "ord": 7,
+      "text": "Group work sits on both sides of the ledger at once: collaboration and dialogue lead the strengths (about 23 of the 62 lessons), yet giving group work clear roles and accountability is a leading fix. The swing factor is structure, not collaboration, so one planning routine would move many lessons.",
+      "verdict": "congruent",
+      "method": "Collaboration / dialogue a leading strength in about 23 of 62 lessons (read count 21 to 25). Group-work structure/accountability a leading development note in about 6 lessons (SEC3, SEC23, SEC27, SEC43, SEC47, SEC57). SEC23 and SEC43 appear on both sides, the \"swing factor is structure\" finding.",
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "secondary",
+          "section_subject": "Social Studies",
+          "area": "Social Studies",
+          "date": "2026-06-09",
+          "progress": 4,
+          "record_id": "AIS-R3-20260609-1327",
+          "token": "1866cfd0e17a4658b759527c13cbbaae",
+          "quote": "Group work provided opportunities for meaningful class discussion and collaboration [strength] ... Group work lacked structure and clear roles, which reduced student accountability [develop]"
+        },
+        {
+          "phase": "secondary",
+          "section_subject": "English",
+          "area": "English",
+          "date": "2026-06-08",
+          "progress": 4,
+          "record_id": "AIS-R3-20260608-0908",
+          "token": "d693289d769f4e0c8e23bcd8ef5d8085",
+          "quote": "Group work requires a clearer structure and defined roles"
+        }
+      ]
+    },
+    {
+      "id": "sec_dev_i2",
+      "round": "R3 June 26",
+      "phase": "secondary",
+      "section": "develop",
+      "kind": "insight",
+      "ord": 8,
+      "text": "The challenge gap runs in opposite directions by subject: Islamic and Arabic are asked to stretch the top while English, Humanities and Science are asked to lift the tail, so a single school-wide differentiation target would miss both.",
+      "verdict": "flag",
+      "method": "Islamic/Arabic develop notes skew to stretching high-achievers (SEC0, SEC2, SEC3, SEC24, SEC37, SEC60). English/Humanities/Science skew to intervention for lower-attainers (SEC12, SEC19, SEC29, SEC43, SEC56).",
+      "flag_note": "Supported as a tendency, not an absolute. There are counter-examples (e.g. Engineering SEC58 and Science also ask to \"extend students who can demonstrate BTE\", Arabic SEC0 also asks for lower-attainer scaffolding). Keep the claim but it is a lean, not a clean split.",
+      "refs": [
+        {
+          "phase": "secondary",
+          "section_subject": "Islamic Studies For Arabs",
+          "area": "Islamic",
+          "date": "2026-06-09",
+          "progress": 2,
+          "record_id": "AIS-R3-20260609-1454",
+          "token": "54f88c310a3c4e30aa0fd2cdda88f580",
+          "quote": "The level of challenge for high-achieving students could be increased"
+        },
+        {
+          "phase": "secondary",
+          "section_subject": "Arabic Language (MINISTRY)",
+          "area": "Arabic",
+          "date": "2026-06-11",
+          "progress": 4,
+          "record_id": "AIS-R3-20260611-1148",
+          "token": "10638578c0d14347afa0a0e65b77a8aa",
+          "quote": "extending the learning of higher-achieving students to ensure they are consistently challenged"
+        },
+        {
+          "phase": "secondary",
+          "section_subject": "English",
+          "area": "English",
+          "date": "2026-06-08",
+          "progress": 1,
+          "record_id": "AIS-R3-20260608-0903",
+          "token": "98e92f4643d34666abaf8cb40f0caaca",
+          "quote": "Could place teacher with the lower students to accelerate their learning"
+        },
+        {
+          "phase": "secondary",
+          "section_subject": "Science (Essential)",
+          "area": "Sciences",
+          "date": "2026-06-08",
+          "progress": 4,
+          "record_id": "AIS-R3-20260608-1257",
+          "token": "654ffd523a9842a2aa8ec3c40c6005fe",
+          "quote": "One significant group making no progress More teacher intervention required"
+        }
+      ]
+    },
+    {
+      "id": "sec_dev_i3",
+      "round": "R3 June 26",
+      "phase": "secondary",
+      "section": "develop",
+      "kind": "insight",
+      "ord": 9,
+      "text": "The weak end is short and specific, not diffuse. There are four Very Weak progress lessons, and each is a single lesson that two inspectors independently both rated Very Weak, so the tail is a concrete, fixable shortlist rather than a broad quality problem.",
+      "verdict": "congruent",
+      "method": "Four Secondary lessons at Very Weak (progress = 6): English (06-08), Humanities x2 (06-08), Arts (06-08). Each was co-observed by two inspectors who BOTH scored 6 (verified: every Very Weak lesson shows two observations, scores [6, 6]).",
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "secondary",
+          "section_subject": "Music",
+          "area": "Arts",
+          "date": "2026-06-08",
+          "progress": 6,
+          "record_id": "AIS-R3-20260608-1440",
+          "token": "075c99d5ad8844e386d6922599f52ff2",
+          "quote": "Students unsupervised Students not on task Difficult to identify any progress in learning or skills"
+        },
+        {
+          "phase": "secondary",
+          "section_subject": "Humanities",
+          "area": "Humanities",
+          "date": "2026-06-08",
+          "progress": 6,
+          "record_id": "AIS-R3-20260608-1239",
+          "token": "10d9b1d9c824438da2bae513c7086d8b",
+          "quote": "Lack of teacher monitoring of student progress and performance - Lack of teacher scaffolding or agency"
+        },
+        {
+          "phase": "secondary",
+          "section_subject": "Humanities",
+          "area": "Humanities",
+          "date": "2026-06-08",
+          "progress": 6,
+          "record_id": "AIS-R3-20260608-1225",
+          "token": "5f3b32907bdb42a38184174be9bb7f88",
+          "quote": "Limited opportunities for peer to peer dialogue or open ended questions impacting opportunities for BEP for almost all students"
+        }
+      ]
+    },
+    {
+      "id": "cmp_0",
+      "round": "R3 June 26",
+      "phase": "compare",
+      "section": "compare",
+      "kind": "insight",
+      "ord": 0,
+      "text": "Same average, different shape. Both phases land on Good (Primary and Kindy 3.2, Secondary 3.2), but Secondary is polarised, with six Outstanding lessons and four Very Weak, while Primary and Kindy has none rated Very Weak and clusters tightly in the Good to Acceptable band. Read the averages alone and they look identical; read the spread and they call for different moves.",
+      "verdict": "congruent",
+      "method": "Average progress (best per teacher, then mean): Primary & Kindy 3.21, Secondary 3.24, both round to 3.2 = Good. Secondary distribution: 6 Outstanding, 4 Very Weak. Primary & Kindy: 0 Very Weak, bulk in Good and Acceptable.",
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "secondary",
+          "section_subject": "Music",
+          "area": "Arts",
+          "date": "2026-06-08",
+          "progress": 6,
+          "record_id": "AIS-R3-20260608-1440",
+          "token": "075c99d5ad8844e386d6922599f52ff2",
+          "quote": "Students unsupervised Students not on task [a Very Weak lesson]"
+        },
+        {
+          "phase": "primary_kindy",
+          "section_subject": "Mathematics",
+          "area": "Mathematics",
+          "date": "2026-06-11",
+          "progress": 4,
+          "record_id": "AIS-R3-20260611-1221",
+          "token": "ba4616a8e4c441059ef64465d6a84e1a",
+          "quote": "almost all, achieving the task without further teaching or support [a calm, mid-band Primary lesson]"
+        }
+      ]
+    },
+    {
+      "id": "cmp_1",
+      "round": "R3 June 26",
+      "phase": "compare",
+      "section": "compare",
+      "kind": "insight",
+      "ord": 1,
+      "text": "The same ceiling effect appears in both phases: the calmest, most individualised lessons are the ones where the able are not extended or progress is hardest to see. Across both, the biggest single development theme is challenge for the most able, not remediation, which points to raising the top rather than rescuing the bottom.",
+      "verdict": "congruent",
+      "method": null,
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "primary_kindy",
+          "section_subject": "Mathematics",
+          "area": "Mathematics",
+          "date": "2026-06-08",
+          "progress": 5,
+          "record_id": "AIS-R3-20260608-1141",
+          "token": "527a1579d39443a394458ef30dd12c90",
+          "quote": "Higher-attaining students were not consistently challenged, as some repeated tasks they could already complete"
+        },
+        {
+          "phase": "secondary",
+          "section_subject": "Islamic Studies For Arabs",
+          "area": "Islamic",
+          "date": "2026-06-09",
+          "progress": 2,
+          "record_id": "AIS-R3-20260609-1454",
+          "token": "54f88c310a3c4e30aa0fd2cdda88f580",
+          "quote": "The level of challenge for high-achieving students could be increased"
+        }
+      ]
+    },
+    {
+      "id": "cmp_2",
+      "round": "R3 June 26",
+      "phase": "compare",
+      "section": "compare",
+      "kind": "insight",
+      "ord": 2,
+      "text": "Effort should land in different places. Primary and Kindy will gain most from a shared \"plan from each child’s starting point\" and self-assessment routine; Secondary will gain most from a group-work structure routine and from closing a short, concrete list of weak-progress lessons. Neither needs a behaviour or engagement drive, both already score those as strengths.",
+      "verdict": "congruent",
+      "method": null,
+      "flag_note": null,
+      "refs": [
+        {
+          "phase": "primary_kindy",
+          "section_subject": "Arabic Studies",
+          "area": "Arabic",
+          "date": "2026-06-11",
+          "progress": 3,
+          "record_id": "AIS-R3-20260611-1045",
+          "token": "321e305c4c6c44e29d5e6faf7df9e522",
+          "quote": "Learning tasks need to be planned from students’ individual starting points to ensure better differentiation"
+        },
+        {
+          "phase": "secondary",
+          "section_subject": "English",
+          "area": "English",
+          "date": "2026-06-08",
+          "progress": 4,
+          "record_id": "AIS-R3-20260608-0908",
+          "token": "d693289d769f4e0c8e23bcd8ef5d8085",
+          "quote": "Group work requires a clearer structure and defined roles"
+        }
+      ]
+    }
+  ]
+}
