@@ -5,6 +5,12 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.28 . 2026-06-22
+- **Autoplay now loops.** When the Story reaches the last beat it returns to the first beat and keeps playing, instead of stopping. `scheduleNext()` wraps `storyIdx` to 0 at the end. Pause, step and Present are unchanged.
+- **Fixed blank content after the tab is backgrounded and restored** (the "go away and come back, some data is missing, needs a refresh" bug, the same class as the R3 form's bfcache issue). A backgrounded or bfcached tab can freeze an entrance mid-animation or restore stale, leaving a viz blank. A new restore handler re-renders the CURRENT board at final state on `pageshow` (bfcache restore) and on `visibilitychange` to visible, preserving the open teacher and the story position. No manual refresh needed.
+- Scope: the restore re-render mirrors the existing `loadLive()` re-render set (the current Snapshot beat, Coverage, or the open teacher detail). It does not reset the teacher selection or restart the story, and does not reload. Verified: a deliberately blanked teacher gauge repaints on restore with state preserved and no console errors; the Observations board is otherwise unchanged.
+- Rollback: `dash-v0.27`.
+
 ## v0.27 . 2026-06-22
 - **Fixed the Snapshot Story first-load text reflow and the in-play header colour change** (two reported bugs, one root cause). The freeze-safety helper `settle()` ran `gsap.set(clearProps:'all')` about 1.9s after each beat, which wiped the beat's hand-authored inline styles, not only GSAP's animation props: the `.beat-h` summary lost its `font-size:clamp(18px,2.3vw,25px)` and jumped to the base 42px (the small-to-big reflow on slides 4 and 6), and the `.beat-k` kicker lost its `color:var(--g)` / `var(--r5)` and reverted to the base blue (the green/terracotta-to-blue change on slides 4 to 7). It read as first-load-only because the strip is permanent on a beat until the Story re-renders, so later autoplay loops showed it already changed.
 - **Fix:** `settle()` now clears only the properties GSAP actually animates (`transform,opacity,filter`), so freeze-safety is preserved and the author's inline size and colour are never touched. It was never a webfont problem (display=block and font preloading could not fix it).
