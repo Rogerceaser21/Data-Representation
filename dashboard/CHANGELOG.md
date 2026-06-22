@@ -5,6 +5,13 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.30 . 2026-06-22
+- **Snapshot Insights now carry their sources (#6/#7 Phases A-C).** Every claim on the Snapshot (the strengths/areas summaries, the bullets, and the Insight cards, in both the Story and Detail views, across Primary & Kindy, Secondary and Compare) now shows a small numbered marker. Clicking it opens a slide-out panel from the LEFT with the supporting evidence: one card per source lesson (subject area, date, progress word, and the inspector's verbatim quote), a "how this is counted" note where relevant, and a link to that lesson's locked R3 record. User-facing this is "Insights", never "AI".
+- **Read live from Supabase, round-scoped.** The narrative wording and the references come from two new Supabase tables (`narrative` + `narrative_ref`) via a definer RPC `get_narrative(round)`, scoped to the current round ('R3 June 26'). The baked `NARR` constant stays as the instant-first-paint and offline fallback, so the Snapshot still renders fully (without markers) if Supabase is unreachable. No error UI ever.
+- **References never name a teacher** (subject area, phase, date, quote and the record link only); a panel footer states identifying details are withheld. The seed came from a Phase A congruence audit that cross-referenced all 43 claims against the live June R3 evidence (`.planning/2026-06-22-phaseA-congruence-audit.md`): 39 congruent, 4 flagged with the real number (the Primary evidence-base denominators drifted 47->48 as late forms arrived; the flags are recorded, the wording is NOT auto-rewritten).
+- **Scope:** all additions are inside the Snapshot. Coverage and Observations are untouched. The panel uses CSS-transition motion (no from-invisible JS), so it stays freeze-safe.
+- Rollback: `dash-v0.29`.
+
 ## v0.29 . 2026-06-22
 - **Observer figures resized + teacher motif recoloured to the AIS blue.** The observer illustration on the two Insights beats (slides 5 and 7) is now half its previous size, closer to the teacher motif's scale (`.statefig.figtall` width clamp halved). The teacher motif on the numbers beat used a different blue (#4C82F5) than the headers; it is recoloured to the approved AIS blue #1257FF ("Blue on Star", from the AIS Approved Colours sheet), so the motif and the headers now match and are on-brand. The presenter headers were already #1257FF, so they are unchanged.
 - Rollback: `dash-v0.28`.

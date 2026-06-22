@@ -42,6 +42,32 @@ body{font-family:var(--body);background:var(--bg);color:var(--ink);-webkit-font-
 .brand{display:flex;align-items:center;gap:12px;margin-right:auto}
 .brand .lg{width:38px;height:38px;background:var(--logo) center/contain no-repeat;flex:none}
 .brand .t{font-family:var(--display);font-weight:600;font-size:17px;letter-spacing:-.01em;line-height:1.05}
+/* Insights . inline source markers + left slide-out reference panel (#6/#7) */
+.refmk{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;padding:0 4px;margin-left:5px;transform:translateY(-1px);
+  font-family:var(--body);font-size:10px;font-weight:700;line-height:1;color:var(--y);background:var(--panel-2);border:1px solid var(--edge);border-radius:7px;cursor:pointer;transition:.15s;vertical-align:middle}
+.refmk:hover{border-color:var(--y);color:var(--ink);box-shadow:0 2px 8px -3px var(--shadow)}
+.refmk:focus-visible{outline:2px solid var(--y);outline-offset:1px}
+.refbackdrop{position:fixed;inset:0;z-index:79;background:rgba(0,0,0,.34);opacity:0;visibility:hidden;transition:opacity .42s,visibility .42s}
+.refbackdrop.open{opacity:1;visibility:visible}
+.refpanel{position:fixed;top:0;left:0;height:100%;width:min(432px,92vw);z-index:80;background:var(--bg-2);border-right:1px solid var(--edge);box-shadow:18px 0 60px -28px var(--shadow);
+  transform:translateX(-102%);transition:transform .42s cubic-bezier(.22,.61,.36,1);display:flex;flex-direction:column;overflow:hidden}
+.refpanel.open{transform:translateX(0)}
+.refhd{display:flex;align-items:flex-start;gap:12px;justify-content:space-between;padding:20px 20px 14px;border-bottom:1px solid var(--edge-soft)}
+.refhd .rk{font-family:var(--body);font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--y)}
+.refhd .rt{font-family:var(--display);font-size:15.5px;font-weight:600;line-height:1.3;color:var(--ink);margin-top:7px}
+.refx{flex:0 0 auto;width:30px;height:30px;border-radius:9px;border:1px solid var(--edge);background:var(--panel-2);color:var(--ink);cursor:pointer;font-size:13px;line-height:1;display:flex;align-items:center;justify-content:center;transition:.15s}
+.refx:hover{color:var(--y);border-color:var(--y)}
+.refbody{padding:14px 18px 24px;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
+.refmethod{font-size:11.5px;line-height:1.5;color:var(--ink-mid);background:var(--panel-2);border:1px solid var(--edge-soft);border-left:2px solid var(--y);border-radius:9px;padding:9px 11px}
+.refmethod b{color:var(--ink-dim);font-weight:700}
+.refcard{background:var(--panel-2);border:1px solid var(--edge);border-radius:14px;padding:12px 13px}
+.refmeta{display:flex;flex-wrap:wrap;gap:5px 9px;align-items:center;font-size:11px;font-weight:600;color:var(--ink-mid);margin-bottom:8px}
+.refmeta .rdot{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+.refmeta .rarea{color:var(--ink)}
+.refq{font-family:var(--display);font-size:13.5px;line-height:1.5;color:var(--ink-dim);font-style:italic}
+.reflink{display:inline-flex;align-items:center;gap:5px;margin-top:10px;font-size:11.5px;font-weight:700;color:var(--y);text-decoration:none}
+.reflink:hover{text-decoration:underline}.reflink svg{width:13px;height:13px}
+.reffoot{padding:11px 20px 16px;border-top:1px solid var(--edge-soft);font-size:10.5px;line-height:1.45;color:var(--ink-faint)}
 .brand .t small{display:block;font-family:var(--body);font-weight:600;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-mid);margin-top:3px}
 .rail{display:flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--edge-soft);border-radius:30px;padding:4px}
 .pill{font:inherit;font-size:13px;font-weight:600;color:var(--ink-mid);background:transparent;border:0;border-radius:24px;padding:8px 16px;cursor:pointer;transition:.2s;white-space:nowrap}
@@ -709,6 +735,7 @@ body.presenting .mast,body.presenting .themeico{display:none}
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
       <div class="vhist">
+        <div class="vrow"><span class="vtag">v0.30</span><span class="vnote">Snapshot Insights now carry their sources. Every summary, bullet and insight shows a small numbered marker; clicking it opens a panel from the left with the supporting lesson quotes (subject, date and progress word) and a link to the locked R3 record, plus a short "how this is counted" note. The wording and the references are read live from Supabase per round (the baked copy is the offline fallback). References never name a teacher. Snapshot only; Coverage and Observations untouched.</span></div>
         <div class="vrow"><span class="vtag">v0.29</span><span class="vnote">The observer illustration on the two Insights slides (5 and 7) is now half its previous size, closer to the teacher figure on the numbers slide. And the teacher figure, which used a slightly different blue, is recoloured to the approved AIS blue (#1257FF, Blue on Star) so it matches the presenter headers, which were already that blue. Story only.</span></div>
         <div class="vrow"><span class="vtag">v0.28</span><span class="vnote">Autoplay now loops: when the Story reaches the last slide it returns to the first and keeps playing. And fixed blank content after backgrounding the tab and returning (the data-missing, needs-refresh bug, the same as the R3 form): the dashboard now re-renders the current board when the tab is restored, so nothing stays blank and no manual refresh is needed. The open teacher and the story position are kept.</span></div>
         <div class="vrow"><span class="vtag">v0.27</span><span class="vnote">Fixed two Story bugs with one root cause. The freeze-safety cleanup that runs after each beat was wiping the beat’s custom inline styling, not only the animation leftovers, so the slide 4 and 6 headlines jumped from their small size to the large base size on first load, and the slide 4 to 7 headers reverted from green or terracotta to blue while playing. The cleanup now clears only the animation properties, so the custom size and colour are kept. It was never a font problem. The Observations board, which shares the same cleanup, is unaffected.</span></div>
@@ -744,7 +771,7 @@ body.presenting .mast,body.presenting .themeico{display:none}
 
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.29</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.30</span></span>
   </div>
 </div>
 
@@ -1022,8 +1049,10 @@ function snapAgg(phase){
   const avgBest=bests.length?bests.reduce((a,b)=>a+b,0)/bests.length:null;
   return {phase,lessons,teachers:teacherSet.size,dist,avgBest};
 }
-/* narrative synthesis of the round's free-text evidence (strengths + areas to develop), per phase */
-const NARR={
+/* narrative synthesis of the round's free-text evidence (strengths + areas to develop), per phase.
+   BAKED FALLBACK: loadNarrative() swaps this for the round-scoped copy in Supabase when reachable;
+   the Phase A references (REF_INDEX) drive the inline "Insights . sources" markers either way. */
+let NARR={
   primary_kindy:{
     strengths:{evidence:'Drawn from the written evidence on 42 of 47 lessons.',
       summary:'Calm, well-routined classrooms with strong relationships and visible scaffolds, so children know exactly what to do.',
@@ -1046,6 +1075,64 @@ const NARR={
   },
   compare:['Same average, different shape. Both phases land on Good (Primary and Kindy 3.2, Secondary 3.2), but Secondary is polarised, with six Outstanding lessons and four Very Weak, while Primary and Kindy has none rated Very Weak and clusters tightly in the Good to Acceptable band. Read the averages alone and they look identical; read the spread and they call for different moves.','The same ceiling effect appears in both phases: the calmest, most individualised lessons are the ones where the able are not extended or progress is hardest to see. Across both, the biggest single development theme is challenge for the most able, not remediation, which points to raising the top rather than rescuing the bottom.','Effort should land in different places. Primary and Kindy will gain most from a shared "plan from each child’s starting point" and self-assessment routine; Secondary will gain most from a group-work structure routine and from closing a short, concrete list of weak-progress lessons. Neither needs a behaviour or engagement drive, both already score those as strengths.']
 };
+/* ---- Insights . sources (#6/#7): inline reference markers + left slide-out panel ----
+   REF_INDEX (slug -> {text,kind,method,refs[]}) comes from Supabase via loadNarrative(); empty
+   until then, so markers are pure progressive enhancement (no Supabase -> no markers, baked text). */
+let REF_INDEX={};
+const PH_AB={primary_kindy:'pk',secondary:'sec'},SEC_AB={strengths:'str',develop:'dev'};
+const SEAS_WORD={1:'Outstanding',2:'Very Good',3:'Good',4:'Acceptable',5:'Weak',6:'Very Weak'};
+function navSlug(phase,section,kind,idx){
+  if(phase==='compare')return 'cmp_'+idx;
+  const p=PH_AB[phase],s=SEC_AB[section];if(!p||!s)return '';
+  return kind==='bullet'?`${p}_${s}_b${idx+1}`:kind==='insight'?`${p}_${s}_i${idx+1}`:`${p}_${s}_${kind}`;}
+function refMark(slug){const e=REF_INDEX[slug];if(!e||!e.refs||!e.refs.length)return '';
+  return `<button class="refmk" type="button" data-slug="${slug}" aria-label="${e.refs.length} supporting source${e.refs.length>1?'s':''}" onclick="openRefs(event,'${slug}')">${e.refs.length}</button>`;}
+function initRefPanel(){if(byId('refPanel'))return;
+  const bd=document.createElement('div');bd.id='refBackdrop';bd.className='refbackdrop';bd.addEventListener('click',closeRefs);
+  const p=document.createElement('aside');p.id='refPanel';p.className='refpanel';p.setAttribute('aria-label','Insight sources');
+  p.innerHTML=`<div class="refhd"><div><div class="rk">Insights . sources</div><div class="rt" id="refTitle"></div></div><button class="refx" type="button" aria-label="Close" onclick="closeRefs()">✕</button></div>`+
+    `<div class="refbody"><div class="refmethod" id="refMethod" hidden></div><div id="refList" style="display:flex;flex-direction:column;gap:12px"></div></div>`+
+    `<div class="reffoot">Each source links to the locked R3 record. Identifying teacher details are withheld here.</div>`;
+  document.body.appendChild(bd);document.body.appendChild(p);}
+function openRefs(ev,slug){if(ev){ev.stopPropagation();ev.preventDefault();}
+  const e=REF_INDEX[slug];if(!e||!e.refs||!e.refs.length)return;
+  if(typeof pauseStory==='function')pauseStory();
+  const R=(typeof RAMP==='function')?RAMP():{};
+  byId('refTitle').textContent=e.text||'';
+  const m=byId('refMethod');if(e.method){m.innerHTML='<b>How this is counted.</b> '+esc(e.method);m.hidden=false;}else m.hidden=true;
+  byId('refList').innerHTML=e.refs.map(r=>{
+    const col=R[r.progress]||'var(--na)',word=SEAS_WORD[r.progress]||'',date=r.observed_on||'',area=r.area||r.subject||'';
+    const link=(r.record_id&&r.record_token)?`<a class="reflink" target="_blank" rel="noopener" href="../Assets/R3/r3-record.html?id=${encodeURIComponent(r.record_id)}&token=${encodeURIComponent(r.record_token)}">Open the R3 record ${I_ARROW}</a>`:'';
+    return `<div class="refcard"><div class="refmeta"><span class="rdot" style="background:${col}"></span><span class="rarea">${esc(area)}</span>${date?`<span>${esc(date)}</span>`:''}${word?`<span>${esc(word)} progress</span>`:''}</div><div class="refq">${esc(r.quote)}</div>${link}</div>`;}).join('');
+  byId('refPanel').classList.add('open');byId('refBackdrop').classList.add('open');}
+function closeRefs(){const p=byId('refPanel'),b=byId('refBackdrop');if(p)p.classList.remove('open');if(b)b.classList.remove('open');}
+addEventListener('keydown',e=>{if(e.key==='Escape'&&byId('refPanel')&&byId('refPanel').classList.contains('open')){e.stopPropagation();closeRefs();}},true);
+/* rebuild the baked-shape NARR from the flat Supabase items; ok=false keeps the baked copy */
+function buildNarrFromItems(items){try{
+  const n={primary_kindy:{strengths:{bullets:[],insights:[]},develop:{bullets:[],insights:[]}},secondary:{strengths:{bullets:[],insights:[]},develop:{bullets:[],insights:[]}},compare:[]};
+  items.slice().sort((a,b)=>(a.ord||0)-(b.ord||0)).forEach(it=>{
+    if(it.phase==='compare'){n.compare[it.ord]=it.text;return;}
+    const s=n[it.phase]&&n[it.phase][it.section];if(!s)return;
+    if(it.kind==='summary')s.summary=it.text;else if(it.kind==='evidence')s.evidence=it.text;
+    else if(it.kind==='bullet')s.bullets.push(it.text);else if(it.kind==='insight')s.insights.push(it.text);});
+  const okSec=ss=>ss&&ss.summary&&ss.evidence&&ss.bullets.length===5&&ss.insights.length===3;
+  const ok=okSec(n.primary_kindy.strengths)&&okSec(n.primary_kindy.develop)&&okSec(n.secondary.strengths)&&okSec(n.secondary.develop)&&n.compare.filter(Boolean).length===3;
+  return {ok,narr:n};}catch(e){return {ok:false};}}
+function reRenderSnapshotKeepPos(){if(current!=='snapshot')return;
+  if(snapView!=='story'){renderDetail();return;}
+  const i=storyIdx,playing=storyPlaying;renderStory();pauseStory();gotoBeat(i,false);if(playing&&snapAutoplay())playStory();}
+/* load the round-scoped narrative + references from Supabase (like loadLive); silent fallback to baked */
+async function loadNarrative(){if(!SB_URL||SB_URL.indexOf('http')!==0)return;
+  try{const ctrl=new AbortController(),to=setTimeout(()=>ctrl.abort(),7000);
+    const r=await fetch(SB_URL.replace(/\/+$/,'')+'/rest/v1/rpc/get_narrative',
+      {method:'POST',headers:{apikey:SB_KEY,Authorization:'Bearer '+SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({p_round:SNAP_ROUND}),signal:ctrl.signal});
+    clearTimeout(to);if(!r.ok)return;
+    const items=await r.json();if(!Array.isArray(items)||!items.length)return;
+    const idx={};for(const it of items)idx[it.slug]={text:it.text,kind:it.kind,method:it.method,refs:Array.isArray(it.refs)?it.refs:[]};
+    REF_INDEX=idx;
+    const built=buildNarrFromItems(items);if(built.ok)NARR=built.narr;
+    if(current==='snapshot')reRenderSnapshotKeepPos();
+  }catch(e){/* offline / blocked / timeout -> keep baked NARR, no markers, no error UI */}}
 const I_CHECK='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.6l3.4 3.4L13 4.6"/></svg>';
 const I_ARROW='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11L11 5M6.2 5H11v4.8"/></svg>';
 let snapPhase='primary_kindy';
@@ -1070,14 +1157,14 @@ function renderHisto(dist,hostId){const host=byId(hostId||'snapHisto');host.inne
     host.appendChild(col);const bar=col.querySelector('.hb');bar.style.transitionDelay=((i-1)*.05)+'s';
     void bar.offsetWidth;bar.style.height=Math.round(c/max*126)+'px';}  // px height + reflow: final state applies without rAF
 }
-function swPanel(kind,data){const p=document.createElement('div');p.className='panel';const isS=kind==='strength';
-  const col=isS?'var(--g)':'var(--r5)',title=isS?'What is working':'Where to focus next',mark=isS?I_CHECK:I_ARROW;
+function swPanel(kind,data,phase){const p=document.createElement('div');p.className='panel';const isS=kind==='strength';
+  const col=isS?'var(--g)':'var(--r5)',title=isS?'What is working':'Where to focus next',mark=isS?I_CHECK:I_ARROW,sec=isS?'strengths':'develop';
   p.innerHTML=`<div class="swhead" style="color:${col}"><span class="swdot" style="background:${col}"></span><b>${title}</b></div>`+
-    `<div class="swev">${esc(data.evidence)}</div><div class="swsum">${esc(data.summary)}</div>`+
-    `<div class="blist">${data.bullets.map(b=>`<div class="brow"><span class="bm" style="color:${col}">${mark}</span><span>${esc(b)}</span></div>`).join('')}</div>`;
+    `<div class="swev">${esc(data.evidence)}${refMark(navSlug(phase,sec,'evidence'))}</div><div class="swsum">${esc(data.summary)}${refMark(navSlug(phase,sec,'summary'))}</div>`+
+    `<div class="blist">${data.bullets.map((b,i)=>`<div class="brow"><span class="bm" style="color:${col}">${mark}</span><span>${esc(b)}${refMark(navSlug(phase,sec,'bullet',i))}</span></div>`).join('')}</div>`;
   return p;}
-function insCol(title,arr,dev){const c=document.createElement('div');c.className='inscol';
-  c.innerHTML=`<div class="ey">${esc(title)}</div>`+arr.map((t,i)=>`<div class="icard${dev?' dev':''}"><span class="inum">${i+1}</span><p>${esc(t)}</p></div>`).join('');
+function insCol(title,arr,dev,phase,section){const c=document.createElement('div');c.className='inscol';
+  c.innerHTML=`<div class="ey">${esc(title)}</div>`+arr.map((t,i)=>`<div class="icard${dev?' dev':''}"><span class="inum">${i+1}</span><p>${esc(t)}${refMark(navSlug(phase,section,'insight',i))}</p></div>`).join('');
   return c;}
 function renderPhase(phase){const a=snapAgg(phase),N=NARR[phase];
   byId('phName').textContent=PHASE_LABEL[phase];
@@ -1088,8 +1175,8 @@ function renderPhase(phase){const a=snapAgg(phase),N=NARR[phase];
   buildValueArc('snapGauge',a.avgBest);
   byId('gaugeWord').textContent=a.avgBest!=null?a.avgBest.toFixed(1)+' of 6':'n/a';
   renderHisto(a.dist);
-  const sw=byId('snapSW');sw.innerHTML='';sw.appendChild(swPanel('strength',N.strengths));sw.appendChild(swPanel('develop',N.develop));
-  const ins=byId('snapInsights');ins.innerHTML='';ins.appendChild(insCol('Strengths',N.strengths.insights,false));ins.appendChild(insCol('Areas to develop',N.develop.insights,true));
+  const sw=byId('snapSW');sw.innerHTML='';sw.appendChild(swPanel('strength',N.strengths,phase));sw.appendChild(swPanel('develop',N.develop,phase));
+  const ins=byId('snapInsights');ins.innerHTML='';ins.appendChild(insCol('Strengths',N.strengths.insights,false,phase,'strengths'));ins.appendChild(insCol('Areas to develop',N.develop.insights,true,phase,'develop'));
 }
 function cmpCard(cls,label,a){return `<div class="panel cmpcard ${cls}"><div class="cl">${label}</div><div class="cmpstat">`+
   `<div class="cs"><div class="cv" data-to="${a.lessons}">${a.lessons}</div><div class="ck">lessons</div></div>`+
@@ -1107,7 +1194,7 @@ function renderDiv(pk,se,hostId){const host=byId(hostId||'divChart');host.innerH
 function renderCompare(){const pk=snapAgg('primary_kindy'),se=snapAgg('secondary');
   byId('cmpTop').innerHTML=cmpCard('pk','Primary & Kindy',pk)+cmpCard('sec','Secondary',se);
   renderDiv(pk.dist,se.dist);
-  byId('cmpInsights').innerHTML=NARR.compare.map((t,i)=>`<div class="icard"><span class="inum" style="color:var(--y)">${i+1}</span><p>${esc(t)}</p></div>`).join('');
+  byId('cmpInsights').innerHTML=NARR.compare.map((t,i)=>`<div class="icard"><span class="inum" style="color:var(--y)">${i+1}</span><p>${esc(t)}${refMark('cmp_'+i)}</p></div>`).join('');
 }
 /* Detail (v1 cards): the original Snapshot, kept one click away behind the Story|Detail toggle. */
 function renderDetail(){
@@ -1169,12 +1256,12 @@ function phaseBeats(phase){const a=snapAgg(phase),N=NARR[phase],L=PHASE_LABEL[ph
   {type:'progress',html:`<div class="beat-k">Student progress . best evidence per teacher</div><div class="pbeat">
     <div><div class="allgauge"><svg class="snapgauge" id="storyGauge" viewBox="0 20 240 200" width="290" height="242"></svg></div><div class="gauge-cap"><div class="gv">${a.avgBest!=null?a.avgBest.toFixed(1)+' of 6':'n/a'}</div><div class="gl">average progress</div></div></div>
     <div><div id="storyDots"></div></div></div>`},
-  {type:'list',extra:figWriting(),html:`<div class="beat-k" style="color:var(--g)">What is working</div><div class="beat-ev">${esc(N.strengths.evidence)}</div><div class="beat-h" style="font-size:clamp(18px,2.3vw,25px);max-width:34ch">${esc(N.strengths.summary)}</div>
-    <div class="bl-list">${N.strengths.bullets.map(b=>`<div class="bl-row"><span class="bm" style="color:var(--g)">${I_CHECK}</span><span>${esc(b)}</span></div>`).join('')}</div>`},
-  {type:'list',extra:figObserve('gold'),html:`<div class="beat-k" style="color:var(--g)">Insights . what the evidence reveals</div><div class="beat-ev">Strengths</div><div class="bl-ins" style="margin-top:8px">${N.strengths.insights.map((t,i)=>`<div class="bi"><span class="bn">${i+1}</span><p>${esc(t)}</p></div>`).join('')}</div>`},
-  {type:'list',extra:figReach(),html:`<div class="beat-k" style="color:var(--r5)">Where to focus next</div><div class="beat-ev">${esc(N.develop.evidence)}</div><div class="beat-h" style="font-size:clamp(18px,2.3vw,25px);max-width:34ch">${esc(N.develop.summary)}</div>
-    <div class="bl-list">${N.develop.bullets.map(b=>`<div class="bl-row"><span class="bm" style="color:var(--r5)">${I_ARROW}</span><span>${esc(b)}</span></div>`).join('')}</div>`},
-  {type:'list',extra:figObserve('terra'),html:`<div class="beat-k" style="color:var(--r5)">Insights . what the evidence reveals</div><div class="beat-ev">Areas to develop</div><div class="bl-ins" style="margin-top:8px">${N.develop.insights.map((t,i)=>`<div class="bi dev"><span class="bn">${i+1}</span><p>${esc(t)}</p></div>`).join('')}</div>`}
+  {type:'list',extra:figWriting(),html:`<div class="beat-k" style="color:var(--g)">What is working</div><div class="beat-ev">${esc(N.strengths.evidence)}${refMark(navSlug(phase,'strengths','evidence'))}</div><div class="beat-h" style="font-size:clamp(18px,2.3vw,25px);max-width:34ch">${esc(N.strengths.summary)}${refMark(navSlug(phase,'strengths','summary'))}</div>
+    <div class="bl-list">${N.strengths.bullets.map((b,i)=>`<div class="bl-row"><span class="bm" style="color:var(--g)">${I_CHECK}</span><span>${esc(b)}${refMark(navSlug(phase,'strengths','bullet',i))}</span></div>`).join('')}</div>`},
+  {type:'list',extra:figObserve('gold'),html:`<div class="beat-k" style="color:var(--g)">Insights . what the evidence reveals</div><div class="beat-ev">Strengths</div><div class="bl-ins" style="margin-top:8px">${N.strengths.insights.map((t,i)=>`<div class="bi"><span class="bn">${i+1}</span><p>${esc(t)}${refMark(navSlug(phase,'strengths','insight',i))}</p></div>`).join('')}</div>`},
+  {type:'list',extra:figReach(),html:`<div class="beat-k" style="color:var(--r5)">Where to focus next</div><div class="beat-ev">${esc(N.develop.evidence)}${refMark(navSlug(phase,'develop','evidence'))}</div><div class="beat-h" style="font-size:clamp(18px,2.3vw,25px);max-width:34ch">${esc(N.develop.summary)}${refMark(navSlug(phase,'develop','summary'))}</div>
+    <div class="bl-list">${N.develop.bullets.map((b,i)=>`<div class="bl-row"><span class="bm" style="color:var(--r5)">${I_ARROW}</span><span>${esc(b)}${refMark(navSlug(phase,'develop','bullet',i))}</span></div>`).join('')}</div>`},
+  {type:'list',extra:figObserve('terra'),html:`<div class="beat-k" style="color:var(--r5)">Insights . what the evidence reveals</div><div class="beat-ev">Areas to develop</div><div class="bl-ins" style="margin-top:8px">${N.develop.insights.map((t,i)=>`<div class="bi dev"><span class="bn">${i+1}</span><p>${esc(t)}${refMark(navSlug(phase,'develop','insight',i))}</p></div>`).join('')}</div>`}
 ];}
 function compareBeats(){const pk=snapAgg('primary_kindy'),se=snapAgg('secondary');
   const col=a=>`<div class="cmpr"><span class="big-n" data-to="${a.lessons}">0</span><span class="ml">lessons</span></div><div class="cmpr"><span class="big-n" data-to="${a.teachers}">0</span><span class="ml">teachers</span></div><div class="cmpr"><span class="big-n word" style="color:${colOf(a.avgBest)}">${esc(wordOf(a.avgBest))}</span><span class="ml">avg progress</span></div>`;
@@ -1186,7 +1273,7 @@ function compareBeats(){const pk=snapAgg('primary_kindy'),se=snapAgg('secondary'
   {type:'compdist',html:`<div class="beat-k">Progress distribution . Primary &amp; Kindy against Secondary</div>
     <div class="divlabels" style="margin-top:8px"><span class="dlL" style="color:var(--b)">Primary &amp; Kindy</span><span></span><span class="dlR" style="color:var(--y)">Secondary</span></div>
     <div class="divchart" id="storyDiv"></div>`},
-  {type:'list',extra:figObserve('gold'),html:`<div class="beat-k">Insights . drawing the two together</div><div class="bl-ins">${NARR.compare.map((t,i)=>`<div class="bi"><span class="bn" style="color:var(--y)">${i+1}</span><p>${esc(t)}</p></div>`).join('')}</div>`}
+  {type:'list',extra:figObserve('gold'),html:`<div class="beat-k">Insights . drawing the two together</div><div class="bl-ins">${NARR.compare.map((t,i)=>`<div class="bi"><span class="bn" style="color:var(--y)">${i+1}</span><p>${esc(t)}${refMark('cmp_'+i)}</p></div>`).join('')}</div>`}
 ];}
 
 /* ---- STORY: slide engine (auto-advance, pause, manual step, off; per-beat progress bar) ---- */
@@ -1494,6 +1581,8 @@ async function loadLive(){
 }
 runEntry();
 loadLive();
+initRefPanel();
+loadNarrative();
 </script>
 </body>
 </html>
