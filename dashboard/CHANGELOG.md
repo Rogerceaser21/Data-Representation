@@ -5,6 +5,9 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.37 . 2026-06-23
+- **Story controls moved into the tabs row (layout only; controls + logic unchanged).** The `#storyCtl` pill (prev / play-pause / next / beat dots / Present) moved out of `#snapStory` (a larger bar below the stage) into the `.tabsrow`, between `#phaseTabs` (Primary & Kindy / Secondary / Compare) and `#viewTabs` (Story / Detail), so `justify-content:space-between` centres it. Restyled compact (buttons 38px -> 30px, tighter padding/gaps, smaller Present) to roughly match the phase-toggle pill. It now shows only on the Story view (`renderSnapshot` sets `storyCtl.hidden = snapView!=='story'`, since it used to be auto-hidden inside `#snapStory`); Present still floats it to the bottom via the existing `position:fixed` rule, and print still hides it. IDs preserved -> all button handlers unchanged.
+
 ## v0.36 . 2026-06-23
 - **Print rendering fixes (print only; the on-screen dashboard is unchanged).** All scoped to `@media print` + the print-prep, per Igor's constraint.
   - **Colours/charts were blank on paper:** browsers strip `background` colours in print by default, and every chart fill is a background (histogram `.dt`, spread swatches, dot-sort `.dsdot`, diverging `.divbar`, gauges, the navy cover). Added `print-color-adjust:exact` (+ `-webkit-`) so they all print; also `transition:none` so bars print at final size.
