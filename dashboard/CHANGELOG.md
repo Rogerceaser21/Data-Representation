@@ -5,6 +5,13 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.32 . 2026-06-23
+- **Snapshot header restructured into two columns.** Left: the SNAPSHOT kicker with the timestamp moved underneath it. Right (right-aligned to the masthead edge): the "The June R3 picture." title with the subheading underneath. Tops aligned (`.snaphead` / `.snaphL` / `.snaphR`).
+- **Phase tabs and the Story/Detail toggle now share one row** (`.tabsrow`, space-between): Primary / Secondary / Compare on the left, Story / Detail on the right. The toggle moved out of the header's top-right.
+- **Detail Insights split into two cards.** The single wide Insights panel becomes two side-by-side `.panel` cards in a `cols-2` grid, identical width/gap/padding to the What is working / Where to focus cards above (verified same left/width), each with a coloured-dot header ("Insights . Strengths" green, "Insights . Areas to develop" terracotta). `insCol()` now returns a panel with a `.swhead`.
+- Scope: Snapshot board only; Coverage, Observations, Settings untouched. Story content unchanged (only the shared header/tabs above it moved). Verified both themes, no console errors.
+- Rollback: `dash-v0.31`.
+
 ## v0.31 . 2026-06-23
 - **Sources panel reworked from an overlay into a right-hand push-drawer.** It now opens from the RIGHT (was left) and, instead of covering the page, it pushes the app left (`body.refopen` reserves `--refw` on the right; `.wrap` transitions) so the Story and its sources are visible at the same time.
 - **Lighter, non-blocking dimming.** The heavy click-blocking scrim (`rgba(0,0,0,.34)`) is gone; the app is only lightly de-emphasised (`.wrap` opacity .84) and stays fully interactive, so the inline markers remain clickable and you can jump straight from one source to another without closing the panel first. Close is via the X or Escape. Verified marker-to-marker switching by real clicks.

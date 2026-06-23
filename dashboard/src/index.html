@@ -389,6 +389,13 @@ svg{display:block;overflow:visible}
 
 /* ===== snapshot STORY view ===== */
 .snaptools{display:flex;flex-direction:column;align-items:flex-end;gap:9px}
+.snaphead{align-items:flex-start}
+.snaphL{display:flex;flex-direction:column;gap:7px;align-items:flex-start}
+.snaphR{display:flex;flex-direction:column;align-items:flex-end;text-align:right;min-width:0}
+.snaphR .big{margin-top:0}
+.snaphR .snapsub{margin-top:9px;max-width:62ch}
+.tabsrow{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:6px 0 2px}
+.tabsrow .phasetabs{margin:0}
 .viewtabs{display:inline-flex;gap:4px;background:var(--panel);border:1px solid var(--edge-soft);border-radius:24px;padding:4px}
 .vtab{font:inherit;font-size:12px;font-weight:600;color:var(--ink-mid);background:transparent;border:0;border-radius:20px;padding:6px 15px;cursor:pointer;transition:.2s}
 .vtab:hover{color:var(--ink)}
@@ -525,26 +532,28 @@ body.presenting .mast,body.presenting .themeico{display:none}
 
   <!-- ============ SNAPSHOT (June R3 sweep) ============ -->
   <section class="view" id="v-snapshot">
-    <div class="head">
-      <div>
+    <div class="head snaphead">
+      <div class="snaphL">
         <span class="kick"><span class="stripe"></span>Snapshot</span>
+        <span class="subtle" id="snap-asof"></span>
+      </div>
+      <div class="snaphR">
         <h2 class="big">The June <em>R3</em> picture.</h2>
         <div class="snapsub" id="snapIntro"></div>
       </div>
-      <div class="snaptools">
-        <div class="viewtabs" id="viewTabs">
-          <button class="vtab on" data-view="story">Story</button>
-          <button class="vtab" data-view="detail">Detail</button>
-        </div>
-        <span class="subtle" id="snap-asof"></span>
-      </div>
     </div>
 
-    <!-- shared phase toggle (drives both Story and Detail) -->
-    <div class="phasetabs" id="phaseTabs">
-      <button class="ptab on" data-phase="primary_kindy">Primary &amp; Kindy</button>
-      <button class="ptab" data-phase="secondary">Secondary</button>
-      <button class="ptab" data-phase="compare">Compare</button>
+    <!-- shared phase toggle + view toggle on one row (drives both Story and Detail) -->
+    <div class="tabsrow">
+      <div class="phasetabs" id="phaseTabs">
+        <button class="ptab on" data-phase="primary_kindy">Primary &amp; Kindy</button>
+        <button class="ptab" data-phase="secondary">Secondary</button>
+        <button class="ptab" data-phase="compare">Compare</button>
+      </div>
+      <div class="viewtabs" id="viewTabs">
+        <button class="vtab on" data-view="story">Story</button>
+        <button class="vtab" data-view="detail">Detail</button>
+      </div>
     </div>
 
     <!-- STORY view (animated narrative, default) -->
@@ -580,10 +589,7 @@ body.presenting .mast,body.presenting .themeico{display:none}
         </div>
       </div>
       <div class="grid cols-2" id="snapSW" style="margin-top:14px"></div>
-      <div class="panel" style="margin-top:14px">
-        <div class="ey">Insights . what the evidence reveals</div>
-        <div class="insgrid" id="snapInsights"></div>
-      </div>
+      <div class="grid cols-2" id="snapInsights" style="margin-top:14px"></div>
     </div>
 
     <!-- compare view -->
@@ -737,6 +743,7 @@ body.presenting .mast,body.presenting .themeico{display:none}
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
       <div class="vhist">
+        <div class="vrow"><span class="vtag">v0.32</span><span class="vnote">Snapshot header restructured: the title and subheading are right-aligned beside the SNAPSHOT kicker, the timestamp moved under the kicker on the left, and the phase tabs (Primary / Secondary / Compare) now share one row with the Story / Detail toggle. In Detail, the Insights are split into two side-by-side cards (Strengths and Areas to develop) matching the What is working / Where to focus cards above them.</span></div>
         <div class="vrow"><span class="vtag">v0.31</span><span class="vnote">The sources panel now opens from the RIGHT and pushes the page aside instead of covering it, so you can read the Story and its sources at the same time. The rest of the page is only lightly dimmed (not greyed out) and its markers stay clickable, so you can jump straight from one source to another. The big Story section headers (the phase title and the progress title) are now the AIS navy and centred.</span></div>
         <div class="vrow"><span class="vtag">v0.30</span><span class="vnote">Snapshot Insights now carry their sources. Every summary, bullet and insight shows a small numbered marker; clicking it opens a panel from the left with the supporting lesson quotes (subject, date and progress word) and a link to the locked R3 record, plus a short "how this is counted" note. The wording and the references are read live from Supabase per round (the baked copy is the offline fallback). References never name a teacher. Snapshot only; Coverage and Observations untouched.</span></div>
         <div class="vrow"><span class="vtag">v0.29</span><span class="vnote">The observer illustration on the two Insights slides (5 and 7) is now half its previous size, closer to the teacher figure on the numbers slide. And the teacher figure, which used a slightly different blue, is recoloured to the approved AIS blue (#1257FF, Blue on Star) so it matches the presenter headers, which were already that blue. Story only.</span></div>
@@ -774,7 +781,7 @@ body.presenting .mast,body.presenting .themeico{display:none}
 
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.31</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.32</span></span>
   </div>
 </div>
 
@@ -1166,8 +1173,8 @@ function swPanel(kind,data,phase){const p=document.createElement('div');p.classN
     `<div class="swev">${esc(data.evidence)}${refMark(navSlug(phase,sec,'evidence'))}</div><div class="swsum">${esc(data.summary)}${refMark(navSlug(phase,sec,'summary'))}</div>`+
     `<div class="blist">${data.bullets.map((b,i)=>`<div class="brow"><span class="bm" style="color:${col}">${mark}</span><span>${esc(b)}${refMark(navSlug(phase,sec,'bullet',i))}</span></div>`).join('')}</div>`;
   return p;}
-function insCol(title,arr,dev,phase,section){const c=document.createElement('div');c.className='inscol';
-  c.innerHTML=`<div class="ey">${esc(title)}</div>`+arr.map((t,i)=>`<div class="icard${dev?' dev':''}"><span class="inum">${i+1}</span><p>${esc(t)}${refMark(navSlug(phase,section,'insight',i))}</p></div>`).join('');
+function insCol(title,arr,dev,phase,section){const c=document.createElement('div');c.className='panel';const col=dev?'var(--r5)':'var(--g)';
+  c.innerHTML=`<div class="swhead" style="color:${col}"><span class="swdot" style="background:${col}"></span><b>${esc(title)}</b></div>`+arr.map((t,i)=>`<div class="icard${dev?' dev':''}"><span class="inum">${i+1}</span><p>${esc(t)}${refMark(navSlug(phase,section,'insight',i))}</p></div>`).join('');
   return c;}
 function renderPhase(phase){const a=snapAgg(phase),N=NARR[phase];
   byId('phName').textContent=PHASE_LABEL[phase];
@@ -1179,7 +1186,7 @@ function renderPhase(phase){const a=snapAgg(phase),N=NARR[phase];
   byId('gaugeWord').textContent=a.avgBest!=null?a.avgBest.toFixed(1)+' of 6':'n/a';
   renderHisto(a.dist);
   const sw=byId('snapSW');sw.innerHTML='';sw.appendChild(swPanel('strength',N.strengths,phase));sw.appendChild(swPanel('develop',N.develop,phase));
-  const ins=byId('snapInsights');ins.innerHTML='';ins.appendChild(insCol('Strengths',N.strengths.insights,false,phase,'strengths'));ins.appendChild(insCol('Areas to develop',N.develop.insights,true,phase,'develop'));
+  const ins=byId('snapInsights');ins.innerHTML='';ins.appendChild(insCol('Insights . Strengths',N.strengths.insights,false,phase,'strengths'));ins.appendChild(insCol('Insights . Areas to develop',N.develop.insights,true,phase,'develop'));
 }
 function cmpCard(cls,label,a){return `<div class="panel cmpcard ${cls}"><div class="cl">${label}</div><div class="cmpstat">`+
   `<div class="cs"><div class="cv" data-to="${a.lessons}">${a.lessons}</div><div class="ck">lessons</div></div>`+
