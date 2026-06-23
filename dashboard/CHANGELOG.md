@@ -5,6 +5,13 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.31 . 2026-06-23
+- **Sources panel reworked from an overlay into a right-hand push-drawer.** It now opens from the RIGHT (was left) and, instead of covering the page, it pushes the app left (`body.refopen` reserves `--refw` on the right; `.wrap` transitions) so the Story and its sources are visible at the same time.
+- **Lighter, non-blocking dimming.** The heavy click-blocking scrim (`rgba(0,0,0,.34)`) is gone; the app is only lightly de-emphasised (`.wrap` opacity .84) and stays fully interactive, so the inline markers remain clickable and you can jump straight from one source to another without closing the panel first. Close is via the X or Escape. Verified marker-to-marker switching by real clicks.
+- **Story section headers restyled.** The blue presenter headers (the phase title on the numbers beat, the "Student progress" title, and the matching Compare headers) move off the electric blue to the AIS navy (`var(--ink)`, the same navy as the masthead title), and the centred-layout beats now centre their header. The green "What is working" and terracotta "Where to focus" headers are unchanged.
+- Build note: the push reserves space with `padding-right:var(--refw)` (no `calc()` wrapping the `clamp()`), which keeps it robust across engines. Verified in both themes, no console errors. Snapshot only; Coverage and Observations untouched.
+- Rollback: `dash-v0.30`.
+
 ## v0.30 . 2026-06-22
 - **Snapshot Insights now carry their sources (#6/#7 Phases A-C).** Every claim on the Snapshot (the strengths/areas summaries, the bullets, and the Insight cards, in both the Story and Detail views, across Primary & Kindy, Secondary and Compare) now shows a small numbered marker. Clicking it opens a slide-out panel from the LEFT with the supporting evidence: one card per source lesson (subject area, date, progress word, and the inspector's verbatim quote), a "how this is counted" note where relevant, and a link to that lesson's locked R3 record. User-facing this is "Insights", never "AI".
 - **Read live from Supabase, round-scoped.** The narrative wording and the references come from two new Supabase tables (`narrative` + `narrative_ref`) via a definer RPC `get_narrative(round)`, scoped to the current round ('R3 June 26'). The baked `NARR` constant stays as the instant-first-paint and offline fallback, so the Snapshot still renders fully (without markers) if Supabase is unreachable. No error UI ever.

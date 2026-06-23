@@ -30,12 +30,14 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{min-height:100%}
-body{font-family:var(--body);background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;transition:background .6s,color .6s;overflow-x:hidden}
+body{font-family:var(--body);background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;--refw:clamp(300px,38vw,420px);transition:background .6s,color .6s,padding-right .42s cubic-bezier(.22,.61,.36,1);overflow-x:hidden}
+body.refopen{padding-right:var(--refw)}   /* sources panel pushes the app left so both are visible (.wrap's own padding gives the gap) */
 #stars{position:fixed;inset:0;z-index:0;pointer-events:none;transition:opacity .6s}
 :root[data-stars="off"] #stars{opacity:0}
 .bgwash{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(1200px 700px at 80% -10%,color-mix(in srgb,var(--b) 16%,transparent),transparent 60%),radial-gradient(900px 600px at 0% 100%,color-mix(in srgb,var(--g) 12%,transparent),transparent 55%)}
 :root[data-theme="light"] .bgwash{opacity:.5}
-.wrap{position:relative;z-index:2;max-width:1180px;margin:0 auto;padding:0 clamp(14px,3.5vw,34px) 80px}
+.wrap{position:relative;z-index:2;max-width:1180px;margin:0 auto;padding:0 clamp(14px,3.5vw,34px) 80px;transition:opacity .42s}
+body.refopen .wrap{opacity:.84}   /* light de-emphasis while the sources panel is open; stays clickable (no blocking scrim) */
 
 /* ===== masthead + board rail ===== */
 .mast{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:11px 13px 11px 18px;margin-top:14px;position:sticky;top:12px;z-index:30;background:var(--panel-2);backdrop-filter:blur(14px);border:1px solid var(--edge);border-radius:20px;box-shadow:0 18px 50px -30px var(--shadow)}
@@ -47,10 +49,9 @@ body{font-family:var(--body);background:var(--bg);color:var(--ink);-webkit-font-
   font-family:var(--body);font-size:10px;font-weight:700;line-height:1;color:var(--y);background:var(--panel-2);border:1px solid var(--edge);border-radius:7px;cursor:pointer;transition:.15s;vertical-align:middle}
 .refmk:hover{border-color:var(--y);color:var(--ink);box-shadow:0 2px 8px -3px var(--shadow)}
 .refmk:focus-visible{outline:2px solid var(--y);outline-offset:1px}
-.refbackdrop{position:fixed;inset:0;z-index:79;background:rgba(0,0,0,.34);opacity:0;visibility:hidden;transition:opacity .42s,visibility .42s}
-.refbackdrop.open{opacity:1;visibility:visible}
-.refpanel{position:fixed;top:0;left:0;height:100%;width:min(432px,92vw);z-index:80;background:var(--bg-2);border-right:1px solid var(--edge);box-shadow:18px 0 60px -28px var(--shadow);
-  transform:translateX(-102%);transition:transform .42s cubic-bezier(.22,.61,.36,1);display:flex;flex-direction:column;overflow:hidden}
+.refbackdrop{position:fixed;inset:0;z-index:79;background:transparent;pointer-events:none}   /* push-drawer: dim lives on .wrap, no click-blocking scrim, so other markers stay clickable */
+.refpanel{position:fixed;top:0;right:0;height:100%;width:var(--refw);z-index:80;background:var(--bg-2);border-left:1px solid var(--edge);box-shadow:-18px 0 60px -28px var(--shadow);
+  transform:translateX(102%);transition:transform .42s cubic-bezier(.22,.61,.36,1);display:flex;flex-direction:column;overflow:hidden}
 .refpanel.open{transform:translateX(0)}
 .refhd{display:flex;align-items:flex-start;gap:12px;justify-content:space-between;padding:20px 20px 14px;border-bottom:1px solid var(--edge-soft)}
 .refhd .rk{font-family:var(--body);font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--y)}
@@ -397,7 +398,8 @@ svg{display:block;overflow:visible}
 .beat{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:clamp(22px,3.4vw,46px);overflow:hidden;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .6s ease,visibility .6s}
 .beat.col-top{justify-content:flex-start;overflow:auto}
 .beat.on{opacity:1;visibility:visible;pointer-events:auto}
-.beat-k{font-size:clamp(20px,3vw,30px);letter-spacing:.12em;text-transform:uppercase;color:var(--b);font-weight:700;margin-bottom:20px;position:relative;z-index:2;line-height:1.12}
+.beat-k{font-size:clamp(20px,3vw,30px);letter-spacing:.12em;text-transform:uppercase;color:var(--ink);font-weight:700;margin-bottom:20px;position:relative;z-index:2;line-height:1.12}
+.beat:not(.col-top) .beat-k{text-align:center}   /* centred-layout beats (numbers, progress) get a centred header */
 .beat-h{font-family:var(--display);font-weight:600;font-size:clamp(24px,4vw,42px);line-height:1.06;letter-spacing:-.02em;max-width:24ch;position:relative;z-index:2}
 .beat-h em{font-style:italic;color:var(--y);text-shadow:var(--glow) color-mix(in srgb,var(--y) 55%,transparent)}
 .beat-ev{font-size:15px;color:var(--ink-mid);font-weight:600;letter-spacing:.02em;margin:4px 0 16px;position:relative;z-index:2}
@@ -735,6 +737,7 @@ body.presenting .mast,body.presenting .themeico{display:none}
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
       <div class="vhist">
+        <div class="vrow"><span class="vtag">v0.31</span><span class="vnote">The sources panel now opens from the RIGHT and pushes the page aside instead of covering it, so you can read the Story and its sources at the same time. The rest of the page is only lightly dimmed (not greyed out) and its markers stay clickable, so you can jump straight from one source to another. The big Story section headers (the phase title and the progress title) are now the AIS navy and centred.</span></div>
         <div class="vrow"><span class="vtag">v0.30</span><span class="vnote">Snapshot Insights now carry their sources. Every summary, bullet and insight shows a small numbered marker; clicking it opens a panel from the left with the supporting lesson quotes (subject, date and progress word) and a link to the locked R3 record, plus a short "how this is counted" note. The wording and the references are read live from Supabase per round (the baked copy is the offline fallback). References never name a teacher. Snapshot only; Coverage and Observations untouched.</span></div>
         <div class="vrow"><span class="vtag">v0.29</span><span class="vnote">The observer illustration on the two Insights slides (5 and 7) is now half its previous size, closer to the teacher figure on the numbers slide. And the teacher figure, which used a slightly different blue, is recoloured to the approved AIS blue (#1257FF, Blue on Star) so it matches the presenter headers, which were already that blue. Story only.</span></div>
         <div class="vrow"><span class="vtag">v0.28</span><span class="vnote">Autoplay now loops: when the Story reaches the last slide it returns to the first and keeps playing. And fixed blank content after backgrounding the tab and returning (the data-missing, needs-refresh bug, the same as the R3 form): the dashboard now re-renders the current board when the tab is restored, so nothing stays blank and no manual refresh is needed. The open teacher and the story position are kept.</span></div>
@@ -771,7 +774,7 @@ body.presenting .mast,body.presenting .themeico{display:none}
 
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.30</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.31</span></span>
   </div>
 </div>
 
@@ -1104,8 +1107,8 @@ function openRefs(ev,slug){if(ev){ev.stopPropagation();ev.preventDefault();}
     const col=R[r.progress]||'var(--na)',word=SEAS_WORD[r.progress]||'',date=r.observed_on||'',area=r.area||r.subject||'';
     const link=(r.record_id&&r.record_token)?`<a class="reflink" target="_blank" rel="noopener" href="../Assets/R3/r3-record.html?id=${encodeURIComponent(r.record_id)}&token=${encodeURIComponent(r.record_token)}">Open the R3 record ${I_ARROW}</a>`:'';
     return `<div class="refcard"><div class="refmeta"><span class="rdot" style="background:${col}"></span><span class="rarea">${esc(area)}</span>${date?`<span>${esc(date)}</span>`:''}${word?`<span>${esc(word)} progress</span>`:''}</div><div class="refq">${esc(r.quote)}</div>${link}</div>`;}).join('');
-  byId('refPanel').classList.add('open');byId('refBackdrop').classList.add('open');}
-function closeRefs(){const p=byId('refPanel'),b=byId('refBackdrop');if(p)p.classList.remove('open');if(b)b.classList.remove('open');}
+  byId('refPanel').classList.add('open');document.body.classList.add('refopen');}
+function closeRefs(){const p=byId('refPanel');if(p)p.classList.remove('open');document.body.classList.remove('refopen');}
 addEventListener('keydown',e=>{if(e.key==='Escape'&&byId('refPanel')&&byId('refPanel').classList.contains('open')){e.stopPropagation();closeRefs();}},true);
 /* rebuild the baked-shape NARR from the flat Supabase items; ok=false keeps the baked copy */
 function buildNarrFromItems(items){try{
