@@ -5,6 +5,13 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.34 . 2026-06-23
+- **Story stage taller** (`.stage` min-height `clamp(460px,60vh,640px)` -> `clamp(460px,72vh,720px)`). One fixed box, identical for all seven beats; the two Insights beats (slides 5 and 7) now show all three cards without the third clipping. Verified the Secondary "Areas to develop" beat (the worst case) fits. Embedded view only.
+- **Present mode: real full screen.** The Present button now calls `requestFullscreen()` on the document (webkit-prefixed for Safari); `fullscreenchange` syncs the `.present` layout back out when the user leaves via Esc, and `exitPresent()` exits fullscreen. iOS Safari (no element fullscreen) silently falls back to the existing CSS full-window present, never an error (hard rule 12). The present stage background is now opaque (`var(--bg)`) so nothing shows through.
+- **Present mode: bigger + centred on every beat.** New `#v-snapshot.present` rules re-express the fixed-px type as viewport-scaled (`vh`) clamps and centre the list beats; the figures enlarge too. Scoped to Present; the embedded Story keeps its sizes.
+- **A- / A+ text-size control (Present only).** Mirrors the `--font-scale` control from the Lesson-Plan slides (frontend-slides): step 10%, range 50 to 200 percent, session only, shown only in the Present control bar (also Cmd . / Cmd , while presenting). Hidden in the embedded view.
+- Scope: Snapshot Story + Present. Coverage, Observations and the Detail view untouched. Verified in-browser, light and dark, no console errors.
+
 ## v0.33 . 2026-06-23
 - **Snapshot subheading removed** ("110 lessons observed across 104 teachers…") for a more compact header. Dropped `#snapIntro` and the JS that filled it.
 - **Coverage and Observations headers made congruent with Snapshot.** Both now use the `.snaphead` two-column header: kicker (+ timestamp on Coverage) on the left, title right-aligned to the masthead edge.

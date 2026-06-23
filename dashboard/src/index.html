@@ -401,7 +401,7 @@ svg{display:block;overflow:visible}
 .vtab:hover{color:var(--ink)}
 .vtab.on{background:var(--panel-2);color:var(--ink);box-shadow:0 2px 10px -5px var(--shadow)}
 #snapStory{margin-top:14px}
-.stage{position:relative;border:1px solid var(--edge);border-radius:22px;background:var(--panel);backdrop-filter:blur(7px);box-shadow:0 30px 70px -50px var(--shadow);overflow:hidden;min-height:clamp(460px,60vh,640px)}
+.stage{position:relative;border:1px solid var(--edge);border-radius:22px;background:var(--panel);backdrop-filter:blur(7px);box-shadow:0 30px 70px -50px var(--shadow);overflow:hidden;min-height:clamp(460px,72vh,720px)}
 .beat{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:clamp(22px,3.4vw,46px);overflow:hidden;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .6s ease,visibility .6s}
 .beat.col-top{justify-content:flex-start;overflow:auto}
 .beat.on{opacity:1;visibility:visible;pointer-events:auto}
@@ -491,10 +491,43 @@ svg{display:block;overflow:visible}
 .sdot.on{background:var(--y);transform:scale(1.3);box-shadow:0 0 10px color-mix(in srgb,var(--y) 60%,transparent)}
 .progress{position:absolute;left:0;top:0;height:3px;background:linear-gradient(90deg,var(--y),var(--g));width:0;z-index:6;transition:width .25s linear;border-radius:0 3px 3px 0}
 /* present (full screen) */
-#v-snapshot.present .stage{position:fixed;inset:0;z-index:80;border-radius:0;min-height:100vh;border:0}
+#v-snapshot.present .stage{position:fixed;inset:0;z-index:80;border-radius:0;min-height:100vh;border:0;background:var(--bg);backdrop-filter:none}
 #v-snapshot.present .storyctl{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:81;margin:0}
 #v-snapshot.present .head,#v-snapshot.present #phaseTabs,#v-snapshot.present #snapDetail{display:none}
 body.presenting .mast,body.presenting .themeico{display:none}
+/* present: bigger, centred type on every beat, scaled live by the A-/A+ control via --font-scale */
+#v-snapshot.present .beat:not([data-type="cover"]){padding:clamp(34px,6vh,86px) clamp(40px,7vw,130px)}
+#v-snapshot.present .beat.col-top{justify-content:center;align-items:center;text-align:center}
+#v-snapshot.present .beat.col-top .bl-list,#v-snapshot.present .beat.col-top .bl-ins{text-align:left;margin-inline:auto}
+#v-snapshot.present .beat.col-top .bl-list{max-width:min(86vw,1000px)}
+#v-snapshot.present .beat.col-top .bl-ins{max-width:min(90vw,1180px)}
+#v-snapshot.present .beat-k{font-size:calc(clamp(24px,3.3vh,46px)*var(--font-scale,1));margin-bottom:clamp(14px,2.2vh,28px)}
+#v-snapshot.present .beat-ev{font-size:calc(clamp(15px,1.9vh,25px)*var(--font-scale,1));margin-bottom:clamp(8px,1.4vh,18px)}
+#v-snapshot.present .beat-h{font-size:calc(clamp(22px,3.2vh,44px)*var(--font-scale,1))!important}
+#v-snapshot.present .bl-row{font-size:calc(clamp(17px,2.2vh,33px)*var(--font-scale,1));line-height:1.45;grid-template-columns:clamp(26px,3vh,40px) 1fr}
+#v-snapshot.present .bl-row .bm svg{width:calc(clamp(20px,2.4vh,34px)*var(--font-scale,1));height:calc(clamp(20px,2.4vh,34px)*var(--font-scale,1))}
+#v-snapshot.present .bi{padding:clamp(20px,2.8vh,38px) clamp(26px,3vw,46px) clamp(20px,2.8vh,38px) clamp(58px,5.5vw,92px)}
+#v-snapshot.present .bi p{font-size:calc(clamp(17px,2.1vh,31px)*var(--font-scale,1));line-height:1.55}
+#v-snapshot.present .bi .bn{font-size:calc(clamp(32px,3.5vh,54px)*var(--font-scale,1));left:clamp(20px,2vw,32px);top:clamp(16px,2vh,28px)}
+#v-snapshot.present .big-n{font-size:calc(clamp(56px,11vh,124px)*var(--font-scale,1))}
+#v-snapshot.present .big-n.word{font-size:calc(clamp(34px,7vh,78px)*var(--font-scale,1))}
+#v-snapshot.present .numtile .ml{font-size:calc(clamp(13px,1.6vh,22px)*var(--font-scale,1))}
+#v-snapshot.present #storyStage .gauge-cap .gv{font-size:calc(clamp(20px,2.4vh,34px)*var(--font-scale,1))}
+#v-snapshot.present .dsword{font-size:calc(clamp(14px,1.7vh,24px)*var(--font-scale,1))}
+#v-snapshot.present .dscount{font-size:calc(clamp(17px,2vh,28px)*var(--font-scale,1))}
+#v-snapshot.present .cmpcol .cl{font-size:calc(clamp(12px,1.5vh,20px)*var(--font-scale,1))}
+#v-snapshot.present .cmpr .ml{font-size:calc(clamp(11px,1.4vh,18px)*var(--font-scale,1))}
+#v-snapshot.present .coverh{font-size:calc(clamp(40px,8vh,92px)*var(--font-scale,1))}
+#v-snapshot.present .covsub{font-size:calc(clamp(16px,2.1vh,30px)*var(--font-scale,1))}
+#v-snapshot.present .coverk{font-size:calc(clamp(12px,1.4vh,18px)*var(--font-scale,1))}
+#v-snapshot.present .statefig{width:clamp(200px,26vh,360px)}
+#v-snapshot.present .statefig.figtall{width:clamp(80px,11vh,150px)}
+/* font-scale (A-/A+) control: present only */
+.fsctl{display:none;align-items:center;gap:5px}
+#v-snapshot.present .fsctl{display:inline-flex}
+.fsctl .fsbtn{width:auto;border-radius:30px;padding:0 13px;font-size:14px;font-weight:700}
+#fsLabel{font-size:12px;font-weight:700;color:var(--ink-dim);min-width:3.4em;text-align:center;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.fsctl .fsbtn:disabled{opacity:.3;cursor:default;transform:none}
 /* autoplay toggle in Settings */
 #autoplayToggle.on .sw{background:var(--g)}
 #autoplayToggle.on .sw::after{left:23px}
@@ -563,6 +596,7 @@ body.presenting .mast,body.presenting .themeico{display:none}
         <button class="sbtn play" id="sPlay" type="button" aria-label="Play or pause"><span class="ico"></span></button>
         <button class="sbtn" id="sNext" type="button" aria-label="Next beat">&#8250;</button>
         <div class="sdots" id="sDots"></div>
+        <span class="fsctl" id="fsCtl"><button class="sbtn fsbtn" id="fsDown" type="button" aria-label="Smaller text" title="Smaller text (Cmd ,)">A-</button><span id="fsLabel">100%</span><button class="sbtn fsbtn" id="fsUp" type="button" aria-label="Larger text" title="Larger text (Cmd .)">A+</button></span>
         <button class="sbtn wide" id="sPresent" type="button">Present</button>
       </div>
     </div>
@@ -752,6 +786,7 @@ body.presenting .mast,body.presenting .themeico{display:none}
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
       <div class="vhist">
+        <div class="vrow"><span class="vtag">v0.34</span><span class="vnote">Snapshot Story polish. The stage is taller, so the two Insights slides (5 and 7) show all three cards without the last one clipping. Present mode now opens in real full screen (not just filling the browser), every beat's text and figures are larger and centred, and an A- / A+ control in the Present bar resizes the Story text live (50 to 200 percent, session only). The Present-mode changes are scoped to Present; the embedded Story, Coverage and Observations are unchanged.</span></div>
         <div class="vrow"><span class="vtag">v0.33</span><span class="vnote">Headers made consistent across the three boards and tightened. The Snapshot subheading ("110 lessons observed…") was removed for a more compact header. Coverage and Observations now use the same two-column header as Snapshot (kicker + timestamp on the left, title right-aligned). On Observations the R3 Obs control moved to a row under the header (where the Snapshot tabs sit), the page title reads "R3 Observations", and the "Back to Coverage" button was removed.</span></div>
         <div class="vrow"><span class="vtag">v0.32</span><span class="vnote">Snapshot header restructured: the title and subheading are right-aligned beside the SNAPSHOT kicker, the timestamp moved under the kicker on the left, and the phase tabs (Primary / Secondary / Compare) now share one row with the Story / Detail toggle. In Detail, the Insights are split into two side-by-side cards (Strengths and Areas to develop) matching the What is working / Where to focus cards above them.</span></div>
         <div class="vrow"><span class="vtag">v0.31</span><span class="vnote">The sources panel now opens from the RIGHT and pushes the page aside instead of covering it, so you can read the Story and its sources at the same time. The rest of the page is only lightly dimmed (not greyed out) and its markers stay clickable, so you can jump straight from one source to another. The big Story section headers (the phase title and the progress title) are now the AIS navy and centred.</span></div>
@@ -791,7 +826,7 @@ body.presenting .mast,body.presenting .themeico{display:none}
 
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.33</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.34</span></span>
   </div>
 </div>
 
@@ -1339,8 +1374,10 @@ function renderStory(){
   storyIdx=0;
   if(snapStarted&&snapAutoplay()){gotoBeat(0,true);playStory();}else{gotoBeat(0,false);storyPlaying=false;setPlayUI();}}
 function beginStory(){if(current==='snapshot'&&snapView==='story'){if(snapAutoplay()){gotoBeat(0,true);playStory();}else gotoBeat(0,false);}}
-function togglePresent(){const v=byId('v-snapshot'),on=!v.classList.contains('present');v.classList.toggle('present',on);document.body.classList.toggle('presenting',on);}
-function exitPresent(){byId('v-snapshot').classList.remove('present');document.body.classList.remove('presenting');}
+function togglePresent(){const v=byId('v-snapshot'),on=!v.classList.contains('present');v.classList.toggle('present',on);document.body.classList.toggle('presenting',on);if(on)reqFS();else exitFS();}
+function exitPresent(){byId('v-snapshot').classList.remove('present');document.body.classList.remove('presenting');exitFS();}
+function reqFS(){const el=document.documentElement,rf=el.requestFullscreen||el.webkitRequestFullscreen;if(rf){try{const p=rf.call(el);if(p&&p.catch)p.catch(()=>{});}catch(e){}}}   /* iOS Safari lacks the API -> silent no-op, CSS full-window present still applies */
+function exitFS(){if(document.fullscreenElement||document.webkitFullscreenElement){const xf=document.exitFullscreen||document.webkitExitFullscreen;if(xf){try{const p=xf.call(document);if(p&&p.catch)p.catch(()=>{});}catch(e){}}}}
 
 /* ============================================================= router + FLIP */
 const views={snapshot:'v-snapshot',coverage:'v-coverage',teacher:'v-teacher',settings:'v-settings'};
@@ -1486,6 +1523,14 @@ document.querySelectorAll('#phaseTabs .ptab').forEach(b=>b.onclick=()=>{snapPhas
 byId('sPlay').onclick=toggleStoryPlay;byId('sPrev').onclick=()=>stepStory(-1);byId('sNext').onclick=()=>stepStory(1);byId('sPresent').onclick=togglePresent;
 addEventListener('keydown',e=>{if(current!=='snapshot'||snapView!=='story')return;
   if(e.key==='ArrowRight')stepStory(1);else if(e.key==='ArrowLeft')stepStory(-1);else if(e.key===' '){e.preventDefault();toggleStoryPlay();}else if(e.key==='Escape')exitPresent();});
+['fullscreenchange','webkitfullscreenchange'].forEach(ev=>document.addEventListener(ev,()=>{const fs=document.fullscreenElement||document.webkitFullscreenElement;if(!fs&&byId('v-snapshot').classList.contains('present'))exitPresent();}));   /* user left native fullscreen (Esc / browser) -> drop present layout too */
+/* present text-size control (A-/A+), session-only, mirrors the Lesson-Plan slides --font-scale */
+(function(){const MIN=.5,MAX=2,STEP=.1,up=byId('fsUp'),dn=byId('fsDown'),lab=byId('fsLabel');let s=1;
+  function apply(){document.documentElement.style.setProperty('--font-scale',s);if(lab)lab.textContent=Math.round(s*100)+'%';if(dn)dn.disabled=s<=MIN;if(up)up.disabled=s>=MAX;}
+  function set(v){s=Math.round(Math.max(MIN,Math.min(MAX,v))*10)/10;apply();}
+  if(up)up.onclick=()=>set(s+STEP);if(dn)dn.onclick=()=>set(s-STEP);
+  addEventListener('keydown',e=>{if(!e.metaKey||!byId('v-snapshot').classList.contains('present'))return;if(e.key==='.'){e.preventDefault();set(s+STEP);}else if(e.key===','){e.preventDefault();set(s-STEP);}});
+  apply();})();
 function syncAutoplayUI(){const t=byId('autoplayToggle');if(t)t.classList.toggle('on',snapAutoplay());}
 byId('autoplayToggle').onclick=()=>{const on=!snapAutoplay();setSnapAutoplay(on);syncAutoplayUI();if(current==='snapshot'&&snapView==='story'){if(on){gotoBeat(storyIdx,true);playStory();}else pauseStory();}};
 syncAutoplayUI();
