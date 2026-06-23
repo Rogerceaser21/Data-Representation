@@ -100,6 +100,9 @@ body.refopen .wrap{opacity:.84}   /* light de-emphasis while the sources panel i
 .themeico .icon-moon{display:none}
 :root[data-theme="dark"] .themeico .icon-sun{display:none}
 :root[data-theme="dark"] .themeico .icon-moon{display:block}
+.printico{position:fixed;top:clamp(.7rem,1.4vw,1.2rem);right:clamp(3.3rem,5vw,4.2rem);z-index:50;width:clamp(2rem,2.4vw,2.4rem);height:clamp(2rem,2.4vw,2.4rem);border-radius:50%;border:1px solid var(--edge);background:var(--panel-2);color:var(--ink-dim);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;transition:background .2s,color .2s,border-color .2s,transform .2s;backdrop-filter:blur(6px)}
+.printico:hover{background:var(--panel);color:var(--ink);border-color:var(--y);transform:scale(1.06)}
+.printico .icon{width:1.02em;height:1.02em;display:block}
 
 /* ===== entry title-card ===== */
 #entry{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;background:radial-gradient(900px 600px at 50% 40%,var(--bg-2),var(--bg));text-align:center;padding:24px;transition:opacity .7s ease}
@@ -494,7 +497,7 @@ svg{display:block;overflow:visible}
 #v-snapshot.present .stage{position:fixed;inset:0;z-index:80;border-radius:0;min-height:100vh;border:0;background:var(--bg);backdrop-filter:none}
 #v-snapshot.present .storyctl{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:81;margin:0}
 #v-snapshot.present .head,#v-snapshot.present #phaseTabs,#v-snapshot.present #snapDetail{display:none}
-body.presenting .mast,body.presenting .themeico{display:none}
+body.presenting .mast,body.presenting .themeico,body.presenting .printico{display:none}
 /* present: bigger, centred type on every beat, scaled live by the A-/A+ control via --font-scale */
 #v-snapshot.present .beat:not([data-type="cover"]){padding:clamp(34px,6vh,86px) clamp(40px,7vw,130px)}
 #v-snapshot.present .beat.col-top{justify-content:center;align-items:center;text-align:center}
@@ -531,6 +534,24 @@ body.presenting .mast,body.presenting .themeico{display:none}
 /* autoplay toggle in Settings */
 #autoplayToggle.on .sw{background:var(--g)}
 #autoplayToggle.on .sw::after{left:23px}
+/* ============ PRINT / Save-as-PDF (view-aware; components never split a page) ============ */
+@media print{
+  @page{margin:14mm}
+  #stars,.mast,.themeico,.printico,.storyctl,.fsctl,.refpanel,.motes,.foot,.tabsrow{display:none!important}
+  body{background:#fff!important;padding-right:0!important}
+  .wrap{opacity:1!important}
+  .view[hidden]{display:none!important}
+  /* card views (Detail / Coverage / Observations): each card is a unit -> never split it across a page */
+  .panel,.stat,.icard,.bi,.cmpcol,.numtile,.trow,.bl-row,.lj{break-inside:avoid}
+  body:not(.print-story) .grid{display:block!important}
+  body:not(.print-story) .grid>*{margin:0 0 12px!important;break-inside:avoid}
+  /* STORY print: every beat is its own page, forced to final static state (no animations, all built) */
+  body.print-story #v-snapshot .stage{position:static!important;height:auto!important;min-height:0!important;overflow:visible!important;border:0!important;box-shadow:none!important;background:transparent!important}
+  body.print-story #v-snapshot .beat{position:static!important;inset:auto!important;display:flex!important;min-height:90vh;break-after:page;page-break-after:always;overflow:hidden}
+  body.print-story #v-snapshot .beat:last-of-type{break-after:auto;page-break-after:auto}
+  body.print-story #v-snapshot .beat,body.print-story #v-snapshot .beat *{animation:none!important;opacity:1!important;transform:none!important;filter:none!important;visibility:visible!important}
+  body.print-story #v-snapshot .head,body.print-story #phaseTabs,body.print-story #snapDetail{display:none!important}
+}
 @media(prefers-reduced-motion:reduce){.mote,.dsdot,.twk{animation:none!important}.beat[data-type="cover"].on .coverscene,.beat.on .nmotif,.beat.on img.statefig,.beat.on .bl-row .bm svg path{animation:none!important}.bl-row .bm svg path{stroke-dashoffset:0}}
 </style>
 </head>
@@ -558,6 +579,7 @@ body.presenting .mast,body.presenting .themeico{display:none}
   </header>
 
   <!-- floating light/dark toggle (R3-form style), top-right; Settings keeps its own theme + stars switches -->
+  <button class="printico" id="printFloat" type="button" aria-label="Print or save this board as PDF" title="Print / Save as PDF"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></button>
   <button class="themeico" id="themeFloat" type="button" aria-label="Toggle light or dark theme" title="Toggle light / dark theme">
     <svg class="icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
     <svg class="icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
@@ -664,7 +686,7 @@ body.presenting .mast,body.presenting .themeico{display:none}
         </div>
       </div>
       <div class="panel span2">
-        <div class="ey">Observations per teacher</div>
+        <div class="ey">Lessons per teacher</div>
         <div class="dist" id="dist"></div>
       </div>
     </div>
@@ -786,6 +808,7 @@ body.presenting .mast,body.presenting .themeico{display:none}
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
       <div class="vhist">
+        <div class="vrow"><span class="vtag">v0.35</span><span class="vnote">Coverage corrected + a Print button. Coverage now counts the same way as the Snapshot: the June R3 round only (February dropped) and distinct lessons with co-observations merged, not raw form submissions, so the two boards agree (149 on register, 104 seen in June, 45 not yet seen, 110 lessons). A new Print / Save-as-PDF button (top right) prints the current board: the Story prints every slide one per page; the card views (Detail, Coverage, Observations) print their cards without ever cutting one across a page break, forced to light. Works from the button or Cmd / Ctrl + P.</span></div>
         <div class="vrow"><span class="vtag">v0.34</span><span class="vnote">Snapshot Story polish. The stage is taller, so the two Insights slides (5 and 7) show all three cards without the last one clipping. Present mode now opens in real full screen (not just filling the browser), every beat's text and figures are larger and centred, and an A- / A+ control in the Present bar resizes the Story text live (50 to 200 percent, session only). The Present-mode changes are scoped to Present; the embedded Story, Coverage and Observations are unchanged.</span></div>
         <div class="vrow"><span class="vtag">v0.33</span><span class="vnote">Headers made consistent across the three boards and tightened. The Snapshot subheading ("110 lessons observed…") was removed for a more compact header. Coverage and Observations now use the same two-column header as Snapshot (kicker + timestamp on the left, title right-aligned). On Observations the R3 Obs control moved to a row under the header (where the Snapshot tabs sit), the page title reads "R3 Observations", and the "Back to Coverage" button was removed.</span></div>
         <div class="vrow"><span class="vtag">v0.32</span><span class="vnote">Snapshot header restructured: the title and subheading are right-aligned beside the SNAPSHOT kicker, the timestamp moved under the kicker on the left, and the phase tabs (Primary / Secondary / Compare) now share one row with the Story / Detail toggle. In Detail, the Insights are split into two side-by-side cards (Strengths and Areas to develop) matching the What is working / Where to focus cards above them.</span></div>
@@ -826,7 +849,7 @@ body.presenting .mast,body.presenting .themeico{display:none}
 
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.34</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.35</span></span>
   </div>
 </div>
 
@@ -865,42 +888,41 @@ const teacherById=id=>D.teachers.find(t=>t.id===id);
 function countUp(node,to,dur){node.textContent=to;if(!window.gsap)return;const o={v:0};gsap.to(o,{v:to,duration:dur||1.1,ease:'power2.out',onUpdate:()=>node.textContent=Math.round(o.v)})}
 
 /* ============================================================= COVERAGE */
-function renderStats(){
-  const c=D.coverage;
-  byId('cov-asof').textContent='Snapshot '+D.generated_on;
+function renderStats(c){
+  byId('cov-asof').textContent='June R3 round . Snapshot '+D.generated_on;
   byId('genBadge').textContent='Snapshot '+D.generated_on;
   const cells=[
-    {v:c.total_teachers,l:'Teachers on register',s:D.school},
-    {v:c.observed,l:'Observed this term',s:Math.round(c.observed/c.total_teachers*100)+'% of staff',cls:'accent'},
-    {v:c.not_observed,l:'Not yet observed',s:'the coverage gap',cls:'warn'},
-    {v:c.total_observations,l:'Observations logged',s:'June '+c.by_round['R3 June 26']+' . February '+c.by_round['R3 February 26']},
+    {v:c.reg,l:'Teachers on register',s:D.school},
+    {v:c.observed,l:'Observed in June',s:Math.round(c.observed/c.reg*100)+'% of staff',cls:'accent'},
+    {v:c.not_observed,l:'Not yet observed',s:'the June coverage gap',cls:'warn'},
+    {v:c.lessons,l:'Lessons observed',s:'June R3 . co-observations merged'},
   ];
   const g=byId('statgrid');g.innerHTML='';
   cells.forEach(cell=>{const d=document.createElement('div');d.className='panel stat'+(cell.cls?' '+cell.cls:'');
     d.innerHTML=`<div class="v" data-to="${cell.v}">${cell.v}</div><div class="l">${cell.l}</div><div class="s">${cell.s}</div>`;g.appendChild(d)});
 }
-function renderRing(){
-  const c=D.coverage,pct=c.observed/c.total_teachers;const s=byId('ring');s.innerHTML='';
+function renderRing(c){
+  const pct=c.observed/c.reg;const s=byId('ring');s.innerHTML='';
   const cx=60,cy=60,r=46,sw=13,circ=2*Math.PI*r;
   s.appendChild(el('circle',{cx,cy,r,fill:'none',stroke:gc('--edge'),'stroke-width':sw}));
   const arc=el('circle',{cx,cy,r,fill:'none',stroke:gc('--g'),'stroke-width':sw,'stroke-linecap':'round',transform:`rotate(-90 ${cx} ${cy})`,'stroke-dasharray':circ,'stroke-dashoffset':circ*(1-pct)});
   s.appendChild(arc);
   if(window.gsap)gsap.fromTo(arc,{attr:{'stroke-dashoffset':circ}},{attr:{'stroke-dashoffset':circ*(1-pct)},duration:1.3,ease:'power2.out',immediateRender:false});
   const pn=byId('ringPct');countUp({set textContent(v){pn.textContent=v+'%'}},Math.round(pct*100),1.3);
-  byId('ringTx').innerHTML=`<b>${c.observed}</b> of ${c.total_teachers} teachers seen at least once this term.`;
+  byId('ringTx').innerHTML=`<b>${c.observed}</b> of ${c.reg} teachers seen in the June R3 round.`;
 }
-function renderDist(){
-  const d=D.coverage.distribution,host=byId('dist');host.innerHTML='';
-  const max=Math.max(...d.map(x=>x.teachers));
+function renderDist(c){
+  const d=[0,1,2,3,4,5].map(n=>({n,teachers:c.hist[n]})),host=byId('dist');host.innerHTML='';
+  const max=Math.max(1,...d.map(x=>x.teachers));
   d.forEach(x=>{const row=document.createElement('div');row.className='drow'+(x.n===0?' zero':'');
-    const label=x.n===0?'Not observed':(x.n+(x.n===1?' time':' times'));
+    const label=x.n===0?'Not observed':(x.n===5?'5+ lessons':(x.n+(x.n===1?' lesson':' lessons')));
     row.innerHTML=`<div class="dk">${label}</div><div class="dt" style="width:0"></div><div class="dv">${x.teachers}</div>`;
     host.appendChild(row);
     const bar=row.querySelector('.dt');void bar.offsetWidth;bar.style.width=(x.teachers/max*100)+'%'; // .dt has a CSS width transition; reflow makes it animate, final width applies even without RAF
   });
 }
-function renderSpread(){
-  const q=D.quality.distribution,host=byId('spread');host.innerHTML='';
+function renderSpread(c){
+  const q=c.spread,host=byId('spread');host.innerHTML='';
   const R=RAMP();
   for(let i=1;i<=6;i++){const sp=document.createElement('span');sp.style.background=R[i];sp.style.flexBasis='0';sp.style.flexGrow='0';
     sp.textContent=q[i]>14?q[i]:'';host.appendChild(sp);}
@@ -909,9 +931,9 @@ function renderSpread(){
   for(let i=1;i<=6;i++){const e=document.createElement('span');e.className='lj';
     e.innerHTML=`<i style="background:${R[i]}"></i>${WORD[i]} <span style="color:var(--ink-faint)">${q[i]}</span>`;lg.appendChild(e);}
 }
-function renderNoobs(){
+function renderNoobs(c){
   const host=byId('noobs');host.innerHTML='';
-  D.coverage.not_observed_names.forEach(n=>{const d=document.createElement('div');
+  c.noobs.forEach(n=>{const d=document.createElement('div');
     d.style.cssText='font-size:13px;font-weight:600;color:var(--ink-dim);display:flex;align-items:center;gap:8px';
     d.innerHTML=`<span style="width:6px;height:6px;border-radius:50%;background:var(--r5);flex:none"></span>${n}`;host.appendChild(d);});
 }
@@ -928,7 +950,7 @@ function renderTlist(){
     host.appendChild(row);});
   if(!rows.length)host.innerHTML='<div style="padding:18px;color:var(--ink-faint);font-size:13px">No teachers match.</div>';
 }
-function renderCoverage(){renderStats();renderRing();renderDist();renderSpread();renderNoobs();}
+function renderCoverage(){const c=covAgg();renderStats(c);renderRing(c);renderDist(c);renderSpread(c);renderNoobs(c);}
 function animateStats(){document.querySelectorAll('#statgrid .v').forEach(n=>countUp(n,+n.dataset.to,1.1));}
 
 /* ============================================================= TEACHER (scoring)
@@ -1103,6 +1125,34 @@ function snapAgg(phase){
   const bests=Object.values(bestByT);
   const avgBest=bests.length?bests.reduce((a,b)=>a+b,0)/bests.length:null;
   return {phase,lessons,teachers:teacherSet.size,dist,avgBest};
+}
+/* COVERAGE aggregate: whole-school, scoped to the June round (SNAP_ROUND), deduped to LESSONS the
+   same way snapAgg does (date + normalised subject, best score wins across co-observers). Mirrors the
+   Snapshot so the two boards agree by construction; READS D.teachers[].observations, never mutates.
+   Replaces the baked D.coverage / D.quality, which pooled February + June and counted raw submissions. */
+function covAgg(){
+  const reg=D.teachers.length;
+  const hist={0:0,1:0,2:0,3:0,4:0,5:0};        // 5 = "5+"
+  const spread={1:0,2:0,3:0,4:0,5:0,6:0};      // Progress (r3_02) + Teaching (r3_05), best per lesson
+  let lessons=0,observed=0;const noobs=[];
+  for(const t of D.teachers){
+    const byLesson=Object.create(null);        // date|normSubject -> {p:bestProgress, tch:bestTeaching}
+    for(const o of t.observations){
+      if(o.round!==SNAP_ROUND)continue;
+      const k=(o.date||'')+'|'+lessonSubjKey(o);
+      if(!(k in byLesson))byLesson[k]={p:null,tch:null};
+      const sc=o.scores||{},p=sc.r3_02,tch=sc.r3_05;
+      if(p!=null&&p>=1&&p<=6&&(byLesson[k].p==null||p<byLesson[k].p))byLesson[k].p=p;
+      if(tch!=null&&tch>=1&&tch<=6&&(byLesson[k].tch==null||tch<byLesson[k].tch))byLesson[k].tch=tch;
+    }
+    const keys=Object.keys(byLesson),n=keys.length;
+    lessons+=n;
+    if(n>0){observed++;hist[Math.min(n,5)]++;}else noobs.push(t.name);
+    for(const k of keys){const L=byLesson[k];if(L.p!=null)spread[L.p]++;if(L.tch!=null)spread[L.tch]++;}
+  }
+  hist[0]=reg-observed;
+  noobs.sort((a,b)=>a.localeCompare(b));
+  return {reg,observed,not_observed:reg-observed,lessons,hist,spread,noobs};
 }
 /* narrative synthesis of the round's free-text evidence (strengths + areas to develop), per phase.
    BAKED FALLBACK: loadNarrative() swaps this for the round-scoped copy in Supabase when reachable;
@@ -1426,6 +1476,7 @@ function showBoard(b,opts={}){
   if(current==='snapshot'&&b!=='snapshot'){pauseStory();exitPresent();}   // leaving Snapshot: stop the story + drop full-screen
   Object.entries(views).forEach(([k,id])=>byId(id).hidden=(k!==b));
   setPill(b);current=b;syncHash(b);
+  byId('printFloat').hidden=(b==='settings');   // print available on the 3 data boards, not Settings
   if(b==='snapshot'){renderSnapshot();snapReveal();}
   if(b==='coverage'){renderCoverage();animateStats();reveal('#v-coverage .panel',.04);}
   if(b==='teacher'){selectedId=null;byId('tsearch').value='';fltNoobs=false;byId('fltNoobs').classList.remove('on');setObsMenu(false);setObs('hub');reveal('#v-teacher .panel',.06);}
@@ -1518,6 +1569,23 @@ byId('starsToggle').onclick=()=>applyStars(document.documentElement.getAttribute
 /* board rail */
 document.querySelectorAll('.pill').forEach(p=>p.onclick=()=>showBoard(p.dataset.board));
 /* snapshot: view toggle (Story|Detail), phase toggle, story controls + keyboard */
+/* ---- PRINT / Save-as-PDF (view-aware): beforeprint preps, afterprint restores; works for the button AND Cmd/Ctrl+P ---- */
+let _printPrevTheme=null;
+function printPrep(){
+  const story=(current==='snapshot'&&snapView==='story');
+  document.body.classList.toggle('print-story',story);
+  if(story)beatEls.forEach(b=>buildBeatViz(b));   // build every slide's data viz so all pages print at final state
+  if(window.gsap)gsap.globalTimeline.getChildren().forEach(t=>{try{t.progress(1);}catch(e){}});   // freeze any running count-up / entrance to its final value
+  document.querySelectorAll('[data-to]').forEach(n=>n.textContent=n.dataset.to);                  // snap the big numbers to final so a quick print never captures mid-animation
+  _printPrevTheme=document.documentElement.getAttribute('data-theme');
+  document.documentElement.setAttribute('data-theme','light');   // ink-friendly, legible pages
+}
+function printRestore(){
+  document.body.classList.remove('print-story');
+  if(_printPrevTheme!=null){document.documentElement.setAttribute('data-theme',_printPrevTheme);_printPrevTheme=null;}
+}
+addEventListener('beforeprint',printPrep);addEventListener('afterprint',printRestore);
+byId('printFloat').onclick=()=>window.print();
 document.querySelectorAll('#viewTabs .vtab').forEach(b=>b.onclick=()=>{snapView=b.dataset.view;renderSnapshot();reveal('#'+(snapView==='story'?'snapStory':'snapDetail'),0);});
 document.querySelectorAll('#phaseTabs .ptab').forEach(b=>b.onclick=()=>{snapPhase=b.dataset.phase;renderSnapshot();});
 byId('sPlay').onclick=toggleStoryPlay;byId('sPrev').onclick=()=>stepStory(-1);byId('sNext').onclick=()=>stepStory(1);byId('sPresent').onclick=togglePresent;
