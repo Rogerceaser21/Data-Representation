@@ -315,6 +315,14 @@ svg{display:block;overflow:visible}
 .sl input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:5px;border-radius:5px;background:var(--edge);outline:none}
 .sl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--y);cursor:pointer;box-shadow:0 0 10px color-mix(in srgb,var(--y) 55%,transparent);border:2px solid var(--bg)}
 .sl input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--y);cursor:pointer;border:2px solid var(--bg)}
+.modal{position:fixed;inset:0;z-index:95;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--ink) 32%,transparent);backdrop-filter:blur(3px);padding:20px}
+.modalcard{position:relative;width:min(94vw,460px);background:var(--panel);border:1px solid var(--edge);border-radius:18px;padding:24px;box-shadow:0 40px 90px -50px var(--shadow)}
+.modalx{position:absolute;top:11px;right:13px;background:none;border:0;color:var(--ink-faint);font-size:22px;line-height:1;cursor:pointer;padding:2px 6px}
+.modalx:hover{color:var(--ink)}
+.setrow{display:flex;align-items:center;gap:8px;margin-top:4px}
+.setrow input{flex:1;background:var(--panel-2);border:1px solid var(--edge);border-radius:10px;outline:0;color:var(--ink);font:inherit;font-size:14px;padding:9px 12px}
+.setrow input::placeholder{color:var(--ink-faint)}
+.setrow .sbtn.wide{margin:0;height:38px}
 
 .foot{margin-top:34px;padding-top:18px;border-top:1px solid var(--edge);font-size:11.5px;color:var(--ink-faint);line-height:1.6;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
 .badge{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-mid);border:1px solid var(--edge);border-radius:30px;padding:4px 10px}
@@ -797,21 +805,18 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
         </div>
       </div>
       <div class="panel">
-        <div class="ey">Theme</div>
-        <label class="toggle" id="themeToggle" style="margin-bottom:4px">
-          <span class="sw" id="themeSw"></span>
-          <span class="tl"><b id="themeName">Light</b><span>Paper by default, dark a tap away.</span></span>
-        </label>
-        <label class="toggle" id="autoplayToggle" style="margin-top:16px">
+        <div class="ey">Snapshot story</div>
+        <label class="toggle" id="autoplayToggle">
           <span class="sw"></span>
           <span class="tl"><b>Auto-play the Snapshot story</b><span>Let it advance on its own; off means you step it yourself.</span></span>
         </label>
-        <p class="subtle" style="margin-top:14px;line-height:1.6">These choices are saved to this browser, so the field can be calm for a governor session and lively for a launch.</p>
+        <p class="subtle" style="margin-top:14px;line-height:1.6">These choices are saved for everyone, on every device, so the field can be calm for a governor session and lively for a launch. The light or dark theme is the round button, top right.</p>
       </div>
     </div>
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
       <div class="vhist">
+        <div class="vrow"><span class="vtag">v0.38</span><span class="vnote">Settings is now password-gated and saved to Supabase, so an admin change applies on every device. Clicking Settings pops up a password prompt (the same admin password as the R3 form, checked server-side); Settings opens only after it is entered, and it re-asks every time you open it. The light or dark toggle was removed from Settings, the round button top-right is now the only theme control. The star-field on/off, the three star sliders and the Snapshot auto-play are saved to Supabase (read on load, written when you change them); the password and the settings come from one shared place, so changing the password once moves both the dashboard and the R3 form.</span></div>
         <div class="vrow"><span class="vtag">v0.37</span><span class="vnote">Story controls moved up into the tabs row. The play / pause / step / dots / Present controls are now a compact pill between the Primary & Kindy phase toggle and the Story / Detail toggle (they were a larger bar below the stage). Smaller buttons; they show only on the Story view and still float to the bottom in Present. Layout only; the controls and dashboard logic are unchanged.</span></div>
         <div class="vrow"><span class="vtag">v0.36</span><span class="vnote">Print rendering fixes (print only; the on-screen dashboard is unchanged). Background colours are now forced to print, so the charts, bars, dots, gauges and the navy cover slide are no longer blank on paper. Story slides anchor each slide's picture and figures to their own page instead of piling up at the bottom. The Coverage stat cards hug their text and wrap rather than stretching across the full page. Bars print at their final size.</span></div>
         <div class="vrow"><span class="vtag">v0.35</span><span class="vnote">Coverage corrected + a Print button. Coverage now counts the same way as the Snapshot: the June R3 round only (February dropped) and distinct lessons with co-observations merged, not raw form submissions, so the two boards agree (149 on register, 104 seen in June, 45 not yet seen, 110 lessons). A new Print / Save-as-PDF button (top right) prints the current board: the Story prints every slide one per page; the card views (Detail, Coverage, Observations) print their cards without ever cutting one across a page break, forced to light. Works from the button or Cmd / Ctrl + P.</span></div>
@@ -853,9 +858,22 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
     </div>
   </section>
 
+  <!-- Admin password gate (pops up on every Settings click; Settings opens only after verify) -->
+  <div class="modal" id="setGate" hidden>
+    <div class="modalcard">
+      <button class="modalx" id="setGateX" type="button" aria-label="Cancel">&times;</button>
+      <div class="ey">Admin settings</div>
+      <p class="subtle" style="margin:6px 0 14px;line-height:1.6">Enter the admin password (the same one as the R3 form) to open Settings.</p>
+      <div class="setrow">
+        <input type="password" id="setPw" placeholder="Admin password" autocomplete="off">
+        <button class="sbtn wide" id="setUnlock" type="button">Unlock</button>
+      </div>
+      <p class="subtle" id="setErr" hidden style="color:var(--r5);margin-top:10px">That password did not match. Try again.</p>
+    </div>
+  </div>
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.37</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.38</span></span>
   </div>
 </div>
 
@@ -1479,7 +1497,9 @@ function syncHash(b){const slug=boardSlug[b]||'';
   else if(location.hash){history.replaceState(null,'',location.pathname+location.search);}}
 function showBoard(b,opts={}){
   if(b===current&&!opts.force)return;
+  if(b==='settings'&&!opts.unlocked){openSettingsGate();return;}   // password popup on EVERY Settings click; opens only after verify
   if(current==='snapshot'&&b!=='snapshot'){pauseStory();exitPresent();}   // leaving Snapshot: stop the story + drop full-screen
+  if(current==='settings'&&b!=='settings')adminPw=null;   // lock the writes + re-prompt next time
   Object.entries(views).forEach(([k,id])=>byId(id).hidden=(k!==b));
   setPill(b);current=b;syncHash(b);
   byId('printFloat').hidden=(b==='settings');   // print available on the 3 data boards, not Settings
@@ -1537,7 +1557,7 @@ function applyStarCfg(){stars.forEach((s,i)=>{s.visible=i<SCFG.count;const z=s.u
 function initStarSliders(){const C=byId('slCount'),S=byId('slSize'),H=byId('slShine');if(!C)return;
   C.value=SCFG.count;S.value=Math.round(SCFG.size*100);H.value=Math.round(SCFG.shine*100);
   const upd=()=>{byId('vCount').textContent=SCFG.count;byId('vSize').textContent=SCFG.size.toFixed(2);byId('vShine').textContent=SCFG.shine.toFixed(2)};upd();
-  const save=()=>{try{localStorage.setItem('ais-star-cfg',JSON.stringify(SCFG))}catch(e){}};
+  const save=()=>{try{localStorage.setItem('ais-star-cfg',JSON.stringify(SCFG))}catch(e){}if(_starSaveT)clearTimeout(_starSaveT);_starSaveT=setTimeout(()=>saveSetting('star_cfg',JSON.stringify(SCFG)),600);};   // debounced Supabase write
   C.addEventListener('input',()=>{SCFG.count=+C.value;upd();applyStarCfg();save()});
   S.addEventListener('input',()=>{SCFG.size=+S.value/100;upd();applyStarCfg();save()});
   H.addEventListener('input',()=>{SCFG.shine=+H.value/100;upd();save()});}
@@ -1558,7 +1578,7 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)starsOff();
 
 /* ============================================================= toggles */
 function applyTheme(t){document.documentElement.setAttribute('data-theme',t);
-  byId('themeName').textContent=t==='dark'?'Dark':'Light';   // Settings label; the floating icon swaps via CSS
+  const _tn=byId('themeName');if(_tn)_tn.textContent=t==='dark'?'Dark':'Light';   // (Settings theme label removed v0.38; floating icon swaps via CSS)
   if(window.THREE)applyStarStyle();
   // re-tint any visible svg shapes that read CSS vars at build time
   if(current==='snapshot'&&snapReady)renderSnapshot();
@@ -1566,11 +1586,31 @@ function applyTheme(t){document.documentElement.setAttribute('data-theme',t);
   if(current==='teacher'&&!byId('obsDetail').hidden&&selectedId!=null)renderTeacher(teacherById(selectedId));
   try{localStorage.setItem('ais-dash-theme',t)}catch(e){}}
 function toggleTheme(){applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');}
-byId('themeFloat').onclick=toggleTheme;     // floating top-right button
-byId('themeToggle').onclick=toggleTheme;    // Settings switch
+byId('themeFloat').onclick=toggleTheme;     // floating top-right button (the only theme control now; the Settings switch was removed v0.38)
 function applyStars(on){document.documentElement.setAttribute('data-stars',on?'on':'off');if(on)starsOn();else starsOff();}
-byId('starsToggle').onclick=()=>applyStars(document.documentElement.getAttribute('data-stars')!=='on');  // Settings switch
+byId('starsToggle').onclick=()=>{const on=document.documentElement.getAttribute('data-stars')!=='on';applyStars(on);try{localStorage.setItem('ais-dash-stars',on?'on':'off')}catch(e){}saveSetting('stars',on?'on':'off');};  // Settings switch -> Supabase
 (function(){let s;try{s=localStorage.getItem('ais-dash-theme')}catch(e){}applyTheme(s||'light');})();
+(function(){let s;try{s=localStorage.getItem('ais-dash-stars')}catch(e){}if(s)applyStars(s==='on');})();   // instant cache; Supabase overrides on load
+
+/* ---- Settings: admin password gate + Supabase-persisted settings (apply on every device) ---- */
+let adminPw=null,_starSaveT=null;   // adminPw = verified admin password this session; null = locked
+function openSettingsGate(){const g=byId('setGate');if(!g)return;byId('setPw').value='';byId('setErr').hidden=true;g.hidden=false;setTimeout(()=>{try{byId('setPw').focus();}catch(e){}},30);}
+function closeSettingsGate(){const g=byId('setGate');if(g)g.hidden=true;}
+function saveSetting(key,value){if(!adminPw)return;sbRpc('admin_set_setting',{p_password:adminPw,p_key:key,p_value:value}).catch(()=>{});}   // fire-and-forget; only when unlocked
+function syncStarSliders(){const C=byId('slCount'),S=byId('slSize'),H=byId('slShine');if(C){C.value=SCFG.count;S.value=Math.round(SCFG.size*100);H.value=Math.round(SCFG.shine*100);}
+  const vc=byId('vCount'),vs=byId('vSize'),vh=byId('vShine');if(vc){vc.textContent=SCFG.count;vs.textContent=SCFG.size.toFixed(2);vh.textContent=SCFG.shine.toFixed(2);}}
+async function loadSettings(){let s;try{s=await sbRpc('get_app_settings',{});}catch(e){return;}if(!s||typeof s!=='object')return;
+  if(typeof s.snap_autoplay==='string'){setSnapAutoplay(s.snap_autoplay!=='off');syncAutoplayUI();if(current==='snapshot'&&snapView==='story'){if(snapAutoplay()){if(!storyPlaying)playStory();}else pauseStory();}}
+  if(typeof s.stars==='string'){applyStars(s.stars==='on');try{localStorage.setItem('ais-dash-stars',s.stars)}catch(e){}}
+  if(typeof s.star_cfg==='string'){try{const c=JSON.parse(s.star_cfg);Object.assign(SCFG,c);if(window.THREE)applyStarCfg();syncStarSliders();}catch(e){}}}
+if(byId('setUnlock')){
+  byId('setUnlock').onclick=async()=>{const pw=(byId('setPw').value||'').trim();byId('setErr').hidden=true;if(!pw)return;
+    let ok=false;try{ok=await sbRpc('verify_admin_password',{p_password:pw});}catch(e){ok=false;}
+    if(ok){adminPw=pw;closeSettingsGate();showBoard('settings',{unlocked:true});}else{byId('setErr').hidden=false;}};
+  byId('setPw').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();byId('setUnlock').click();}else if(e.key==='Escape')closeSettingsGate();});
+  byId('setGateX').onclick=closeSettingsGate;
+  byId('setGate').addEventListener('click',e=>{if(e.target===byId('setGate'))closeSettingsGate();});   // click the dim to dismiss
+}
 
 /* board rail */
 document.querySelectorAll('.pill').forEach(p=>p.onclick=()=>showBoard(p.dataset.board));
@@ -1606,7 +1646,7 @@ addEventListener('keydown',e=>{if(current!=='snapshot'||snapView!=='story')retur
   addEventListener('keydown',e=>{if(!e.metaKey||!byId('v-snapshot').classList.contains('present'))return;if(e.key==='.'){e.preventDefault();set(s+STEP);}else if(e.key===','){e.preventDefault();set(s-STEP);}});
   apply();})();
 function syncAutoplayUI(){const t=byId('autoplayToggle');if(t)t.classList.toggle('on',snapAutoplay());}
-byId('autoplayToggle').onclick=()=>{const on=!snapAutoplay();setSnapAutoplay(on);syncAutoplayUI();if(current==='snapshot'&&snapView==='story'){if(on){gotoBeat(storyIdx,true);playStory();}else pauseStory();}};
+byId('autoplayToggle').onclick=()=>{const on=!snapAutoplay();setSnapAutoplay(on);saveSetting('snap_autoplay',on?'on':'off');syncAutoplayUI();if(current==='snapshot'&&snapView==='story'){if(on){gotoBeat(storyIdx,true);playStory();}else pauseStory();}};
 syncAutoplayUI();
 /* browser back/forward + deep links: route to the board named in the hash */
 addEventListener('hashchange',()=>{const b=slugBoard[location.hash.slice(1)]||'coverage';if(b!==current)showBoard(b);});
@@ -1651,6 +1691,10 @@ function runEntry(){
    fetch fails/times out, we silently stay on the baked snapshot. The shaping below mirrors
    db/export_snapshot.mjs exactly so live and baked produce the identical __AIS_DATA shape. */
 const SB_URL='https://rfbetrcevtmisknndpgg.supabase.co', SB_KEY='sb_publishable_shin2gZ5-pARRc-cLDd5lQ_YAOacR72';
+async function sbRpc(fn,params){if(!SB_URL||SB_URL.indexOf('http')!==0)return null;
+  const r=await fetch(SB_URL.replace(/\/+$/,'')+'/rest/v1/rpc/'+fn,
+    {method:'POST',headers:{apikey:SB_KEY,Authorization:'Bearer '+SB_KEY,'Content-Type':'application/json'},body:JSON.stringify(params||{})});
+  if(!r.ok)throw new Error('rpc '+fn+' '+r.status);return await r.json();}
 const AREA_MAP={"Arabic Language (MINISTRY)": "Arabic", "Arabic Studies": "Arabic", "Arabic Studies For Non Arabs": "Arabic NA", "Business and Economics": "Humanities", "Business Studies": "Humanities", "Creative Arts": "Arts", "Digital Art and Design": "Arts", "Drama": "Arts", "English": "English", "English (Advanced)": "English", "English (Essential)": "English", "Film TV and Media": "Arts", "Humanities": "Humanities", "Humanities (Essential)": "Humanities", "Islamic Studies": "Islamic", "Islamic Studies (MINISTRY)": "Islamic", "Islamic Studies For Arabs": "Islamic", "Islamic Studies For Non Arabs": "Islamic", "Mathematics": "Mathematics", "Mathematics (Advanced)": "Mathematics", "Mathematics (Essential)": "Mathematics", "Moral Education": "Social Studies", "Moral Education For Arabs": "Social Studies", "Moral Education For Non Arabs": "Social Studies", "Music": "Arts", "Psychology": "Sciences", "QCE Arabic": "Arabic", "QCE Biology": "Sciences", "QCE Business": "Humanities", "QCE Business Studies": "Humanities", "QCE Chemistry": "Sciences", "QCE Drama In Practice": "Arts", "QCE Economics": "Humanities", "QCE Essential English": "English", "QCE Essential Mathematics": "Mathematics", "QCE Film Television and New Media": "Arts", "QCE Film TV and Media": "Arts", "QCE General English": "English", "QCE General Mathematics": "Mathematics", "QCE Mathematical Methods": "Mathematics", "QCE Media Arts In Practice": "Arts", "QCE Music In Practice": "Arts", "QCE Physics": "Sciences", "QCE Psychology": "Sciences", "QCE Science In Practice (BCP)": "Sciences", "QCE Tourism": "Humanities", "QCE Visual Art": "Arts", "QCE Visual Arts In Practice": "Arts", "Science": "Sciences", "Science (Advanced)": "Sciences", "Science (Essential)": "Sciences", "Science In Practice": "Sciences", "Social Studies": "Social Studies", "Social Studies For Arabs": "Social Studies", "Social Studies For Non Arabs": "Social Studies", "Visual Art": "Arts"};
 const AREAS=['Mathematics','English','Sciences','Arabic','Arabic NA','Islamic','Social Studies','Humanities','Arts'];
 const AREA_FALLBACK={Math:'Mathematics',Maths:'Mathematics',Science:'Sciences',Social:'Social Studies',ANA:'Arabic NA',PE:'',Technology:'',Languages:'',CircleTime:'','Kindy (holistic Development)':''};
@@ -1716,7 +1760,7 @@ async function loadLive(){
   }catch(e){/* offline / blocked / timeout -> keep the baked snapshot, no error UI */}
 }
 runEntry();
-loadLive();
+loadLive();loadSettings();
 initRefPanel();
 loadNarrative();
 </script>
