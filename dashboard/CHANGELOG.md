@@ -5,6 +5,13 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.33 . 2026-06-23
+- **Snapshot subheading removed** ("110 lessons observed across 104 teachers…") for a more compact header. Dropped `#snapIntro` and the JS that filled it.
+- **Coverage and Observations headers made congruent with Snapshot.** Both now use the `.snaphead` two-column header: kicker (+ timestamp on Coverage) on the left, title right-aligned to the masthead edge.
+- **Observations restructured:** the page title is now "R3 Observations" (right), the R3 Obs control (with its search box and "Not yet observed" filter) moved into a `.tabsrow` under the header (the same place the Snapshot phase tabs sit), and the **"Back to Coverage" button was removed** (element + handler). The R3 Obs menu, Teacher search and teacher drill-down are unchanged (IDs preserved; verified the menu, search and list still work).
+- Scope: headers across Snapshot + Coverage + Observations. Board content/logic untouched. Verified both themes, no console errors.
+- Rollback: `dash-v0.32`.
+
 ## v0.32 . 2026-06-23
 - **Snapshot header restructured into two columns.** Left: the SNAPSHOT kicker with the timestamp moved underneath it. Right (right-aligned to the masthead edge): the "The June R3 picture." title with the subheading underneath. Tops aligned (`.snaphead` / `.snaphL` / `.snaphR`).
 - **Phase tabs and the Story/Detail toggle now share one row** (`.tabsrow`, space-between): Primary / Secondary / Compare on the left, Story / Detail on the right. The toggle moved out of the header's top-right.

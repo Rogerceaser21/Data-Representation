@@ -539,7 +539,6 @@ body.presenting .mast,body.presenting .themeico{display:none}
       </div>
       <div class="snaphR">
         <h2 class="big">The June <em>R3</em> picture.</h2>
-        <div class="snapsub" id="snapIntro"></div>
       </div>
     </div>
 
@@ -610,12 +609,14 @@ body.presenting .mast,body.presenting .themeico{display:none}
 
   <!-- ============ COVERAGE ============ -->
   <section class="view" id="v-coverage" hidden>
-    <div class="head">
-      <div>
+    <div class="head snaphead">
+      <div class="snaphL">
         <span class="kick"><span class="stripe"></span>Coverage</span>
+        <span class="subtle" id="cov-asof"></span>
+      </div>
+      <div class="snaphR">
         <h2 class="big">Who has been <em>observed</em>, and who has not.</h2>
       </div>
-      <span class="subtle" id="cov-asof"></span>
     </div>
 
     <div class="grid cols-4" id="statgrid"></div>
@@ -651,9 +652,18 @@ body.presenting .mast,body.presenting .themeico{display:none}
   <!-- ============ OBSERVATIONS (was Teacher) ============ -->
   <section class="view" id="v-teacher" hidden>
     <!-- head holds the kick + the active control on ONE line: R3 Obs (hub) or the search (work) -->
-    <div class="head">
-      <div class="obshead">
+    <div class="head snaphead">
+      <div class="snaphL">
         <span class="kick"><span class="stripe"></span>Observations</span>
+      </div>
+      <div class="snaphR">
+        <h2 class="big">R3 Observations</h2>
+      </div>
+    </div>
+
+    <!-- controls row (mirrors the Snapshot tabs row): R3 Obs menu + search + filter -->
+    <div class="tabsrow">
+      <div class="obshead">
         <div class="obsmenuwrap">
           <button class="obsbtn" id="r3ObsBtn">R3 Obs <span class="car">&#9662;</span></button>
           <div class="obsmenu" id="obsMenu" hidden>
@@ -672,7 +682,6 @@ body.presenting .mast,body.presenting .themeico{display:none}
         <div class="search" id="tsearchWrap" hidden><span style="color:var(--ink-faint)">Search</span><input id="tsearch" placeholder="type a name..."></div>
         <button class="flt" id="fltNoobs" hidden>Not yet observed</button>
       </div>
-      <button class="back" id="backBtn">Back to Coverage</button>
     </div>
 
     <!-- teacher list (work / browsing) -->
@@ -743,6 +752,7 @@ body.presenting .mast,body.presenting .themeico{display:none}
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
       <div class="vhist">
+        <div class="vrow"><span class="vtag">v0.33</span><span class="vnote">Headers made consistent across the three boards and tightened. The Snapshot subheading ("110 lessons observed…") was removed for a more compact header. Coverage and Observations now use the same two-column header as Snapshot (kicker + timestamp on the left, title right-aligned). On Observations the R3 Obs control moved to a row under the header (where the Snapshot tabs sit), the page title reads "R3 Observations", and the "Back to Coverage" button was removed.</span></div>
         <div class="vrow"><span class="vtag">v0.32</span><span class="vnote">Snapshot header restructured: the title and subheading are right-aligned beside the SNAPSHOT kicker, the timestamp moved under the kicker on the left, and the phase tabs (Primary / Secondary / Compare) now share one row with the Story / Detail toggle. In Detail, the Insights are split into two side-by-side cards (Strengths and Areas to develop) matching the What is working / Where to focus cards above them.</span></div>
         <div class="vrow"><span class="vtag">v0.31</span><span class="vnote">The sources panel now opens from the RIGHT and pushes the page aside instead of covering it, so you can read the Story and its sources at the same time. The rest of the page is only lightly dimmed (not greyed out) and its markers stay clickable, so you can jump straight from one source to another. The big Story section headers (the phase title and the progress title) are now the AIS navy and centred.</span></div>
         <div class="vrow"><span class="vtag">v0.30</span><span class="vnote">Snapshot Insights now carry their sources. Every summary, bullet and insight shows a small numbered marker; clicking it opens a panel from the left with the supporting lesson quotes (subject, date and progress word) and a link to the locked R3 record, plus a short "how this is counted" note. The wording and the references are read live from Supabase per round (the baked copy is the offline fallback). References never name a teacher. Snapshot only; Coverage and Observations untouched.</span></div>
@@ -781,7 +791,7 @@ body.presenting .mast,body.presenting .themeico{display:none}
 
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.32</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.33</span></span>
   </div>
 </div>
 
@@ -1221,8 +1231,6 @@ function renderDetail(){
 /* dispatcher: Story (animated narrative, default) or Detail (cards) for the selected phase */
 function renderSnapshot(){
   byId('snap-asof').textContent='Snapshot '+D.generated_on;
-  const all=snapAgg('all');
-  byId('snapIntro').textContent=all.lessons+' lessons observed across '+all.teachers+' teachers in the June R3 sweep. Story plays the picture beat by beat; Detail is the full card view.';
   document.querySelectorAll('#viewTabs .vtab').forEach(b=>b.classList.toggle('on',b.dataset.view===snapView));
   document.querySelectorAll('#phaseTabs .ptab').forEach(b=>b.classList.toggle('on',b.dataset.phase===snapPhase));
   const story=snapView==='story';
@@ -1481,7 +1489,6 @@ addEventListener('keydown',e=>{if(current!=='snapshot'||snapView!=='story')retur
 function syncAutoplayUI(){const t=byId('autoplayToggle');if(t)t.classList.toggle('on',snapAutoplay());}
 byId('autoplayToggle').onclick=()=>{const on=!snapAutoplay();setSnapAutoplay(on);syncAutoplayUI();if(current==='snapshot'&&snapView==='story'){if(on){gotoBeat(storyIdx,true);playStory();}else pauseStory();}};
 syncAutoplayUI();
-byId('backBtn').onclick=()=>showBoard('coverage');
 /* browser back/forward + deep links: route to the board named in the hash */
 addEventListener('hashchange',()=>{const b=slugBoard[location.hash.slice(1)]||'coverage';if(b!==current)showBoard(b);});
 byId('r3ObsBtn').onclick=e=>{e.stopPropagation();const open=byId('obsMenu').hidden;setObsMenu(open);if(open)reveal('#obsMenu .obsmi',.05);};
