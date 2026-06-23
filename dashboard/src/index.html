@@ -536,20 +536,24 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
 #autoplayToggle.on .sw::after{left:23px}
 /* ============ PRINT / Save-as-PDF (view-aware; components never split a page) ============ */
 @media print{
-  @page{margin:14mm}
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;transition:none!important}   /* FIX 1: browsers strip background colours in print by default -> force them so bars/dots/swatches/gauges/navy cover all show; kill transitions so bars print at final size */
+  @page{margin:13mm}
   #stars,.mast,.themeico,.printico,.storyctl,.fsctl,.refpanel,.motes,.foot,.tabsrow{display:none!important}
   body{background:#fff!important;padding-right:0!important}
   .wrap{opacity:1!important}
   .view[hidden]{display:none!important}
   /* card views (Detail / Coverage / Observations): each card is a unit -> never split it across a page */
   .panel,.stat,.icard,.bi,.cmpcol,.numtile,.trow,.bl-row,.lj{break-inside:avoid}
-  body:not(.print-story) .grid{display:block!important}
-  body:not(.print-story) .grid>*{margin:0 0 12px!important;break-inside:avoid}
-  /* STORY print: every beat is its own page, forced to final static state (no animations, all built) */
+  /* FIX 3: stat tiles hug their text and wrap in a row (was: full-width block that stretched each card across the page) */
+  body:not(.print-story) .grid.cols-4{display:flex!important;flex-wrap:wrap;gap:10px!important;align-items:flex-start}
+  body:not(.print-story) .grid.cols-4>.stat{flex:0 1 auto;width:auto!important;min-width:120px;max-width:220px}
+  /* STORY print: every beat is its own page, final static state */
   body.print-story #v-snapshot .stage{position:static!important;height:auto!important;min-height:0!important;overflow:visible!important;border:0!important;box-shadow:none!important;background:transparent!important}
-  body.print-story #v-snapshot .beat{position:static!important;inset:auto!important;display:flex!important;min-height:90vh;break-after:page;page-break-after:always;overflow:hidden}
+  /* FIX 2: position:relative (not static) so each slide's absolute image/figure anchors to its OWN slide instead of piling up at the page bottom */
+  body.print-story #v-snapshot .beat{position:relative!important;inset:auto!important;display:flex!important;min-height:92vh;break-after:page;page-break-after:always;overflow:hidden}
   body.print-story #v-snapshot .beat:last-of-type{break-after:auto;page-break-after:auto}
   body.print-story #v-snapshot .beat,body.print-story #v-snapshot .beat *{animation:none!important;opacity:1!important;transform:none!important;filter:none!important;visibility:visible!important}
+  body.print-story #v-snapshot .coverscene{filter:brightness(1.55) saturate(1.05)!important}   /* FIX 2 (cover): keep the cover line-art bright on navy; needs the #v-snapshot id to out-specify the blanket .beat * filter:none above */
   body.print-story #v-snapshot .head,body.print-story #phaseTabs,body.print-story #snapDetail{display:none!important}
 }
 @media(prefers-reduced-motion:reduce){.mote,.dsdot,.twk{animation:none!important}.beat[data-type="cover"].on .coverscene,.beat.on .nmotif,.beat.on img.statefig,.beat.on .bl-row .bm svg path{animation:none!important}.bl-row .bm svg path{stroke-dashoffset:0}}
@@ -808,6 +812,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
       <div class="vhist">
+        <div class="vrow"><span class="vtag">v0.36</span><span class="vnote">Print rendering fixes (print only; the on-screen dashboard is unchanged). Background colours are now forced to print, so the charts, bars, dots, gauges and the navy cover slide are no longer blank on paper. Story slides anchor each slide's picture and figures to their own page instead of piling up at the bottom. The Coverage stat cards hug their text and wrap rather than stretching across the full page. Bars print at their final size.</span></div>
         <div class="vrow"><span class="vtag">v0.35</span><span class="vnote">Coverage corrected + a Print button. Coverage now counts the same way as the Snapshot: the June R3 round only (February dropped) and distinct lessons with co-observations merged, not raw form submissions, so the two boards agree (149 on register, 104 seen in June, 45 not yet seen, 110 lessons). A new Print / Save-as-PDF button (top right) prints the current board: the Story prints every slide one per page; the card views (Detail, Coverage, Observations) print their cards without ever cutting one across a page break, forced to light. Works from the button or Cmd / Ctrl + P.</span></div>
         <div class="vrow"><span class="vtag">v0.34</span><span class="vnote">Snapshot Story polish. The stage is taller, so the two Insights slides (5 and 7) show all three cards without the last one clipping. Present mode now opens in real full screen (not just filling the browser), every beat's text and figures are larger and centred, and an A- / A+ control in the Present bar resizes the Story text live (50 to 200 percent, session only). The Present-mode changes are scoped to Present; the embedded Story, Coverage and Observations are unchanged.</span></div>
         <div class="vrow"><span class="vtag">v0.33</span><span class="vnote">Headers made consistent across the three boards and tightened. The Snapshot subheading ("110 lessons observed…") was removed for a more compact header. Coverage and Observations now use the same two-column header as Snapshot (kicker + timestamp on the left, title right-aligned). On Observations the R3 Obs control moved to a row under the header (where the Snapshot tabs sit), the page title reads "R3 Observations", and the "Back to Coverage" button was removed.</span></div>
@@ -849,7 +854,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
 
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.35</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.36</span></span>
   </div>
 </div>
 
