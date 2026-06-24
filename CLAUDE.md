@@ -223,6 +223,8 @@ Once Igor has weighed a concern and made a call, **execute**; don't re-raise the
 |---|---|
 | This repo | `github.com/Rogerceaser21/Data-Representation` (private) |
 | Live deck | https://rogerceaser21.github.io/Data-Representation/ |
+| **Focus OS (task list)** ||
+| Linked project | `AIS-Data-Dashboard` (id `4617bb5f-91da-4c14-a9dc-3b05aa0de972`) · holds this repo's task list; read/written by the `handoff_load` / `handoff_write` skills. The old `SPEA Dashboard` project was deleted 2026-06-23. |
 | **Lesson Observation** ||
 | Live form | https://rogerceaser21.github.io/Data-Representation/Assets/Lesson%20Observation%20Form/lesson-observation-form.html |
 | Sample locked record | https://rogerceaser21.github.io/Data-Representation/Assets/Lesson%20Observation%20Form/lesson-observation-form.html?id=AIS-OBS-20241112-1430 |
