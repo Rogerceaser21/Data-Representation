@@ -1,0 +1,18 @@
+{
+  "timeZone": "Asia/Dubai",
+  "exceptionLogging": "STACKDRIVER",
+  "runtimeVersion": "V8",
+  "dependencies": {
+    "enabledAdvancedServices": [
+      { "userSymbol": "Docs", "version": "v1", "serviceId": "docs" }
+    ]
+  },
+  "webapp": {
+    "executeAs": "USER_DEPLOYING",
+    "access": "ANYONE_ANONYMOUS"
+  },
+  "oauthScopes": [
+    "https://www.googleapis.com/auth/documents",
+    "https://www.googleapis.com/auth/drive"
+  ]
+}

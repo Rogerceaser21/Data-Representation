@@ -411,6 +411,46 @@ svg{display:block;overflow:visible}
 .vtab{font:inherit;font-size:12px;font-weight:600;color:var(--ink-mid);background:transparent;border:0;border-radius:20px;padding:6px 15px;cursor:pointer;transition:.2s}
 .vtab:hover{color:var(--ink)}
 .vtab.on{background:var(--panel-2);color:var(--ink);box-shadow:0 2px 10px -5px var(--shadow)}
+/* Report Depth (Phase D): the Make-Google-Doc button + the full governance document (also the export source) */
+.repexport{font:inherit;font-size:12px;font-weight:700;color:var(--bg);background:var(--ink);border:0;border-radius:24px;padding:9px 17px;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:7px}
+.repexport:hover{transform:translateY(-1px);box-shadow:0 7px 18px -8px var(--shadow)}
+.repexport:disabled{opacity:.55;cursor:default;transform:none;box-shadow:none}
+.repexport svg{width:14px;height:14px}
+.repexport:disabled{opacity:.5;cursor:default;transform:none;box-shadow:none}
+.reportwrap{position:relative;display:inline-block}
+.repbtn{font:inherit;font-size:12px;font-weight:600;color:var(--ink-mid);background:var(--panel);border:1px solid var(--edge-soft);border-radius:24px;padding:6px 15px;cursor:pointer;display:inline-flex;gap:6px;align-items:center;transition:.2s}
+.repbtn:hover{color:var(--ink)}
+.repbtn.on{background:var(--panel-2);color:var(--ink);box-shadow:0 2px 10px -5px var(--shadow)}
+.rcaret{font-size:10px;opacity:.8}
+.repmenu{position:absolute;right:0;top:calc(100% + 6px);z-index:30;background:var(--panel);border:1px solid var(--edge-soft);border-radius:14px;padding:6px;box-shadow:0 18px 44px -18px var(--shadow);display:flex;flex-direction:column;gap:2px;min-width:188px}
+.repmi{font:inherit;font-size:13px;font-weight:600;color:var(--ink);background:transparent;border:0;border-radius:10px;padding:9px 12px;text-align:left;cursor:pointer;transition:.15s}
+.repmi:hover{background:var(--panel-2)}
+.repmi .sub{display:block;font-size:11px;font-weight:500;color:var(--ink-mid);margin-top:2px}
+.rep-top{display:flex;justify-content:space-between;align-items:flex-start;gap:18px}
+.rep-th{flex:1;min-width:0}
+.rep{max-width:860px;margin:0 auto;padding:10px 4px 44px;color:var(--ink)}
+.rep-kick{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-mid);margin-bottom:2px}
+.rep .big{margin-top:4px}
+.rep-meta{font-size:13px;color:var(--ink-mid);margin-top:8px}
+.rep-scope{font-size:14px;color:var(--ink-mid);margin:6px 0 0}
+.rep-scope-all{margin:16px 0;font-size:15px;color:var(--ink);padding:13px 17px;background:var(--panel);border:1px solid var(--edge-soft);border-radius:14px}
+.rep-method{font-size:13px;line-height:1.6;color:var(--ink-mid);background:var(--panel);border:1px solid var(--edge-soft);border-left:3px solid var(--edge);border-radius:10px;padding:13px 17px;margin-bottom:28px}
+.rep-sec{margin-bottom:36px}
+.rep-h{font-family:var(--display);font-weight:600;font-size:26px;color:var(--ink);margin:0 0 4px;padding-bottom:9px;border-bottom:2px solid var(--edge-soft);letter-spacing:-.01em}
+.rep-grp{margin-top:20px}
+.rep-gh{font-size:15px;font-weight:700;margin:0 0 8px}
+.rep-ev{font-size:12.5px;color:var(--ink-mid);font-style:italic;margin:0 0 6px}
+.rep-sum{font-size:16px;line-height:1.5;color:var(--ink);margin:0 0 12px;font-weight:600}
+.rep-bl{margin:0 0 16px;padding-left:20px}
+.rep-bl li{font-size:14px;line-height:1.55;color:var(--ink);margin-bottom:5px}
+.rep-insh{font-size:12px;font-weight:700;letter-spacing:.04em;margin:0 0 9px}
+.rep-ins{display:flex;flex-direction:column;gap:10px}
+.rep-i{position:relative;padding:12px 16px 12px 46px;background:var(--panel);border:1px solid var(--edge-soft);border-radius:12px}
+.rep-i .rin{position:absolute;left:16px;top:10px;font-size:21px;font-weight:700;font-family:var(--display);line-height:1}
+.rep-i p{margin:0;font-size:14px;line-height:1.55;color:var(--ink)}
+.rep-foot{font-size:12px;color:var(--ink-mid);border-top:1px solid var(--edge-soft);padding-top:14px;margin-top:8px}
+.repmsg{font-size:12px;color:var(--ink-mid);margin-left:8px}
+.repmsg.warn{color:var(--r5)}
 #snapStory{margin-top:14px}
 .stage{position:relative;border:1px solid var(--edge);border-radius:22px;background:var(--panel);backdrop-filter:blur(7px);box-shadow:0 30px 70px -50px var(--shadow);overflow:hidden;min-height:clamp(460px,72vh,720px)}
 .beat{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:clamp(22px,3.4vw,46px);overflow:hidden;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .6s ease,visibility .6s}
@@ -628,12 +668,22 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
         <button class="vtab on" data-view="story">Story</button>
         <button class="vtab" data-view="detail">Detail</button>
       </div>
+      <div class="reportwrap" id="reportWrap">
+        <button class="repbtn" id="reportBtn" type="button" aria-haspopup="true" aria-expanded="false">Report <span class="rcaret">&#9662;</span></button>
+        <div class="repmenu" id="reportMenu" hidden>
+          <button class="repmi" type="button" data-report="simple">Simple<span class="sub">Concise governance summary</span></button>
+          <button class="repmi" type="button" data-report="indepth">In Depth<span class="sub">Full evidence report</span></button>
+        </div>
+      </div>
     </div>
 
     <!-- STORY view (animated narrative, default) -->
     <div id="snapStory">
       <div class="stage" id="storyStage"></div>
     </div>
+
+    <!-- REPORT view (Report Depth: the full governance document; this is ALSO the Google Doc export source) -->
+    <div id="snapReport" hidden></div>
 
     <!-- DETAIL view (the v1 cards, one click away) -->
     <div id="snapDetail" hidden>
@@ -1179,31 +1229,14 @@ function covAgg(){
   return {reg,observed,not_observed:reg-observed,lessons,hist,spread,noobs};
 }
 /* narrative synthesis of the round's free-text evidence (strengths + areas to develop), per phase.
-   BAKED FALLBACK: loadNarrative() swaps this for the round-scoped copy in Supabase when reachable;
-   the Phase A references (REF_INDEX) drive the inline "Insights . sources" markers either way. */
-let NARR={
-  primary_kindy:{
-    strengths:{evidence:'Drawn from the written evidence on 42 of 47 lessons.',
-      summary:'Calm, well-routined classrooms with strong relationships and visible scaffolds, so children know exactly what to do.',
-      bullets:['Routines, relationships and behaviour for learning are consistently strong','Clear instructions; children know what is expected and follow it','Differentiation and scaffolds in place (sentence stems, helping words, checklists)','Purposeful questioning and turn-and-talk dialogue','Activating prior knowledge and modelling with gradual release'],
-      insights:['Self-assessment is the quiet star. Where children used checklists or self-monitoring they paced themselves and progress was visible to the inspector; it shows up in only a handful of classes, so it is a small, copyable practice with room to spread.','The strength is consistency, not peaks. Almost every lesson clears a solid bar, with no lesson rated Very Weak and only three at Weak, so quality here is broad and dependable rather than reliant on a few stars.','Establishing each child’s starting point is already a strength in Science, and it is the single most useful move to export to the subjects where it is the most common gap.']},
-    develop:{evidence:'Drawn from the written evidence on 40 of 47 lessons.',
-      summary:'Progress is capped at the top more than it is missing at the bottom; the dominant need is stretching the most able.',
-      bullets:['Extend and challenge the more able; too many capable children repeat what they can already do','Move beyond one task for all; undifferentiated tasks limit progress for some groups','Intervene earlier and more deliberately with the middle and lower groups','Reduce teacher talk in places and hand more of the thinking to children','Reclaim lost time at set-up and for early finishers'],
-      insights:['The ceiling, not the floor, is the issue. Challenge for the most able is the dominant development note (about 20 of the 40), while almost none mention behaviour or engagement (just one), so moving Acceptable to Good here is about raising the top, not rescuing the bottom.','One root cause links several fixes: a check for understanding surfaces a gap, then the whole class receives the same next step anyway. The shift needed is reactive teaching becoming responsive, not more planning.','Some Acceptable ratings reflect lesson type, not teaching. Assessment-style lessons recur with "hard to see progress in a single lesson", so the headline average slightly understates the teaching on show.']}
-  },
-  secondary:{
-    strengths:{evidence:'Drawn from the written evidence on all 62 lessons.',
-      summary:'Collaboration, dialogue and higher-order questioning, with students who can talk confidently about their own learning.',
-      bullets:['Collaboration, dialogue and discussion (turn-and-talk, peer review)','High engagement and on-task investment','Effective, higher-order questioning','Clear instructions and expectations','Individualised goals with visible next steps'],
-      insights:['Secondary has a real top end: six lessons reached Outstanding for progress, three times Primary\'s two, so the phase has exemplars to learn from in-house rather than from outside.','Students can articulate their own learning because individualised goals and next steps recur as a strength; this is the foundation any group-work fix can build on.','The strengths are remarkably consistent across very different subjects (Islamic, English, Arts and Science all share clarity, questioning and engagement), so the phase has a shared professional language to build on.']},
-    develop:{evidence:'Drawn from the written evidence on 56 of 62 lessons.',
-      summary:'More polarised than Primary; a leading fix is giving group work real structure and accountability.',
-      bullets:['Give group work structure, roles and accountability (a leading fix)','Make student-to-student dialogue purposeful, not just present','Stretch high-achievers further, especially in Islamic and Arabic','Targeted intervention for a small group of lower-attainers','Make progress visible and evidenced in books and within the lesson'],
-      insights:['Group work sits on both sides of the ledger at once: collaboration and dialogue lead the strengths (about 23 of the 62 lessons), yet giving group work clear roles and accountability is a leading fix. The swing factor is structure, not collaboration, so one planning routine would move many lessons.','The challenge gap runs in opposite directions by subject: Islamic and Arabic are asked to stretch the top while English, Humanities and Science are asked to lift the tail, so a single school-wide differentiation target would miss both.','The weak end is short and specific, not diffuse. There are four Very Weak progress lessons, and each is a single lesson that two inspectors independently both rated Very Weak, so the tail is a concrete, fixable shortlist rather than a broad quality problem.']}
-  },
-  compare:['Same average, different shape. Both phases land on Good (Primary and Kindy 3.2, Secondary 3.2), but Secondary is polarised, with six Outstanding lessons and four Very Weak, while Primary and Kindy has none rated Very Weak and clusters tightly in the Good to Acceptable band. Read the averages alone and they look identical; read the spread and they call for different moves.','The same ceiling effect appears in both phases: the calmest, most individualised lessons are the ones where the able are not extended or progress is hardest to see. Across both, the biggest single development theme is challenge for the most able, not remediation, which points to raising the top rather than rescuing the bottom.','Effort should land in different places. Primary and Kindy will gain most from a shared "plan from each child’s starting point" and self-assessment routine; Secondary will gain most from a group-work structure routine and from closing a short, concrete list of weak-progress lessons. Neither needs a behaviour or engagement drive, both already score those as strengths.']
-};
+   SINGLE SOURCE OF TRUTH = Supabase (narrative + narrative_ref). The page no longer hand-types this:
+   the publish step (db/export_snapshot.mjs) bakes the round's get_narrative payload into data.js as
+   window.__AIS_NARR_ITEMS, and applyNarrItems() below builds NARR + REF_INDEX from it at load (so the
+   in-page copy can only be as stale as the last publish, exactly like the numbers). loadNarrative()
+   then upgrades to the LIVE copy on each load. This MIN skeleton is only a last-ditch shape guard so
+   render never throws if data.js somehow lacks the baked items; it is immediately overwritten. */
+const MIN_SEC=()=>({evidence:'',summary:'',bullets:[],insights:[]});
+let NARR={primary_kindy:{strengths:MIN_SEC(),develop:MIN_SEC()},secondary:{strengths:MIN_SEC(),develop:MIN_SEC()},compare:[]};
 /* ---- Insights . sources (#6/#7): inline reference markers + left slide-out panel ----
    REF_INDEX (slug -> {text,kind,method,refs[]}) comes from Supabase via loadNarrative(); empty
    until then, so markers are pure progressive enhancement (no Supabase -> no markers, baked text). */
@@ -1247,6 +1280,16 @@ function buildNarrFromItems(items){try{
   const okSec=ss=>ss&&ss.summary&&ss.evidence&&ss.bullets.length===5&&ss.insights.length===3;
   const ok=okSec(n.primary_kindy.strengths)&&okSec(n.primary_kindy.develop)&&okSec(n.secondary.strengths)&&okSec(n.secondary.develop)&&n.compare.filter(Boolean).length===3;
   return {ok,narr:n};}catch(e){return {ok:false};}}
+/* shared by the baked load (synchronously, just below) and the live upgrade (loadNarrative): turn the
+   flat get_narrative items into REF_INDEX (slug -> {text,kind,method,refs}) + NARR. Returns true if applied. */
+function applyNarrItems(items){if(!Array.isArray(items)||!items.length)return false;
+  const idx={};for(const it of items)idx[it.slug]={text:it.text,kind:it.kind,method:it.method,refs:Array.isArray(it.refs)?it.refs:[]};
+  REF_INDEX=idx;
+  const built=buildNarrFromItems(items);if(built.ok)NARR=built.narr;
+  return true;}
+/* baked fallback from data.js (window.__AIS_NARR_ITEMS), applied at load so the insight text AND the
+   reference markers are present on first paint and offline; loadNarrative() upgrades to live after. */
+try{applyNarrItems((typeof window!=='undefined'&&window.__AIS_NARR_ITEMS)||[]);}catch(e){}
 function reRenderSnapshotKeepPos(){if(current!=='snapshot')return;
   if(snapView!=='story'){renderDetail();return;}
   const i=storyIdx,playing=storyPlaying;renderStory();pauseStory();gotoBeat(i,false);if(playing&&snapAutoplay())playStory();}
@@ -1256,16 +1299,14 @@ async function loadNarrative(){if(!SB_URL||SB_URL.indexOf('http')!==0)return;
     const r=await fetch(SB_URL.replace(/\/+$/,'')+'/rest/v1/rpc/get_narrative',
       {method:'POST',headers:{apikey:SB_KEY,Authorization:'Bearer '+SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({p_round:SNAP_ROUND}),signal:ctrl.signal});
     clearTimeout(to);if(!r.ok)return;
-    const items=await r.json();if(!Array.isArray(items)||!items.length)return;
-    const idx={};for(const it of items)idx[it.slug]={text:it.text,kind:it.kind,method:it.method,refs:Array.isArray(it.refs)?it.refs:[]};
-    REF_INDEX=idx;
-    const built=buildNarrFromItems(items);if(built.ok)NARR=built.narr;
+    const items=await r.json();if(!applyNarrItems(items))return;
     if(current==='snapshot')reRenderSnapshotKeepPos();
   }catch(e){/* offline / blocked / timeout -> keep baked NARR, no markers, no error UI */}}
 const I_CHECK='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.6l3.4 3.4L13 4.6"/></svg>';
 const I_ARROW='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11L11 5M6.2 5H11v4.8"/></svg>';
 let snapPhase='primary_kindy';
 let snapView='story';   // 'story' (animated narrative, default) | 'detail' (the v1 cards)
+let snapReport=null;    // null = live snapshot (Story/Detail); 'simple' | 'indepth' = a report opened from the Report menu
 let snapStarted=false;  // becomes true once the entry title-card has dissolved, so the story plays in view, not behind the splash
 let snapReady=false;   // snapAgg uses resolveArea (a const defined lower in the file); gate the pre-init applyTheme render until runEntry, after that const exists
 function statTile(c){const d=document.createElement('div');d.className='panel stat'+(c.cls?' '+c.cls:'');
@@ -1337,15 +1378,111 @@ function renderDetail(){
   if(compare)renderCompare();else renderPhase(snapPhase);
   applyCounts(byId('snapDetail'));
 }
-/* dispatcher: Story (animated narrative, default) or Detail (cards) for the selected phase */
+/* dispatcher: the live snapshot (Story or Detail) OR a Report (Simple | In Depth) opened from the
+   Report menu. snapReport=null -> live snapshot; Story/Detail return from a report to the live view. */
 function renderSnapshot(){
   byId('snap-asof').textContent='Snapshot '+D.generated_on;
-  document.querySelectorAll('#viewTabs .vtab').forEach(b=>b.classList.toggle('on',b.dataset.view===snapView));
+  const inReport=!!snapReport;
+  document.querySelectorAll('#viewTabs .vtab').forEach(b=>b.classList.toggle('on',!inReport&&b.dataset.view===snapView));
   document.querySelectorAll('#phaseTabs .ptab').forEach(b=>b.classList.toggle('on',b.dataset.phase===snapPhase));
+  byId('reportBtn').classList.toggle('on',inReport);
+  // a Report is one full document, all phases at once -> hide the phase tabs + story controls + the board header (the report carries its own title); Story/Detail stay so you can go back
+  byId('phaseTabs').hidden=inReport;
+  const sh=byId('v-snapshot').querySelector('.snaphead');if(sh)sh.hidden=inReport;
+  byId('snapReport').hidden=!inReport;
+  if(inReport){pauseStory();byId('snapStory').hidden=true;byId('snapDetail').hidden=true;byId('storyCtl').hidden=true;
+    if(snapReport==='indepth')renderInDepth();else renderSimpleReport();return;}
   const story=snapView==='story';
   byId('snapStory').hidden=!story;byId('snapDetail').hidden=story;byId('storyCtl').hidden=!story;   // controls live in the tabs row now -> hide them on the Detail view
   if(story)renderStory();else{pauseStory();renderDetail();}
 }
+/* SIMPLE report: the concise governance document, all phases in one scroll. SAME wording + references
+   as the live snapshot (NARR + REF_INDEX), laid out as a report and used verbatim as the Google Doc
+   export source. References reuse the existing right-side panel on screen (refMark -> openRefs). */
+function renderSimpleReport(){
+  const host=byId('snapReport');if(!host)return;const all=snapAgg('all');
+  const scope=a=>`${a.lessons} lessons . ${a.teachers} teachers . average progress <b style="color:${colOf(a.avgBest)}">${esc(wordOf(a.avgBest))}</b>${a.avgBest!=null?' ('+a.avgBest.toFixed(1)+' of 6)':''}`;
+  const grp=(phase,section,label,N2,colVar)=>`<div class="rep-grp">
+      <h4 class="rep-gh" style="color:${colVar}">${label}</h4>
+      <p class="rep-ev">${esc(N2.evidence)}${refMark(navSlug(phase,section,'evidence'))}</p>
+      <p class="rep-sum">${esc(N2.summary)}${refMark(navSlug(phase,section,'summary'))}</p>
+      <ul class="rep-bl">${N2.bullets.map((b,i)=>`<li>${esc(b)}${refMark(navSlug(phase,section,'bullet',i))}</li>`).join('')}</ul>
+      <div class="rep-insh" style="color:${colVar}">Insights . ${section==='strengths'?'Strengths':'Areas to develop'}</div>
+      <div class="rep-ins">${N2.insights.map((t,i)=>`<div class="rep-i"><span class="rin" style="color:${colVar}">${i+1}</span><p>${esc(t)}${refMark(navSlug(phase,section,'insight',i))}</p></div>`).join('')}</div>
+    </div>`;
+  const sec=phase=>{const a=snapAgg(phase),N=NARR[phase];return `<section class="rep-sec">
+      <h3 class="rep-h">${esc(PHASE_LABEL[phase])}</h3>
+      <div class="rep-scope">${scope(a)}</div>
+      ${grp(phase,'strengths','What is working',N.strengths,'var(--g)')}
+      ${grp(phase,'develop','Where to focus next',N.develop,'var(--r5)')}
+    </section>`;};
+  const cmp=`<section class="rep-sec"><h3 class="rep-h">Primary &amp; Kindy compared with Secondary</h3>
+      <div class="rep-ins">${NARR.compare.map((t,i)=>`<div class="rep-i"><span class="rin" style="color:var(--y)">${i+1}</span><p>${esc(t)}${refMark('cmp_'+i)}</p></div>`).join('')}</div></section>`;
+  host.innerHTML=`<div class="rep">
+    <div class="rep-top"><div class="rep-th"><div class="rep-kick">Governance report . Simple</div><h2 class="big">The June <em>R3</em> picture.</h2>
+      <div class="rep-meta">AIS Sharjah . ${esc(SNAP_ROUND)} . generated ${esc(D.generated_on)}</div></div>${exportBtnHTML()}</div>
+    <div class="rep-scope rep-scope-all">${scope(all)}</div>
+    <div class="rep-method"><b>How these are counted.</b> Average progress is the best (highest) progress rating recorded for each teacher, then averaged across teachers. A lesson observed by two inspectors is counted once, with the stronger evidence kept. Scope is the ${esc(SNAP_ROUND)} round only. Each numbered marker opens the supporting evidence; identifying teacher details are withheld.</div>
+    ${sec('primary_kindy')}
+    ${sec('secondary')}
+    ${cmp}
+    <div class="rep-foot">References cite the locked R3 record for each lesson. Identifying teacher details are withheld.</div>
+  </div>`;
+  wireExport();
+}
+/* IN DEPTH report: button + placeholder only for now. The fuller report and its Supabase-stored data
+   are defined and built together next (Igor). The export button is the entry point, disabled until built. */
+function renderInDepth(){
+  const host=byId('snapReport');if(!host)return;
+  host.innerHTML=`<div class="rep">
+    <div class="rep-top"><div class="rep-th"><div class="rep-kick">Governance report . In Depth</div><h2 class="big">In Depth report</h2>
+      <div class="rep-meta">AIS Sharjah . ${esc(SNAP_ROUND)}</div></div>${exportBtnHTML(true)}</div>
+    <div class="rep-method"><b>Not built yet.</b> The In Depth report and its data (stored in Supabase) are defined and added next. This is its place in the dashboard; the export button above is its entry point.</div>
+  </div>`;
+  wireExport();
+}
+/* the Make Google Doc button, rendered inside each report's header (one per report); disabled when the
+   report is not exportable yet (In Depth) */
+function exportBtnHTML(disabled){return `<button class="repexport" id="repExport" type="button"${disabled?' disabled title="Available once the In Depth report is built"':''}><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M4.5 6.5L8 10l3.5-3.5M3 13h10"/></svg>Make Google Doc</button>`;}
+function wireExport(){const b=byId('repExport');if(b&&!b.disabled)b.onclick=exportDoc;}
+/* ---- Report Depth: export to a real Google Doc (Phase D, answer 1=A) ----
+   Built from the LIVE get_narrative payload (NOT the baked fallback) so the governance artifact is
+   never stale; if Supabase is unreachable at export time we BLOCK with a calm note (no stale Doc).
+   A small Apps Script web app (DOC_EXPORT_URL, deploy as admin.user) builds the Doc and returns its URL.
+   No password gate here by design: access will be Google SSO + roles later (Igor, answer 3=no gate). */
+const DOC_EXPORT_URL='https://script.google.com/macros/s/AKfycbxyU02PN9ZdOzVW45XaiL_4lsvU_FqtDy9f_kEtv7sVuMzVmNQW3Oe2w7TBrvtZtO1j/exec';   // Apps Script Google Doc builder (admin.user), deployed 2026-06-24
+const R3_VIEWER_BASE='https://rogerceaser21.github.io/Data-Representation/Assets/R3/r3-record.html';
+function repStatus(msg,kind){const btn=byId('repExport');if(!btn)return;let n=byId('repExportMsg');
+  if(!n){n=document.createElement('span');n.id='repExportMsg';n.className='repmsg';btn.insertAdjacentElement('afterend',n);}
+  n.textContent=msg||'';n.className='repmsg'+(kind?' '+kind:'');}
+async function fetchLiveNarrative(){if(!SB_URL||SB_URL.indexOf('http')!==0)return null;
+  try{const c=new AbortController(),to=setTimeout(()=>c.abort(),8000);
+    const r=await fetch(SB_URL.replace(/\/+$/,'')+'/rest/v1/rpc/get_narrative',{method:'POST',headers:{apikey:SB_KEY,Authorization:'Bearer '+SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({p_round:SNAP_ROUND}),signal:c.signal});
+    clearTimeout(to);if(!r.ok)return null;const items=await r.json();return (Array.isArray(items)&&items.length)?items:null;}catch(e){return null;}}
+function buildDocModel(items){const bySlug={};items.forEach(it=>bySlug[it.slug]=it);
+  const refOf=r=>({area:r.area||r.subject||'',date:r.observed_on||'',progress:SEAS_WORD[r.progress]||'',quote:r.quote||'',
+    url:(r.record_id&&r.record_token)?(R3_VIEWER_BASE+'?id='+encodeURIComponent(r.record_id)+'&token='+encodeURIComponent(r.record_token)):''});
+  const claim=slug=>{const e=bySlug[slug];return e?{text:e.text,refs:(e.refs||[]).map(refOf)}:null;};
+  const sline=a=>`${a.lessons} lessons, ${a.teachers} teachers, average progress ${wordOf(a.avgBest)}${a.avgBest!=null?' ('+a.avgBest.toFixed(1)+' of 6)':''}`;
+  const grp=(phase,section)=>({evidence:claim(navSlug(phase,section,'evidence')),summary:claim(navSlug(phase,section,'summary')),
+    bullets:[0,1,2,3,4].map(i=>claim(navSlug(phase,section,'bullet',i))).filter(Boolean),
+    insights:[0,1,2].map(i=>claim(navSlug(phase,section,'insight',i))).filter(Boolean)});
+  const phaseSec=phase=>({label:PHASE_LABEL[phase],scope:sline(snapAgg(phase)),strengths:grp(phase,'strengths'),develop:grp(phase,'develop')});
+  return {round:SNAP_ROUND,generated_on:D.generated_on,scope:sline(snapAgg('all')),
+    method:'Average progress is the best (highest) progress rating recorded for each teacher, then averaged across teachers. A lesson observed by two inspectors is counted once, with the stronger evidence kept. Scope is the '+SNAP_ROUND+' round only.',
+    phases:[phaseSec('primary_kindy'),phaseSec('secondary')],compare:[0,1,2].map(i=>claim('cmp_'+i)).filter(Boolean)};}
+async function exportDoc(){const btn=byId('repExport');if(!btn||btn.disabled)return;
+  if(snapReport!=='simple')return;   // In Depth not built yet; its export is disabled
+  btn.disabled=true;repStatus('Building the live report...');
+  const items=await fetchLiveNarrative();
+  if(!items){repStatus('Could not reach the live data. Reconnect to export.','warn');btn.disabled=false;return;}
+  if(!DOC_EXPORT_URL){repStatus('Export endpoint not configured yet.','warn');btn.disabled=false;return;}
+  try{const r=await fetch(DOC_EXPORT_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(buildDocModel(items))});
+    const out=await r.json();
+    if(out&&out.url){repStatus('');window.open(out.url,'_blank','noopener');}
+    else repStatus('Export did not complete. Try again in a moment.','warn');
+  }catch(e){repStatus('Export did not complete. Try again in a moment.','warn');}
+  btn.disabled=false;}
 function applyCounts(scope){if(!scope||!window.gsap)return;scope.querySelectorAll('[data-to]').forEach(n=>{if(n.offsetParent!==null)countUp(n,+n.dataset.to,1.1);});}
 function snapReveal(){reveal('#v-snapshot .head',0);reveal('#phaseTabs',0);}
 
@@ -1632,8 +1769,13 @@ function printRestore(){
 }
 addEventListener('beforeprint',printPrep);addEventListener('afterprint',printRestore);
 byId('printFloat').onclick=()=>window.print();
-document.querySelectorAll('#viewTabs .vtab').forEach(b=>b.onclick=()=>{snapView=b.dataset.view;renderSnapshot();reveal('#'+(snapView==='story'?'snapStory':'snapDetail'),0);});
+document.querySelectorAll('#viewTabs .vtab').forEach(b=>b.onclick=()=>{snapReport=null;snapView=b.dataset.view;renderSnapshot();reveal('#'+(snapView==='story'?'snapStory':'snapDetail'),0);});   // Story/Detail return from a report to the live snapshot
 document.querySelectorAll('#phaseTabs .ptab').forEach(b=>b.onclick=()=>{snapPhase=b.dataset.phase;renderSnapshot();});
+/* Report menu: one button -> Simple | In Depth */
+function setReportMenu(open){const m=byId('reportMenu'),b=byId('reportBtn');if(!m)return;m.hidden=!open;b.setAttribute('aria-expanded',open?'true':'false');}
+byId('reportBtn').onclick=e=>{e.stopPropagation();setReportMenu(byId('reportMenu').hidden);};
+document.querySelectorAll('#reportMenu .repmi').forEach(b=>b.onclick=()=>{snapReport=b.dataset.report;setReportMenu(false);renderSnapshot();reveal('#snapReport',0);});
+document.addEventListener('click',e=>{if(byId('reportMenu')&&!byId('reportMenu').hidden&&!byId('reportWrap').contains(e.target))setReportMenu(false);});
 byId('sPlay').onclick=toggleStoryPlay;byId('sPrev').onclick=()=>stepStory(-1);byId('sNext').onclick=()=>stepStory(1);byId('sPresent').onclick=togglePresent;
 addEventListener('keydown',e=>{if(current!=='snapshot'||snapView!=='story')return;
   if(e.key==='ArrowRight')stepStory(1);else if(e.key==='ArrowLeft')stepStory(-1);else if(e.key===' '){e.preventDefault();toggleStoryPlay();}else if(e.key==='Escape')exitPresent();});
