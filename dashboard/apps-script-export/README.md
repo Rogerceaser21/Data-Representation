@@ -38,3 +38,6 @@ Response: `{ ok:true, url:"<google doc url>" }` or `{ ok:false, error }`.
 - deploymentId: `AKfycbxyU02PN9ZdOzVW45XaiL_4lsvU_FqtDy9f_kEtv7sVuMzVmNQW3Oe2w7TBrvtZtO1j`
 - /exec: `https://script.google.com/macros/s/AKfycbxyU02PN9ZdOzVW45XaiL_4lsvU_FqtDy9f_kEtv7sVuMzVmNQW3Oe2w7TBrvtZtO1j/exec`
 - Pending: admin.user runs `authorize` in the editor once (grants Docs + Drive), then this URL goes in `DOC_EXPORT_URL` in `dashboard/src/index.html`.
+
+## 2026-06-25 . v3 redesign (redeploy @8)
+Doc builder rebuilt to the approved AIS-branded concept: Playfair Display headings + Lato body, AIS navy + gold accent, green/terracotta only on section labels, one consistent bullet style, a navy cover image (Docs API `insertInlineImage` by URL, no UrlFetchApp scope), a stat callout + insight cards (1-cell tables), first tab renamed "Report" (`updateDocumentTabProperties`). `buildSimple` = cards; `buildInDepth` = cover + Contents + sections. References tab + cross-tab links unchanged.
