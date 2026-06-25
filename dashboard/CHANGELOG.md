@@ -5,6 +5,12 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.44 . 2026-06-25
+- **In Depth now opens with an executive summary ("In summary").** A short lead gives the round's picture and the shape behind the average: of the lessons with a progress rating, about half are Good or better, about a third sit at Acceptable, and about one in ten are below; Acceptable is the biggest movable group. Then four headline points, each backed by its evidence behind a marker: the most consistent strength, the main development focus (the ceiling, not the floor), the Primary versus Secondary contrast, and the move to Good by phase.
+- Stored round-scoped in Supabase (`narrative` `section='summary'`, phase `all`): the lead has no marker (it is the headline numbers, like the scope line); the four points carry their references. Front-end builds `SUMMARY` in `applyNarrItems` + renders `execSection()` at the top of In Depth.
+- Scope: In Depth report ONLY. Verified in preview: the section sits above the phases, the lead reads the distribution, the four points open the sources panel, no console errors.
+- Rollback: `dash-v0.43`.
+
 ## v0.43 . 2026-06-25
 - **The two governor summaries in the In Depth coaching section now carry their own evidence marker.** They were the only claims in the section without one. Each marker opens a representative, balanced set of supporting lessons (a round-robin across that phase's coaching directions, deduped to lessons, up to 12), so the summary is backed like every other statement. New `narrative_ref` rows for `pk_coach_sum` / `secondary_coach_sum`; the front-end renders the marker on `.rec-gov`.
 - Scope: In Depth coaching section only. Verified in preview: both summaries show a 12-source marker that opens the panel, no console errors.
