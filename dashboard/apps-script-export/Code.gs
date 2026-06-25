@@ -1,20 +1,22 @@
 /**
  * AIS Observation Dashboard . Google Doc export (Phase D, #6/#7 Report Depth).
  *
- * Receives the Snapshot "Report Depth" model as JSON (sent as text/plain so the browser makes a
- * simple cross-origin request with no CORS preflight, the same pattern the R3 form uses), builds a
- * formatted Google Doc that mirrors the on-screen report, and returns { ok, url }.
+ * Receives the Snapshot report model as JSON (text/plain so the browser makes a simple cross-origin
+ * request with no CORS preflight, the same pattern the R3 form uses) and builds a formatted Google Doc
+ * that mirrors the on-screen report, returning { ok, url }.
  *
- * Layout: a clean MAIN tab (no inline quotes) where every claim ends with a small numbered marker,
- * plus a real REFERENCES tab holding the evidence; each marker links to the References tab.
- * The main tab is written with DocumentApp (easy styling). The References tab is created AND filled
- * with the Docs API (DocumentApp can neither create a tab nor write into a non-first tab). If tab
- * creation is unavailable, references fall back to a section at the end of the main tab (same
- * numbering), so the export never fails.
+ * Two layouts (model.kind):
+ *   'simple'  -> a "pretty" card-styled report on a white page (each section in a 1-cell table card),
+ *               with the navy cover image on page 1.
+ *   'indepth' -> a formal report: cover image, a Contents list, then flowing sections with headings
+ *               (In summary -> phases -> compared -> How to move Acceptable to Good), incl. coaching.
+ *
+ * Both: a navy cover image at the top (inserted by URL via the Docs API, no UrlFetchApp scope), a clean
+ * MAIN tab where every claim ends with a numbered marker, and a real REFERENCES tab holding the evidence
+ * with each marker linked to it. If tab creation is unavailable, references fall back to a section at the
+ * end of the main tab. References never name a teacher (the model omits names); each cites the R3 record.
  *
  * Deploy: web app, "Execute as: Me (admin.user@ais.ae)", "Who has access: Anyone".
- * No password gate by design (Igor): dashboard access will be Google SSO + roles. No secrets here.
- * References never name a teacher (the model omits names); each cites the locked R3 record link.
  */
 
 function doPost(e) {
@@ -26,7 +28,6 @@ function doPost(e) {
   }
 }
 
-// health check / smoke test in a browser
 function doGet() {
   return json({ ok: true, service: 'AIS dashboard Google Doc export' });
 }
@@ -36,24 +37,27 @@ function json(o) {
 }
 
 var GREY = '#6b7280', INK = '#1f2937', LINK = '#1257FF', NAVY = '#1c2740', GREEN = '#2e7d4f', TERRA = '#c0563b';
+var CARD_FILL = '#FBFAF8', CARD_FILL_2 = '#F4F1EA', CARD_BORDER = '#E3DFD5';
+var H1 = DocumentApp.ParagraphHeading.HEADING1, H2 = DocumentApp.ParagraphHeading.HEADING2, TITLE = DocumentApp.ParagraphHeading.TITLE;
 
 function buildDoc(model) {
-  var doc = DocumentApp.create('AIS R3 governance report . ' + (model.round || ''));
+  var label = (model.kind === 'indepth') ? 'In Depth' : 'Simple';
+  var doc = DocumentApp.create('AIS R3 governance report . ' + label + ' . ' + (model.round || ''));
   var docId = doc.getId();
 
-  // 1) create the References tab via the Docs API (DocumentApp cannot create tabs)
+  // References tab via the Docs API (DocumentApp cannot create tabs)
   var refTabId = null;
   try {
     var resp = Docs.Documents.batchUpdate({ requests: [{ addDocumentTab: { tabProperties: { title: 'References' } } }] }, docId);
     refTabId = resp.replies[0].addDocumentTab.tabProperties.tabId;
-  } catch (e) { refTabId = null; }   // fall back to an in-doc References section
+  } catch (e) { refTabId = null; }
   var tabUrl = 'https://docs.google.com/document/d/' + docId + '/edit' + (refTabId ? ('?tab=' + refTabId) : '');
 
-  // 2) main report via DocumentApp (first/active tab)
   doc = DocumentApp.openById(docId);
-  var mainBody = doc.getTabs()[0].asDocumentTab().getBody();
+  var firstTab = doc.getTabs()[0];
+  var firstTabId = firstTab.getId();
+  var body = firstTab.asDocumentTab().getBody();
 
-  // running marker counter + the reference entries we collect while writing the main report
   var ctr = { n: 0 }, refEntries = [];
   function appendMarker(para, claim) {
     if (!claim || !claim.refs || !claim.refs.length) return;
@@ -63,68 +67,135 @@ function buildDoc(model) {
     var start = te.getText().length;
     te.appendText(' [' + ctr.n + ']');
     var end = te.getText().length - 1;
-    if (refTabId) te.setLinkUrl(start, end, tabUrl);   // link the marker to the References tab
+    if (refTabId) te.setLinkUrl(start, end, tabUrl);
     te.setForegroundColor(start, end, LINK);
   }
 
-  mainBody.appendParagraph('GOVERNANCE REPORT  .  SIMPLE').editAsText().setBold(true).setForegroundColor(GREY).setFontSize(8.5);
-  mainBody.appendParagraph('The June R3 picture').setHeading(DocumentApp.ParagraphHeading.TITLE);
-  mainBody.appendParagraph('AIS Sharjah  .  ' + (model.round || '') + '  .  generated ' + (model.generated_on || '')).editAsText().setForegroundColor(GREY).setFontSize(10);
-  if (model.scope) mainBody.appendParagraph(model.scope).editAsText().setBold(true);
-  if (model.method) mainBody.appendParagraph('How these are counted. ' + model.method).editAsText().setItalic(true).setForegroundColor(GREY).setFontSize(10);
-  mainBody.appendHorizontalRule();
+  if (model.kind === 'indepth') buildInDepth(body, model, appendMarker);
+  else buildSimple(body, model, appendMarker);
 
-  (model.phases || []).forEach(function (ph) {
-    mainBody.appendParagraph(ph.label || '').setHeading(DocumentApp.ParagraphHeading.HEADING1).editAsText().setForegroundColor(NAVY);
-    if (ph.scope) mainBody.appendParagraph(ph.scope).editAsText().setForegroundColor(GREY).setFontSize(10);
-    groupOut(mainBody, 'What is working', 'Strengths', ph.strengths, GREEN, appendMarker);
-    groupOut(mainBody, 'Where to focus next', 'Areas to develop', ph.develop, TERRA, appendMarker);
-  });
-
-  if (model.compare && model.compare.length) {
-    mainBody.appendParagraph('Primary & Kindy compared with Secondary').setHeading(DocumentApp.ParagraphHeading.HEADING1).editAsText().setForegroundColor(NAVY);
-    mainBody.appendParagraph('Insights').editAsText().setBold(true).setForegroundColor(NAVY).setFontSize(10);
-    model.compare.forEach(function (it, i) {
-      var p = mainBody.appendParagraph((i + 1) + '.  ' + it.text); p.setIndentStart(18);
-      appendMarker(p, it);
-    });
-  }
-
-  // fallback only: if no References tab, append the references as a section in the main tab
-  if (!refTabId) {
-    mainBody.appendHorizontalRule();
-    mainBody.appendParagraph('References').setHeading(DocumentApp.ParagraphHeading.HEADING1).editAsText().setForegroundColor(NAVY);
-    mainBody.appendParagraph('Each entry supports the matching number above. Identifying teacher details are withheld.').editAsText().setItalic(true).setForegroundColor(GREY).setFontSize(10);
-    refEntries.forEach(function (e) {
-      mainBody.appendParagraph('[' + e.n + ']  ' + e.label).editAsText().setBold(true).setForegroundColor(INK).setFontSize(11);
-      e.refs.forEach(function (r) {
-        var meta = refMeta(r);
-        if (meta) mainBody.appendParagraph(meta).setIndentStart(18).editAsText().setFontSize(9).setForegroundColor(GREY);
-        if (r.quote) mainBody.appendParagraph('“' + r.quote + '”').setIndentStart(18).editAsText().setItalic(true).setFontSize(10).setForegroundColor(INK);
-        if (r.explanation) mainBody.appendParagraph('Why this counts. ' + r.explanation).setIndentStart(18).editAsText().setFontSize(9).setForegroundColor(GREY);
-        if (r.url) { var lp = mainBody.appendParagraph('Open the R3 record'); lp.setIndentStart(18); lp.editAsText().setLinkUrl(0, lp.getText().length - 1, r.url).setFontSize(9).setForegroundColor(LINK); }
-      });
-    });
-  }
-
-  dropSeed(mainBody);
+  if (!refTabId) appendRefsSection(body, refEntries);
+  dropSeed(body);
   doc.saveAndClose();
 
-  // 3) References tab content via the Docs API (DocumentApp cannot write a non-first tab)
+  // cover image at the very top of the main tab (Docs API by URL, no UrlFetchApp scope needed)
+  if (model.cover) insertCoverImage(docId, firstTabId, model.cover);
   if (refTabId) writeRefsTab(docId, refTabId, refEntries);
 
   try { DriveApp.getFileById(docId).setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch (e) {}
   return 'https://docs.google.com/document/d/' + docId + '/edit';
 }
 
-function refMeta(r) {
-  return [r.area, r.date, (r.progress ? r.progress + ' progress' : '')].filter(function (x) { return x; }).join('  .  ');
+// ---- cover ----
+function insertCoverImage(docId, tabId, uri) {
+  try {
+    Docs.Documents.batchUpdate({ requests: [{ insertText: { location: { tabId: tabId, index: 1 }, text: '\n' } }] }, docId);
+    Docs.Documents.batchUpdate({ requests: [
+      { insertInlineImage: { location: { tabId: tabId, index: 1 }, uri: uri, objectSize: { width: { magnitude: 468, unit: 'PT' }, height: { magnitude: 263, unit: 'PT' } } } },
+      { updateParagraphStyle: { range: { tabId: tabId, startIndex: 1, endIndex: 2 }, paragraphStyle: { alignment: 'CENTER', spaceBelow: { magnitude: 12, unit: 'PT' } }, fields: 'alignment,spaceBelow' } }
+    ] }, docId);
+  } catch (e) {}
 }
 
-// one group (strengths or develop): coloured header, italic evidence, bold summary, bullets, insights
+// ---- card helpers (Simple layout) ----
+function card(body, fill) {
+  var t = body.appendTable([['']]);
+  t.setBorderColor(CARD_BORDER); t.setBorderWidth(0.75);
+  var c = t.getCell(0, 0);
+  c.setBackgroundColor(fill || CARD_FILL);
+  c.setPaddingTop(11).setPaddingBottom(11).setPaddingLeft(15).setPaddingRight(15);
+  return c;
+}
+function trimCell(c) { try { var f = c.getChild(0); if (f && f.getType() === DocumentApp.ElementType.PARAGRAPH && f.asParagraph().getText() === '') f.removeFromParent(); } catch (e) {} }
+
+function titleBlock(body, kicker) {
+  body.appendParagraph(kicker).editAsText().setBold(true).setForegroundColor(GREY).setFontSize(8.5);
+  body.appendParagraph('The June R3 picture').setHeading(TITLE);
+}
+
+function buildSimple(body, model, appendMarker) {
+  titleBlock(body, 'GOVERNANCE REPORT  .  SIMPLE');
+  body.appendParagraph('AIS Sharjah  .  ' + (model.round || '') + '  .  generated ' + (model.generated_on || '')).editAsText().setForegroundColor(GREY).setFontSize(10);
+
+  if (model.scope) { var sc = card(body); sc.appendParagraph(model.scope).editAsText().setBold(true).setFontSize(12); trimCell(sc); }
+  if (model.method) { var mc = card(body, CARD_FILL_2); mc.appendParagraph('How these are counted. ' + model.method).editAsText().setItalic(true).setForegroundColor(GREY).setFontSize(10); trimCell(mc); }
+
+  (model.phases || []).forEach(function (ph) {
+    body.appendParagraph(ph.label || '').setHeading(H1).editAsText().setForegroundColor(NAVY);
+    if (ph.scope) body.appendParagraph(ph.scope).editAsText().setForegroundColor(GREY).setFontSize(10);
+    cardGroup(body, 'What is working', 'Strengths', ph.strengths, GREEN, appendMarker);
+    cardGroup(body, 'Where to focus next', 'Areas to develop', ph.develop, TERRA, appendMarker);
+  });
+
+  if (model.compare && model.compare.length) {
+    body.appendParagraph('Primary & Kindy compared with Secondary').setHeading(H1).editAsText().setForegroundColor(NAVY);
+    var cc = card(body);
+    cc.appendParagraph('Insights').editAsText().setBold(true).setForegroundColor(NAVY).setFontSize(10);
+    model.compare.forEach(function (it, i) { var p = cc.appendParagraph((i + 1) + '.  ' + it.text); p.setIndentStart(14); appendMarker(p, it); });
+    trimCell(cc);
+  }
+}
+
+// one strengths/develop group inside a card
+function cardGroup(body, label, insLabel, g, colour, appendMarker) {
+  if (!g) return;
+  var c = card(body);
+  c.appendParagraph(label).editAsText().setBold(true).setForegroundColor(colour).setFontSize(13);
+  if (g.evidence) { var pe = c.appendParagraph(g.evidence.text); pe.editAsText().setItalic(true).setForegroundColor(GREY).setFontSize(10); appendMarker(pe, g.evidence); }
+  if (g.summary) { var ps = c.appendParagraph(g.summary.text); ps.editAsText().setBold(true); appendMarker(ps, g.summary); }
+  (g.bullets || []).forEach(function (b) { var li = c.appendListItem(b.text).setGlyphType(DocumentApp.GlyphType.BULLET); appendMarker(li, b); });
+  if (g.insights && g.insights.length) {
+    c.appendParagraph('Insights . ' + insLabel).editAsText().setBold(true).setForegroundColor(colour).setFontSize(10);
+    g.insights.forEach(function (it, i) { var p = c.appendParagraph((i + 1) + '.  ' + it.text); p.setIndentStart(14); appendMarker(p, it); });
+  }
+  trimCell(c);
+}
+
+// ---- In Depth: formal report with a Contents list ----
+function buildInDepth(body, model, appendMarker) {
+  titleBlock(body, 'GOVERNANCE REPORT  .  IN DEPTH');
+  body.appendParagraph('AIS Sharjah  .  ' + (model.round || '') + '  .  generated ' + (model.generated_on || '')).editAsText().setForegroundColor(GREY).setFontSize(10);
+  if (model.scope) body.appendParagraph(model.scope).editAsText().setBold(true);
+  if (model.method) body.appendParagraph('How these are counted. ' + model.method).editAsText().setItalic(true).setForegroundColor(GREY).setFontSize(10);
+  body.appendHorizontalRule();
+
+  body.appendParagraph('Contents').setHeading(H1).editAsText().setForegroundColor(NAVY);
+  ['In summary', 'Primary & Kindy', 'Secondary', 'Primary & Kindy compared with Secondary', 'How to move Acceptable to Good']
+    .forEach(function (t) { body.appendListItem(t).setGlyphType(DocumentApp.GlyphType.NUMBER); });
+  body.appendHorizontalRule();
+
+  body.appendParagraph('In summary').setHeading(H1).editAsText().setForegroundColor(NAVY);
+  if (model.summary && model.summary.lead) { var pl = body.appendParagraph(model.summary.lead.text); appendMarker(pl, model.summary.lead); }
+  if (model.summary && model.summary.points) model.summary.points.forEach(function (pt) { var li = body.appendListItem(pt.text).setGlyphType(DocumentApp.GlyphType.BULLET); appendMarker(li, pt); });
+
+  (model.phases || []).forEach(function (ph) {
+    body.appendParagraph(ph.label || '').setHeading(H1).editAsText().setForegroundColor(NAVY);
+    if (ph.scope) body.appendParagraph(ph.scope).editAsText().setForegroundColor(GREY).setFontSize(10);
+    groupOut(body, 'What is working', 'Strengths', ph.strengths, GREEN, appendMarker);
+    groupOut(body, 'Where to focus next', 'Areas to develop', ph.develop, TERRA, appendMarker);
+  });
+
+  if (model.compare && model.compare.length) {
+    body.appendParagraph('Primary & Kindy compared with Secondary').setHeading(H1).editAsText().setForegroundColor(NAVY);
+    body.appendParagraph('Insights').editAsText().setBold(true).setForegroundColor(NAVY).setFontSize(10);
+    model.compare.forEach(function (it, i) { var p = body.appendParagraph((i + 1) + '.  ' + it.text); p.setIndentStart(18); appendMarker(p, it); });
+  }
+
+  if (model.coaching && model.coaching.length) {
+    body.appendParagraph('How to move Acceptable to Good').setHeading(H1).editAsText().setForegroundColor(NAVY);
+    model.coaching.forEach(function (cp) {
+      body.appendParagraph(cp.label || '').setHeading(H2).editAsText().setForegroundColor(INK);
+      if (cp.summary) { var ps = body.appendParagraph(cp.summary.text); ps.editAsText().setBold(true); appendMarker(ps, cp.summary); }
+      body.appendParagraph('Where coaching could help').editAsText().setBold(true).setForegroundColor(GREEN).setFontSize(10);
+      (cp.points || []).forEach(function (pt) { var li = body.appendListItem(pt.text).setGlyphType(DocumentApp.GlyphType.BULLET); appendMarker(li, pt); });
+    });
+  }
+}
+
+// In Depth strengths/develop group (flowing, not carded)
 function groupOut(body, label, insLabel, g, colour, appendMarker) {
   if (!g) return;
-  body.appendParagraph(label).setHeading(DocumentApp.ParagraphHeading.HEADING2).editAsText().setForegroundColor(colour);
+  body.appendParagraph(label).setHeading(H2).editAsText().setForegroundColor(colour);
   if (g.evidence) { var pe = body.appendParagraph(g.evidence.text); pe.editAsText().setItalic(true).setForegroundColor(GREY).setFontSize(10); appendMarker(pe, g.evidence); }
   if (g.summary) { var ps = body.appendParagraph(g.summary.text); ps.editAsText().setBold(true); appendMarker(ps, g.summary); }
   (g.bullets || []).forEach(function (b) { var li = body.appendListItem(b.text).setGlyphType(DocumentApp.GlyphType.BULLET); appendMarker(li, b); });
@@ -134,8 +205,28 @@ function groupOut(body, label, insLabel, g, colour, appendMarker) {
   }
 }
 
-// Write the References tab via the Docs API. Running-index batchUpdate: every insert appends at the
-// current end, then styles that exact range, so indices stay consistent.
+function refMeta(r) {
+  return [r.area, r.date, (r.progress ? r.progress + ' progress' : '')].filter(function (x) { return x; }).join('  .  ');
+}
+
+// in-doc References section (fallback only when the tab could not be created)
+function appendRefsSection(body, refEntries) {
+  body.appendHorizontalRule();
+  body.appendParagraph('References').setHeading(H1).editAsText().setForegroundColor(NAVY);
+  body.appendParagraph('Each entry supports the matching number above. Identifying teacher details are withheld.').editAsText().setItalic(true).setForegroundColor(GREY).setFontSize(10);
+  refEntries.forEach(function (e) {
+    body.appendParagraph('[' + e.n + ']  ' + e.label).editAsText().setBold(true).setForegroundColor(INK).setFontSize(11);
+    e.refs.forEach(function (r) {
+      var meta = refMeta(r);
+      if (meta) body.appendParagraph(meta).setIndentStart(18).editAsText().setFontSize(9).setForegroundColor(GREY);
+      if (r.quote) body.appendParagraph('“' + r.quote + '”').setIndentStart(18).editAsText().setItalic(true).setFontSize(10).setForegroundColor(INK);
+      if (r.explanation) body.appendParagraph('Why this counts. ' + r.explanation).setIndentStart(18).editAsText().setFontSize(9).setForegroundColor(GREY);
+      if (r.url) { var lp = body.appendParagraph('Open the R3 record'); lp.setIndentStart(18); lp.editAsText().setLinkUrl(0, lp.getText().length - 1, r.url).setFontSize(9).setForegroundColor(LINK); }
+    });
+  });
+}
+
+// References tab via the Docs API. Running-index batchUpdate: every insert appends at the current end.
 function writeRefsTab(docId, tabId, entries) {
   var reqs = [], idx = 1;
   function ins(text, o) {
@@ -177,14 +268,12 @@ function rgb(hex) {
   return { red: parseInt(hex.substr(0, 2), 16) / 255, green: parseInt(hex.substr(2, 2), 16) / 255, blue: parseInt(hex.substr(4, 2), 16) / 255 };
 }
 
-// remove the seed empty paragraph Apps Script puts at the top of a body
 function dropSeed(body) {
   try { var c = body.getChild(0); if (c && c.getType() === DocumentApp.ElementType.PARAGRAPH && c.asParagraph().getText() === '') c.removeFromParent(); } catch (e) {}
 }
 
 /**
  * Run this ONCE in the editor (Run button) to grant the Docs + Drive permissions the web app needs.
- * It creates a throwaway Doc and immediately trashes it, which forces the OAuth consent screen.
  */
 function authorize() {
   var d = DocumentApp.create('AIS export authorization check');

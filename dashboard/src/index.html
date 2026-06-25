@@ -881,6 +881,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
       <div class="vhist">
+        <div class="vrow"><span class="vtag">v0.45</span><span class="vnote">Both reports now export to a styled Google Doc with the navy cover image. The Simple Doc is the "pretty" one: a white page with each section in a card, matching the on-screen report. The In Depth Doc is a formal report: the same cover, a Contents list, then the full report (In summary, the two phases, the comparison, and How to move Acceptable to Good). References stay in a linked References tab in both. (Cards are square-cornered and the Contents is a list, both Google Docs limits.)</span></div>
         <div class="vrow"><span class="vtag">v0.44</span><span class="vnote">The In Depth report now opens with an executive summary ("In summary"): a short lead giving the round's picture and the shape behind the average (about half of lessons Good or better, about a third Acceptable, about one in ten below), then four headline points, the most consistent strength, the main focus, the Primary versus Secondary contrast, and the move to Good by phase, each backed by its evidence behind a marker. In Depth only.</span></div>
         <div class="vrow"><span class="vtag">v0.43</span><span class="vnote">Each governor summary in the "How to move Acceptable to Good" section now carries its own evidence marker (it was the only claim without one). The marker opens a representative, balanced set of the supporting lessons drawn from that phase's coaching directions, so the summary is backed like every other statement in the report.</span></div>
         <div class="vrow"><span class="vtag">v0.42</span><span class="vnote">The In Depth report gains a "How to move Acceptable to Good" section (In Depth only). For Primary & Kindy and for Secondary it gives a short governor summary plus a set of "Where Coaching Could Help" directions, each grounded in the AIS progress rubric and this round's evidence: what the Good and better lessons did that the Acceptable ones were noted as missing, with the concrete move and a "what good looks like" indicator. All supporting lessons sit behind the marker (6 to 17 each, no teacher names). Built from the live R3 data and stored round-scoped in Supabase so it recompiles next round.</span></div>
@@ -944,7 +945,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
   </div>
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.44</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.45</span></span>
   </div>
 </div>
 
@@ -1507,6 +1508,7 @@ function wireExport(){const b=byId('repExport');if(b&&!b.disabled)b.onclick=expo
    A small Apps Script web app (DOC_EXPORT_URL, deploy as admin.user) builds the Doc and returns its URL.
    No password gate here by design: access will be Google SSO + roles later (Igor, answer 3=no gate). */
 const DOC_EXPORT_URL='https://script.google.com/macros/s/AKfycbxyU02PN9ZdOzVW45XaiL_4lsvU_FqtDy9f_kEtv7sVuMzVmNQW3Oe2w7TBrvtZtO1j/exec';   // Apps Script Google Doc builder (admin.user), deployed 2026-06-24
+const DOC_COVER_URL='https://rogerceaser21.github.io/Data-Representation/dashboard/assets/report-cover.png';   // navy cover for the exported Docs (public Pages asset)
 const R3_VIEWER_BASE='https://rogerceaser21.github.io/Data-Representation/Assets/R3/r3-record.html';
 function repStatus(msg,kind){const btn=byId('repExport');if(!btn)return;let n=byId('repExportMsg');
   if(!n){n=document.createElement('span');n.id='repExportMsg';n.className='repmsg';btn.insertAdjacentElement('afterend',n);}
@@ -1515,7 +1517,7 @@ async function fetchLiveNarrative(){if(!SB_URL||SB_URL.indexOf('http')!==0)retur
   try{const c=new AbortController(),to=setTimeout(()=>c.abort(),8000);
     const r=await fetch(SB_URL.replace(/\/+$/,'')+'/rest/v1/rpc/get_narrative',{method:'POST',headers:{apikey:SB_KEY,Authorization:'Bearer '+SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({p_round:SNAP_ROUND}),signal:c.signal});
     clearTimeout(to);if(!r.ok)return null;const items=await r.json();return (Array.isArray(items)&&items.length)?items:null;}catch(e){return null;}}
-function buildDocModel(items){const bySlug={};items.forEach(it=>bySlug[it.slug]=it);
+function buildDocModel(items,kind){const bySlug={};items.forEach(it=>bySlug[it.slug]=it);
   const refOf=r=>({area:r.area||r.subject||'',date:r.observed_on||'',progress:SEAS_WORD[r.progress]||'',quote:r.quote||'',explanation:r.explanation||'',
     url:(r.record_id&&r.record_token)?(R3_VIEWER_BASE+'?id='+encodeURIComponent(r.record_id)+'&token='+encodeURIComponent(r.record_token)):''});
   const claim=slug=>{const e=bySlug[slug];return e?{text:e.text,refs:(e.refs||[]).map(refOf)}:null;};
@@ -1524,8 +1526,13 @@ function buildDocModel(items){const bySlug={};items.forEach(it=>bySlug[it.slug]=
     bullets:[0,1,2,3,4].map(i=>claim(navSlug(phase,section,'bullet',i))).filter(Boolean),
     insights:[0,1,2].map(i=>claim(navSlug(phase,section,'insight',i))).filter(Boolean)});
   const phaseSec=phase=>({label:PHASE_LABEL[phase],scope:sline(snapAgg(phase)),strengths:grp(phase,'strengths'),develop:grp(phase,'develop')});
-  return {round:SNAP_ROUND,generated_on:D.generated_on,scope:sline(snapAgg('all')),
+  const summary={lead:claim('exec_lead'),points:['exec_p0','exec_p1','exec_p2','exec_p3'].map(claim).filter(Boolean)};
+  const coachPhase=(sumSlug,pre)=>({summary:claim(sumSlug),points:[0,1,2].map(i=>claim(pre+i)).filter(Boolean)});
+  const coaching=[Object.assign({label:'Primary & Kindy'},coachPhase('primary_kindy_coach_sum','pk_coach_')),
+                  Object.assign({label:'Secondary'},coachPhase('secondary_coach_sum','sec_coach_'))];
+  return {kind:kind||'simple',cover:DOC_COVER_URL,round:SNAP_ROUND,generated_on:D.generated_on,scope:sline(snapAgg('all')),
     method:'Average progress is the best (highest) progress rating recorded for each teacher, then averaged across teachers. A lesson observed by two inspectors is counted once, with the stronger evidence kept. Scope is the '+SNAP_ROUND+' round only.',
+    summary:summary,coaching:coaching,
     phases:[phaseSec('primary_kindy'),phaseSec('secondary')],compare:[0,1,2].map(i=>claim('cmp_'+i)).filter(Boolean)};}
 async function exportDoc(){const btn=byId('repExport');if(!btn||btn.disabled)return;
   if(snapReport!=='simple'&&snapReport!=='indepth')return;
@@ -1533,7 +1540,7 @@ async function exportDoc(){const btn=byId('repExport');if(!btn||btn.disabled)ret
   const items=await fetchLiveNarrative();
   if(!items){repStatus('Could not reach the live data. Reconnect to export.','warn');btn.disabled=false;return;}
   if(!DOC_EXPORT_URL){repStatus('Export endpoint not configured yet.','warn');btn.disabled=false;return;}
-  try{const r=await fetch(DOC_EXPORT_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(buildDocModel(items))});
+  try{const r=await fetch(DOC_EXPORT_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(buildDocModel(items,snapReport))});
     const out=await r.json();
     if(out&&out.url){repStatus('');window.open(out.url,'_blank','noopener');}
     else repStatus('Export did not complete. Try again in a moment.','warn');

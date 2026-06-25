@@ -5,6 +5,12 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.45 . 2026-06-25
+- **Both reports export to a styled Google Doc with the navy cover.** The Simple Doc is card-styled (white page, the cover image, each section in a 1-cell-table card) to mirror the on-screen report; the In Depth Doc is a formal report (cover, a Contents list, then In summary, the phases, the comparison, and How to move Acceptable to Good). Every claim still ends with a numbered marker linked to a real References tab.
+- The cover is inserted by URL via the Docs API (`dashboard/assets/report-cover.png`, a high-resolution render of the Story cover slide), so no new Apps Script permission was needed. `buildDocModel` now sends the report `kind`, the cover URL, and the summary + coaching sections; `Code.gs` branches into `buildSimple` (cards) and `buildInDepth` (report + Contents).
+- Constraints (Google Docs limits): cards are square-cornered; the Contents is a styled list, not an auto page-numbered TOC (the headings still drive the document outline).
+- Scope: export only; the on-screen dashboard is unchanged. Apps Script redeployed in place (same `/exec`). Rollback: `dash-v0.44`.
+
 ## v0.44 . 2026-06-25
 - **In Depth now opens with an executive summary ("In summary").** A short lead gives the round's picture and the shape behind the average: of the lessons with a progress rating, about half are Good or better, about a third sit at Acceptable, and about one in ten are below; Acceptable is the biggest movable group. Then four headline points, each backed by its evidence behind a marker: the most consistent strength, the main development focus (the ceiling, not the floor), the Primary versus Secondary contrast, and the move to Good by phase.
 - Stored round-scoped in Supabase (`narrative` `section='summary'`, phase `all`): the lead has no marker (it is the headline numbers, like the scope line); the four points carry their references. Front-end builds `SUMMARY` in `applyNarrItems` + renders `execSection()` at the top of In Depth.
