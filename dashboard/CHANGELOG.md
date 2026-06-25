@@ -5,6 +5,11 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.41 . 2026-06-25
+- **In Depth report rebuilt to the readable Simple layout.** The v0.40 In Depth printed every supporting quote inline under each claim, which was too dense to read. In Depth now uses the same clean layout as the Simple report (the summaries, bullets and insights, with each claim's evidence behind the numbered markers that open the right-side sources panel). For now In Depth reads almost the same as Simple; it diverges later when the Acceptable to Good recommendations and a summary are added to it. `renderInDepth()` now delegates to the shared report builder with an "In Depth" kicker; the inline-dump code and its `.idclaim` / `.idrefs` / `.idevhead` styles were removed. The comprehensive ~499 references and their "why this counts" notes are unchanged and still power the markers and the Google Doc export.
+- Scope: Snapshot report only. Story, Detail, Coverage and Observations untouched. Verified in the preview (In Depth kicker, markers with their source counts, no inline dump, no console errors).
+- Rollback: `dash-v0.40`.
+
 ## v0.40 . 2026-06-25
 - **In Depth report built, with comprehensive evidence (Phase D, part 2).** Every report statement is now backed by ALL of its supporting June lessons, not a 2-4 sample: a multi-agent pass matched each of the 39 claims against the deduped lesson evidence by meaning, and every quote was code-verified as an exact substring of the source (anti-fabrication). Result: **~499 references**, average ~13/statement (the "routines, relationships and behaviour" bullet went 2 -> 17). Each reference carries a short **"why this counts"** note.
 - **Threshold cleanup.** Statements with 5 or fewer proofs were kept only where small-by-design (e.g. "four Very Weak lessons", "self-assessment in a handful of classes"); the one genuinely thin Secondary "where to focus" bullet ("targeted intervention for a small group of lower-attainers", 2 proofs) was **replaced** with a provable one, "Tighten lesson pace and time management so no learning time is lost" (8 proofs).

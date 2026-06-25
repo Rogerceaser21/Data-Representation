@@ -64,13 +64,6 @@ body.refopen .wrap{opacity:.84}   /* light de-emphasis while the sources panel i
 .refcard{background:var(--panel-2);border:1px solid var(--edge);border-radius:14px;padding:12px 13px}
 .refwhy{margin-top:9px;font-size:11.5px;line-height:1.5;color:var(--ink-mid);border-top:1px dashed var(--edge-soft);padding-top:8px}
 .refwhy b{color:var(--ink);font-weight:700}
-.idclaim{margin:0 0 20px}
-.idclaim .idtext{margin:0 0 9px;font-size:15px;line-height:1.5;color:var(--ink);font-weight:600}
-.idclaim.idsum .idtext{font-size:16px}
-.idclaim.idins{position:relative;padding-left:30px}
-.idclaim.idins .rin{position:absolute;left:0;top:-2px;font-family:var(--display);font-weight:700;font-size:19px;color:var(--ink-mid)}
-.idrefs{display:flex;flex-direction:column;gap:9px;margin-left:13px;padding-left:14px;border-left:2px solid var(--edge-soft)}
-.idevhead{font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-mid);margin-bottom:1px}
 .refmeta{display:flex;flex-wrap:wrap;gap:5px 9px;align-items:center;font-size:11px;font-weight:600;color:var(--ink-mid);margin-bottom:8px}
 .refmeta .rdot{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
 .refmeta .rarea{color:var(--ink)}
@@ -875,6 +868,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
       <div class="vhist">
+        <div class="vrow"><span class="vtag">v0.41</span><span class="vnote">The In Depth report now uses the same readable layout as the Simple report (the summaries, bullets and insights, with each claim's evidence behind the numbered markers in the side panel) instead of printing every quote inline, which was hard to read. For now In Depth reads almost the same as Simple; it will diverge later when the Acceptable to Good recommendations and a summary are added to it. The comprehensive references and their "why this counts" notes are unchanged and still power the markers and the Google Doc export.</span></div>
         <div class="vrow"><span class="vtag">v0.40</span><span class="vnote">In Depth report built, with comprehensive evidence. Every statement is now backed by all of its supporting lessons, not a sample (the routines bullet went from 2 to 17, 493+ references in total), and each reference carries a short "why this counts" note. The Report menu's In Depth view shows every claim with all its evidence printed inline (quote + why + R3 form link); Simple keeps it behind the markers. Any statement with five or fewer proofs was kept only where it is small by design; the one genuinely thin "areas to focus" bullet was replaced with a provable one about lesson pace and time management. References + notes are stored in Supabase (comparable next round) and both reports export to a Google Doc.</span></div>
         <div class="vrow"><span class="vtag">v0.39</span><span class="vnote">The Snapshot gains a Report button: choose the Simple report (the current summaries + insights, references behind the side panel) or, soon, the In Depth report. Each report can be exported to a real Google Doc that mirrors the on-screen layout (clean report in the main tab, every source in a References tab, and each claim's number links to it). The insight text and its references are now read from one place (Supabase), with the page only keeping a copy for instant loading. The In Depth report is a button for now and is built next.</span></div>
         <div class="vrow"><span class="vtag">v0.38</span><span class="vnote">Settings is now password-gated and saved to Supabase, so an admin change applies on every device. Clicking Settings pops up a password prompt (the same admin password as the R3 form, checked server-side); Settings opens only after it is entered, and it re-asks every time you open it. The light or dark toggle was removed from Settings, the round button top-right is now the only theme control. The star-field on/off, the three star sliders and the Snapshot auto-play are saved to Supabase (read on load, written when you change them); the password and the settings come from one shared place, so changing the password once moves both the dashboard and the R3 form.</span></div>
@@ -934,7 +928,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
   </div>
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.40</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.41</span></span>
   </div>
 </div>
 
@@ -1407,10 +1401,12 @@ function renderSnapshot(){
   byId('snapStory').hidden=!story;byId('snapDetail').hidden=story;byId('storyCtl').hidden=!story;   // controls live in the tabs row now -> hide them on the Detail view
   if(story)renderStory();else{pauseStory();renderDetail();}
 }
-/* SIMPLE report: the concise governance document, all phases in one scroll. SAME wording + references
-   as the live snapshot (NARR + REF_INDEX), laid out as a report and used verbatim as the Google Doc
-   export source. References reuse the existing right-side panel on screen (refMark -> openRefs). */
-function renderSimpleReport(){
+/* The readable governance report, all phases in one scroll. SAME wording + references as the live
+   snapshot (NARR + REF_INDEX), laid out as a report and used verbatim as the Google Doc export source.
+   References stay behind the existing right-side panel markers (refMark -> openRefs). Serves BOTH the
+   Simple and the In Depth reports; only the kicker differs for now (In Depth diverges later when the
+   Acceptable->Good recommendations + a Summary are added to it). */
+function renderSimpleReport(kind){
   const host=byId('snapReport');if(!host)return;const all=snapAgg('all');
   const scope=a=>`${a.lessons} lessons . ${a.teachers} teachers . average progress <b style="color:${colOf(a.avgBest)}">${esc(wordOf(a.avgBest))}</b>${a.avgBest!=null?' ('+a.avgBest.toFixed(1)+' of 6)':''}`;
   const grp=(phase,section,label,N2,colVar)=>`<div class="rep-grp">
@@ -1430,7 +1426,7 @@ function renderSimpleReport(){
   const cmp=`<section class="rep-sec"><h3 class="rep-h">Primary &amp; Kindy compared with Secondary</h3>
       <div class="rep-ins">${NARR.compare.map((t,i)=>`<div class="rep-i"><span class="rin" style="color:var(--y)">${i+1}</span><p>${esc(t)}${refMark('cmp_'+i)}</p></div>`).join('')}</div></section>`;
   host.innerHTML=`<div class="rep">
-    <div class="rep-top"><div class="rep-th"><div class="rep-kick">Governance report . Simple</div><h2 class="big">The June <em>R3</em> picture.</h2>
+    <div class="rep-top"><div class="rep-th"><div class="rep-kick">Governance report . ${kind==='indepth'?'In Depth':'Simple'}</div><h2 class="big">The June <em>R3</em> picture.</h2>
       <div class="rep-meta">AIS Sharjah . ${esc(SNAP_ROUND)} . generated ${esc(D.generated_on)}</div></div>${exportBtnHTML()}</div>
     <div class="rep-scope rep-scope-all">${scope(all)}</div>
     <div class="rep-method"><b>How these are counted.</b> Average progress is the best (highest) progress rating recorded for each teacher, then averaged across teachers. A lesson observed by two inspectors is counted once, with the stronger evidence kept. Scope is the ${esc(SNAP_ROUND)} round only. Each numbered marker opens the supporting evidence; identifying teacher details are withheld.</div>
@@ -1441,44 +1437,10 @@ function renderSimpleReport(){
   </div>`;
   wireExport();
 }
-/* IN DEPTH report: the full report with EVERY claim's supporting evidence printed inline (quote +
-   why-it-counts + R3 record link), read straight from REF_INDEX (the comprehensive Supabase refs).
-   Simple keeps the evidence behind the side-panel markers; In Depth shows it all on the page. */
-function renderInDepth(){
-  const host=byId('snapReport');if(!host)return;const all=snapAgg('all');const R=RAMP();
-  const scope=a=>`${a.lessons} lessons . ${a.teachers} teachers . average progress <b style="color:${colOf(a.avgBest)}">${esc(wordOf(a.avgBest))}</b>${a.avgBest!=null?' ('+a.avgBest.toFixed(1)+' of 6)':''}`;
-  const refCard=r=>{const col=R[r.progress]||'var(--na)',word=SEAS_WORD[r.progress]||'',link=(r.record_id&&r.record_token)?`<a class="reflink" target="_blank" rel="noopener" href="../Assets/R3/r3-record.html?id=${encodeURIComponent(r.record_id)}&token=${encodeURIComponent(r.record_token)}">Open the R3 record ${I_ARROW}</a>`:'';
-    return `<div class="refcard"><div class="refmeta"><span class="rdot" style="background:${col}"></span><span class="rarea">${esc(r.area||r.subject||'')}</span>${r.observed_on?`<span>${esc(r.observed_on)}</span>`:''}${word?`<span>${esc(word)} progress</span>`:''}</div><div class="refq">${esc(r.quote)}</div>${r.explanation?`<div class="refwhy"><b>Why this counts.</b> ${esc(r.explanation)}</div>`:''}${link}</div>`;};
-  const refsFor=slug=>{const e=REF_INDEX[slug];const rs=(e&&e.refs)||[];if(!rs.length)return '';return `<div class="idrefs"><div class="idevhead">Evidence . ${rs.length} lesson${rs.length>1?'s':''}</div>${rs.map(refCard).join('')}</div>`;};
-  const claim=(text,slug,cls,num)=>`<div class="idclaim ${cls||''}">${num?`<span class="rin">${num}</span>`:''}<p class="idtext">${esc(text)}</p>${refsFor(slug)}</div>`;
-  const grp=(phase,section,label,N2,colVar)=>`<div class="rep-grp">
-      <h4 class="rep-gh" style="color:${colVar}">${label}</h4>
-      <p class="rep-ev">${esc(N2.evidence)}</p>
-      ${claim(N2.summary, navSlug(phase,section,'summary'), 'idsum')}
-      ${N2.bullets.map((b,i)=>claim(b, navSlug(phase,section,'bullet',i), 'idbul')).join('')}
-      <div class="rep-insh" style="color:${colVar}">Insights . ${section==='strengths'?'Strengths':'Areas to develop'}</div>
-      ${N2.insights.map((t,i)=>claim(t, navSlug(phase,section,'insight',i), 'idins', i+1)).join('')}
-    </div>`;
-  const sec=phase=>{const a=snapAgg(phase),N=NARR[phase];return `<section class="rep-sec">
-      <h3 class="rep-h">${esc(PHASE_LABEL[phase])}</h3>
-      <div class="rep-scope">${scope(a)}</div>
-      ${grp(phase,'strengths','What is working',N.strengths,'var(--g)')}
-      ${grp(phase,'develop','Where to focus next',N.develop,'var(--r5)')}
-    </section>`;};
-  const cmp=`<section class="rep-sec"><h3 class="rep-h">Primary &amp; Kindy compared with Secondary</h3>
-      ${NARR.compare.map((t,i)=>claim(t,'cmp_'+i,'idins',i+1)).join('')}</section>`;
-  host.innerHTML=`<div class="rep">
-    <div class="rep-top"><div class="rep-th"><div class="rep-kick">Governance report . In Depth</div><h2 class="big">The June <em>R3</em> picture.</h2>
-      <div class="rep-meta">AIS Sharjah . ${esc(SNAP_ROUND)} . generated ${esc(D.generated_on)} . every claim shown with its full evidence</div></div>${exportBtnHTML()}</div>
-    <div class="rep-scope rep-scope-all">${scope(all)}</div>
-    <div class="rep-method"><b>How these are counted.</b> Average progress is the best (highest) progress rating recorded for each teacher, then averaged across teachers. A lesson observed by two inspectors is counted once, with the stronger evidence kept. Scope is the ${esc(SNAP_ROUND)} round only. Every claim below is followed by all of its supporting lessons, each with the inspector's quote and why it counts; identifying teacher details are withheld.</div>
-    ${sec('primary_kindy')}
-    ${sec('secondary')}
-    ${cmp}
-    <div class="rep-foot">References cite the locked R3 record for each lesson. Identifying teacher details are withheld.</div>
-  </div>`;
-  wireExport();
-}
+/* In Depth report. For now it reuses the readable Simple layout (references behind the side-panel
+   markers), only the kicker reads "In Depth". It diverges from Simple later: the Acceptable->Good
+   recommendations (task 6) and a Summary (task 7) get added here, not to Simple. */
+function renderInDepth(){renderSimpleReport('indepth');}
 /* the Make Google Doc button, rendered inside each report's header (one per report); disabled when the
    report is not exportable yet (In Depth) */
 function exportBtnHTML(disabled){return `<button class="repexport" id="repExport" type="button"${disabled?' disabled title="Available once the In Depth report is built"':''}><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M4.5 6.5L8 10l3.5-3.5M3 13h10"/></svg>Make Google Doc</button>`;}
