@@ -1,16 +1,16 @@
-# Graph Report - recursing-keller-456a13  (2026-06-25)
+# Graph Report - Data-Representation  (2026-06-16)
 
 ## Corpus Check
-- 39 files · ~487,997 words
+- 38 files · ~369,126 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 613 nodes · 874 edges · 46 communities (35 shown, 11 thin omitted)
+- 567 nodes · 817 edges · 45 communities (35 shown, 10 thin omitted)
 - Extraction: 94% EXTRACTED · 5% INFERRED · 1% AMBIGUOUS · INFERRED: 44 edges (avg confidence: 0.87)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `bd4ebbec`
+- Built from commit: `1715f438`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -53,22 +53,21 @@
 - [[_COMMUNITY_Community 35|Community 35]]
 - [[_COMMUNITY_Community 36|Community 36]]
 - [[_COMMUNITY_Community 37|Community 37]]
-- [[_COMMUNITY_Community 38|Community 38]]
-- [[_COMMUNITY_Community 39|Community 39]]
-- [[_COMMUNITY_Community 40|Community 40]]
-- [[_COMMUNITY_Community 41|Community 41]]
+- [[_COMMUNITY_Community 42|Community 42]]
+- [[_COMMUNITY_Community 43|Community 43]]
+- [[_COMMUNITY_Community 44|Community 44]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `ce` - 97 edges
-2. `AIS Observation Dashboard . changelog` - 41 edges
-3. `R3 Evidence Form Master Source` - 22 edges
-4. `Teacher Observation Pitch Deck (index.html)` - 16 edges
-5. `R3 Evidence Form (Master Source)` - 16 edges
-6. `Year 6 Lesson Plan – Build Tetris with A.I.` - 15 edges
-7. `Locked decisions (the grill)` - 13 edges
-8. `v0.10 · R3 Evidence Form build + Lesson Observation reorg` - 13 edges
-9. `Lesson Observation Form (HTML)` - 13 edges
-10. `Primary School Outstanding Teacher Profile (OTP)` - 13 edges
+2. `R3 Evidence Form Master Source` - 22 edges
+3. `Teacher Observation Pitch Deck (index.html)` - 16 edges
+4. `R3 Evidence Form (Master Source)` - 16 edges
+5. `Year 6 Lesson Plan – Build Tetris with A.I.` - 15 edges
+6. `Locked decisions (the grill)` - 13 edges
+7. `v0.10 · R3 Evidence Form build + Lesson Observation reorg` - 13 edges
+8. `Lesson Observation Form (HTML)` - 13 edges
+9. `Primary School Outstanding Teacher Profile (OTP)` - 13 edges
+10. `Locked design decisions` - 12 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `Curtis All Portrait` --conceptually_related_to--> `Teacher Observation Pitch Deck (index.html)`  [AMBIGUOUS]
@@ -85,23 +84,23 @@
 ## Import Cycles
 - None detected.
 
-## Communities (46 total, 11 thin omitted)
+## Communities (45 total, 10 thin omitted)
 
 ### Community 0 - "AIS Observation Forms & Scripts"
 Cohesion: 0.07
-Nodes (60): admin.user@ais.ae (Super Admin Identity), Lesson Obs Apps Script Config (00_Config.gs), Lesson Obs Apps Script doGet (02_doGet.gs), Lesson Obs Apps Script doPost (01_doPost.gs), R3 Apps Script Config (00_Config.gs), R3 Apps Script doGet (02_doGet.gs), R3 Apps Script doPost (01_doPost.gs), R3 Apps Script TeacherLoader (04_TeacherLoader.gs) (+52 more)
+Nodes (61): admin.user@ais.ae (Super Admin Identity), Lesson Obs Apps Script Config (00_Config.gs), Lesson Obs Apps Script doGet (02_doGet.gs), Lesson Obs Apps Script doPost (01_doPost.gs), R3 Apps Script Config (00_Config.gs), R3 Apps Script doGet (02_doGet.gs), R3 Apps Script doPost (01_doPost.gs), R3 Apps Script TeacherLoader (04_TeacherLoader.gs) (+53 more)
 
 ### Community 1 - "TomSelect Core API"
 Cohesion: 0.05
 Nodes (49): Lesson Observation - Igor 12/11, Classroom Management (Observation), Curriculum Development (Observation), DigiTech Subject, Interpersonal Relationships (Observation), Ben Hyde (Observer / DHOS), Mr Igor (Teacher), Teaching & Learning (Observation) (+41 more)
 
 ### Community 2 - "Pitch Deck Build & Bugs"
-Cohesion: 0.13
+Cohesion: 0.14
 Nodes (4): C, e(), le(), t
 
 ### Community 4 - "TomSelect Item Selection"
-Cohesion: 0.24
-Nodes (18): Deck Slides Overflow/Clipping Bug (v0.11-v0.12), Deck PDF Export (working reference), GitHub Pages Deployment, Handoff Brief Deck v0.12 Broken (2026-05-29), Screenshot: Slide 1 Cover v0.12 (title/masthead distortion), Screenshot: Slide 3 Teacher Dashboard Bottom v0.12 (all 8 categories), Screenshot: Slide 3 Teacher Dashboard Top v0.12 (donut + categories), Screenshot: Slide 4 Department Dashboard Bottom v0.12 (footer overlap bug) (+10 more)
+Cohesion: 0.26
+Nodes (17): Deck Slides Overflow/Clipping Bug (v0.11-v0.12), Deck PDF Export (working reference), Handoff Brief Deck v0.12 Broken (2026-05-29), Screenshot: Slide 1 Cover v0.12 (title/masthead distortion), Screenshot: Slide 3 Teacher Dashboard Bottom v0.12 (all 8 categories), Screenshot: Slide 3 Teacher Dashboard Top v0.12 (donut + categories), Screenshot: Slide 4 Department Dashboard Bottom v0.12 (footer overlap bug), Screenshot: Slide 4 Department Dashboard Top v0.12 (3 teachers, overlap) (+9 more)
 
 ### Community 5 - "Lesson Obs Script Manifest"
 Cohesion: 0.12
@@ -164,32 +163,32 @@ Cohesion: 0.20
 Nodes (9): Apps Script + Sheet, Cache invalidation (v0.33), Changelog · v0.30-v0.44, Edit / deploy workflow, Folder layout (v0.37), Full project context, Gmail filter (one-time), Live URL + access password (+1 more)
 
 ### Community 26 - "Community 26"
-Cohesion: 0.05
-Nodes (41): AIS Observation Dashboard . changelog, v0.10 . 2026-06-17, v0.11 . 2026-06-17, v0.12 . 2026-06-18, v0.13 . 2026-06-18, v0.14 . 2026-06-18, v0.15 . 2026-06-18, v0.16 . 2026-06-18 (+33 more)
+Cohesion: 0.18
+Nodes (10): Accessibility checklist (must pass before shipping), Behaviour contract, CSS sketch, Deferred plan · custom selection picker for the R3 form, Failure history that led here, JS sketch (~80-100 lines for a reusable component), Sources / further reading, The architecture that works (+2 more)
 
 ### Community 27 - "Community 27"
-Cohesion: 0.07
-Nodes (36): avgBest, dist, lessons, notesLessons, strengthsLessons, teachers, weaknessLessons, claims (+28 more)
+Cohesion: 0.20
+Nodes (9): Docs synced, Files created (committed 915919e, on the branch), Gotchas / how-to learned this session, Handoff · Dashboard design locked (Cinematic + AIS stars + light default) + living spec sheet; build next, IMMEDIATE next step: build the dashboard (to Tuesday), Open items, Read in this order, Suggested skills (+1 more)
 
 ### Community 28 - "Community 28"
 Cohesion: 0.33
 Nodes (5): Backup mail filter (one-time Gmail setup), Force-refresh the dropdowns after a Sheet edit, R3 Evidence · Google file links, Related, Sheet tabs (quick jump)
 
 ### Community 30 - "Community 30"
-Cohesion: 0.18
-Nodes (10): Accessibility checklist (must pass before shipping), Behaviour contract, CSS sketch, Deferred plan · custom selection picker for the R3 form, Failure history that led here, JS sketch (~80-100 lines for a reusable component), Sources / further reading, The architecture that works (+2 more)
+Cohesion: 0.20
+Nodes (9): Current state (all live + verified), Docs synced, Gotchas learned this session, Handoff · Dashboard v0.1 BUILT + DEPLOYED (gated); next = live Supabase + @ais.ae SSO + RLS, How it is built (the load-bearing facts), Open items / immediate next, Read in this order, Suggested skills (+1 more)
 
 ### Community 31 - "Community 31"
-Cohesion: 0.18
-Nodes (10): Claim-by-claim map, Compare, Flags (real number shown; nothing rewritten), Headline verdict, Live numbers (now), Phase A . Congruence audit + reference map (Snapshot claims vs live R3 data), Primary & Kindy . What is working, Primary & Kindy . Where to focus next (+2 more)
+Cohesion: 0.22
+Nodes (8): DB tooling + gotchas, Docs synced, Handoff · Supabase data layer built (R3 in 2 rounds) + Humanities dept; dashboard next, Key corrections Igor insisted on (do not regress), Open items / immediate next, Read in this order, Suggested skills, What this session did: built the entire Supabase data layer
 
 ### Community 32 - "Community 32"
-Cohesion: 0.20
-Nodes (9): dependencies, enabledAdvancedServices, exceptionLogging, oauthScopes, runtimeVersion, timeZone, webapp, access (+1 more)
+Cohesion: 0.25
+Nodes (7): Confidence notes, Deployment / preview nuance, Goal, Open decisions, Part A · Backend (`Assets/R3/apps-script/02_doGet.gs`), Part B · Form (`Assets/R3/src/r3-evidence-form.html`), Phase 2 plan · in-form Observed / Not-yet-observed panels
 
 ### Community 33 - "Community 33"
 Cohesion: 0.25
-Nodes (7): filePushOrder, htmlExtensions, jsonExtensions, rootDir, scriptExtensions, scriptId, skipSubdirectories
+Nodes (7): Data-Representation · Teacher Observation Pitch, File map, Rating scale, Related, Status, Visibility, Worked example
 
 ### Community 34 - "Community 34"
 Cohesion: 0.12
@@ -199,17 +198,17 @@ Nodes (16): AIS Assessment Dashboard · Architecture Decision Record, Locked dec
 Cohesion: 0.15
 Nodes (12): 1. Job 1 DONE (Observed tab AVERAGE → BEST), 2. Dashboard design exploration, 3. Grilling COMPLETE (Q1-Q11), Build/tooling gotchas learned, Docs synced, Handoff · Job 1 shipped + dashboard concepts + grilling COMPLETE (next: Supabase build), Hard-won rules (carry forward), IMMEDIATE NEXT STEP: the Supabase build (steps 1-2 of Q11) (+4 more)
 
-### Community 38 - "Community 38"
-Cohesion: 0.25
-Nodes (7): Data-Representation · Teacher Observation Pitch, File map, Rating scale, Related, Status, Visibility, Worked example
+### Community 42 - "Community 42"
+Cohesion: 0.10
+Nodes (20): One-shot attempt (no loop), One-shot attempt (no loop), One-shot attempt (no loop), One-shot attempt (no loop), Same task through the loop, Same task through the loop, Same task through the loop, Same task through the loop (+12 more)
 
-### Community 39 - "Community 39"
-Cohesion: 0.29
-Nodes (6): How this connects to existing work, Implementation notes for whoever builds it (so the print path is correct first time), Printing / exporting the Snapshot dashboard . research (no implementation), Recommendation, The options, What we are printing, and why it is not trivial
+### Community 43 - "Community 43"
+Cohesion: 0.20
+Nodes (9): Core Loop, Data analysis, Domain-specific patterns, Fable Mode, Long-running / multi-session tasks, Research / knowledge work, Software engineering, What this skill doesn't do (+1 more)
 
-### Community 40 - "Community 40"
-Cohesion: 0.33
-Nodes (5): Contract, Dashboard Google Doc export (Phase D), Deploy (one time), Deployed 2026-06-24 (admin.user@ais.ae, via clasp), Redeploy after editing Code.gs
+### Community 44 - "Community 44"
+Cohesion: 0.20
+Nodes (9): Docs synced, Gotchas / how-to (saved to memory [[feedback_batch_and_verify_efficiently]]), Handoff · Dashboard Teacher page iterated to dash-v0.6 (best-skill-wins scoring, session-card redesign, subject/area, animations), Open / next, Other load-bearing facts added this session, Read in this order, Suggested skills, The FINAL scoring model (do not regress, Igor reversed once to get here) (+1 more)
 
 ## Ambiguous Edges - Review These
 - `Teacher Observation Pitch Deck (index.html)` → `Curtis All Portrait`  [AMBIGUOUS]
@@ -224,9 +223,9 @@ Nodes (5): Contract, Dashboard Google Doc export (Phase D), Deploy (one time), D
   SPEA Data Report/Lana Mosleh.jpg · relation: conceptually_related_to
 
 ## Knowledge Gaps
-- **320 isolated node(s):** `version`, `configurations`, `allow`, `generated`, `round` (+315 more)
+- **284 isolated node(s):** `allow`, `salt`, `scriptId`, `rootDir`, `scriptExtensions` (+279 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **11 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **10 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
@@ -242,6 +241,6 @@ _Questions this graph is uniquely positioned to answer:_
 - **What is the exact relationship between `Teacher Observation Pitch Deck (index.html)` and `Lana Mosleh Portrait`?**
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
 - **Why does `ce` connect `TomSelect Plugin Hooks` to `Pitch Deck Build & Bugs`?**
-  _High betweenness centrality (0.028) - this node is a cross-community bridge._
+  _High betweenness centrality (0.032) - this node is a cross-community bridge._
 - **Why does `R3 Evidence Form Master Source` connect `AIS Observation Forms & Scripts` to `TomSelect Item Selection`?**
-  _High betweenness centrality (0.006) - this node is a cross-community bridge._
+  _High betweenness centrality (0.007) - this node is a cross-community bridge._
