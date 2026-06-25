@@ -5,6 +5,13 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.39 . 2026-06-25
+- **Snapshot Report (Phase D, part 1): a "Report" button with Simple + In Depth, and Google Doc export.** The Report button (in the Snapshot tabs row) opens a menu: **Simple** (the current summaries + insights, laid out as a clean governance report; references stay behind the side-panel markers) or **In Depth** (a button + placeholder for now; the fuller evidence report is built next). Story / Detail return to the live snapshot.
+- **Make Google Doc.** Each report has its own export. It builds a real Google Doc from the **live** `get_narrative` payload via a small Apps Script web app (`dashboard/apps-script-export/`, runs as admin.user): a clean main tab that mirrors the on-screen report (no inline quotes) plus a real **References tab** (every source: subject, date, rating, quote, and a link to the locked R3 record), with each claim's number in the report linking to the References tab. If the live data is unreachable it blocks with a calm message rather than exporting a stale Doc. No password gate on export by design (Google SSO + roles later).
+- **Insights now have one source of truth.** The narrative text + references are read from Supabase (`narrative` / `narrative_ref`); the page keeps a baked copy in `data.js` only for instant first paint + offline, refreshed at publish time by `export_snapshot.mjs` (`window.__AIS_NARR_ITEMS`). The hand-typed `NARR` constant was removed; markers now show on first paint too.
+- Scope: Snapshot only. Coverage, Observations and Settings untouched. In Depth content + its Supabase data are the next step.
+- Rollback: `dash-v0.38`.
+
 ## v0.38 . 2026-06-23
 - **Settings is password-gated (popup on every open) and now saved to Supabase, applying on all devices.** Clicking the Settings nav pops a centered password modal (`#setGate`) over the current board; `showBoard` intercepts `settings` and opens it only after `verify_admin_password` succeeds (the SAME shared admin password as the R3 form, bcrypt server-side in `app_config`). It re-asks every time: `adminPw` is held only while in Settings and cleared on leaving, so each open re-prompts. Cancel / Esc / click-the-dim dismisses and stays on the previous board. The old inline lock card was removed.
 - **Light/dark toggle removed from Settings** (the floating round button, top right, is now the only theme control). Theme stays a per-device preference (localStorage).

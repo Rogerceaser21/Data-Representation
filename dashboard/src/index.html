@@ -866,6 +866,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
       <div class="vhist">
+        <div class="vrow"><span class="vtag">v0.39</span><span class="vnote">The Snapshot gains a Report button: choose the Simple report (the current summaries + insights, references behind the side panel) or, soon, the In Depth report. Each report can be exported to a real Google Doc that mirrors the on-screen layout (clean report in the main tab, every source in a References tab, and each claim's number links to it). The insight text and its references are now read from one place (Supabase), with the page only keeping a copy for instant loading. The In Depth report is a button for now and is built next.</span></div>
         <div class="vrow"><span class="vtag">v0.38</span><span class="vnote">Settings is now password-gated and saved to Supabase, so an admin change applies on every device. Clicking Settings pops up a password prompt (the same admin password as the R3 form, checked server-side); Settings opens only after it is entered, and it re-asks every time you open it. The light or dark toggle was removed from Settings, the round button top-right is now the only theme control. The star-field on/off, the three star sliders and the Snapshot auto-play are saved to Supabase (read on load, written when you change them); the password and the settings come from one shared place, so changing the password once moves both the dashboard and the R3 form.</span></div>
         <div class="vrow"><span class="vtag">v0.37</span><span class="vnote">Story controls moved up into the tabs row. The play / pause / step / dots / Present controls are now a compact pill between the Primary & Kindy phase toggle and the Story / Detail toggle (they were a larger bar below the stage). Smaller buttons; they show only on the Story view and still float to the bottom in Present. Layout only; the controls and dashboard logic are unchanged.</span></div>
         <div class="vrow"><span class="vtag">v0.36</span><span class="vnote">Print rendering fixes (print only; the on-screen dashboard is unchanged). Background colours are now forced to print, so the charts, bars, dots, gauges and the navy cover slide are no longer blank on paper. Story slides anchor each slide's picture and figures to their own page instead of piling up at the bottom. The Coverage stat cards hug their text and wrap rather than stretching across the full page. Bars print at their final size.</span></div>
@@ -923,7 +924,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
   </div>
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.38</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.39</span></span>
   </div>
 </div>
 
