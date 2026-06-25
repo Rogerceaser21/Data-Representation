@@ -101,6 +101,7 @@ function buildDoc(model) {
         var meta = refMeta(r);
         if (meta) mainBody.appendParagraph(meta).setIndentStart(18).editAsText().setFontSize(9).setForegroundColor(GREY);
         if (r.quote) mainBody.appendParagraph('“' + r.quote + '”').setIndentStart(18).editAsText().setItalic(true).setFontSize(10).setForegroundColor(INK);
+        if (r.explanation) mainBody.appendParagraph('Why this counts. ' + r.explanation).setIndentStart(18).editAsText().setFontSize(9).setForegroundColor(GREY);
         if (r.url) { var lp = mainBody.appendParagraph('Open the R3 record'); lp.setIndentStart(18); lp.editAsText().setLinkUrl(0, lp.getText().length - 1, r.url).setFontSize(9).setForegroundColor(LINK); }
       });
     });
@@ -164,6 +165,7 @@ function writeRefsTab(docId, tabId, entries) {
       var meta = refMeta(r);
       if (meta) ins(meta + '\n', { color: GREY, size: 9, indent: 18 });
       if (r.quote) ins('“' + r.quote + '”\n', { italic: true, color: INK, size: 10, indent: 18 });
+      if (r.explanation) ins('Why this counts. ' + r.explanation + '\n', { color: GREY, size: 9, indent: 18 });
       if (r.url) ins('Open the R3 record\n', { link: r.url, color: LINK, size: 9, indent: 18 });
     });
   });
