@@ -877,6 +877,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
       <div class="vhist">
+        <div class="vrow"><span class="vtag">v0.43</span><span class="vnote">Each governor summary in the "How to move Acceptable to Good" section now carries its own evidence marker (it was the only claim without one). The marker opens a representative, balanced set of the supporting lessons drawn from that phase's coaching directions, so the summary is backed like every other statement in the report.</span></div>
         <div class="vrow"><span class="vtag">v0.42</span><span class="vnote">The In Depth report gains a "How to move Acceptable to Good" section (In Depth only). For Primary & Kindy and for Secondary it gives a short governor summary plus a set of "Where Coaching Could Help" directions, each grounded in the AIS progress rubric and this round's evidence: what the Good and better lessons did that the Acceptable ones were noted as missing, with the concrete move and a "what good looks like" indicator. All supporting lessons sit behind the marker (6 to 17 each, no teacher names). Built from the live R3 data and stored round-scoped in Supabase so it recompiles next round.</span></div>
         <div class="vrow"><span class="vtag">v0.41</span><span class="vnote">The In Depth report now uses the same readable layout as the Simple report (the summaries, bullets and insights, with each claim's evidence behind the numbered markers in the side panel) instead of printing every quote inline, which was hard to read. For now In Depth reads almost the same as Simple; it will diverge later when the Acceptable to Good recommendations and a summary are added to it. The comprehensive references and their "why this counts" notes are unchanged and still power the markers and the Google Doc export.</span></div>
         <div class="vrow"><span class="vtag">v0.40</span><span class="vnote">In Depth report built, with comprehensive evidence. Every statement is now backed by all of its supporting lessons, not a sample (the routines bullet went from 2 to 17, 493+ references in total), and each reference carries a short "why this counts" note. The Report menu's In Depth view shows every claim with all its evidence printed inline (quote + why + R3 form link); Simple keeps it behind the markers. Any statement with five or fewer proofs was kept only where it is small by design; the one genuinely thin "areas to focus" bullet was replaced with a provable one about lesson pace and time management. References + notes are stored in Supabase (comparable next round) and both reports export to a Google Doc.</span></div>
@@ -938,7 +939,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
   </div>
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.42</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.43</span></span>
   </div>
 </div>
 
@@ -1299,7 +1300,7 @@ function buildNarrFromItems(items){try{
 /* In Depth coaching recommendations (section='coaching'): a governor summary + ordered points per phase. */
 function buildRecsFromItems(items){const r={primary_kindy:{summary:'',points:[]},secondary:{summary:'',points:[]}};
   try{items.filter(it=>it.section==='coaching').sort((a,b)=>(a.ord||0)-(b.ord||0)).forEach(it=>{const ph=r[it.phase];if(!ph)return;
-    if(it.kind==='summary')ph.summary=it.text;else if(it.kind==='recommendation')ph.points.push(it.slug);});}catch(e){}
+    if(it.kind==='summary'){ph.summary=it.text;ph.summarySlug=it.slug;}else if(it.kind==='recommendation')ph.points.push(it.slug);});}catch(e){}
   return r;}
 /* shared by the baked load (synchronously, just below) and the live upgrade (loadNarrative): turn the
    flat get_narrative items into REF_INDEX (slug -> {text,kind,method,refs}) + NARR. Returns true if applied. */
@@ -1466,7 +1467,7 @@ function recPoint(slug){const e=REF_INDEX[slug];if(!e||!e.text)return '';
   let look='';const lm=rest.match(/Look for:\s*[\s\S]*$/);if(lm){look=lm[0];rest=rest.slice(0,lm.index).trim();}
   return `<div class="rec-i"><p class="rec-h">${esc(head)}${refMark(slug)}</p>${rest?`<p class="rec-b">${esc(rest)}</p>`:''}${look?`<p class="rec-look">${esc(look)}</p>`:''}</div>`;}
 function recPhase(phase,label){const R=RECS[phase];if(!R||!R.points.length)return '';
-  return `<div class="rec-phase"><h4 class="rep-gh">${esc(label)}</h4>${R.summary?`<p class="rec-gov">${esc(R.summary)}</p>`:''}
+  return `<div class="rec-phase"><h4 class="rep-gh">${esc(label)}</h4>${R.summary?`<p class="rec-gov">${esc(R.summary)}${R.summarySlug?refMark(R.summarySlug):''}</p>`:''}
     <div class="rep-insh" style="color:var(--g)">Where Coaching Could Help</div>
     <div class="rec-list">${R.points.map(recPoint).join('')}</div></div>`;}
 function recsSection(){const has=(RECS.primary_kindy&&RECS.primary_kindy.points.length)||(RECS.secondary&&RECS.secondary.points.length);if(!has)return '';

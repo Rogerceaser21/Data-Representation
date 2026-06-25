@@ -5,6 +5,11 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.43 . 2026-06-25
+- **The two governor summaries in the In Depth coaching section now carry their own evidence marker.** They were the only claims in the section without one. Each marker opens a representative, balanced set of supporting lessons (a round-robin across that phase's coaching directions, deduped to lessons, up to 12), so the summary is backed like every other statement. New `narrative_ref` rows for `pk_coach_sum` / `secondary_coach_sum`; the front-end renders the marker on `.rec-gov`.
+- Scope: In Depth coaching section only. Verified in preview: both summaries show a 12-source marker that opens the panel, no console errors.
+- Rollback: `dash-v0.42`.
+
 ## v0.42 . 2026-06-25
 - **In Depth gains a "How to move Acceptable to Good" coaching section (In Depth only).** For each phase (Primary & Kindy, Secondary) it shows a governor summary plus a set of "Where Coaching Could Help" directions. Each direction is grounded in the AIS progress rubric (the coaching Google Doc) and this round's written evidence: it names what the Good and better lessons did that the Acceptable lessons were flagged for missing, with the concrete classroom move and a "what good looks like" indicator. All supporting lessons sit behind the numbered marker (Good+ exemplars + Acceptable-gap lessons; 6 to 17 each; no teacher names).
 - **Stored in Supabase, round-scoped.** New `narrative` rows (`section='coaching'`, kind `summary` + `recommendation`) + `narrative_ref` evidence, so the section recompiles for the next round and feeds the reusable prompt. No schema or RPC change (the generic `get_narrative` carries them); baked into `data.js` for first paint. Tooling: `db/recs_prep.mjs` + `db/recs_seed.mjs`.
