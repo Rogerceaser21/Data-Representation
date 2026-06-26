@@ -5,6 +5,11 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.46 . 2026-06-26
+- **The coaching section now explicitly references the AIS progress rubric, using BOTH of its aspects.** "How to move Acceptable to Good" is anchored to the rubric (cited + linked) and frames progression on the rubric's two aspects: **Progress in Lessons** (the outcome, Acceptable to Good) and **Facilitating better than expected progress** (the teaching behaviour). Each direction now shows the move + the Facilitating rubric descriptor it strengthens + the R3 evidence. The In Depth Google Doc carries the same.
+- Stored round-scoped in Supabase (a coaching intro row + a rubric descriptor per direction in `narrative.method`) so it carries into the Doc and the future next-round prompt.
+- Scope: the In Depth coaching section only (on-screen + Doc). Rollback: `dash-v0.45`.
+
 ## v0.45 . 2026-06-25
 - **Doc design reworked to the approved AIS-branded concept (v3)** after the first pass read as incoherent (clashing colours, mixed bullets/numbers, stray italics): Playfair Display headings + Lato body, AIS navy with a gold accent (green/terracotta kept only on the What-is-working / Where-to-focus labels), one consistent bullet style, a stat callout, insight cards, and the first tab renamed "Report". Three concepts were mocked up and reviewed; Igor picked v3. Apps Script redeployed in place.
 - **Both reports export to a styled Google Doc with the navy cover.** The Simple Doc is card-styled (white page, the cover image, each section in a 1-cell-table card) to mirror the on-screen report; the In Depth Doc is a formal report (cover, a Contents list, then In summary, the phases, the comparison, and How to move Acceptable to Good). Every claim still ends with a numbered marker linked to a real References tab.

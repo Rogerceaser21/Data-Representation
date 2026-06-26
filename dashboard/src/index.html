@@ -459,6 +459,8 @@ svg{display:block;overflow:visible}
 .rec-h{margin:0;font-size:15px;line-height:1.5;color:var(--ink);font-weight:700}
 .rec-b{margin:6px 0 0;font-size:13.5px;line-height:1.6;color:var(--ink-mid)}
 .rec-look{margin:8px 0 0;font-size:12.5px;line-height:1.5;color:var(--g);font-weight:600}
+.rec-rubric{margin:7px 0 0;font-size:12px;line-height:1.5;color:var(--ink-mid)}
+.rec-rubric b{color:#9a7320;font-weight:700}
 .rep-exec{margin-bottom:36px}
 .exec-lead{font-size:15.5px;line-height:1.6;color:var(--ink);margin:0 0 14px;padding:14px 18px;background:var(--panel);border:1px solid var(--edge-soft);border-radius:12px}
 .exec-pts{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
@@ -881,6 +883,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
       <div class="vhist">
+        <div class="vrow"><span class="vtag">v0.46</span><span class="vnote">The "How to move Acceptable to Good" section now explicitly grounds each direction in the AIS progress rubric's two aspects: Progress in Lessons (the outcome, Acceptable to Good) and Facilitating better than expected progress (the teaching behaviour, quoted under each direction). The section is anchored to and links the rubric, and the In Depth Google Doc carries the same. Stored round-scoped so it feeds the next-round prompt.</span></div>
         <div class="vrow"><span class="vtag">v0.45</span><span class="vnote">Both reports now export to a styled Google Doc with the navy cover image. The Simple Doc is the "pretty" one: a white page with each section in a card, matching the on-screen report. The In Depth Doc is a formal report: the same cover, a Contents list, then the full report (In summary, the two phases, the comparison, and How to move Acceptable to Good). References stay in a linked References tab in both. (Cards are square-cornered and the Contents is a list, both Google Docs limits.)</span></div>
         <div class="vrow"><span class="vtag">v0.44</span><span class="vnote">The In Depth report now opens with an executive summary ("In summary"): a short lead giving the round's picture and the shape behind the average (about half of lessons Good or better, about a third Acceptable, about one in ten below), then four headline points, the most consistent strength, the main focus, the Primary versus Secondary contrast, and the move to Good by phase, each backed by its evidence behind a marker. In Depth only.</span></div>
         <div class="vrow"><span class="vtag">v0.43</span><span class="vnote">Each governor summary in the "How to move Acceptable to Good" section now carries its own evidence marker (it was the only claim without one). The marker opens a representative, balanced set of the supporting lessons drawn from that phase's coaching directions, so the summary is backed like every other statement in the report.</span></div>
@@ -945,7 +948,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
   </div>
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.45</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.46</span></span>
   </div>
 </div>
 
@@ -1263,7 +1266,7 @@ let NARR={primary_kindy:{strengths:MIN_SEC(),develop:MIN_SEC()},secondary:{stren
    REF_INDEX (slug -> {text,kind,method,refs[]}) comes from Supabase via loadNarrative(); empty
    until then, so markers are pure progressive enhancement (no Supabase -> no markers, baked text). */
 let REF_INDEX={};
-let RECS={primary_kindy:{summary:'',points:[]},secondary:{summary:'',points:[]}};   // In Depth coaching (section='coaching')
+let RECS={intro:'',primary_kindy:{summary:'',points:[]},secondary:{summary:'',points:[]}};   // In Depth coaching (section='coaching')
 let SUMMARY={lead:'',leadSlug:'',points:[]};   // In Depth executive summary (section='summary')
 const PH_AB={primary_kindy:'pk',secondary:'sec'},SEC_AB={strengths:'str',develop:'dev'};
 const SEAS_WORD={1:'Outstanding',2:'Very Good',3:'Good',4:'Acceptable',5:'Weak',6:'Very Weak'};
@@ -1305,8 +1308,10 @@ function buildNarrFromItems(items){try{
   const ok=okSec(n.primary_kindy.strengths)&&okSec(n.primary_kindy.develop)&&okSec(n.secondary.strengths)&&okSec(n.secondary.develop)&&n.compare.filter(Boolean).length===3;
   return {ok,narr:n};}catch(e){return {ok:false};}}
 /* In Depth coaching recommendations (section='coaching'): a governor summary + ordered points per phase. */
-function buildRecsFromItems(items){const r={primary_kindy:{summary:'',points:[]},secondary:{summary:'',points:[]}};
-  try{items.filter(it=>it.section==='coaching').sort((a,b)=>(a.ord||0)-(b.ord||0)).forEach(it=>{const ph=r[it.phase];if(!ph)return;
+function buildRecsFromItems(items){const r={intro:'',primary_kindy:{summary:'',points:[]},secondary:{summary:'',points:[]}};
+  try{items.filter(it=>it.section==='coaching').sort((a,b)=>(a.ord||0)-(b.ord||0)).forEach(it=>{
+    if(it.kind==='intro'){r.intro=it.text;return;}
+    const ph=r[it.phase];if(!ph)return;
     if(it.kind==='summary'){ph.summary=it.text;ph.summarySlug=it.slug;}else if(it.kind==='recommendation')ph.points.push(it.slug);});}catch(e){}
   return r;}
 /* In Depth executive summary (section='summary'): a lead (kind='summary') + ordered synthesis points. */
@@ -1479,14 +1484,14 @@ function renderInDepth(){renderSimpleReport('indepth');}
 function recPoint(slug){const e=REF_INDEX[slug];if(!e||!e.text)return '';
   const t=e.text;const m=t.match(/^(.*?\.)\s+([\s\S]*)$/);let head=m?m[1]:t,rest=m?m[2]:'';
   let look='';const lm=rest.match(/Look for:\s*[\s\S]*$/);if(lm){look=lm[0];rest=rest.slice(0,lm.index).trim();}
-  return `<div class="rec-i"><p class="rec-h">${esc(head)}${refMark(slug)}</p>${rest?`<p class="rec-b">${esc(rest)}</p>`:''}${look?`<p class="rec-look">${esc(look)}</p>`:''}</div>`;}
+  return `<div class="rec-i"><p class="rec-h">${esc(head)}${refMark(slug)}</p>${rest?`<p class="rec-b">${esc(rest)}</p>`:''}${e.method?`<p class="rec-rubric"><b>AIS rubric &middot; Facilitating:</b> ${esc(e.method)}</p>`:''}${look?`<p class="rec-look">${esc(look)}</p>`:''}</div>`;}
 function recPhase(phase,label){const R=RECS[phase];if(!R||!R.points.length)return '';
   return `<div class="rec-phase"><h4 class="rep-gh">${esc(label)}</h4>${R.summary?`<p class="rec-gov">${esc(R.summary)}${R.summarySlug?refMark(R.summarySlug):''}</p>`:''}
     <div class="rep-insh" style="color:var(--g)">Where Coaching Could Help</div>
     <div class="rec-list">${R.points.map(recPoint).join('')}</div></div>`;}
 function recsSection(){const has=(RECS.primary_kindy&&RECS.primary_kindy.points.length)||(RECS.secondary&&RECS.secondary.points.length);if(!has)return '';
   return `<section class="rep-sec rep-recs"><h3 class="rep-h">How to move Acceptable to Good</h3>
-    <div class="rec-intro">Grounded in the AIS progress rubric and this round's written evidence. Acceptable lessons hold most students at expected progress; the move to Good is a majority making better than expected progress. Each direction shows what the Good and better lessons did, with the supporting lessons behind the marker. Identifying teacher details are withheld.</div>
+    <div class="rec-intro">${esc(RECS.intro||"Anchored to the AIS progress rubric and this round's written evidence; each direction names the Facilitating behaviour it strengthens to lift Progress in Lessons from Acceptable to Good.")} <a class="reflink" href="${RUBRIC_URL}" target="_blank" rel="noopener">View the AIS progress rubric ${I_ARROW}</a></div>
     ${recPhase('primary_kindy','Primary & Kindy')}
     ${recPhase('secondary','Secondary')}</section>`;}
 /* In Depth ONLY: the executive summary at the top. Lead = the round picture + distribution (numbers,
@@ -1509,6 +1514,7 @@ function wireExport(){const b=byId('repExport');if(b&&!b.disabled)b.onclick=expo
    No password gate here by design: access will be Google SSO + roles later (Igor, answer 3=no gate). */
 const DOC_EXPORT_URL='https://script.google.com/macros/s/AKfycbxyU02PN9ZdOzVW45XaiL_4lsvU_FqtDy9f_kEtv7sVuMzVmNQW3Oe2w7TBrvtZtO1j/exec';   // Apps Script Google Doc builder (admin.user), deployed 2026-06-24
 const DOC_COVER_URL='https://rogerceaser21.github.io/Data-Representation/dashboard/assets/report-cover.png';   // navy cover for the exported Docs (public Pages asset)
+const RUBRIC_URL='https://docs.google.com/document/d/1j-W83HKfirTVboOEM0iFqWzAfTufV-7miPjVgAsnbd0/edit';   // AIS progress rubric the coaching section is anchored to
 const R3_VIEWER_BASE='https://rogerceaser21.github.io/Data-Representation/Assets/R3/r3-record.html';
 function repStatus(msg,kind){const btn=byId('repExport');if(!btn)return;let n=byId('repExportMsg');
   if(!n){n=document.createElement('span');n.id='repExportMsg';n.className='repmsg';btn.insertAdjacentElement('afterend',n);}
@@ -1520,7 +1526,7 @@ async function fetchLiveNarrative(){if(!SB_URL||SB_URL.indexOf('http')!==0)retur
 function buildDocModel(items,kind){const bySlug={};items.forEach(it=>bySlug[it.slug]=it);
   const refOf=r=>({area:r.area||r.subject||'',date:r.observed_on||'',progress:SEAS_WORD[r.progress]||'',quote:r.quote||'',explanation:r.explanation||'',
     url:(r.record_id&&r.record_token)?(R3_VIEWER_BASE+'?id='+encodeURIComponent(r.record_id)+'&token='+encodeURIComponent(r.record_token)):''});
-  const claim=slug=>{const e=bySlug[slug];return e?{text:e.text,refs:(e.refs||[]).map(refOf)}:null;};
+  const claim=slug=>{const e=bySlug[slug];return e?{text:e.text,method:e.method||'',refs:(e.refs||[]).map(refOf)}:null;};
   const sline=a=>`${a.lessons} lessons, ${a.teachers} teachers, average progress ${wordOf(a.avgBest)}${a.avgBest!=null?' ('+a.avgBest.toFixed(1)+' of 6)':''}`;
   const grp=(phase,section)=>({evidence:claim(navSlug(phase,section,'evidence')),summary:claim(navSlug(phase,section,'summary')),
     bullets:[0,1,2,3,4].map(i=>claim(navSlug(phase,section,'bullet',i))).filter(Boolean),
@@ -1532,7 +1538,7 @@ function buildDocModel(items,kind){const bySlug={};items.forEach(it=>bySlug[it.s
                   Object.assign({label:'Secondary'},coachPhase('secondary_coach_sum','sec_coach_'))];
   return {kind:kind||'simple',cover:DOC_COVER_URL,round:SNAP_ROUND,generated_on:D.generated_on,scope:sline(snapAgg('all')),
     method:'Average progress is the best (highest) progress rating recorded for each teacher, then averaged across teachers. A lesson observed by two inspectors is counted once, with the stronger evidence kept. Scope is the '+SNAP_ROUND+' round only.',
-    summary:summary,coaching:coaching,
+    summary:summary,coaching:coaching,coachingIntro:(bySlug['coach_intro']||{}).text||'',rubricUrl:RUBRIC_URL,
     phases:[phaseSec('primary_kindy'),phaseSec('secondary')],compare:[0,1,2].map(i=>claim('cmp_'+i)).filter(Boolean)};}
 async function exportDoc(){const btn=byId('repExport');if(!btn||btn.disabled)return;
   if(snapReport!=='simple'&&snapReport!=='indepth')return;

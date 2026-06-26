@@ -216,11 +216,16 @@ function buildInDepth(body, model, marker) {
   // 5 coaching
   if (model.coaching && model.coaching.length) {
     sectionHead(body, 'How to move Acceptable to Good', 5);
+    if (model.coachingIntro) P(body, model.coachingIntro, { font: LATO, size: 11, italic: true, color: MUTED, spaceAfter: 3 });
+    if (model.rubricUrl) { var rl = P(body, 'View the AIS progress rubric', { font: LATO, size: 10, color: LINK, spaceAfter: 6 }); rl.editAsText().setLinkUrl(0, rl.getText().length - 1, model.rubricUrl); }
     model.coaching.forEach(function (cp) {
       P(body, cp.label || '', { font: PLAY, heading: SH2, color: INK, spaceBefore: 8, spaceAfter: 3 });
       if (cp.summary) marker(P(body, cp.summary.text, { font: LATO, size: 12, bold: true, color: INK, spaceAfter: 4 }), cp.summary);
       P(body, 'WHERE COACHING COULD HELP', { font: LATO, size: 10, bold: true, color: GREEN, spaceAfter: 3 });
-      (cp.points || []).forEach(function (pt) { var p = P(body, pt.text, { font: LATO, size: 11.5, color: INK, bullet: true }); boldLead(p); marker(p, pt); });
+      (cp.points || []).forEach(function (pt) {
+        var p = P(body, pt.text, { font: LATO, size: 11.5, color: INK, bullet: true }); boldLead(p); marker(p, pt);
+        if (pt.method) { var rb = P(body, 'AIS rubric, Facilitating: ' + pt.method, { font: LATO, size: 10, color: MUTED, indent: 18 }); var lbl = 'AIS rubric, Facilitating:'.length; rb.editAsText().setBold(0, lbl - 1, true).setForegroundColor(0, lbl - 1, GOLD); }
+      });
     });
   }
 }
