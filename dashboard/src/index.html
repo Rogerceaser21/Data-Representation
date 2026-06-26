@@ -428,6 +428,39 @@ svg{display:block;overflow:visible}
 .repmi{font:inherit;font-size:13px;font-weight:600;color:var(--ink);background:transparent;border:0;border-radius:10px;padding:9px 12px;text-align:left;cursor:pointer;transition:.15s}
 .repmi:hover{background:var(--panel-2)}
 .repmi .sub{display:block;font-size:11px;font-weight:500;color:var(--ink-mid);margin-top:2px}
+/* v0.47: uniform sizing for the snapshot tab-row controls (phase tabs / Story-Detail / Present / Report / report-page tabs) so they read as one set. The round step controls (prev/play/next, A-/A+) are intentionally left as icon buttons. */
+.tabsrow .phasetabs,.tabsrow .viewtabs,#reportTabs .rtabset{height:38px;align-items:center;padding:0 5px;border-radius:22px;margin:0}
+.tabsrow .ptab,.tabsrow .vtab,#reportTabs .rtab{font:inherit;font-size:13px;font-weight:600;letter-spacing:0;text-transform:none;height:30px;padding:0 16px;display:inline-flex;align-items:center;border-radius:16px;white-space:nowrap}
+.tabsrow .repbtn,.tabsrow .sbtn.wide,#reportTabs .repback{height:38px;border-radius:22px;font:inherit;font-size:13px;font-weight:600;letter-spacing:0;text-transform:none;padding:0 16px;display:inline-flex;align-items:center}
+/* report-page control row: Back + Simple/In Depth, replacing the dropdown once inside a report (v0.47) */
+#reportTabs{flex:1;display:flex;align-items:center;justify-content:space-between;gap:14px}
+#reportTabs[hidden]{display:none}
+.rtabset{display:inline-flex;gap:4px;background:var(--panel);border:1px solid var(--edge-soft)}
+.rtab{background:transparent;border:0;color:var(--ink-mid);cursor:pointer;transition:.2s}
+.rtab:hover{color:var(--ink)}
+.rtab.on{background:var(--panel-2);color:var(--ink);box-shadow:0 2px 12px -5px var(--shadow)}
+.repback{background:var(--panel);border:1px solid var(--edge-soft);color:var(--ink-mid);cursor:pointer;transition:.2s}
+.repback:hover{color:var(--ink);border-color:var(--y);transform:translateY(-1px)}
+/* v0.47: the report is a clean monochrome governance document (no green/terracotta/gold accents in the body) */
+.rep .big em{color:var(--ink);text-shadow:none;font-style:italic}
+.rep .rec-look{color:var(--ink-mid)}
+.rep .rec-rubric b{color:var(--ink)}
+/* v0.47: admin Settings gate restyled to match the R3 form's admin card (gradient top-bar, AIS·Admin eyebrow, Settings heading, framed input, ghost Close + green Unlock) */
+#setGate .modalcard{overflow:hidden;width:min(94vw,430px);padding:26px 26px 24px}
+#setGate .modalcard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--r),var(--y),var(--g))}
+#setGate .ad-eyebrow{display:inline-flex;align-items:center;gap:.7em;font-size:10.5px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:var(--r);margin-bottom:12px}
+#setGate .ad-eyebrow::before{content:'';width:30px;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--r),var(--y),var(--g))}
+#setGate .ad-h{font-family:var(--display);font-weight:600;font-size:26px;line-height:1.08;letter-spacing:-.01em;color:var(--ink);margin:0 0 2px}
+#setGate .ad-label{display:block;font-size:10.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-mid);margin:16px 0 7px}
+#setGate input{width:100%;box-sizing:border-box;background:var(--panel-2);border:1px solid var(--edge);border-radius:11px;outline:0;color:var(--ink);font-family:var(--display);font-size:16px;padding:11px 14px;transition:border-color .2s,background .2s}
+#setGate input::placeholder{color:var(--ink-faint);font-style:italic}
+#setGate input:focus{border-color:var(--g)}
+#setGate .ad-row{display:flex;gap:10px;margin-top:18px}
+#setGate .ad-btn{flex:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font:inherit;font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;padding:11px 14px;border-radius:999px;border:1px solid var(--g);background:var(--g);color:#fff;box-shadow:0 10px 24px -12px color-mix(in srgb,var(--g) 60%,transparent);transition:.2s}
+#setGate .ad-btn:hover{filter:brightness(1.06);transform:translateY(-1px)}
+#setGate .ad-btn.ghost{background:transparent;border-color:var(--edge);color:var(--ink-dim);box-shadow:none}
+#setGate .ad-btn.ghost:hover{color:var(--ink);border-color:var(--ink-mid);background:var(--panel-2)}
+#setGate .ad-status{min-height:1.1rem;margin-top:12px;font-size:12.5px;color:var(--r5);font-weight:600}
 .rep-top{display:flex;justify-content:space-between;align-items:flex-start;gap:18px}
 .rep-th{flex:1;min-width:0}
 .rep{max-width:860px;margin:0 auto;padding:10px 4px 44px;color:var(--ink)}
@@ -692,6 +725,14 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
           <button class="repmi" type="button" data-report="indepth">In Depth<span class="sub">Full evidence report</span></button>
         </div>
       </div>
+      <!-- report-page controls (v0.47): shown only inside a report, replacing the dropdown + Story/Detail -->
+      <div id="reportTabs" hidden>
+        <button class="repback" id="repBack" type="button">&#8592; Back</button>
+        <div class="rtabset">
+          <button class="rtab on" id="repSimple" type="button" data-report="simple">Simple</button>
+          <button class="rtab" id="repIndepth" type="button" data-report="indepth">In Depth</button>
+        </div>
+      </div>
     </div>
 
     <!-- STORY view (animated narrative, default) -->
@@ -882,6 +923,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
     </div>
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
+        <div class="vrow"><span class="vtag">v0.47</span><span class="vnote">Report and Snapshot buttons tidied. Opening a report is now its own page (the link reads /dashboard/#report): the Story and Detail toggle and the dropdown are replaced by a Back button plus a Simple / In Depth switch. The report body is now a clean monochrome document, with the green, terracotta and gold accents on its headings, numbers and the R3 title removed. On the live Snapshot the phase tabs, Story / Detail, Present and Report buttons are all one uniform size. And the admin Settings password popup is restyled to match the R3 form's admin card (gradient top bar, AIS Admin eyebrow, framed input, Close and Unlock).</span></div>
       <div class="vhist">
         <div class="vrow"><span class="vtag">v0.46</span><span class="vnote">The "How to move Acceptable to Good" section now explicitly grounds each direction in the AIS progress rubric's two aspects: Progress in Lessons (the outcome, Acceptable to Good) and Facilitating better than expected progress (the teaching behaviour, quoted under each direction). The section is anchored to and links the rubric, and the In Depth Google Doc carries the same. Stored round-scoped so it feeds the next-round prompt.</span></div>
         <div class="vrow"><span class="vtag">v0.45</span><span class="vnote">Both reports now export to a styled Google Doc with the navy cover image. The Simple Doc is the "pretty" one: a white page with each section in a card, matching the on-screen report. The In Depth Doc is a formal report: the same cover, a Contents list, then the full report (In summary, the two phases, the comparison, and How to move Acceptable to Good). References stay in a linked References tab in both. (Cards are square-cornered and the Contents is a list, both Google Docs limits.)</span></div>
@@ -936,19 +978,20 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
   <!-- Admin password gate (pops up on every Settings click; Settings opens only after verify) -->
   <div class="modal" id="setGate" hidden>
     <div class="modalcard">
-      <button class="modalx" id="setGateX" type="button" aria-label="Cancel">&times;</button>
-      <div class="ey">Admin settings</div>
-      <p class="subtle" style="margin:6px 0 14px;line-height:1.6">Enter the admin password (the same one as the R3 form) to open Settings.</p>
-      <div class="setrow">
-        <input type="password" id="setPw" placeholder="Admin password" autocomplete="off">
-        <button class="sbtn wide" id="setUnlock" type="button">Unlock</button>
+      <span class="ad-eyebrow">AIS &middot; Admin</span>
+      <h2 class="ad-h">Settings</h2>
+      <label class="ad-label" for="setPw">Administrator password</label>
+      <input type="password" id="setPw" placeholder="Enter password" autocomplete="off" spellcheck="false">
+      <div class="ad-row">
+        <button class="ad-btn ghost" id="setGateClose" type="button">Close</button>
+        <button class="ad-btn" id="setUnlock" type="button">Unlock</button>
       </div>
-      <p class="subtle" id="setErr" hidden style="color:var(--r5);margin-top:10px">That password did not match. Try again.</p>
+      <p class="ad-status" id="setErr" hidden>That password did not match. Try again.</p>
     </div>
   </div>
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.46</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.47</span></span>
   </div>
 </div>
 
@@ -1429,6 +1472,8 @@ function renderSnapshot(){
   byId('reportBtn').classList.toggle('on',inReport);
   // a Report is one full document, all phases at once -> hide the phase tabs + story controls + the board header (the report carries its own title); Story/Detail stay so you can go back
   byId('phaseTabs').hidden=inReport;
+  byId('viewTabs').hidden=inReport;byId('reportWrap').hidden=inReport;byId('reportTabs').hidden=!inReport;   // in a report: drop Story/Detail + the dropdown, show Back + Simple/In Depth
+  if(inReport)document.querySelectorAll('#reportTabs .rtab').forEach(b=>b.classList.toggle('on',b.dataset.report===snapReport));
   const sh=byId('v-snapshot').querySelector('.snaphead');if(sh)sh.hidden=inReport;
   byId('snapReport').hidden=!inReport;
   if(inReport){pauseStory();byId('snapStory').hidden=true;byId('snapDetail').hidden=true;byId('storyCtl').hidden=true;
@@ -1444,7 +1489,7 @@ function renderSnapshot(){
    Acceptable->Good recommendations + a Summary are added to it). */
 function renderSimpleReport(kind){
   const host=byId('snapReport');if(!host)return;const all=snapAgg('all');
-  const scope=a=>`${a.lessons} lessons . ${a.teachers} teachers . average progress <b style="color:${colOf(a.avgBest)}">${esc(wordOf(a.avgBest))}</b>${a.avgBest!=null?' ('+a.avgBest.toFixed(1)+' of 6)':''}`;
+  const scope=a=>`${a.lessons} lessons . ${a.teachers} teachers . average progress <b>${esc(wordOf(a.avgBest))}</b>${a.avgBest!=null?' ('+a.avgBest.toFixed(1)+' of 6)':''}`;
   const grp=(phase,section,label,N2,colVar)=>`<div class="rep-grp">
       <h4 class="rep-gh" style="color:${colVar}">${label}</h4>
       <p class="rep-ev">${esc(N2.evidence)}${refMark(navSlug(phase,section,'evidence'))}</p>
@@ -1456,11 +1501,11 @@ function renderSimpleReport(kind){
   const sec=phase=>{const a=snapAgg(phase),N=NARR[phase];return `<section class="rep-sec">
       <h3 class="rep-h">${esc(PHASE_LABEL[phase])}</h3>
       <div class="rep-scope">${scope(a)}</div>
-      ${grp(phase,'strengths','What is working',N.strengths,'var(--g)')}
-      ${grp(phase,'develop','Where to focus next',N.develop,'var(--r5)')}
+      ${grp(phase,'strengths','What is working',N.strengths,'var(--ink)')}
+      ${grp(phase,'develop','Where to focus next',N.develop,'var(--ink)')}
     </section>`;};
   const cmp=`<section class="rep-sec"><h3 class="rep-h">Primary &amp; Kindy compared with Secondary</h3>
-      <div class="rep-ins">${NARR.compare.map((t,i)=>`<div class="rep-i"><span class="rin" style="color:var(--y)">${i+1}</span><p>${esc(t)}${refMark('cmp_'+i)}</p></div>`).join('')}</div></section>`;
+      <div class="rep-ins">${NARR.compare.map((t,i)=>`<div class="rep-i"><span class="rin" style="color:var(--ink)">${i+1}</span><p>${esc(t)}${refMark('cmp_'+i)}</p></div>`).join('')}</div></section>`;
   host.innerHTML=`<div class="rep">
     <div class="rep-top"><div class="rep-th"><div class="rep-kick">Governance report . ${kind==='indepth'?'In Depth':'Simple'}</div><h2 class="big">The June <em>R3</em> picture.</h2>
       <div class="rep-meta">AIS Sharjah . ${esc(SNAP_ROUND)} . generated ${esc(D.generated_on)}</div></div>${exportBtnHTML()}</div>
@@ -1487,7 +1532,7 @@ function recPoint(slug){const e=REF_INDEX[slug];if(!e||!e.text)return '';
   return `<div class="rec-i"><p class="rec-h">${esc(head)}${refMark(slug)}</p>${rest?`<p class="rec-b">${esc(rest)}</p>`:''}${e.method?`<p class="rec-rubric"><b>AIS rubric &middot; Facilitating:</b> ${esc(e.method)}</p>`:''}${look?`<p class="rec-look">${esc(look)}</p>`:''}</div>`;}
 function recPhase(phase,label){const R=RECS[phase];if(!R||!R.points.length)return '';
   return `<div class="rec-phase"><h4 class="rep-gh">${esc(label)}</h4>${R.summary?`<p class="rec-gov">${esc(R.summary)}${R.summarySlug?refMark(R.summarySlug):''}</p>`:''}
-    <div class="rep-insh" style="color:var(--g)">Where Coaching Could Help</div>
+    <div class="rep-insh" style="color:var(--ink)">Where Coaching Could Help</div>
     <div class="rec-list">${R.points.map(recPoint).join('')}</div></div>`;}
 function recsSection(){const has=(RECS.primary_kindy&&RECS.primary_kindy.points.length)||(RECS.secondary&&RECS.secondary.points.length);if(!has)return '';
   return `<section class="rep-sec rep-recs"><h3 class="rep-h">How to move Acceptable to Good</h3>
@@ -1698,10 +1743,14 @@ function reveal(sel,stagger){if(!window.gsap)return;gsap.fromTo(sel,{y:18},{y:0,
    coverage = no hash (default), Observations = #teachers, Settings = #settings. */
 const boardSlug={snapshot:'',coverage:'coverage',teacher:'teachers',settings:'settings'};
 const slugBoard={'':'snapshot',snapshot:'snapshot',coverage:'coverage',teachers:'teacher',settings:'settings'};
+const REPORT_SLUG={simple:'report',indepth:'report-indepth'};   // the report is its own standalone route under the Snapshot board (v0.47)
+function openReport(kind){snapReport=kind;if(current!=='snapshot')showBoard('snapshot');renderSnapshot();reveal('#snapReport',0);if(location.hash.slice(1)!==REPORT_SLUG[kind])location.hash=REPORT_SLUG[kind];}
+function exitReport(){snapReport=null;if(location.hash)history.replaceState(null,'',location.pathname+location.search);renderSnapshot();}
 function syncHash(b){const slug=boardSlug[b]||'';
   if(slug){if(location.hash.slice(1)!==slug)location.hash=slug;}
   else if(location.hash){history.replaceState(null,'',location.pathname+location.search);}}
 function showBoard(b,opts={}){
+  if(b==='snapshot'&&current==='snapshot'&&snapReport){exitReport();return;}   // Snapshot pill while in a report -> back to the live snapshot
   if(b===current&&!opts.force)return;
   if(b==='settings'&&!opts.unlocked){openSettingsGate();return;}   // password popup on EVERY Settings click; opens only after verify
   if(current==='snapshot'&&b!=='snapshot'){pauseStory();exitPresent();}   // leaving Snapshot: stop the story + drop full-screen
@@ -1814,7 +1863,7 @@ if(byId('setUnlock')){
     let ok=false;try{ok=await sbRpc('verify_admin_password',{p_password:pw});}catch(e){ok=false;}
     if(ok){adminPw=pw;closeSettingsGate();showBoard('settings',{unlocked:true});}else{byId('setErr').hidden=false;}};
   byId('setPw').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();byId('setUnlock').click();}else if(e.key==='Escape')closeSettingsGate();});
-  byId('setGateX').onclick=closeSettingsGate;
+  byId('setGateClose').onclick=closeSettingsGate;
   byId('setGate').addEventListener('click',e=>{if(e.target===byId('setGate'))closeSettingsGate();});   // click the dim to dismiss
 }
 
@@ -1843,8 +1892,11 @@ document.querySelectorAll('#phaseTabs .ptab').forEach(b=>b.onclick=()=>{snapPhas
 /* Report menu: one button -> Simple | In Depth */
 function setReportMenu(open){const m=byId('reportMenu'),b=byId('reportBtn');if(!m)return;m.hidden=!open;b.setAttribute('aria-expanded',open?'true':'false');}
 byId('reportBtn').onclick=e=>{e.stopPropagation();setReportMenu(byId('reportMenu').hidden);};
-document.querySelectorAll('#reportMenu .repmi').forEach(b=>b.onclick=()=>{snapReport=b.dataset.report;setReportMenu(false);renderSnapshot();reveal('#snapReport',0);});
+document.querySelectorAll('#reportMenu .repmi').forEach(b=>b.onclick=()=>{setReportMenu(false);openReport(b.dataset.report);});
 document.addEventListener('click',e=>{if(byId('reportMenu')&&!byId('reportMenu').hidden&&!byId('reportWrap').contains(e.target))setReportMenu(false);});
+/* report-page controls (v0.47): Simple/In Depth switch the report; Back returns to the live snapshot */
+document.querySelectorAll('#reportTabs .rtab').forEach(b=>b.onclick=()=>openReport(b.dataset.report));
+byId('repBack').onclick=exitReport;
 byId('sPlay').onclick=toggleStoryPlay;byId('sPrev').onclick=()=>stepStory(-1);byId('sNext').onclick=()=>stepStory(1);byId('sPresent').onclick=togglePresent;
 addEventListener('keydown',e=>{if(current!=='snapshot'||snapView!=='story')return;
   if(e.key==='ArrowRight')stepStory(1);else if(e.key==='ArrowLeft')stepStory(-1);else if(e.key===' '){e.preventDefault();toggleStoryPlay();}else if(e.key==='Escape')exitPresent();});
@@ -1860,7 +1912,12 @@ function syncAutoplayUI(){const t=byId('autoplayToggle');if(t)t.classList.toggle
 byId('autoplayToggle').onclick=()=>{const on=!snapAutoplay();setSnapAutoplay(on);saveSetting('snap_autoplay',on?'on':'off');syncAutoplayUI();if(current==='snapshot'&&snapView==='story'){if(on){gotoBeat(storyIdx,true);playStory();}else pauseStory();}};
 syncAutoplayUI();
 /* browser back/forward + deep links: route to the board named in the hash */
-addEventListener('hashchange',()=>{const b=slugBoard[location.hash.slice(1)]||'coverage';if(b!==current)showBoard(b);});
+addEventListener('hashchange',()=>{const h=location.hash.slice(1);
+  if(h==='report'||h==='report-indepth'){const kind=h==='report-indepth'?'indepth':'simple';
+    if(current!=='snapshot')showBoard('snapshot');
+    if(snapReport!==kind){snapReport=kind;renderSnapshot();reveal('#snapReport',0);}return;}
+  if(snapReport){snapReport=null;renderSnapshot();}   // navigated out of the report (back/forward)
+  const b=slugBoard[h]||'coverage';if(b!==current)showBoard(b);});
 byId('r3ObsBtn').onclick=e=>{e.stopPropagation();const open=byId('obsMenu').hidden;setObsMenu(open);if(open)reveal('#obsMenu .obsmi',.05);};
 byId('obsMenu').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;e.stopPropagation();
   if(b.dataset.sub==='school'){const s=byId('subSchool');s.hidden=!s.hidden;if(!s.hidden)reveal('#subSchool .obsmi2',.04);return;}

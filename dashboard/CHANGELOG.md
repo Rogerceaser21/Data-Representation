@@ -5,6 +5,13 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.47 . 2026-06-26
+- **Report opens as its own page; the buttons are tidied.** Choosing Simple or In Depth from the Report menu now routes to a standalone report page (the link reads `/dashboard/#report`, bookmarkable, and browser back returns to the live Snapshot). On the report page the Story / Detail toggle and the dropdown are gone, replaced by a **Back** button and a solid **Simple | In Depth** switch; "Make Google Doc" stays in the report header.
+- **The report is now a clean monochrome governance document.** The green, terracotta and gold accents on its section headers, "Insights" labels, insight numbers, the average-progress word and the `R3` title are all removed (navy ink throughout). The live Snapshot header, Story and Detail views keep their colour; only the report body changed.
+- **Uniform Snapshot controls.** The phase tabs (Primary & Kindy / Secondary / Compare), Story / Detail, Present and Report are all one size now (38px tall). The round step controls (prev / play / next, A- / A+) stay as icon buttons by design.
+- **Admin Settings password popup restyled to match the R3 form's admin card:** AIS gradient top-bar, "AIS . Admin" eyebrow, a Settings display heading, a framed password input, and a ghost **Close** + green **Unlock** pair (the old plain card with the corner x is gone). Works in both light and dark.
+- Scope: Snapshot board only (report + tab row + the Settings gate). Coverage, Observations and the Doc export are untouched. Rollback: `dash-v0.46`.
+
 ## v0.46 . 2026-06-26
 - **The coaching section now explicitly references the AIS progress rubric, using BOTH of its aspects.** "How to move Acceptable to Good" is anchored to the rubric (cited + linked) and frames progression on the rubric's two aspects: **Progress in Lessons** (the outcome, Acceptable to Good) and **Facilitating better than expected progress** (the teaching behaviour). Each direction now shows the move + the Facilitating rubric descriptor it strengthens + the R3 evidence. The In Depth Google Doc carries the same.
 - Stored round-scoped in Supabase (a coaching intro row + a rubric descriptor per direction in `narrative.method`) so it carries into the Doc and the future next-round prompt.
