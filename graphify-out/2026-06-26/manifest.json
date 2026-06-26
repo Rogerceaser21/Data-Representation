@@ -1,216 +1,216 @@
 {
   ".claude/settings.local.json": {
-    "mtime": 1782374700.5373983,
+    "mtime": 1782279401.896123,
     "ast_hash": "3d35fbc52ce3d97c7ce015a4b8b290f8",
     "semantic_hash": ""
   },
   "Assets/R3/.staticrypt.json": {
-    "mtime": 1782374700.2499096,
+    "mtime": 1782279401.8352685,
     "ast_hash": "953870f5bdd2a8cdda6f974024363024",
     "semantic_hash": "953870f5bdd2a8cdda6f974024363024"
   },
   "Assets/R3/apps-script/.clasp.json": {
-    "mtime": 1782374700.2828815,
+    "mtime": 1782279401.8621368,
     "ast_hash": "10a544e06e01e3808290f47fc79b3d38",
     "semantic_hash": "10a544e06e01e3808290f47fc79b3d38"
   },
   "Assets/R3/apps-script/appsscript.json": {
-    "mtime": 1782374700.286333,
+    "mtime": 1782279401.865568,
     "ast_hash": "6939bc4efaa9040c02e329e9efc9bb12",
     "semantic_hash": "6939bc4efaa9040c02e329e9efc9bb12"
   },
   "Assets/R3/encrypt.sh": {
-    "mtime": 1782374700.2867296,
+    "mtime": 1782279401.8659966,
     "ast_hash": "58fdb380c5a293dd891e4cc22b47a432",
     "semantic_hash": ""
   },
   "Assets/R3/lib/tom-select.complete.min.js": {
-    "mtime": 1782374700.288005,
+    "mtime": 1782279401.8668582,
     "ast_hash": "9242d15f40fbfe372dcb8ab3e6fb9000",
     "semantic_hash": "9242d15f40fbfe372dcb8ab3e6fb9000"
   },
   "apps-script/.clasp.json": {
-    "mtime": 1782374700.3356068,
+    "mtime": 1782279401.9141994,
     "ast_hash": "34915cfffc3de052cf11215acfc7e610",
     "semantic_hash": "34915cfffc3de052cf11215acfc7e610"
   },
   "apps-script/appsscript.json": {
-    "mtime": 1782374700.3376334,
+    "mtime": 1782279401.9168234,
     "ast_hash": "dfcd96c58f35883f4af129dc26f9236f",
     "semantic_hash": "dfcd96c58f35883f4af129dc26f9236f"
   },
   ".planning/v0.10-r3-form-checklist.md": {
-    "mtime": 1782374700.2480695,
+    "mtime": 1782279401.833795,
     "ast_hash": "64cba10913cdc250f027304f8316cf11",
     "semantic_hash": "64cba10913cdc250f027304f8316cf11"
   },
   "Assets/Lesson Observation Form/lesson-observation-form.html": {
-    "mtime": 1782374700.2489336,
+    "mtime": 1782279401.834521,
     "ast_hash": "1faa82fc80c0392a3408c7c62f8283eb",
     "semantic_hash": ""
   },
   "Assets/R3/2026-05-28_email_R3-Data_to-Dave_cc-Leon-Steve.md": {
-    "mtime": 1782374700.2506063,
+    "mtime": 1782279401.8362453,
     "ast_hash": "2cdf2eb0df659de330b6a3f89763a183",
     "semantic_hash": "2cdf2eb0df659de330b6a3f89763a183"
   },
   "Assets/R3/Google file links.md": {
-    "mtime": 1782374700.2512507,
+    "mtime": 1782279401.8366368,
     "ast_hash": "a0ea3ee945013fb83ed9869763211186",
     "semantic_hash": "a0ea3ee945013fb83ed9869763211186"
   },
   "Assets/R3/README.md": {
-    "mtime": 1782374700.2824597,
+    "mtime": 1782279401.8614879,
     "ast_hash": "14b5d320afda1daec523e3fb5e0e8f54",
     "semantic_hash": ""
   },
   "Assets/R3/r3-evidence-form.html": {
-    "mtime": 1782374700.2920773,
+    "mtime": 1782279401.8703356,
     "ast_hash": "b7de78cde7f2f9384f22e48c1f01f948",
     "semantic_hash": ""
   },
   "Assets/R3/src/r3-evidence-form.html": {
-    "mtime": 1782374700.295918,
+    "mtime": 1782279401.872551,
     "ast_hash": "168bb236e2a35b10ef7aed7c1f6e8b5d",
     "semantic_hash": ""
   },
   "CLAUDE.md": {
-    "mtime": 1782458057.5179176,
-    "ast_hash": "dc4137ceb618a8ef3a881287ebcd1911",
+    "mtime": 1782371532.7215083,
+    "ast_hash": "9f5b80b06f97b5d0863e59cd69d7cffa",
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1782374700.3059902,
+    "mtime": 1782279401.888939,
     "ast_hash": "f100038c4d7689dc16086d906c44ee18",
     "semantic_hash": "f100038c4d7689dc16086d906c44ee18"
   },
   "handoff/handoff-2026-06-02-1151.md": {
-    "mtime": 1782374700.4728212,
+    "mtime": 1782279402.0365293,
     "ast_hash": "7f5c05166293c66c0ee3aeb058e14f7b",
     "semantic_hash": "7f5c05166293c66c0ee3aeb058e14f7b"
   },
   "handoff/handoff-2026-06-03-1300.md": {
-    "mtime": 1782374700.473338,
+    "mtime": 1782279402.0369406,
     "ast_hash": "3360865d0e307f4fc6fd3b3e6684784e",
     "semantic_hash": "3360865d0e307f4fc6fd3b3e6684784e"
   },
   "handoff/handoff-2026-06-06-1015.md": {
-    "mtime": 1782374700.4738011,
+    "mtime": 1782279402.037625,
     "ast_hash": "522b081b50f1885a051fa93f7071b258",
     "semantic_hash": "522b081b50f1885a051fa93f7071b258"
   },
   "handoff/handoff.html": {
-    "mtime": 1782374700.4774525,
+    "mtime": 1782279402.039423,
     "ast_hash": "3fb89b89ddecc75d7fed8f3fe195644c",
     "semantic_hash": "3fb89b89ddecc75d7fed8f3fe195644c"
   },
   "index.html": {
-    "mtime": 1782374700.554453,
+    "mtime": 1782279402.0763605,
     "ast_hash": "1da9d6089f67248356eed5002ef72d64",
     "semantic_hash": "1da9d6089f67248356eed5002ef72d64"
   },
   "lesson-observation-form.html": {
-    "mtime": 1782374700.5550966,
+    "mtime": 1782279402.077219,
     "ast_hash": "33710b418d288117cbaaa1f04ab9145b",
     "semantic_hash": "33710b418d288117cbaaa1f04ab9145b"
   },
   "selction_picker_plan.md": {
-    "mtime": 1782374700.5560384,
+    "mtime": 1782279402.0780175,
     "ast_hash": "1b58c76be0bdcac00ad6e3ed9845b0e6",
     "semantic_hash": "1b58c76be0bdcac00ad6e3ed9845b0e6"
   },
   "SPEA Data Report/Form_ Probation Lesson Observation (8).pdf": {
-    "mtime": 1782374700.3201566,
+    "mtime": 1782279401.9014587,
     "ast_hash": "b400b6581aabbe33b3d52f8a8c874bfa",
     "semantic_hash": "b400b6581aabbe33b3d52f8a8c874bfa"
   },
   "handoff/images/deck-pdf-export-works.pdf": {
-    "mtime": 1782374700.5399978,
+    "mtime": 1782279402.0716054,
     "ast_hash": "2d716972cc30674ddeaf16363152b58b",
     "semantic_hash": "2d716972cc30674ddeaf16363152b58b"
   },
   "Assets/brand/AIS Logo/AIS Navy.png": {
-    "mtime": 1782374700.3022397,
+    "mtime": 1782279401.8841343,
     "ast_hash": "fe823a7dad155db8265a92082a373b1a",
     "semantic_hash": "fe823a7dad155db8265a92082a373b1a"
   },
   "Assets/brand/AIS Logo/AIS White.png": {
-    "mtime": 1782374700.303869,
+    "mtime": 1782279401.8862092,
     "ast_hash": "39e8b2cfb07620554429a051475509e9",
     "semantic_hash": "39e8b2cfb07620554429a051475509e9"
   },
   "Assets/brand/email-signature-primary.png": {
-    "mtime": 1782374700.3055398,
+    "mtime": 1782279401.8881652,
     "ast_hash": "2771e421d3084ee34cc2bdc32b1d5aab",
     "semantic_hash": "2771e421d3084ee34cc2bdc32b1d5aab"
   },
   "SPEA Data Report/Curtis All.jpg": {
-    "mtime": 1782374700.3088937,
+    "mtime": 1782279401.8969,
     "ast_hash": "b94a7bb2780078431aaa521fabbc72e1",
     "semantic_hash": "b94a7bb2780078431aaa521fabbc72e1"
   },
   "SPEA Data Report/Deena AbuGeras from DB Files.jpg": {
-    "mtime": 1782374700.309747,
+    "mtime": 1782279401.8977878,
     "ast_hash": "92102c51a0e798f10016769122876258",
     "semantic_hash": "92102c51a0e798f10016769122876258"
   },
   "SPEA Data Report/Gina Hanlon from DB Files (1).jpg": {
-    "mtime": 1782374700.3212652,
+    "mtime": 1782279401.9024708,
     "ast_hash": "2699a53fa271a7d247da4e3a1e9bf11a",
     "semantic_hash": "2699a53fa271a7d247da4e3a1e9bf11a"
   },
   "SPEA Data Report/Hani Asad - DB Files.jpg": {
-    "mtime": 1782374700.3247166,
+    "mtime": 1782279401.903405,
     "ast_hash": "bf2d8a82e5fad61d9b14ca1485548816",
     "semantic_hash": "bf2d8a82e5fad61d9b14ca1485548816"
   },
   "SPEA Data Report/Jo Mare Kruger from DB Files.jpg": {
-    "mtime": 1782374700.3261726,
+    "mtime": 1782279401.9045198,
     "ast_hash": "2962b47a81e35afc70588889d4794d1c",
     "semantic_hash": "2962b47a81e35afc70588889d4794d1c"
   },
   "SPEA Data Report/Lana Mosleh.jpg": {
-    "mtime": 1782374700.3274457,
+    "mtime": 1782279401.9055169,
     "ast_hash": "f6d3890b7102bb176e745d0a78be8ac6",
     "semantic_hash": "f6d3890b7102bb176e745d0a78be8ac6"
   },
   "handoff/images/00-slide4-v011-baseline-broken.png": {
-    "mtime": 1782374700.4896955,
+    "mtime": 1782279402.0420423,
     "ast_hash": "61bbff68ee466b38d45e85a350078d62",
     "semantic_hash": "61bbff68ee466b38d45e85a350078d62"
   },
   "handoff/images/01-slide1-cover-v012.png": {
-    "mtime": 1782374700.4960527,
+    "mtime": 1782279402.0446904,
     "ast_hash": "992aa8d2850ee2f38766e91f4519f276",
     "semantic_hash": "992aa8d2850ee2f38766e91f4519f276"
   },
   "handoff/images/02-slide3-teacher-dashboard-top-v012.png": {
-    "mtime": 1782374700.5013103,
+    "mtime": 1782279402.0474594,
     "ast_hash": "db91d14173c3e93b12573cafc451194c",
     "semantic_hash": "db91d14173c3e93b12573cafc451194c"
   },
   "handoff/images/03-slide3-teacher-dashboard-bottom-v012.png": {
-    "mtime": 1782374700.5069647,
+    "mtime": 1782279402.0497746,
     "ast_hash": "4dab7a4d58e7a5b939be74bef6c32fb3",
     "semantic_hash": "4dab7a4d58e7a5b939be74bef6c32fb3"
   },
   "handoff/images/04-slide4-department-dashboard-top-v012.png": {
-    "mtime": 1782374700.5111005,
+    "mtime": 1782279402.0521348,
     "ast_hash": "a35b92a700ee6429763b5ee5354c59b9",
     "semantic_hash": "a35b92a700ee6429763b5ee5354c59b9"
   },
   "handoff/images/05-slide4-department-dashboard-bottom-v012.png": {
-    "mtime": 1782374700.514334,
+    "mtime": 1782279402.0548484,
     "ast_hash": "6b4eaf458764536fb84a27574fa2992c",
     "semantic_hash": "6b4eaf458764536fb84a27574fa2992c"
   },
   ".planning/2026-06-11-moderation-and-dashboard-plan.md": {
-    "mtime": 1782374700.2429168,
+    "mtime": 1782279401.8300898,
     "ast_hash": "e73e699be16898efe766d2499c2086c1",
     "semantic_hash": ""
   },
   "Assets/R3/r3-record.html": {
-    "mtime": 1782374700.2930884,
+    "mtime": 1782279401.8716738,
     "ast_hash": "2a9e770acdc29108f2cc59d187f7bcf2",
     "semantic_hash": ""
   },
@@ -235,193 +235,193 @@
     "semantic_hash": ""
   },
   "handoff/handoff-2026-06-09-1145.md": {
-    "mtime": 1782374700.4744933,
+    "mtime": 1782279402.0380952,
     "ast_hash": "25dd3d2835306d2cf7e663b4e546a70a",
     "semantic_hash": ""
   },
   "handoff/handoff-2026-06-11-1710.md": {
-    "mtime": 1782374700.475409,
+    "mtime": 1782279402.0383706,
     "ast_hash": "020484f6c2dcfda46f2fd0ea38781f3f",
     "semantic_hash": ""
   },
   "handoff/handoff-2026-06-12-1653.md": {
-    "mtime": 1782374700.4761755,
+    "mtime": 1782279402.038575,
     "ast_hash": "ca395b8ac90304dfd5b0038940a4ca28",
     "semantic_hash": ""
   },
   ".planning/2026-06-12-dashboard-architecture-DECISIONS.md": {
-    "mtime": 1782374700.2437396,
+    "mtime": 1782279401.8305566,
     "ast_hash": "0c0f1396658ddf3a59c34b2333772e21",
     "semantic_hash": ""
   },
   "dashboard-previews/console.html": {
-    "mtime": 1782374700.3481183,
+    "mtime": 1782279401.927338,
     "ast_hash": "955463aacee31baade948d9f233b3d73",
     "semantic_hash": ""
   },
   "dashboard-previews/index.html": {
-    "mtime": 1782374700.3509343,
+    "mtime": 1782279401.9301608,
     "ast_hash": "af41d372eedf7e90240acb7a85ef223d",
     "semantic_hash": ""
   },
   "dashboard-previews/ledger.html": {
-    "mtime": 1782374700.3514085,
+    "mtime": 1782279401.9306185,
     "ast_hash": "f5c8f323ebd0fa76b1482fd57f256c50",
     "semantic_hash": ""
   },
   "dashboard-previews/observatory.html": {
-    "mtime": 1782374700.3538804,
+    "mtime": 1782279401.933287,
     "ast_hash": "30c420e147b7c0cdef92ce6445377736",
     "semantic_hash": ""
   },
   "dashboard-previews/spea-dashboard.html": {
-    "mtime": 1782374700.354489,
+    "mtime": 1782279401.9339137,
     "ast_hash": "548b2f811dbb5dcd6e3913599977b61c",
     "semantic_hash": ""
   },
   "handoff/handoff-2026-06-13-1607.md": {
-    "mtime": 1782374700.477023,
+    "mtime": 1782279402.0390224,
     "ast_hash": "642c74b7bfe1e340d3fd0306d5386d98",
     "semantic_hash": ""
   },
   "dashboard-previews/assets/ais-navy.png": {
-    "mtime": 1782374700.3416765,
+    "mtime": 1782279401.921183,
     "ast_hash": "fe823a7dad155db8265a92082a373b1a",
     "semantic_hash": ""
   },
   "dashboard-previews/assets/ais-white.png": {
-    "mtime": 1782374700.3427646,
+    "mtime": 1782279401.9219286,
     "ast_hash": "39e8b2cfb07620554429a051475509e9",
     "semantic_hash": ""
   },
   "dashboard-previews/assets/curtis.jpg": {
-    "mtime": 1782374700.3431375,
+    "mtime": 1782279401.9223013,
     "ast_hash": "b94a7bb2780078431aaa521fabbc72e1",
     "semantic_hash": ""
   },
   "dashboard-previews/assets/deena.jpg": {
-    "mtime": 1782374700.3435462,
+    "mtime": 1782279401.9226055,
     "ast_hash": "92102c51a0e798f10016769122876258",
     "semantic_hash": ""
   },
   "dashboard-previews/assets/gina.jpg": {
-    "mtime": 1782374700.3438616,
+    "mtime": 1782279401.9229426,
     "ast_hash": "2699a53fa271a7d247da4e3a1e9bf11a",
     "semantic_hash": ""
   },
   "dashboard-previews/assets/hani.jpg": {
-    "mtime": 1782374700.3442533,
+    "mtime": 1782279401.9233127,
     "ast_hash": "bf2d8a82e5fad61d9b14ca1485548816",
     "semantic_hash": ""
   },
   "dashboard-previews/assets/jo-mare.jpg": {
-    "mtime": 1782374700.344747,
+    "mtime": 1782279401.9240804,
     "ast_hash": "2962b47a81e35afc70588889d4794d1c",
     "semantic_hash": ""
   },
   "dashboard-previews/assets/lana.jpg": {
-    "mtime": 1782374700.345235,
+    "mtime": 1782279401.9247923,
     "ast_hash": "f6d3890b7102bb176e745d0a78be8ac6",
     "semantic_hash": ""
   },
   ".claude/launch.json": {
-    "mtime": 1782375464.992345,
+    "mtime": 1782282114.1792493,
     "ast_hash": "a144f88ec4afdcd676a6adde3df2b388",
     "semantic_hash": ""
   },
   ".planning/2026-06-15-dashboard-design-DECISIONS.md": {
-    "mtime": 1782374700.2443233,
+    "mtime": 1782279401.8310752,
     "ast_hash": "c7007f5b15dc44eb2896a2f8d6db78c3",
     "semantic_hash": ""
   },
   "dashboard-previews/centerpieces.html": {
-    "mtime": 1782374700.347573,
+    "mtime": 1782279401.9267104,
     "ast_hash": "f890281450cd4fb5e3c51be10d23b357",
     "semantic_hash": ""
   },
   "dashboard-previews/design-spec.html": {
-    "mtime": 1782374700.348546,
+    "mtime": 1782279401.9285963,
     "ast_hash": "0db33ff88f29600a7bb6c14f24a9f84a",
     "semantic_hash": ""
   },
   "dashboard-previews/look-cinematic.html": {
-    "mtime": 1782374700.3521507,
+    "mtime": 1782279401.9313226,
     "ast_hash": "181cd752fc502f0ba997efeb27ab83f6",
     "semantic_hash": ""
   },
   "dashboard-previews/look-editorial.html": {
-    "mtime": 1782374700.3528016,
+    "mtime": 1782279401.932109,
     "ast_hash": "80243ce355a576103302ba1f5b4df769",
     "semantic_hash": ""
   },
   "dashboard-previews/look-product.html": {
-    "mtime": 1782374700.3533854,
+    "mtime": 1782279401.9327557,
     "ast_hash": "0f0a93597ce49b7a209de2218cc9a496",
     "semantic_hash": ""
   },
   ".planning/phaseA-reference-map.json": {
-    "mtime": 1782374700.2471292,
+    "mtime": 1782279401.8332,
     "ast_hash": "e2beeafd32682e572fd8ac7fa4e91eca",
     "semantic_hash": ""
   },
   "dashboard/.staticrypt.json": {
-    "mtime": 1782374700.3549676,
+    "mtime": 1782279401.9344935,
     "ast_hash": "c21bf6be4f58d6ae465c8f905706047a",
     "semantic_hash": ""
   },
   "dashboard/apps-script-export/.clasp.json": {
-    "mtime": 1782375207.8136601,
+    "mtime": 1782285247.7377908,
     "ast_hash": "1d66375c210e0dde555030c6fd3291e3",
     "semantic_hash": ""
   },
   "dashboard/apps-script-export/appsscript.json": {
-    "mtime": 1782375207.814719,
+    "mtime": 1782287660.178192,
     "ast_hash": "6e3e4da5989368e58dd2a9be1929b7c1",
     "semantic_hash": ""
   },
   "dashboard/encrypt.sh": {
-    "mtime": 1782374700.3887682,
+    "mtime": 1782279401.961096,
     "ast_hash": "e401c20d9197868f5019c029196f12ba",
     "semantic_hash": ""
   },
   ".planning/2026-06-22-phaseA-congruence-audit.md": {
-    "mtime": 1782374700.2455509,
+    "mtime": 1782279401.8316512,
     "ast_hash": "8f7b130b4aba697821c337be13e7caa9",
     "semantic_hash": ""
   },
   ".planning/2026-06-23-print-export-research.md": {
-    "mtime": 1782374700.246622,
+    "mtime": 1782279401.8326137,
     "ast_hash": "9fb6590461a05444879353e4efc20a71",
     "semantic_hash": ""
   },
   "dashboard-previews/card-A-revised.html": {
-    "mtime": 1782374700.3460438,
+    "mtime": 1782279401.9254136,
     "ast_hash": "2f0a9787964831fdaac0336d5e602f50",
     "semantic_hash": ""
   },
   "dashboard-previews/card-variants.html": {
-    "mtime": 1782374700.347122,
+    "mtime": 1782279401.9260979,
     "ast_hash": "56da2df7e98db249031057faf73aa356",
     "semantic_hash": ""
   },
   "dashboard/CHANGELOG.md": {
-    "mtime": 1782458057.5166707,
-    "ast_hash": "7f3ec0a538be67a0a4379c5dee3235d6",
+    "mtime": 1782371455.5814047,
+    "ast_hash": "1292ea9fe78d29144a49c4847664c516",
     "semantic_hash": ""
   },
   "dashboard/apps-script-export/README.md": {
-    "mtime": 1782390502.1379337,
-    "ast_hash": "a807a635d383e324c7776c0ca86af694",
+    "mtime": 1782285428.8788788,
+    "ast_hash": "df0ef14622809545355cfe87d9bfe661",
     "semantic_hash": ""
   },
   "dashboard/index.html": {
-    "mtime": 1782458084.5826304,
-    "ast_hash": "fffe4a8f509b8b4579ceadd87c087afc",
+    "mtime": 1782371550.0327508,
+    "ast_hash": "4342c3ec3cbeb3c28236688b457c9df0",
     "semantic_hash": ""
   },
   "dashboard/src/index.html": {
-    "mtime": 1782458057.4357624,
-    "ast_hash": "26e4b0e059aff4a2aa91dbc91e6a5095",
+    "mtime": 1782371428.3884008,
+    "ast_hash": "fcaba2ce5ea01e78cc2e9349c1557aba",
     "semantic_hash": ""
   },
   "graphify-out/converted/24-25-Primary School OTP - v4_20aca440.md": {
@@ -445,83 +445,58 @@
     "semantic_hash": ""
   },
   "dashboard/assets/ais-navy.png": {
-    "mtime": 1782374700.3618214,
+    "mtime": 1782279401.9394407,
     "ast_hash": "fe823a7dad155db8265a92082a373b1a",
     "semantic_hash": ""
   },
   "dashboard/assets/ais-white.png": {
-    "mtime": 1782374700.3625681,
+    "mtime": 1782279401.9401793,
     "ast_hash": "39e8b2cfb07620554429a051475509e9",
     "semantic_hash": ""
   },
   "dashboard/assets/snapshot-cover.jpg": {
-    "mtime": 1782374700.3793738,
+    "mtime": 1782279401.9529648,
     "ast_hash": "74ea4065f5cf61cfc0d84430173122e3",
     "semantic_hash": ""
   },
   "dashboard/assets/story/cover-classroom.png": {
-    "mtime": 1782374700.383445,
+    "mtime": 1782279401.9540498,
     "ast_hash": "e63d1f8a8d38ca3fe5d5b8cb062a0230",
     "semantic_hash": ""
   },
   "dashboard/assets/story/icon-book.png": {
-    "mtime": 1782374700.3842256,
+    "mtime": 1782279401.9548068,
     "ast_hash": "39ff3c265473e1009079bb825d49b447",
     "semantic_hash": ""
   },
   "dashboard/assets/story/icon-observer-gold.png": {
-    "mtime": 1782374700.3849988,
+    "mtime": 1782279401.9575734,
     "ast_hash": "24d8e610f2fd3a8721b30bc261c9b521",
     "semantic_hash": ""
   },
   "dashboard/assets/story/icon-observer-terra.png": {
-    "mtime": 1782374700.3856163,
+    "mtime": 1782279401.958409,
     "ast_hash": "5457b392c9bff4be1263eadad5b7c4b1",
     "semantic_hash": ""
   },
   "dashboard/assets/story/icon-progress.png": {
-    "mtime": 1782374700.386645,
+    "mtime": 1782279401.9590814,
     "ast_hash": "4ff441e5844c3b74fc601f7ac1dea2f2",
     "semantic_hash": ""
   },
   "dashboard/assets/story/icon-student-writing.png": {
-    "mtime": 1782374700.387267,
+    "mtime": 1782279401.9596882,
     "ast_hash": "27e4f732fd1bb388770055963da9083f",
     "semantic_hash": ""
   },
   "dashboard/assets/story/icon-student.png": {
-    "mtime": 1782374700.3879468,
+    "mtime": 1782279401.960175,
     "ast_hash": "afad73e7996c578873d4de348ce3d5fa",
     "semantic_hash": ""
   },
   "dashboard/assets/story/icon-teacher.png": {
-    "mtime": 1782374700.3885057,
+    "mtime": 1782279401.9606862,
     "ast_hash": "6b9756ea02da3a492675187173effe9e",
-    "semantic_hash": ""
-  },
-  "graphify-out/converted/24-25-Primary School OTP - v4_9e995707.md": {
-    "mtime": 1782471042.8573916,
-    "ast_hash": "29e9db9bc82395fe4a3857e7a969dc31",
-    "semantic_hash": ""
-  },
-  "graphify-out/converted/Lesson Observation - Igor- 12_11_12a2aec0.md": {
-    "mtime": 1782471042.8866847,
-    "ast_hash": "aef19a2faf53299a5b6c988416c1abc6",
-    "semantic_hash": ""
-  },
-  "graphify-out/converted/R3 Evidence Form Template_1a02a6a4.md": {
-    "mtime": 1782471042.7921996,
-    "ast_hash": "6319e8fd83ccd51a82b75f6fee5d3196",
-    "semantic_hash": ""
-  },
-  "graphify-out/converted/Year 6 Lesson Plan_be38268f.md": {
-    "mtime": 1782471042.9092815,
-    "ast_hash": "7b799f7585159522ff68c298c29bb0d0",
-    "semantic_hash": ""
-  },
-  "dashboard/assets/report-cover.png": {
-    "mtime": 1782387584.0899076,
-    "ast_hash": "66fe46875caa36dfbbf11a2c0ce936f8",
     "semantic_hash": ""
   }
 }

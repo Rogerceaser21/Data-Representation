@@ -9,7 +9,7 @@
       "source_file": ".claude/launch.json",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_recursing_keller_456a13_claude_launch_json",
+      "id": "claude_launch",
       "community": 41,
       "norm_label": "launch.json"
     },
@@ -69,7 +69,7 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_recursing_keller_456a13_planning_phasea_reference_map_json",
+      "id": "planning_phasea_reference_map",
       "community": 27,
       "norm_label": "phasea-reference-map.json"
     },
@@ -643,7 +643,7 @@
         "kind": "file"
       },
       "_origin": "ast",
-      "id": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_recursing_keller_456a13_assets_r3_encrypt_sh",
+      "id": "r3_encrypt",
       "community": 16,
       "norm_label": "encrypt.sh"
     },
@@ -878,7 +878,7 @@
       "source_location": "L177",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_setup",
-      "community": 3,
+      "community": 2,
       "norm_label": ".setup()"
     },
     {
@@ -1987,7 +1987,7 @@
       "source_file": "dashboard/apps-script-export/.clasp.json",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_recursing_keller_456a13_dashboard_apps_script_export_clasp_json",
+      "id": "apps_script_export_clasp",
       "community": 33,
       "norm_label": ".clasp.json"
     },
@@ -2067,7 +2067,7 @@
       "source_file": "dashboard/apps-script-export/appsscript.json",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_recursing_keller_456a13_dashboard_apps_script_export_appsscript_json",
+      "id": "apps_script_export_appsscript",
       "community": 32,
       "norm_label": "appsscript.json"
     },
@@ -2635,7 +2635,7 @@
       "source_file": ".planning/2026-06-22-phaseA-congruence-audit.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_recursing_keller_456a13_planning_2026_06_22_phasea_congruence_audit_md",
+      "id": "planning_2026_06_22_phasea_congruence_audit",
       "community": 31,
       "norm_label": "2026-06-22-phasea-congruence-audit.md"
     },
@@ -2745,7 +2745,7 @@
       "source_file": ".planning/2026-06-23-print-export-research.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_recursing_keller_456a13_planning_2026_06_23_print_export_research_md",
+      "id": "planning_2026_06_23_print_export_research",
       "community": 39,
       "norm_label": "2026-06-23-print-export-research.md"
     },
@@ -3035,7 +3035,7 @@
       "source_file": "Assets/R3/README.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_recursing_keller_456a13_assets_r3_readme_md",
+      "id": "r3_readme",
       "community": 25,
       "norm_label": "readme.md"
     },
@@ -3380,70 +3380,10 @@
       "norm_label": "ais observation dashboard . changelog"
     },
     {
-      "label": "v0.46 . 2026-06-26",
-      "file_type": "document",
-      "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L8",
-      "_origin": "ast",
-      "id": "dashboard_changelog_v0_46_2026_06_26",
-      "community": 26,
-      "norm_label": "v0.46 . 2026-06-26"
-    },
-    {
-      "label": "v0.45 . 2026-06-25",
-      "file_type": "document",
-      "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L13",
-      "_origin": "ast",
-      "id": "dashboard_changelog_v0_45_2026_06_25",
-      "community": 26,
-      "norm_label": "v0.45 . 2026-06-25"
-    },
-    {
-      "label": "v0.44 . 2026-06-25",
-      "file_type": "document",
-      "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L20",
-      "_origin": "ast",
-      "id": "dashboard_changelog_v0_44_2026_06_25",
-      "community": 26,
-      "norm_label": "v0.44 . 2026-06-25"
-    },
-    {
-      "label": "v0.43 . 2026-06-25",
-      "file_type": "document",
-      "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L26",
-      "_origin": "ast",
-      "id": "dashboard_changelog_v0_43_2026_06_25",
-      "community": 26,
-      "norm_label": "v0.43 . 2026-06-25"
-    },
-    {
-      "label": "v0.42 . 2026-06-25",
-      "file_type": "document",
-      "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L31",
-      "_origin": "ast",
-      "id": "dashboard_changelog_v0_42_2026_06_25",
-      "community": 26,
-      "norm_label": "v0.42 . 2026-06-25"
-    },
-    {
-      "label": "v0.41 . 2026-06-25",
-      "file_type": "document",
-      "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L37",
-      "_origin": "ast",
-      "id": "dashboard_changelog_v0_41_2026_06_25",
-      "community": 26,
-      "norm_label": "v0.41 . 2026-06-25"
-    },
-    {
       "label": "v0.40 . 2026-06-25",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L42",
+      "source_location": "L8",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_40_2026_06_25",
       "community": 26,
@@ -3453,7 +3393,7 @@
       "label": "v0.39 . 2026-06-25",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L49",
+      "source_location": "L15",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_39_2026_06_25",
       "community": 26,
@@ -3463,7 +3403,7 @@
       "label": "v0.38 . 2026-06-23",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L56",
+      "source_location": "L22",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_38_2026_06_23",
       "community": 26,
@@ -3473,7 +3413,7 @@
       "label": "v0.37 . 2026-06-23",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L62",
+      "source_location": "L28",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_37_2026_06_23",
       "community": 26,
@@ -3483,7 +3423,7 @@
       "label": "v0.36 . 2026-06-23",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L65",
+      "source_location": "L31",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_36_2026_06_23",
       "community": 26,
@@ -3493,7 +3433,7 @@
       "label": "v0.35 . 2026-06-23",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L72",
+      "source_location": "L38",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_35_2026_06_23",
       "community": 26,
@@ -3503,7 +3443,7 @@
       "label": "v0.34 . 2026-06-23",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L77",
+      "source_location": "L43",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_34_2026_06_23",
       "community": 26,
@@ -3513,7 +3453,7 @@
       "label": "v0.33 . 2026-06-23",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L84",
+      "source_location": "L50",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_33_2026_06_23",
       "community": 26,
@@ -3523,7 +3463,7 @@
       "label": "v0.32 . 2026-06-23",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L91",
+      "source_location": "L57",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_32_2026_06_23",
       "community": 26,
@@ -3533,7 +3473,7 @@
       "label": "v0.31 . 2026-06-23",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L98",
+      "source_location": "L64",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_31_2026_06_23",
       "community": 26,
@@ -3543,7 +3483,7 @@
       "label": "v0.30 . 2026-06-22",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L105",
+      "source_location": "L71",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_30_2026_06_22",
       "community": 26,
@@ -3553,7 +3493,7 @@
       "label": "v0.29 . 2026-06-22",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L112",
+      "source_location": "L78",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_29_2026_06_22",
       "community": 26,
@@ -3563,7 +3503,7 @@
       "label": "v0.28 . 2026-06-22",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L116",
+      "source_location": "L82",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_28_2026_06_22",
       "community": 26,
@@ -3573,7 +3513,7 @@
       "label": "v0.27 . 2026-06-22",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L122",
+      "source_location": "L88",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_27_2026_06_22",
       "community": 26,
@@ -3583,7 +3523,7 @@
       "label": "v0.26 . 2026-06-21",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L128",
+      "source_location": "L94",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_26_2026_06_21",
       "community": 26,
@@ -3593,7 +3533,7 @@
       "label": "v0.25 . 2026-06-20",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L136",
+      "source_location": "L102",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_25_2026_06_20",
       "community": 26,
@@ -3603,7 +3543,7 @@
       "label": "v0.24 . 2026-06-19",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L143",
+      "source_location": "L109",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_24_2026_06_19",
       "community": 26,
@@ -3613,7 +3553,7 @@
       "label": "v0.23 . 2026-06-19",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L152",
+      "source_location": "L118",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_23_2026_06_19",
       "community": 26,
@@ -3623,7 +3563,7 @@
       "label": "v0.22 . 2026-06-19",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L160",
+      "source_location": "L126",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_22_2026_06_19",
       "community": 26,
@@ -3633,7 +3573,7 @@
       "label": "v0.21 . 2026-06-18",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L168",
+      "source_location": "L134",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_21_2026_06_18",
       "community": 26,
@@ -3643,7 +3583,7 @@
       "label": "v0.20 . 2026-06-18",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L176",
+      "source_location": "L142",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_20_2026_06_18",
       "community": 26,
@@ -3653,7 +3593,7 @@
       "label": "v0.19 . 2026-06-18",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L182",
+      "source_location": "L148",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_19_2026_06_18",
       "community": 26,
@@ -3663,7 +3603,7 @@
       "label": "v0.18 . 2026-06-18",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L191",
+      "source_location": "L157",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_18_2026_06_18",
       "community": 26,
@@ -3673,7 +3613,7 @@
       "label": "v0.17 . 2026-06-18",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L196",
+      "source_location": "L162",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_17_2026_06_18",
       "community": 26,
@@ -3683,7 +3623,7 @@
       "label": "v0.16 . 2026-06-18",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L202",
+      "source_location": "L168",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_16_2026_06_18",
       "community": 26,
@@ -3693,7 +3633,7 @@
       "label": "v0.15 . 2026-06-18",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L211",
+      "source_location": "L177",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_15_2026_06_18",
       "community": 26,
@@ -3703,7 +3643,7 @@
       "label": "v0.14 . 2026-06-18",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L218",
+      "source_location": "L184",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_14_2026_06_18",
       "community": 26,
@@ -3713,7 +3653,7 @@
       "label": "v0.13 . 2026-06-18",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L224",
+      "source_location": "L190",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_13_2026_06_18",
       "community": 26,
@@ -3723,7 +3663,7 @@
       "label": "v0.12 . 2026-06-18",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L229",
+      "source_location": "L195",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_12_2026_06_18",
       "community": 26,
@@ -3733,7 +3673,7 @@
       "label": "v0.11 . 2026-06-17",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L232",
+      "source_location": "L198",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_11_2026_06_17",
       "community": 26,
@@ -3743,7 +3683,7 @@
       "label": "v0.10 . 2026-06-17",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L238",
+      "source_location": "L204",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_10_2026_06_17",
       "community": 26,
@@ -3753,7 +3693,7 @@
       "label": "v0.9 . 2026-06-17",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L242",
+      "source_location": "L208",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_9_2026_06_17",
       "community": 26,
@@ -3763,7 +3703,7 @@
       "label": "v0.8 . 2026-06-16",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L250",
+      "source_location": "L216",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_8_2026_06_16",
       "community": 26,
@@ -3773,7 +3713,7 @@
       "label": "v0.7 . 2026-06-16",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L256",
+      "source_location": "L222",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_7_2026_06_16",
       "community": 26,
@@ -3783,7 +3723,7 @@
       "label": "v0.6 . 2026-06-16",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L265",
+      "source_location": "L231",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_6_2026_06_16",
       "community": 26,
@@ -3793,7 +3733,7 @@
       "label": "v0.5 . 2026-06-16",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L268",
+      "source_location": "L234",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_5_2026_06_16",
       "community": 26,
@@ -3803,7 +3743,7 @@
       "label": "v0.4 . 2026-06-16",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L271",
+      "source_location": "L237",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_4_2026_06_16",
       "community": 26,
@@ -3813,7 +3753,7 @@
       "label": "v0.3 . 2026-06-16",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L274",
+      "source_location": "L240",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_3_2026_06_16",
       "community": 26,
@@ -3823,7 +3763,7 @@
       "label": "v0.2 . 2026-06-16",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L277",
+      "source_location": "L243",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_2_2026_06_16",
       "community": 26,
@@ -3833,7 +3773,7 @@
       "label": "v0.1 . 2026-06-15",
       "file_type": "document",
       "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L280",
+      "source_location": "L246",
       "_origin": "ast",
       "id": "dashboard_changelog_v0_1_2026_06_15",
       "community": 26,
@@ -3900,54 +3840,44 @@
       "norm_label": "deployed 2026-06-24 (admin.user@ais.ae, via clasp)"
     },
     {
-      "label": "2026-06-25 . v3 redesign (redeploy @8)",
+      "label": "24-25-Primary School OTP - v4_20aca440.md",
       "file_type": "document",
-      "source_file": "dashboard/apps-script-export/README.md",
-      "source_location": "L42",
-      "_origin": "ast",
-      "id": "apps_script_export_readme_2026_06_25_v3_redesign_redeploy_8",
-      "community": 40,
-      "norm_label": "2026-06-25 . v3 redesign (redeploy @8)"
-    },
-    {
-      "label": "24-25-Primary School OTP - v4_9e995707.md",
-      "file_type": "document",
-      "source_file": "graphify-out/converted/24-25-Primary School OTP - v4_9e995707.md",
+      "source_file": "graphify-out/converted/24-25-Primary School OTP - v4_20aca440.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "converted_24_25_primary_school_otp_v4_9e995707",
+      "id": "converted_24_25_primary_school_otp_v4_20aca440",
       "community": 42,
-      "norm_label": "24-25-primary school otp - v4_9e995707.md"
+      "norm_label": "24-25-primary school otp - v4_20aca440.md"
     },
     {
-      "label": "Lesson Observation - Igor- 12_11_12a2aec0.md",
+      "label": "Lesson Observation - Igor- 12_11_502068c6.md",
       "file_type": "document",
-      "source_file": "graphify-out/converted/Lesson Observation - Igor- 12_11_12a2aec0.md",
+      "source_file": "graphify-out/converted/Lesson Observation - Igor- 12_11_502068c6.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "converted_lesson_observation_igor_12_11_12a2aec0",
+      "id": "converted_lesson_observation_igor_12_11_502068c6",
       "community": 43,
-      "norm_label": "lesson observation - igor- 12_11_12a2aec0.md"
+      "norm_label": "lesson observation - igor- 12_11_502068c6.md"
     },
     {
-      "label": "R3 Evidence Form Template_1a02a6a4.md",
+      "label": "R3 Evidence Form Template_bcff2c8b.md",
       "file_type": "document",
-      "source_file": "graphify-out/converted/R3 Evidence Form Template_1a02a6a4.md",
+      "source_file": "graphify-out/converted/R3 Evidence Form Template_bcff2c8b.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "converted_r3_evidence_form_template_1a02a6a4",
+      "id": "converted_r3_evidence_form_template_bcff2c8b",
       "community": 44,
-      "norm_label": "r3 evidence form template_1a02a6a4.md"
+      "norm_label": "r3 evidence form template_bcff2c8b.md"
     },
     {
-      "label": "Year 6 Lesson Plan_be38268f.md",
+      "label": "Year 6 Lesson Plan_bf864ebe.md",
       "file_type": "document",
-      "source_file": "graphify-out/converted/Year 6 Lesson Plan_be38268f.md",
+      "source_file": "graphify-out/converted/Year 6 Lesson Plan_bf864ebe.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "converted_year_6_lesson_plan_be38268f",
+      "id": "converted_year_6_lesson_plan_bf864ebe",
       "community": 45,
-      "norm_label": "year 6 lesson plan_be38268f.md"
+      "norm_label": "year 6 lesson plan_bf864ebe.md"
     },
     {
       "label": "handoff-2026-06-02-1151.md",
@@ -5734,7 +5664,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 4,
       "norm_label": "github pages deployment",
       "id": "github_pages"
     },
@@ -6617,7 +6547,7 @@
       "source_file": ".claude/launch.json",
       "source_location": "L3",
       "weight": 1.0,
-      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_recursing_keller_456a13_claude_launch_json",
+      "source": "claude_launch",
       "target": "claude_launch_configurations",
       "confidence_score": 1.0
     },
@@ -6627,7 +6557,7 @@
       "source_file": ".claude/launch.json",
       "source_location": "L2",
       "weight": 1.0,
-      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_recursing_keller_456a13_claude_launch_json",
+      "source": "claude_launch",
       "target": "claude_launch_version",
       "confidence_score": 1.0
     },
@@ -6637,9 +6567,9 @@
       "source_file": ".claude/settings.local.json",
       "source_location": "L2",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_settings_local_json",
-      "target": "claude_settings_local_permissions"
+      "target": "claude_settings_local_permissions",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -6657,7 +6587,7 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L56",
       "weight": 1.0,
-      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_recursing_keller_456a13_planning_phasea_reference_map_json",
+      "source": "planning_phasea_reference_map",
       "target": "planning_phasea_reference_map_claims",
       "confidence_score": 1.0
     },
@@ -6667,7 +6597,7 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L4",
       "weight": 1.0,
-      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_recursing_keller_456a13_planning_phasea_reference_map_json",
+      "source": "planning_phasea_reference_map",
       "target": "planning_phasea_reference_map_data_basis",
       "confidence_score": 1.0
     },
@@ -6677,7 +6607,7 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L2",
       "weight": 1.0,
-      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_recursing_keller_456a13_planning_phasea_reference_map_json",
+      "source": "planning_phasea_reference_map",
       "target": "planning_phasea_reference_map_generated",
       "confidence_score": 1.0
     },
@@ -6687,7 +6617,7 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L5",
       "weight": 1.0,
-      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_recursing_keller_456a13_planning_phasea_reference_map_json",
+      "source": "planning_phasea_reference_map",
       "target": "planning_phasea_reference_map_live_numbers",
       "confidence_score": 1.0
     },
@@ -6697,7 +6627,7 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L3",
       "weight": 1.0,
-      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_recursing_keller_456a13_planning_phasea_reference_map_json",
+      "source": "planning_phasea_reference_map",
       "target": "planning_phasea_reference_map_round",
       "confidence_score": 1.0
     },
@@ -6707,7 +6637,7 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L55",
       "weight": 1.0,
-      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_recursing_keller_456a13_planning_phasea_reference_map_json",
+      "source": "planning_phasea_reference_map",
       "target": "planning_phasea_reference_map_unlinked_june_rows",
       "confidence_score": 1.0
     },
@@ -6717,9 +6647,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L38",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_live_numbers",
-      "target": "planning_phasea_reference_map_live_numbers_all"
+      "target": "planning_phasea_reference_map_live_numbers_all",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -6727,9 +6657,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L6",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_live_numbers",
-      "target": "planning_phasea_reference_map_live_numbers_primary_kindy"
+      "target": "planning_phasea_reference_map_live_numbers_primary_kindy",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -6737,9 +6667,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L22",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_live_numbers",
-      "target": "planning_phasea_reference_map_live_numbers_secondary"
+      "target": "planning_phasea_reference_map_live_numbers_secondary",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -6747,9 +6677,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L17",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_live_numbers_primary_kindy",
-      "target": "planning_phasea_reference_map_primary_kindy_avgbest"
+      "target": "planning_phasea_reference_map_primary_kindy_avgbest",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -6757,9 +6687,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L9",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_live_numbers_primary_kindy",
-      "target": "planning_phasea_reference_map_primary_kindy_dist"
+      "target": "planning_phasea_reference_map_primary_kindy_dist",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -6767,9 +6697,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L7",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_live_numbers_primary_kindy",
-      "target": "planning_phasea_reference_map_primary_kindy_lessons"
+      "target": "planning_phasea_reference_map_primary_kindy_lessons",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -6777,9 +6707,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L20",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_live_numbers_primary_kindy",
-      "target": "planning_phasea_reference_map_primary_kindy_noteslessons"
+      "target": "planning_phasea_reference_map_primary_kindy_noteslessons",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -6787,9 +6717,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L18",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_live_numbers_primary_kindy",
-      "target": "planning_phasea_reference_map_primary_kindy_strengthslessons"
+      "target": "planning_phasea_reference_map_primary_kindy_strengthslessons",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -6797,9 +6727,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L8",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_live_numbers_primary_kindy",
-      "target": "planning_phasea_reference_map_primary_kindy_teachers"
+      "target": "planning_phasea_reference_map_primary_kindy_teachers",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -6807,9 +6737,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L19",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_live_numbers_primary_kindy",
-      "target": "planning_phasea_reference_map_primary_kindy_weaknesslessons"
+      "target": "planning_phasea_reference_map_primary_kindy_weaknesslessons",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -6817,9 +6747,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L10",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_primary_kindy_dist",
-      "target": "planning_phasea_reference_map_dist_1"
+      "target": "planning_phasea_reference_map_dist_1",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -6827,9 +6757,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L11",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_primary_kindy_dist",
-      "target": "planning_phasea_reference_map_dist_2"
+      "target": "planning_phasea_reference_map_dist_2",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -6837,9 +6767,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L12",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_primary_kindy_dist",
-      "target": "planning_phasea_reference_map_dist_3"
+      "target": "planning_phasea_reference_map_dist_3",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -6847,9 +6777,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L13",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_primary_kindy_dist",
-      "target": "planning_phasea_reference_map_dist_4"
+      "target": "planning_phasea_reference_map_dist_4",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -6857,9 +6787,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L14",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_primary_kindy_dist",
-      "target": "planning_phasea_reference_map_dist_5"
+      "target": "planning_phasea_reference_map_dist_5",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -6867,9 +6797,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L15",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_primary_kindy_dist",
-      "target": "planning_phasea_reference_map_dist_6"
+      "target": "planning_phasea_reference_map_dist_6",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -6877,9 +6807,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L42",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_all_dist",
-      "target": "planning_phasea_reference_map_dist_1"
+      "target": "planning_phasea_reference_map_dist_1",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -6887,9 +6817,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L26",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_secondary_dist",
-      "target": "planning_phasea_reference_map_dist_1"
+      "target": "planning_phasea_reference_map_dist_1",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -6897,9 +6827,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L43",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_all_dist",
-      "target": "planning_phasea_reference_map_dist_2"
+      "target": "planning_phasea_reference_map_dist_2",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -6907,9 +6837,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L27",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_secondary_dist",
-      "target": "planning_phasea_reference_map_dist_2"
+      "target": "planning_phasea_reference_map_dist_2",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -6917,9 +6847,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L44",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_all_dist",
-      "target": "planning_phasea_reference_map_dist_3"
+      "target": "planning_phasea_reference_map_dist_3",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -6927,9 +6857,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L28",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_secondary_dist",
-      "target": "planning_phasea_reference_map_dist_3"
+      "target": "planning_phasea_reference_map_dist_3",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -6937,9 +6867,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L45",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_all_dist",
-      "target": "planning_phasea_reference_map_dist_4"
+      "target": "planning_phasea_reference_map_dist_4",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -6947,9 +6877,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L29",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_secondary_dist",
-      "target": "planning_phasea_reference_map_dist_4"
+      "target": "planning_phasea_reference_map_dist_4",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -6957,9 +6887,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L46",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_all_dist",
-      "target": "planning_phasea_reference_map_dist_5"
+      "target": "planning_phasea_reference_map_dist_5",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -6967,9 +6897,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L30",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_secondary_dist",
-      "target": "planning_phasea_reference_map_dist_5"
+      "target": "planning_phasea_reference_map_dist_5",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -6977,9 +6907,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L47",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_all_dist",
-      "target": "planning_phasea_reference_map_dist_6"
+      "target": "planning_phasea_reference_map_dist_6",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -6987,9 +6917,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L31",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_secondary_dist",
-      "target": "planning_phasea_reference_map_dist_6"
+      "target": "planning_phasea_reference_map_dist_6",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -6997,9 +6927,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L33",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_live_numbers_secondary",
-      "target": "planning_phasea_reference_map_secondary_avgbest"
+      "target": "planning_phasea_reference_map_secondary_avgbest",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -7007,9 +6937,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L25",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_live_numbers_secondary",
-      "target": "planning_phasea_reference_map_secondary_dist"
+      "target": "planning_phasea_reference_map_secondary_dist",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -7017,9 +6947,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L23",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_live_numbers_secondary",
-      "target": "planning_phasea_reference_map_secondary_lessons"
+      "target": "planning_phasea_reference_map_secondary_lessons",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -7027,9 +6957,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L36",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_live_numbers_secondary",
-      "target": "planning_phasea_reference_map_secondary_noteslessons"
+      "target": "planning_phasea_reference_map_secondary_noteslessons",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -7037,9 +6967,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L34",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_live_numbers_secondary",
-      "target": "planning_phasea_reference_map_secondary_strengthslessons"
+      "target": "planning_phasea_reference_map_secondary_strengthslessons",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -7047,9 +6977,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L24",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_live_numbers_secondary",
-      "target": "planning_phasea_reference_map_secondary_teachers"
+      "target": "planning_phasea_reference_map_secondary_teachers",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -7057,9 +6987,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L35",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_live_numbers_secondary",
-      "target": "planning_phasea_reference_map_secondary_weaknesslessons"
+      "target": "planning_phasea_reference_map_secondary_weaknesslessons",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -7067,9 +6997,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L49",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_live_numbers_all",
-      "target": "planning_phasea_reference_map_all_avgbest"
+      "target": "planning_phasea_reference_map_all_avgbest",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -7077,9 +7007,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L41",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_live_numbers_all",
-      "target": "planning_phasea_reference_map_all_dist"
+      "target": "planning_phasea_reference_map_all_dist",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -7087,9 +7017,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L39",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_live_numbers_all",
-      "target": "planning_phasea_reference_map_all_lessons"
+      "target": "planning_phasea_reference_map_all_lessons",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -7097,9 +7027,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L52",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_live_numbers_all",
-      "target": "planning_phasea_reference_map_all_noteslessons"
+      "target": "planning_phasea_reference_map_all_noteslessons",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -7107,9 +7037,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L50",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_live_numbers_all",
-      "target": "planning_phasea_reference_map_all_strengthslessons"
+      "target": "planning_phasea_reference_map_all_strengthslessons",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -7117,9 +7047,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L40",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_live_numbers_all",
-      "target": "planning_phasea_reference_map_all_teachers"
+      "target": "planning_phasea_reference_map_all_teachers",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -7127,9 +7057,9 @@
       "source_file": ".planning/phaseA-reference-map.json",
       "source_location": "L51",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_phasea_reference_map_live_numbers_all",
-      "target": "planning_phasea_reference_map_all_weaknesslessons"
+      "target": "planning_phasea_reference_map_all_weaknesslessons",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -7137,9 +7067,9 @@
       "source_file": "Assets/R3/.staticrypt.json",
       "source_location": "L2",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_staticrypt_json",
-      "target": "r3_staticrypt_salt"
+      "target": "r3_staticrypt_salt",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -7147,9 +7077,9 @@
       "source_file": "Assets/R3/apps-script/.clasp.json",
       "source_location": "L14",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_apps_script_clasp_json",
-      "target": "assets_r3_apps_script_clasp_json_apps_script_clasp_filepushorder"
+      "target": "assets_r3_apps_script_clasp_json_apps_script_clasp_filepushorder",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -7157,9 +7087,9 @@
       "source_file": "Assets/R3/apps-script/.clasp.json",
       "source_location": "L8",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_apps_script_clasp_json",
-      "target": "assets_r3_apps_script_clasp_json_apps_script_clasp_htmlextensions"
+      "target": "assets_r3_apps_script_clasp_json_apps_script_clasp_htmlextensions",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -7167,9 +7097,9 @@
       "source_file": "Assets/R3/apps-script/.clasp.json",
       "source_location": "L11",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_apps_script_clasp_json",
-      "target": "assets_r3_apps_script_clasp_json_apps_script_clasp_jsonextensions"
+      "target": "assets_r3_apps_script_clasp_json_apps_script_clasp_jsonextensions",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -7177,9 +7107,9 @@
       "source_file": "Assets/R3/apps-script/.clasp.json",
       "source_location": "L3",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_apps_script_clasp_json",
-      "target": "assets_r3_apps_script_clasp_json_apps_script_clasp_rootdir"
+      "target": "assets_r3_apps_script_clasp_json_apps_script_clasp_rootdir",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -7187,9 +7117,9 @@
       "source_file": "Assets/R3/apps-script/.clasp.json",
       "source_location": "L4",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_apps_script_clasp_json",
-      "target": "assets_r3_apps_script_clasp_json_apps_script_clasp_scriptextensions"
+      "target": "assets_r3_apps_script_clasp_json_apps_script_clasp_scriptextensions",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -7197,9 +7127,9 @@
       "source_file": "Assets/R3/apps-script/.clasp.json",
       "source_location": "L2",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_apps_script_clasp_json",
-      "target": "assets_r3_apps_script_clasp_json_apps_script_clasp_scriptid"
+      "target": "assets_r3_apps_script_clasp_json_apps_script_clasp_scriptid",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -7207,9 +7137,9 @@
       "source_file": "Assets/R3/apps-script/.clasp.json",
       "source_location": "L15",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_apps_script_clasp_json",
-      "target": "assets_r3_apps_script_clasp_json_apps_script_clasp_skipsubdirectories"
+      "target": "assets_r3_apps_script_clasp_json_apps_script_clasp_skipsubdirectories",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -7217,9 +7147,9 @@
       "source_file": "Assets/R3/apps-script/appsscript.json",
       "source_location": "L3",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_apps_script_appsscript_json",
-      "target": "assets_r3_apps_script_appsscript_json_apps_script_appsscript_dependencies"
+      "target": "assets_r3_apps_script_appsscript_json_apps_script_appsscript_dependencies",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -7227,9 +7157,9 @@
       "source_file": "Assets/R3/apps-script/appsscript.json",
       "source_location": "L12",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_apps_script_appsscript_json",
-      "target": "assets_r3_apps_script_appsscript_json_apps_script_appsscript_exceptionlogging"
+      "target": "assets_r3_apps_script_appsscript_json_apps_script_appsscript_exceptionlogging",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -7237,9 +7167,9 @@
       "source_file": "Assets/R3/apps-script/appsscript.json",
       "source_location": "L18",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_apps_script_appsscript_json",
-      "target": "assets_r3_apps_script_appsscript_json_apps_script_appsscript_oauthscopes"
+      "target": "assets_r3_apps_script_appsscript_json_apps_script_appsscript_oauthscopes",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -7247,9 +7177,9 @@
       "source_file": "Assets/R3/apps-script/appsscript.json",
       "source_location": "L13",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_apps_script_appsscript_json",
-      "target": "assets_r3_apps_script_appsscript_json_apps_script_appsscript_runtimeversion"
+      "target": "assets_r3_apps_script_appsscript_json_apps_script_appsscript_runtimeversion",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -7257,9 +7187,9 @@
       "source_file": "Assets/R3/apps-script/appsscript.json",
       "source_location": "L2",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_apps_script_appsscript_json",
-      "target": "assets_r3_apps_script_appsscript_json_apps_script_appsscript_timezone"
+      "target": "assets_r3_apps_script_appsscript_json_apps_script_appsscript_timezone",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -7267,9 +7197,9 @@
       "source_file": "Assets/R3/apps-script/appsscript.json",
       "source_location": "L14",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_apps_script_appsscript_json",
-      "target": "assets_r3_apps_script_appsscript_json_apps_script_appsscript_webapp"
+      "target": "assets_r3_apps_script_appsscript_json_apps_script_appsscript_webapp",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -7307,7 +7237,7 @@
       "source_file": "Assets/R3/encrypt.sh",
       "source_location": "L1",
       "weight": 1.0,
-      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_recursing_keller_456a13_assets_r3_encrypt_sh",
+      "source": "r3_encrypt",
       "target": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_recursing_keller_456a13_assets_r3_encrypt_sh__entry",
       "confidence_score": 1.0
     },
@@ -10468,9 +10398,9 @@
       "source_file": "apps-script/.clasp.json",
       "source_location": "L14",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_apps_script_clasp_json",
-      "target": "apps_script_clasp_json_apps_script_clasp_filepushorder"
+      "target": "apps_script_clasp_json_apps_script_clasp_filepushorder",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10478,9 +10408,9 @@
       "source_file": "apps-script/.clasp.json",
       "source_location": "L8",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_apps_script_clasp_json",
-      "target": "apps_script_clasp_json_apps_script_clasp_htmlextensions"
+      "target": "apps_script_clasp_json_apps_script_clasp_htmlextensions",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10488,9 +10418,9 @@
       "source_file": "apps-script/.clasp.json",
       "source_location": "L11",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_apps_script_clasp_json",
-      "target": "apps_script_clasp_json_apps_script_clasp_jsonextensions"
+      "target": "apps_script_clasp_json_apps_script_clasp_jsonextensions",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10498,9 +10428,9 @@
       "source_file": "apps-script/.clasp.json",
       "source_location": "L3",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_apps_script_clasp_json",
-      "target": "apps_script_clasp_json_apps_script_clasp_rootdir"
+      "target": "apps_script_clasp_json_apps_script_clasp_rootdir",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10508,9 +10438,9 @@
       "source_file": "apps-script/.clasp.json",
       "source_location": "L4",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_apps_script_clasp_json",
-      "target": "apps_script_clasp_json_apps_script_clasp_scriptextensions"
+      "target": "apps_script_clasp_json_apps_script_clasp_scriptextensions",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10518,9 +10448,9 @@
       "source_file": "apps-script/.clasp.json",
       "source_location": "L2",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_apps_script_clasp_json",
-      "target": "apps_script_clasp_json_apps_script_clasp_scriptid"
+      "target": "apps_script_clasp_json_apps_script_clasp_scriptid",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10528,9 +10458,9 @@
       "source_file": "apps-script/.clasp.json",
       "source_location": "L15",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_apps_script_clasp_json",
-      "target": "apps_script_clasp_json_apps_script_clasp_skipsubdirectories"
+      "target": "apps_script_clasp_json_apps_script_clasp_skipsubdirectories",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10538,9 +10468,9 @@
       "source_file": "apps-script/appsscript.json",
       "source_location": "L3",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_apps_script_appsscript_json",
-      "target": "apps_script_appsscript_json_apps_script_appsscript_dependencies"
+      "target": "apps_script_appsscript_json_apps_script_appsscript_dependencies",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10548,9 +10478,9 @@
       "source_file": "apps-script/appsscript.json",
       "source_location": "L4",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_apps_script_appsscript_json",
-      "target": "apps_script_appsscript_json_apps_script_appsscript_exceptionlogging"
+      "target": "apps_script_appsscript_json_apps_script_appsscript_exceptionlogging",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10558,9 +10488,9 @@
       "source_file": "apps-script/appsscript.json",
       "source_location": "L10",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_apps_script_appsscript_json",
-      "target": "apps_script_appsscript_json_apps_script_appsscript_oauthscopes"
+      "target": "apps_script_appsscript_json_apps_script_appsscript_oauthscopes",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10568,9 +10498,9 @@
       "source_file": "apps-script/appsscript.json",
       "source_location": "L5",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_apps_script_appsscript_json",
-      "target": "apps_script_appsscript_json_apps_script_appsscript_runtimeversion"
+      "target": "apps_script_appsscript_json_apps_script_appsscript_runtimeversion",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10578,9 +10508,9 @@
       "source_file": "apps-script/appsscript.json",
       "source_location": "L2",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_apps_script_appsscript_json",
-      "target": "apps_script_appsscript_json_apps_script_appsscript_timezone"
+      "target": "apps_script_appsscript_json_apps_script_appsscript_timezone",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10588,9 +10518,9 @@
       "source_file": "apps-script/appsscript.json",
       "source_location": "L6",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_apps_script_appsscript_json",
-      "target": "apps_script_appsscript_json_apps_script_appsscript_webapp"
+      "target": "apps_script_appsscript_json_apps_script_appsscript_webapp",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10618,9 +10548,9 @@
       "source_file": "dashboard/.staticrypt.json",
       "source_location": "L2",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_dashboard_staticrypt_json",
-      "target": "dashboard_staticrypt_salt"
+      "target": "dashboard_staticrypt_salt",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10628,7 +10558,7 @@
       "source_file": "dashboard/apps-script-export/.clasp.json",
       "source_location": "L14",
       "weight": 1.0,
-      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_recursing_keller_456a13_dashboard_apps_script_export_clasp_json",
+      "source": "apps_script_export_clasp",
       "target": "apps_script_export_clasp_filepushorder",
       "confidence_score": 1.0
     },
@@ -10638,7 +10568,7 @@
       "source_file": "dashboard/apps-script-export/.clasp.json",
       "source_location": "L8",
       "weight": 1.0,
-      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_recursing_keller_456a13_dashboard_apps_script_export_clasp_json",
+      "source": "apps_script_export_clasp",
       "target": "apps_script_export_clasp_htmlextensions",
       "confidence_score": 1.0
     },
@@ -10648,7 +10578,7 @@
       "source_file": "dashboard/apps-script-export/.clasp.json",
       "source_location": "L11",
       "weight": 1.0,
-      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_recursing_keller_456a13_dashboard_apps_script_export_clasp_json",
+      "source": "apps_script_export_clasp",
       "target": "apps_script_export_clasp_jsonextensions",
       "confidence_score": 1.0
     },
@@ -10658,7 +10588,7 @@
       "source_file": "dashboard/apps-script-export/.clasp.json",
       "source_location": "L3",
       "weight": 1.0,
-      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_recursing_keller_456a13_dashboard_apps_script_export_clasp_json",
+      "source": "apps_script_export_clasp",
       "target": "apps_script_export_clasp_rootdir",
       "confidence_score": 1.0
     },
@@ -10668,7 +10598,7 @@
       "source_file": "dashboard/apps-script-export/.clasp.json",
       "source_location": "L4",
       "weight": 1.0,
-      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_recursing_keller_456a13_dashboard_apps_script_export_clasp_json",
+      "source": "apps_script_export_clasp",
       "target": "apps_script_export_clasp_scriptextensions",
       "confidence_score": 1.0
     },
@@ -10678,7 +10608,7 @@
       "source_file": "dashboard/apps-script-export/.clasp.json",
       "source_location": "L2",
       "weight": 1.0,
-      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_recursing_keller_456a13_dashboard_apps_script_export_clasp_json",
+      "source": "apps_script_export_clasp",
       "target": "apps_script_export_clasp_scriptid",
       "confidence_score": 1.0
     },
@@ -10688,7 +10618,7 @@
       "source_file": "dashboard/apps-script-export/.clasp.json",
       "source_location": "L15",
       "weight": 1.0,
-      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_recursing_keller_456a13_dashboard_apps_script_export_clasp_json",
+      "source": "apps_script_export_clasp",
       "target": "apps_script_export_clasp_skipsubdirectories",
       "confidence_score": 1.0
     },
@@ -10698,7 +10628,7 @@
       "source_file": "dashboard/apps-script-export/appsscript.json",
       "source_location": "L5",
       "weight": 1.0,
-      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_recursing_keller_456a13_dashboard_apps_script_export_appsscript_json",
+      "source": "apps_script_export_appsscript",
       "target": "apps_script_export_appsscript_dependencies",
       "confidence_score": 1.0
     },
@@ -10708,7 +10638,7 @@
       "source_file": "dashboard/apps-script-export/appsscript.json",
       "source_location": "L3",
       "weight": 1.0,
-      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_recursing_keller_456a13_dashboard_apps_script_export_appsscript_json",
+      "source": "apps_script_export_appsscript",
       "target": "apps_script_export_appsscript_exceptionlogging",
       "confidence_score": 1.0
     },
@@ -10718,7 +10648,7 @@
       "source_file": "dashboard/apps-script-export/appsscript.json",
       "source_location": "L14",
       "weight": 1.0,
-      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_recursing_keller_456a13_dashboard_apps_script_export_appsscript_json",
+      "source": "apps_script_export_appsscript",
       "target": "apps_script_export_appsscript_oauthscopes",
       "confidence_score": 1.0
     },
@@ -10728,7 +10658,7 @@
       "source_file": "dashboard/apps-script-export/appsscript.json",
       "source_location": "L4",
       "weight": 1.0,
-      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_recursing_keller_456a13_dashboard_apps_script_export_appsscript_json",
+      "source": "apps_script_export_appsscript",
       "target": "apps_script_export_appsscript_runtimeversion",
       "confidence_score": 1.0
     },
@@ -10738,7 +10668,7 @@
       "source_file": "dashboard/apps-script-export/appsscript.json",
       "source_location": "L2",
       "weight": 1.0,
-      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_recursing_keller_456a13_dashboard_apps_script_export_appsscript_json",
+      "source": "apps_script_export_appsscript",
       "target": "apps_script_export_appsscript_timezone",
       "confidence_score": 1.0
     },
@@ -10748,7 +10678,7 @@
       "source_file": "dashboard/apps-script-export/appsscript.json",
       "source_location": "L10",
       "weight": 1.0,
-      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_recursing_keller_456a13_dashboard_apps_script_export_appsscript_json",
+      "source": "apps_script_export_appsscript",
       "target": "apps_script_export_appsscript_webapp",
       "confidence_score": 1.0
     },
@@ -10758,9 +10688,9 @@
       "source_file": "dashboard/apps-script-export/appsscript.json",
       "source_location": "L6",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "apps_script_export_appsscript_dependencies",
-      "target": "apps_script_export_appsscript_dependencies_enabledadvancedservices"
+      "target": "apps_script_export_appsscript_dependencies_enabledadvancedservices",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10768,9 +10698,9 @@
       "source_file": "dashboard/apps-script-export/appsscript.json",
       "source_location": "L12",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "apps_script_export_appsscript_webapp",
-      "target": "apps_script_export_appsscript_webapp_access"
+      "target": "apps_script_export_appsscript_webapp_access",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10778,9 +10708,9 @@
       "source_file": "dashboard/apps-script-export/appsscript.json",
       "source_location": "L11",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "apps_script_export_appsscript_webapp",
-      "target": "apps_script_export_appsscript_webapp_executeas"
+      "target": "apps_script_export_appsscript_webapp_executeas",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10788,9 +10718,9 @@
       "source_file": "dashboard/encrypt.sh",
       "source_location": "L1",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_dashboard_encrypt_sh",
-      "target": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_dashboard_encrypt_sh__entry"
+      "target": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_dashboard_encrypt_sh__entry",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10798,9 +10728,9 @@
       "source_file": ".planning/2026-06-11-moderation-and-dashboard-plan.md",
       "source_location": "L1",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_planning_2026_06_11_moderation_and_dashboard_plan_md",
-      "target": "planning_2026_06_11_moderation_and_dashboard_plan_next_jobs_moderation_change_dashboards"
+      "target": "planning_2026_06_11_moderation_and_dashboard_plan_next_jobs_moderation_change_dashboards",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10878,9 +10808,9 @@
       "source_file": ".planning/2026-06-12-dashboard-architecture-DECISIONS.md",
       "source_location": "L1",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_planning_2026_06_12_dashboard_architecture_decisions_md",
-      "target": "planning_2026_06_12_dashboard_architecture_decisions_ais_assessment_dashboard_architecture_decision_record"
+      "target": "planning_2026_06_12_dashboard_architecture_decisions_ais_assessment_dashboard_architecture_decision_record",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11038,9 +10968,9 @@
       "source_file": ".planning/2026-06-15-dashboard-design-DECISIONS.md",
       "source_location": "L1",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_planning_2026_06_15_dashboard_design_decisions_md",
-      "target": "planning_2026_06_15_dashboard_design_decisions_ais_observation_dashboard_design_motion_decision_record"
+      "target": "planning_2026_06_15_dashboard_design_decisions_ais_observation_dashboard_design_motion_decision_record",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11208,7 +11138,7 @@
       "source_file": ".planning/2026-06-22-phaseA-congruence-audit.md",
       "source_location": "L1",
       "weight": 1.0,
-      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_recursing_keller_456a13_planning_2026_06_22_phasea_congruence_audit_md",
+      "source": "planning_2026_06_22_phasea_congruence_audit",
       "target": "planning_2026_06_22_phasea_congruence_audit_phase_a_congruence_audit_reference_map_snapshot_claims_vs_live_r3_data",
       "confidence_score": 1.0
     },
@@ -11218,9 +11148,9 @@
       "source_file": ".planning/2026-06-22-phaseA-congruence-audit.md",
       "source_location": "L43",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_2026_06_22_phasea_congruence_audit_phase_a_congruence_audit_reference_map_snapshot_claims_vs_live_r3_data",
-      "target": "planning_2026_06_22_phasea_congruence_audit_claim_by_claim_map"
+      "target": "planning_2026_06_22_phasea_congruence_audit_claim_by_claim_map",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11228,9 +11158,9 @@
       "source_file": ".planning/2026-06-22-phaseA-congruence-audit.md",
       "source_location": "L19",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_2026_06_22_phasea_congruence_audit_phase_a_congruence_audit_reference_map_snapshot_claims_vs_live_r3_data",
-      "target": "planning_2026_06_22_phasea_congruence_audit_flags_real_number_shown_nothing_rewritten"
+      "target": "planning_2026_06_22_phasea_congruence_audit_flags_real_number_shown_nothing_rewritten",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11238,9 +11168,9 @@
       "source_file": ".planning/2026-06-22-phaseA-congruence-audit.md",
       "source_location": "L16",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_2026_06_22_phasea_congruence_audit_phase_a_congruence_audit_reference_map_snapshot_claims_vs_live_r3_data",
-      "target": "planning_2026_06_22_phasea_congruence_audit_headline_verdict"
+      "target": "planning_2026_06_22_phasea_congruence_audit_headline_verdict",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11248,9 +11178,9 @@
       "source_file": ".planning/2026-06-22-phaseA-congruence-audit.md",
       "source_location": "L7",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_2026_06_22_phasea_congruence_audit_phase_a_congruence_audit_reference_map_snapshot_claims_vs_live_r3_data",
-      "target": "planning_2026_06_22_phasea_congruence_audit_live_numbers_now"
+      "target": "planning_2026_06_22_phasea_congruence_audit_live_numbers_now",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11258,9 +11188,9 @@
       "source_file": ".planning/2026-06-22-phaseA-congruence-audit.md",
       "source_location": "L294",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_2026_06_22_phasea_congruence_audit_claim_by_claim_map",
-      "target": "planning_2026_06_22_phasea_congruence_audit_compare"
+      "target": "planning_2026_06_22_phasea_congruence_audit_compare",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11268,9 +11198,9 @@
       "source_file": ".planning/2026-06-22-phaseA-congruence-audit.md",
       "source_location": "L46",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_2026_06_22_phasea_congruence_audit_claim_by_claim_map",
-      "target": "planning_2026_06_22_phasea_congruence_audit_primary_kindy_what_is_working"
+      "target": "planning_2026_06_22_phasea_congruence_audit_primary_kindy_what_is_working",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11278,9 +11208,9 @@
       "source_file": ".planning/2026-06-22-phaseA-congruence-audit.md",
       "source_location": "L111",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_2026_06_22_phasea_congruence_audit_claim_by_claim_map",
-      "target": "planning_2026_06_22_phasea_congruence_audit_primary_kindy_where_to_focus_next"
+      "target": "planning_2026_06_22_phasea_congruence_audit_primary_kindy_where_to_focus_next",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11288,9 +11218,9 @@
       "source_file": ".planning/2026-06-22-phaseA-congruence-audit.md",
       "source_location": "L173",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_2026_06_22_phasea_congruence_audit_claim_by_claim_map",
-      "target": "planning_2026_06_22_phasea_congruence_audit_secondary_what_is_working"
+      "target": "planning_2026_06_22_phasea_congruence_audit_secondary_what_is_working",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11298,9 +11228,9 @@
       "source_file": ".planning/2026-06-22-phaseA-congruence-audit.md",
       "source_location": "L230",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_2026_06_22_phasea_congruence_audit_claim_by_claim_map",
-      "target": "planning_2026_06_22_phasea_congruence_audit_secondary_where_to_focus_next"
+      "target": "planning_2026_06_22_phasea_congruence_audit_secondary_where_to_focus_next",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11308,7 +11238,7 @@
       "source_file": ".planning/2026-06-23-print-export-research.md",
       "source_location": "L1",
       "weight": 1.0,
-      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_recursing_keller_456a13_planning_2026_06_23_print_export_research_md",
+      "source": "planning_2026_06_23_print_export_research",
       "target": "planning_2026_06_23_print_export_research_printing_exporting_the_snapshot_dashboard_research_no_implementation",
       "confidence_score": 1.0
     },
@@ -11318,9 +11248,9 @@
       "source_file": ".planning/2026-06-23-print-export-research.md",
       "source_location": "L47",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_2026_06_23_print_export_research_printing_exporting_the_snapshot_dashboard_research_no_implementation",
-      "target": "planning_2026_06_23_print_export_research_how_this_connects_to_existing_work"
+      "target": "planning_2026_06_23_print_export_research_how_this_connects_to_existing_work",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11328,9 +11258,9 @@
       "source_file": ".planning/2026-06-23-print-export-research.md",
       "source_location": "L39",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_2026_06_23_print_export_research_printing_exporting_the_snapshot_dashboard_research_no_implementation",
-      "target": "planning_2026_06_23_print_export_research_implementation_notes_for_whoever_builds_it_so_the_print_path_is_correct_first_time"
+      "target": "planning_2026_06_23_print_export_research_implementation_notes_for_whoever_builds_it_so_the_print_path_is_correct_first_time",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11338,9 +11268,9 @@
       "source_file": ".planning/2026-06-23-print-export-research.md",
       "source_location": "L26",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_2026_06_23_print_export_research_printing_exporting_the_snapshot_dashboard_research_no_implementation",
-      "target": "planning_2026_06_23_print_export_research_recommendation"
+      "target": "planning_2026_06_23_print_export_research_recommendation",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11348,9 +11278,9 @@
       "source_file": ".planning/2026-06-23-print-export-research.md",
       "source_location": "L14",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_2026_06_23_print_export_research_printing_exporting_the_snapshot_dashboard_research_no_implementation",
-      "target": "planning_2026_06_23_print_export_research_the_options"
+      "target": "planning_2026_06_23_print_export_research_the_options",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11358,9 +11288,9 @@
       "source_file": ".planning/2026-06-23-print-export-research.md",
       "source_location": "L5",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "planning_2026_06_23_print_export_research_printing_exporting_the_snapshot_dashboard_research_no_implementation",
-      "target": "planning_2026_06_23_print_export_research_what_we_are_printing_and_why_it_is_not_trivial"
+      "target": "planning_2026_06_23_print_export_research_what_we_are_printing_and_why_it_is_not_trivial",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11368,9 +11298,9 @@
       "source_file": ".planning/v0.10-r3-form-checklist.md",
       "source_location": "L1",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_planning_v0_10_r3_form_checklist_md",
-      "target": "planning_v0_10_r3_form_checklist_v0_10_r3_evidence_form_build_lesson_observation_reorg"
+      "target": "planning_v0_10_r3_form_checklist_v0_10_r3_evidence_form_build_lesson_observation_reorg",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11498,9 +11428,9 @@
       "source_file": "Assets/R3/2026-05-28_email_R3-Data_to-Dave_cc-Leon-Steve.md",
       "source_location": "L10",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_2026_05_28_email_r3_data_to_dave_cc_leon_steve_md",
-      "target": "r3_2026_05_28_email_r3_data_to_dave_cc_leon_steve_r3_data"
+      "target": "r3_2026_05_28_email_r3_data_to_dave_cc_leon_steve_r3_data",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11508,9 +11438,9 @@
       "source_file": "Assets/R3/Google file links.md",
       "source_location": "L1",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_google_file_links_md",
-      "target": "r3_google_file_links_r3_evidence_google_file_links"
+      "target": "r3_google_file_links_r3_evidence_google_file_links",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11558,9 +11488,9 @@
       "source_file": "Assets/R3/README.md",
       "source_location": "L1",
       "weight": 1.0,
-      "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_recursing_keller_456a13_assets_r3_readme_md",
-      "target": "r3_readme_r3_evidence_form",
-      "confidence_score": 1.0
+      "confidence_score": 1.0,
+      "source": "r3_readme",
+      "target": "r3_readme_r3_evidence_form"
     },
     {
       "relation": "contains",
@@ -11788,9 +11718,9 @@
       "source_file": "README.md",
       "source_location": "L1",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_readme_md",
-      "target": "data_representation_readme_data_representation_teacher_observation_pitch"
+      "target": "data_representation_readme_data_representation_teacher_observation_pitch",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11798,9 +11728,9 @@
       "source_file": "README.md",
       "source_location": "L11",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "data_representation_readme_data_representation_teacher_observation_pitch",
-      "target": "data_representation_readme_file_map"
+      "target": "data_representation_readme_file_map",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11808,9 +11738,9 @@
       "source_file": "README.md",
       "source_location": "L30",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "data_representation_readme_data_representation_teacher_observation_pitch",
-      "target": "data_representation_readme_rating_scale"
+      "target": "data_representation_readme_rating_scale",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11818,9 +11748,9 @@
       "source_file": "README.md",
       "source_location": "L38",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "data_representation_readme_data_representation_teacher_observation_pitch",
-      "target": "data_representation_readme_related"
+      "target": "data_representation_readme_related",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11828,9 +11758,9 @@
       "source_file": "README.md",
       "source_location": "L7",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "data_representation_readme_data_representation_teacher_observation_pitch",
-      "target": "data_representation_readme_status"
+      "target": "data_representation_readme_status",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11838,9 +11768,9 @@
       "source_file": "README.md",
       "source_location": "L34",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "data_representation_readme_data_representation_teacher_observation_pitch",
-      "target": "data_representation_readme_visibility"
+      "target": "data_representation_readme_visibility",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11848,9 +11778,9 @@
       "source_file": "README.md",
       "source_location": "L26",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "data_representation_readme_data_representation_teacher_observation_pitch",
-      "target": "data_representation_readme_worked_example"
+      "target": "data_representation_readme_worked_example",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11858,9 +11788,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L1",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog",
-      "target": "dashboard_changelog_ais_observation_dashboard_changelog"
+      "target": "dashboard_changelog_ais_observation_dashboard_changelog",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11868,9 +11798,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L204",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_10_2026_06_17"
+      "target": "dashboard_changelog_v0_10_2026_06_17",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11878,9 +11808,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L198",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_11_2026_06_17"
+      "target": "dashboard_changelog_v0_11_2026_06_17",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11888,9 +11818,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L195",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_12_2026_06_18"
+      "target": "dashboard_changelog_v0_12_2026_06_18",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11898,9 +11828,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L190",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_13_2026_06_18"
+      "target": "dashboard_changelog_v0_13_2026_06_18",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11908,9 +11838,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L184",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_14_2026_06_18"
+      "target": "dashboard_changelog_v0_14_2026_06_18",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11918,9 +11848,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L177",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_15_2026_06_18"
+      "target": "dashboard_changelog_v0_15_2026_06_18",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11928,9 +11858,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L168",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_16_2026_06_18"
+      "target": "dashboard_changelog_v0_16_2026_06_18",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11938,9 +11868,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L162",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_17_2026_06_18"
+      "target": "dashboard_changelog_v0_17_2026_06_18",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11948,9 +11878,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L157",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_18_2026_06_18"
+      "target": "dashboard_changelog_v0_18_2026_06_18",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11958,9 +11888,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L148",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_19_2026_06_18"
+      "target": "dashboard_changelog_v0_19_2026_06_18",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11968,9 +11898,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L246",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_1_2026_06_15"
+      "target": "dashboard_changelog_v0_1_2026_06_15",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11978,9 +11908,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L142",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_20_2026_06_18"
+      "target": "dashboard_changelog_v0_20_2026_06_18",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11988,9 +11918,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L134",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_21_2026_06_18"
+      "target": "dashboard_changelog_v0_21_2026_06_18",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11998,9 +11928,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L126",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_22_2026_06_19"
+      "target": "dashboard_changelog_v0_22_2026_06_19",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12008,9 +11938,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L118",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_23_2026_06_19"
+      "target": "dashboard_changelog_v0_23_2026_06_19",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12018,9 +11948,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L109",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_24_2026_06_19"
+      "target": "dashboard_changelog_v0_24_2026_06_19",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12028,9 +11958,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L102",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_25_2026_06_20"
+      "target": "dashboard_changelog_v0_25_2026_06_20",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12038,9 +11968,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L94",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_26_2026_06_21"
+      "target": "dashboard_changelog_v0_26_2026_06_21",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12048,9 +11978,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L88",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_27_2026_06_22"
+      "target": "dashboard_changelog_v0_27_2026_06_22",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12058,9 +11988,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L82",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_28_2026_06_22"
+      "target": "dashboard_changelog_v0_28_2026_06_22",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12068,9 +11998,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L78",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_29_2026_06_22"
+      "target": "dashboard_changelog_v0_29_2026_06_22",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12078,9 +12008,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L243",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_2_2026_06_16"
+      "target": "dashboard_changelog_v0_2_2026_06_16",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12088,9 +12018,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L71",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_30_2026_06_22"
+      "target": "dashboard_changelog_v0_30_2026_06_22",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12098,9 +12028,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L64",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_31_2026_06_23"
+      "target": "dashboard_changelog_v0_31_2026_06_23",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12108,9 +12038,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L57",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_32_2026_06_23"
+      "target": "dashboard_changelog_v0_32_2026_06_23",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12118,9 +12048,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L50",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_33_2026_06_23"
+      "target": "dashboard_changelog_v0_33_2026_06_23",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12128,9 +12058,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L43",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_34_2026_06_23"
+      "target": "dashboard_changelog_v0_34_2026_06_23",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12138,9 +12068,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L38",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_35_2026_06_23"
+      "target": "dashboard_changelog_v0_35_2026_06_23",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12148,9 +12078,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L31",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_36_2026_06_23"
+      "target": "dashboard_changelog_v0_36_2026_06_23",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12158,9 +12088,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L28",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_37_2026_06_23"
+      "target": "dashboard_changelog_v0_37_2026_06_23",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12168,9 +12098,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L22",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_38_2026_06_23"
+      "target": "dashboard_changelog_v0_38_2026_06_23",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12178,9 +12108,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L15",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_39_2026_06_25"
+      "target": "dashboard_changelog_v0_39_2026_06_25",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12188,68 +12118,8 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L240",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_3_2026_06_16"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L8",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_40_2026_06_25"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L37",
-      "weight": 1.0,
-      "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_41_2026_06_25",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L31",
-      "weight": 1.0,
-      "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_42_2026_06_25",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L26",
-      "weight": 1.0,
-      "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_43_2026_06_25",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L20",
-      "weight": 1.0,
-      "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_44_2026_06_25",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "dashboard/CHANGELOG.md",
-      "source_location": "L13",
-      "weight": 1.0,
-      "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_45_2026_06_25",
+      "target": "dashboard_changelog_v0_3_2026_06_16",
       "confidence_score": 1.0
     },
     {
@@ -12259,7 +12129,7 @@
       "source_location": "L8",
       "weight": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_46_2026_06_26",
+      "target": "dashboard_changelog_v0_40_2026_06_25",
       "confidence_score": 1.0
     },
     {
@@ -12268,9 +12138,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L237",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_4_2026_06_16"
+      "target": "dashboard_changelog_v0_4_2026_06_16",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12278,9 +12148,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L234",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_5_2026_06_16"
+      "target": "dashboard_changelog_v0_5_2026_06_16",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12288,9 +12158,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L231",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_6_2026_06_16"
+      "target": "dashboard_changelog_v0_6_2026_06_16",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12298,9 +12168,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L222",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_7_2026_06_16"
+      "target": "dashboard_changelog_v0_7_2026_06_16",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12308,9 +12178,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L216",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_8_2026_06_16"
+      "target": "dashboard_changelog_v0_8_2026_06_16",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12318,9 +12188,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L208",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "target": "dashboard_changelog_v0_9_2026_06_17"
+      "target": "dashboard_changelog_v0_9_2026_06_17",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12328,18 +12198,8 @@
       "source_file": "dashboard/apps-script-export/README.md",
       "source_location": "L1",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "apps_script_export_readme",
-      "target": "apps_script_export_readme_dashboard_google_doc_export_phase_d"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "dashboard/apps-script-export/README.md",
-      "source_location": "L42",
-      "weight": 1.0,
-      "source": "apps_script_export_readme_dashboard_google_doc_export_phase_d",
-      "target": "apps_script_export_readme_2026_06_25_v3_redesign_redeploy_8",
+      "target": "apps_script_export_readme_dashboard_google_doc_export_phase_d",
       "confidence_score": 1.0
     },
     {
@@ -12348,9 +12208,9 @@
       "source_file": "dashboard/apps-script-export/README.md",
       "source_location": "L25",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "apps_script_export_readme_dashboard_google_doc_export_phase_d",
-      "target": "apps_script_export_readme_contract"
+      "target": "apps_script_export_readme_contract",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12358,9 +12218,9 @@
       "source_file": "dashboard/apps-script-export/README.md",
       "source_location": "L7",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "apps_script_export_readme_dashboard_google_doc_export_phase_d",
-      "target": "apps_script_export_readme_deploy_one_time"
+      "target": "apps_script_export_readme_deploy_one_time",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12368,9 +12228,9 @@
       "source_file": "dashboard/apps-script-export/README.md",
       "source_location": "L34",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "apps_script_export_readme_dashboard_google_doc_export_phase_d",
-      "target": "apps_script_export_readme_deployed_2026_06_24_admin_user_ais_ae_via_clasp"
+      "target": "apps_script_export_readme_deployed_2026_06_24_admin_user_ais_ae_via_clasp",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12378,9 +12238,9 @@
       "source_file": "dashboard/apps-script-export/README.md",
       "source_location": "L20",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "apps_script_export_readme_dashboard_google_doc_export_phase_d",
-      "target": "apps_script_export_readme_redeploy_after_editing_code_gs"
+      "target": "apps_script_export_readme_redeploy_after_editing_code_gs",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12388,9 +12248,9 @@
       "source_file": "handoff/handoff-2026-06-02-1151.md",
       "source_location": "L1",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_handoff_handoff_2026_06_02_1151_md",
-      "target": "handoff_handoff_2026_06_02_1151_handoff_data_representation_deck_next_session"
+      "target": "handoff_handoff_2026_06_02_1151_handoff_data_representation_deck_next_session",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12488,9 +12348,9 @@
       "source_file": "handoff/handoff-2026-06-03-1300.md",
       "source_location": "L1",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_handoff_handoff_2026_06_03_1300_md",
-      "target": "handoff_handoff_2026_06_03_1300_handoff_data_representation_r3_evidence_form"
+      "target": "handoff_handoff_2026_06_03_1300_handoff_data_representation_r3_evidence_form",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12648,9 +12508,9 @@
       "source_file": "handoff/handoff-2026-06-06-1015.md",
       "source_location": "L1",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_handoff_handoff_2026_06_06_1015_md",
-      "target": "handoff_handoff_2026_06_06_1015_handoff_data_representation_r3_evidence_form"
+      "target": "handoff_handoff_2026_06_06_1015_handoff_data_representation_r3_evidence_form",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12738,9 +12598,9 @@
       "source_file": "handoff/handoff-2026-06-09-1145.md",
       "source_location": "L1",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_handoff_handoff_2026_06_09_1145_md",
-      "target": "handoff_handoff_2026_06_09_1145_handoff_data_representation_r3_evidence_live_inspection_week"
+      "target": "handoff_handoff_2026_06_09_1145_handoff_data_representation_r3_evidence_live_inspection_week",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12838,9 +12698,9 @@
       "source_file": "handoff/handoff-2026-06-11-1710.md",
       "source_location": "L1",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_handoff_handoff_2026_06_11_1710_md",
-      "target": "handoff_handoff_2026_06_11_1710_handoff_r3_inspector_note_backfill_moderation_dashboard_prep"
+      "target": "handoff_handoff_2026_06_11_1710_handoff_r3_inspector_note_backfill_moderation_dashboard_prep",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -12948,9 +12808,9 @@
       "source_file": "handoff/handoff-2026-06-12-1653.md",
       "source_location": "L1",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_handoff_handoff_2026_06_12_1653_md",
-      "target": "handoff_handoff_2026_06_12_1653_handoff_job_0_shipped_v0_41_v0_44_dashboard_architecture_grilling_resume_at_q7"
+      "target": "handoff_handoff_2026_06_12_1653_handoff_job_0_shipped_v0_41_v0_44_dashboard_architecture_grilling_resume_at_q7",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -13058,9 +12918,9 @@
       "source_file": "handoff/handoff-2026-06-13-1607.md",
       "source_location": "L1",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_handoff_handoff_2026_06_13_1607_md",
-      "target": "handoff_handoff_2026_06_13_1607_handoff_job_1_shipped_dashboard_concepts_grilling_complete_next_supabase_build"
+      "target": "handoff_handoff_2026_06_13_1607_handoff_job_1_shipped_dashboard_concepts_grilling_complete_next_supabase_build",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -13178,9 +13038,9 @@
       "source_file": "selction_picker_plan.md",
       "source_location": "L1",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_selction_picker_plan_md",
-      "target": "data_representation_selction_picker_plan_deferred_plan_custom_selection_picker_for_the_r3_form"
+      "target": "data_representation_selction_picker_plan_deferred_plan_custom_selection_picker_for_the_r3_form",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -13188,9 +13048,9 @@
       "source_file": "selction_picker_plan.md",
       "source_location": "L30",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "data_representation_selction_picker_plan_deferred_plan_custom_selection_picker_for_the_r3_form",
-      "target": "data_representation_selction_picker_plan_failure_history_that_led_here"
+      "target": "data_representation_selction_picker_plan_failure_history_that_led_here",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -13198,9 +13058,9 @@
       "source_file": "selction_picker_plan.md",
       "source_location": "L223",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "data_representation_selction_picker_plan_deferred_plan_custom_selection_picker_for_the_r3_form",
-      "target": "data_representation_selction_picker_plan_sources_further_reading"
+      "target": "data_representation_selction_picker_plan_sources_further_reading",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -13208,9 +13068,9 @@
       "source_file": "selction_picker_plan.md",
       "source_location": "L48",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "data_representation_selction_picker_plan_deferred_plan_custom_selection_picker_for_the_r3_form",
-      "target": "data_representation_selction_picker_plan_the_architecture_that_works"
+      "target": "data_representation_selction_picker_plan_the_architecture_that_works",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -13218,9 +13078,9 @@
       "source_file": "selction_picker_plan.md",
       "source_location": "L209",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "data_representation_selction_picker_plan_deferred_plan_custom_selection_picker_for_the_r3_form",
-      "target": "data_representation_selction_picker_plan_when_to_revisit_this_plan"
+      "target": "data_representation_selction_picker_plan_when_to_revisit_this_plan",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -13228,9 +13088,9 @@
       "source_file": "selction_picker_plan.md",
       "source_location": "L11",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "data_representation_selction_picker_plan_deferred_plan_custom_selection_picker_for_the_r3_form",
-      "target": "data_representation_selction_picker_plan_why_this_file_exists"
+      "target": "data_representation_selction_picker_plan_why_this_file_exists",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -13238,9 +13098,9 @@
       "source_file": "selction_picker_plan.md",
       "source_location": "L197",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "data_representation_selction_picker_plan_the_architecture_that_works",
-      "target": "data_representation_selction_picker_plan_accessibility_checklist_must_pass_before_shipping"
+      "target": "data_representation_selction_picker_plan_accessibility_checklist_must_pass_before_shipping",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -13248,9 +13108,9 @@
       "source_file": "selction_picker_plan.md",
       "source_location": "L83",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "data_representation_selction_picker_plan_the_architecture_that_works",
-      "target": "data_representation_selction_picker_plan_behaviour_contract"
+      "target": "data_representation_selction_picker_plan_behaviour_contract",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -13258,9 +13118,9 @@
       "source_file": "selction_picker_plan.md",
       "source_location": "L97",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "data_representation_selction_picker_plan_the_architecture_that_works",
-      "target": "data_representation_selction_picker_plan_css_sketch"
+      "target": "data_representation_selction_picker_plan_css_sketch",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -13268,9 +13128,9 @@
       "source_file": "selction_picker_plan.md",
       "source_location": "L128",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "data_representation_selction_picker_plan_the_architecture_that_works",
-      "target": "data_representation_selction_picker_plan_js_sketch_80_100_lines_for_a_reusable_component"
+      "target": "data_representation_selction_picker_plan_js_sketch_80_100_lines_for_a_reusable_component",
+      "confidence_score": 1.0
     },
     {
       "relation": "references",
@@ -15604,5 +15464,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "b9e49f68b4df653f335caff1208d82f05db615bb"
+  "built_at_commit": "bd4ebbeca4dec2cb501dd189921c4aaa4b43e344"
 }

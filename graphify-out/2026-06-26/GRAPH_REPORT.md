@@ -1,16 +1,16 @@
-# Graph Report - charming-shannon-fd4bad  (2026-06-26)
+# Graph Report - recursing-keller-456a13  (2026-06-25)
 
 ## Corpus Check
-- 39 files · ~529,475 words
+- 39 files · ~487,997 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 620 nodes · 881 edges · 46 communities (35 shown, 11 thin omitted)
+- 613 nodes · 874 edges · 46 communities (35 shown, 11 thin omitted)
 - Extraction: 94% EXTRACTED · 5% INFERRED · 1% AMBIGUOUS · INFERRED: 44 edges (avg confidence: 0.87)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `b9e49f68`
+- Built from commit: `bd4ebbec`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -60,7 +60,7 @@
 
 ## God Nodes (most connected - your core abstractions)
 1. `ce` - 97 edges
-2. `AIS Observation Dashboard . changelog` - 47 edges
+2. `AIS Observation Dashboard . changelog` - 41 edges
 3. `R3 Evidence Form Master Source` - 22 edges
 4. `Teacher Observation Pitch Deck (index.html)` - 16 edges
 5. `R3 Evidence Form (Master Source)` - 16 edges
@@ -89,7 +89,7 @@
 
 ### Community 0 - "AIS Observation Forms & Scripts"
 Cohesion: 0.07
-Nodes (61): admin.user@ais.ae (Super Admin Identity), Lesson Obs Apps Script Config (00_Config.gs), Lesson Obs Apps Script doGet (02_doGet.gs), Lesson Obs Apps Script doPost (01_doPost.gs), R3 Apps Script Config (00_Config.gs), R3 Apps Script doGet (02_doGet.gs), R3 Apps Script doPost (01_doPost.gs), R3 Apps Script TeacherLoader (04_TeacherLoader.gs) (+53 more)
+Nodes (60): admin.user@ais.ae (Super Admin Identity), Lesson Obs Apps Script Config (00_Config.gs), Lesson Obs Apps Script doGet (02_doGet.gs), Lesson Obs Apps Script doPost (01_doPost.gs), R3 Apps Script Config (00_Config.gs), R3 Apps Script doGet (02_doGet.gs), R3 Apps Script doPost (01_doPost.gs), R3 Apps Script TeacherLoader (04_TeacherLoader.gs) (+52 more)
 
 ### Community 1 - "TomSelect Core API"
 Cohesion: 0.05
@@ -100,8 +100,8 @@ Cohesion: 0.13
 Nodes (4): C, e(), le(), t
 
 ### Community 4 - "TomSelect Item Selection"
-Cohesion: 0.26
-Nodes (17): Deck Slides Overflow/Clipping Bug (v0.11-v0.12), Deck PDF Export (working reference), Handoff Brief Deck v0.12 Broken (2026-05-29), Screenshot: Slide 1 Cover v0.12 (title/masthead distortion), Screenshot: Slide 3 Teacher Dashboard Bottom v0.12 (all 8 categories), Screenshot: Slide 3 Teacher Dashboard Top v0.12 (donut + categories), Screenshot: Slide 4 Department Dashboard Bottom v0.12 (footer overlap bug), Screenshot: Slide 4 Department Dashboard Top v0.12 (3 teachers, overlap) (+9 more)
+Cohesion: 0.24
+Nodes (18): Deck Slides Overflow/Clipping Bug (v0.11-v0.12), Deck PDF Export (working reference), GitHub Pages Deployment, Handoff Brief Deck v0.12 Broken (2026-05-29), Screenshot: Slide 1 Cover v0.12 (title/masthead distortion), Screenshot: Slide 3 Teacher Dashboard Bottom v0.12 (all 8 categories), Screenshot: Slide 3 Teacher Dashboard Top v0.12 (donut + categories), Screenshot: Slide 4 Department Dashboard Bottom v0.12 (footer overlap bug) (+10 more)
 
 ### Community 5 - "Lesson Obs Script Manifest"
 Cohesion: 0.12
@@ -164,8 +164,8 @@ Cohesion: 0.20
 Nodes (9): Apps Script + Sheet, Cache invalidation (v0.33), Changelog · v0.30-v0.44, Edit / deploy workflow, Folder layout (v0.37), Full project context, Gmail filter (one-time), Live URL + access password (+1 more)
 
 ### Community 26 - "Community 26"
-Cohesion: 0.04
-Nodes (47): AIS Observation Dashboard . changelog, v0.10 . 2026-06-17, v0.11 . 2026-06-17, v0.12 . 2026-06-18, v0.13 . 2026-06-18, v0.14 . 2026-06-18, v0.15 . 2026-06-18, v0.16 . 2026-06-18 (+39 more)
+Cohesion: 0.05
+Nodes (41): AIS Observation Dashboard . changelog, v0.10 . 2026-06-17, v0.11 . 2026-06-17, v0.12 . 2026-06-18, v0.13 . 2026-06-18, v0.14 . 2026-06-18, v0.15 . 2026-06-18, v0.16 . 2026-06-18 (+33 more)
 
 ### Community 27 - "Community 27"
 Cohesion: 0.07
@@ -208,8 +208,8 @@ Cohesion: 0.29
 Nodes (6): How this connects to existing work, Implementation notes for whoever builds it (so the print path is correct first time), Printing / exporting the Snapshot dashboard . research (no implementation), Recommendation, The options, What we are printing, and why it is not trivial
 
 ### Community 40 - "Community 40"
-Cohesion: 0.29
-Nodes (6): 2026-06-25 . v3 redesign (redeploy @8), Contract, Dashboard Google Doc export (Phase D), Deploy (one time), Deployed 2026-06-24 (admin.user@ais.ae, via clasp), Redeploy after editing Code.gs
+Cohesion: 0.33
+Nodes (5): Contract, Dashboard Google Doc export (Phase D), Deploy (one time), Deployed 2026-06-24 (admin.user@ais.ae, via clasp), Redeploy after editing Code.gs
 
 ## Ambiguous Edges - Review These
 - `Teacher Observation Pitch Deck (index.html)` → `Curtis All Portrait`  [AMBIGUOUS]
@@ -224,7 +224,7 @@ Nodes (6): 2026-06-25 . v3 redesign (redeploy @8), Contract, Dashboard Google Do
   SPEA Data Report/Lana Mosleh.jpg · relation: conceptually_related_to
 
 ## Knowledge Gaps
-- **327 isolated node(s):** `version`, `configurations`, `allow`, `generated`, `round` (+322 more)
+- **320 isolated node(s):** `version`, `configurations`, `allow`, `generated`, `round` (+315 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **11 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -242,6 +242,6 @@ _Questions this graph is uniquely positioned to answer:_
 - **What is the exact relationship between `Teacher Observation Pitch Deck (index.html)` and `Lana Mosleh Portrait`?**
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
 - **Why does `ce` connect `TomSelect Plugin Hooks` to `Pitch Deck Build & Bugs`?**
-  _High betweenness centrality (0.027) - this node is a cross-community bridge._
+  _High betweenness centrality (0.028) - this node is a cross-community bridge._
 - **Why does `R3 Evidence Form Master Source` connect `AIS Observation Forms & Scripts` to `TomSelect Item Selection`?**
   _High betweenness centrality (0.006) - this node is a cross-community bridge._
