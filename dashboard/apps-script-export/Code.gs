@@ -129,22 +129,20 @@ function insertCoverImage(docId, tabId, uri) {
 // ---- shared title block (kicker, Playfair title, meta, gold accent bar) ----
 function titleBlock(body, kind) {
   P(body, kind === 'indepth' ? 'GOVERNANCE REPORT  .  IN DEPTH' : 'GOVERNANCE REPORT  .  SIMPLE',
-    { font: LATO, size: 9, color: GOLD, bold: true, spaceAfter: 2 });
+    { font: LATO, size: 9, color: GREY, bold: true, spaceAfter: 2 });
   P(body, 'The June R3 picture.', { font: PLAY, heading: TT, color: NAVY });
 }
 
 // ---- a strengths/develop group (label + evidence + summary + bullets + insights card) ----
 function group(host, label, insLabel, g, colour, marker, carded) {
   if (!g) return;
-  P(host, label.toUpperCase(), { font: LATO, size: 11, bold: true, color: colour, spaceBefore: 8, spaceAfter: 3 });
+  P(host, label.toUpperCase(), { font: LATO, size: 11, bold: true, color: NAVY, spaceBefore: 10, spaceAfter: 3 });
   if (g.evidence) marker(P(host, g.evidence.text, { font: LATO, size: 10.5, italic: true, color: GREY, spaceAfter: 4 }), g.evidence);
   if (g.summary) marker(P(host, g.summary.text, { font: LATO, size: 12.5, bold: true, color: INK, spaceAfter: 6 }), g.summary);
   (g.bullets || []).forEach(function (b) { marker(P(host, b.text, { font: LATO, size: 11.5, color: INK, bullet: true }), b); });
   if (g.insights && g.insights.length) {
-    var cell = card(host, INS_BG, INS_BORDER);
-    P(cell, 'INSIGHTS  .  ' + insLabel, { font: LATO, size: 9.5, bold: true, color: GOLD, spaceAfter: 4 });
-    g.insights.forEach(function (it) { marker(P(cell, it.text, { font: LATO, size: 11.5, color: INK, bullet: true }), it); });
-    trim(cell);
+    P(host, 'INSIGHTS  .  ' + insLabel, { font: LATO, size: 9.5, bold: true, color: NAVY, spaceBefore: 6, spaceAfter: 4 });
+    g.insights.forEach(function (it) { marker(P(host, it.text, { font: LATO, size: 11.5, color: INK, bullet: true }), it); });
   }
 }
 
@@ -152,32 +150,28 @@ function group(host, label, insLabel, g, colour, marker, carded) {
 function buildSimple(body, model, marker) {
   titleBlock(body, 'simple');
   P(body, 'AIS Sharjah  .  ' + (model.round || '') + '  .  generated ' + (model.generated_on || ''), { font: LATO, size: 10, color: GREY, spaceAfter: 6 });
-  bar(body, GOLD);
+  bar(body, NAVY);
 
-  if (model.scope) { var sc = card(body, CALLOUT_BG); P(sc, model.scope, { font: LATO, size: 12.5, bold: true, color: NAVY }); trim(sc); }
-  if (model.method) { var mc = card(body, CARD_BG, CARD_BORDER); P(mc, 'How these are counted. ' + model.method, { font: LATO, size: 10.5, italic: true, color: MUTED }); trim(mc); }
+  if (model.scope) P(body, model.scope, { font: LATO, size: 12.5, bold: true, color: NAVY, spaceBefore: 8, spaceAfter: 6 });
+  if (model.method) P(body, 'How these are counted. ' + model.method, { font: LATO, size: 10.5, italic: true, color: MUTED, spaceAfter: 6 });
 
   (model.phases || []).forEach(function (ph) {
     sectionHead(body, ph.label || '');
     if (ph.scope) P(body, ph.scope, { font: LATO, size: 10.5, color: GREY, spaceAfter: 4 });
-    var cell = card(body, CARD_BG, CARD_BORDER);
-    group(cell, 'What is working', 'Strengths', ph.strengths, GREEN, marker, true);
-    group(cell, 'Where to focus next', 'Areas to develop', ph.develop, TERRA, marker, true);
-    trim(cell);
+    group(body, 'What is working', 'Strengths', ph.strengths, NAVY, marker, false);
+    group(body, 'Where to focus next', 'Areas to develop', ph.develop, NAVY, marker, false);
   });
 
   if (model.compare && model.compare.length) {
     sectionHead(body, 'Primary & Kindy compared with Secondary');
-    var cc = card(body, CARD_BG, CARD_BORDER);
-    model.compare.forEach(function (it) { marker(P(cc, it.text, { font: LATO, size: 11.5, color: INK, bullet: true }), it); });
-    trim(cc);
+    model.compare.forEach(function (it) { marker(P(body, it.text, { font: LATO, size: 11.5, color: INK, bullet: true }), it); });
   }
 }
 
 // a navy Playfair section heading with a gold number prefix
 function sectionHead(body, text, num) {
   var p = P(body, (num ? num + '   ' : '') + text, { font: PLAY, heading: SH, color: NAVY, spaceBefore: 14, spaceAfter: 4 });
-  if (num) p.editAsText().setForegroundColor(0, String(num).length - 1, GOLD);
+  if (num) p.editAsText().setForegroundColor(0, String(num).length - 1, NAVY);
   return p;
 }
 
@@ -185,16 +179,16 @@ function sectionHead(body, text, num) {
 function buildInDepth(body, model, marker) {
   titleBlock(body, 'indepth');
   P(body, 'AIS Sharjah  .  ' + (model.round || '') + '  .  generated ' + (model.generated_on || ''), { font: LATO, size: 10, color: GREY, spaceAfter: 6 });
-  bar(body, GOLD);
+  bar(body, NAVY);
 
   // Contents
   P(body, 'Contents', { font: PLAY, heading: SH, color: NAVY, spaceBefore: 12, spaceAfter: 4 });
   ['In summary', 'Primary & Kindy', 'Secondary', 'Primary & Kindy compared with Secondary', 'How to move Acceptable to Good']
-    .forEach(function (t, i) { var p = P(body, (i + 1) + '   ' + t, { font: LATO, size: 12, color: INK, spaceAfter: 2 }); p.editAsText().setForegroundColor(0, 0, GOLD).setBold(0, 0, true); });
+    .forEach(function (t, i) { var p = P(body, (i + 1) + '   ' + t, { font: LATO, size: 12, color: INK, spaceAfter: 2 }); p.editAsText().setForegroundColor(0, 0, NAVY).setBold(0, 0, true); });
 
   // 1 In summary
   sectionHead(body, 'In summary', 1);
-  if (model.scope) { var sc = card(body, CALLOUT_BG); P(sc, model.scope, { font: LATO, size: 12.5, bold: true, color: NAVY }); if (model.method) P(sc, 'How these are counted. ' + model.method, { font: LATO, size: 10, italic: true, color: MUTED, spaceBefore: 4 }); trim(sc); }
+  if (model.scope) { P(body, model.scope, { font: LATO, size: 12.5, bold: true, color: NAVY, spaceBefore: 8 }); if (model.method) P(body, 'How these are counted. ' + model.method, { font: LATO, size: 10, italic: true, color: MUTED, spaceBefore: 4, spaceAfter: 4 }); }
   if (model.summary && model.summary.lead) marker(P(body, model.summary.lead.text, { font: LATO, size: 12.5, color: INK, spaceBefore: 6, spaceAfter: 6 }), model.summary.lead);
   if (model.summary && model.summary.points) model.summary.points.forEach(function (pt) { var p = P(body, pt.text, { font: LATO, size: 11.5, color: INK, bullet: true }); boldLead(p); marker(p, pt); });
 
@@ -203,8 +197,8 @@ function buildInDepth(body, model, marker) {
   (model.phases || []).forEach(function (ph) {
     sectionHead(body, ph.label || '', nums[ph.label] || null);
     if (ph.scope) P(body, ph.scope, { font: LATO, size: 10.5, color: GREY, spaceAfter: 4 });
-    group(body, 'What is working', 'Strengths', ph.strengths, GREEN, marker, false);
-    group(body, 'Where to focus next', 'Areas to develop', ph.develop, TERRA, marker, false);
+    group(body, 'What is working', 'Strengths', ph.strengths, NAVY, marker, false);
+    group(body, 'Where to focus next', 'Areas to develop', ph.develop, NAVY, marker, false);
   });
 
   // 4 compare
@@ -221,10 +215,10 @@ function buildInDepth(body, model, marker) {
     model.coaching.forEach(function (cp) {
       P(body, cp.label || '', { font: PLAY, heading: SH2, color: INK, spaceBefore: 8, spaceAfter: 3 });
       if (cp.summary) marker(P(body, cp.summary.text, { font: LATO, size: 12, bold: true, color: INK, spaceAfter: 4 }), cp.summary);
-      P(body, 'WHERE COACHING COULD HELP', { font: LATO, size: 10, bold: true, color: GREEN, spaceAfter: 3 });
+      P(body, 'WHERE COACHING COULD HELP', { font: LATO, size: 10, bold: true, color: NAVY, spaceAfter: 3 });
       (cp.points || []).forEach(function (pt) {
         var p = P(body, pt.text, { font: LATO, size: 11.5, color: INK, bullet: true }); boldLead(p); marker(p, pt);
-        if (pt.method) { var rb = P(body, 'AIS rubric, Facilitating: ' + pt.method, { font: LATO, size: 10, color: MUTED, indent: 18 }); var lbl = 'AIS rubric, Facilitating:'.length; rb.editAsText().setBold(0, lbl - 1, true).setForegroundColor(0, lbl - 1, GOLD); }
+        if (pt.method) { var rb = P(body, 'AIS rubric, Facilitating: ' + pt.method, { font: LATO, size: 10, color: MUTED, indent: 18 }); var lbl = 'AIS rubric, Facilitating:'.length; rb.editAsText().setBold(0, lbl - 1, true).setForegroundColor(0, lbl - 1, NAVY); }
       });
     });
   }
