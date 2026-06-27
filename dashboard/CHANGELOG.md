@@ -5,6 +5,11 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.48 . 2026-06-27
+- **Snapshot tab-row buttons are now genuinely uniform.** The phase tabs (Primary & Kindy / Secondary / Compare), Story / Detail, Present and Report all render as the same solid pill at the same height as Present. Before, the active phase and Story pills were shrunk inside a faint frame (so they looked shorter) and the Report button used a faded fill (so it looked washed out and smaller), even though the outer heights matched. Now the frames are gone, every selected/action control is one solid pill, and unselected tabs are quiet text at full height.
+- **The Google Doc export now reads as a clean monochrome report.** All the cream/beige fill boxes behind the report text (insight, scope, method, phase and compare cards) are removed, and the gold/green/terracotta header labels are taken to navy. Blue reference links and the navy cover are kept. Apps Script (`Code.gs`) redeployed in place (@10).
+- Scope: the Snapshot tab row (on-screen) + the Google Doc export. The on-screen report styling is intentionally unchanged (it already reads well). Rollback: `dash-v0.47`.
+
 ## v0.47 . 2026-06-26
 - **Report opens as its own page; the buttons are tidied.** Choosing Simple or In Depth from the Report menu now routes to a standalone report page (the link reads `/dashboard/#report`, bookmarkable, and browser back returns to the live Snapshot). On the report page the Story / Detail toggle and the dropdown are gone, replaced by a **Back** button and a solid **Simple | In Depth** switch; "Make Google Doc" stays in the report header.
 - **The report is now a clean monochrome governance document.** The green, terracotta and gold accents on its section headers, "Insights" labels, insight numbers, the average-progress word and the `R3` title are all removed (navy ink throughout). The live Snapshot header, Story and Detail views keep their colour; only the report body changed.

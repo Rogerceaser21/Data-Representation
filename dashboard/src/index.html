@@ -428,10 +428,11 @@ svg{display:block;overflow:visible}
 .repmi{font:inherit;font-size:13px;font-weight:600;color:var(--ink);background:transparent;border:0;border-radius:10px;padding:9px 12px;text-align:left;cursor:pointer;transition:.15s}
 .repmi:hover{background:var(--panel-2)}
 .repmi .sub{display:block;font-size:11px;font-weight:500;color:var(--ink-mid);margin-top:2px}
-/* v0.47: uniform sizing for the snapshot tab-row controls (phase tabs / Story-Detail / Present / Report / report-page tabs) so they read as one set. The round step controls (prev/play/next, A-/A+) are intentionally left as icon buttons. */
-.tabsrow .phasetabs,.tabsrow .viewtabs,#reportTabs .rtabset{height:38px;align-items:center;padding:0 5px;border-radius:22px;margin:0}
-.tabsrow .ptab,.tabsrow .vtab,#reportTabs .rtab{font:inherit;font-size:13px;font-weight:600;letter-spacing:0;text-transform:none;height:30px;padding:0 16px;display:inline-flex;align-items:center;border-radius:16px;white-space:nowrap}
-.tabsrow .repbtn,.tabsrow .sbtn.wide,#reportTabs .repback{height:38px;border-radius:22px;font:inherit;font-size:13px;font-weight:600;letter-spacing:0;text-transform:none;padding:0 16px;display:inline-flex;align-items:center}
+/* v0.48: every tab-row control reads as the SAME solid 38px pill as Present. The phase + Story/Detail groups lose their faint frame so the active pill is full-height (was a 30px inset that looked shorter), and Report matches Present's solid fill (was faded 0.66). The round step controls (prev/play/next, A-/A+) stay as icon buttons. */
+.tabsrow .phasetabs,.tabsrow .viewtabs,#reportTabs .rtabset{background:transparent;border:0;box-shadow:none;padding:0;gap:6px;height:38px;align-items:center;border-radius:22px;margin:0}
+.tabsrow .ptab,.tabsrow .vtab,#reportTabs .rtab{font:inherit;font-size:13px;font-weight:600;letter-spacing:0;text-transform:none;height:38px;padding:0 18px;display:inline-flex;align-items:center;border:1px solid transparent;border-radius:22px;background:transparent;white-space:nowrap}
+.tabsrow .ptab.on,.tabsrow .vtab.on,#reportTabs .rtab.on{background:var(--panel-2);color:var(--ink);border-color:var(--edge-soft);box-shadow:0 2px 12px -5px var(--shadow)}
+.tabsrow .repbtn,.tabsrow .sbtn.wide,#reportTabs .repback{height:38px;border-radius:22px;font:inherit;font-size:13px;font-weight:600;letter-spacing:0;text-transform:none;padding:0 18px;display:inline-flex;align-items:center;background:var(--panel-2);border:1px solid var(--edge-soft);box-shadow:0 2px 12px -5px var(--shadow);color:var(--ink)}
 /* report-page control row: Back + Simple/In Depth, replacing the dropdown once inside a report (v0.47) */
 #reportTabs{flex:1;display:flex;align-items:center;justify-content:space-between;gap:14px}
 #reportTabs[hidden]{display:none}
@@ -923,6 +924,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
     </div>
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
+        <div class="vrow"><span class="vtag">v0.48</span><span class="vnote">Snapshot tab-row buttons made truly uniform. Every control (the phase tabs, Story / Detail, Present and Report) is now the same solid pill at the same height as Present; previously the active phase and Story pills sat shrunk inside a faint frame and the Report button was faded, so they looked like different sizes. Unselected tabs are quiet text. The Google Doc export was also flattened to a clean monochrome report (cream boxes removed, headers navy); the on-screen report is unchanged.</span></div>
         <div class="vrow"><span class="vtag">v0.47</span><span class="vnote">Report and Snapshot buttons tidied. Opening a report is now its own page (the link reads /dashboard/#report): the Story and Detail toggle and the dropdown are replaced by a Back button plus a Simple / In Depth switch. The report body is now a clean monochrome document, with the green, terracotta and gold accents on its headings, numbers and the R3 title removed. On the live Snapshot the phase tabs, Story / Detail, Present and Report buttons are all one uniform size. And the admin Settings password popup is restyled to match the R3 form's admin card (gradient top bar, AIS Admin eyebrow, framed input, Close and Unlock).</span></div>
       <div class="vhist">
         <div class="vrow"><span class="vtag">v0.46</span><span class="vnote">The "How to move Acceptable to Good" section now explicitly grounds each direction in the AIS progress rubric's two aspects: Progress in Lessons (the outcome, Acceptable to Good) and Facilitating better than expected progress (the teaching behaviour, quoted under each direction). The section is anchored to and links the rubric, and the In Depth Google Doc carries the same. Stored round-scoped so it feeds the next-round prompt.</span></div>
@@ -991,7 +993,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
   </div>
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.47</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.48</span></span>
   </div>
 </div>
 
