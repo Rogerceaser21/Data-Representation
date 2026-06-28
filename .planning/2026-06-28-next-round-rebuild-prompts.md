@@ -1,0 +1,174 @@
+# Next-round AI regeneration prompts
+
+> Reusable, round-parameterised prompts that recreate every AI-written dashboard text surface for a NEW R3 round. Stored in THREE places (this MD, Supabase `ai_prompts` via `get_ai_prompts()`, and one Focus OS task as JSON) for redundancy. Canonical source: `~/AIS-Data-Dashboard/db/ai_prompts_build.mjs` (re-run it to update all three). `${ROUND}` = the new round label.
+
+## Global rules (apply to every pipeline)
+
+- Round parameter: replace the round label everywhere (tools take it as argv or a ROUND const; app_config.current_round is the live value).
+- Best evidence wins: an overall is the MIN score (1 = best), never a mean, when rolling up observations.
+- Dedupe to lessons: collapse co-observed forms by teacher + date + normalised subject area, best score wins, evidence text merged. Counts are LESSONS, not raw form rows.
+- Every quote used as evidence/reference MUST be a verbatim substring of the source observation text. No paraphrase. An automated pass drops any quote that does not match.
+- References NEVER name a teacher. Never link one teacher to another teacher’s R3 record (anonymity breach).
+- User-facing label is always "Insights", never "AI".
+- Observer shorthand: SS = Student, T = Teacher, S to S = Student-to-Student dialogue.
+- Australian English. No em dashes or en dashes anywhere (use commas, parentheses, semicolons). Hyphens in compound words are fine.
+- phase = primary_kindy (teachers.section in kindy/primary) or secondary; plus a compare view.
+
+
+## 0. Next-round rebuild runbook (run order + deploy)  `(runbook)`
+
+**Produces:** orchestration only  
+**Inputs:** A new R3 round fully landed in Supabase via the R3 -> Supabase dual-write; current_round set via the R3 admin cog.
+
+**Pipeline:**
+- 0. Confirm the new round is complete in assessments (round = the new label) and current_round is set.
+- 1. NARRATIVE  -> run the "narrative" prompt -> narrative + narrative_ref (Story / Detail / Simple text + insights).
+- 2. INDEPTH_REFS -> run the "indepth_refs" prompt -> comprehensive narrative_ref + why-notes.
+- 3. RECOMMENDATIONS -> run the "recommendations" prompt -> narrative (Acceptable->Good directions + exec summary).
+- 4. COACHING -> run the "coaching" prompt -> teacher_next_steps (one note per teacher).
+- 5. REBAKE + SHIP: node db/export_snapshot.mjs "<repo>/dashboard/data.js" (bakes __AIS_DATA + __AIS_NARR_ITEMS + __AIS_NEXTSTEPS); bash dashboard/encrypt.sh (verify 0 __AIS_DATA and 0 __AIS_NEXTSTEPS in dashboard/index.html); bump footer + Settings build-history + CHANGELOG + CLAUDE.md; commit; git tag dash-vX.Y; git push origin HEAD:main --tags; gh api -X POST repos/Rogerceaser21/Data-Representation/pages/builds; poll live bytes == local.
+- 6. Only redeploy the Doc builder (dashboard/apps-script-export, clasp) if Code.gs changed.
+
+**Prompt:**
+
+> You are regenerating ALL AI-written dashboard text for a NEW R3 round. Work strictly in the order narrative -> indepth_refs -> recommendations -> coaching (each has its own prompt entry here). Each pipeline reads the new round’s data from Supabase (assessments.content strengths/weakness/observer_notes + scores), dedupes to lessons, and writes to its target table round-scoped (so the previous round is preserved). After all four, rebake data.js, encrypt, bump the version, push, and force a Pages build. Verify in a headed browser that the Snapshot Story/Detail, the report, and a sample teacher’s coaching note all read correctly. Do NOT invent numbers: every count is recomputed from the deduped lessons; every quote is verbatim; flag (do not silently rewrite) any claim whose evidence no longer supports it.
+
+**Rules / locked decisions:**
+- Round parameter: replace the round label everywhere (tools take it as argv or a ROUND const; app_config.current_round is the live value).
+- Best evidence wins: an overall is the MIN score (1 = best), never a mean, when rolling up observations.
+- Dedupe to lessons: collapse co-observed forms by teacher + date + normalised subject area, best score wins, evidence text merged. Counts are LESSONS, not raw form rows.
+- Every quote used as evidence/reference MUST be a verbatim substring of the source observation text. No paraphrase. An automated pass drops any quote that does not match.
+- References NEVER name a teacher. Never link one teacher to another teacher’s R3 record (anonymity breach).
+- User-facing label is always "Insights", never "AI".
+- Observer shorthand: SS = Student, T = Teacher, S to S = Student-to-Student dialogue.
+- Australian English. No em dashes or en dashes anywhere (use commas, parentheses, semicolons). Hyphens in compound words are fine.
+- phase = primary_kindy (teachers.section in kindy/primary) or secondary; plus a compare view.
+
+**Notes:** Tooling lives in ~/AIS-Data-Dashboard/db (NOT a git repo). Network node scripts need dangerouslyDisableSandbox. The button that fires this end-to-end is future; these prompts are the recipes it will use.
+
+
+## 1. Snapshot Story + Detail + Simple-report narrative (summaries, bullets, Insights) + base references  `(narrative)`
+
+**Produces:** narrative + narrative_ref  
+**Inputs:** assessments.content (summary_strengths / summary_weakness / observer_notes) for ${ROUND}, deduped to lessons; teachers.section for the phase split; scores (r3_02 progress, r3_05 teaching).
+
+**Pipeline:**
+- Re-derive the round numbers per phase (lessons observed, teachers, average best-progress, the 6-point distribution) from the deduped lessons (mirror snapAgg / covAgg).
+- Write, per phase (primary_kindy, secondary) and for compare: a What-is-working summary + a Where-to-focus summary, 2-4 bullets each, and exactly 3 Insights per section.
+- Run a congruence audit: cross-check every claim against the round evidence, map each to its source lessons + a verbatim supporting quote, FLAG mismatches with the real number (do not auto-rewrite). Output a phaseA-reference-map.json.
+- seed_narrative.mjs loads the map into narrative + narrative_ref (idempotent per school+round, text kept VERBATIM).
+
+**Prompt:**
+
+> For ${ROUND}, write the governance narrative the Snapshot Story, Detail and Simple report all share. For each phase (Primary & Kindy, Secondary) and the Primary-vs-Secondary compare, produce: (a) a "what is working" summary and a "where to focus next" summary (2-3 sentences each, plain governance English); (b) 2 to 4 bullets under each; (c) exactly 3 INSIGHTS per section = non-obvious, QUANTIFIED patterns a human reader would miss, each stated with its number ("about 20 of the 40 lessons...", "just one..."). Then audit every single claim against the round’s deduped lesson evidence: re-derive each count yourself, attach the source lesson(s) and a verbatim quote to each claim, and flag any claim whose number is off (give the real number; do not quietly change the wording). The audit becomes the reference map that seed_narrative.mjs loads verbatim.
+
+**Rules / locked decisions:**
+- Round parameter: replace the round label everywhere (tools take it as argv or a ROUND const; app_config.current_round is the live value).
+- Best evidence wins: an overall is the MIN score (1 = best), never a mean, when rolling up observations.
+- Dedupe to lessons: collapse co-observed forms by teacher + date + normalised subject area, best score wins, evidence text merged. Counts are LESSONS, not raw form rows.
+- Every quote used as evidence/reference MUST be a verbatim substring of the source observation text. No paraphrase. An automated pass drops any quote that does not match.
+- References NEVER name a teacher. Never link one teacher to another teacher’s R3 record (anonymity breach).
+- User-facing label is always "Insights", never "AI".
+- Observer shorthand: SS = Student, T = Teacher, S to S = Student-to-Student dialogue.
+- Australian English. No em dashes or en dashes anywhere (use commas, parentheses, semicolons). Hyphens in compound words are fine.
+- phase = primary_kindy (teachers.section in kindy/primary) or secondary; plus a compare view.
+- Insights must be quantified and genuinely non-obvious (root causes / cross-subject patterns), not restatements of the summary.
+- Numbers come from the deduped-lesson aggregation, not raw form counts.
+
+**Notes:** This is the v0.30/v0.40 narrative pipeline. The baked __AIS_NARR_ITEMS in data.js is the offline copy; Supabase get_narrative is the live source.
+
+
+## 2. Comprehensive In-Depth references + "why this counts" notes  `(indepth_refs)`
+
+**Produces:** narrative_ref (+ narrative_ref.explanation)  
+**Inputs:** indepth_prep.mjs dumps, per statement, every candidate lesson’s written evidence (deduped to lessons, numbered per file, split by phase + section).
+
+**Pipeline:**
+- indepth_prep.mjs -> /tmp/indepth/*.json (statements.json + per-bucket evidence files).
+- Multi-agent Workflow: ONE agent per statement reads its evidence file and returns ALL lessons that genuinely support the statement (matched BY MEANING, not keywords), each ref = lesson n + a verbatim quote + a 1-2 sentence "why this counts" explanation.
+- indepth_verify.mjs: every quote must be an exact substring of that lesson’s evidence (else dropped); dedupe per lesson; flag any statement with <= 5 verified references.
+- indepth_seed.mjs -> narrative_ref (with explanation), round-scoped.
+
+**Prompt:**
+
+> For each statement in the report (for ${ROUND}), find EVERY lesson in its evidence file that genuinely supports it, matched by MEANING not keyword overlap. For each, return the lesson number, a verbatim quote from that lesson’s evidence (an exact substring, copy it), and a short "why this counts" note explaining how that quote proves the statement. Be exhaustive (a routines/relationships bullet may have 15+ supporting lessons), but never stretch a quote to fit. A statement left with 5 or fewer real references must be flagged for rewrite or kept only if it is small by design.
+
+**Rules / locked decisions:**
+- Round parameter: replace the round label everywhere (tools take it as argv or a ROUND const; app_config.current_round is the live value).
+- Best evidence wins: an overall is the MIN score (1 = best), never a mean, when rolling up observations.
+- Dedupe to lessons: collapse co-observed forms by teacher + date + normalised subject area, best score wins, evidence text merged. Counts are LESSONS, not raw form rows.
+- Every quote used as evidence/reference MUST be a verbatim substring of the source observation text. No paraphrase. An automated pass drops any quote that does not match.
+- References NEVER name a teacher. Never link one teacher to another teacher’s R3 record (anonymity breach).
+- User-facing label is always "Insights", never "AI".
+- Observer shorthand: SS = Student, T = Teacher, S to S = Student-to-Student dialogue.
+- Australian English. No em dashes or en dashes anywhere (use commas, parentheses, semicolons). Hyphens in compound words are fine.
+- phase = primary_kindy (teachers.section in kindy/primary) or secondary; plus a compare view.
+- Match by meaning; an automated pass drops any quote that is not a verbatim substring.
+- Statements with <= 5 verified references are flagged (rewrite, or keep only if small-by-design).
+- The "why this counts" note is shown to stakeholders under each reference; keep it factual and specific.
+
+**Notes:** This is the v0.40 comprehensive-reference pipeline (~499 refs, avg ~13/statement). Powers the sources panel markers and the Doc References tab.
+
+
+## 3. Acceptable->Good recommendations + the "In summary" executive summary  `(recommendations)`
+
+**Produces:** narrative (kind = recommendation / summary, section = coaching)  
+**Inputs:** recs_prep.mjs buckets each phase’s deduped lessons into Good+ (progress 1-3) / Acceptable (4) / Weak (5-6) with evidence + record links + band counts; the AIS OTP Progress Rubric (coaching_rubric, both aspects).
+
+**Pipeline:**
+- recs_prep.mjs -> per-phase Good+/Acceptable/Weak evidence dumps.
+- Write, per phase, 3 directions to move Acceptable -> Good, each grounded in the rubric’s TWO aspects and backed by 6+ lessons; plus the "In summary" exec summary.
+- recs_seed.mjs -> narrative (section coaching, kind recommendation) + the exec-summary items, round-scoped, with refs.
+
+**Prompt:**
+
+> For ${ROUND}, write how Acceptable lessons move to Good, per phase (Primary & Kindy, Secondary). Give 3 directions per phase. Ground EACH explicitly in the AIS OTP Progress Rubric and keep its TWO aspects distinct: (A) Progress in Lessons = the outcome/level (Acceptable -> Good), and (B) Facilitating better than expected progress = the teacher practice; quote the rubric’s next-level Facilitating descriptor for the move. Build each direction from what the Good and Very Good lessons actually DID that the Acceptable lessons were noted as MISSING, and back it with at least 6 supporting lessons (markers, no names). Also write an "In summary" executive summary: the round picture, the shape behind the average (roughly how many lessons Good or better / Acceptable / below), 4 headline points, the most consistent strength, the main focus, and the Primary-vs-Secondary contrast, each backed by evidence.
+
+**Rules / locked decisions:**
+- Round parameter: replace the round label everywhere (tools take it as argv or a ROUND const; app_config.current_round is the live value).
+- Best evidence wins: an overall is the MIN score (1 = best), never a mean, when rolling up observations.
+- Dedupe to lessons: collapse co-observed forms by teacher + date + normalised subject area, best score wins, evidence text merged. Counts are LESSONS, not raw form rows.
+- Every quote used as evidence/reference MUST be a verbatim substring of the source observation text. No paraphrase. An automated pass drops any quote that does not match.
+- References NEVER name a teacher. Never link one teacher to another teacher’s R3 record (anonymity breach).
+- User-facing label is always "Insights", never "AI".
+- Observer shorthand: SS = Student, T = Teacher, S to S = Student-to-Student dialogue.
+- Australian English. No em dashes or en dashes anywhere (use commas, parentheses, semicolons). Hyphens in compound words are fine.
+- phase = primary_kindy (teachers.section in kindy/primary) or secondary; plus a compare view.
+- Cite AND link the AIS OTP Progress Rubric; keep aspect A (outcome) and aspect B (practice) distinct, never blended.
+- Each direction needs 6+ supporting lessons; fewer means rewrite or drop.
+
+**Notes:** v0.42-v0.46. Lives in the In Depth report’s "How to move Acceptable to Good" section + the exec summary.
+
+
+## 4. Per-teacher coaching note "Next Steps & Improvement" (v0.51 engine)  `(coaching)`
+
+**Produces:** teacher_next_steps  
+**Inputs:** coach_prep.mjs: per teacher in ${ROUND}, pool ALL their lessons (best rating wins, evidence merged); 6-pt Progress (r3_02) + 6-pt Facilitating (r3_05) both floored at Good; the 5-pt facilitating target descriptor (move_descriptor, internal); the 18 curated online sources (coach_online_sources.md, 6 themes x 3).
+
+**Pipeline:**
+- coach_prep.mjs -> /tmp/coach/in/<teacher_id>.json (+ teachers.json, ids.json, rubric.json).
+- Multi-agent Workflow: ONE agent per teacher (model sonnet) reads its input and writes /tmp/coach/out/<id>.json. Inline the ids in the script (passing as args arrives stringified).
+- coach_verify.mjs: evidence + rubric_descriptor must be verbatim substrings, source.url must be one of the 18; drops bad bullets, BLOCKS notes with 0 grounded bullets (regen those).
+- coach_seed.mjs ["${ROUND}"] [--force] -> teacher_next_steps (keeps approved rows unless --force).
+
+**Prompt:**
+
+> You are an AIS Sharjah instructional coach writing ONE teacher’s confidential coaching note for ${ROUND}. Read /tmp/coach/in/<id>.json (name, phase, subjects, progress + facilitating on the 6-point scale with floor-at-Good targets, facilitating.move_descriptor = the rubric text the moves draw from, evidence = this teacher’s own quotes, online_sources = 6 themes x 3 links). Write /tmp/coach/out/<id>.json: { teacher_id, progress_current, progress_target, facilitating_current, facilitating_target (all 6-point words), standing ("Progress in Lessons: X -> Y . Facilitating: A -> B"), summary (3-5 sentences, second person, supportive), bullets[2-4] }. Each bullet = { move (the one concrete change), rubric_band (the 6-point target word), rubric_descriptor (a VERBATIM substring of facilitating.move_descriptor), evidence (a VERBATIM substring of this teacher’s own evidence), look_for (one observable success criterion), technique (2-4 sentences WRITING OUT a classroom technique from the matched online theme, what the teacher DOES, not "try this: link"), source ({title, org, url} copied exactly from online_sources, theme matched to the move) }. NEVER write the old 5-point band names (Beginner, Emerging, Great) in prose, use only the 6-point words. NEVER name another teacher or link another teacher’s record.
+
+**Rules / locked decisions:**
+- Round parameter: replace the round label everywhere (tools take it as argv or a ROUND const; app_config.current_round is the live value).
+- Best evidence wins: an overall is the MIN score (1 = best), never a mean, when rolling up observations.
+- Dedupe to lessons: collapse co-observed forms by teacher + date + normalised subject area, best score wins, evidence text merged. Counts are LESSONS, not raw form rows.
+- Every quote used as evidence/reference MUST be a verbatim substring of the source observation text. No paraphrase. An automated pass drops any quote that does not match.
+- References NEVER name a teacher. Never link one teacher to another teacher’s R3 record (anonymity breach).
+- User-facing label is always "Insights", never "AI".
+- Observer shorthand: SS = Student, T = Teacher, S to S = Student-to-Student dialogue.
+- Australian English. No em dashes or en dashes anywhere (use commas, parentheses, semicolons). Hyphens in compound words are fine.
+- phase = primary_kindy (teachers.section in kindy/primary) or secondary; plus a compare view.
+- LOCKED v0.50/v0.51: Facilitating shown on the SAME 6-point scale as Progress (floored at Good); the 5-pt rubric descriptors are internal-only (move source), band names never in prose.
+- Rubric grounding is the reworded linked line: "In the AIS OTP Progress Rubric, to facilitate better than expected progress at a [band] level, the teacher [descriptor]" + a rubric link.
+- Each move carries an online technique WRITTEN OUT + a source link from the 18 curated resources. NO in-house exemplars, NO other-teacher record links.
+- Front-end layout = two-column focus cards (action left, grounding right) with a current->target SEAS ladder per aspect + a theme chip. Edit pane labels each focus area by its theme (never "Move N").
+- sustain (already Outstanding): ground on the Outstanding descriptor; frame moves as deepening.
+
+**Notes:** Shipped dash-v0.49, reworked dash-v0.50/v0.51. ~104 notes. Visible to all (soft gate); admin-gated edit/approve; per-teacher Google Doc export. Online sources: ~/AIS-Data-Dashboard/coach_online_sources.md.
