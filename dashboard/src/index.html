@@ -502,6 +502,39 @@ svg{display:block;overflow:visible}
 .rep-foot{font-size:12px;color:var(--ink-mid);border-top:1px solid var(--edge-soft);padding-top:14px;margin-top:8px}
 .repmsg{font-size:12px;color:var(--ink-mid);margin-left:8px}
 .repmsg.warn{color:var(--r5)}
+/* v0.49: per-teacher coaching note ("Next Steps & Improvement") in the Observations drill-down. */
+.ns-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+.ns-title{display:flex;align-items:center;gap:10px}
+.ns-badge{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:999px;border:1px solid var(--edge-soft)}
+.ns-badge.draft{color:var(--r4);background:color-mix(in srgb,var(--r4) 12%,transparent)}
+.ns-badge.approved{color:var(--g);background:color-mix(in srgb,var(--g) 13%,transparent)}
+.ns-actions{display:flex;gap:8px}
+.ns-btn{font:inherit;font-size:12px;font-weight:700;color:var(--ink);background:var(--panel-2);border:1px solid var(--edge-soft);border-radius:18px;padding:7px 14px;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:6px}
+.ns-btn:hover{border-color:var(--y);transform:translateY(-1px)}
+.ns-btn.go{background:var(--g);border-color:var(--g);color:#fff}
+.ns-btn.go:hover{filter:brightness(1.06)}
+.ns-btn:disabled{opacity:.5;cursor:default;transform:none}
+.ns-stand{font-size:13px;font-weight:700;color:var(--ink);margin:8px 0 12px;letter-spacing:.01em}
+.ns-stand .arw{color:var(--ink-mid);font-weight:400;margin:0 4px}
+.ns-sum{font-size:15px;line-height:1.6;color:var(--ink);margin:0 0 16px}
+.ns-bl{display:flex;flex-direction:column;gap:14px}
+.ns-i{padding:14px 16px;background:var(--panel);border:1px solid var(--edge-soft);border-left:3px solid var(--edge);border-radius:12px}
+.ns-move{font-size:14px;font-weight:700;line-height:1.5;color:var(--ink);margin:0}
+.ns-rub{font-size:12px;line-height:1.5;color:var(--ink-mid);margin:7px 0 0}
+.ns-rub b{color:var(--ink);font-weight:700}
+.ns-ev{font-size:12.5px;line-height:1.5;color:var(--ink-mid);font-style:italic;margin:6px 0 0}
+.ns-ev b{font-style:normal;font-weight:700;color:var(--ink-mid)}
+.ns-look{font-size:12.5px;line-height:1.5;color:var(--ink);margin:7px 0 0}
+.ns-look b{font-weight:700}
+.ns-ex{margin:9px 0 0;display:flex;flex-direction:column;gap:5px}
+.ns-exh{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-faint)}
+.ns-exr{font-size:12px;line-height:1.5;color:var(--ink-mid)}
+.ns-exr a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--edge)}
+.ns-exr a:hover{border-color:var(--y)}
+.ns-edit textarea{width:100%;box-sizing:border-box;background:var(--panel-2);border:1px solid var(--edge);border-radius:10px;color:var(--ink);font:inherit;font-size:13.5px;line-height:1.55;padding:9px 12px;resize:vertical;margin:0 0 10px}
+.ns-empty{font-size:13px;color:var(--ink-mid)}
+.ns-msg{font-size:12px;color:var(--ink-mid);margin-top:8px}
+.ns-msg.warn{color:var(--r5)}.ns-msg.ok{color:var(--g)}
 #snapStory{margin-top:14px}
 .stage{position:relative;border:1px solid var(--edge);border-radius:22px;background:var(--panel);backdrop-filter:blur(7px);box-shadow:0 30px 70px -50px var(--shadow);overflow:hidden;min-height:clamp(460px,72vh,720px)}
 .beat{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:clamp(22px,3.4vw,46px);overflow:hidden;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .6s ease,visibility .6s}
@@ -882,6 +915,9 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
         <div class="ey">Observations . select all, or a single session</div>
         <div class="obslist" id="obslist"></div>
       </div>
+
+      <!-- per-teacher coaching note (v0.49): visible to all; edit + approve are admin-gated -->
+      <div class="panel" id="nextSteps" style="margin-top:14px"></div>
     </div>
 
     <!-- Grade/Department + School Level land here for now (front-end only, no data yet) -->
@@ -924,6 +960,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
     </div>
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
+        <div class="vrow"><span class="vtag">v0.49</span><span class="vnote">Per-teacher coaching added to the Observations drill-down: a "Next Steps & Improvement" note for every June R3 teacher. Each note is generated from that teacher's own observation evidence and the AIS progress rubric (both aspects), showing where they are and the next level up on Progress in Lessons and on Facilitating, a short summary, and two to four concrete moves, each grounded in the rubric and their own evidence, with anonymous same-subject examples from other lessons this round. Notes are visible to everyone with the dashboard password; editing and approving are admin-only, and each can be exported to a personal Google Doc to share with the teacher. AI-drafted, coach-approved; per-role access follows with sign-in.</span></div>
         <div class="vrow"><span class="vtag">v0.48</span><span class="vnote">Snapshot tab-row buttons made truly uniform. Every control (the phase tabs, Story / Detail, Present and Report) is now the same solid pill at the same height as Present; previously the active phase and Story pills sat shrunk inside a faint frame and the Report button was faded, so they looked like different sizes. Unselected tabs are quiet text. The Google Doc export was also flattened to a clean monochrome report (cream boxes removed, headers navy); the on-screen report is unchanged.</span></div>
         <div class="vrow"><span class="vtag">v0.47</span><span class="vnote">Report and Snapshot buttons tidied. Opening a report is now its own page (the link reads /dashboard/#report): the Story and Detail toggle and the dropdown are replaced by a Back button plus a Simple / In Depth switch. The report body is now a clean monochrome document, with the green, terracotta and gold accents on its headings, numbers and the R3 title removed. On the live Snapshot the phase tabs, Story / Detail, Present and Report buttons are all one uniform size. And the admin Settings password popup is restyled to match the R3 form's admin card (gradient top bar, AIS Admin eyebrow, framed input, Close and Unlock).</span></div>
       <div class="vhist">
@@ -993,7 +1030,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
   </div>
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.48</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.49</span></span>
   </div>
 </div>
 
@@ -1229,6 +1266,64 @@ function renderTeacher(t){
   bits.push('June '+t.n_june+' . February '+t.n_feb);
   byId('tMeta').textContent=bits.join('  .  ');
   selectedObs='all';renderObsList(t);buildArc(t,'svgArc',progScore,progAvg,false);buildArc(t,'svgArcT',teachScore,teachAvg,true);selectObs(t,'all');
+  renderNextSteps(t);
+}
+/* ---- per-teacher coaching note (v0.49). Visible to all; Edit/Approve/Make-Doc are admin-gated. ---- */
+function nsEx(e){const link=(e.record_id&&e.token)?` <a target="_blank" rel="noopener" href="../Assets/R3/r3-record.html?id=${encodeURIComponent(e.record_id)}&token=${encodeURIComponent(e.token)}">view lesson</a>`:'';
+  const where=[e.area,e.date].filter(Boolean).join(', ');
+  return `<div class="ns-exr">A ${esc(where)} lesson this round: &ldquo;${esc(e.quote||'')}&rdquo;${link}</div>`;}
+function nsBullet(b){const ex=Array.isArray(b.exemplars)?b.exemplars:[];
+  return `<div class="ns-i"><p class="ns-move">${esc(b.move||'')}</p>`+
+    (b.rubric_descriptor?`<p class="ns-rub"><b>AIS rubric &middot; Facilitating:</b> ${esc(b.rubric_descriptor)}</p>`:'')+
+    (b.evidence?`<p class="ns-ev"><b>From your lessons:</b> &ldquo;${esc(b.evidence)}&rdquo;</p>`:'')+
+    (b.look_for?`<p class="ns-look"><b>Look for:</b> ${esc(b.look_for)}</p>`:'')+
+    (ex.length?`<div class="ns-ex"><div class="ns-exh">What this looks like elsewhere</div>${ex.map(nsEx).join('')}</div>`:'')+
+    `</div>`;}
+function renderNextSteps(t){const host=byId('nextSteps');if(!host)return;
+  const n=NEXTSTEPS[t.id];
+  if(!n){host.dataset.edit='';host.innerHTML=`<div class="ey">Next Steps &amp; Improvement</div><div class="ns-empty">No coaching note has been generated for this teacher in this round yet.</div>`;return;}
+  const badge=n.status==='approved'?'<span class="ns-badge approved">Approved</span>':'<span class="ns-badge draft">Draft</span>';
+  const bl=Array.isArray(n.bullets)?n.bullets:[];
+  if(host.dataset.edit==='1'){
+    host.innerHTML=`<div class="ns-head"><div class="ns-title"><div class="ey" style="margin:0">Next Steps &amp; Improvement</div>${badge}</div>`+
+      `<div class="ns-actions"><button class="ns-btn" id="nsCancel">Cancel</button><button class="ns-btn go" id="nsSave">Save</button></div></div>`+
+      `<div class="ns-edit"><label class="ns-exh">Summary</label><textarea id="nsSum" rows="5">${esc(n.summary||'')}</textarea>`+
+      bl.map((b,i)=>`<label class="ns-exh">Move ${i+1}</label><textarea data-bi="${i}" rows="3">${esc(b.move||'')}</textarea>`).join('')+
+      `</div><div class="ns-msg" id="nsMsg"></div>`;
+    byId('nsCancel').onclick=()=>{host.dataset.edit='';renderNextSteps(t);};
+    byId('nsSave').onclick=()=>nsSave(t);
+    return;
+  }
+  const stand=esc(n.standing||'').replace(/-&gt;/g,'<span class="arw">&rarr;</span>').replace(/->/g,'<span class="arw">&rarr;</span>');
+  host.innerHTML=`<div class="ns-head"><div class="ns-title"><div class="ey" style="margin:0">Next Steps &amp; Improvement</div>${badge}</div>`+
+    `<div class="ns-actions"><button class="ns-btn" id="nsEdit">Edit</button>`+
+      (n.status!=='approved'?'<button class="ns-btn go" id="nsApprove">Approve</button>':'<button class="ns-btn" id="nsUnapprove">Unapprove</button>')+
+      `<button class="ns-btn" id="nsDoc">Make Doc</button></div></div>`+
+    (n.standing?`<div class="ns-stand">${stand}</div>`:'')+
+    (n.summary?`<p class="ns-sum">${esc(n.summary)}</p>`:'')+
+    `<div class="ns-bl">${bl.map(nsBullet).join('')}</div><div class="ns-msg" id="nsMsg"></div>`;
+  byId('nsEdit').onclick=()=>requireAdmin(()=>{host.dataset.edit='1';renderNextSteps(t);});
+  const ap=byId('nsApprove');if(ap)ap.onclick=()=>requireAdmin(()=>nsSetStatus(t,'approved'));
+  const un=byId('nsUnapprove');if(un)un.onclick=()=>requireAdmin(()=>nsSetStatus(t,'draft'));
+  byId('nsDoc').onclick=()=>requireAdmin(()=>nsDoc(t));
+}
+async function nsSave(t){const host=byId('nextSteps'),n=NEXTSTEPS[t.id];if(!n)return;
+  const sum=byId('nsSum').value;const bl=(n.bullets||[]).map(b=>({...b}));
+  host.querySelectorAll('textarea[data-bi]').forEach(ta=>{const i=+ta.dataset.bi;if(bl[i])bl[i].move=ta.value;});
+  const msg=byId('nsMsg');if(msg){msg.className='ns-msg';msg.textContent='Saving...';}
+  const res=await sbRpc('admin_set_teacher_next_step',{p_password:adminPw,p_round:SNAP_ROUND,p_teacher_id:t.id,p_standing:n.standing||null,p_summary:sum,p_bullets:bl,p_status:null}).catch(()=>null);
+  if(res&&res.success){n.summary=sum;n.bullets=bl;host.dataset.edit='';renderNextSteps(t);}
+  else if(msg){msg.textContent='Could not save. Check the admin password and try again.';msg.className='ns-msg warn';}
+}
+async function nsSetStatus(t,status){const n=NEXTSTEPS[t.id];if(!n)return;const msg=byId('nsMsg');if(msg){msg.className='ns-msg';msg.textContent=status==='approved'?'Approving...':'Updating...';}
+  const res=await sbRpc('admin_set_teacher_next_step',{p_password:adminPw,p_round:SNAP_ROUND,p_teacher_id:t.id,p_standing:null,p_summary:null,p_bullets:null,p_status:status}).catch(()=>null);
+  if(res&&res.success){n.status=status;renderNextSteps(t);}else if(msg){msg.textContent='Could not update. Check the admin password.';msg.className='ns-msg warn';}
+}
+async function nsDoc(t){const n=NEXTSTEPS[t.id];if(!n)return;const msg=byId('nsMsg');if(msg){msg.className='ns-msg';msg.textContent='Building the coaching Doc...';}
+  try{const r=await fetch(DOC_EXPORT_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({kind:'coaching',round:SNAP_ROUND,generated_on:D.generated_on,teacher_name:t.name,note:n})});
+    const out=await r.json();if(out&&out.url){if(msg)msg.textContent='';window.open(out.url,'_blank','noopener');}
+    else if(msg){msg.textContent='Export did not complete. Try again in a moment.';msg.className='ns-msg warn';}
+  }catch(e){if(msg){msg.textContent='Export did not complete. Try again in a moment.';msg.className='ns-msg warn';}}
 }
 
 /* ============================================================= SNAPSHOT (the June R3 sweep)
@@ -1313,6 +1408,8 @@ let NARR={primary_kindy:{strengths:MIN_SEC(),develop:MIN_SEC()},secondary:{stren
 let REF_INDEX={};
 let RECS={intro:'',primary_kindy:{summary:'',points:[]},secondary:{summary:'',points:[]}};   // In Depth coaching (section='coaching')
 let SUMMARY={lead:'',leadSlug:'',points:[]};   // In Depth executive summary (section='summary')
+let NEXTSTEPS={};   // teacher_id -> per-teacher coaching note (get_teacher_next_steps); baked fallback below
+try{((typeof window!=='undefined'&&window.__AIS_NEXTSTEPS)||[]).forEach(n=>{NEXTSTEPS[n.teacher_id]=n;});}catch(e){}
 const PH_AB={primary_kindy:'pk',secondary:'sec'},SEC_AB={strengths:'str',develop:'dev'};
 const SEAS_WORD={1:'Outstanding',2:'Very Good',3:'Good',4:'Acceptable',5:'Weak',6:'Very Weak'};
 function navSlug(phase,section,kind,idx){
@@ -1388,6 +1485,15 @@ async function loadNarrative(){if(!SB_URL||SB_URL.indexOf('http')!==0)return;
     const items=await r.json();if(!applyNarrItems(items))return;
     if(current==='snapshot')reRenderSnapshotKeepPos();
   }catch(e){/* offline / blocked / timeout -> keep baked NARR, no markers, no error UI */}}
+/* per-teacher coaching notes (get_teacher_next_steps), round-scoped; visible to all (soft gate) */
+async function loadNextSteps(){if(!SB_URL||SB_URL.indexOf('http')!==0)return;
+  try{const ctrl=new AbortController(),to=setTimeout(()=>ctrl.abort(),7000);
+    const r=await fetch(SB_URL.replace(/\/+$/,'')+'/rest/v1/rpc/get_teacher_next_steps',
+      {method:'POST',headers:{apikey:SB_KEY,Authorization:'Bearer '+SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({p_round:SNAP_ROUND}),signal:ctrl.signal});
+    clearTimeout(to);if(!r.ok)return;const arr=await r.json();if(!Array.isArray(arr))return;
+    const m={};for(const n of arr)m[n.teacher_id]=n;NEXTSTEPS=m;
+    if(current==='teacher'&&!byId('obsDetail').hidden&&selectedId!=null)renderNextSteps(teacherById(selectedId));
+  }catch(e){/* silent: keep baked, no error UI */}}
 const I_CHECK='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.6l3.4 3.4L13 4.6"/></svg>';
 const I_ARROW='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11L11 5M6.2 5H11v4.8"/></svg>';
 let snapPhase='primary_kindy';
@@ -1851,8 +1957,11 @@ byId('starsToggle').onclick=()=>{const on=document.documentElement.getAttribute(
 
 /* ---- Settings: admin password gate + Supabase-persisted settings (apply on every device) ---- */
 let adminPw=null,_starSaveT=null;   // adminPw = verified admin password this session; null = locked
+let pendingAdmin=null;   // a callback to run after an in-place admin unlock (e.g. edit/approve a coaching note)
+/* run cb if already unlocked, else pop the admin gate and run cb on success (no navigation) */
+function requireAdmin(cb){if(adminPw){cb();return;}pendingAdmin=cb;openSettingsGate();}
 function openSettingsGate(){const g=byId('setGate');if(!g)return;byId('setPw').value='';byId('setErr').hidden=true;g.hidden=false;setTimeout(()=>{try{byId('setPw').focus();}catch(e){}},30);}
-function closeSettingsGate(){const g=byId('setGate');if(g)g.hidden=true;}
+function closeSettingsGate(){const g=byId('setGate');if(g)g.hidden=true;pendingAdmin=null;}
 function saveSetting(key,value){if(!adminPw)return;sbRpc('admin_set_setting',{p_password:adminPw,p_key:key,p_value:value}).catch(()=>{});}   // fire-and-forget; only when unlocked
 function syncStarSliders(){const C=byId('slCount'),S=byId('slSize'),H=byId('slShine');if(C){C.value=SCFG.count;S.value=Math.round(SCFG.size*100);H.value=Math.round(SCFG.shine*100);}
   const vc=byId('vCount'),vs=byId('vSize'),vh=byId('vShine');if(vc){vc.textContent=SCFG.count;vs.textContent=SCFG.size.toFixed(2);vh.textContent=SCFG.shine.toFixed(2);}}
@@ -1863,7 +1972,7 @@ async function loadSettings(){let s;try{s=await sbRpc('get_app_settings',{});}ca
 if(byId('setUnlock')){
   byId('setUnlock').onclick=async()=>{const pw=(byId('setPw').value||'').trim();byId('setErr').hidden=true;if(!pw)return;
     let ok=false;try{ok=await sbRpc('verify_admin_password',{p_password:pw});}catch(e){ok=false;}
-    if(ok){adminPw=pw;closeSettingsGate();showBoard('settings',{unlocked:true});}else{byId('setErr').hidden=false;}};
+    if(ok){adminPw=pw;const cb=pendingAdmin;pendingAdmin=null;closeSettingsGate();if(cb)cb();else showBoard('settings',{unlocked:true});}else{byId('setErr').hidden=false;}};
   byId('setPw').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();byId('setUnlock').click();}else if(e.key==='Escape')closeSettingsGate();});
   byId('setGateClose').onclick=closeSettingsGate;
   byId('setGate').addEventListener('click',e=>{if(e.target===byId('setGate'))closeSettingsGate();});   // click the dim to dismiss
@@ -2033,6 +2142,7 @@ runEntry();
 loadLive();loadSettings();
 initRefPanel();
 loadNarrative();
+loadNextSteps();
 </script>
 </body>
 </html>

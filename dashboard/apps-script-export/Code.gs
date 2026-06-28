@@ -73,15 +73,17 @@ function card(body, fill, border) {
 function trim(cell) { try { var f = cell.getChild(0); if (f && f.getType() === DocumentApp.ElementType.PARAGRAPH && f.asParagraph().getText() === '') f.removeFromParent(); } catch (e) {} }
 
 function buildDoc(model) {
-  var label = (model.kind === 'indepth') ? 'In Depth' : 'Simple';
-  var doc = DocumentApp.create('AIS R3 governance report . ' + label + ' . ' + (model.round || ''));
+  var label = (model.kind === 'indepth') ? 'In Depth' : (model.kind === 'coaching' ? 'Coaching' : 'Simple');
+  var doc = DocumentApp.create((model.kind === 'coaching' ? 'AIS coaching note . ' + (model.teacher_name || '') : 'AIS R3 governance report . ' + label) + ' . ' + (model.round || ''));
   var docId = doc.getId();
 
   var refTabId = null;
-  try {
-    var resp = Docs.Documents.batchUpdate({ requests: [{ addDocumentTab: { tabProperties: { title: 'References' } } }] }, docId);
-    refTabId = resp.replies[0].addDocumentTab.tabProperties.tabId;
-  } catch (e) { refTabId = null; }
+  if (model.kind !== 'coaching') {   // coaching note is single-tab, no References
+    try {
+      var resp = Docs.Documents.batchUpdate({ requests: [{ addDocumentTab: { tabProperties: { title: 'References' } } }] }, docId);
+      refTabId = resp.replies[0].addDocumentTab.tabProperties.tabId;
+    } catch (e) { refTabId = null; }
+  }
   var tabUrl = 'https://docs.google.com/document/d/' + docId + '/edit' + (refTabId ? ('?tab=' + refTabId) : '');
 
   doc = DocumentApp.openById(docId);
@@ -102,15 +104,16 @@ function buildDoc(model) {
   }
 
   if (model.kind === 'indepth') buildInDepth(body, model, marker);
+  else if (model.kind === 'coaching') buildCoaching(body, model);
   else buildSimple(body, model, marker);
 
-  if (!refTabId) appendRefsSection(body, refEntries);
+  if (!refTabId && refEntries.length) appendRefsSection(body, refEntries);
   dropSeed(body);
   doc.saveAndClose();
 
-  try { Docs.Documents.batchUpdate({ requests: [{ updateDocumentTabProperties: { tabProperties: { tabId: firstTabId, title: 'Report' }, fields: 'title' } }] }, docId); } catch (e) {}
+  try { Docs.Documents.batchUpdate({ requests: [{ updateDocumentTabProperties: { tabProperties: { tabId: firstTabId, title: (model.kind === 'coaching' ? 'Coaching' : 'Report') }, fields: 'title' } }] }, docId); } catch (e) {}
   if (model.cover) insertCoverImage(docId, firstTabId, model.cover);
-  if (refTabId) writeRefsTab(docId, refTabId, refEntries);
+  if (refTabId && refEntries.length) writeRefsTab(docId, refTabId, refEntries);
 
   try { DriveApp.getFileById(docId).setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW); } catch (e) {}
   return 'https://docs.google.com/document/d/' + docId + '/edit';
@@ -222,6 +225,32 @@ function buildInDepth(body, model, marker) {
       });
     });
   }
+}
+
+// ---- COACHING: a single teacher's personal "Next Steps & Improvement" note (clean monochrome) ----
+function buildCoaching(body, model) {
+  var n = model.note || {};
+  var RUBRIC_URL = model.rubricUrl || 'https://docs.google.com/document/d/1j-W83HKfirTVboOEM0iFqWzAfTufV-7miPjVgAsnbd0/edit';
+  P(body, 'AIS SHARJAH  .  COACHING NOTE', { font: LATO, size: 9, color: GREY, bold: true, spaceAfter: 2 });
+  P(body, 'Next Steps & Improvement', { font: PLAY, heading: TT, color: NAVY });
+  P(body, (model.teacher_name || '') + '  .  ' + (model.round || '') + '  .  generated ' + (model.generated_on || ''), { font: LATO, size: 10, color: GREY, spaceAfter: 6 });
+  bar(body, NAVY);
+  if (n.standing) P(body, String(n.standing).replace(/->/g, '\u2192'), { font: LATO, size: 12, bold: true, color: NAVY, spaceBefore: 8, spaceAfter: 8 });
+  if (n.summary) P(body, n.summary, { font: LATO, size: 12, color: INK, spaceAfter: 8 });
+  sectionHead(body, 'Where to focus next');
+  (n.bullets || []).forEach(function (b) {
+    P(body, b.move || '', { font: LATO, size: 12, bold: true, color: INK, bullet: true, spaceBefore: 8 });
+    if (b.rubric_descriptor) { var rb = P(body, 'AIS rubric, Facilitating: ' + b.rubric_descriptor, { font: LATO, size: 10, color: MUTED, indent: 18 }); var lbl = 'AIS rubric, Facilitating:'.length; rb.editAsText().setBold(0, lbl - 1, true).setForegroundColor(0, lbl - 1, NAVY); }
+    if (b.evidence) P(body, 'From your lessons: \u201c' + b.evidence + '\u201d', { font: LATO, size: 10, italic: true, color: MUTED, indent: 18 });
+    if (b.look_for) { var lf = P(body, 'Look for: ' + b.look_for, { font: LATO, size: 10, color: INK, indent: 18 }); lf.editAsText().setBold(0, 'Look for:'.length - 1, true); }
+    (b.exemplars || []).forEach(function (e) {
+      var where = [e.area, e.date].filter(function (x) { return x; }).join(', ');
+      P(body, 'What this looks like elsewhere: a ' + where + ' lesson this round: \u201c' + (e.quote || '') + '\u201d', { font: LATO, size: 9.5, color: GREY, indent: 18 });
+      if (e.record_id && e.token) { var lp = P(body, 'Open the R3 record', { font: LATO, size: 9, color: LINK, indent: 18 }); lp.editAsText().setLinkUrl(0, lp.getText().length - 1, 'https://rogerceaser21.github.io/Data-Representation/Assets/R3/r3-record.html?id=' + encodeURIComponent(e.record_id) + '&token=' + encodeURIComponent(e.token)); }
+    });
+  });
+  var rl = P(body, 'View the AIS progress rubric', { font: LATO, size: 10, color: LINK, spaceBefore: 12 }); rl.editAsText().setLinkUrl(0, rl.getText().length - 1, RUBRIC_URL);
+  P(body, 'This is a coaching draft to support your development, drawn from your June R3 observations and the AIS progress rubric. It is confidential to you and your coach.', { font: LATO, size: 9, italic: true, color: GREY, spaceBefore: 10 });
 }
 
 function refMeta(r) { return [r.area, r.date, (r.progress ? r.progress + ' progress' : '')].filter(function (x) { return x; }).join('  .  '); }
