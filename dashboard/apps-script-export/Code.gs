@@ -235,7 +235,7 @@ function buildCoaching(body, model) {
   P(body, 'Next Steps & Improvement', { font: PLAY, heading: TT, color: NAVY });
   P(body, (model.teacher_name || '') + '  .  ' + (model.round || '') + '  .  generated ' + (model.generated_on || ''), { font: LATO, size: 10, color: GREY, spaceAfter: 6 });
   bar(body, NAVY);
-  if (n.standing) P(body, String(n.standing).replace(/->/g, '\u2192'), { font: LATO, size: 12, bold: true, color: NAVY, spaceBefore: 8, spaceAfter: 8 });
+  if (n.standing) P(body, String(n.standing).replace(/Facilitating:/g, 'Facilitating better progress:').replace(/->/g, '\u2192'), { font: LATO, size: 12, bold: true, color: NAVY, spaceBefore: 8, spaceAfter: 8 });
   if (n.summary) P(body, n.summary, { font: LATO, size: 12, color: INK, spaceAfter: 8 });
   sectionHead(body, 'Where to focus next');
   (n.bullets || []).forEach(function (b) {

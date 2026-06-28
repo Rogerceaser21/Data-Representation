@@ -219,6 +219,7 @@ svg{display:block;overflow:visible}
 .ocolhdr{display:flex;align-items:center;justify-content:flex-start;gap:6px;width:100%;background:transparent;border:0;padding:0 0 2px;cursor:pointer;font:inherit;text-align:left}
 .ocolttl{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-mid);font-weight:700}
 .ocolhdr:hover .ocolttl{color:var(--ink)}
+.oround{margin-left:auto;font-size:10.5px;font-weight:700;letter-spacing:.04em;color:var(--ink-mid);background:var(--panel-2);border:1px solid var(--edge-soft);border-radius:7px;padding:2px 8px;white-space:nowrap}
 .ochevw{display:inline-flex;animation:chevbob 1.9s ease-in-out infinite}
 .ochev{width:12px;height:12px;color:var(--ink-mid);transition:transform .42s cubic-bezier(.4,0,.2,1);flex:none}
 .ochev path{stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
@@ -514,7 +515,7 @@ svg{display:block;overflow:visible}
 .ns-btn.go{background:var(--g);border-color:var(--g);color:#fff}
 .ns-btn.go:hover{filter:brightness(1.06)}
 .ns-btn:disabled{opacity:.5;cursor:default;transform:none}
-.ns-sum{font-size:14px;line-height:1.6;color:var(--ink-dim);margin:2px 0 16px;max-width:62ch}
+.ns-sum{font-size:14px;line-height:1.6;color:var(--ink-dim);margin:2px 0 16px}
 .ns-exh{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-faint)}
 /* ===== v0.50 coaching note: shared bits ===== */
 .ns-rub a,.ns-look a,.ns-fine a,.ns-tech a,.ns-q a{color:var(--ink-mid);text-decoration:none;border-bottom:1px solid var(--edge)}
@@ -539,13 +540,13 @@ svg{display:block;overflow:visible}
 .ns-cell.tgt{opacity:1;box-shadow:0 0 0 2px var(--panel-2),0 0 0 4px var(--c)}
 /* theme chip */
 .ns-chip{display:inline-flex;align-items:center;font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:999px;color:var(--cc);background:color-mix(in srgb,var(--cc) 13%,transparent);border:1px solid color-mix(in srgb,var(--cc) 30%,transparent);white-space:nowrap}
-.ns-q{margin:9px 0 0;padding:2px 0 2px 12px;border-left:2px solid var(--edge);font-size:12.5px;line-height:1.55;color:var(--ink-mid);font-style:italic}
-.ns-tech{font-size:12.5px;line-height:1.58;color:var(--ink);margin:8px 0 0}
+.ns-q{margin:9px 0 0;padding:2px 0 2px 12px;border-left:2px solid var(--edge);font-size:13px;line-height:1.58;color:var(--ink-dim);font-style:italic}
+.ns-tech{font-size:14px;line-height:1.6;color:var(--ink);margin:8px 0 0}
 .ns-tech b{font-weight:800}
 .ns-src{font-size:11px;line-height:1.4;margin:6px 0 0;color:var(--ink-faint)}
-.ns-rub{font-size:11.5px;line-height:1.5;color:var(--ink-mid);margin:8px 0 0}
+.ns-rub{font-size:13px;line-height:1.55;color:var(--ink-dim);margin:8px 0 0}
 .ns-rub b{color:var(--ink);font-weight:700}
-.ns-look{font-size:12.5px;line-height:1.5;color:var(--ink);margin:7px 0 0}
+.ns-look{font-size:13.5px;line-height:1.55;color:var(--ink);margin:7px 0 0}
 .ns-look b{font-weight:800}
 /* ---- Layout A: accordion focus list ---- */
 .accbl{display:flex;flex-direction:column;gap:9px}
@@ -576,6 +577,12 @@ svg{display:block;overflow:visible}
 .tl-foot{font-size:10.5px;line-height:1.5;color:var(--ink-faint);margin:8px 0 0;border-top:1px dashed var(--edge-soft);padding-top:7px}
 .tl-foot b{color:var(--ink-mid);font-weight:700}
 .ns-edit textarea{width:100%;box-sizing:border-box;background:var(--panel-2);border:1px solid var(--edge);border-radius:10px;color:var(--ink);font:inherit;font-size:13.5px;line-height:1.55;padding:9px 12px;resize:vertical;margin:0 0 10px}
+.ns-edit label.ns-exh{display:block;margin:0 0 4px}
+.ns-eitem{border-top:1px solid var(--edge-soft);margin-top:14px;padding-top:13px}
+.ns-eh{font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--ink);margin:0 0 8px}
+.ns-eg{font-size:12px;line-height:1.5;color:var(--ink-mid);background:var(--panel-2);border:1px solid var(--edge-soft);border-left:2px solid var(--y);border-radius:9px;padding:8px 10px;margin:0 0 11px}
+.ns-eg b{color:var(--ink);font-weight:700}
+.ns-eg .gl{display:block;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:3px}
 .ns-empty{font-size:13px;color:var(--ink-mid)}
 .ns-msg{font-size:12px;color:var(--ink-mid);margin-top:8px}
 .ns-msg.warn{color:var(--r5)}.ns-msg.ok{color:var(--g)}
@@ -1004,6 +1011,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
     </div>
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
+        <div class="vrow"><span class="vtag">v0.51</span><span class="vnote">Coaching note polish. The observation session card now shows its inspection round (for example R3 June 26) beside the Inspection details heading. The note summary now fills the full card width. "Facilitating" is renamed "Facilitating better progress". The rubric grounding and the lesson quote on the right are larger and darker, and the technique text on the left now matches the summary size. The edit pane no longer says "Move 1, 2, 3"; each focus area is headed by its theme (Student dialogue, Questioning, and so on), shows its rubric grounding read-only for reference, and has clearly labelled boxes for the recommended action, what to look for, and the technique.</span></div>
         <div class="vrow"><span class="vtag">v0.50</span><span class="vnote">Per-teacher coaching note reworked. Facilitating now sits on the same six-point scale as Progress (for example Good to Very Good), not the old five band names. Each move is grounded in a plain-English rubric line ("In the AIS OTP Progress Rubric, to facilitate better than expected progress at a Good level, the teacher...") with a link to the rubric. The in-house examples (which linked to other teachers' records) are gone; each move now carries a reputable online technique written out in full plus a link to its source (Edutopia, Structural Learning, Chartered College, Third Space, InnerDrive, Tips for Teachers). The note is laid out as two-column focus cards (the action on the left, the rubric grounding and your own evidence on the right), with a current-to-target ladder per aspect and a theme tag per move. All 104 notes regenerated and evidence-checked.</span></div>
         <div class="vrow"><span class="vtag">v0.49</span><span class="vnote">Per-teacher coaching added to the Observations drill-down: a "Next Steps & Improvement" note for every June R3 teacher. Each note is generated from that teacher's own observation evidence and the AIS progress rubric (both aspects), showing where they are and the next level up on Progress in Lessons and on Facilitating, a short summary, and two to four concrete moves, each grounded in the rubric and their own evidence, with anonymous same-subject examples from other lessons this round. Notes are visible to everyone with the dashboard password; editing and approving are admin-only, and each can be exported to a personal Google Doc to share with the teacher. AI-drafted, coach-approved; per-role access follows with sign-in.</span></div>
         <div class="vrow"><span class="vtag">v0.48</span><span class="vnote">Snapshot tab-row buttons made truly uniform. Every control (the phase tabs, Story / Detail, Present and Report) is now the same solid pill at the same height as Present; previously the active phase and Story pills sat shrunk inside a faint frame and the Report button was faded, so they looked like different sizes. Unselected tabs are quiet text. The Google Doc export was also flattened to a clean monochrome report (cream boxes removed, headers navy); the on-screen report is unchanged.</span></div>
@@ -1075,7 +1083,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
   </div>
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.50</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.51</span></span>
   </div>
 </div>
 
@@ -1265,7 +1273,7 @@ function renderObsList(t){const host=byId('obslist');host.innerHTML='';
         `<div class="allmain">${gaugeSP}<div class="allleft">${aspec}</div>${gaugeTE}</div>`;
     }else{
       const o=it.obs||{};
-      const insp=`<div class="ocol inspection"><button class="ocolhdr" type="button"><span class="ocolttl">Inspection details</span>${OCHEV}</button><div class="ocolbody"><div class="ocolbody-in">`+
+      const insp=`<div class="ocol inspection"><button class="ocolhdr" type="button"><span class="ocolttl">Inspection details</span>${OCHEV}${o.round?`<span class="oround">${esc(o.round)}</span>`:''}</button><div class="ocolbody"><div class="ocolbody-in">`+
         `<div class="odrow"><span class="odn">Inspector</span><span class="odv">${esc(it.who)}${o.date?' . '+monthYear(o.date):''}</span></div>`+
         (o.subject?`<div class="odrow"><span class="odn">Subject</span><span class="odv">${esc(o.subject)}</span></div>`:'')+
         (o.subject_area?`<div class="odrow"><span class="odn">Area</span><span class="odv">${esc(o.subject_area)}</span></div>`:'')+
@@ -1325,6 +1333,7 @@ function nsTheme(url){url=url||'';const m=[['differentiatedinstruction','differe
   for(const[s,k]of m)if(url.includes(s))return k;return '';}
 function nsChip(b){const k=b.source?nsTheme(b.source.url):'';if(!k)return '';
   return `<span class="ns-chip" style="--cc:var(${NS_TCOL[k]||'--ink-mid'})">${NS_TLAB[k]}</span>`;}
+function nsThemeName(b){const k=b.source?nsTheme(b.source.url):'';return NS_TLAB[k]||'Focus area';}
 function nsAccent(b){const k=b.source?nsTheme(b.source.url):'';return `var(${k?NS_TCOL[k]:'--edge'})`;}
 function nsRubLine(b){if(!b.rubric_descriptor||!b.rubric_band)return '';
   const d=esc(b.rubric_descriptor).replace(/\.+$/,'');const band=esc(b.rubric_band);
@@ -1343,7 +1352,7 @@ function nsLad(name,cur,tgt){const C=NS_BAND[cur],T=NS_BAND[tgt];
   return `<div class="ns-lad"><div class="ns-lad-top"><span class="ns-lad-name">${name}</span><span class="ns-lad-mv">${mv}</span></div><div class="ns-track">${cells}</div></div>`;}
 function nsLadders(n){return `<div class="ns-ladders">`+
   nsLad('Progress in Lessons',n.progress_current,n.progress_target)+
-  nsLad('Facilitating',n.facilitating_current,n.facilitating_target)+`</div>`;}
+  nsLad('Facilitating better progress',n.facilitating_current,n.facilitating_target)+`</div>`;}
 function nsBullet(b,i){const rub=nsRubLine(b),src=nsSrc(b),chip=nsChip(b),acc=nsAccent(b),num=i+1;
   if(NS_LAYOUT==='B'){   // two-column focus card: action | grounding
     return `<div class="fc" style="--cc:${acc}"><div class="fc-l">${chip}<p class="ns-move">${esc(b.move||'')}</p>`+
@@ -1381,7 +1390,11 @@ function renderNextSteps(t){const host=byId('nextSteps');if(!host)return;
     host.innerHTML=`<div class="ns-head"><div class="ns-title"><div class="ey" style="margin:0">Next Steps &amp; Improvement</div>${badge}</div>`+
       `<div class="ns-actions"><button class="ns-btn" id="nsCancel">Cancel</button><button class="ns-btn go" id="nsSave">Save</button></div></div>`+
       `<div class="ns-edit"><label class="ns-exh">Summary</label><textarea id="nsSum" rows="5">${esc(n.summary||'')}</textarea>`+
-      bl.map((b,i)=>`<label class="ns-exh">Move ${i+1}</label><textarea data-bi="${i}" rows="3">${esc(b.move||'')}</textarea>`).join('')+
+      bl.map((b,i)=>{const rub=nsRubLine(b);return `<div class="ns-eitem"><div class="ns-eh">${esc(nsThemeName(b))}</div>`+
+        (rub?`<div class="ns-eg"><span class="gl">Grounded in (read only)</span>${rub}</div>`:'')+
+        `<label class="ns-exh">Recommended action</label><textarea data-bi="${i}" data-f="move" rows="3">${esc(b.move||'')}</textarea>`+
+        `<label class="ns-exh">Look for</label><textarea data-bi="${i}" data-f="look_for" rows="3">${esc(b.look_for||'')}</textarea>`+
+        `<label class="ns-exh">Technique</label><textarea data-bi="${i}" data-f="technique" rows="5">${esc(b.technique||'')}</textarea></div>`;}).join('')+
       `</div><div class="ns-msg" id="nsMsg"></div>`;
     byId('nsCancel').onclick=()=>{host.dataset.edit='';renderNextSteps(t);};
     byId('nsSave').onclick=()=>nsSave(t);
@@ -1401,7 +1414,7 @@ function renderNextSteps(t){const host=byId('nextSteps');if(!host)return;
 }
 async function nsSave(t){const host=byId('nextSteps'),n=NEXTSTEPS[t.id];if(!n)return;
   const sum=byId('nsSum').value;const bl=(n.bullets||[]).map(b=>({...b}));
-  host.querySelectorAll('textarea[data-bi]').forEach(ta=>{const i=+ta.dataset.bi;if(bl[i])bl[i].move=ta.value;});
+  host.querySelectorAll('textarea[data-bi]').forEach(ta=>{const i=+ta.dataset.bi,f=ta.dataset.f||'move';if(bl[i])bl[i][f]=ta.value;});
   const msg=byId('nsMsg');if(msg){msg.className='ns-msg';msg.textContent='Saving...';}
   const res=await sbRpc('admin_set_teacher_next_step',{p_password:adminPw,p_round:SNAP_ROUND,p_teacher_id:t.id,p_standing:n.standing||null,p_summary:sum,p_bullets:bl,p_status:null}).catch(()=>null);
   if(res&&res.success){n.summary=sum;n.bullets=bl;host.dataset.edit='';renderNextSteps(t);}

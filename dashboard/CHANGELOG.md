@@ -5,6 +5,11 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.51 . 2026-06-28
+- **Coaching note polish** (Igor's review of v0.50). The observation session card now shows its inspection round (e.g. "R3 June 26") beside the Inspection details heading. The coaching note summary fills the full card width (a width cap was removed). The Facilitating aspect is renamed "Facilitating better progress". The right column (rubric grounding + the lesson quote) is larger and darker, and the technique text on the left now matches the summary size.
+- **Edit pane clarified.** It no longer labels boxes "Move 1, 2, 3". Each focus area is headed by its theme (Student dialogue, Questioning, and so on), shows its rubric grounding read-only for reference, and gives clearly labelled boxes for the recommended action, what to look for, and the technique (all three now editable; the rubric line and the verbatim lesson quote stay locked). The Doc export's standing line carries the renamed aspect.
+- Scope: the Observations drill-down (session card + coaching note). Snapshot, Coverage, report unchanged. Front-end only; no notes regenerated. Rollback: `dash-v0.50`.
+
 ## v0.50 . 2026-06-28
 - **Per-teacher coaching note reworked** (the v0.49 engine, presentation + grounding overhauled; Igor's review). All 104 June notes regenerated and re-checked.
 - **Facilitating now uses the same six-point scale as Progress** (Very Weak..Outstanding), driven by Teaching r3_05 and floored at Good, so it reads e.g. "Good to Very Good" instead of the old five band names (Beginner/Emerging/Good/Great/Outstanding). The five-point rubric descriptors stay internal only as the source of the coaching move; the band names never appear in the prose.
