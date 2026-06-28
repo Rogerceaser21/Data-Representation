@@ -514,23 +514,67 @@ svg{display:block;overflow:visible}
 .ns-btn.go{background:var(--g);border-color:var(--g);color:#fff}
 .ns-btn.go:hover{filter:brightness(1.06)}
 .ns-btn:disabled{opacity:.5;cursor:default;transform:none}
-.ns-stand{font-size:13px;font-weight:700;color:var(--ink);margin:8px 0 12px;letter-spacing:.01em}
-.ns-stand .arw{color:var(--ink-mid);font-weight:400;margin:0 4px}
-.ns-sum{font-size:15px;line-height:1.6;color:var(--ink);margin:0 0 16px}
-.ns-bl{display:flex;flex-direction:column;gap:14px}
-.ns-i{padding:14px 16px;background:var(--panel);border:1px solid var(--edge-soft);border-left:3px solid var(--edge);border-radius:12px}
-.ns-move{font-size:14px;font-weight:700;line-height:1.5;color:var(--ink);margin:0}
-.ns-rub{font-size:12px;line-height:1.5;color:var(--ink-mid);margin:7px 0 0}
-.ns-rub b{color:var(--ink);font-weight:700}
-.ns-ev{font-size:12.5px;line-height:1.5;color:var(--ink-mid);font-style:italic;margin:6px 0 0}
-.ns-ev b{font-style:normal;font-weight:700;color:var(--ink-mid)}
-.ns-look{font-size:12.5px;line-height:1.5;color:var(--ink);margin:7px 0 0}
-.ns-look b{font-weight:700}
-.ns-ex{margin:9px 0 0;display:flex;flex-direction:column;gap:5px}
+.ns-sum{font-size:14px;line-height:1.6;color:var(--ink-dim);margin:2px 0 16px;max-width:62ch}
 .ns-exh{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-faint)}
-.ns-exr{font-size:12px;line-height:1.5;color:var(--ink-mid)}
-.ns-exr a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--edge)}
-.ns-exr a:hover{border-color:var(--y)}
+/* ===== v0.50 coaching note: shared bits ===== */
+.ns-rub a,.ns-look a,.ns-fine a,.ns-tech a,.ns-q a{color:var(--ink-mid);text-decoration:none;border-bottom:1px solid var(--edge)}
+.ns-rub a:hover,.ns-look a:hover,.ns-fine a:hover,.ns-tech a:hover,.ns-q a:hover{color:var(--ink);border-color:var(--y)}
+.ns-bl a svg{width:11px;height:11px;vertical-align:-1px;border:0}
+.ns-lay{display:flex;gap:5px;align-items:center}
+.ns-lay .lbl{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);margin-right:2px}
+.ns-lay button{font:inherit;font-size:11px;font-weight:800;width:24px;height:24px;border-radius:7px;border:1px solid var(--edge-soft);background:var(--panel-2);color:var(--ink-mid);cursor:pointer;transition:.15s}
+.ns-lay button:hover{border-color:var(--y)}
+.ns-lay button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+/* current -> target ladders (shared header visual, 6-pt SEAS ramp) */
+.ns-ladders{display:grid;grid-template-columns:1fr 1fr;gap:12px 22px;margin:12px 0 18px}
+@media(max-width:680px){.ns-ladders{grid-template-columns:1fr}}
+.ns-lad-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px}
+.ns-lad-name{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-mid)}
+.ns-lad-mv{font-size:12px;font-weight:800;color:var(--ink);white-space:nowrap}
+.ns-lad-mv .a{color:var(--ink-faint);font-weight:600;margin:0 5px}
+.ns-track{display:grid;grid-template-columns:repeat(6,1fr);gap:4px}
+.ns-cell{height:9px;border-radius:5px;background:var(--c);opacity:.16}
+.ns-cell.mid{opacity:.4}
+.ns-cell.cur{opacity:1}
+.ns-cell.tgt{opacity:1;box-shadow:0 0 0 2px var(--panel-2),0 0 0 4px var(--c)}
+/* theme chip */
+.ns-chip{display:inline-flex;align-items:center;font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:3px 9px;border-radius:999px;color:var(--cc);background:color-mix(in srgb,var(--cc) 13%,transparent);border:1px solid color-mix(in srgb,var(--cc) 30%,transparent);white-space:nowrap}
+.ns-q{margin:9px 0 0;padding:2px 0 2px 12px;border-left:2px solid var(--edge);font-size:12.5px;line-height:1.55;color:var(--ink-mid);font-style:italic}
+.ns-tech{font-size:12.5px;line-height:1.58;color:var(--ink);margin:8px 0 0}
+.ns-tech b{font-weight:800}
+.ns-src{font-size:11px;line-height:1.4;margin:6px 0 0;color:var(--ink-faint)}
+.ns-rub{font-size:11.5px;line-height:1.5;color:var(--ink-mid);margin:8px 0 0}
+.ns-rub b{color:var(--ink);font-weight:700}
+.ns-look{font-size:12.5px;line-height:1.5;color:var(--ink);margin:7px 0 0}
+.ns-look b{font-weight:800}
+/* ---- Layout A: accordion focus list ---- */
+.accbl{display:flex;flex-direction:column;gap:9px}
+.acc{border:1px solid var(--edge-soft);border-radius:12px;background:var(--panel);overflow:hidden}
+.acc.open{border-color:color-mix(in srgb,var(--cc) 45%,var(--edge))}
+.acchd{display:flex;align-items:center;gap:11px;width:100%;text-align:left;font:inherit;cursor:pointer;background:none;border:0;padding:12px 14px}
+.acc-num{flex:none;width:23px;height:23px;border-radius:7px;background:var(--cc);color:#fff;font-size:12px;font-weight:800;display:grid;place-items:center}
+.acc-mv{flex:1;font-size:13.5px;font-weight:700;line-height:1.4;color:var(--ink)}
+.acc-chev{flex:none;color:var(--ink-faint);font-size:12px;transition:transform .2s}
+.acc.open .acc-chev{transform:rotate(90deg)}
+.acc-lf{padding:0 14px 12px 48px;font-size:12.5px;line-height:1.5;color:var(--ink-mid);margin:-4px 0 0}
+.acc-lf b{color:var(--ink);font-weight:800}
+.acc-body{padding:0 14px 14px 48px;border-top:1px solid var(--edge-soft);margin-top:2px;padding-top:11px}
+/* ---- Layout B: two-column focus cards (action | grounding) ---- */
+.fcbl{display:flex;flex-direction:column;gap:12px}
+.fc{display:grid;grid-template-columns:1.45fr 1fr;border:1px solid var(--edge-soft);border-radius:14px;overflow:hidden;border-left:3px solid var(--cc)}
+@media(max-width:640px){.fc{grid-template-columns:1fr}}
+.fc-l{padding:14px 16px;background:var(--panel)}
+.fc-r{padding:14px 16px;background:color-mix(in srgb,var(--ink) 4%,transparent);border-left:1px solid var(--edge-soft)}
+.fc .ns-move{font-size:14px;font-weight:800;line-height:1.45;color:var(--ink);margin:8px 0 0}
+.fc-rlab{font-size:9.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:2px}
+/* ---- Layout C: editorial timeline ---- */
+.tlbl{position:relative;display:flex;flex-direction:column;gap:18px;padding-left:6px}
+.tl{display:grid;grid-template-columns:34px 1fr;column-gap:14px;position:relative}
+.tl:not(:last-child)::before{content:"";position:absolute;left:16px;top:30px;bottom:-18px;width:2px;background:var(--edge-soft)}
+.tl-dot{width:30px;height:30px;border-radius:50%;border:2px solid var(--cc);color:var(--cc);font-size:12px;font-weight:800;display:grid;place-items:center;background:var(--panel-2);z-index:1}
+.tl-h{font-family:var(--display);font-weight:600;font-size:17px;line-height:1.22;letter-spacing:-.01em;color:var(--ink);margin:3px 0 6px}
+.tl-foot{font-size:10.5px;line-height:1.5;color:var(--ink-faint);margin:8px 0 0;border-top:1px dashed var(--edge-soft);padding-top:7px}
+.tl-foot b{color:var(--ink-mid);font-weight:700}
 .ns-edit textarea{width:100%;box-sizing:border-box;background:var(--panel-2);border:1px solid var(--edge);border-radius:10px;color:var(--ink);font:inherit;font-size:13.5px;line-height:1.55;padding:9px 12px;resize:vertical;margin:0 0 10px}
 .ns-empty{font-size:13px;color:var(--ink-mid)}
 .ns-msg{font-size:12px;color:var(--ink-mid);margin-top:8px}
@@ -960,6 +1004,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
     </div>
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
+        <div class="vrow"><span class="vtag">v0.50</span><span class="vnote">Per-teacher coaching note reworked. Facilitating now sits on the same six-point scale as Progress (for example Good to Very Good), not the old five band names. Each move is grounded in a plain-English rubric line ("In the AIS OTP Progress Rubric, to facilitate better than expected progress at a Good level, the teacher...") with a link to the rubric. The in-house examples (which linked to other teachers' records) are gone; each move now carries a reputable online technique written out in full plus a link to its source (Edutopia, Structural Learning, Chartered College, Third Space, InnerDrive, Tips for Teachers). The note is laid out as two-column focus cards (the action on the left, the rubric grounding and your own evidence on the right), with a current-to-target ladder per aspect and a theme tag per move. All 104 notes regenerated and evidence-checked.</span></div>
         <div class="vrow"><span class="vtag">v0.49</span><span class="vnote">Per-teacher coaching added to the Observations drill-down: a "Next Steps & Improvement" note for every June R3 teacher. Each note is generated from that teacher's own observation evidence and the AIS progress rubric (both aspects), showing where they are and the next level up on Progress in Lessons and on Facilitating, a short summary, and two to four concrete moves, each grounded in the rubric and their own evidence, with anonymous same-subject examples from other lessons this round. Notes are visible to everyone with the dashboard password; editing and approving are admin-only, and each can be exported to a personal Google Doc to share with the teacher. AI-drafted, coach-approved; per-role access follows with sign-in.</span></div>
         <div class="vrow"><span class="vtag">v0.48</span><span class="vnote">Snapshot tab-row buttons made truly uniform. Every control (the phase tabs, Story / Detail, Present and Report) is now the same solid pill at the same height as Present; previously the active phase and Story pills sat shrunk inside a faint frame and the Report button was faded, so they looked like different sizes. Unselected tabs are quiet text. The Google Doc export was also flattened to a clean monochrome report (cream boxes removed, headers navy); the on-screen report is unchanged.</span></div>
         <div class="vrow"><span class="vtag">v0.47</span><span class="vnote">Report and Snapshot buttons tidied. Opening a report is now its own page (the link reads /dashboard/#report): the Story and Detail toggle and the dropdown are replaced by a Back button plus a Simple / In Depth switch. The report body is now a clean monochrome document, with the green, terracotta and gold accents on its headings, numbers and the R3 title removed. On the live Snapshot the phase tabs, Story / Detail, Present and Report buttons are all one uniform size. And the admin Settings password popup is restyled to match the R3 form's admin card (gradient top bar, AIS Admin eyebrow, framed input, Close and Unlock).</span></div>
@@ -1030,7 +1075,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
   </div>
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.49</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.50</span></span>
   </div>
 </div>
 
@@ -1268,17 +1313,65 @@ function renderTeacher(t){
   selectedObs='all';renderObsList(t);buildArc(t,'svgArc',progScore,progAvg,false);buildArc(t,'svgArcT',teachScore,teachAvg,true);selectObs(t,'all');
   renderNextSteps(t);
 }
-/* ---- per-teacher coaching note (v0.49). Visible to all; Edit/Approve/Make-Doc are admin-gated. ---- */
-function nsEx(e){const link=(e.record_id&&e.token)?` <a target="_blank" rel="noopener" href="../Assets/R3/r3-record.html?id=${encodeURIComponent(e.record_id)}&token=${encodeURIComponent(e.token)}">view lesson</a>`:'';
-  const where=[e.area,e.date].filter(Boolean).join(', ');
-  return `<div class="ns-exr">A ${esc(where)} lesson this round: &ldquo;${esc(e.quote||'')}&rdquo;${link}</div>`;}
-function nsBullet(b){const ex=Array.isArray(b.exemplars)?b.exemplars:[];
-  return `<div class="ns-i"><p class="ns-move">${esc(b.move||'')}</p>`+
-    (b.rubric_descriptor?`<p class="ns-rub"><b>AIS rubric &middot; Facilitating:</b> ${esc(b.rubric_descriptor)}</p>`:'')+
-    (b.evidence?`<p class="ns-ev"><b>From your lessons:</b> &ldquo;${esc(b.evidence)}&rdquo;</p>`:'')+
-    (b.look_for?`<p class="ns-look"><b>Look for:</b> ${esc(b.look_for)}</p>`:'')+
-    (ex.length?`<div class="ns-ex"><div class="ns-exh">What this looks like elsewhere</div>${ex.map(nsEx).join('')}</div>`:'')+
-    `</div>`;}
+/* ---- per-teacher coaching note (v0.50). Visible to all; Edit/Approve/Make-Doc are admin-gated.
+   Layout = two-column focus cards (action | grounding), chosen by Igor 2026-06-28 from a 3-way preview.
+   Each move shows a current -> target SEAS ladder header + a per-move theme chip. ---- */
+let NS_LAYOUT='B';
+// SEAS band -> ramp colour var + ladder index (1 best ... 6 worst); ladder draws Very Weak..Outstanding L-to-R
+const NS_BAND={'Very Weak':{i:6,c:'--r6'},'Weak':{i:5,c:'--r5'},'Acceptable':{i:4,c:'--r4'},'Good':{i:3,c:'--r3'},'Very Good':{i:2,c:'--r2'},'Outstanding':{i:1,c:'--r1'}};
+const NS_TLAB={differentiate:'Differentiation',stretch:'Stretch & challenge',dialogue:'Student dialogue',questioning:'Questioning',check:'Checking understanding',pace:'Pace & intervention'};
+const NS_TCOL={differentiate:'--b',stretch:'--y',dialogue:'--g',questioning:'--r',check:'--r2',pace:'--r4'};
+function nsTheme(url){url=url||'';const m=[['differentiatedinstruction','differentiate'],['integrating-ells','differentiate'],['differentiated-instruction-resources','differentiate'],['stretch-and-challenge-a-teachers','stretch'],['great-teaching-techniques-stretch','stretch'],['how-to-teach-more-able','stretch'],['talk-based-learning','dialogue'],['strategies-encourage-classroom-discussion','dialogue'],['discussion-guidelines-secondary','dialogue'],['rosenshines-third-principle','questioning'],['rosenshines-principles-a-teachers','questioning'],['does-cold-calling-work','questioning'],['hinge-questions','check'],['8-quick-checks','check'],['29-high-impact-formative','check'],['maximising-the-participation-ratio','pace'],['instructional-pacing','pace'],['research-backed-strategies-keep-students-on-task','pace']];
+  for(const[s,k]of m)if(url.includes(s))return k;return '';}
+function nsChip(b){const k=b.source?nsTheme(b.source.url):'';if(!k)return '';
+  return `<span class="ns-chip" style="--cc:var(${NS_TCOL[k]||'--ink-mid'})">${NS_TLAB[k]}</span>`;}
+function nsAccent(b){const k=b.source?nsTheme(b.source.url):'';return `var(${k?NS_TCOL[k]:'--edge'})`;}
+function nsRubLine(b){if(!b.rubric_descriptor||!b.rubric_band)return '';
+  const d=esc(b.rubric_descriptor).replace(/\.+$/,'');const band=esc(b.rubric_band);
+  return `In the AIS OTP Progress Rubric, to facilitate better than expected progress at a <b>${band}</b> level, the teacher ${d}. <a href="${RUBRIC_URL}" target="_blank" rel="noopener">View the rubric ${I_ARROW}</a>`;}
+function nsSrc(b){if(!b.source||!b.source.url)return '';
+  const t=esc(b.source.title||'source');const o=b.source.org?' ('+esc(b.source.org)+')':'';
+  return `<a href="${esc(b.source.url)}" target="_blank" rel="noopener">${t}${o} ${I_ARROW}</a>`;}
+function nsQuote(b){return b.evidence?`<div class="ns-q">&ldquo;${esc(b.evidence)}&rdquo;</div>`:'';}
+// one current -> target ladder row
+function nsLad(name,cur,tgt){const C=NS_BAND[cur],T=NS_BAND[tgt];
+  let cells='';for(let idx=6;idx>=1;idx--){const col=['','--r1','--r2','--r3','--r4','--r5','--r6'][idx];
+    let cls='ns-cell';if(C&&idx===C.i)cls+=' cur';else if(T&&idx===T.i)cls+=' tgt';
+    else if(C&&T&&idx<C.i&&idx>T.i)cls+=' mid';   // the climb between current and target
+    cells+=`<div class="${cls}" style="--c:var(${col})"></div>`;}
+  const mv=cur?`${esc(cur)}${tgt&&tgt!==cur?`<span class="a">&rarr;</span>${esc(tgt)}`:''}`:'n/a';
+  return `<div class="ns-lad"><div class="ns-lad-top"><span class="ns-lad-name">${name}</span><span class="ns-lad-mv">${mv}</span></div><div class="ns-track">${cells}</div></div>`;}
+function nsLadders(n){return `<div class="ns-ladders">`+
+  nsLad('Progress in Lessons',n.progress_current,n.progress_target)+
+  nsLad('Facilitating',n.facilitating_current,n.facilitating_target)+`</div>`;}
+function nsBullet(b,i){const rub=nsRubLine(b),src=nsSrc(b),chip=nsChip(b),acc=nsAccent(b),num=i+1;
+  if(NS_LAYOUT==='B'){   // two-column focus card: action | grounding
+    return `<div class="fc" style="--cc:${acc}"><div class="fc-l">${chip}<p class="ns-move">${esc(b.move||'')}</p>`+
+      (b.look_for?`<p class="ns-look"><b>Look for</b><br>${esc(b.look_for)}</p>`:'')+
+      (b.technique?`<p class="ns-tech">${esc(b.technique)}</p>`:'')+
+      (src?`<p class="ns-src">${src}</p>`:'')+`</div>`+
+      `<div class="fc-r"><div class="fc-rlab">Grounded in</div>`+
+      (rub?`<p class="ns-rub">${rub}</p>`:'')+
+      (b.evidence?`<div class="fc-rlab" style="margin-top:10px">From your lesson</div>${nsQuote(b)}`:'')+`</div></div>`;
+  }
+  if(NS_LAYOUT==='C'){   // editorial timeline
+    return `<div class="tl" style="--cc:${acc}"><div class="tl-dot">${num}</div><div class="tl-body">${chip}`+
+      `<h4 class="tl-h">${esc(b.move||'')}</h4>`+
+      (b.technique?`<p class="ns-tech">${esc(b.technique)}</p>`:'')+
+      nsQuote(b)+
+      (b.look_for?`<p class="ns-look"><b>Look for:</b> ${esc(b.look_for)}</p>`:'')+
+      ((rub||src)?`<p class="tl-foot">${rub||''}${(rub&&src)?'  &middot;  ':''}${src?'Technique source: '+src:''}</p>`:'')+`</div></div>`;
+  }
+  // Layout A: accordion focus list (scannable; depth on tap)
+  const open=i===0?' open':'';const bodyHidden=i===0?'':'hidden';
+  return `<div class="acc${open}" style="--cc:${acc}">`+
+    `<button class="acchd" data-acc="${i}"><span class="acc-num">${num}</span><span class="acc-mv">${esc(b.move||'')}</span>${chip}<span class="acc-chev">${I_ARROW}</span></button>`+
+    (b.look_for?`<div class="acc-lf"><b>Look for:</b> ${esc(b.look_for)}</div>`:'')+
+    `<div class="acc-body" ${bodyHidden}>`+
+      (b.technique?`<p class="ns-tech">${esc(b.technique)}</p>`:'')+
+      (src?`<p class="ns-src">Technique source: ${src}</p>`:'')+
+      nsQuote(b)+
+      (rub?`<p class="ns-rub">${rub}</p>`:'')+`</div></div>`;}
 function renderNextSteps(t){const host=byId('nextSteps');if(!host)return;
   const n=NEXTSTEPS[t.id];
   if(!n){host.dataset.edit='';host.innerHTML=`<div class="ey">Next Steps &amp; Improvement</div><div class="ns-empty">No coaching note has been generated for this teacher in this round yet.</div>`;return;}
@@ -1294,14 +1387,13 @@ function renderNextSteps(t){const host=byId('nextSteps');if(!host)return;
     byId('nsSave').onclick=()=>nsSave(t);
     return;
   }
-  const stand=esc(n.standing||'').replace(/-&gt;/g,'<span class="arw">&rarr;</span>').replace(/->/g,'<span class="arw">&rarr;</span>');
   host.innerHTML=`<div class="ns-head"><div class="ns-title"><div class="ey" style="margin:0">Next Steps &amp; Improvement</div>${badge}</div>`+
     `<div class="ns-actions"><button class="ns-btn" id="nsEdit">Edit</button>`+
       (n.status!=='approved'?'<button class="ns-btn go" id="nsApprove">Approve</button>':'<button class="ns-btn" id="nsUnapprove">Unapprove</button>')+
       `<button class="ns-btn" id="nsDoc">Make Doc</button></div></div>`+
-    (n.standing?`<div class="ns-stand">${stand}</div>`:'')+
+    nsLadders(n)+
     (n.summary?`<p class="ns-sum">${esc(n.summary)}</p>`:'')+
-    `<div class="ns-bl">${bl.map(nsBullet).join('')}</div><div class="ns-msg" id="nsMsg"></div>`;
+    `<div class="ns-bl fcbl">${bl.map((b,i)=>nsBullet(b,i)).join('')}</div><div class="ns-msg" id="nsMsg"></div>`;
   byId('nsEdit').onclick=()=>requireAdmin(()=>{host.dataset.edit='1';renderNextSteps(t);});
   const ap=byId('nsApprove');if(ap)ap.onclick=()=>requireAdmin(()=>nsSetStatus(t,'approved'));
   const un=byId('nsUnapprove');if(un)un.onclick=()=>requireAdmin(()=>nsSetStatus(t,'draft'));

@@ -240,14 +240,19 @@ function buildCoaching(body, model) {
   sectionHead(body, 'Where to focus next');
   (n.bullets || []).forEach(function (b) {
     P(body, b.move || '', { font: LATO, size: 12, bold: true, color: INK, bullet: true, spaceBefore: 8 });
-    if (b.rubric_descriptor) { var rb = P(body, 'AIS rubric, Facilitating: ' + b.rubric_descriptor, { font: LATO, size: 10, color: MUTED, indent: 18 }); var lbl = 'AIS rubric, Facilitating:'.length; rb.editAsText().setBold(0, lbl - 1, true).setForegroundColor(0, lbl - 1, NAVY); }
-    if (b.evidence) P(body, 'From your lessons: \u201c' + b.evidence + '\u201d', { font: LATO, size: 10, italic: true, color: MUTED, indent: 18 });
     if (b.look_for) { var lf = P(body, 'Look for: ' + b.look_for, { font: LATO, size: 10, color: INK, indent: 18 }); lf.editAsText().setBold(0, 'Look for:'.length - 1, true); }
-    (b.exemplars || []).forEach(function (e) {
-      var where = [e.area, e.date].filter(function (x) { return x; }).join(', ');
-      P(body, 'What this looks like elsewhere: a ' + where + ' lesson this round: \u201c' + (e.quote || '') + '\u201d', { font: LATO, size: 9.5, color: GREY, indent: 18 });
-      if (e.record_id && e.token) { var lp = P(body, 'Open the R3 record', { font: LATO, size: 9, color: LINK, indent: 18 }); lp.editAsText().setLinkUrl(0, lp.getText().length - 1, 'https://rogerceaser21.github.io/Data-Representation/Assets/R3/r3-record.html?id=' + encodeURIComponent(e.record_id) + '&token=' + encodeURIComponent(e.token)); }
-    });
+    if (b.technique) { var tq = P(body, 'Technique to try: ' + b.technique, { font: LATO, size: 10, color: INK, indent: 18 }); tq.editAsText().setBold(0, 'Technique to try:'.length - 1, true); }
+    if (b.source && b.source.url) {
+      var st = (b.source.title || 'Source') + (b.source.org ? ' (' + b.source.org + ')' : '');
+      var sp = P(body, st, { font: LATO, size: 9.5, color: LINK, indent: 18, spaceAfter: 2 });
+      sp.editAsText().setLinkUrl(0, sp.getText().length - 1, b.source.url);
+    }
+    if (b.rubric_descriptor && b.rubric_band) {
+      var txt = 'Grounded in the AIS OTP Progress Rubric, to facilitate better than expected progress at a ' + b.rubric_band + ' level, the teacher ' + String(b.rubric_descriptor).replace(/\.+$/, '') + '.';
+      var rb = P(body, txt, { font: LATO, size: 10, color: MUTED, indent: 18 });
+      rb.editAsText().setBold(0, 'Grounded in the AIS OTP Progress Rubric'.length - 1, true).setForegroundColor(0, 'Grounded in the AIS OTP Progress Rubric'.length - 1, NAVY);
+    }
+    if (b.evidence) P(body, 'From your lesson: \u201c' + b.evidence + '\u201d', { font: LATO, size: 10, italic: true, color: MUTED, indent: 18 });
   });
   var rl = P(body, 'View the AIS progress rubric', { font: LATO, size: 10, color: LINK, spaceBefore: 12 }); rl.editAsText().setLinkUrl(0, rl.getText().length - 1, RUBRIC_URL);
   P(body, 'This is a coaching draft to support your development, drawn from your June R3 observations and the AIS progress rubric. It is confidential to you and your coach.', { font: LATO, size: 9, italic: true, color: GREY, spaceBefore: 10 });
