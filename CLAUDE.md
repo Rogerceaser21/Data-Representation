@@ -25,6 +25,7 @@ A role-based **Supabase-backed dashboard** is being built to aggregate all teach
 - Design + motion (Cinematic, LIGHT default, AIS star-field, 6-point SEAS scale, Spectrum/Arc/matrix): `.planning/2026-06-15-dashboard-design-DECISIONS.md`
 - Living spec, open in a browser: `dashboard-previews/design-spec.html`
 - Current DB + decision state: memory `project_dashboard_architecture.md`. Supabase ref `rfbetrcevtmisknndpgg`; tooling + creds at `~/AIS-Data-Dashboard/` (never echo secrets).
+- Next-round regeneration: the reusable prompts that recreate every AI-written text surface (narrative/Story/Detail, In-Depth refs, Acceptable->Good recommendations, per-teacher coaching) for a new R3 round are stored 3 ways, Supabase `ai_prompts` via `get_ai_prompts()`, repo `.planning/2026-06-28-next-round-rebuild-prompts.md` (+ `.json`), and Focus OS task `c1ace004`; canonical source `~/AIS-Data-Dashboard/db/ai_prompts_build.mjs` (re-run to sync all three). Verifying them + a test sandbox = Focus OS `ea033575`.
 - Latest status: newest doc in `handoff/`.
 
 **Dashboard build chain + hard rules (see also memory):**
