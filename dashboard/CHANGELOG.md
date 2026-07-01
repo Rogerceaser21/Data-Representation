@@ -5,6 +5,12 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.53 . 2026-07-01
+- **Round selector on the Snapshot: February, June, Compare.** The board now compares the two R3 rounds. A top-level round switch drives the view; February and Compare also carry an All / Primary and Kindy / Secondary sub-filter.
+- **February board (numbers only).** Lessons observed, teachers seen, average progress on the ramp gauge, and the six-point distribution. February R3 recorded progress ratings and short observation notes only, so strengths and areas to develop are omitted by design.
+- **Compare (February against June).** Headline delta tiles (direction-aware, a lower rating is better), a paired distribution, a movement slopegraph and a February-to-June transition matrix for the teachers seen in BOTH rounds, plus a net improved / held / declined summary. Numbers only; movement is measured on the shared metric (progress) and the matched cohort is kept separate from the per-round aggregates.
+- Scope: the Snapshot only. June's Story, Detail and Report views, Coverage and Observations are unchanged. Reads the data, never mutates it. Rollback: `dash-v0.52`.
+
 ## v0.52 . 2026-07-01
 - **Observation session card: round tag repositioned.** The inspection round tag (e.g. "R3 June 26") now sits just to the right of the Inspection details heading and its arrow, on the same line, instead of being pushed out to the far right edge of the card.
 - One CSS change: `.oround`'s `margin-left:auto` removed, so the header's flex `gap` places the tag 6px after the chevron (Igor's exact spec).

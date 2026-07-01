@@ -401,6 +401,62 @@ svg{display:block;overflow:visible}
 .divn{font-size:12.5px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
 .divword{text-align:center;font-size:10.5px;font-weight:700;color:var(--ink-dim);font-family:var(--display)}
 
+/* ===== round compare (v0.53): round selector + Feb board + Feb-vs-June compare ===== */
+.roundrow{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin:12px 0 4px}
+.roundlab{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);font-weight:700}
+.roundtabs{display:inline-flex;gap:5px;background:var(--panel);border:1px solid var(--edge-soft);border-radius:30px;padding:5px;box-shadow:0 2px 14px -8px var(--shadow)}
+.rdtab{font:inherit;font-size:13.5px;font-weight:700;letter-spacing:.01em;color:var(--ink-mid);background:transparent;border:0;border-radius:24px;padding:9px 22px;cursor:pointer;transition:.2s;white-space:nowrap}
+.rdtab:hover{color:var(--ink)}
+.rdtab.on{background:var(--ink);color:var(--bg-2);box-shadow:0 5px 18px -7px var(--shadow)}
+:root[data-theme="light"] .rdtab.on{color:#fff}
+.subphase{display:inline-flex;gap:5px}
+.sptab{font:inherit;font-size:12px;font-weight:600;color:var(--ink-mid);background:transparent;border:1px solid var(--edge-soft);border-radius:20px;padding:6px 15px;cursor:pointer;transition:.2s;white-space:nowrap}
+.sptab:hover{color:var(--ink)}
+.sptab.on{background:var(--panel-2);color:var(--ink);border-color:var(--edge);box-shadow:0 2px 12px -5px var(--shadow)}
+.rmethod{font-size:11.5px;line-height:1.6;color:var(--ink-faint);margin-top:12px}
+.rmethod b{color:var(--ink-dim);font-weight:700}
+.secband{display:flex;align-items:center;gap:12px;margin:20px 0 10px}
+.secband .st{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--ink-mid);white-space:nowrap}
+.secband i{flex:1;height:1px;background:var(--edge-soft)}
+/* delta tiles (Feb -> June) */
+.dgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media(max-width:900px){.dgrid{grid-template-columns:repeat(2,1fr)}}
+.dtile{position:relative;overflow:hidden}
+.dtile .dl{font-size:11px;color:var(--ink-dim);font-weight:600;margin-bottom:12px}
+.dtile .drow{display:flex;align-items:baseline;gap:9px}
+.dtile .dfeb{font-family:var(--display);font-size:19px;color:var(--ink-mid);font-variant-numeric:tabular-nums;font-style:italic}
+.dtile .dar{color:var(--ink-faint);font-size:14px;align-self:center}
+.dtile .djun{font-family:var(--display);font-weight:600;font-size:clamp(28px,4vw,42px);line-height:.95;letter-spacing:-.02em;color:var(--ink);font-variant-numeric:tabular-nums}
+.dtile .djunw{font-family:var(--display);font-weight:600;font-style:italic;font-size:clamp(22px,3vw,30px);line-height:1;letter-spacing:-.01em}
+.dchip{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;margin-top:11px}
+.dchip.up{color:var(--g);background:color-mix(in srgb,var(--g) 15%,transparent)}
+.dchip.dn{color:var(--r6);background:color-mix(in srgb,var(--r6) 15%,transparent)}
+.dchip.fl{color:var(--ink-mid);background:var(--panel-2)}
+.dtile .dsub{font-size:10.5px;color:var(--ink-faint);margin-top:7px}
+/* movement summary chips */
+.movesum{display:flex;gap:26px;flex-wrap:wrap;margin-top:2px}
+.movesum .ms{display:flex;align-items:baseline;gap:8px}
+.movesum .mv{font-family:var(--display);font-weight:600;font-size:30px;line-height:1;font-variant-numeric:tabular-nums}
+.movesum .mk{font-size:11px;font-weight:600;color:var(--ink-dim)}
+/* slopegraph */
+.slopewrap{width:100%}
+.slope{width:100%;height:auto;display:block;overflow:visible}
+.slope .sl-line{fill:none;stroke-width:1.7;opacity:.52}
+.slaxis{font-family:var(--display);font-size:14px;font-weight:600;font-style:italic;letter-spacing:.01em}
+.slband{font-family:var(--body);font-size:9.5px;font-weight:600;fill:var(--ink-mid);letter-spacing:.01em}
+.slkey{display:flex;gap:20px;justify-content:center;margin-top:8px;font-size:12px;font-weight:600;color:var(--ink-dim);flex-wrap:wrap}
+.slkey span{display:inline-flex;align-items:center;gap:7px}
+.slkey i{width:18px;height:3px;border-radius:2px;display:inline-block}
+/* movement matrix */
+.mmxwrap{overflow-x:auto}
+.mmx{display:grid;gap:4px;min-width:440px}
+.mmx .mc{display:flex;align-items:center;justify-content:center;min-height:36px;border-radius:7px;font-family:var(--display);font-weight:600;font-size:15px;font-variant-numeric:tabular-nums;color:var(--ink);border:1px solid transparent}
+.mmx .mc.diag{border-color:var(--edge)}
+.mmx .mh{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:3px;font-family:var(--body);font-size:8.5px;font-weight:700;letter-spacing:.02em;color:var(--ink-mid);text-transform:uppercase;text-align:center;line-height:1.05;padding:2px}
+.mmx .msw{width:11px;height:11px;border-radius:3px}
+.mmx .mtot{color:var(--ink-mid);font-size:13px;background:var(--panel-2);font-style:normal}
+.mmx .mcorner{font-family:var(--body);font-size:8.5px;color:var(--ink-faint);text-transform:none;letter-spacing:.02em;font-weight:600}
+
 /* ===== snapshot STORY view ===== */
 .snaptools{display:flex;flex-direction:column;align-items:flex-end;gap:9px}
 .snaphead{align-items:flex-start}
@@ -780,12 +836,26 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
         <span class="subtle" id="snap-asof"></span>
       </div>
       <div class="snaphR">
-        <h2 class="big">The June <em>R3</em> picture.</h2>
+        <h2 class="big" id="snapTitle">The June <em>R3</em> picture.</h2>
+      </div>
+    </div>
+
+    <!-- round selector (v0.53): February | June | Compare-rounds; + All / PK / Sec sub-filter for Feb + Compare -->
+    <div class="roundrow">
+      <div class="roundtabs" id="roundTabs">
+        <button class="rdtab" data-round="feb" type="button">February</button>
+        <button class="rdtab on" data-round="june" type="button">June</button>
+        <button class="rdtab" data-round="cmp" type="button">Compare</button>
+      </div>
+      <div class="subphase" id="subPhase" hidden>
+        <button class="sptab on" data-sp="all" type="button">All</button>
+        <button class="sptab" data-sp="primary_kindy" type="button">Primary &amp; Kindy</button>
+        <button class="sptab" data-sp="secondary" type="button">Secondary</button>
       </div>
     </div>
 
     <!-- shared phase toggle + view toggle on one row (drives both Story and Detail) -->
-    <div class="tabsrow">
+    <div class="tabsrow" id="tabsRow">
       <div class="phasetabs" id="phaseTabs">
         <button class="ptab on" data-phase="primary_kindy">Primary &amp; Kindy</button>
         <button class="ptab" data-phase="secondary">Secondary</button>
@@ -866,6 +936,50 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
       </div>
     </div>
     </div><!-- /#snapDetail -->
+
+    <!-- FEBRUARY board (v0.53): numbers only (no strengths / areas were recorded that round) -->
+    <div id="snapFeb" hidden>
+      <div class="grid cols-4" id="febStats"></div>
+      <div class="panel" style="margin-top:14px">
+        <div class="ey">Student progress . best evidence per teacher</div>
+        <div class="progmain">
+          <div>
+            <div class="allgauge"><svg class="snapgauge" id="febGauge" viewBox="0 20 240 200" width="208" height="173"></svg></div>
+            <div class="gauge-cap"><div class="gv" id="febGaugeWord">.</div><div class="gl">average progress</div></div>
+          </div>
+          <div class="histo" id="febHisto"></div>
+        </div>
+        <div class="rmethod" id="febMethod"></div>
+      </div>
+    </div>
+
+    <!-- COMPARE ROUNDS (v0.53): February against June, numbers only -->
+    <div id="snapCmpR" hidden>
+      <div class="secband"><span class="st">Both rounds at a glance</span><i></i></div>
+      <div class="dgrid" id="crDeltas"></div>
+      <div class="panel" style="margin-top:14px">
+        <div class="ey">Progress distribution . February against June</div>
+        <div class="divlabels"><span class="dlL" style="color:var(--b)">February</span><span></span><span class="dlR" style="color:var(--y)">June</span></div>
+        <div class="divchart" id="crDiv"></div>
+      </div>
+      <div class="secband"><span class="st" id="crMatchTitle">Teachers seen in both rounds</span><i></i></div>
+      <div class="panel">
+        <div class="ey">Movement . each teacher's progress, February to June</div>
+        <div class="slopewrap" id="crSlope"></div>
+        <div class="slkey" id="crSlopeKey"></div>
+      </div>
+      <div class="grid cols-2" style="margin-top:14px">
+        <div class="panel">
+          <div class="ey">Where they moved . February band to June band</div>
+          <div class="mmxwrap"><div class="mmx" id="crMatrix"></div></div>
+        </div>
+        <div class="panel">
+          <div class="ey">Net movement</div>
+          <div class="movesum" id="crMoveSum" style="margin-top:16px"></div>
+          <div class="rmethod" id="crMethod"></div>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- ============ COVERAGE ============ -->
@@ -1011,6 +1125,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
     </div>
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
+        <div class="vrow"><span class="vtag">v0.53</span><span class="vnote">The Snapshot gains a round selector (February, June, Compare). February shows a numbers-only board (lessons, teachers, average progress, six-point distribution), since only progress ratings and short observation notes were recorded that round. Compare puts February against June: headline deltas, a paired distribution, a movement slopegraph and a February-to-June transition matrix for the teachers seen in both rounds, all filterable by All / Primary and Kindy / Secondary. Numbers only; June's Story, Detail and Report views are unchanged.</span></div>
         <div class="vrow"><span class="vtag">v0.52</span><span class="vnote">Observation session card: the inspection round tag (for example R3 June 26) now sits next to the Inspection details heading and its arrow on the left, on the same line, instead of being pushed out to the far right edge of the card.</span></div>
         <div class="vrow"><span class="vtag">v0.51</span><span class="vnote">Coaching note polish. The observation session card now shows its inspection round (for example R3 June 26) beside the Inspection details heading. The note summary now fills the full card width. "Facilitating" is renamed "Facilitating better progress". The rubric grounding and the lesson quote on the right are larger and darker, and the technique text on the left now matches the summary size. The edit pane no longer says "Move 1, 2, 3"; each focus area is headed by its theme (Student dialogue, Questioning, and so on), shows its rubric grounding read-only for reference, and has clearly labelled boxes for the recommended action, what to look for, and the technique.</span></div>
         <div class="vrow"><span class="vtag">v0.50</span><span class="vnote">Per-teacher coaching note reworked. Facilitating now sits on the same six-point scale as Progress (for example Good to Very Good), not the old five band names. Each move is grounded in a plain-English rubric line ("In the AIS OTP Progress Rubric, to facilitate better than expected progress at a Good level, the teacher...") with a link to the rubric. The in-house examples (which linked to other teachers' records) are gone; each move now carries a reputable online technique written out in full plus a link to its source (Edutopia, Structural Learning, Chartered College, Third Space, InnerDrive, Tips for Teachers). The note is laid out as two-column focus cards (the action on the left, the rubric grounding and your own evidence on the right), with a current-to-target ladder per aspect and a theme tag per move. All 104 notes regenerated and evidence-checked.</span></div>
@@ -1084,7 +1199,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
   </div>
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.52</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.53</span></span>
   </div>
 </div>
 
@@ -1450,13 +1565,13 @@ const PHASE_LABEL={primary_kindy:'Primary & Kindy',secondary:'Secondary'};
    ISOLATED to the Snapshot: this READS D.teachers[].observations but never mutates them, so the
    Observations board (which renders every individual submission) stays exactly as it is. */
 function lessonSubjKey(o){const a=(typeof resolveArea==='function')?resolveArea(o.subject):'';return a||((o.subject||'').toLowerCase().trim()||'?');}
-function snapAgg(phase){
+function snapAgg(phase,round){round=round||SNAP_ROUND;
   const dist={1:0,2:0,3:0,4:0,5:0,6:0};const teacherSet=new Set();const bestByT={};let lessons=0;
   for(const t of D.teachers){
     if(phase!=='all'&&phaseOf(t.section)!==phase)continue;
     const byLesson=Object.create(null);let seen=false;   // key: date|normSubject -> best (min) progress (or null)
     for(const o of t.observations){
-      if(o.round!==SNAP_ROUND)continue;
+      if(o.round!==round)continue;
       seen=true;
       const k=(o.date||'')+'|'+lessonSubjKey(o);
       if(!(k in byLesson))byLesson[k]=null;
@@ -1604,6 +1719,9 @@ const I_CHECK='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke
 const I_ARROW='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11L11 5M6.2 5H11v4.8"/></svg>';
 let snapPhase='primary_kindy';
 let snapView='story';   // 'story' (animated narrative, default) | 'detail' (the v1 cards)
+let snapRound='june';   // v0.53 round axis: 'june' (full board) | 'feb' (numbers only) | 'cmp' (Feb vs June)
+let cmpPhase='all';     // sub-filter for Feb + Compare views: 'all' | 'primary_kindy' | 'secondary'
+const R_FEB='R3 February 26';   // the second round; SNAP_ROUND (June) is the first
 let snapReport=null;    // null = live snapshot (Story/Detail); 'simple' | 'indepth' = a report opened from the Report menu
 let snapStarted=false;  // becomes true once the entry title-card has dissolved, so the story plays in view, not behind the splash
 let snapReady=false;   // snapAgg uses resolveArea (a const defined lower in the file); gate the pre-init applyTheme render until runEntry, after that const exists
@@ -1664,6 +1782,151 @@ function renderCompare(){const pk=snapAgg('primary_kindy'),se=snapAgg('secondary
   renderDiv(pk.dist,se.dist);
   byId('cmpInsights').innerHTML=NARR.compare.map((t,i)=>`<div class="icard"><span class="inum" style="color:var(--y)">${i+1}</span><p>${esc(t)}${refMark('cmp_'+i)}</p></div>`).join('');
 }
+/* ============================================================= ROUND COMPARE (v0.53)
+   February vs June. Numbers only (February recorded progress ratings + short notes; no strengths /
+   areas that round). ISOLATED like snapAgg: READS D.teachers[].observations, never mutates. The June
+   board (Story / Detail / Report) is untouched; snapRound routes to these functions instead. */
+const RMETHOD_FEB='<b>How this is counted.</b> Average progress is the best (highest) progress rating recorded for each teacher, then averaged across teachers. A lesson observed by two inspectors is counted once, the stronger evidence kept. February R3 recorded progress ratings and short observation notes only; strengths and areas to develop were not captured that round, so this view is numbers only.';
+const RMETHOD_CMP='<b>How this is counted.</b> Counts and the distribution are every teacher seen in each round. Movement is the teachers seen in BOTH rounds only, comparing each teacher\'s best progress rating in February with their best in June. The scale runs Outstanding (best) to Very Weak, so a move to a higher band is an improvement.';
+/* best (min = strongest evidence) progress per teacher in a round, optionally filtered by phase. */
+function bestProgByTeacher(round,phase){const m={};
+  for(const t of D.teachers){
+    if(phase&&phase!=='all'&&phaseOf(t.section)!==phase)continue;
+    let best=null;
+    for(const o of t.observations){if(o.round!==round)continue;const p=(o.scores||{}).r3_02;if(p!=null&&p>=1&&p<=6&&(best==null||p<best))best=p;}
+    if(best!=null)m[t.id]=best;}
+  return m;}
+/* matched cohort: teachers with a progress rating in BOTH rounds (within phase). Returns the pairs,
+   the improved/held/declined split, and the 6x6 February-band -> June-band transition matrix. */
+function matchedMove(phase){
+  const F=bestProgByTeacher(R_FEB,phase),J=bestProgByTeacher(SNAP_ROUND,phase);
+  const pairs=[],matrix=[[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0]];
+  let improved=0,held=0,declined=0;
+  for(const t of D.teachers){const id=t.id;if(F[id]==null||J[id]==null)continue;
+    const feb=F[id],jun=J[id];pairs.push({id,name:t.name,feb,june:jun});
+    matrix[feb-1][jun-1]++;
+    if(jun<feb)improved++;else if(jun>feb)declined++;else held++;}
+  return {pairs,matrix,improved,held,declined,n:pairs.length};}
+/* % of teachers at Good (3) or better in a round (per-teacher best, not per lesson). */
+function pctGoodPlus(round,phase){const v=Object.values(bestProgByTeacher(round,phase));
+  return v.length?Math.round(v.filter(p=>p<=3).length/v.length*100):null;}
+/* ---- FEBRUARY board: numbers only ---- */
+function renderFebBoard(){
+  const a=snapAgg(cmpPhase,R_FEB),pg=pctGoodPlus(R_FEB,cmpPhase);
+  const g=byId('febStats');g.innerHTML='';
+  [{v:a.lessons,l:'Lessons observed',s:PHASE_LABEL[cmpPhase]||'whole school',cls:'accent'},
+   {v:a.teachers,l:'Teachers seen',s:'at least once in February'},
+   {word:wordOf(a.avgBest),col:colOf(a.avgBest),l:'Average progress',s:a.avgBest!=null?a.avgBest.toFixed(1)+' of 6':'not assessed'},
+   {word:pg!=null?pg+'%':'.',col:pg!=null?rampAt(pg>=75?2:pg>=50?3:4):gc('--na'),l:'Good or better',s:'teachers at Good or above'}].forEach(c=>g.appendChild(statTile(c)));
+  buildValueArc('febGauge',a.avgBest);
+  byId('febGaugeWord').textContent=a.avgBest!=null?a.avgBest.toFixed(1)+' of 6':'n/a';
+  renderHisto(a.dist,'febHisto');
+  byId('febMethod').innerHTML=RMETHOD_FEB;
+  applyCounts(byId('snapFeb'));
+}
+/* ---- COMPARE ROUNDS: February against June (numbers only) ---- */
+function renderCmpRounds(){
+  const phase=cmpPhase,F=snapAgg(phase,R_FEB),J=snapAgg(phase,SNAP_ROUND),M=matchedMove(phase);
+  const pgF=pctGoodPlus(R_FEB,phase),pgJ=pctGoodPlus(SNAP_ROUND,phase);
+  byId('crDeltas').innerHTML=[
+    deltaTile('Teachers observed',F.teachers,J.teachers,'count',''),
+    deltaTile('Lessons observed',F.lessons,J.lessons,'count',''),
+    deltaTile('Average progress',F.avgBest,J.avgBest,'progress',''),
+    deltaTile('Good or better',pgF,pgJ,'pct','teachers at Good or above')].join('');
+  renderDiv(F.dist,J.dist,'crDiv');
+  byId('crMatchTitle').textContent=M.n+' teacher'+(M.n===1?'':'s')+' seen in both rounds';
+  renderSlope('crSlope',M.pairs);
+  byId('crSlopeKey').innerHTML=`<span><i style="background:var(--g)"></i>Improved ${M.improved}</span><span><i style="background:var(--ink-faint)"></i>Held ${M.held}</span><span><i style="background:var(--r6)"></i>Declined ${M.declined}</span>`;
+  renderMmx('crMatrix',M.matrix);
+  byId('crMoveSum').innerHTML=moveStat('Improved',M.improved,'var(--g)')+moveStat('Held',M.held,'var(--ink-mid)')+moveStat('Declined',M.declined,'var(--r6)');
+  byId('crMethod').innerHTML=RMETHOD_CMP;
+  applyCounts(byId('snapCmpR'));
+}
+function moveStat(k,v,col){return `<div class="ms"><span class="mv" style="color:${col}" data-to="${v}">${v}</span><span class="mk">${esc(k)}</span></div>`;}
+function chipUp(t){return `<span class="dchip up">&#9650; ${esc(t)}</span>`;}
+function chipDn(t){return `<span class="dchip dn">&#9660; ${esc(t)}</span>`;}
+function chipFl(t){return `<span class="dchip fl">${esc(t)}</span>`;}
+/* one aggregate delta tile: Feb value -> June value + a direction chip. kind: count | pct | progress.
+   progress uses the SEAS word (lower rating = better) so June below Feb is an improvement (green). */
+function deltaTile(label,fv,jv,kind,sub){
+  let febTxt,junHtml,chip;
+  if(kind==='progress'){
+    febTxt=wordOf(fv)+(fv!=null?' ('+fv.toFixed(1)+')':'');
+    junHtml=`<span class="djunw" style="color:${colOf(jv)}">${esc(wordOf(jv))}${jv!=null?' ('+jv.toFixed(1)+')':''}</span>`;
+    const d=(fv!=null&&jv!=null)?(fv-jv):null;   // >0 = improved (June rating lower/better)
+    chip=d==null?chipFl('.'):d>0.049?chipUp('better'):d<-0.049?chipDn('worse'):chipFl('no change');
+  }else{
+    const suf=kind==='pct'?'%':'';
+    febTxt=(fv==null?'.':fv)+suf;
+    junHtml=`<span class="djun" data-to="${jv==null?0:jv}">${jv==null?'.':jv}</span>`+(suf?`<span class="djunw" style="font-size:20px">${suf}</span>`:'');
+    const d=(fv!=null&&jv!=null)?(jv-fv):null;
+    if(d==null)chip=chipFl('.');
+    else if(kind==='pct')chip=d===0?chipFl('no change'):d>0?chipUp('+'+d+'%'):chipDn(d+'%');
+    else chip=chipFl((d>=0?'+':'')+d+' vs Feb');
+  }
+  return `<div class="panel dtile stat"><div class="dl">${esc(label)}</div><div class="drow"><span class="dfeb">${esc(febTxt)}</span><span class="dar">&#8594;</span>${junHtml}</div>${chip}${sub?`<div class="dsub">${esc(sub)}</div>`:''}</div>`;
+}
+/* slopegraph: each matched teacher a line from their February band (left) to their June band (right).
+   Green up (improved), grey flat (held), red down (declined). Endpoints tint to the SEAS band. Lines
+   draw in with GSAP (immediateRender:false) so a frozen tab shows them already drawn (non-negotiable #4). */
+function renderSlope(hostId,pairs){
+  const host=byId(hostId);if(!host)return;const R=RAMP();
+  const W=760,H=392,xL=162,xR=598,top=50,bot=352,span=bot-top;
+  const bandY=b=>top+(b-1)/5*span;
+  let s=`<svg class="slope" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">`;
+  for(let b=1;b<=6;b++){const y=bandY(b);
+    s+=`<line x1="${xL}" y1="${y}" x2="${xR}" y2="${y}" stroke="${R[b]}" stroke-width="1" opacity=".2"/>`;
+    s+=`<text class="slband" x="${xL-16}" y="${(y+3.5).toFixed(1)}" text-anchor="end">${esc(WORD[b])}</text>`;
+    s+=`<text class="slband" x="${xR+16}" y="${(y+3.5).toFixed(1)}" text-anchor="start">${esc(WORD[b])}</text>`;}
+  s+=`<text class="slaxis" x="${xL}" y="${top-24}" text-anchor="middle" fill="var(--b)">February</text>`;
+  s+=`<text class="slaxis" x="${xR}" y="${top-24}" text-anchor="middle" fill="var(--y)">June</text>`;
+  const cntF={},cntJ={};pairs.forEach(p=>{cntF[p.feb]=(cntF[p.feb]||0)+1;cntJ[p.june]=(cntJ[p.june]||0)+1;});
+  const idxF={},idxJ={};
+  const yOff=(band,i,n)=>{const room=Math.min(24,span/6-6),gap=n>1?Math.min(9,room/(n-1)):0;return (i-(n-1)/2)*gap;};
+  const rank=p=>{const m=p.feb-p.june;return m>0?2:m<0?0:1;};   // declined(0) held(1) improved(2): improved drawn last (on top)
+  const order=[...pairs].sort((a,b)=>rank(a)-rank(b));
+  let lines='';
+  order.forEach(p=>{
+    const iF=(idxF[p.feb]=(idxF[p.feb]||0)+1)-1,iJ=(idxJ[p.june]=(idxJ[p.june]||0)+1)-1;
+    const yF=bandY(p.feb)+yOff(p.feb,iF,cntF[p.feb]),yJ=bandY(p.june)+yOff(p.june,iJ,cntJ[p.june]);
+    const mv=p.feb-p.june,col=mv>0?'var(--g)':mv<0?'var(--r6)':'var(--ink-faint)';
+    const c1=xL+(xR-xL)*0.4,c2=xL+(xR-xL)*0.6;
+    lines+=`<path class="sl-line" d="M ${xL} ${yF.toFixed(1)} C ${c1} ${yF.toFixed(1)}, ${c2} ${yJ.toFixed(1)}, ${xR} ${yJ.toFixed(1)}" stroke="${col}"/>`;
+    lines+=`<circle cx="${xL}" cy="${yF.toFixed(1)}" r="3" fill="${R[p.feb]}"/><circle cx="${xR}" cy="${yJ.toFixed(1)}" r="3" fill="${R[p.june]}"/>`;});
+  s+=lines+`</svg>`;host.innerHTML=s;
+  if(window.gsap){try{host.querySelectorAll('.sl-line').forEach((p,i)=>{const L=p.getTotalLength();p.style.strokeDasharray=L;gsap.fromTo(p,{strokeDashoffset:L},{strokeDashoffset:0,duration:.9,ease:'power2.out',delay:.15+i*0.004,immediateRender:false});});}catch(e){}}
+}
+/* movement matrix: 6x6 February band (rows) -> June band (cols), cell = teacher count. Cells above the
+   diagonal (improved) tint green, below (declined) red, the diagonal (held) neutral; margins total. */
+function renderMmx(hostId,matrix){
+  const host=byId(hostId);if(!host)return;const R=RAMP();
+  let max=1;for(let f=0;f<6;f++)for(let j=0;j<6;j++)max=Math.max(max,matrix[f][j]);
+  const rowTot=f=>matrix[f].reduce((a,b)=>a+b,0),colTot=j=>{let s=0;for(let f=0;f<6;f++)s+=matrix[f][j];return s;};
+  const bg=(f,j,c)=>{if(!c)return 'transparent';const t=.12+.5*(c/max),pc=Math.round(t*100);
+    if(j<f)return `color-mix(in srgb,var(--g) ${pc}%,transparent)`;
+    if(j>f)return `color-mix(in srgb,var(--r6) ${pc}%,transparent)`;
+    return `color-mix(in srgb,var(--ink-mid) ${Math.round(t*60)}%,transparent)`;};
+  host.style.gridTemplateColumns='104px repeat(6,minmax(30px,1fr)) 48px';
+  let h=`<div class="mh mcorner">Feb &#8595; / Jun &#8594;</div>`;
+  for(let j=1;j<=6;j++)h+=`<div class="mh"><span class="msw" style="background:${R[j]}"></span>${esc(WORD[j])}</div>`;
+  h+=`<div class="mh mcorner">Total</div>`;
+  for(let f=1;f<=6;f++){
+    h+=`<div class="mh"><span class="msw" style="background:${R[f]}"></span>${esc(WORD[f])}</div>`;
+    for(let j=1;j<=6;j++){const c=matrix[f-1][j-1];h+=`<div class="mc${f===j?' diag':''}" style="background:${bg(f-1,j-1,c)}">${c||''}</div>`;}
+    h+=`<div class="mc mtot">${rowTot(f-1)}</div>`;}
+  h+=`<div class="mh mcorner">Total</div>`;
+  for(let j=1;j<=6;j++)h+=`<div class="mc mtot">${colTot(j-1)}</div>`;
+  h+=`<div class="mc mtot">${matrix.reduce((a,r)=>a+r.reduce((x,y)=>x+y,0),0)}</div>`;
+  host.innerHTML=h;
+  if(window.gsap){try{const cells=host.querySelectorAll('.mc');gsap.fromTo(cells,{scale:.9,opacity:0},{scale:1,opacity:1,duration:.45,ease:'back.out(1.5)',stagger:.006,immediateRender:false});settle(cells);}catch(e){}}
+}
+/* round routing: syncRoundUI paints the selector + title; renderSnapshot branches on snapRound. */
+function syncRoundUI(){
+  document.querySelectorAll('#roundTabs .rdtab').forEach(b=>b.classList.toggle('on',b.dataset.round===snapRound));
+  const sp=byId('subPhase');if(sp)sp.hidden=(snapRound==='june');
+  document.querySelectorAll('#subPhase .sptab').forEach(b=>b.classList.toggle('on',b.dataset.sp===cmpPhase));
+  const t=byId('snapTitle');if(t)t.innerHTML=snapRound==='feb'?'The February <em>R3</em> picture.':snapRound==='cmp'?'February against <em>June</em>.':'The June <em>R3</em> picture.';
+}
 /* Detail (v1 cards): the original Snapshot, kept one click away behind the Story|Detail toggle. */
 function renderDetail(){
   const all=snapAgg('all');
@@ -1680,6 +1943,17 @@ function renderDetail(){
    Report menu. snapReport=null -> live snapshot; Story/Detail return from a report to the live view. */
 function renderSnapshot(){
   byId('snap-asof').textContent='Snapshot '+D.generated_on;
+  syncRoundUI();
+  if(snapRound!=='june'){   // Feb or Compare-rounds: numbers-only boards; June machinery hidden
+    pauseStory();snapReport=null;
+    byId('tabsRow').hidden=true;byId('storyCtl').hidden=true;
+    byId('snapStory').hidden=true;byId('snapReport').hidden=true;byId('snapDetail').hidden=true;
+    byId('snapFeb').hidden=(snapRound!=='feb');byId('snapCmpR').hidden=(snapRound!=='cmp');
+    const sh=byId('v-snapshot').querySelector('.snaphead');if(sh)sh.hidden=false;
+    if(snapRound==='feb')renderFebBoard();else renderCmpRounds();
+    return;
+  }
+  byId('tabsRow').hidden=false;byId('snapFeb').hidden=true;byId('snapCmpR').hidden=true;
   const inReport=!!snapReport;
   document.querySelectorAll('#viewTabs .vtab').forEach(b=>b.classList.toggle('on',!inReport&&b.dataset.view===snapView));
   document.querySelectorAll('#phaseTabs .ptab').forEach(b=>b.classList.toggle('on',b.dataset.phase===snapPhase));
@@ -1812,7 +2086,10 @@ async function exportDoc(){const btn=byId('repExport');if(!btn||btn.disabled)ret
   }catch(e){repStatus('Export did not complete. Try again in a moment.','warn');}
   btn.disabled=false;}
 function applyCounts(scope){if(!scope||!window.gsap)return;scope.querySelectorAll('[data-to]').forEach(n=>{if(n.offsetParent!==null)countUp(n,+n.dataset.to,1.1);});}
-function snapReveal(){reveal('#v-snapshot .head',0);reveal('#phaseTabs',0);}
+function snapReveal(){reveal('#v-snapshot .head',0);reveal('#roundTabs',0);
+  if(snapRound==='feb')reveal('#snapFeb .panel',.05);
+  else if(snapRound==='cmp')reveal('#snapCmpR .panel',.05);
+  else reveal('#phaseTabs',0);}
 
 /* ---- STORY: the SEAS dot-sort (each lesson is a dot; they fly in and sort onto the rating scale) ----
    rAF-safe: the fly-in is a CSS keyframe (document timeline), so a frozen/restored tab always lands
@@ -2106,6 +2383,8 @@ addEventListener('beforeprint',printPrep);addEventListener('afterprint',printRes
 byId('printFloat').onclick=()=>window.print();
 document.querySelectorAll('#viewTabs .vtab').forEach(b=>b.onclick=()=>{snapReport=null;snapView=b.dataset.view;renderSnapshot();reveal('#'+(snapView==='story'?'snapStory':'snapDetail'),0);});   // Story/Detail return from a report to the live snapshot
 document.querySelectorAll('#phaseTabs .ptab').forEach(b=>b.onclick=()=>{snapPhase=b.dataset.phase;renderSnapshot();});
+document.querySelectorAll('#roundTabs .rdtab').forEach(b=>b.onclick=()=>{snapRound=b.dataset.round;snapReport=null;renderSnapshot();snapReveal();});   // v0.53 round axis
+document.querySelectorAll('#subPhase .sptab').forEach(b=>b.onclick=()=>{cmpPhase=b.dataset.sp;renderSnapshot();snapReveal();});
 /* Report menu: one button -> Simple | In Depth */
 function setReportMenu(open){const m=byId('reportMenu'),b=byId('reportBtn');if(!m)return;m.hidden=!open;b.setAttribute('aria-expanded',open?'true':'false');}
 byId('reportBtn').onclick=e=>{e.stopPropagation();setReportMenu(byId('reportMenu').hidden);};
