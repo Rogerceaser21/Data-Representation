@@ -5,6 +5,11 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.52 . 2026-07-01
+- **Observation session card: round tag repositioned.** The inspection round tag (e.g. "R3 June 26") now sits just to the right of the Inspection details heading and its arrow, on the same line, instead of being pushed out to the far right edge of the card.
+- One CSS change: `.oround`'s `margin-left:auto` removed, so the header's flex `gap` places the tag 6px after the chevron (Igor's exact spec).
+- Scope: the observation session card only (Observations drill-down; renders everywhere the card appears). Snapshot, Coverage, coaching note, report unchanged. Front-end only; no notes regenerated. Rollback: `dash-v0.51`.
+
 ## v0.51 . 2026-06-28
 - **Coaching note polish** (Igor's review of v0.50). The observation session card now shows its inspection round (e.g. "R3 June 26") beside the Inspection details heading. The coaching note summary fills the full card width (a width cap was removed). The Facilitating aspect is renamed "Facilitating better progress". The right column (rubric grounding + the lesson quote) is larger and darker, and the technique text on the left now matches the summary size.
 - **Edit pane clarified.** It no longer labels boxes "Move 1, 2, 3". Each focus area is headed by its theme (Student dialogue, Questioning, and so on), shows its rubric grounding read-only for reference, and gives clearly labelled boxes for the recommended action, what to look for, and the technique (all three now editable; the rubric line and the verbatim lesson quote stay locked). The Doc export's standing line carries the renamed aspect.

@@ -219,7 +219,7 @@ svg{display:block;overflow:visible}
 .ocolhdr{display:flex;align-items:center;justify-content:flex-start;gap:6px;width:100%;background:transparent;border:0;padding:0 0 2px;cursor:pointer;font:inherit;text-align:left}
 .ocolttl{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-mid);font-weight:700}
 .ocolhdr:hover .ocolttl{color:var(--ink)}
-.oround{margin-left:auto;font-size:10.5px;font-weight:700;letter-spacing:.04em;color:var(--ink-mid);background:var(--panel-2);border:1px solid var(--edge-soft);border-radius:7px;padding:2px 8px;white-space:nowrap}
+.oround{font-size:10.5px;font-weight:700;letter-spacing:.04em;color:var(--ink-mid);background:var(--panel-2);border:1px solid var(--edge-soft);border-radius:7px;padding:2px 8px;white-space:nowrap}
 .ochevw{display:inline-flex;animation:chevbob 1.9s ease-in-out infinite}
 .ochev{width:12px;height:12px;color:var(--ink-mid);transition:transform .42s cubic-bezier(.4,0,.2,1);flex:none}
 .ochev path{stroke:currentColor;stroke-width:2.2;fill:none;stroke-linecap:round;stroke-linejoin:round}
@@ -1011,6 +1011,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
     </div>
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
+        <div class="vrow"><span class="vtag">v0.52</span><span class="vnote">Observation session card: the inspection round tag (for example R3 June 26) now sits next to the Inspection details heading and its arrow on the left, on the same line, instead of being pushed out to the far right edge of the card.</span></div>
         <div class="vrow"><span class="vtag">v0.51</span><span class="vnote">Coaching note polish. The observation session card now shows its inspection round (for example R3 June 26) beside the Inspection details heading. The note summary now fills the full card width. "Facilitating" is renamed "Facilitating better progress". The rubric grounding and the lesson quote on the right are larger and darker, and the technique text on the left now matches the summary size. The edit pane no longer says "Move 1, 2, 3"; each focus area is headed by its theme (Student dialogue, Questioning, and so on), shows its rubric grounding read-only for reference, and has clearly labelled boxes for the recommended action, what to look for, and the technique.</span></div>
         <div class="vrow"><span class="vtag">v0.50</span><span class="vnote">Per-teacher coaching note reworked. Facilitating now sits on the same six-point scale as Progress (for example Good to Very Good), not the old five band names. Each move is grounded in a plain-English rubric line ("In the AIS OTP Progress Rubric, to facilitate better than expected progress at a Good level, the teacher...") with a link to the rubric. The in-house examples (which linked to other teachers' records) are gone; each move now carries a reputable online technique written out in full plus a link to its source (Edutopia, Structural Learning, Chartered College, Third Space, InnerDrive, Tips for Teachers). The note is laid out as two-column focus cards (the action on the left, the rubric grounding and your own evidence on the right), with a current-to-target ladder per aspect and a theme tag per move. All 104 notes regenerated and evidence-checked.</span></div>
         <div class="vrow"><span class="vtag">v0.49</span><span class="vnote">Per-teacher coaching added to the Observations drill-down: a "Next Steps & Improvement" note for every June R3 teacher. Each note is generated from that teacher's own observation evidence and the AIS progress rubric (both aspects), showing where they are and the next level up on Progress in Lessons and on Facilitating, a short summary, and two to four concrete moves, each grounded in the rubric and their own evidence, with anonymous same-subject examples from other lessons this round. Notes are visible to everyone with the dashboard password; editing and approving are admin-only, and each can be exported to a personal Google Doc to share with the teacher. AI-drafted, coach-approved; per-role access follows with sign-in.</span></div>
@@ -1083,7 +1084,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
   </div>
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.51</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.52</span></span>
   </div>
 </div>
 
