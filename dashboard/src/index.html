@@ -110,6 +110,16 @@ body.refopen .wrap{opacity:.84}   /* light de-emphasis while the sources panel i
 #entry{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;background:radial-gradient(900px 600px at 50% 40%,var(--bg-2),var(--bg));text-align:center;padding:24px;transition:opacity .7s ease}
 #entry.gone{opacity:0;pointer-events:none}
 #entry .crest{width:96px;height:96px;background:var(--logo) center/contain no-repeat}
+/* Better-Never-Stops intro (v0.54): three AIS logo stars comet in, hold, then drift into the field.
+   Resting state = the plain title card visible (#entryCard); the stars layer only exists while GSAP
+   drives it, so a frozen/animation-less load shows the card exactly as before (hard rule 4). */
+#entryCard{display:flex;flex-direction:column;align-items:center;gap:18px}
+#entryStars{position:absolute;inset:0;pointer-events:none}
+#entryTrails{position:absolute;inset:0;width:100%;height:100%}
+.etrail{fill:none;stroke-width:3;stroke-linecap:round;opacity:0}
+.estar{position:absolute;width:96px;height:96px;left:0;top:0;margin:-48px 0 0 -48px;opacity:0;will-change:transform}
+.estar svg{width:100%;height:100%;overflow:visible}
+.eword{position:absolute;transform:translate(-50%,0);font-family:var(--display);font-style:italic;font-weight:600;font-size:clamp(26px,3.4vw,38px);letter-spacing:-.01em;opacity:0;white-space:nowrap}
 #entry .stripe{width:54px;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--y),var(--g),var(--b))}
 #entry .ek{font-size:11.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--ink-mid);font-weight:700}
 #entry h1{font-family:var(--display);font-weight:600;font-size:clamp(30px,6vw,58px);letter-spacing:-.02em;line-height:1.02}
@@ -402,14 +412,7 @@ svg{display:block;overflow:visible}
 .divword{text-align:center;font-size:10.5px;font-weight:700;color:var(--ink-dim);font-family:var(--display)}
 
 /* ===== round compare (v0.53): round selector + Feb board + Feb-vs-June compare ===== */
-.roundrow{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin:12px 0 4px}
-.roundlab{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);font-weight:700}
-.roundtabs{display:inline-flex;gap:5px;background:var(--panel);border:1px solid var(--edge-soft);border-radius:30px;padding:5px;box-shadow:0 2px 14px -8px var(--shadow)}
-.rdtab{font:inherit;font-size:13.5px;font-weight:700;letter-spacing:.01em;color:var(--ink-mid);background:transparent;border:0;border-radius:24px;padding:9px 22px;cursor:pointer;transition:.2s;white-space:nowrap}
-.rdtab:hover{color:var(--ink)}
-.rdtab.on{background:var(--ink);color:var(--bg-2);box-shadow:0 5px 18px -7px var(--shadow)}
-:root[data-theme="light"] .rdtab.on{color:#fff}
-.subphase{display:inline-flex;gap:5px}
+.bfilter{display:flex;gap:5px;margin:0 0 14px}
 .sptab{font:inherit;font-size:12px;font-weight:600;color:var(--ink-mid);background:transparent;border:1px solid var(--edge-soft);border-radius:20px;padding:6px 15px;cursor:pointer;transition:.2s;white-space:nowrap}
 .sptab:hover{color:var(--ink)}
 .sptab.on{background:var(--panel-2);color:var(--ink);border-color:var(--edge);box-shadow:0 2px 12px -5px var(--shadow)}
@@ -456,6 +459,11 @@ svg{display:block;overflow:visible}
 .mmx .msw{width:11px;height:11px;border-radius:3px}
 .mmx .mtot{color:var(--ink-mid);font-size:13px;background:var(--panel-2);font-style:normal}
 .mmx .mcorner{font-family:var(--body);font-size:8.5px;color:var(--ink-faint);text-transform:none;letter-spacing:.02em;font-weight:600}
+/* the single Compare entry (v0.54): a menu button inside the phase pill row */
+.cmpwrap{position:relative;display:inline-flex}
+.cmpmenu{left:0;right:auto;min-width:280px;background:var(--panel-2);backdrop-filter:blur(16px) saturate(1.1);-webkit-backdrop-filter:blur(16px) saturate(1.1);box-shadow:0 22px 54px -16px var(--shadow)}
+.cmpsec{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);font-weight:700;padding:7px 12px 3px}
+.cmpsec+.cmpsec,.repmi+.cmpsec{margin-top:5px;border-top:1px solid var(--edge-soft);padding-top:9px}
 
 /* ===== snapshot STORY view ===== */
 .snaptools{display:flex;flex-direction:column;align-items:flex-end;gap:9px}
@@ -803,11 +811,14 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
 <div class="bgwash"></div>
 
 <div id="entry">
-  <div class="crest"></div>
-  <div class="ek">AIS Sharjah</div>
-  <h1>Observation <em>Record</em></h1>
-  <div class="stripe"></div>
-  <div class="es">Term 3 governance picture . SPEA review preparation</div>
+  <div id="entryStars"><svg id="entryTrails"></svg></div>
+  <div id="entryCard">
+    <div class="crest"></div>
+    <div class="ek">AIS Sharjah</div>
+    <h1>Observation <em>Record</em></h1>
+    <div class="stripe"></div>
+    <div class="es">Term 3 governance picture . SPEA review preparation</div>
+  </div>
 </div>
 
 <div class="wrap">
@@ -840,26 +851,16 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
       </div>
     </div>
 
-    <!-- round selector (v0.53): February | June | Compare-rounds; + All / PK / Sec sub-filter for Feb + Compare -->
-    <div class="roundrow">
-      <div class="roundtabs" id="roundTabs">
-        <button class="rdtab" data-round="feb" type="button">February</button>
-        <button class="rdtab on" data-round="june" type="button">June</button>
-        <button class="rdtab" data-round="cmp" type="button">Compare</button>
-      </div>
-      <div class="subphase" id="subPhase" hidden>
-        <button class="sptab on" data-sp="all" type="button">All</button>
-        <button class="sptab" data-sp="primary_kindy" type="button">Primary &amp; Kindy</button>
-        <button class="sptab" data-sp="secondary" type="button">Secondary</button>
-      </div>
-    </div>
-
-    <!-- shared phase toggle + view toggle on one row (drives both Story and Detail) -->
+    <!-- ONE control row (v0.54): phase tabs + the single Compare menu + view/report controls.
+         Rounds are reached through the Compare menu (Compare + View a round sections). -->
     <div class="tabsrow" id="tabsRow">
       <div class="phasetabs" id="phaseTabs">
         <button class="ptab on" data-phase="primary_kindy">Primary &amp; Kindy</button>
         <button class="ptab" data-phase="secondary">Secondary</button>
-        <button class="ptab" data-phase="compare">Compare</button>
+        <div class="cmpwrap" id="cmpWrap">
+          <button class="ptab cmptab" id="cmpBtn" type="button" aria-haspopup="true" aria-expanded="false">Compare <span class="rcaret">&#9662;</span></button>
+          <div class="repmenu cmpmenu" id="cmpMenu" hidden></div>
+        </div>
       </div>
       <div class="storyctl" id="storyCtl">
         <button class="sbtn" id="sPrev" type="button" aria-label="Previous beat">&#8249;</button>
@@ -937,8 +938,9 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
     </div>
     </div><!-- /#snapDetail -->
 
-    <!-- FEBRUARY board (v0.53): numbers only (no strengths / areas were recorded that round) -->
+    <!-- non-June ROUND board (v0.53, generalised v0.54): numbers only (no strengths / areas those rounds) -->
     <div id="snapFeb" hidden>
+      <div class="bfilter" id="febFilter"></div>
       <div class="grid cols-4" id="febStats"></div>
       <div class="panel" style="margin-top:14px">
         <div class="ey">Student progress . best evidence per teacher</div>
@@ -955,22 +957,23 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
 
     <!-- COMPARE ROUNDS (v0.53): February against June, numbers only -->
     <div id="snapCmpR" hidden>
+      <div class="bfilter" id="crFilter"></div>
       <div class="secband"><span class="st">Both rounds at a glance</span><i></i></div>
       <div class="dgrid" id="crDeltas"></div>
       <div class="panel" style="margin-top:14px">
-        <div class="ey">Progress distribution . February against June</div>
-        <div class="divlabels"><span class="dlL" style="color:var(--b)">February</span><span></span><span class="dlR" style="color:var(--y)">June</span></div>
+        <div class="ey" id="crDivHead">Progress distribution</div>
+        <div class="divlabels"><span class="dlL" style="color:var(--b)" id="crLabA">February</span><span></span><span class="dlR" style="color:var(--y)" id="crLabB">June</span></div>
         <div class="divchart" id="crDiv"></div>
       </div>
       <div class="secband"><span class="st" id="crMatchTitle">Teachers seen in both rounds</span><i></i></div>
       <div class="panel">
-        <div class="ey">Movement . each teacher's progress, February to June</div>
+        <div class="ey" id="crSlopeHead">Movement . each teacher's progress</div>
         <div class="slopewrap" id="crSlope"></div>
         <div class="slkey" id="crSlopeKey"></div>
       </div>
       <div class="grid cols-2" style="margin-top:14px">
         <div class="panel">
-          <div class="ey">Where they moved . February band to June band</div>
+          <div class="ey" id="crMmxHead">Where they moved</div>
           <div class="mmxwrap"><div class="mmx" id="crMatrix"></div></div>
         </div>
         <div class="panel">
@@ -1125,6 +1128,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
     </div>
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
+        <div class="vrow"><span class="vtag">v0.54</span><span class="vnote">One control row, one Compare entry. The separate February / June round row is gone. The Compare button beside the phase tabs opens a single menu with two sections: Compare (Primary and Kindy against Secondary within June; February against June for teacher movement) and View a round (February's numbers-only board; June, the default). The All / Primary and Kindy / Secondary filter now lives inside the February and Compare boards themselves. Menu entries are generated from the data, so future rounds appear automatically, and clicking Primary and Kindy or Secondary returns to the June board. New Better-Never-Stops entrance: the three AIS logo stars (approved Red, Blue and Yellow) comet in from the left, top and bottom carrying the motto, stand for two seconds, then drift up into the star-field as the title card assembles; 5.5 seconds, click to skip, and any load without animation support falls back to the plain title card.</span></div>
         <div class="vrow"><span class="vtag">v0.53</span><span class="vnote">The Snapshot gains a round selector (February, June, Compare). February shows a numbers-only board (lessons, teachers, average progress, six-point distribution), since only progress ratings and short observation notes were recorded that round. Compare puts February against June: headline deltas, a paired distribution, a movement slopegraph and a February-to-June transition matrix for the teachers seen in both rounds, all filterable by All / Primary and Kindy / Secondary. Numbers only; June's Story, Detail and Report views are unchanged.</span></div>
         <div class="vrow"><span class="vtag">v0.52</span><span class="vnote">Observation session card: the inspection round tag (for example R3 June 26) now sits next to the Inspection details heading and its arrow on the left, on the same line, instead of being pushed out to the far right edge of the card.</span></div>
         <div class="vrow"><span class="vtag">v0.51</span><span class="vnote">Coaching note polish. The observation session card now shows its inspection round (for example R3 June 26) beside the Inspection details heading. The note summary now fills the full card width. "Facilitating" is renamed "Facilitating better progress". The rubric grounding and the lesson quote on the right are larger and darker, and the technique text on the left now matches the summary size. The edit pane no longer says "Move 1, 2, 3"; each focus area is headed by its theme (Student dialogue, Questioning, and so on), shows its rubric grounding read-only for reference, and has clearly labelled boxes for the recommended action, what to look for, and the technique.</span></div>
@@ -1199,12 +1203,13 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
   </div>
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.53</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.54</span></span>
   </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/MotionPathPlugin.min.js"></script>
 <script src="data.js"></script>
 <script>
 /* ============================================================= data + helpers */
@@ -1722,6 +1727,8 @@ let snapView='story';   // 'story' (animated narrative, default) | 'detail' (the
 let snapRound='june';   // v0.53 round axis: 'june' (full board) | 'feb' (numbers only) | 'cmp' (Feb vs June)
 let cmpPhase='all';     // sub-filter for Feb + Compare views: 'all' | 'primary_kindy' | 'secondary'
 const R_FEB='R3 February 26';   // the second round; SNAP_ROUND (June) is the first
+let cmpRounds=null;             // rounds-compare pair [earlier, later]; set by the Compare menu (defaults Feb vs June)
+let viewRound=null;             // the non-June round shown by "View a round" (defaults R_FEB)
 let snapReport=null;    // null = live snapshot (Story/Detail); 'simple' | 'indepth' = a report opened from the Report menu
 let snapStarted=false;  // becomes true once the entry title-card has dissolved, so the story plays in view, not behind the splash
 let snapReady=false;   // snapAgg uses resolveArea (a const defined lower in the file); gate the pre-init applyTheme render until runEntry, after that const exists
@@ -1786,8 +1793,13 @@ function renderCompare(){const pk=snapAgg('primary_kindy'),se=snapAgg('secondary
    February vs June. Numbers only (February recorded progress ratings + short notes; no strengths /
    areas that round). ISOLATED like snapAgg: READS D.teachers[].observations, never mutates. The June
    board (Story / Detail / Report) is untouched; snapRound routes to these functions instead. */
-const RMETHOD_FEB='<b>How this is counted.</b> Average progress is the best (highest) progress rating recorded for each teacher, then averaged across teachers. A lesson observed by two inspectors is counted once, the stronger evidence kept. February R3 recorded progress ratings and short observation notes only; strengths and areas to develop were not captured that round, so this view is numbers only.';
-const RMETHOD_CMP='<b>How this is counted.</b> Counts and the distribution are every teacher seen in each round. Movement is the teachers seen in BOTH rounds only, comparing each teacher\'s best progress rating in February with their best in June. The scale runs Outstanding (best) to Very Weak, so a move to a higher band is an improvement.';
+const rmethodRound=l=>'<b>How this is counted.</b> Average progress is the best (highest) progress rating recorded for each teacher, then averaged across teachers. A lesson observed by two inspectors is counted once, the stronger evidence kept. '+l+' R3 recorded progress ratings and short observation notes only; strengths and areas to develop were not captured that round, so this view is numbers only.';
+const rmethodCmp=(a,b)=>'<b>How this is counted.</b> Counts and the distribution are every teacher seen in each round. Movement is the teachers seen in BOTH rounds only, comparing each teacher\'s best progress rating in '+a+' with their best in '+b+'. The scale runs Outstanding (best) to Very Weak, so a move to a higher band is an improvement.';
+/* round helpers for the Compare menu: chronological order + a short display label ("R3 February 26" -> "February").
+   Pairs are generated from whatever rounds exist in the data, so future rounds appear in the menu on their own. */
+function roundDate(r){const m=/^R3\s+(\w+)\s+(\d+)/.exec(r||'');if(!m)return 0;const mi=MONTHS.indexOf(m[1]);return (2000+ +m[2])*100+(mi<0?0:mi);}
+function roundLabel(r){const m=/^R3\s+(\w+)/.exec(r||'');return m?m[1]:String(r||'');}
+function roundsChrono(){return (D.rounds||[]).slice().sort((a,b)=>roundDate(a)-roundDate(b));}
 /* best (min = strongest evidence) progress per teacher in a round, optionally filtered by phase. */
 function bestProgByTeacher(round,phase){const m={};
   for(const t of D.teachers){
@@ -1798,8 +1810,8 @@ function bestProgByTeacher(round,phase){const m={};
   return m;}
 /* matched cohort: teachers with a progress rating in BOTH rounds (within phase). Returns the pairs,
    the improved/held/declined split, and the 6x6 February-band -> June-band transition matrix. */
-function matchedMove(phase){
-  const F=bestProgByTeacher(R_FEB,phase),J=bestProgByTeacher(SNAP_ROUND,phase);
+function matchedMove(phase,rA,rB){rA=rA||R_FEB;rB=rB||SNAP_ROUND;   // pair keys below: feb = the earlier round, june = the later
+  const F=bestProgByTeacher(rA,phase),J=bestProgByTeacher(rB,phase);
   const pairs=[],matrix=[[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0],[0,0,0,0,0,0]];
   let improved=0,held=0,declined=0;
   for(const t of D.teachers){const id=t.id;if(F[id]==null||J[id]==null)continue;
@@ -1810,36 +1822,50 @@ function matchedMove(phase){
 /* % of teachers at Good (3) or better in a round (per-teacher best, not per lesson). */
 function pctGoodPlus(round,phase){const v=Object.values(bestProgByTeacher(round,phase));
   return v.length?Math.round(v.filter(p=>p<=3).length/v.length*100):null;}
-/* ---- FEBRUARY board: numbers only ---- */
+/* the view-scoped All / Primary & Kindy / Secondary filter, rendered INSIDE the round + compare boards
+   (keeps the control rows to ONE; changing it re-renders the whole board so the .on state follows) */
+function bFilter(hostId){const h=byId(hostId);if(!h)return;
+  h.innerHTML=[['all','All'],['primary_kindy','Primary & Kindy'],['secondary','Secondary']].map(([k,l])=>`<button class="sptab${cmpPhase===k?' on':''}" data-sp="${k}" type="button">${l}</button>`).join('');
+  h.querySelectorAll('.sptab').forEach(b=>b.onclick=()=>{cmpPhase=b.dataset.sp;renderSnapshot();});}
+/* ---- single-round board (February, and any future non-June round): numbers only ---- */
 function renderFebBoard(){
-  const a=snapAgg(cmpPhase,R_FEB),pg=pctGoodPlus(R_FEB,cmpPhase);
+  const RV=viewRound||R_FEB,lab=roundLabel(RV);
+  bFilter('febFilter');
+  const a=snapAgg(cmpPhase,RV),pg=pctGoodPlus(RV,cmpPhase);
   const g=byId('febStats');g.innerHTML='';
   [{v:a.lessons,l:'Lessons observed',s:PHASE_LABEL[cmpPhase]||'whole school',cls:'accent'},
-   {v:a.teachers,l:'Teachers seen',s:'at least once in February'},
+   {v:a.teachers,l:'Teachers seen',s:'at least once in '+lab},
    {word:wordOf(a.avgBest),col:colOf(a.avgBest),l:'Average progress',s:a.avgBest!=null?a.avgBest.toFixed(1)+' of 6':'not assessed'},
    {word:pg!=null?pg+'%':'.',col:pg!=null?rampAt(pg>=75?2:pg>=50?3:4):gc('--na'),l:'Good or better',s:'teachers at Good or above'}].forEach(c=>g.appendChild(statTile(c)));
   buildValueArc('febGauge',a.avgBest);
   byId('febGaugeWord').textContent=a.avgBest!=null?a.avgBest.toFixed(1)+' of 6':'n/a';
   renderHisto(a.dist,'febHisto');
-  byId('febMethod').innerHTML=RMETHOD_FEB;
+  byId('febMethod').innerHTML=rmethodRound(lab);
   applyCounts(byId('snapFeb'));
 }
 /* ---- COMPARE ROUNDS: February against June (numbers only) ---- */
 function renderCmpRounds(){
-  const phase=cmpPhase,F=snapAgg(phase,R_FEB),J=snapAgg(phase,SNAP_ROUND),M=matchedMove(phase);
-  const pgF=pctGoodPlus(R_FEB,phase),pgJ=pctGoodPlus(SNAP_ROUND,phase);
+  bFilter('crFilter');
+  const RA=(cmpRounds&&cmpRounds[0])||R_FEB,RB=(cmpRounds&&cmpRounds[1])||SNAP_ROUND;
+  const la=roundLabel(RA),lb=roundLabel(RB);
+  const phase=cmpPhase,F=snapAgg(phase,RA),J=snapAgg(phase,RB),M=matchedMove(phase,RA,RB);
+  const pgF=pctGoodPlus(RA,phase),pgJ=pctGoodPlus(RB,phase);
   byId('crDeltas').innerHTML=[
-    deltaTile('Teachers observed',F.teachers,J.teachers,'count',''),
-    deltaTile('Lessons observed',F.lessons,J.lessons,'count',''),
-    deltaTile('Average progress',F.avgBest,J.avgBest,'progress',''),
-    deltaTile('Good or better',pgF,pgJ,'pct','teachers at Good or above')].join('');
+    deltaTile('Teachers observed',F.teachers,J.teachers,'count','',la),
+    deltaTile('Lessons observed',F.lessons,J.lessons,'count','',la),
+    deltaTile('Average progress',F.avgBest,J.avgBest,'progress','',la),
+    deltaTile('Good or better',pgF,pgJ,'pct','teachers at Good or above',la)].join('');
+  byId('crDivHead').textContent='Progress distribution . '+la+' against '+lb;
+  byId('crLabA').textContent=la;byId('crLabB').textContent=lb;
+  byId('crSlopeHead').textContent='Movement . each teacher\'s progress, '+la+' to '+lb;
+  byId('crMmxHead').textContent='Where they moved . '+la+' band to '+lb+' band';
   renderDiv(F.dist,J.dist,'crDiv');
   byId('crMatchTitle').textContent=M.n+' teacher'+(M.n===1?'':'s')+' seen in both rounds';
-  renderSlope('crSlope',M.pairs);
+  renderSlope('crSlope',M.pairs,la,lb);
   byId('crSlopeKey').innerHTML=`<span><i style="background:var(--g)"></i>Improved ${M.improved}</span><span><i style="background:var(--ink-faint)"></i>Held ${M.held}</span><span><i style="background:var(--r6)"></i>Declined ${M.declined}</span>`;
-  renderMmx('crMatrix',M.matrix);
+  renderMmx('crMatrix',M.matrix,la,lb);
   byId('crMoveSum').innerHTML=moveStat('Improved',M.improved,'var(--g)')+moveStat('Held',M.held,'var(--ink-mid)')+moveStat('Declined',M.declined,'var(--r6)');
-  byId('crMethod').innerHTML=RMETHOD_CMP;
+  byId('crMethod').innerHTML=rmethodCmp(la,lb);
   applyCounts(byId('snapCmpR'));
 }
 function moveStat(k,v,col){return `<div class="ms"><span class="mv" style="color:${col}" data-to="${v}">${v}</span><span class="mk">${esc(k)}</span></div>`;}
@@ -1848,7 +1874,7 @@ function chipDn(t){return `<span class="dchip dn">&#9660; ${esc(t)}</span>`;}
 function chipFl(t){return `<span class="dchip fl">${esc(t)}</span>`;}
 /* one aggregate delta tile: Feb value -> June value + a direction chip. kind: count | pct | progress.
    progress uses the SEAS word (lower rating = better) so June below Feb is an improvement (green). */
-function deltaTile(label,fv,jv,kind,sub){
+function deltaTile(label,fv,jv,kind,sub,earlierLab){
   let febTxt,junHtml,chip;
   if(kind==='progress'){
     febTxt=wordOf(fv)+(fv!=null?' ('+fv.toFixed(1)+')':'');
@@ -1862,14 +1888,14 @@ function deltaTile(label,fv,jv,kind,sub){
     const d=(fv!=null&&jv!=null)?(jv-fv):null;
     if(d==null)chip=chipFl('.');
     else if(kind==='pct')chip=d===0?chipFl('no change'):d>0?chipUp('+'+d+'%'):chipDn(d+'%');
-    else chip=chipFl((d>=0?'+':'')+d+' vs Feb');
+    else chip=chipFl((d>=0?'+':'')+d+' vs '+(earlierLab||'Feb').slice(0,3));
   }
   return `<div class="panel dtile stat"><div class="dl">${esc(label)}</div><div class="drow"><span class="dfeb">${esc(febTxt)}</span><span class="dar">&#8594;</span>${junHtml}</div>${chip}${sub?`<div class="dsub">${esc(sub)}</div>`:''}</div>`;
 }
 /* slopegraph: each matched teacher a line from their February band (left) to their June band (right).
    Green up (improved), grey flat (held), red down (declined). Endpoints tint to the SEAS band. Lines
    draw in with GSAP (immediateRender:false) so a frozen tab shows them already drawn (non-negotiable #4). */
-function renderSlope(hostId,pairs){
+function renderSlope(hostId,pairs,labA,labB){labA=labA||'February';labB=labB||'June';
   const host=byId(hostId);if(!host)return;const R=RAMP();
   const W=760,H=392,xL=162,xR=598,top=50,bot=352,span=bot-top;
   const bandY=b=>top+(b-1)/5*span;
@@ -1878,8 +1904,8 @@ function renderSlope(hostId,pairs){
     s+=`<line x1="${xL}" y1="${y}" x2="${xR}" y2="${y}" stroke="${R[b]}" stroke-width="1" opacity=".2"/>`;
     s+=`<text class="slband" x="${xL-16}" y="${(y+3.5).toFixed(1)}" text-anchor="end">${esc(WORD[b])}</text>`;
     s+=`<text class="slband" x="${xR+16}" y="${(y+3.5).toFixed(1)}" text-anchor="start">${esc(WORD[b])}</text>`;}
-  s+=`<text class="slaxis" x="${xL}" y="${top-24}" text-anchor="middle" fill="var(--b)">February</text>`;
-  s+=`<text class="slaxis" x="${xR}" y="${top-24}" text-anchor="middle" fill="var(--y)">June</text>`;
+  s+=`<text class="slaxis" x="${xL}" y="${top-24}" text-anchor="middle" fill="var(--b)">${esc(labA)}</text>`;
+  s+=`<text class="slaxis" x="${xR}" y="${top-24}" text-anchor="middle" fill="var(--y)">${esc(labB)}</text>`;
   const cntF={},cntJ={};pairs.forEach(p=>{cntF[p.feb]=(cntF[p.feb]||0)+1;cntJ[p.june]=(cntJ[p.june]||0)+1;});
   const idxF={},idxJ={};
   const yOff=(band,i,n)=>{const room=Math.min(24,span/6-6),gap=n>1?Math.min(9,room/(n-1)):0;return (i-(n-1)/2)*gap;};
@@ -1898,7 +1924,7 @@ function renderSlope(hostId,pairs){
 }
 /* movement matrix: 6x6 February band (rows) -> June band (cols), cell = teacher count. Cells above the
    diagonal (improved) tint green, below (declined) red, the diagonal (held) neutral; margins total. */
-function renderMmx(hostId,matrix){
+function renderMmx(hostId,matrix,la,lb){la=(la||'Feb').slice(0,3);lb=(lb||'Jun').slice(0,3);
   const host=byId(hostId);if(!host)return;const R=RAMP();
   let max=1;for(let f=0;f<6;f++)for(let j=0;j<6;j++)max=Math.max(max,matrix[f][j]);
   const rowTot=f=>matrix[f].reduce((a,b)=>a+b,0),colTot=j=>{let s=0;for(let f=0;f<6;f++)s+=matrix[f][j];return s;};
@@ -1907,7 +1933,7 @@ function renderMmx(hostId,matrix){
     if(j>f)return `color-mix(in srgb,var(--r6) ${pc}%,transparent)`;
     return `color-mix(in srgb,var(--ink-mid) ${Math.round(t*60)}%,transparent)`;};
   host.style.gridTemplateColumns='104px repeat(6,minmax(30px,1fr)) 48px';
-  let h=`<div class="mh mcorner">Feb &#8595; / Jun &#8594;</div>`;
+  let h=`<div class="mh mcorner">${esc(la)} &#8595; / ${esc(lb)} &#8594;</div>`;
   for(let j=1;j<=6;j++)h+=`<div class="mh"><span class="msw" style="background:${R[j]}"></span>${esc(WORD[j])}</div>`;
   h+=`<div class="mh mcorner">Total</div>`;
   for(let f=1;f<=6;f++){
@@ -1922,10 +1948,9 @@ function renderMmx(hostId,matrix){
 }
 /* round routing: syncRoundUI paints the selector + title; renderSnapshot branches on snapRound. */
 function syncRoundUI(){
-  document.querySelectorAll('#roundTabs .rdtab').forEach(b=>b.classList.toggle('on',b.dataset.round===snapRound));
-  const sp=byId('subPhase');if(sp)sp.hidden=(snapRound==='june');
-  document.querySelectorAll('#subPhase .sptab').forEach(b=>b.classList.toggle('on',b.dataset.sp===cmpPhase));
-  const t=byId('snapTitle');if(t)t.innerHTML=snapRound==='feb'?'The February <em>R3</em> picture.':snapRound==='cmp'?'February against <em>June</em>.':'The June <em>R3</em> picture.';
+  const cb=byId('cmpBtn');if(cb)cb.classList.toggle('on',snapRound!=='june'||(snapPhase==='compare'&&!snapReport));   // lit for anything reached via the Compare menu
+  const RA=(cmpRounds&&cmpRounds[0])||R_FEB,RB=(cmpRounds&&cmpRounds[1])||SNAP_ROUND;
+  const t=byId('snapTitle');if(t)t.innerHTML=snapRound==='feb'?'The '+esc(roundLabel(viewRound||R_FEB))+' <em>R3</em> picture.':snapRound==='cmp'?esc(roundLabel(RA))+' against <em>'+esc(roundLabel(RB))+'</em>.':'The June <em>R3</em> picture.';
 }
 /* Detail (v1 cards): the original Snapshot, kept one click away behind the Story|Detail toggle. */
 function renderDetail(){
@@ -1944,9 +1969,11 @@ function renderDetail(){
 function renderSnapshot(){
   byId('snap-asof').textContent='Snapshot '+D.generated_on;
   syncRoundUI();
-  if(snapRound!=='june'){   // Feb or Compare-rounds: numbers-only boards; June machinery hidden
+  if(snapRound!=='june'){   // a round board or the rounds compare: the SAME single control row, June-only controls hidden
     pauseStory();snapReport=null;
-    byId('tabsRow').hidden=true;byId('storyCtl').hidden=true;
+    byId('tabsRow').hidden=false;byId('storyCtl').hidden=true;
+    byId('phaseTabs').hidden=false;byId('viewTabs').hidden=true;byId('reportWrap').hidden=true;byId('reportTabs').hidden=true;
+    document.querySelectorAll('#phaseTabs .ptab[data-phase]').forEach(b=>b.classList.remove('on'));   // PK / Secondary stay as one-click exits back to June
     byId('snapStory').hidden=true;byId('snapReport').hidden=true;byId('snapDetail').hidden=true;
     byId('snapFeb').hidden=(snapRound!=='feb');byId('snapCmpR').hidden=(snapRound!=='cmp');
     const sh=byId('v-snapshot').querySelector('.snaphead');if(sh)sh.hidden=false;
@@ -1956,7 +1983,7 @@ function renderSnapshot(){
   byId('tabsRow').hidden=false;byId('snapFeb').hidden=true;byId('snapCmpR').hidden=true;
   const inReport=!!snapReport;
   document.querySelectorAll('#viewTabs .vtab').forEach(b=>b.classList.toggle('on',!inReport&&b.dataset.view===snapView));
-  document.querySelectorAll('#phaseTabs .ptab').forEach(b=>b.classList.toggle('on',b.dataset.phase===snapPhase));
+  document.querySelectorAll('#phaseTabs .ptab[data-phase]').forEach(b=>b.classList.toggle('on',b.dataset.phase===snapPhase));
   byId('reportBtn').classList.toggle('on',inReport);
   // a Report is one full document, all phases at once -> hide the phase tabs + story controls + the board header (the report carries its own title); Story/Detail stay so you can go back
   byId('phaseTabs').hidden=inReport;
@@ -2086,7 +2113,7 @@ async function exportDoc(){const btn=byId('repExport');if(!btn||btn.disabled)ret
   }catch(e){repStatus('Export did not complete. Try again in a moment.','warn');}
   btn.disabled=false;}
 function applyCounts(scope){if(!scope||!window.gsap)return;scope.querySelectorAll('[data-to]').forEach(n=>{if(n.offsetParent!==null)countUp(n,+n.dataset.to,1.1);});}
-function snapReveal(){reveal('#v-snapshot .head',0);reveal('#roundTabs',0);
+function snapReveal(){reveal('#v-snapshot .head',0);
   if(snapRound==='feb')reveal('#snapFeb .panel',.05);
   else if(snapRound==='cmp')reveal('#snapCmpR .panel',.05);
   else reveal('#phaseTabs',0);}
@@ -2382,9 +2409,28 @@ function printRestore(){
 addEventListener('beforeprint',printPrep);addEventListener('afterprint',printRestore);
 byId('printFloat').onclick=()=>window.print();
 document.querySelectorAll('#viewTabs .vtab').forEach(b=>b.onclick=()=>{snapReport=null;snapView=b.dataset.view;renderSnapshot();reveal('#'+(snapView==='story'?'snapStory':'snapDetail'),0);});   // Story/Detail return from a report to the live snapshot
-document.querySelectorAll('#phaseTabs .ptab').forEach(b=>b.onclick=()=>{snapPhase=b.dataset.phase;renderSnapshot();});
-document.querySelectorAll('#roundTabs .rdtab').forEach(b=>b.onclick=()=>{snapRound=b.dataset.round;snapReport=null;renderSnapshot();snapReveal();});   // v0.53 round axis
-document.querySelectorAll('#subPhase .sptab').forEach(b=>b.onclick=()=>{cmpPhase=b.dataset.sp;renderSnapshot();snapReveal();});
+document.querySelectorAll('#phaseTabs .ptab[data-phase]').forEach(b=>b.onclick=()=>{snapRound='june';snapPhase=b.dataset.phase;renderSnapshot();});   // from rounds-compare a phase tab returns to June
+/* Compare menu (v0.54): the ONE Compare entry (beside the phase tabs) -> a menu with two sections,
+   Compare (phase + round comparisons) and View a round. Everything round-related lives HERE; both
+   sections are generated from the rounds in the data, so future rounds appear on their own. */
+function buildCmpMenu(){const m=byId('cmpMenu');if(!m)return;
+  const rs=roundsChrono();let pairs='';
+  for(let i=0;i<rs.length;i++)for(let j=i+1;j<rs.length;j++)
+    pairs+=`<button class="repmi" type="button" data-cmp="rounds" data-a="${esc(rs[i])}" data-b="${esc(rs[j])}">${esc(roundLabel(rs[i]))} vs ${esc(roundLabel(rs[j]))}<span class="sub">Rounds . teacher progression over time</span></button>`;
+  const views=rs.map(r=>`<button class="repmi" type="button" data-view-round="${esc(r)}">${esc(roundLabel(r))}<span class="sub">${r===SNAP_ROUND?'Current round . the full board':'Numbers-only board'}</span></button>`).join('');
+  m.innerHTML=`<div class="cmpsec">Compare</div>`+
+    `<button class="repmi" type="button" data-cmp="phases">Primary &amp; Kindy vs Secondary<span class="sub">Phases . within the ${esc(roundLabel(SNAP_ROUND))} round</span></button>`+pairs+
+    `<div class="cmpsec">View a round</div>`+views;
+  m.querySelectorAll('.repmi').forEach(b=>b.onclick=()=>{setCmpMenu(false);snapReport=null;
+    if(b.dataset.cmp==='phases'){snapRound='june';snapPhase='compare';}
+    else if(b.dataset.cmp==='rounds'){cmpRounds=[b.dataset.a,b.dataset.b];snapRound='cmp';}
+    else{const r=b.dataset.viewRound;
+      if(r===SNAP_ROUND){snapRound='june';if(snapPhase==='compare')snapPhase='primary_kindy';}   // June = the default full board
+      else{viewRound=r;snapRound='feb';}}
+    renderSnapshot();snapReveal();});}
+function setCmpMenu(open){const m=byId('cmpMenu'),b=byId('cmpBtn');if(!m)return;if(open)buildCmpMenu();m.hidden=!open;b.setAttribute('aria-expanded',open?'true':'false');}
+byId('cmpBtn').onclick=e=>{e.stopPropagation();setCmpMenu(byId('cmpMenu').hidden);};
+document.addEventListener('click',e=>{if(byId('cmpMenu')&&!byId('cmpMenu').hidden&&!byId('cmpWrap').contains(e.target))setCmpMenu(false);});
 /* Report menu: one button -> Simple | In Depth */
 function setReportMenu(open){const m=byId('reportMenu'),b=byId('reportBtn');if(!m)return;m.hidden=!open;b.setAttribute('aria-expanded',open?'true':'false');}
 byId('reportBtn').onclick=e=>{e.stopPropagation();setReportMenu(byId('reportMenu').hidden);};
@@ -2439,13 +2485,78 @@ function runEntry(){
     if(location.hash){history.replaceState(null,'',location.pathname+location.search);}   // login always lands on Snapshot
     snapStarted=true;beginStory();   // play the story now that the splash has cleared (respects the auto-play setting)
   };
-  if(window.gsap){                               // polish the title card itself
+  // Better-Never-Stops intro (v0.54): comet fly-ins (left/top/bottom), a 2s still hold, then the
+  // stars drift up into the field as the title card assembles. 5.5s + a beat. Any missing piece
+  // (no gsap, no MotionPathPlugin, reduced motion, any throw) falls back to the plain title card
+  // with the original 2.6s hold, so the entry can never strand (hard rules 4 + 12).
+  let holdMs=2600;
+  const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if(window.gsap&&window.MotionPathPlugin&&!reduce){
+    try{holdMs=entryStars();}catch(e){holdMs=2600;gsap.set('#entryCard',{clearProps:'opacity'});}
+  }else if(window.gsap&&!reduce){                 // no plugin: the original card polish
     gsap.fromTo('#entry .crest',{scale:.7,opacity:0},{scale:1,opacity:1,duration:.7,ease:'power3.out',immediateRender:false});
     gsap.fromTo('#entry h1',{y:16,opacity:0},{y:0,opacity:1,duration:.6,delay:.2,ease:'power3.out',immediateRender:false});
     gsap.fromTo('#entry .es',{y:10,opacity:0},{y:0,opacity:1,duration:.5,delay:.45,ease:'power3.out',immediateRender:false});
   }
-  setTimeout(revealUI,2600);                      // hard floor: hold then dissolve
+  setTimeout(revealUI,holdMs);                    // hard floor: hold then dissolve (fires even if rAF frozen)
   entry.addEventListener('click',revealUI);       // tap to skip
+}
+/* the Better-Never-Stops star intro. Colours = the AIS Approved Colours sheet ("on Star" set):
+   Red #EF343A, Blue #1257FF, Yellow #EDFF21 (star + trail always exact). Word text + the dark-theme
+   star lift (a light stroke + soft white glow, SAME on all three stars for congruence) are the only
+   theme-aware parts: the words use the theme's readable brand tokens. Returns the reveal delay. */
+function entryStars(){
+  gsap.registerPlugin(MotionPathPlugin);
+  const stage=byId('entryStars'),trails=byId('entryTrails');
+  const dark=document.documentElement.getAttribute('data-theme')!=='light';
+  const DEF=[
+    {w:'Better',col:'#EF343A',word:dark?'#ff6a6e':'#EF343A',from:'left'},
+    {w:'Never', col:'#1257FF',word:dark?'#7ba3ff':'#1257FF',from:'top'},
+    {w:'Stops', col:'#EDFF21',word:'#FFBA14',from:'bottom'}];
+  const stroke=dark?'rgba(255,255,255,.55)':null;   // congruent dark lift on all three
+  const glow=c=>dark?`drop-shadow(0 0 14px ${c}CC) drop-shadow(0 0 30px rgba(255,255,255,.25))`:`drop-shadow(0 6px 18px ${c}66)`;
+  const starSvg=c=>{const pts=[];for(let i=0;i<10;i++){const r=i%2?11:26,a=Math.PI/5*i-Math.PI/2;pts.push((Math.cos(a)*r).toFixed(2)+','+(Math.sin(a)*r).toFixed(2));}
+    return `<svg viewBox="-30 -30 60 60"><polygon points="${pts.join(' ')}" fill="${c}" stroke="${stroke||c}" stroke-width="${stroke?2.4:4}" stroke-linejoin="round" style="filter:${glow(c)}"/></svg>`;};
+  const W=innerWidth,H=innerHeight,cx=W/2,cy=H/2-40;
+  const slots=[[cx-Math.min(240,W*.24),cy],[cx,cy],[cx+Math.min(240,W*.24),cy]];
+  const els=DEF.map((d,i)=>{
+    const [ax,ay]=slots[i];
+    const s=document.createElement('div');s.className='estar';s.innerHTML=starSvg(d.col);stage.appendChild(s);
+    const w=document.createElement('div');w.className='eword';w.textContent=d.w;w.style.color=d.word;w.style.left=ax+'px';w.style.top=(ay+58)+'px';stage.appendChild(w);
+    let sx,sy,c1,c2;
+    if(d.from==='left'){sx=-70;sy=cy+H*.22;c1=[W*.22,cy+H*.3];c2=[ax-140,ay+110];}
+    else if(d.from==='top'){sx=cx+W*.18;sy=-70;c1=[cx+W*.3,H*.22];c2=[ax+120,ay-130];}
+    else{sx=cx-W*.16;sy=H+70;c1=[cx-W*.3,H*.74];c2=[ax+130,ay+140];}
+    const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+    p.setAttribute('d',`M ${sx} ${sy} C ${c1[0]} ${c1[1]}, ${c2[0]} ${c2[1]}, ${ax} ${ay}`);
+    p.setAttribute('class','etrail');p.setAttribute('stroke',d.col);trails.appendChild(p);
+    return {d,star:s,word:w,path:p};
+  });
+  trails.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  gsap.set('#entryCard',{opacity:0});
+  const tl=gsap.timeline();
+  els.forEach((e,i)=>{
+    const t0=i*0.25,len=e.path.getTotalLength();
+    gsap.set(e.path,{strokeDasharray:len,strokeDashoffset:len});
+    tl.set(e.star,{opacity:1},t0)
+      .to(e.path,{opacity:dark?.7:(e.d.col==='#EDFF21'?.7:.5),duration:.12},t0)
+      .to(e.star,{motionPath:{path:e.path,align:e.path,alignOrigin:[.5,.5]},duration:1,ease:'power3.out'},t0)
+      .fromTo(e.star,{rotation:-140},{rotation:0,duration:1,ease:'power3.out'},t0)
+      .to(e.path,{strokeDashoffset:0,duration:1,ease:'power3.out'},t0)
+      .to(e.path,{opacity:0,duration:.6,ease:'power1.out'},t0+.85)
+      .fromTo(e.word,{opacity:0,filter:'blur(9px)',scale:1.18},{opacity:1,filter:'blur(0px)',scale:1,duration:.45,ease:'power2.out'},t0+.78);
+  });
+  const EXIT=3.75;   // 1.75 -> 3.75 = the 2s still hold
+  els.forEach((e,i)=>{
+    tl.to(e.word,{opacity:0,y:12,duration:.4,ease:'power2.in'},EXIT+i*.05)
+      .to(e.star,{y:'-='+(H*.42),x:'+='+((i-1)*70),scale:.3,opacity:.5,duration:1.2,ease:'power2.inOut'},EXIT+.1+i*.06)
+      .to(e.star,{opacity:0,duration:.35,ease:'power1.out'},EXIT+1.15+i*.06);
+  });
+  tl.to('#entryCard',{opacity:1,duration:.75,ease:'power2.out'},EXIT+.35)
+    .fromTo('#entry .crest',{scale:.7},{scale:1,duration:.7,ease:'power3.out'},EXIT+.35)
+    .fromTo('#entry h1',{y:16},{y:0,duration:.6,ease:'power3.out'},EXIT+.45)
+    .fromTo('#entry .es',{y:10,opacity:0},{y:0,opacity:1,duration:.5,ease:'power3.out'},EXIT+.6);
+  return 6100;   // 5.5s intro + a settle beat before the dissolve
 }
 
 /* ============================================================= live Supabase read (Option A)

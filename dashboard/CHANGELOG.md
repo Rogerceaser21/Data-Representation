@@ -5,6 +5,11 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.54 . 2026-07-02
+- **One control row, one Compare entry.** The separate February / June round row (v0.53) is gone. The Compare button beside the phase tabs now opens a single menu with two sections: Compare (Primary and Kindy against Secondary within June; February against June for teacher movement) and View a round (February's numbers-only board; June, the default). Menu entries are generated from the rounds in the data, so future rounds appear automatically. The All / Primary and Kindy / Secondary filter lives inside the February and Compare boards; clicking Primary and Kindy or Secondary returns to the June board.
+- **Better Never Stops entrance.** The three AIS logo stars (approved Red #EF343A, Blue #1257FF and Yellow #EDFF21 from the Approved Colours sheet) comet in from the left, top and bottom carrying the school motto, stand still for two seconds, then drift up into the star-field as the Observation Record title card assembles. 5.5 seconds, click anywhere to skip. Dark theme gives all three stars the same light stroke and glow so the blue holds on navy. Any load without animation support (or reduced motion) falls back to the plain title card, so the entry can never strand.
+- Scope: the Snapshot controls and the entry screen. Boards, reports, Coverage and Observations data unchanged. GSAP MotionPathPlugin (same cdnjs family) added for the comet paths. Rollback: `dash-v0.53`.
+
 ## v0.53 . 2026-07-01
 - **Round selector on the Snapshot: February, June, Compare.** The board now compares the two R3 rounds. A top-level round switch drives the view; February and Compare also carry an All / Primary and Kindy / Secondary sub-filter.
 - **February board (numbers only).** Lessons observed, teachers seen, average progress on the ramp gauge, and the six-point distribution. February R3 recorded progress ratings and short observation notes only, so strengths and areas to develop are omitted by design.
