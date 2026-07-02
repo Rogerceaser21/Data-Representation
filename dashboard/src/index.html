@@ -72,7 +72,8 @@ body.refopen .wrap{opacity:.84}   /* light de-emphasis while the sources panel i
 .reflink:hover{text-decoration:underline}.reflink svg{width:13px;height:13px}
 .reffoot{padding:11px 20px 16px;border-top:1px solid var(--edge-soft);font-size:10.5px;line-height:1.45;color:var(--ink-faint)}
 .brand .t small{display:block;font-family:var(--body);font-weight:600;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-mid);margin-top:3px}
-.rail{display:flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--edge-soft);border-radius:30px;padding:4px}
+.rail{display:flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--edge-soft);border-radius:30px;padding:4px;max-width:100%;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.rail::-webkit-scrollbar{display:none}
 .pill{font:inherit;font-size:13px;font-weight:600;color:var(--ink-mid);background:transparent;border:0;border-radius:24px;padding:8px 16px;cursor:pointer;transition:.2s;white-space:nowrap}
 .pill:hover{color:var(--ink)}
 .pill.on{background:var(--panel-2);color:var(--ink);box-shadow:0 2px 10px -4px var(--shadow)}
@@ -804,6 +805,110 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
   body.print-story #v-snapshot .head,body.print-story #phaseTabs,body.print-story #snapDetail{display:none!important}
 }
 @media(prefers-reduced-motion:reduce){.mote,.dsdot,.twk{animation:none!important}.beat[data-type="cover"].on .coverscene,.beat.on .nmotif,.beat.on img.statefig,.beat.on .bl-row .bm svg path{animation:none!important}.bl-row .bm svg path{stroke-dashoffset:0}}
+/* ---- Teacher portal (Phase 2, design C "Star file"). Band stays navy in BOTH themes
+   (Story-cover precedent); tiles are house panels; browse = yearbook wall grouped by section. ---- */
+.pfilters{display:flex;gap:8px;flex-wrap:wrap}
+.plink{font:inherit;font-size:11.5px;font-weight:600;color:var(--ink-mid);background:transparent;border:0;padding:4px 0 0;cursor:pointer;letter-spacing:.04em;transition:.2s}
+.plink:hover{color:var(--ink)}
+#pCount{color:var(--ink-faint);font-size:11.5px;letter-spacing:.06em;font-weight:500;text-transform:none}
+/* band hero */
+.pband{position:relative;border-radius:26px;overflow:hidden;margin-top:4px;padding:clamp(28px,4.2vw,54px) clamp(24px,3.8vw,54px);
+  background:radial-gradient(900px 420px at 18% -18%,#16224a,transparent),radial-gradient(700px 420px at 108% 118%,#101a3c,transparent),#0a0e22;
+  border:1px solid rgba(255,255,255,.1);box-shadow:0 40px 90px -30px rgba(6,8,22,.65);color:#eef1fb;
+  display:grid;grid-template-columns:1fr auto;gap:clamp(20px,4vw,56px);align-items:center}
+.pband .bkick{font-size:10.5px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:#8fa2d8}
+.pband .bname{font-family:var(--display);font-style:italic;font-weight:600;font-size:clamp(38px,5.6vw,70px);line-height:1;letter-spacing:-.02em;margin:10px 0 12px;color:#fff;text-shadow:0 6px 40px rgba(0,0,0,.45)}
+.pband .bmeta{color:#aab7e2;font-size:13.5px}
+.pchiprow{display:flex;align-items:center;gap:14px;margin-top:22px;flex-wrap:wrap}
+.pchip{font-size:14px;font-weight:700;letter-spacing:.03em;padding:9px 20px;border-radius:13px;color:#fff;box-shadow:0 10px 30px -8px rgba(0,0,0,.5)}
+.pchip.na{background:rgba(120,132,165,.35);border:1px dashed rgba(255,255,255,.35)}
+.psubnote{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#8fa2d8}
+.pobtn{font:inherit;font-size:12px;font-weight:600;color:#dfe6ff;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06);border-radius:12px;padding:9px 17px;cursor:pointer;margin-top:22px;transition:.2s}
+.pobtn:hover{background:rgba(255,255,255,.14)}
+.pframe{position:relative;width:clamp(180px,24vw,250px);aspect-ratio:2/3;border-radius:20px;flex:none;background:#fff;padding:9px;box-shadow:0 30px 70px -20px rgba(0,0,0,.6);transform:rotate(1.6deg)}
+.pframe img{width:100%;height:100%;object-fit:cover;border-radius:13px;display:block}
+.pframe .pin{display:flex;align-items:center;justify-content:center;width:100%;height:100%;border-radius:13px;background:#eef0f6;font-family:var(--display);font-style:italic;font-weight:600;font-size:56px;color:#6b7790}
+.pstar{position:absolute;width:22px;height:22px;filter:drop-shadow(0 0 8px currentColor);animation:pdrift 7s ease-in-out infinite}
+@keyframes pdrift{0%,100%{transform:translateY(0) rotate(-8deg)}50%{transform:translateY(-12px) rotate(10deg)}}
+/* data tiles */
+.ppgrid{display:grid;grid-template-columns:1.35fr 1fr;gap:14px;margin-top:16px;align-items:start}
+.ppgrid .panel{margin:0}
+.prail{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:6px}
+.pseg{height:44px;border-radius:10px;background:var(--na);opacity:.5;position:relative}
+.pseg.lit{opacity:1;box-shadow:0 8px 20px -8px var(--shadow)}
+.pseg span{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:10px;font-weight:800;color:#fff}
+.praillab{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:6px;font-size:8px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-faint);text-align:center}
+.pev{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px dashed var(--edge-soft);font-size:13px;flex-wrap:wrap}
+.pev:last-child{border-bottom:0}
+.pev .rt{font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-mid);border:1px solid var(--edge-soft);border-radius:7px;padding:3px 8px;background:var(--panel)}
+.pev .sd{color:var(--ink-faint);font-size:11.5px;min-width:74px}
+.pev b{margin-right:auto;font-weight:650}
+.pev .jw{font-family:var(--display);font-style:italic;font-weight:600;font-size:15px}
+.pevlink{display:inline-flex;align-items:center;gap:5px;color:var(--ink-mid);font-size:11px;text-decoration:none;border:1px solid var(--edge);border-radius:8px;padding:3px 8px;transition:.2s}
+.pevlink svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:1.6}
+.pevlink:hover{color:var(--ink)}
+.ppsum p{margin:0;font-size:12.5px;line-height:1.7;color:var(--ink-dim)}
+/* grouped yearbook wall */
+.psecthead{display:flex;align-items:baseline;gap:12px;margin:26px 0 12px}
+.psecthead:first-child{margin-top:4px}
+.psecthead h3{font-family:var(--display);font-style:italic;font-weight:600;font-size:23px;margin:0}
+.psecthead small{color:var(--ink-faint);font-size:11px;letter-spacing:.06em}
+.pwall{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:15px}
+.pface{position:relative;aspect-ratio:2/3;border-radius:18px;overflow:hidden;border:1px solid var(--edge-soft);background:var(--panel-2);cursor:pointer;box-shadow:0 16px 36px -20px var(--shadow);transition:transform .25s ease,box-shadow .25s ease;padding:0;font:inherit;text-align:left;width:100%}
+.pface:hover{transform:translateY(-5px);box-shadow:0 26px 50px -20px var(--shadow)}
+.pface img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .6s ease}
+.pface:hover img{transform:scale(1.045)}
+.pface .scrim{position:absolute;inset:auto 0 0 0;padding:32px 13px 11px;background:linear-gradient(transparent,rgba(8,12,30,.86));color:#fff}
+.pface .nm{font-family:var(--display);font-weight:600;font-size:16px;line-height:1.15;display:block}
+.pface .sub{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;opacity:.75;margin-top:2px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pfchip{position:absolute;top:10px;right:10px;font-size:9.5px;font-weight:800;letter-spacing:.05em;padding:4px 10px;border-radius:9px;color:#fff;backdrop-filter:blur(6px)}
+.pface.init{display:flex;align-items:center;justify-content:center}
+.pface.init .pin{font-family:var(--display);font-style:italic;font-weight:600;font-size:42px;color:var(--ink-mid)}
+@media(max-width:860px){.pband{grid-template-columns:1fr}.pframe{margin:0 auto;order:-1}.ppgrid{grid-template-columns:1fr}}
+@media(max-width:560px){.pwall{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}}
+/* ---- Department view (Phase 3) ---- */
+.obslab{font-size:8.5px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint);padding:8px 14px 4px}
+.pband.dept{padding:clamp(24px,3.4vw,42px) clamp(24px,3.6vw,48px);align-items:center}
+.pband.dept .bname{font-size:clamp(34px,4.6vw,58px)}
+.ddstats{display:flex;align-items:center;gap:clamp(18px,3vw,44px);flex:none}
+.ddstat{text-align:center}
+.ddstat b{display:block;font-family:var(--display);font-style:italic;font-weight:600;font-size:clamp(30px,3.6vw,46px);color:#fff;line-height:1}
+.ddstat b i{font-style:italic;font-size:.55em;color:#8fa2d8}
+.ddstat span{display:block;margin-top:6px;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#8fa2d8}
+.dddist{display:grid;grid-template-columns:repeat(6,18px);gap:7px;align-items:end;position:relative;padding-bottom:16px}
+.ddbar{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;height:64px}
+.ddbar i{width:12px;border-radius:4px;display:block}
+.ddbar b{font-size:9px;color:#aab7e2;font-weight:700;min-height:11px}
+.ddcap{position:absolute;left:50%;bottom:-4px;transform:translateX(-50%);white-space:nowrap;font-size:8px;letter-spacing:.14em;text-transform:uppercase;color:#5f6f9f}
+.dmxwrap{overflow-x:auto;margin:2px -6px 0;padding:0 6px}
+.dmx{min-width:860px}
+.dmrow{display:grid;grid-template-columns:minmax(210px,250px) repeat(8,1fr);gap:8px;align-items:center;width:100%;font:inherit;color:var(--ink);text-align:left;background:transparent;border:0;border-bottom:1px solid var(--edge-soft);padding:9px 4px;cursor:pointer;transition:background .15s}
+.dmrow:hover{background:var(--panel)}
+.dmrow:last-child{border-bottom:0}
+.dmrow.dmheadr{cursor:default;border-bottom:1px solid var(--edge);padding:4px 4px 8px}
+.dmrow.dmheadr:hover{background:transparent}
+.dmrow.dmheadr .dmwho{font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-mid)}
+.dmh{font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-mid);text-align:center}
+.dmwho{display:flex;align-items:center;gap:11px;min-width:0}
+.dmav{position:relative;width:46px;height:46px;border-radius:13px;flex:none;background:var(--panel);border:1px solid var(--edge-soft);overflow:hidden;display:flex;align-items:center;justify-content:center}
+.dmav img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 12%;z-index:1}
+.dmav .pin{font-family:var(--display);font-style:italic;font-weight:600;font-size:13px;color:var(--ink-mid)}
+.dmnm{font-weight:650;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dmsub{display:block;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin-top:2px}
+.dmhead{font-style:normal;font-size:8px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--y);border:1px solid color-mix(in srgb,var(--y) 45%,transparent);border-radius:6px;padding:2px 6px;margin-left:8px;vertical-align:2px}
+.dmc{display:flex;align-items:center;justify-content:center;height:30px;border-radius:9px;font-size:10px;font-weight:700;letter-spacing:.02em;border:1px solid transparent;white-space:nowrap}
+.dmc.lit{border-style:solid}
+.dmc.off{border:0;background:transparent}
+.dmc.off::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--na)}
+.dmc.naa{border:1px dashed var(--edge);color:var(--ink-faint);font-weight:600}
+.dmfoot{margin-top:12px;font-size:10.5px;color:var(--ink-faint)}
+@media(max-width:860px){.pband.dept{grid-template-columns:1fr}.ddstats{justify-content:flex-start}}
+.dstack{display:flex;align-items:center;margin-top:18px}
+.dstack .sav{position:relative;width:36px;height:36px;border-radius:50%;border:2px solid rgba(255,255,255,.85);margin-right:-10px;overflow:hidden;background:#eef0f6;display:flex;align-items:center;justify-content:center;box-shadow:0 5px 12px rgba(0,0,0,.4)}
+.dstack .sav img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 12%}
+.dstack .sav .pin{font-family:var(--display);font-style:italic;font-weight:600;font-size:12px;color:#3a4a66}
+.dstack .slab{margin-left:22px;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:#8fa2d8}
+.pband.dept .pstar{width:18px;height:18px}
 </style>
 </head>
 <body>
@@ -828,6 +933,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
       <button class="pill on" data-board="snapshot">Snapshot</button>
       <button class="pill" data-board="coverage">Coverage</button>
       <button class="pill" data-board="teacher">Observations</button>
+      <button class="pill" data-board="portal">Teacher portal</button>
       <button class="pill" data-board="settings">Settings</button>
     </nav>
   </header>
@@ -1046,7 +1152,8 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
           <button class="obsbtn" id="r3ObsBtn">R3 Obs <span class="car">&#9662;</span></button>
           <div class="obsmenu" id="obsMenu" hidden>
             <button class="obsmi" data-act="teacher">Teacher Level</button>
-            <button class="obsmi" data-act="placeholder" data-kick="Grade / Department Level" data-title="Grade / Department" data-note="Your assigned grades and departments will appear here once the data is connected.">Grade / Department Level</button>
+            <button class="obsmi" data-sub="dept">Department Level <span class="car">&#9656;</span></button>
+            <div class="obssub" id="subDept" hidden></div>
             <button class="obsmi" data-sub="school">School Level <span class="car">&#9656;</span></button>
             <div class="obssub" id="subSchool" hidden>
               <button class="obsmi2" data-act="placeholder" data-kick="School Level" data-title="Kindy" data-note="This scope will be connected to data later.">Kindy</button>
@@ -1074,6 +1181,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
           <div class="who">
             <h2 id="tName">.</h2>
             <div class="meta" id="tMeta">.</div>
+            <button class="plink" id="tPortalLink" type="button">Teacher portal &#8599;</button>
           </div>
           <div class="bigj"><div class="l" id="tScopeLabel">Overall</div><div class="v" id="tOverall">.</div></div>
         </div>
@@ -1088,12 +1196,38 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
       <div class="panel" id="nextSteps" style="margin-top:14px"></div>
     </div>
 
-    <!-- Grade/Department + School Level land here for now (front-end only, no data yet) -->
+    <!-- Department view (Phase 3): navy dept band + teacher x 8-type matrix -->
+    <div id="obsDept" hidden></div>
+
+    <!-- School Level lands here for now (front-end only, no data yet) -->
     <div class="panel" id="obsPlaceholder" hidden>
       <div class="ey" id="phKick">Scope</div>
       <h2 class="phtitle" id="phTitle">.</h2>
       <div class="phnote" id="phNote">.</div>
     </div>
+  </section>
+
+  <!-- =================== TEACHER PORTAL (Phase 2): browse + a self-contained page per teacher.
+       Grill record: .planning/2026-07-02-teacher-portal-DECISIONS.md. Each page renders from ONE
+       teacher's slice only (architected for the later @ais.ae SSO landing). =================== -->
+  <section class="view" id="v-portal" hidden>
+    <div class="head snaphead">
+      <div class="snaphL"><span class="kick"><span class="stripe"></span>Teacher portal</span></div>
+      <div class="snaphR"><h2 class="big">Teacher portal</h2></div>
+    </div>
+    <!-- ONE control row: back (page state) + search-first + quiet section filters -->
+    <div class="tabsrow">
+      <div class="obshead">
+        <button class="flt" id="portalBack" hidden>&#8592; All teachers</button>
+        <div class="search"><span style="color:var(--ink-faint)">Search</span><input id="psearch" placeholder="type a name..."></div>
+        <div class="pfilters" id="pFilters"></div>
+      </div>
+    </div>
+    <div class="panel" id="portalBrowse">
+      <div class="ey" style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">All teachers <span id="pCount"></span></div>
+      <div id="pgrid"></div>
+    </div>
+    <div id="portalPage" hidden></div>
   </section>
 
   <!-- ============ SETTINGS ============ -->
@@ -1128,6 +1262,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
     </div>
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
+        <div class="vrow"><span class="vtag">v0.55</span><span class="vnote">The Teacher portal. A new fifth tab: every register teacher has their own page (the "Star file": a navy band with their full staff portrait, the AIS stars, their overall SEAS judgement, then their place on the SEAS scale, coverage of the eight observation types, their R3 evidence with locked-record links, and their coaching summary). Browse is a yearbook wall of all 149 staff grouped by school section, with search and section filters; staff photos flow from Drive into Supabase nightly (never through GitHub). The Observations R3 Obs menu gained a working Department Level: Humanities renders as a department board (navy header with the head, the team, teachers observed, average judgement and spread, then a teacher-by-type matrix; clicking a teacher opens their portal page). Departments appear automatically as they are marked in the staff Sheet.</span></div>
         <div class="vrow"><span class="vtag">v0.54</span><span class="vnote">One control row, one Compare entry. The separate February / June round row is gone. The Compare button beside the phase tabs opens a single menu with two sections: Compare (Primary and Kindy against Secondary within June; February against June for teacher movement) and View a round (February's numbers-only board; June, the default). The All / Primary and Kindy / Secondary filter now lives inside the February and Compare boards themselves. Menu entries are generated from the data, so future rounds appear automatically, and clicking Primary and Kindy or Secondary returns to the June board. New Better-Never-Stops entrance: the three AIS logo stars (approved Red, Blue and Yellow) comet in from the left, top and bottom carrying the motto, stand for two seconds, then drift up into the star-field as the title card assembles; 5.5 seconds, click to skip, and any load without animation support falls back to the plain title card.</span></div>
         <div class="vrow"><span class="vtag">v0.53</span><span class="vnote">The Snapshot gains a round selector (February, June, Compare). February shows a numbers-only board (lessons, teachers, average progress, six-point distribution), since only progress ratings and short observation notes were recorded that round. Compare puts February against June: headline deltas, a paired distribution, a movement slopegraph and a February-to-June transition matrix for the teachers seen in both rounds, all filterable by All / Primary and Kindy / Secondary. Numbers only; June's Story, Detail and Report views are unchanged.</span></div>
         <div class="vrow"><span class="vtag">v0.52</span><span class="vnote">Observation session card: the inspection round tag (for example R3 June 26) now sits next to the Inspection details heading and its arrow on the left, on the same line, instead of being pushed out to the far right edge of the card.</span></div>
@@ -1203,7 +1338,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
   </div>
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.54</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.55</span></span>
   </div>
 </div>
 
@@ -1441,6 +1576,7 @@ function renderTeacher(t){
   byId('tMeta').textContent=bits.join('  .  ');
   selectedObs='all';renderObsList(t);buildArc(t,'svgArc',progScore,progAvg,false);buildArc(t,'svgArcT',teachScore,teachAvg,true);selectObs(t,'all');
   renderNextSteps(t);
+  const pl=byId('tPortalLink');if(pl)pl.onclick=()=>{showBoard('portal');openPortalTeacher(t.id);};
 }
 /* ---- per-teacher coaching note (v0.50). Visible to all; Edit/Approve/Make-Doc are admin-gated.
    Layout = two-column focus cards (action | grounding), chosen by Igor 2026-06-28 from a 3-way preview.
@@ -1551,6 +1687,170 @@ async function nsDoc(t){const n=NEXTSTEPS[t.id];if(!n)return;const msg=byId('nsM
     else if(msg){msg.textContent='Export did not complete. Try again in a moment.';msg.className='ns-msg warn';}
   }catch(e){if(msg){msg.textContent='Export did not complete. Try again in a moment.';msg.className='ns-msg warn';}}
 }
+
+/* ============================================================= DEPARTMENT VIEW (Phase 3)
+   Lives inside Observations under the R3 Obs menu ("Department Level"). The submenu is built
+   LIVE from teachers.dept (nothing hardcoded: mark a department in the Sheet Teachers tab and it
+   appears here on the next export/live load). A department renders as a navy band (name, head,
+   observed count, average word, mini 6-point distribution) over a matrix: teacher rows (portrait,
+   head badge) x the 8 observation-type columns on the SEAS ramp (only SPEA lit today). Clicking
+   a row FLIPs into that teacher's portal page. */
+let deptName=null;
+function buildDeptMenu(){const s=byId('subDept');if(!s)return;
+  const by={secondary:new Set(),primary:new Set()};
+  D.teachers.forEach(t=>{if(!t.dept)return;(t.section==='primary'||t.section==='kindy'?by.primary:by.secondary).add(t.dept);});
+  const PH='<button class="obsmi2" data-act="placeholder" data-kick="Department Level" data-title="__T__" data-note="Departments land with the new academic year. Any department marked in the staff Sheet appears here automatically.">Landing with the new academic year</button>';
+  let h='<div class="obslab">Secondary school</div>';
+  h+=by.secondary.size?[...by.secondary].sort().map(d=>`<button class="obsmi2" data-dept="${esc(d)}">${esc(d)}</button>`).join(''):PH.replace('__T__','Secondary school');
+  h+='<div class="obslab">Primary school</div>';
+  h+=by.primary.size?[...by.primary].sort().map(d=>`<button class="obsmi2" data-dept="${esc(d)}">${esc(d)}</button>`).join(''):PH.replace('__T__','Primary school');
+  s.innerHTML=h;}
+function enterDeptView(name){deptName=name;selectedId=null;byId('tsearch').value='';setObs('dept');renderDept(name);
+  if(window.gsap){
+    gsap.fromTo('#obsDept .bkick,#obsDept .bname,#obsDept .bmeta,#obsDept .pchiprow,#obsDept .dstack',{y:20},{y:0,duration:.6,stagger:.07,ease:'power3.out',immediateRender:false});
+    gsap.fromTo('#obsDept .ddstat,#obsDept .dddist',{y:16},{y:0,duration:.55,stagger:.08,delay:.15,ease:'power2.out',immediateRender:false});
+    gsap.fromTo('#obsDept .ddbar i',{scaleY:0,transformOrigin:'bottom'},{scaleY:1,duration:.7,stagger:.06,delay:.3,ease:'back.out(1.6)',immediateRender:false});
+    gsap.fromTo('#obsDept .dmrow[data-id]',{x:36},{x:0,duration:.62,stagger:.07,delay:.15,ease:'power3.out',immediateRender:false});
+    settle('#obsDept .bkick,#obsDept .bname,#obsDept .bmeta,#obsDept .pchiprow,#obsDept .dstack');settle('#obsDept .ddstat,#obsDept .dddist');settle('#obsDept .ddbar i',1600);settle('#obsDept .dmrow[data-id]',1600);
+  } else reveal('#obsDept .pband, #obsDept .panel',.06);
+  window.scrollTo({top:0,behavior:'smooth'});}
+function renderDept(name){const host=byId('obsDept');if(!host)return;
+  const members=D.teachers.filter(t=>t.dept===name)
+    .sort((a,b)=>((b.dept_role==='head')-(a.dept_role==='head'))||a.name.localeCompare(b.name));
+  if(!members.length){host.innerHTML='<div class="panel"><div class="ns-empty">No teachers are marked for this department yet.</div></div>';return;}
+  const head=members.find(m=>m.dept_role==='head');
+  const observed=members.filter(m=>m.n_obs);
+  const avgs=observed.map(teacherAvg).filter(v=>v!=null);
+  const avg=avgs.length?avgs.reduce((x,y)=>x+y,0)/avgs.length:null;
+  const dist=[0,0,0,0,0,0];avgs.forEach(v=>dist[Math.min(5,Math.max(0,Math.round(v)-1))]++);
+  const maxd=Math.max(1,...dist);
+  const bars=dist.map((n,i)=>`<div class="ddbar" title="${WORD[i+1]}: ${n}"><i style="height:${n?Math.max(12,Math.round(n/maxd*38)):4}px;background:var(--r${i+1});opacity:${n?1:.28}"></i><b>${n||'&nbsp;'}</b></div>`).join('');
+  const sec=members.every(m=>m.section==='secondary')?'Secondary school':(members.every(m=>m.section==='primary'||m.section==='kindy')?'Primary school':'Whole school');
+  const band=`<div class="pband dept">
+    <div>
+      <div class="bkick">Department . ${esc(sec)} . SPEA R3</div>
+      <h2 class="bname">${esc(name)}</h2>
+      <div class="bmeta">${head?esc(head.name)+' . Head of Department . ':''}${members.length} teachers</div>
+      <div class="pchiprow">${avg!=null?`<span class="pchip" style="background:${rampAt(avg)}">${wordOf(avg)}</span>`:'<span class="pchip na">Not assessed</span>'}<span class="psubnote">Department average . best evidence wins</span></div>
+      <div class="dstack">${members.map(m=>`<span class="sav" title="${esc(m.name)}">${m.photo_url?`<img src="${esc(m.photo_url)}" alt="" loading="lazy" onerror="this.remove()">`:''}<span class="pin">${esc(pInitials(m.name))}</span></span>`).join('')}<span class="slab">The team</span></div>
+    </div>
+    <div class="ddstats">
+      <div class="ddstat"><b>${observed.length}<i>/${members.length}</i></b><span>teachers observed</span></div>
+      <div class="dddist">${bars}<div class="ddcap">Overall spread</div></div>
+    </div>${PSTAR('#EF343A','62%','12%',0)}${PSTAR('#1257FF','96%','68%',1.3)}${PSTAR('#EDFF21','70%','80%',.6)}</div>`;
+  const heads='<div class="dmrow dmheadr"><span class="dmwho">Teacher</span>'+PORTAL_TYPES.map(ty=>`<span class="dmh" title="${esc(ty.label)}">${ty.short}</span>`).join('')+'</div>';
+  const rows=members.map(m=>{const ov=m.n_obs?teacherAvg(m):null;
+    const av=m.photo_url?`<img src="${esc(m.photo_url)}" alt="" loading="lazy" onerror="this.remove()"><span class="pin">${esc(pInitials(m.name))}</span>`:`<span class="pin">${esc(pInitials(m.name))}</span>`;
+    const cells=PORTAL_TYPES.map(ty=>{
+      if(!ty.live)return '<span class="dmc off"></span>';
+      return ov!=null?`<span class="dmc lit" style="background:${pAlpha(rampAt(ov),.16)};border-color:${pAlpha(rampAt(ov),.5)};color:${rampAt(ov)}">${wordOf(ov)}</span>`
+        :'<span class="dmc naa">Not seen</span>';}).join('');
+    return `<button type="button" class="dmrow" data-id="${m.id}"><span class="dmwho"><span class="dmav">${av}</span><span style="min-width:0"><span class="dmnm">${esc(m.name)}${m.dept_role==='head'?'<i class="dmhead">Head</i>':''}</span><small class="dmsub">${m.n_obs?m.n_obs+(m.n_obs===1?' observation':' observations'):'Not yet observed'}</small></span></span>${cells}</button>`;}).join('');
+  host.innerHTML=band+`<div class="panel" style="margin-top:14px"><div class="ey">Observation record . ${members.length} teachers x 8 observation types</div><div class="dmxwrap"><div class="dmx">${heads}${rows}</div></div><div class="dmfoot">Only SPEA R3 feeds ratings today; the other seven types light up as their pipelines land. Click a teacher to open their portal page.</div></div>`;
+  host.querySelectorAll('.dmrow[data-id]').forEach(r=>r.onclick=()=>{
+    const id=r.dataset.id;const nm=r.querySelector('.dmnm');
+    const rect=nm?nm.getBoundingClientRect():null;
+    showBoard('portal');
+    openPortalTeacher(id,rect?{querySelector:()=>({getBoundingClientRect:()=>rect})}:null);});}
+
+/* ============================================================= TEACHER PORTAL (Phase 2, design C)
+   The 5th pill (#portal). Browse = yearbook wall of every register teacher grouped by school
+   section (full 2:3 portraits, name scrim, SEAS chip; initials disc when no photo). Page = the
+   "Star file": navy band hero (white-framed portrait + drifting AIS logo stars + huge serif name)
+   over house data tiles (SEAS spectrum with their observation dots, 8-type coverage rail,
+   evidence lines with locked-record links, Next Steps summary). Self-contained per teacher
+   (SSO-ready). Photos: teachers.photo_url from the Phase 1 Drive -> Supabase mirror. */
+const PORTAL_TYPES=[
+  {key:'spea',label:'SPEA R3 Observations',short:'SPEA',live:true},
+  {key:'walk',label:'Walkthroughs',short:'Walk'},
+  {key:'prob',label:'Probationary Observations',short:'Prob'},
+  {key:'lesson',label:'Lesson Observations',short:'Lesson'},
+  {key:'escm',label:'Classroom Profiling ESCM',short:'ESCM'},
+  {key:'otp',label:'OTP & APR (Self-Assessment)',short:'OTP'},
+  {key:'notes',label:'Additional Notes & Attachments',short:'Notes'},
+  {key:'files',label:'File Attachments',short:'Files'}];
+let portalId=null,portalSec='all';
+const PSECS=[['all','All'],['kindy','Kindy'],['primary','Primary'],['secondary','Secondary']];
+const PGROUPS=[['secondary','Secondary'],['primary','Primary'],['kindy','Kindy']];
+function pInitials(name){const p=String(name||'').trim().split(/\s+/);return (((p[0]||'')[0]||'')+((p[p.length-1]||'')[0]||'')).toUpperCase();}
+function pAlpha(col,a){return String(col).replace('rgb(','rgba(').replace(')',','+a+')');}  // rampAt returns rgb(...)
+const PSTAR=(c,x,y,d)=>`<svg class="pstar" viewBox="0 0 24 24" style="color:${c};left:${x};top:${y};animation-delay:${d}s"><path fill="currentColor" d="M12 1.6l2.7 6.9 7.3.4-5.7 4.7 1.9 7.1L12 16.8l-6.2 3.9 1.9-7.1L2 8.9l7.3-.4z"/></svg>`;
+function portalLayout(){const page=portalId!=null;
+  byId('portalBrowse').hidden=page;byId('portalPage').hidden=!page;byId('portalBack').hidden=!page;byId('pFilters').hidden=page;}
+function renderPortal(){renderPortalFilters();
+  if(portalId!=null){const t=teacherById(portalId);if(t){renderPortalPage(t);portalLayout();return;}portalId=null;}
+  renderPortalBrowse();portalLayout();}
+function renderPortalFilters(){const host=byId('pFilters');if(host.dataset.built)return;host.dataset.built='1';
+  host.innerHTML=PSECS.map(([k,l])=>`<button class="flt${portalSec===k?' on':''}" data-sec="${k}" type="button">${l}</button>`).join('');
+  host.querySelectorAll('[data-sec]').forEach(b=>b.onclick=()=>{portalSec=b.dataset.sec;
+    host.querySelectorAll('[data-sec]').forEach(x=>x.classList.toggle('on',x.dataset.sec===portalSec));renderPortalBrowse();});}
+function pFaceCard(t){const ov=t.n_obs?teacherAvg(t):null;
+  const chip=ov!=null?`<span class="pfchip" style="background:${pAlpha(rampAt(ov),.82)}">${wordOf(ov)}</span>`:'<span class="pfchip" style="background:rgba(90,100,130,.55)">Not assessed</span>';
+  const sub=[t.dept?t.dept+(t.dept_role==='head'?' . head':''):null,t.section||null].filter(Boolean).join(' . ');
+  const scrim=`<span class="scrim"><span class="nm">${esc(t.name)}</span><span class="sub">${sub?esc(sub):'&nbsp;'}</span></span>`;
+  const inner=t.photo_url?`<img src="${esc(t.photo_url)}" alt="" loading="lazy" onerror="this.remove()">${chip}${scrim}`
+    :`${chip}<span class="pin">${esc(pInitials(t.name))}</span>${scrim}`;
+  return `<button type="button" class="pface${t.photo_url?'':' init'}" data-id="${t.id}">${inner}</button>`;}
+function renderPortalBrowse(){const q=(byId('psearch').value||'').toLowerCase();
+  let rows=D.teachers.filter(t=>t.name.toLowerCase().includes(q));
+  if(portalSec!=='all')rows=rows.filter(t=>(t.section||'')===portalSec);
+  byId('pCount').textContent=rows.length+' of '+D.teachers.length+' teachers';
+  const host=byId('pgrid');
+  const groups=PGROUPS.filter(([k])=>portalSec==='all'||portalSec===k)
+    .map(([k,l])=>({k,l,rows:rows.filter(t=>(t.section||'')===k)}));
+  const other=rows.filter(t=>!PGROUPS.some(([k])=>(t.section||'')===k));
+  if(other.length)groups.push({k:'other',l:'Other staff',rows:other});
+  host.innerHTML=groups.filter(g=>g.rows.length).map(g=>
+    `<div class="psecthead"><h3>${g.l}</h3><small>${g.rows.length} teacher${g.rows.length===1?'':'s'}</small></div><div class="pwall">${g.rows.map(pFaceCard).join('')}</div>`).join('')
+    ||'<div style="padding:18px;color:var(--ink-faint);font-size:13px">No teachers match.</div>';
+  host.querySelectorAll('.pface').forEach(c=>c.onclick=()=>openPortalTeacher(c.dataset.id,c));}
+function renderPortalPage(t){const host=byId('portalPage');const ov=t.n_obs?teacherAvg(t):null;
+  const n=NEXTSTEPS[t.id];const hasSum=n&&n.summary;const approved=hasSum&&n.status==='approved';
+  const meta=[t.section||null,t.dept?t.dept+(t.dept_role==='head'?' (head)':''):null,
+    t.n_obs?(t.n_obs+(t.n_obs===1?' observation':' observations')+' . June '+t.n_june+' . February '+t.n_feb):'No observations recorded yet this year'].filter(Boolean).join('   .   ');
+  const chip=ov!=null?`<span class="pchip" style="background:${rampAt(ov)}">${wordOf(ov)}</span>`:'<span class="pchip na">Not assessed</span>';
+  const frame=`<div class="pframe">${t.photo_url?`<img src="${esc(t.photo_url)}" alt="" onerror="this.outerHTML='<span class=pin>${esc(pInitials(t.name))}</span>'">`:`<span class="pin">${esc(pInitials(t.name))}</span>`}
+    ${PSTAR('#EF343A','-16px','-14px',0)}${PSTAR('#1257FF','-22px','72%',1.4)}${PSTAR('#EDFF21','92%','-18px',.7)}</div>`;
+  const items=t.observations.map(o=>({label:o.assessor||'Inspector',score:obsScore(o)})).filter(it=>it.score!=null);
+  const spec=items.length?specHTML(items,ov):'<div class="ns-empty">No observations to place on the scale yet.</div>';
+  const rail=`<div class="prail">${PORTAL_TYPES.map(ty=>(ty.live&&ov!=null)?`<div class="pseg lit" style="background:${rampAt(ov)}" title="${esc(ty.label)}: ${wordOf(ov)}"><span>${wordOf(ov)[0]}</span></div>`:`<div class="pseg" title="${esc(ty.label)}: Not assessed"></div>`).join('')}</div>
+    <div class="praillab">${PORTAL_TYPES.map(ty=>`<span>${ty.short}</span>`).join('')}</div>`;
+  const ev=t.n_obs?t.observations.map(o=>{const sc=obsScore(o);
+    const link=(o.token&&o.record_id)?`<a class="pevlink" target="_blank" rel="noopener" href="../Assets/R3/r3-record.html?id=${encodeURIComponent(o.record_id)}&token=${encodeURIComponent(o.token)}">${OEXT}Record</a>`:'';
+    return `<div class="pev"><span class="rt">${esc(roundLabel(o.round))}</span><span class="sd">${monthYear(o.date)}</span><b>${esc(o.subject_area||o.subject||'')}</b><span class="jw" style="color:${colOf(sc)}">${wordOf(sc)}</span>${link}</div>`;}).join('')
+    :'<div class="ns-empty">No observations recorded yet this year.</div>';
+  const sum=hasSum?`${approved?'':'<span class="ns-badge draft" style="margin-bottom:8px;display:inline-block">Draft</span>'}<p>${esc(n.summary)}</p><p style="margin-top:8px;font-size:10.5px;color:var(--ink-faint)">From the ${approved?'approved ':''}${esc(roundLabel(SNAP_ROUND))} coaching note. The full note lives in Observations.</p>`
+    :'<div class="ns-empty">No coaching summary for this teacher yet.</div>';
+  host.innerHTML=`<div class="pband">
+      <div>
+        <div class="bkick">AIS Sharjah . Teacher record . SPEA R3</div>
+        <h2 class="bname">${esc(t.name)}</h2>
+        <div class="bmeta">${esc(meta)}</div>
+        <div class="pchiprow">${chip}<span class="psubnote">Overall . best evidence wins</span></div>
+        ${t.n_obs?'<button class="pobtn" id="ppToObs" type="button">Open in Observations &#8599;</button>':''}
+      </div>${frame}</div>
+    <div class="ppgrid">
+      <div class="panel"><div class="ey">Where they sit on the SEAS scale</div>${spec}</div>
+      <div class="panel"><div class="ey">Assessment coverage . 8 observation types</div>${rail}</div>
+      <div class="panel"><div class="ey">Evidence . SPEA R3 observations</div>${ev}</div>
+      <div class="panel ppsum"><div class="ey">Next Steps &amp; Improvement</div>${sum}</div>
+    </div>`;
+  const ob=byId('ppToObs');if(ob)ob.onclick=()=>{const id=t.id;showBoard('teacher');setObs('teacher');openTeacher(id);};}
+function openPortalTeacher(id,cardEl){portalId=id;
+  const first=cardEl?cardEl.querySelector('.nm').getBoundingClientRect():null;
+  const t=teacherById(id);if(!t)return;renderPortalPage(t);portalLayout();
+  const target=document.querySelector('#portalPage .bname');
+  if(window.gsap&&first&&target){const last=target.getBoundingClientRect();
+    const dx=first.left-last.left,dy=first.top-last.top,sc=Math.min(1.6,first.height/last.height)||1;
+    gsap.set(target,{transformOrigin:'left top'});
+    gsap.fromTo(target,{x:dx,y:dy,scale:sc},{x:0,y:0,scale:1,duration:.6,ease:'power3.inOut',immediateRender:false});
+    gsap.fromTo('#portalPage .panel',{y:22},{y:0,duration:.55,stagger:.07,delay:.1,ease:'power3.out',immediateRender:false});
+    gsap.fromTo('#portalPage .pframe',{y:18,rotate:5},{y:0,rotate:1.6,duration:.8,ease:'power3.out',immediateRender:false});
+    settle(target);settle('#portalPage .panel');settle('#portalPage .pframe');
+  } else reveal('#portalPage .panel',.06);
+  window.scrollTo({top:0,behavior:'smooth'});}
+byId('psearch').addEventListener('input',()=>{if(portalId!=null){portalId=null;portalLayout();}renderPortalBrowse();});
+byId('portalBack').onclick=()=>{portalId=null;renderPortal();reveal('#portalBrowse',0);};
 
 /* ============================================================= SNAPSHOT (the June R3 sweep)
    A governance "at a glance" board, scoped to the Week 11 / June round only. Three views via the
@@ -2223,7 +2523,7 @@ function reqFS(){const el=document.documentElement,rf=el.requestFullscreen||el.w
 function exitFS(){if(document.fullscreenElement||document.webkitFullscreenElement){const xf=document.exitFullscreen||document.webkitExitFullscreen;if(xf){try{const p=xf.call(document);if(p&&p.catch)p.catch(()=>{});}catch(e){}}}}
 
 /* ============================================================= router + FLIP */
-const views={snapshot:'v-snapshot',coverage:'v-coverage',teacher:'v-teacher',settings:'v-settings'};
+const views={snapshot:'v-snapshot',coverage:'v-coverage',teacher:'v-teacher',portal:'v-portal',settings:'v-settings'};
 let current='snapshot';
 /* Observations tab: the R3 Obs button fans out a menu of levels. obsView is the chosen level:
    'hub' (nothing picked yet) | 'teacher' (search + list/detail, the only data-wired level) |
@@ -2238,9 +2538,10 @@ function layoutObs(){const teacher=obsView==='teacher';
   byId('fltNoobs').hidden=!teacher||viewing;    // filter only while browsing the list
   byId('obsListCard').hidden=!teacher||viewing;
   byId('obsDetail').hidden=!viewing;
-  byId('obsPlaceholder').hidden=obsView!=='placeholder';}
+  byId('obsPlaceholder').hidden=obsView!=='placeholder';
+  byId('obsDept').hidden=obsView!=='dept';}
 function setObs(v){obsView=v;layoutObs();}
-function setObsMenu(open){byId('obsMenu').hidden=!open;if(!open)byId('subSchool').hidden=true;}
+function setObsMenu(open){byId('obsMenu').hidden=!open;if(!open){byId('subSchool').hidden=true;const sd=byId('subDept');if(sd)sd.hidden=true;}}
 function showPlaceholder(kick,title,note){setObs('placeholder');
   byId('phKick').textContent=kick;byId('phTitle').textContent=title;byId('phNote').textContent=note||'';
   reveal('#obsPlaceholder',0);window.scrollTo({top:0,behavior:'smooth'});}
@@ -2259,8 +2560,8 @@ function settle(sel,ms){setTimeout(()=>{try{if(window.gsap){gsap.killTweensOf(se
 function reveal(sel,stagger){if(!window.gsap)return;gsap.fromTo(sel,{y:18},{y:0,duration:.5,stagger:stagger||.05,ease:'power3.out',immediateRender:false});settle(sel);}
 /* hash routing: each tab gets its own URL so the link changes and is bookmarkable/refresh-safe.
    coverage = no hash (default), Observations = #teachers, Settings = #settings. */
-const boardSlug={snapshot:'',coverage:'coverage',teacher:'teachers',settings:'settings'};
-const slugBoard={'':'snapshot',snapshot:'snapshot',coverage:'coverage',teachers:'teacher',settings:'settings'};
+const boardSlug={snapshot:'',coverage:'coverage',teacher:'teachers',portal:'portal',settings:'settings'};
+const slugBoard={'':'snapshot',snapshot:'snapshot',coverage:'coverage',teachers:'teacher',portal:'portal',settings:'settings'};
 const REPORT_SLUG={simple:'report',indepth:'report-indepth'};   // the report is its own standalone route under the Snapshot board (v0.47)
 function openReport(kind){snapReport=kind;if(current!=='snapshot')showBoard('snapshot');renderSnapshot();reveal('#snapReport',0);if(location.hash.slice(1)!==REPORT_SLUG[kind])location.hash=REPORT_SLUG[kind];}
 function exitReport(){snapReport=null;if(location.hash)history.replaceState(null,'',location.pathname+location.search);renderSnapshot();}
@@ -2275,10 +2576,11 @@ function showBoard(b,opts={}){
   if(current==='settings'&&b!=='settings')adminPw=null;   // lock the writes + re-prompt next time
   Object.entries(views).forEach(([k,id])=>byId(id).hidden=(k!==b));
   setPill(b);current=b;syncHash(b);
-  byId('printFloat').hidden=(b==='settings');   // print available on the 3 data boards, not Settings
+  byId('printFloat').hidden=(b==='settings'||b==='portal');   // print available on the 3 data boards, not Settings
   if(b==='snapshot'){renderSnapshot();snapReveal();}
   if(b==='coverage'){renderCoverage();animateStats();reveal('#v-coverage .panel',.04);}
   if(b==='teacher'){selectedId=null;byId('tsearch').value='';fltNoobs=false;byId('fltNoobs').classList.remove('on');setObsMenu(false);setObs('hub');reveal('#v-teacher .panel',.06);}
+  if(b==='portal'){portalId=null;renderPortal();reveal('#v-portal .panel',.05);}
   if(b==='settings')reveal('#v-settings .panel',.08);
   if(b!=='teacher'&&!opts.force)window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -2345,6 +2647,8 @@ function repaintRestore(){if(!snapReady)return;try{
   if(current==='snapshot'){ if(snapView==='story'){ if(beatEls[storyIdx]) buildBeatViz(beatEls[storyIdx]); } else renderDetail(); }
   else if(current==='coverage'){ renderCoverage(); }
   else if(current==='teacher' && byId('obsDetail') && !byId('obsDetail').hidden && selectedId!=null){ renderTeacher(teacherById(selectedId)); }
+  else if(current==='teacher' && obsView==='dept' && deptName){ renderDept(deptName); }
+  else if(current==='portal'){ renderPortal(); }
 }catch(e){}}
 addEventListener('pageshow',e=>{if(e.persisted)repaintRestore();});   // bfcache restore (back/forward, iOS tab restore)
 document.addEventListener('visibilitychange',()=>{if(document.hidden)starsOff();else{if(document.documentElement.getAttribute('data-stars')==='on')starsOn();repaintRestore();}});
@@ -2357,6 +2661,8 @@ function applyTheme(t){document.documentElement.setAttribute('data-theme',t);
   if(current==='snapshot'&&snapReady)renderSnapshot();
   if(current==='coverage'){renderRing();renderSpread();renderDist();}
   if(current==='teacher'&&!byId('obsDetail').hidden&&selectedId!=null)renderTeacher(teacherById(selectedId));
+  if(current==='teacher'&&obsView==='dept'&&deptName)renderDept(deptName);
+  if(current==='portal')renderPortal();
   try{localStorage.setItem('ais-dash-theme',t)}catch(e){}}
 function toggleTheme(){applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');}
 byId('themeFloat').onclick=toggleTheme;     // floating top-right button (the only theme control now; the Settings switch was removed v0.38)
@@ -2463,6 +2769,8 @@ addEventListener('hashchange',()=>{const h=location.hash.slice(1);
 byId('r3ObsBtn').onclick=e=>{e.stopPropagation();const open=byId('obsMenu').hidden;setObsMenu(open);if(open)reveal('#obsMenu .obsmi',.05);};
 byId('obsMenu').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;e.stopPropagation();
   if(b.dataset.sub==='school'){const s=byId('subSchool');s.hidden=!s.hidden;if(!s.hidden)reveal('#subSchool .obsmi2',.04);return;}
+  if(b.dataset.sub==='dept'){const s=byId('subDept');if(s.hidden)buildDeptMenu();s.hidden=!s.hidden;if(!s.hidden)reveal('#subDept .obsmi2',.04);return;}
+  if(b.dataset.dept){setObsMenu(false);enterDeptView(b.dataset.dept);return;}
   if(b.dataset.act==='teacher'){setObsMenu(false);enterTeacherLevel();return;}
   if(b.dataset.act==='placeholder'){setObsMenu(false);showPlaceholder(b.dataset.kick,b.dataset.title,b.dataset.note);return;}});
 document.addEventListener('click',()=>setObsMenu(false));   // click anywhere else closes the menu
@@ -2583,7 +2891,7 @@ function shapeSnapshot(raw){
   const obsScores=new Map();
   for(const r of scoreRows){if(!obsScores.has(r.assessment_id))obsScores.set(r.assessment_id,{});obsScores.get(r.assessment_id)[r.code]=r.score;}
   const tById=new Map();
-  for(const r of teacherRows){if(!tById.has(r.id))tById.set(r.id,{id:r.id,name:r.full_name,section:r.section||null,dept:r.dept||null,dept_role:r.dept_role||null,observations:[]});}
+  for(const r of teacherRows){if(!tById.has(r.id))tById.set(r.id,{id:r.id,name:r.full_name,section:r.section||null,dept:r.dept||null,dept_role:r.dept_role||null,photo_url:r.photo_url||null,observations:[]});}
   const fmtDate=d=>d?new Date(d).toISOString().slice(0,10):null;
   for(const a of assessmentRows){if(!a.teacher_id||!tById.has(a.teacher_id))continue;
     const scores=obsScores.get(a.id)||{};const vals=Object.values(scores);const overall=vals.length?Math.min(...vals):null;
@@ -2596,7 +2904,7 @@ function shapeSnapshot(raw){
     const n_obs=obs.length,n_june=obs.filter(o=>o.round==='R3 June 26').length,n_feb=obs.filter(o=>o.round==='R3 February 26').length;
     const best={};for(const o of obs)for(const[code,sc]of Object.entries(o.scores)){if(best[code]==null||sc<best[code])best[code]=sc;}
     const overalls=obs.map(o=>o.overall).filter(v=>v!=null);const overall=overalls.length?Math.min(...overalls):null;
-    teachers.push({id:t.id,name:t.name,section:t.section,dept:t.dept,dept_role:t.dept_role,observed:n_obs>0,n_obs,n_june,n_feb,overall,best,observations:obs});}
+    teachers.push({id:t.id,name:t.name,section:t.section,dept:t.dept,dept_role:t.dept_role,photo_url:t.photo_url||null,observed:n_obs>0,n_obs,n_june,n_feb,overall,best,observations:obs});}
   teachers.sort((a,b)=>a.name.localeCompare(b.name));
   const distMap={};for(const t of teachers)distMap[t.n_obs]=(distMap[t.n_obs]||0)+1;
   const maxN=Math.max(...teachers.map(t=>t.n_obs));
@@ -2632,6 +2940,8 @@ async function loadLive(){
     if(current==='snapshot')renderSnapshot();                           // re-render whatever is showing
     else if(current==='coverage'){renderCoverage();animateStats();}
     else if(current==='teacher'&&!byId('obsDetail').hidden&&selectedId!=null)renderTeacher(teacherById(selectedId));
+    else if(current==='teacher'&&obsView==='dept'&&deptName)renderDept(deptName);
+    else if(current==='portal')renderPortal();
   }catch(e){/* offline / blocked / timeout -> keep the baked snapshot, no error UI */}
 }
 runEntry();
