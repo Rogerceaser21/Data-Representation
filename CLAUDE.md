@@ -91,6 +91,7 @@ Data-Representation/                          github.com/Rogerceaser21/Data-Repr
 │   ├── encrypt.sh                             build · inlines data.js ENCRYPTED into index.html (password ais2026ais)
 │   ├── password-template.html                 AIS-themed StatiCrypt gate (re-themed from R3)
 │   ├── CHANGELOG.md                           per-release changelog (every dash-vX.Y)
+│   ├── apps-script-photos/                    staff-photo Drive->Supabase mirror (clasp, admin.user, daily 03:00 trigger; README has setup)
 │   └── assets/                                ais-white.png + ais-navy.png + snapshot-cover.jpg + story/ illustrated motifs (public, non-sensitive)
 ├── dashboard-previews/                        dashboard design concepts · spea-dashboard.html = dashboard-v1 (parked); built from index.html slides 3-4
 ├── README.md                                 STALE (still describes v0.1 pitch only)
