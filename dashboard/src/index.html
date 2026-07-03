@@ -195,6 +195,8 @@ h2.big em{font-style:italic;color:var(--y);text-shadow:var(--glow) color-mix(in 
 
 /* ===== teacher drill-down ===== */
 .thead{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.tavatar{width:58px;aspect-ratio:2/3;border-radius:12px;overflow:hidden;flex:none;border:1px solid var(--edge-soft);box-shadow:0 10px 24px -12px var(--shadow)}
+.tavatar img{width:100%;height:100%;object-fit:cover;object-position:50% 12%;display:block}
 .thead .who{margin-right:auto}
 .thead .who h2{font-family:var(--display);font-weight:600;font-size:clamp(24px,3.4vw,38px);line-height:1.02;letter-spacing:-.01em}
 .thead .who .meta{font-size:12.5px;color:var(--ink-mid);margin-top:6px;font-weight:600}
@@ -830,24 +832,26 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
 .pframe .pin{display:flex;align-items:center;justify-content:center;width:100%;height:100%;border-radius:13px;background:#eef0f6;font-family:var(--display);font-style:italic;font-weight:600;font-size:56px;color:#6b7790}
 .pstar{position:absolute;width:22px;height:22px;filter:drop-shadow(0 0 8px currentColor);animation:pdrift 7s ease-in-out infinite}
 @keyframes pdrift{0%,100%{transform:translateY(0) rotate(-8deg)}50%{transform:translateY(-12px) rotate(10deg)}}
-/* data tiles */
-.ppgrid{display:grid;grid-template-columns:1.35fr 1fr;gap:14px;margin-top:16px;align-items:start}
-.ppgrid .panel{margin:0}
-.prail{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:6px}
-.pseg{height:44px;border-radius:10px;background:var(--na);opacity:.5;position:relative}
-.pseg.lit{opacity:1;box-shadow:0 8px 20px -8px var(--shadow)}
+/* coverage rail inside the hero = the portal menu (v0.56) */
+.hrailwrap{margin-top:26px;max-width:560px}
+.hraillbl{font-size:9.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#8fa2d8;margin-bottom:9px}
+.prail{display:grid;grid-template-columns:repeat(8,1fr);gap:6px}
+.pseg{height:40px;border-radius:10px;border:0;padding:0;font:inherit;background:rgba(255,255,255,.09);position:relative}
+.pseg:disabled{cursor:default}
+.pseg.me{cursor:pointer;transition:transform .2s ease,box-shadow .2s ease}
+.pseg.me:hover{transform:translateY(-2px);box-shadow:0 10px 24px -8px rgba(0,0,0,.55)}
+.pseg.lit{box-shadow:0 8px 20px -8px rgba(0,0,0,.5)}
 .pseg span{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:10px;font-weight:800;color:#fff}
-.praillab{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:6px;font-size:8px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-faint);text-align:center}
-.pev{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px dashed var(--edge-soft);font-size:13px;flex-wrap:wrap}
-.pev:last-child{border-bottom:0}
-.pev .rt{font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-mid);border:1px solid var(--edge-soft);border-radius:7px;padding:3px 8px;background:var(--panel)}
-.pev .sd{color:var(--ink-faint);font-size:11.5px;min-width:74px}
-.pev b{margin-right:auto;font-weight:650}
-.pev .jw{font-family:var(--display);font-style:italic;font-weight:600;font-size:15px}
-.pevlink{display:inline-flex;align-items:center;gap:5px;color:var(--ink-mid);font-size:11px;text-decoration:none;border:1px solid var(--edge);border-radius:8px;padding:3px 8px;transition:.2s}
-.pevlink svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:1.6}
-.pevlink:hover{color:var(--ink)}
-.ppsum p{margin:0;font-size:12.5px;line-height:1.7;color:var(--ink-dim)}
+.praillab{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:6px;font-size:8px;letter-spacing:.04em;text-transform:uppercase;color:#8fa2d8;text-align:center}
+/* SPEA section under the hero: summary card + pop-down full record */
+.pptype{margin-top:16px}
+.ppsumhead{display:flex;align-items:center;gap:10px}
+.ppsum .ppsump{margin:10px 0 0;font-size:13.5px;line-height:1.75;color:var(--ink-dim);max-width:78ch}
+.ppsum .oexpbtn{padding:12px 6px 0}
+.oexpbtn.open .oexpchev{transform:rotate(180deg)}
+.pptbody{display:grid;grid-template-rows:0fr;transition:grid-template-rows .5s cubic-bezier(.4,0,.2,1)}
+.pptype.open .pptbody{grid-template-rows:1fr}
+.pptbody-in{overflow:hidden;min-height:0}
 /* grouped yearbook wall */
 .psecthead{display:flex;align-items:baseline;gap:12px;margin:26px 0 12px}
 .psecthead:first-child{margin-top:4px}
@@ -864,7 +868,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
 .pfchip{position:absolute;top:10px;right:10px;font-size:9.5px;font-weight:800;letter-spacing:.05em;padding:4px 10px;border-radius:9px;color:#fff;backdrop-filter:blur(6px)}
 .pface.init{display:flex;align-items:center;justify-content:center}
 .pface.init .pin{font-family:var(--display);font-style:italic;font-weight:600;font-size:42px;color:var(--ink-mid)}
-@media(max-width:860px){.pband{grid-template-columns:1fr}.pframe{margin:0 auto;order:-1}.ppgrid{grid-template-columns:1fr}}
+@media(max-width:860px){.pband{grid-template-columns:1fr}.pframe{margin:0 auto;order:-1}.hrailwrap{max-width:none}}
 @media(max-width:560px){.pwall{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}}
 /* ---- Department view (Phase 3) ---- */
 .obslab{font-size:8.5px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint);padding:8px 14px 4px}
@@ -1178,6 +1182,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
     <div id="obsDetail" hidden>
       <div class="panel" style="margin-top:14px">
         <div class="thead">
+          <div class="tavatar" id="tAvatar" hidden></div>
           <div class="who">
             <h2 id="tName">.</h2>
             <div class="meta" id="tMeta">.</div>
@@ -1262,6 +1267,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
     </div>
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
+        <div class="vrow"><span class="vtag">v0.56</span><span class="vnote">The Teacher portal page became a real teacher hub. The eight-type Assessment coverage rail now lives inside the navy hero and acts as the portal menu (only SPEA R3 is live today; Lesson Observations and OTP/APR join it next year). Clicking SPEA R3 leads to its section: the coaching summary appears as the main thing once the observer has approved it, with a pop-down arrow revealing the same observation cards used on the Observations board (Inspection details and Skills observed open as usual, but the observer's verbatim notes and the locked-record links never appear on the teacher-facing copy) plus the full approved Next Steps note. Draft notes no longer show on the portal at all. The Observations board's teacher header also gained the staff photo beside the name.</span></div>
         <div class="vrow"><span class="vtag">v0.55</span><span class="vnote">The Teacher portal. A new fifth tab: every register teacher has their own page (the "Star file": a navy band with their full staff portrait, the AIS stars, their overall SEAS judgement, then their place on the SEAS scale, coverage of the eight observation types, their R3 evidence with locked-record links, and their coaching summary). Browse is a yearbook wall of all 149 staff grouped by school section, with search and section filters; staff photos flow from Drive into Supabase nightly (never through GitHub). The Observations R3 Obs menu gained a working Department Level: Humanities renders as a department board (navy header with the head, the team, teachers observed, average judgement and spread, then a teacher-by-type matrix; clicking a teacher opens their portal page). Departments appear automatically as they are marked in the staff Sheet.</span></div>
         <div class="vrow"><span class="vtag">v0.54</span><span class="vnote">One control row, one Compare entry. The separate February / June round row is gone. The Compare button beside the phase tabs opens a single menu with two sections: Compare (Primary and Kindy against Secondary within June; February against June for teacher movement) and View a round (February's numbers-only board; June, the default). The All / Primary and Kindy / Secondary filter now lives inside the February and Compare boards themselves. Menu entries are generated from the data, so future rounds appear automatically, and clicking Primary and Kindy or Secondary returns to the June board. New Better-Never-Stops entrance: the three AIS logo stars (approved Red, Blue and Yellow) comet in from the left, top and bottom carrying the motto, stand for two seconds, then drift up into the star-field as the title card assembles; 5.5 seconds, click to skip, and any load without animation support falls back to the plain title card.</span></div>
         <div class="vrow"><span class="vtag">v0.53</span><span class="vnote">The Snapshot gains a round selector (February, June, Compare). February shows a numbers-only board (lessons, teachers, average progress, six-point distribution), since only progress ratings and short observation notes were recorded that round. Compare puts February against June: headline deltas, a paired distribution, a movement slopegraph and a February-to-June transition matrix for the teachers seen in both rounds, all filterable by All / Primary and Kindy / Secondary. Numbers only; June's Story, Detail and Report views are unchanged.</span></div>
@@ -1338,7 +1344,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
   </div>
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.55</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.56</span></span>
   </div>
 </div>
 
@@ -1514,7 +1520,10 @@ function obsList(t){const out=[];
   t.observations.forEach((o,i)=>{
     out.push({key:i,who:o.assessor||'Inspector',obs:o,items:Object.entries(o.scores||{}).map(([code,score])=>({code,label:CRIT_LABEL[code]||code,score})),avg:obsScore(o)});});
   return out;}
-function renderObsList(t){const host=byId('obslist');host.innerHTML='';
+/* opts.teacherView (portal reuse): no Observation-notes expander, no record link, no select wiring
+   (the verbatim observer text never reaches the teacher-facing copy). opts.svgSP/svgTE override the
+   gauge svg ids so the portal copy never collides with the board's #svgArc/#svgArcT. */
+function renderObsList(t,host,opts){host=host||byId('obslist');opts=opts||{};host.innerHTML='';
   obsList(t).forEach(it=>{const card=document.createElement('div');
     card.className='ocard '+(it.all?'all':'session')+(String(it.key)===String(selectedObs)?' sel':'');card.dataset.key=it.key;
     if(it.all){
@@ -1523,8 +1532,8 @@ function renderObsList(t){const host=byId('obslist');host.innerHTML='';
       // middle IS the circle's middle; with .allmain align-items:center that lines up with the
       // Spectrum bar's middle. The titles (Student Progress | All observations | Teaching) are
       // headers in .allhead, one per column, never inside the gauges.
-      const gaugeSP=`<div class="allgauge"><svg id="svgArc" viewBox="0 20 240 200" width="196" height="163"></svg></div>`;
-      const gaugeTE=`<div class="allgauge"><svg id="svgArcT" viewBox="0 20 240 200" width="196" height="163"></svg></div>`;
+      const gaugeSP=`<div class="allgauge"><svg id="${opts.svgSP||'svgArc'}" viewBox="0 20 240 200" width="196" height="163"></svg></div>`;
+      const gaugeTE=`<div class="allgauge"><svg id="${opts.svgTE||'svgArcT'}" viewBox="0 20 240 200" width="196" height="163"></svg></div>`;
       card.innerHTML=`<div class="allhead"><span class="ey-bold gtitle">Student Progress</span><div class="owho"><span class="ey-bold">All observations</span><small>${it.sub}</small></div><span class="ey-bold gtitle">Teaching</span></div>`+
         `<div class="allmain">${gaugeSP}<div class="allleft">${aspec}</div>${gaugeTE}</div>`;
     }else{
@@ -1538,13 +1547,14 @@ function renderObsList(t){const host=byId('obslist');host.innerHTML='';
         it.items.map(j=>`<div class="odrow"><span class="odn">${esc(j.label)}</span><span class="odv">${wordOf(j.score)}</span><i class="osw" style="background:${skillCol(j.code)}"></i></div>`).join('')+`</div></div></div>`)
         :`<div class="ocol skills"><div class="ocolttl">Skills observed</div><div class="ona">No judgements recorded.</div></div>`;
       const ramp=it.items.length?`<div class="orampfull">${specHTML(it.items,it.avg)}</div>`:'';
-      const r3=(o.token&&o.record_id)?`<a class="oexpr3" target="_blank" rel="noopener" href="../Assets/R3/r3-record.html?id=${encodeURIComponent(o.record_id)}&token=${encodeURIComponent(o.token)}">${OEXT}Open the R3 record</a>`:'<span></span>';
-      const fields=[o.notes?`<div class="ofield"><div class="ofl">Observation notes</div><p>${esc(o.notes)}</p></div>`:'',o.strengths?`<div class="ofield"><div class="ofl">Strengths</div><p>${esc(o.strengths)}</p></div>`:'',o.weakness?`<div class="ofield"><div class="ofl">Areas to develop</div><p>${esc(o.weakness)}</p></div>`:''].join('');
+      const r3=(!opts.teacherView&&o.token&&o.record_id)?`<a class="oexpr3" target="_blank" rel="noopener" href="../Assets/R3/r3-record.html?id=${encodeURIComponent(o.record_id)}&token=${encodeURIComponent(o.token)}">${OEXT}Open the R3 record</a>`:'<span></span>';
+      const fields=opts.teacherView?'':[o.notes?`<div class="ofield"><div class="ofl">Observation notes</div><p>${esc(o.notes)}</p></div>`:'',o.strengths?`<div class="ofield"><div class="ofl">Strengths</div><p>${esc(o.strengths)}</p></div>`:'',o.weakness?`<div class="ofield"><div class="ofl">Areas to develop</div><p>${esc(o.weakness)}</p></div>`:''].join('');
       const exp=fields?`<div class="oexppanel"><div class="oexppanel-in"><div class="oexpbody">${fields}</div></div></div>`:'';
+      const notesBtn=opts.teacherView?'<span></span>':`<button class="oexpbtn" type="button">Observation notes ${OEXPCHEV}</button>`;
       card.innerHTML=`<div class="octop"><div class="otopcols">${insp}${sk}</div>${ramp}</div>`+
-        `<div class="oexprow"><div class="oexpname"><span class="oacc"></span>${esc(t.name)}</div><button class="oexpbtn" type="button">Observation notes ${OEXPCHEV}</button>${r3}</div>${exp}`;
+        `<div class="oexprow"><div class="oexpname"><span class="oacc"></span>${esc(t.name)}</div>${notesBtn}${r3}</div>${exp}`;
     }
-    card.onclick=()=>selectObs(t,it.key);host.appendChild(card);
+    if(!opts.teacherView)card.onclick=()=>selectObs(t,it.key);host.appendChild(card);
     // spectrum entrance is CSS (.ospec animation), so it just runs on insert; no JS trigger needed
     if(!it.all){
       // every click on the card selects it: the handlers below do NOT stop propagation, so the click bubbles to card.onclick
@@ -1569,6 +1579,7 @@ function selectObs(t,key){selectedObs=key;
 }
 function renderTeacher(t){
   byId('tName').textContent=t.name;
+  const av=byId('tAvatar');if(av){av.hidden=!t.photo_url;av.innerHTML=t.photo_url?`<img src="${esc(t.photo_url)}" alt="" onerror="this.parentElement.hidden=true">`:'';}
   const bits=[t.n_obs+(t.n_obs===1?' observation':' observations')];
   if(t.dept)bits.push(t.dept+(t.dept_role==='head'?' (head)':''));
   if(t.section)bits.push(t.section);
@@ -1638,8 +1649,17 @@ function nsBullet(b,i){const rub=nsRubLine(b),src=nsSrc(b),chip=nsChip(b),acc=ns
       (src?`<p class="ns-src">Technique source: ${src}</p>`:'')+
       nsQuote(b)+
       (rub?`<p class="ns-rub">${rub}</p>`:'')+`</div></div>`;}
-function renderNextSteps(t){const host=byId('nextSteps');if(!host)return;
+/* opts.teacherView (portal reuse): approved notes only, no admin actions, no edit state. */
+function renderNextSteps(t,host,opts){host=host||byId('nextSteps');opts=opts||{};if(!host)return;
   const n=NEXTSTEPS[t.id];
+  if(opts.teacherView){
+    if(!n||n.status!=='approved'){host.innerHTML=`<div class="ey">Next Steps &amp; Improvement</div><div class="ns-empty">Your coaching note appears here once your observer approves it.</div>`;return;}
+    const tb=Array.isArray(n.bullets)?n.bullets:[];
+    host.innerHTML=`<div class="ns-head"><div class="ns-title"><div class="ey" style="margin:0">Next Steps &amp; Improvement</div><span class="ns-badge approved">Approved</span></div></div>`+
+      nsLadders(n)+(n.summary?`<p class="ns-sum">${esc(n.summary)}</p>`:'')+
+      `<div class="ns-bl fcbl">${tb.map((b,i)=>nsBullet(b,i)).join('')}</div>`;
+    return;
+  }
   if(!n){host.dataset.edit='';host.innerHTML=`<div class="ey">Next Steps &amp; Improvement</div><div class="ns-empty">No coaching note has been generated for this teacher in this round yet.</div>`;return;}
   const badge=n.status==='approved'?'<span class="ns-badge approved">Approved</span>':'<span class="ns-badge draft">Draft</span>';
   const bl=Array.isArray(n.bullets)?n.bullets:[];
@@ -1755,11 +1775,13 @@ function renderDept(name){const host=byId('obsDept');if(!host)return;
 
 /* ============================================================= TEACHER PORTAL (Phase 2, design C)
    The 5th pill (#portal). Browse = yearbook wall of every register teacher grouped by school
-   section (full 2:3 portraits, name scrim, SEAS chip; initials disc when no photo). Page = the
-   "Star file": navy band hero (white-framed portrait + drifting AIS logo stars + huge serif name)
-   over house data tiles (SEAS spectrum with their observation dots, 8-type coverage rail,
-   evidence lines with locked-record links, Next Steps summary). Self-contained per teacher
-   (SSO-ready). Photos: teachers.photo_url from the Phase 1 Drive -> Supabase mirror. */
+   section (full 2:3 portraits, name scrim, SEAS chip; initials disc when no photo). Page (v0.56) =
+   navy band hero (white-framed portrait + drifting AIS logo stars + huge serif name) with the
+   8-type coverage rail INSIDE it as the portal menu; clicking a lit type (only SPEA R3 today)
+   leads to that type's section: the approved coaching summary first, then a pop-down arrow
+   revealing the REUSED Observations cards (teacherView: no verbatim observer notes, no record
+   links) + the full approved Next Steps note. Nothing shows until the observer approves.
+   Self-contained per teacher (SSO-ready). Photos: teachers.photo_url from the Drive mirror. */
 const PORTAL_TYPES=[
   {key:'spea',label:'SPEA R3 Observations',short:'SPEA',live:true},
   {key:'walk',label:'Walkthroughs',short:'Walk'},
@@ -1805,36 +1827,48 @@ function renderPortalBrowse(){const q=(byId('psearch').value||'').toLowerCase();
     ||'<div style="padding:18px;color:var(--ink-faint);font-size:13px">No teachers match.</div>';
   host.querySelectorAll('.pface').forEach(c=>c.onclick=()=>openPortalTeacher(c.dataset.id,c));}
 function renderPortalPage(t){const host=byId('portalPage');const ov=t.n_obs?teacherAvg(t):null;
-  const n=NEXTSTEPS[t.id];const hasSum=n&&n.summary;const approved=hasSum&&n.status==='approved';
+  const n=NEXTSTEPS[t.id];const approved=!!(n&&n.summary&&n.status==='approved');
   const meta=[t.section||null,t.dept?t.dept+(t.dept_role==='head'?' (head)':''):null,
     t.n_obs?(t.n_obs+(t.n_obs===1?' observation':' observations')+' . June '+t.n_june+' . February '+t.n_feb):'No observations recorded yet this year'].filter(Boolean).join('   .   ');
   const chip=ov!=null?`<span class="pchip" style="background:${rampAt(ov)}">${wordOf(ov)}</span>`:'<span class="pchip na">Not assessed</span>';
   const frame=`<div class="pframe">${t.photo_url?`<img src="${esc(t.photo_url)}" alt="" onerror="this.outerHTML='<span class=pin>${esc(pInitials(t.name))}</span>'">`:`<span class="pin">${esc(pInitials(t.name))}</span>`}
     ${PSTAR('#EF343A','-16px','-14px',0)}${PSTAR('#1257FF','-22px','72%',1.4)}${PSTAR('#EDFF21','92%','-18px',.7)}</div>`;
-  const items=t.observations.map(o=>({label:o.assessor||'Inspector',score:obsScore(o)})).filter(it=>it.score!=null);
-  const spec=items.length?specHTML(items,ov):'<div class="ns-empty">No observations to place on the scale yet.</div>';
-  const rail=`<div class="prail">${PORTAL_TYPES.map(ty=>(ty.live&&ov!=null)?`<div class="pseg lit" style="background:${rampAt(ov)}" title="${esc(ty.label)}: ${wordOf(ov)}"><span>${wordOf(ov)[0]}</span></div>`:`<div class="pseg" title="${esc(ty.label)}: Not assessed"></div>`).join('')}</div>
-    <div class="praillab">${PORTAL_TYPES.map(ty=>`<span>${ty.short}</span>`).join('')}</div>`;
-  const ev=t.n_obs?t.observations.map(o=>{const sc=obsScore(o);
-    const link=(o.token&&o.record_id)?`<a class="pevlink" target="_blank" rel="noopener" href="../Assets/R3/r3-record.html?id=${encodeURIComponent(o.record_id)}&token=${encodeURIComponent(o.token)}">${OEXT}Record</a>`:'';
-    return `<div class="pev"><span class="rt">${esc(roundLabel(o.round))}</span><span class="sd">${monthYear(o.date)}</span><b>${esc(o.subject_area||o.subject||'')}</b><span class="jw" style="color:${colOf(sc)}">${wordOf(sc)}</span>${link}</div>`;}).join('')
-    :'<div class="ns-empty">No observations recorded yet this year.</div>';
-  const sum=hasSum?`${approved?'':'<span class="ns-badge draft" style="margin-bottom:8px;display:inline-block">Draft</span>'}<p>${esc(n.summary)}</p><p style="margin-top:8px;font-size:10.5px;color:var(--ink-faint)">From the ${approved?'approved ':''}${esc(roundLabel(SNAP_ROUND))} coaching note. The full note lives in Observations.</p>`
-    :'<div class="ns-empty">No coaching summary for this teacher yet.</div>';
+  // The coverage rail lives INSIDE the hero and is the portal menu: one tile per observation type,
+  // lit + clickable when that type has content (only SPEA R3 today; Lesson Obs / OTP-APR join later).
+  const rail=`<div class="hrailwrap"><div class="hraillbl">Assessment coverage . 8 observation types</div>
+    <div class="prail">${PORTAL_TYPES.map(ty=>{const lit=ty.live&&ov!=null;
+      return `<button type="button" class="pseg${lit?' lit me':''}"${lit?` style="background:${rampAt(ov)}"`:' disabled'} data-ptype="${ty.key}" title="${esc(ty.label)}: ${lit?wordOf(ov):'Not assessed'}">${lit?`<span>${wordOf(ov)[0]}</span>`:''}</button>`;}).join('')}</div>
+    <div class="praillab">${PORTAL_TYPES.map(ty=>`<span>${ty.short}</span>`).join('')}</div></div>`;
+  // SPEA section under the hero: the approved coaching summary is the main thing; the full record
+  // (the Observations cards + the full note, teacher view) sits behind the pop-down arrow.
+  const sum=approved?`<p class="ppsump">${esc(n.summary)}</p>`
+    :`<div class="ns-empty">${t.n_obs?'The summary appears here once your observer approves this round’s coaching note.':'No observations recorded yet this year.'}</div>`;
   host.innerHTML=`<div class="pband">
       <div>
         <div class="bkick">AIS Sharjah . Teacher record . SPEA R3</div>
         <h2 class="bname">${esc(t.name)}</h2>
         <div class="bmeta">${esc(meta)}</div>
         <div class="pchiprow">${chip}<span class="psubnote">Overall . best evidence wins</span></div>
+        ${rail}
         ${t.n_obs?'<button class="pobtn" id="ppToObs" type="button">Open in Observations &#8599;</button>':''}
       </div>${frame}</div>
-    <div class="ppgrid">
-      <div class="panel"><div class="ey">Where they sit on the SEAS scale</div>${spec}</div>
-      <div class="panel"><div class="ey">Assessment coverage . 8 observation types</div>${rail}</div>
-      <div class="panel"><div class="ey">Evidence . SPEA R3 observations</div>${ev}</div>
-      <div class="panel ppsum"><div class="ey">Next Steps &amp; Improvement</div>${sum}</div>
+    <div class="pptype" id="ppType">
+      <div class="panel ppsum"><div class="ppsumhead"><div class="ey" style="margin:0">SPEA R3 Observation . summary</div>${approved?'<span class="ns-badge approved">Approved</span>':''}</div>
+        ${sum}${approved?`<button class="oexpbtn" id="ppMore" type="button">See the full record ${OEXPCHEV}</button>`:''}</div>
+      <div class="pptbody"><div class="pptbody-in">
+        <div class="panel" style="margin-top:14px"><div class="ey">Observations . SPEA R3</div><div class="obslist" id="ppObslist"></div></div>
+        <div class="panel" id="ppNextSteps" style="margin-top:14px"></div>
+      </div></div>
     </div>`;
+  if(approved){   // teacher-view copies of the Observations cards + the full note (built at render, freeze-safe)
+    selectedObs='all';
+    renderObsList(t,byId('ppObslist'),{teacherView:true,svgSP:'svgArcP',svgTE:'svgArcTP'});
+    buildArc(t,'svgArcP',progScore,progAvg,false);buildArc(t,'svgArcTP',teachScore,teachAvg,true);
+    renderNextSteps(t,byId('ppNextSteps'),{teacherView:true});
+    const more=byId('ppMore');more.onclick=()=>{const open=byId('ppType').classList.toggle('open');more.classList.toggle('open',open);};
+  }
+  host.querySelectorAll('[data-ptype]').forEach(b=>{if(b.disabled)return;
+    b.onclick=()=>byId('ppType').scrollIntoView({behavior:'smooth',block:'start'});});
   const ob=byId('ppToObs');if(ob)ob.onclick=()=>{const id=t.id;showBoard('teacher');setObs('teacher');openTeacher(id);};}
 function openPortalTeacher(id,cardEl){portalId=id;
   const first=cardEl?cardEl.querySelector('.nm').getBoundingClientRect():null;

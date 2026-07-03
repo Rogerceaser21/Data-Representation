@@ -5,6 +5,14 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.56 . 2026-07-03
+- **The portal page became a teacher hub (Focus OS "Teacher Portal Page", all four points).** The eight-type Assessment coverage rail moved INSIDE the navy hero and is now the portal menu: one tile per observation type, lit and clickable where content exists (SPEA R3 today; Walkthroughs, Lesson Observations, OTP/APR and the rest join as their pipelines land next year).
+- **SPEA R3 section, approval-gated.** Under the hero, the teacher's coaching summary appears as the main thing once (and only once) the observer has approved it, with an Approved badge and a "See the full record" pop-down arrow. The arrow reveals the SAME observation cards the Observations board uses (Student Progress and Teaching gauges, the SEAS spectrum, per-session cards with the Inspection details and Skills observed pop-downs) plus the full approved Next Steps note. Reused components, not rebuilt ones: `renderObsList` and `renderNextSteps` gained a teacher-view mode.
+- **What teachers never see.** The teacher-facing copies carry no Observation-notes expander, no locked-record links (both expose the observer's verbatim writing) and no admin buttons; Draft notes no longer appear on the portal at all (the old Draft-badge summary is gone). The Observations board itself is unchanged and keeps everything.
+- **Observations header photo.** The teacher drill-down's top card now shows the staff portrait beside the name (2:3 frame, forehead-safe crop).
+- The old portal data tiles (custom SEAS spectrum, coverage panel, evidence lines, summary card) are replaced by the hero menu + section; their CSS went with them.
+- Scope: the Teacher portal page + the Observations header card. Snapshot, Coverage, reports, Settings and all data untouched. Rollback: `dash-v0.55`.
+
 ## v0.55 . 2026-07-02
 - **The Teacher portal (new fifth tab).** Every register teacher now has their own page, the "Star file": a navy band with their full staff portrait (white frame, the three AIS logo stars drifting), their name in the display serif, section and observation counts, and their overall SEAS judgement (best evidence wins). Below: where they sit on the SEAS scale (their observation dots and average flag), assessment coverage across the eight observation types (SPEA lit, the rest waiting on their pipelines), their R3 evidence lines with locked-record links, and their Next Steps coaching summary (Draft badge until approved). Cross-links both ways with the Observations drill-down.
 - **Browse = a yearbook wall.** All 149 staff as full 2:3 portrait tiles grouped Secondary / Primary / Kindy / Other, name on a scrim, SEAS chip, initials tile for anyone without a photo; search plus quiet section filters in the one control row.
