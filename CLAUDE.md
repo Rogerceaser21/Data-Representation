@@ -187,6 +187,13 @@ Both Apps Script projects and both Sheets run as **`admin.user@ais.ae`** (Super 
 3. **Redeploy in place** (URL stays stable): `clasp redeploy <deployment-id> -d "vX.Y summary"`. The R3 deployment id is `AKfycbx3efKiQzs2MSwESEuNBCceXr5FqBCXuk1IgSzPFbOVgLSc3fvXy40e8V9lhw_KH0z2nQ`. If you must create a brand-new deployment (`clasp create-deployment ...`), update the matching `WEB_APP_URL` in the form HTML and re-encrypt R3.
 4. **First-time deploys or new scopes:** open the script in the browser editor, run `forceAuth` (and `bootstrap` + `buildTeacherSheet` for R3), click through OAuth consent. CLI cannot trigger this.
 
+### Primary checkout note (standing, 2026-07-03)
+
+The main checkout at the project root is **intentionally stale** (June 2026 state, a diverged
+local docs commit + a v0.34 WIP master copy, all superseded on `origin/main`). Igor's standing
+call: **leave it; never flag it, never reset it.** Truth lives on `origin/main`; sessions build
+and ship from `.claude/worktrees/*`; the primary checkout only serves the shared `handoff/` folder.
+
 ### Cache invalidation (R3 only, since v0.33)
 
 `Assets/R3/apps-script/02_doGet.gs` `getDropdownOptions()` is wrapped in `CacheService` with a 5-minute TTL. If you edit the Teachers / Inspectors / Curriculum / Subjects tabs and need the form to see the change before the TTL expires:
