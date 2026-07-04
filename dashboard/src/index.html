@@ -825,24 +825,23 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
 .pchip{font-size:14px;font-weight:700;letter-spacing:.03em;padding:9px 20px;border-radius:13px;color:#fff;box-shadow:0 10px 30px -8px rgba(0,0,0,.5)}
 .pchip.na{background:rgba(120,132,165,.35);border:1px dashed rgba(255,255,255,.35)}
 .psubnote{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#8fa2d8}
-.pobtn{font:inherit;font-size:12px;font-weight:600;color:#dfe6ff;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06);border-radius:12px;padding:9px 17px;cursor:pointer;margin-top:22px;transition:.2s}
-.pobtn:hover{background:rgba(255,255,255,.14)}
 .pframe{position:relative;width:clamp(180px,24vw,250px);aspect-ratio:2/3;border-radius:20px;flex:none;background:#fff;padding:9px;box-shadow:0 30px 70px -20px rgba(0,0,0,.6);transform:rotate(1.6deg)}
 .pframe img{width:100%;height:100%;object-fit:cover;border-radius:13px;display:block}
 .pframe .pin{display:flex;align-items:center;justify-content:center;width:100%;height:100%;border-radius:13px;background:#eef0f6;font-family:var(--display);font-style:italic;font-weight:600;font-size:56px;color:#6b7790}
 .pstar{position:absolute;width:22px;height:22px;filter:drop-shadow(0 0 8px currentColor);animation:pdrift 7s ease-in-out infinite}
 @keyframes pdrift{0%,100%{transform:translateY(0) rotate(-8deg)}50%{transform:translateY(-12px) rotate(10deg)}}
-/* coverage rail inside the hero = the portal menu (v0.56) */
-.hrailwrap{margin-top:26px;max-width:560px}
+/* coverage rail = full-width bottom row of the hero, the portal menu (v0.57) */
+.hrailwrap{grid-column:1/-1;margin-top:10px}
 .hraillbl{font-size:9.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#8fa2d8;margin-bottom:9px}
-.prail{display:grid;grid-template-columns:repeat(8,1fr);gap:6px}
-.pseg{height:40px;border-radius:10px;border:0;padding:0;font:inherit;background:rgba(255,255,255,.09);position:relative}
+.prail{display:grid;grid-template-columns:repeat(8,1fr);gap:8px}
+.pseg{height:44px;border-radius:10px;border:0;padding:0;font:inherit;background:rgba(255,255,255,.09);position:relative}
 .pseg:disabled{cursor:default}
 .pseg.me{cursor:pointer;transition:transform .2s ease,box-shadow .2s ease}
 .pseg.me:hover{transform:translateY(-2px);box-shadow:0 10px 24px -8px rgba(0,0,0,.55)}
 .pseg.lit{box-shadow:0 8px 20px -8px rgba(0,0,0,.5)}
-.pseg span{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:10px;font-weight:800;color:#fff}
-.praillab{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:6px;font-size:8px;letter-spacing:.04em;text-transform:uppercase;color:#8fa2d8;text-align:center}
+.pseg span{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:11px;font-weight:800;letter-spacing:.04em;color:#fff}
+.praillab{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;margin-top:7px;font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:#8fa2d8;text-align:center}
+.praillab span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* SPEA section under the hero: summary card + pop-down full record */
 .pptype{margin-top:16px}
 .ppsumhead{display:flex;align-items:center;gap:10px}
@@ -868,7 +867,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
 .pfchip{position:absolute;top:10px;right:10px;font-size:9.5px;font-weight:800;letter-spacing:.05em;padding:4px 10px;border-radius:9px;color:#fff;backdrop-filter:blur(6px)}
 .pface.init{display:flex;align-items:center;justify-content:center}
 .pface.init .pin{font-family:var(--display);font-style:italic;font-weight:600;font-size:42px;color:var(--ink-mid)}
-@media(max-width:860px){.pband{grid-template-columns:1fr}.pframe{margin:0 auto;order:-1}.hrailwrap{max-width:none}}
+@media(max-width:860px){.pband{grid-template-columns:1fr}.pframe{margin:0 auto;order:-1}}
 @media(max-width:560px){.pwall{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}}
 /* ---- Department view (Phase 3) ---- */
 .obslab{font-size:8.5px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint);padding:8px 14px 4px}
@@ -1168,7 +1167,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
             </div>
           </div>
         </div>
-        <div class="search" id="tsearchWrap" hidden><span style="color:var(--ink-faint)">Search</span><input id="tsearch" placeholder="type a name..."></div>
+        <div class="search" id="tsearchWrap" hidden><input id="tsearch" placeholder="Type a teacher name..."></div>
         <button class="flt" id="fltNoobs" hidden>Not yet observed</button>
       </div>
     </div>
@@ -1224,7 +1223,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
     <div class="tabsrow">
       <div class="obshead">
         <button class="flt" id="portalBack" hidden>&#8592; All teachers</button>
-        <div class="search"><span style="color:var(--ink-faint)">Search</span><input id="psearch" placeholder="type a name..."></div>
+        <div class="search"><input id="psearch" placeholder="Type a teacher name..."></div>
         <div class="pfilters" id="pFilters"></div>
       </div>
     </div>
@@ -1267,6 +1266,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
     </div>
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
+        <div class="vrow"><span class="vtag">v0.57</span><span class="vnote">Portal hero card cleaned up per Igor. The Assessment coverage rail now spans the full width of the hero at the bottom; lit tiles carry real judgement abbreviations (O, VG, G, A, W, VW instead of a lone first letter) and the type labels read as words (SPEA R3, Walkthrough, Probation, Lesson Obs, ESCM, OTP &amp; APR, Notes, Files). The hero kicker is simply "AIS Sharjah . Teacher portal" (the card is the whole portal's identity, not an R3 artefact) and the "Open in Observations" button is gone: teachers will never have access to the admin boards. Both teacher-search pills lost the decoy "Search" prefix (clicking it did nothing); the input now fills the pill with "Type a teacher name..." as the placeholder. And the intro's yellow star now matches its word: both the star and "Stops" are the readable mustard #FFBA14 (the drifting hero stars keep the approved sheet yellow).</span></div>
         <div class="vrow"><span class="vtag">v0.56</span><span class="vnote">The Teacher portal page became a real teacher hub. The eight-type Assessment coverage rail now lives inside the navy hero and acts as the portal menu (only SPEA R3 is live today; Lesson Observations and OTP/APR join it next year). Clicking SPEA R3 leads to its section: the coaching summary appears as the main thing once the observer has approved it, with a pop-down arrow revealing the same observation cards used on the Observations board (Inspection details and Skills observed open as usual, but the observer's verbatim notes and the locked-record links never appear on the teacher-facing copy) plus the full approved Next Steps note. Draft notes no longer show on the portal at all. The Observations board's teacher header also gained the staff photo beside the name.</span></div>
         <div class="vrow"><span class="vtag">v0.55</span><span class="vnote">The Teacher portal. A new fifth tab: every register teacher has their own page (the "Star file": a navy band with their full staff portrait, the AIS stars, their overall SEAS judgement, then their place on the SEAS scale, coverage of the eight observation types, their R3 evidence with locked-record links, and their coaching summary). Browse is a yearbook wall of all 149 staff grouped by school section, with search and section filters; staff photos flow from Drive into Supabase nightly (never through GitHub). The Observations R3 Obs menu gained a working Department Level: Humanities renders as a department board (navy header with the head, the team, teachers observed, average judgement and spread, then a teacher-by-type matrix; clicking a teacher opens their portal page). Departments appear automatically as they are marked in the staff Sheet.</span></div>
         <div class="vrow"><span class="vtag">v0.54</span><span class="vnote">One control row, one Compare entry. The separate February / June round row is gone. The Compare button beside the phase tabs opens a single menu with two sections: Compare (Primary and Kindy against Secondary within June; February against June for teacher movement) and View a round (February's numbers-only board; June, the default). The All / Primary and Kindy / Secondary filter now lives inside the February and Compare boards themselves. Menu entries are generated from the data, so future rounds appear automatically, and clicking Primary and Kindy or Secondary returns to the June board. New Better-Never-Stops entrance: the three AIS logo stars (approved Red, Blue and Yellow) comet in from the left, top and bottom carrying the motto, stand for two seconds, then drift up into the star-field as the title card assembles; 5.5 seconds, click to skip, and any load without animation support falls back to the plain title card.</span></div>
@@ -1344,7 +1344,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
   </div>
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.56</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.57</span></span>
   </div>
 </div>
 
@@ -1782,15 +1782,17 @@ function renderDept(name){const host=byId('obsDept');if(!host)return;
    revealing the REUSED Observations cards (teacherView: no verbatim observer notes, no record
    links) + the full approved Next Steps note. Nothing shows until the observer approves.
    Self-contained per teacher (SSO-ready). Photos: teachers.photo_url from the Drive mirror. */
-const PORTAL_TYPES=[
-  {key:'spea',label:'SPEA R3 Observations',short:'SPEA',live:true},
-  {key:'walk',label:'Walkthroughs',short:'Walk'},
-  {key:'prob',label:'Probationary Observations',short:'Prob'},
-  {key:'lesson',label:'Lesson Observations',short:'Lesson'},
-  {key:'escm',label:'Classroom Profiling ESCM',short:'ESCM'},
-  {key:'otp',label:'OTP & APR (Self-Assessment)',short:'OTP'},
-  {key:'notes',label:'Additional Notes & Attachments',short:'Notes'},
-  {key:'files',label:'File Attachments',short:'Files'}];
+const PORTAL_TYPES=[   // short = the tight dept-matrix header; rail = the portal hero rail label
+  {key:'spea',label:'SPEA R3 Observations',short:'SPEA',rail:'SPEA R3',live:true},
+  {key:'walk',label:'Walkthroughs',short:'Walk',rail:'Walkthrough'},
+  {key:'prob',label:'Probationary Observations',short:'Prob',rail:'Probation'},
+  {key:'lesson',label:'Lesson Observations',short:'Lesson',rail:'Lesson Obs'},
+  {key:'escm',label:'Classroom Profiling ESCM',short:'ESCM',rail:'ESCM'},
+  {key:'otp',label:'OTP & APR (Self-Assessment)',short:'OTP',rail:'OTP & APR'},
+  {key:'notes',label:'Additional Notes & Attachments',short:'Notes',rail:'Notes'},
+  {key:'files',label:'File Attachments',short:'Files',rail:'Files'}];
+// judgement abbreviations for the rail tiles ("V" told nobody anything; VG = Very Good)
+const JABBR={'Outstanding':'O','Very Good':'VG','Good':'G','Acceptable':'A','Weak':'W','Very Weak':'VW'};
 let portalId=null,portalSec='all';
 const PSECS=[['all','All'],['kindy','Kindy'],['primary','Primary'],['secondary','Secondary']];
 const PGROUPS=[['secondary','Secondary'],['primary','Primary'],['kindy','Kindy']];
@@ -1833,25 +1835,24 @@ function renderPortalPage(t){const host=byId('portalPage');const ov=t.n_obs?teac
   const chip=ov!=null?`<span class="pchip" style="background:${rampAt(ov)}">${wordOf(ov)}</span>`:'<span class="pchip na">Not assessed</span>';
   const frame=`<div class="pframe">${t.photo_url?`<img src="${esc(t.photo_url)}" alt="" onerror="this.outerHTML='<span class=pin>${esc(pInitials(t.name))}</span>'">`:`<span class="pin">${esc(pInitials(t.name))}</span>`}
     ${PSTAR('#EF343A','-16px','-14px',0)}${PSTAR('#1257FF','-22px','72%',1.4)}${PSTAR('#EDFF21','92%','-18px',.7)}</div>`;
-  // The coverage rail lives INSIDE the hero and is the portal menu: one tile per observation type,
-  // lit + clickable when that type has content (only SPEA R3 today; Lesson Obs / OTP-APR join later).
+  // The coverage rail spans the FULL hero width at the bottom and is the portal menu: one tile per
+  // observation type, lit + clickable when that type has content (only SPEA R3 today; the hero is
+  // the whole portal's identity card, so nothing above the rail is SPEA-specific).
   const rail=`<div class="hrailwrap"><div class="hraillbl">Assessment coverage . 8 observation types</div>
     <div class="prail">${PORTAL_TYPES.map(ty=>{const lit=ty.live&&ov!=null;
-      return `<button type="button" class="pseg${lit?' lit me':''}"${lit?` style="background:${rampAt(ov)}"`:' disabled'} data-ptype="${ty.key}" title="${esc(ty.label)}: ${lit?wordOf(ov):'Not assessed'}">${lit?`<span>${wordOf(ov)[0]}</span>`:''}</button>`;}).join('')}</div>
-    <div class="praillab">${PORTAL_TYPES.map(ty=>`<span>${ty.short}</span>`).join('')}</div></div>`;
+      return `<button type="button" class="pseg${lit?' lit me':''}"${lit?` style="background:${rampAt(ov)}"`:' disabled'} data-ptype="${ty.key}" title="${esc(ty.label)}: ${lit?wordOf(ov):'Not assessed'}">${lit?`<span>${JABBR[wordOf(ov)]||''}</span>`:''}</button>`;}).join('')}</div>
+    <div class="praillab">${PORTAL_TYPES.map(ty=>`<span>${ty.rail}</span>`).join('')}</div></div>`;
   // SPEA section under the hero: the approved coaching summary is the main thing; the full record
   // (the Observations cards + the full note, teacher view) sits behind the pop-down arrow.
   const sum=approved?`<p class="ppsump">${esc(n.summary)}</p>`
     :`<div class="ns-empty">${t.n_obs?'The summary appears here once your observer approves this round’s coaching note.':'No observations recorded yet this year.'}</div>`;
   host.innerHTML=`<div class="pband">
       <div>
-        <div class="bkick">AIS Sharjah . Teacher record . SPEA R3</div>
+        <div class="bkick">AIS Sharjah . Teacher portal</div>
         <h2 class="bname">${esc(t.name)}</h2>
         <div class="bmeta">${esc(meta)}</div>
         <div class="pchiprow">${chip}<span class="psubnote">Overall . best evidence wins</span></div>
-        ${rail}
-        ${t.n_obs?'<button class="pobtn" id="ppToObs" type="button">Open in Observations &#8599;</button>':''}
-      </div>${frame}</div>
+      </div>${frame}${rail}</div>
     <div class="pptype" id="ppType">
       <div class="panel ppsum"><div class="ppsumhead"><div class="ey" style="margin:0">SPEA R3 Observation . summary</div>${approved?'<span class="ns-badge approved">Approved</span>':''}</div>
         ${sum}${approved?`<button class="oexpbtn" id="ppMore" type="button">See the full record ${OEXPCHEV}</button>`:''}</div>
@@ -1868,8 +1869,9 @@ function renderPortalPage(t){const host=byId('portalPage');const ov=t.n_obs?teac
     const more=byId('ppMore');more.onclick=()=>{const open=byId('ppType').classList.toggle('open');more.classList.toggle('open',open);};
   }
   host.querySelectorAll('[data-ptype]').forEach(b=>{if(b.disabled)return;
-    b.onclick=()=>byId('ppType').scrollIntoView({behavior:'smooth',block:'start'});});
-  const ob=byId('ppToObs');if(ob)ob.onclick=()=>{const id=t.id;showBoard('teacher');setObs('teacher');openTeacher(id);};}
+    b.onclick=()=>byId('ppType').scrollIntoView({behavior:'smooth',block:'start'});});}
+  // "Open in Observations" removed v0.57: the portal is the teacher-facing surface; the admin
+  // Observations board is not theirs to reach (the board's own "Teacher portal" link stays).
 function openPortalTeacher(id,cardEl){portalId=id;
   const first=cardEl?cardEl.querySelector('.nm').getBoundingClientRect():null;
   const t=teacherById(id);if(!t)return;renderPortalPage(t);portalLayout();
@@ -2843,10 +2845,11 @@ function runEntry(){
   setTimeout(revealUI,holdMs);                    // hard floor: hold then dissolve (fires even if rAF frozen)
   entry.addEventListener('click',revealUI);       // tap to skip
 }
-/* the Better-Never-Stops star intro. Colours = the AIS Approved Colours sheet ("on Star" set):
-   Red #EF343A, Blue #1257FF, Yellow #EDFF21 (star + trail always exact). Word text + the dark-theme
-   star lift (a light stroke + soft white glow, SAME on all three stars for congruence) are the only
-   theme-aware parts: the words use the theme's readable brand tokens. Returns the reveal delay. */
+/* the Better-Never-Stops star intro. Red #EF343A + Blue #1257FF = the AIS Approved Colours sheet
+   ("on Star" set). The yellow star matches its WORD (#FFBA14 mustard, the readable brand yellow):
+   Igor's call v0.57, star and word must be the same colour (the approved #EDFF21 stayed on the
+   drifting hero/dept stars, which carry no words). Word text + the dark-theme star lift (a light
+   stroke + soft white glow, SAME on all three stars) are the only theme-aware parts. */
 function entryStars(){
   gsap.registerPlugin(MotionPathPlugin);
   const stage=byId('entryStars'),trails=byId('entryTrails');
@@ -2854,7 +2857,7 @@ function entryStars(){
   const DEF=[
     {w:'Better',col:'#EF343A',word:dark?'#ff6a6e':'#EF343A',from:'left'},
     {w:'Never', col:'#1257FF',word:dark?'#7ba3ff':'#1257FF',from:'top'},
-    {w:'Stops', col:'#EDFF21',word:'#FFBA14',from:'bottom'}];
+    {w:'Stops', col:'#FFBA14',word:'#FFBA14',from:'bottom'}];
   const stroke=dark?'rgba(255,255,255,.55)':null;   // congruent dark lift on all three
   const glow=c=>dark?`drop-shadow(0 0 14px ${c}CC) drop-shadow(0 0 30px rgba(255,255,255,.25))`:`drop-shadow(0 6px 18px ${c}66)`;
   const starSvg=c=>{const pts=[];for(let i=0;i<10;i++){const r=i%2?11:26,a=Math.PI/5*i-Math.PI/2;pts.push((Math.cos(a)*r).toFixed(2)+','+(Math.sin(a)*r).toFixed(2));}
@@ -2881,7 +2884,7 @@ function entryStars(){
     const t0=i*0.25,len=e.path.getTotalLength();
     gsap.set(e.path,{strokeDasharray:len,strokeDashoffset:len});
     tl.set(e.star,{opacity:1},t0)
-      .to(e.path,{opacity:dark?.7:(e.d.col==='#EDFF21'?.7:.5),duration:.12},t0)
+      .to(e.path,{opacity:dark?.7:(e.d.col==='#FFBA14'?.7:.5),duration:.12},t0)
       .to(e.star,{motionPath:{path:e.path,align:e.path,alignOrigin:[.5,.5]},duration:1,ease:'power3.out'},t0)
       .fromTo(e.star,{rotation:-140},{rotation:0,duration:1,ease:'power3.out'},t0)
       .to(e.path,{strokeDashoffset:0,duration:1,ease:'power3.out'},t0)

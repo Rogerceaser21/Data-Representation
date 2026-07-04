@@ -5,6 +5,12 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.57 . 2026-07-04
+- **Portal hero cleaned up (Igor's three fixes).** The Assessment coverage rail now spans the full hero width at the bottom; lit tiles show real judgement abbreviations (O / VG / G / A / W / VW, no more meaningless single letters) and the type labels read as words (SPEA R3, Walkthrough, Probation, Lesson Obs, ESCM, OTP & APR, Notes, Files; the tight department-matrix header keeps its short codes). The kicker is now "AIS Sharjah . Teacher portal", nothing above the rail is SPEA-specific, and the "Open in Observations" button is REMOVED: the portal is teacher-facing and the admin boards are not theirs to reach (the Observations board's own portal link stays, admin-side).
+- **Search pills fixed.** The decoy "Search" prefix (which looked like the input and swallowed clicks) is gone from both teacher searches (Observations + Portal); the input fills the pill and the placeholder says "Type a teacher name...".
+- **Intro star matches its word.** The Better-Never-Stops yellow star (and its trail) is now the same mustard #FFBA14 as the word "Stops". Red and Blue already matched and keep the approved sheet values; the drifting stars on the portal/department heroes keep the approved #EDFF21 (they carry no words).
+- Scope: portal hero, two search pills, the entry intro. Boards, data, reports untouched. Rollback: `dash-v0.56`.
+
 ## v0.56 . 2026-07-03
 - **The portal page became a teacher hub (Focus OS "Teacher Portal Page", all four points).** The eight-type Assessment coverage rail moved INSIDE the navy hero and is now the portal menu: one tile per observation type, lit and clickable where content exists (SPEA R3 today; Walkthroughs, Lesson Observations, OTP/APR and the rest join as their pipelines land next year).
 - **SPEA R3 section, approval-gated.** Under the hero, the teacher's coaching summary appears as the main thing once (and only once) the observer has approved it, with an Approved badge and a "See the full record" pop-down arrow. The arrow reveals the SAME observation cards the Observations board uses (Student Progress and Teaching gauges, the SEAS spectrum, per-session cards with the Inspection details and Skills observed pop-downs) plus the full approved Next Steps note. Reused components, not rebuilt ones: `renderObsList` and `renderNextSteps` gained a teacher-view mode.
