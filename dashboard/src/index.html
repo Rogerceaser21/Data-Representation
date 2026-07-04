@@ -830,18 +830,20 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
 .pframe .pin{display:flex;align-items:center;justify-content:center;width:100%;height:100%;border-radius:13px;background:#eef0f6;font-family:var(--display);font-style:italic;font-weight:600;font-size:56px;color:#6b7790}
 .pstar{position:absolute;width:22px;height:22px;filter:drop-shadow(0 0 8px currentColor);animation:pdrift 7s ease-in-out infinite}
 @keyframes pdrift{0%,100%{transform:translateY(0) rotate(-8deg)}50%{transform:translateY(-12px) rotate(10deg)}}
-/* coverage rail = full-width bottom row of the hero, the portal menu (v0.57) */
-.hrailwrap{grid-column:1/-1;margin-top:10px}
-.hraillbl{font-size:9.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#8fa2d8;margin-bottom:9px}
-.prail{display:grid;grid-template-columns:repeat(8,1fr);gap:8px}
-.pseg{height:44px;border-radius:10px;border:0;padding:0;font:inherit;background:rgba(255,255,255,.09);position:relative}
-.pseg:disabled{cursor:default}
-.pseg.me{cursor:pointer;transition:transform .2s ease,box-shadow .2s ease}
-.pseg.me:hover{transform:translateY(-2px);box-shadow:0 10px 24px -8px rgba(0,0,0,.55)}
-.pseg.lit{box-shadow:0 8px 20px -8px rgba(0,0,0,.5)}
-.pseg span{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:11px;font-weight:800;letter-spacing:.04em;color:#fff}
-.praillab{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;margin-top:7px;font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:#8fa2d8;text-align:center}
-.praillab span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* hero section list = the portal menu (v0.59): numbered rows left of the photo, judgement pill per row */
+.hsecs{margin-top:26px;display:flex;flex-direction:column;gap:7px;max-width:600px}
+.hsec{display:flex;align-items:center;gap:13px;font:inherit;color:inherit;text-align:left;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);border-radius:13px;padding:10px 15px}
+.hsec .no{font-family:var(--display);font-style:italic;font-weight:600;font-size:15px;color:#8fa2d8;width:24px;flex:none}
+.hsec .tt{font-size:13px;font-weight:600;color:#eef1fb;margin-right:auto;line-height:1.25}
+.hsec .tt small{display:block;font-size:9.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#8fa2d8;margin-top:2px}
+.hsec .pl{flex:none;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#fff;padding:5px 12px;border-radius:999px;box-shadow:0 8px 20px -10px rgba(0,0,0,.55)}
+.hsec .pl.na{background:rgba(120,132,165,.28);border:1px dashed rgba(255,255,255,.3);color:#aab7e2;box-shadow:none}
+.hsec .pl.soon{background:rgba(237,255,33,.14);border:1px solid rgba(237,255,33,.35);color:#EDFF21;box-shadow:none}
+.hsec:disabled{cursor:default}
+.hsec:disabled .no,.hsec:disabled .tt{opacity:.55}
+.hsec.me{cursor:pointer;transition:transform .2s ease,background .2s ease,box-shadow .2s ease}
+.hsec.me:hover{transform:translateY(-2px);background:rgba(255,255,255,.11);box-shadow:0 12px 28px -12px rgba(0,0,0,.6)}
 /* SPEA section under the hero: summary card + pop-down full record */
 .pptype{margin-top:16px}
 .ppsumhead{display:flex;align-items:center;gap:10px}
@@ -867,7 +869,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
 .pfchip{position:absolute;top:10px;right:10px;font-size:9.5px;font-weight:800;letter-spacing:.05em;padding:4px 10px;border-radius:9px;color:#fff;backdrop-filter:blur(6px)}
 .pface.init{display:flex;align-items:center;justify-content:center}
 .pface.init .pin{font-family:var(--display);font-style:italic;font-weight:600;font-size:42px;color:var(--ink-mid)}
-@media(max-width:860px){.pband{grid-template-columns:1fr}.pframe{margin:0 auto;order:-1}}
+@media(max-width:860px){.pband{grid-template-columns:1fr}.pframe{margin:0 auto;order:-1}.hsecs{max-width:none}}
 @media(max-width:560px){.pwall{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}}
 /* ---- Department view (Phase 3) ---- */
 .obslab{font-size:8.5px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-faint);padding:8px 14px 4px}
@@ -1266,6 +1268,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
     </div>
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
+        <div class="vrow"><span class="vtag">v0.59</span><span class="vnote">Portal hero rearranged to the numbered section list (Igor's order): Probationary Observations, OTP &amp; APR (Self-Assessment), Lesson Observations (APR), SPEA R3 Observation, Classroom Profiling ESCM, Walkthroughs, and Links and Files + AI Chat (coming soon). The list sits left of the staff portrait; each row will carry its own judgement scale, so today only SPEA R3 shows its judgement word (and opens the round stack below), the others sit greyed as Not assessed and the last row is marked Coming soon. The full-width coverage rail is retired.</span></div>
         <div class="vrow"><span class="vtag">v0.58</span><span class="vnote">Coaching notes went per-round. The Observations drill-down now shows one Next Steps block per round (June's full note and February's new minimal note), each with its own Draft/Approved badge and its own Edit, Approve and Make Doc buttons; approving one round never touches another. February's notes were seeded as neutral one-line drafts built only from structured facts (subject + judgement word, never the observer's verbatim text). The Teacher portal shows the round STACK: one summary card per APPROVED round, newest first, each opening into only that round's session cards, gauges and full note. This also fixes the leak where an unapproved February session card rode along inside an approved June record.</span></div>
         <div class="vrow"><span class="vtag">v0.57</span><span class="vnote">Portal hero card cleaned up per Igor. The Assessment coverage rail now spans the full width of the hero at the bottom; lit tiles carry real judgement abbreviations (O, VG, G, A, W, VW instead of a lone first letter) and the type labels read as words (SPEA R3, Walkthrough, Probation, Lesson Obs, ESCM, OTP &amp; APR, Notes, Files). The hero kicker is simply "AIS Sharjah . Teacher portal" (the card is the whole portal's identity, not an R3 artefact) and the "Open in Observations" button is gone: teachers will never have access to the admin boards. Both teacher-search pills lost the decoy "Search" prefix (clicking it did nothing); the input now fills the pill with "Type a teacher name..." as the placeholder. And the intro's yellow star now matches its word: both the star and "Stops" are the readable mustard #FFBA14 (the drifting hero stars keep the approved sheet yellow).</span></div>
         <div class="vrow"><span class="vtag">v0.56</span><span class="vnote">The Teacher portal page became a real teacher hub. The eight-type Assessment coverage rail now lives inside the navy hero and acts as the portal menu (only SPEA R3 is live today; Lesson Observations and OTP/APR join it next year). Clicking SPEA R3 leads to its section: the coaching summary appears as the main thing once the observer has approved it, with a pop-down arrow revealing the same observation cards used on the Observations board (Inspection details and Skills observed open as usual, but the observer's verbatim notes and the locked-record links never appear on the teacher-facing copy) plus the full approved Next Steps note. Draft notes no longer show on the portal at all. The Observations board's teacher header also gained the staff photo beside the name.</span></div>
@@ -1345,7 +1348,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
   </div>
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.58</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.59</span></span>
   </div>
 </div>
 
@@ -1789,12 +1792,13 @@ function renderDept(name){const host=byId('obsDept');if(!host)return;
 
 /* ============================================================= TEACHER PORTAL (Phase 2, design C)
    The 5th pill (#portal). Browse = yearbook wall of every register teacher grouped by school
-   section (full 2:3 portraits, name scrim, SEAS chip; initials disc when no photo). Page (v0.56) =
-   navy band hero (white-framed portrait + drifting AIS logo stars + huge serif name) with the
-   8-type coverage rail INSIDE it as the portal menu; clicking a lit type (only SPEA R3 today)
-   leads to that type's section: the approved coaching summary first, then a pop-down arrow
-   revealing the REUSED Observations cards (teacherView: no verbatim observer notes, no record
-   links) + the full approved Next Steps note. Nothing shows until the observer approves.
+   section (full 2:3 portraits, name scrim, SEAS chip; initials disc when no photo). Page (v0.59) =
+   navy band hero (white-framed portrait right + drifting AIS logo stars + huge serif name) with
+   the NUMBERED SECTION LIST left as the portal menu (PORTAL_SECTIONS, Igor's order; each section
+   gets its own judgement scale, only SPEA R3 live today). Clicking SPEA leads to the ROUND STACK
+   (v0.58): one summary card per APPROVED round, newest first, each popping down into that round's
+   REUSED Observations cards (teacherView: no verbatim observer notes, no record links) + that
+   round's full note. Nothing shows until the observer approves that round.
    Self-contained per teacher (SSO-ready). Photos: teachers.photo_url from the Drive mirror. */
 const PORTAL_TYPES=[   // short = the tight dept-matrix header; rail = the portal hero rail label
   {key:'spea',label:'SPEA R3 Observations',short:'SPEA',rail:'SPEA R3',live:true},
@@ -1805,8 +1809,16 @@ const PORTAL_TYPES=[   // short = the tight dept-matrix header; rail = the porta
   {key:'otp',label:'OTP & APR (Self-Assessment)',short:'OTP',rail:'OTP & APR'},
   {key:'notes',label:'Additional Notes & Attachments',short:'Notes',rail:'Notes'},
   {key:'files',label:'File Attachments',short:'Files',rail:'Files'}];
-// judgement abbreviations for the rail tiles ("V" told nobody anything; VG = Very Good)
-const JABBR={'Outstanding':'O','Very Good':'VG','Good':'G','Acceptable':'A','Weak':'W','Very Weak':'VW'};
+// the hero section list (v0.59, Igor's order). Each section will carry its OWN judgement scale;
+// only SPEA R3 is live today, the rest sit greyed as Not assessed ("soon" = the coming-soon row).
+const PORTAL_SECTIONS=[
+  {key:'prob',label:'Probationary Observations'},
+  {key:'otp',label:'OTP &amp; APR (Self-Assessment)'},
+  {key:'lesson',label:'Lesson Observations (APR)'},
+  {key:'spea',label:'SPEA R3 Observation',live:true},
+  {key:'escm',label:'Classroom Profiling ESCM'},
+  {key:'walk',label:'Walkthroughs'},
+  {key:'links',label:'Links and Files + AI Chat',soon:true}];
 let portalId=null,portalSec='all';
 const PSECS=[['all','All'],['kindy','Kindy'],['primary','Primary'],['secondary','Secondary']];
 const PGROUPS=[['secondary','Secondary'],['primary','Primary'],['kindy','Kindy']];
@@ -1848,13 +1860,15 @@ function renderPortalPage(t){const host=byId('portalPage');const ov=t.n_obs?teac
   const chip=ov!=null?`<span class="pchip" style="background:${rampAt(ov)}">${wordOf(ov)}</span>`:'<span class="pchip na">Not assessed</span>';
   const frame=`<div class="pframe">${t.photo_url?`<img src="${esc(t.photo_url)}" alt="" onerror="this.outerHTML='<span class=pin>${esc(pInitials(t.name))}</span>'">`:`<span class="pin">${esc(pInitials(t.name))}</span>`}
     ${PSTAR('#EF343A','-16px','-14px',0)}${PSTAR('#1257FF','-22px','72%',1.4)}${PSTAR('#EDFF21','92%','-18px',.7)}</div>`;
-  // The coverage rail spans the FULL hero width at the bottom and is the portal menu: one tile per
-  // observation type, lit + clickable when that type has content (only SPEA R3 today; the hero is
-  // the whole portal's identity card, so nothing above the rail is SPEA-specific).
-  const rail=`<div class="hrailwrap"><div class="hraillbl">Assessment coverage . 8 observation types</div>
-    <div class="prail">${PORTAL_TYPES.map(ty=>{const lit=ty.live&&ov!=null;
-      return `<button type="button" class="pseg${lit?' lit me':''}"${lit?` style="background:${rampAt(ov)}"`:' disabled'} data-ptype="${ty.key}" title="${esc(ty.label)}: ${lit?wordOf(ov):'Not assessed'}">${lit?`<span>${JABBR[wordOf(ov)]||''}</span>`:''}</button>`;}).join('')}</div>
-    <div class="praillab">${PORTAL_TYPES.map(ty=>`<span>${ty.rail}</span>`).join('')}</div></div>`;
+  // The hero menu (v0.59): the numbered section list sits LEFT (photo stays right), one row per
+  // school ask in Igor's order. Only SPEA R3 is live and clickable; each future section will carry
+  // its own judgement scale, so the others stay greyed Not assessed until their pipelines land.
+  const list=`<div class="hsecs">${PORTAL_SECTIONS.map((sec,i)=>{
+    const live=sec.live&&ov!=null;
+    const pill=live?`<span class="pl" style="background:${rampAt(ov)}">${wordOf(ov)}</span>`
+      :sec.soon?'<span class="pl soon">Coming soon</span>':'<span class="pl na">Not assessed</span>';
+    const sub=live?`<small>Evidence on record . ${t.n_obs} observation${t.n_obs===1?'':'s'}</small>`:'';
+    return `<button type="button" class="hsec${live?' me':''}" data-ptype="${sec.key}"${live?'':' disabled'}><span class="no">${String(i+1).padStart(2,'0')}</span><span class="tt">${sec.label}${sub}</span>${pill}</button>`;}).join('')}</div>`;
   // SPEA section under the hero (v0.58 = the ROUND STACK): one card per round whose coaching note
   // is APPROVED, newest first; each card = that round's summary + a pop-down with ONLY that round's
   // session cards + note (teacher view). Unapproved rounds are absent entirely.
@@ -1877,7 +1891,8 @@ function renderPortalPage(t){const host=byId('portalPage');const ov=t.n_obs?teac
         <h2 class="bname">${esc(t.name)}</h2>
         <div class="bmeta">${esc(meta)}</div>
         <div class="pchiprow">${chip}<span class="psubnote">Overall . best evidence wins</span></div>
-      </div>${frame}${rail}</div>
+        ${list}
+      </div>${frame}</div>
     <div id="ppStack">${stack}</div>`;
   apprRounds.forEach((rd,i)=>{   // teacher-view copies per round (built at render, freeze-safe)
     const fo=t.observations.filter(o=>o.round===rd);

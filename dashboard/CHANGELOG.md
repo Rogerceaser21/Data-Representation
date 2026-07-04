@@ -5,6 +5,10 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.59 . 2026-07-04
+- **Portal hero = the numbered section list.** The hero left side now lists every school ask in Igor's order: 01 Probationary Observations, 02 OTP & APR (Self-Assessment), 03 Lesson Observations (APR), 04 SPEA R3 Observation, 05 Classroom Profiling ESCM, 06 Walkthroughs, 07 Links and Files + AI Chat (Coming soon). Each row carries a judgement pill on its own scale; only SPEA R3 is live today (judgement word, evidence count, click opens the round stack below), the rest sit greyed Not assessed. The staff portrait stays on the right; the full-width coverage rail is retired. Department matrix columns unchanged.
+- Scope: portal hero only. Round stack (v0.58), boards, data untouched. Rollback: `dash-v0.58`.
+
 ## v0.58 . 2026-07-04
 - **Coaching notes are per-round now.** The Observations drill-down shows one "Next Steps & Improvement" block per round the teacher appears in, each with its own round tag, Draft/Approved badge and its own Edit / Approve / Make Doc buttons. Approving June never touches February and vice versa. All edits and approvals save against that block's round in Supabase.
 - **February drafts seeded (121 teachers).** February recorded only progress ratings, so each draft is one neutral line built from structured facts only: "In the February R3 round, a [subject] lesson was observed and progress in the lesson was judged [word]." Never the observer's verbatim text, no invented content, no coaching bullets. Edit before approving if you want more. (`~/AIS-Data-Dashboard/db/seed_feb_notes.mjs`, re-runnable, never overwrites existing rows.)
