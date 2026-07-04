@@ -1196,8 +1196,8 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
         <div class="obslist" id="obslist"></div>
       </div>
 
-      <!-- per-teacher coaching note (v0.49): visible to all; edit + approve are admin-gated -->
-      <div class="panel" id="nextSteps" style="margin-top:14px"></div>
+      <!-- per-teacher coaching notes (v0.49; v0.58 = one block per round): visible to all; edit + approve admin-gated -->
+      <div id="nextSteps"></div>
     </div>
 
     <!-- Department view (Phase 3): navy dept band + teacher x 8-type matrix -->
@@ -1266,6 +1266,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
     </div>
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
+        <div class="vrow"><span class="vtag">v0.58</span><span class="vnote">Coaching notes went per-round. The Observations drill-down now shows one Next Steps block per round (June's full note and February's new minimal note), each with its own Draft/Approved badge and its own Edit, Approve and Make Doc buttons; approving one round never touches another. February's notes were seeded as neutral one-line drafts built only from structured facts (subject + judgement word, never the observer's verbatim text). The Teacher portal shows the round STACK: one summary card per APPROVED round, newest first, each opening into only that round's session cards, gauges and full note. This also fixes the leak where an unapproved February session card rode along inside an approved June record.</span></div>
         <div class="vrow"><span class="vtag">v0.57</span><span class="vnote">Portal hero card cleaned up per Igor. The Assessment coverage rail now spans the full width of the hero at the bottom; lit tiles carry real judgement abbreviations (O, VG, G, A, W, VW instead of a lone first letter) and the type labels read as words (SPEA R3, Walkthrough, Probation, Lesson Obs, ESCM, OTP &amp; APR, Notes, Files). The hero kicker is simply "AIS Sharjah . Teacher portal" (the card is the whole portal's identity, not an R3 artefact) and the "Open in Observations" button is gone: teachers will never have access to the admin boards. Both teacher-search pills lost the decoy "Search" prefix (clicking it did nothing); the input now fills the pill with "Type a teacher name..." as the placeholder. And the intro's yellow star now matches its word: both the star and "Stops" are the readable mustard #FFBA14 (the drifting hero stars keep the approved sheet yellow).</span></div>
         <div class="vrow"><span class="vtag">v0.56</span><span class="vnote">The Teacher portal page became a real teacher hub. The eight-type Assessment coverage rail now lives inside the navy hero and acts as the portal menu (only SPEA R3 is live today; Lesson Observations and OTP/APR join it next year). Clicking SPEA R3 leads to its section: the coaching summary appears as the main thing once the observer has approved it, with a pop-down arrow revealing the same observation cards used on the Observations board (Inspection details and Skills observed open as usual, but the observer's verbatim notes and the locked-record links never appear on the teacher-facing copy) plus the full approved Next Steps note. Draft notes no longer show on the portal at all. The Observations board's teacher header also gained the staff photo beside the name.</span></div>
         <div class="vrow"><span class="vtag">v0.55</span><span class="vnote">The Teacher portal. A new fifth tab: every register teacher has their own page (the "Star file": a navy band with their full staff portrait, the AIS stars, their overall SEAS judgement, then their place on the SEAS scale, coverage of the eight observation types, their R3 evidence with locked-record links, and their coaching summary). Browse is a yearbook wall of all 149 staff grouped by school section, with search and section filters; staff photos flow from Drive into Supabase nightly (never through GitHub). The Observations R3 Obs menu gained a working Department Level: Humanities renders as a department board (navy header with the head, the team, teachers observed, average judgement and spread, then a teacher-by-type matrix; clicking a teacher opens their portal page). Departments appear automatically as they are marked in the staff Sheet.</span></div>
@@ -1344,7 +1345,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
   </div>
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.57</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.58</span></span>
   </div>
 </div>
 
@@ -1586,7 +1587,7 @@ function renderTeacher(t){
   bits.push('June '+t.n_june+' . February '+t.n_feb);
   byId('tMeta').textContent=bits.join('  .  ');
   selectedObs='all';renderObsList(t);buildArc(t,'svgArc',progScore,progAvg,false);buildArc(t,'svgArcT',teachScore,teachAvg,true);selectObs(t,'all');
-  renderNextSteps(t);
+  renderNextStepsBoard(t);
   const pl=byId('tPortalLink');if(pl)pl.onclick=()=>{showBoard('portal');openPortalTeacher(t.id);};
 }
 /* ---- per-teacher coaching note (v0.50). Visible to all; Edit/Approve/Make-Doc are admin-gated.
@@ -1649,64 +1650,77 @@ function nsBullet(b,i){const rub=nsRubLine(b),src=nsSrc(b),chip=nsChip(b),acc=ns
       (src?`<p class="ns-src">Technique source: ${src}</p>`:'')+
       nsQuote(b)+
       (rub?`<p class="ns-rub">${rub}</p>`:'')+`</div></div>`;}
-/* opts.teacherView (portal reuse): approved notes only, no admin actions, no edit state. */
+/* v0.58: one note per ROUND. opts.round picks the note (default SNAP_ROUND); every round gets its
+   own Edit/Approve/Make Doc. Queries are HOST-scoped (never byId) so two round blocks coexist.
+   opts.teacherView (portal reuse): approved notes only, no admin actions, no edit state. */
 function renderNextSteps(t,host,opts){host=host||byId('nextSteps');opts=opts||{};if(!host)return;
-  const n=NEXTSTEPS[t.id];
+  const round=opts.round||SNAP_ROUND;const n=nsGet(t,round);
+  const rtag=`<span class="oround">${esc(round)}</span>`;
   if(opts.teacherView){
     if(!n||n.status!=='approved'){host.innerHTML=`<div class="ey">Next Steps &amp; Improvement</div><div class="ns-empty">Your coaching note appears here once your observer approves it.</div>`;return;}
     const tb=Array.isArray(n.bullets)?n.bullets:[];
-    host.innerHTML=`<div class="ns-head"><div class="ns-title"><div class="ey" style="margin:0">Next Steps &amp; Improvement</div><span class="ns-badge approved">Approved</span></div></div>`+
+    host.innerHTML=`<div class="ns-head"><div class="ns-title"><div class="ey" style="margin:0">Next Steps &amp; Improvement</div>${rtag}<span class="ns-badge approved">Approved</span></div></div>`+
       nsLadders(n)+(n.summary?`<p class="ns-sum">${esc(n.summary)}</p>`:'')+
       `<div class="ns-bl fcbl">${tb.map((b,i)=>nsBullet(b,i)).join('')}</div>`;
     return;
   }
-  if(!n){host.dataset.edit='';host.innerHTML=`<div class="ey">Next Steps &amp; Improvement</div><div class="ns-empty">No coaching note has been generated for this teacher in this round yet.</div>`;return;}
+  const hq=s=>host.querySelector(s);
+  if(!n){host.dataset.edit='';host.innerHTML=`<div class="ns-head"><div class="ns-title"><div class="ey" style="margin:0">Next Steps &amp; Improvement</div>${rtag}</div></div><div class="ns-empty">No coaching note has been generated for this teacher in this round yet.</div>`;return;}
   const badge=n.status==='approved'?'<span class="ns-badge approved">Approved</span>':'<span class="ns-badge draft">Draft</span>';
   const bl=Array.isArray(n.bullets)?n.bullets:[];
   if(host.dataset.edit==='1'){
-    host.innerHTML=`<div class="ns-head"><div class="ns-title"><div class="ey" style="margin:0">Next Steps &amp; Improvement</div>${badge}</div>`+
-      `<div class="ns-actions"><button class="ns-btn" id="nsCancel">Cancel</button><button class="ns-btn go" id="nsSave">Save</button></div></div>`+
-      `<div class="ns-edit"><label class="ns-exh">Summary</label><textarea id="nsSum" rows="5">${esc(n.summary||'')}</textarea>`+
+    host.innerHTML=`<div class="ns-head"><div class="ns-title"><div class="ey" style="margin:0">Next Steps &amp; Improvement</div>${rtag}${badge}</div>`+
+      `<div class="ns-actions"><button class="ns-btn" data-ns="cancel">Cancel</button><button class="ns-btn go" data-ns="save">Save</button></div></div>`+
+      `<div class="ns-edit"><label class="ns-exh">Summary</label><textarea data-ns="sum" rows="5">${esc(n.summary||'')}</textarea>`+
       bl.map((b,i)=>{const rub=nsRubLine(b);return `<div class="ns-eitem"><div class="ns-eh">${esc(nsThemeName(b))}</div>`+
         (rub?`<div class="ns-eg"><span class="gl">Grounded in (read only)</span>${rub}</div>`:'')+
         `<label class="ns-exh">Recommended action</label><textarea data-bi="${i}" data-f="move" rows="3">${esc(b.move||'')}</textarea>`+
         `<label class="ns-exh">Look for</label><textarea data-bi="${i}" data-f="look_for" rows="3">${esc(b.look_for||'')}</textarea>`+
         `<label class="ns-exh">Technique</label><textarea data-bi="${i}" data-f="technique" rows="5">${esc(b.technique||'')}</textarea></div>`;}).join('')+
-      `</div><div class="ns-msg" id="nsMsg"></div>`;
-    byId('nsCancel').onclick=()=>{host.dataset.edit='';renderNextSteps(t);};
-    byId('nsSave').onclick=()=>nsSave(t);
+      `</div><div class="ns-msg" data-ns="msg"></div>`;
+    hq('[data-ns=cancel]').onclick=()=>{host.dataset.edit='';renderNextSteps(t,host,opts);};
+    hq('[data-ns=save]').onclick=()=>nsSave(t,host,round,opts);
     return;
   }
-  host.innerHTML=`<div class="ns-head"><div class="ns-title"><div class="ey" style="margin:0">Next Steps &amp; Improvement</div>${badge}</div>`+
-    `<div class="ns-actions"><button class="ns-btn" id="nsEdit">Edit</button>`+
-      (n.status!=='approved'?'<button class="ns-btn go" id="nsApprove">Approve</button>':'<button class="ns-btn" id="nsUnapprove">Unapprove</button>')+
-      `<button class="ns-btn" id="nsDoc">Make Doc</button></div></div>`+
+  host.innerHTML=`<div class="ns-head"><div class="ns-title"><div class="ey" style="margin:0">Next Steps &amp; Improvement</div>${rtag}${badge}</div>`+
+    `<div class="ns-actions"><button class="ns-btn" data-ns="edit">Edit</button>`+
+      (n.status!=='approved'?'<button class="ns-btn go" data-ns="approve">Approve</button>':'<button class="ns-btn" data-ns="unapprove">Unapprove</button>')+
+      `<button class="ns-btn" data-ns="doc">Make Doc</button></div></div>`+
     nsLadders(n)+
     (n.summary?`<p class="ns-sum">${esc(n.summary)}</p>`:'')+
-    `<div class="ns-bl fcbl">${bl.map((b,i)=>nsBullet(b,i)).join('')}</div><div class="ns-msg" id="nsMsg"></div>`;
-  byId('nsEdit').onclick=()=>requireAdmin(()=>{host.dataset.edit='1';renderNextSteps(t);});
-  const ap=byId('nsApprove');if(ap)ap.onclick=()=>requireAdmin(()=>nsSetStatus(t,'approved'));
-  const un=byId('nsUnapprove');if(un)un.onclick=()=>requireAdmin(()=>nsSetStatus(t,'draft'));
-  byId('nsDoc').onclick=()=>requireAdmin(()=>nsDoc(t));
+    `<div class="ns-bl fcbl">${bl.map((b,i)=>nsBullet(b,i)).join('')}</div><div class="ns-msg" data-ns="msg"></div>`;
+  hq('[data-ns=edit]').onclick=()=>requireAdmin(()=>{host.dataset.edit='1';renderNextSteps(t,host,opts);});
+  const ap=hq('[data-ns=approve]');if(ap)ap.onclick=()=>requireAdmin(()=>nsSetStatus(t,host,round,'approved',opts));
+  const un=hq('[data-ns=unapprove]');if(un)un.onclick=()=>requireAdmin(()=>nsSetStatus(t,host,round,'draft',opts));
+  hq('[data-ns=doc]').onclick=()=>requireAdmin(()=>nsDoc(t,host,round));
 }
-async function nsSave(t){const host=byId('nextSteps'),n=NEXTSTEPS[t.id];if(!n)return;
-  const sum=byId('nsSum').value;const bl=(n.bullets||[]).map(b=>({...b}));
+async function nsSave(t,host,round,opts){const n=nsGet(t,round);if(!n||!host)return;
+  const sum=(host.querySelector('[data-ns=sum]')||{}).value||'';const bl=(n.bullets||[]).map(b=>({...b}));
   host.querySelectorAll('textarea[data-bi]').forEach(ta=>{const i=+ta.dataset.bi,f=ta.dataset.f||'move';if(bl[i])bl[i][f]=ta.value;});
-  const msg=byId('nsMsg');if(msg){msg.className='ns-msg';msg.textContent='Saving...';}
-  const res=await sbRpc('admin_set_teacher_next_step',{p_password:adminPw,p_round:SNAP_ROUND,p_teacher_id:t.id,p_standing:n.standing||null,p_summary:sum,p_bullets:bl,p_status:null}).catch(()=>null);
-  if(res&&res.success){n.summary=sum;n.bullets=bl;host.dataset.edit='';renderNextSteps(t);}
+  const msg=host.querySelector('[data-ns=msg]');if(msg){msg.className='ns-msg';msg.textContent='Saving...';}
+  const res=await sbRpc('admin_set_teacher_next_step',{p_password:adminPw,p_round:round,p_teacher_id:t.id,p_standing:n.standing||null,p_summary:sum,p_bullets:bl,p_status:null}).catch(()=>null);
+  if(res&&res.success){n.summary=sum;n.bullets=bl;host.dataset.edit='';renderNextSteps(t,host,opts);}
   else if(msg){msg.textContent='Could not save. Check the admin password and try again.';msg.className='ns-msg warn';}
 }
-async function nsSetStatus(t,status){const n=NEXTSTEPS[t.id];if(!n)return;const msg=byId('nsMsg');if(msg){msg.className='ns-msg';msg.textContent=status==='approved'?'Approving...':'Updating...';}
-  const res=await sbRpc('admin_set_teacher_next_step',{p_password:adminPw,p_round:SNAP_ROUND,p_teacher_id:t.id,p_standing:null,p_summary:null,p_bullets:null,p_status:status}).catch(()=>null);
-  if(res&&res.success){n.status=status;renderNextSteps(t);}else if(msg){msg.textContent='Could not update. Check the admin password.';msg.className='ns-msg warn';}
+async function nsSetStatus(t,host,round,status,opts){const n=nsGet(t,round);if(!n||!host)return;
+  const msg=host.querySelector('[data-ns=msg]');if(msg){msg.className='ns-msg';msg.textContent=status==='approved'?'Approving...':'Updating...';}
+  const res=await sbRpc('admin_set_teacher_next_step',{p_password:adminPw,p_round:round,p_teacher_id:t.id,p_standing:null,p_summary:null,p_bullets:null,p_status:status}).catch(()=>null);
+  if(res&&res.success){n.status=status;renderNextSteps(t,host,opts);}else if(msg){msg.textContent='Could not update. Check the admin password.';msg.className='ns-msg warn';}
 }
-async function nsDoc(t){const n=NEXTSTEPS[t.id];if(!n)return;const msg=byId('nsMsg');if(msg){msg.className='ns-msg';msg.textContent='Building the coaching Doc...';}
-  try{const r=await fetch(DOC_EXPORT_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({kind:'coaching',round:SNAP_ROUND,generated_on:D.generated_on,teacher_name:t.name,note:n})});
+async function nsDoc(t,host,round){const n=nsGet(t,round);if(!n)return;const msg=host?host.querySelector('[data-ns=msg]'):null;if(msg){msg.className='ns-msg';msg.textContent='Building the coaching Doc...';}
+  try{const r=await fetch(DOC_EXPORT_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({kind:'coaching',round:round,generated_on:D.generated_on,teacher_name:t.name,note:n})});
     const out=await r.json();if(out&&out.url){if(msg)msg.textContent='';window.open(out.url,'_blank','noopener');}
     else if(msg){msg.textContent='Export did not complete. Try again in a moment.';msg.className='ns-msg warn';}
   }catch(e){if(msg){msg.textContent='Export did not complete. Try again in a moment.';msg.className='ns-msg warn';}}
 }
+/* the admin board's Next Steps area: one block per round the teacher appears in, newest first */
+function renderNextStepsBoard(t){const wrap=byId('nextSteps');if(!wrap)return;wrap.innerHTML='';
+  roundsChrono().reverse().forEach(rd=>{
+    if(!nsGet(t,rd)&&!t.observations.some(o=>o.round===rd))return;
+    const b=document.createElement('div');b.className='panel';b.style.marginTop='14px';
+    wrap.appendChild(b);renderNextSteps(t,b,{round:rd});});
+  if(!wrap.children.length){const b=document.createElement('div');b.className='panel';b.style.marginTop='14px';
+    b.innerHTML='<div class="ey">Next Steps &amp; Improvement</div><div class="ns-empty">No coaching note has been generated for this teacher yet.</div>';wrap.appendChild(b);}}
 
 /* ============================================================= DEPARTMENT VIEW (Phase 3)
    Lives inside Observations under the R3 Obs menu ("Department Level"). The submenu is built
@@ -1829,7 +1843,6 @@ function renderPortalBrowse(){const q=(byId('psearch').value||'').toLowerCase();
     ||'<div style="padding:18px;color:var(--ink-faint);font-size:13px">No teachers match.</div>';
   host.querySelectorAll('.pface').forEach(c=>c.onclick=()=>openPortalTeacher(c.dataset.id,c));}
 function renderPortalPage(t){const host=byId('portalPage');const ov=t.n_obs?teacherAvg(t):null;
-  const n=NEXTSTEPS[t.id];const approved=!!(n&&n.summary&&n.status==='approved');
   const meta=[t.section||null,t.dept?t.dept+(t.dept_role==='head'?' (head)':''):null,
     t.n_obs?(t.n_obs+(t.n_obs===1?' observation':' observations')+' . June '+t.n_june+' . February '+t.n_feb):'No observations recorded yet this year'].filter(Boolean).join('   .   ');
   const chip=ov!=null?`<span class="pchip" style="background:${rampAt(ov)}">${wordOf(ov)}</span>`:'<span class="pchip na">Not assessed</span>';
@@ -1842,10 +1855,22 @@ function renderPortalPage(t){const host=byId('portalPage');const ov=t.n_obs?teac
     <div class="prail">${PORTAL_TYPES.map(ty=>{const lit=ty.live&&ov!=null;
       return `<button type="button" class="pseg${lit?' lit me':''}"${lit?` style="background:${rampAt(ov)}"`:' disabled'} data-ptype="${ty.key}" title="${esc(ty.label)}: ${lit?wordOf(ov):'Not assessed'}">${lit?`<span>${JABBR[wordOf(ov)]||''}</span>`:''}</button>`;}).join('')}</div>
     <div class="praillab">${PORTAL_TYPES.map(ty=>`<span>${ty.rail}</span>`).join('')}</div></div>`;
-  // SPEA section under the hero: the approved coaching summary is the main thing; the full record
-  // (the Observations cards + the full note, teacher view) sits behind the pop-down arrow.
-  const sum=approved?`<p class="ppsump">${esc(n.summary)}</p>`
-    :`<div class="ns-empty">${t.n_obs?'The summary appears here once your observer approves this round’s coaching note.':'No observations recorded yet this year.'}</div>`;
+  // SPEA section under the hero (v0.58 = the ROUND STACK): one card per round whose coaching note
+  // is APPROVED, newest first; each card = that round's summary + a pop-down with ONLY that round's
+  // session cards + note (teacher view). Unapproved rounds are absent entirely.
+  const apprRounds=roundsChrono().reverse().filter(rd=>{const nn=nsGet(t,rd);return nn&&nn.status==='approved';});
+  const stack=apprRounds.length?apprRounds.map((rd,i)=>{const nn=nsGet(t,rd);
+    return `<div class="pptype" id="ppType${i}">
+      <div class="panel ppsum"><div class="ppsumhead"><div class="ey" style="margin:0">SPEA R3 Observation . ${esc(rd.replace(/^R3\s+/,''))} . summary</div><span class="ns-badge approved">Approved</span></div>
+        <p class="ppsump">${esc(nn.summary||'')}</p>
+        <button class="oexpbtn" id="ppMore${i}" type="button">See the full record ${OEXPCHEV}</button></div>
+      <div class="pptbody"><div class="pptbody-in">
+        <div class="panel" style="margin-top:14px"><div class="ey">Observations . SPEA R3 . ${esc(rd.replace(/^R3\s+/,''))}</div><div class="obslist" id="ppObslist${i}"></div></div>
+        <div class="panel" id="ppNextSteps${i}" style="margin-top:14px"></div>
+      </div></div>
+    </div>`;}).join('')
+    :`<div class="pptype"><div class="panel ppsum"><div class="ppsumhead"><div class="ey" style="margin:0">SPEA R3 Observation . summary</div></div>
+      <div class="ns-empty">${t.n_obs?'Your observation summary appears here once your observer approves it.':'No observations recorded yet this year.'}</div></div></div>`;
   host.innerHTML=`<div class="pband">
       <div>
         <div class="bkick">AIS Sharjah . Teacher portal</div>
@@ -1853,23 +1878,17 @@ function renderPortalPage(t){const host=byId('portalPage');const ov=t.n_obs?teac
         <div class="bmeta">${esc(meta)}</div>
         <div class="pchiprow">${chip}<span class="psubnote">Overall . best evidence wins</span></div>
       </div>${frame}${rail}</div>
-    <div class="pptype" id="ppType">
-      <div class="panel ppsum"><div class="ppsumhead"><div class="ey" style="margin:0">SPEA R3 Observation . summary</div>${approved?'<span class="ns-badge approved">Approved</span>':''}</div>
-        ${sum}${approved?`<button class="oexpbtn" id="ppMore" type="button">See the full record ${OEXPCHEV}</button>`:''}</div>
-      <div class="pptbody"><div class="pptbody-in">
-        <div class="panel" style="margin-top:14px"><div class="ey">Observations . SPEA R3</div><div class="obslist" id="ppObslist"></div></div>
-        <div class="panel" id="ppNextSteps" style="margin-top:14px"></div>
-      </div></div>
-    </div>`;
-  if(approved){   // teacher-view copies of the Observations cards + the full note (built at render, freeze-safe)
+    <div id="ppStack">${stack}</div>`;
+  apprRounds.forEach((rd,i)=>{   // teacher-view copies per round (built at render, freeze-safe)
+    const fo=t.observations.filter(o=>o.round===rd);
+    const t2={...t,observations:fo,n_obs:fo.length};   // n_obs drives the All-card counter
     selectedObs='all';
-    renderObsList(t,byId('ppObslist'),{teacherView:true,svgSP:'svgArcP',svgTE:'svgArcTP'});
-    buildArc(t,'svgArcP',progScore,progAvg,false);buildArc(t,'svgArcTP',teachScore,teachAvg,true);
-    renderNextSteps(t,byId('ppNextSteps'),{teacherView:true});
-    const more=byId('ppMore');more.onclick=()=>{const open=byId('ppType').classList.toggle('open');more.classList.toggle('open',open);};
-  }
+    renderObsList(t2,byId('ppObslist'+i),{teacherView:true,svgSP:'svgArcP'+i,svgTE:'svgArcTP'+i});
+    buildArc(t2,'svgArcP'+i,progScore,progAvg,false);buildArc(t2,'svgArcTP'+i,teachScore,teachAvg,true);
+    renderNextSteps(t2,byId('ppNextSteps'+i),{teacherView:true,round:rd});
+    const more=byId('ppMore'+i);more.onclick=()=>{const open=byId('ppType'+i).classList.toggle('open');more.classList.toggle('open',open);};});
   host.querySelectorAll('[data-ptype]').forEach(b=>{if(b.disabled)return;
-    b.onclick=()=>byId('ppType').scrollIntoView({behavior:'smooth',block:'start'});});}
+    b.onclick=()=>byId('ppStack').scrollIntoView({behavior:'smooth',block:'start'});});}
   // "Open in Observations" removed v0.57: the portal is the teacher-facing surface; the admin
   // Observations board is not theirs to reach (the board's own "Teacher portal" link stays).
 function openPortalTeacher(id,cardEl){portalId=id;
@@ -1970,8 +1989,9 @@ let NARR={primary_kindy:{strengths:MIN_SEC(),develop:MIN_SEC()},secondary:{stren
 let REF_INDEX={};
 let RECS={intro:'',primary_kindy:{summary:'',points:[]},secondary:{summary:'',points:[]}};   // In Depth coaching (section='coaching')
 let SUMMARY={lead:'',leadSlug:'',points:[]};   // In Depth executive summary (section='summary')
-let NEXTSTEPS={};   // teacher_id -> per-teacher coaching note (get_teacher_next_steps); baked fallback below
-try{((typeof window!=='undefined'&&window.__AIS_NEXTSTEPS)||[]).forEach(n=>{NEXTSTEPS[n.teacher_id]=n;});}catch(e){}
+let NEXTSTEPS={};   // round -> teacher_id -> coaching note (get_teacher_next_steps); baked fallback below (v0.58: per-round)
+try{((typeof window!=='undefined'&&window.__AIS_NEXTSTEPS)||[]).forEach(n=>{if(!n.round)return;(NEXTSTEPS[n.round]=NEXTSTEPS[n.round]||{})[n.teacher_id]=n;});}catch(e){}
+function nsGet(t,round){return (NEXTSTEPS[round]||{})[t.id];}
 const PH_AB={primary_kindy:'pk',secondary:'sec'},SEC_AB={strengths:'str',develop:'dev'};
 const SEAS_WORD={1:'Outstanding',2:'Very Good',3:'Good',4:'Acceptable',5:'Weak',6:'Very Weak'};
 function navSlug(phase,section,kind,idx){
@@ -2047,14 +2067,17 @@ async function loadNarrative(){if(!SB_URL||SB_URL.indexOf('http')!==0)return;
     const items=await r.json();if(!applyNarrItems(items))return;
     if(current==='snapshot')reRenderSnapshotKeepPos();
   }catch(e){/* offline / blocked / timeout -> keep baked NARR, no markers, no error UI */}}
-/* per-teacher coaching notes (get_teacher_next_steps), round-scoped; visible to all (soft gate) */
+/* per-teacher coaching notes (get_teacher_next_steps), ALL rounds since v0.58; visible to all (soft gate) */
 async function loadNextSteps(){if(!SB_URL||SB_URL.indexOf('http')!==0)return;
-  try{const ctrl=new AbortController(),to=setTimeout(()=>ctrl.abort(),7000);
-    const r=await fetch(SB_URL.replace(/\/+$/,'')+'/rest/v1/rpc/get_teacher_next_steps',
-      {method:'POST',headers:{apikey:SB_KEY,Authorization:'Bearer '+SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({p_round:SNAP_ROUND}),signal:ctrl.signal});
-    clearTimeout(to);if(!r.ok)return;const arr=await r.json();if(!Array.isArray(arr))return;
-    const m={};for(const n of arr)m[n.teacher_id]=n;NEXTSTEPS=m;
-    if(current==='teacher'&&!byId('obsDetail').hidden&&selectedId!=null)renderNextSteps(teacherById(selectedId));
+  try{const rounds=(D.rounds&&D.rounds.length)?D.rounds:[SNAP_ROUND];const out={};
+    await Promise.all(rounds.map(async rd=>{const ctrl=new AbortController(),to=setTimeout(()=>ctrl.abort(),7000);
+      const r=await fetch(SB_URL.replace(/\/+$/,'')+'/rest/v1/rpc/get_teacher_next_steps',
+        {method:'POST',headers:{apikey:SB_KEY,Authorization:'Bearer '+SB_KEY,'Content-Type':'application/json'},body:JSON.stringify({p_round:rd}),signal:ctrl.signal});
+      clearTimeout(to);if(!r.ok)return;const arr=await r.json();if(!Array.isArray(arr))return;
+      const m={};for(const n of arr)m[n.teacher_id]=n;out[rd]=m;}));
+    if(!Object.keys(out).length)return;NEXTSTEPS=out;
+    if(current==='teacher'&&!byId('obsDetail').hidden&&selectedId!=null)renderNextStepsBoard(teacherById(selectedId));
+    if(current==='portal'&&portalId!=null){const t=teacherById(portalId);if(t)renderPortalPage(t);}
   }catch(e){/* silent: keep baked, no error UI */}}
 const I_CHECK='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.6l3.4 3.4L13 4.6"/></svg>';
 const I_ARROW='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11L11 5M6.2 5H11v4.8"/></svg>';
