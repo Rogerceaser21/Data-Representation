@@ -472,6 +472,10 @@ svg{display:block;overflow:visible}
 .snaptools{display:flex;flex-direction:column;align-items:flex-end;gap:9px}
 .snaphead{align-items:flex-start}
 .snaphL{display:flex;flex-direction:column;gap:7px;align-items:flex-start}
+/* v0.60: the board name on the left wears the SAME display serif as the right title; the gradient
+   stripe stays left of it, centre-aligned to the word (inline-flex align-items:center). */
+.snaphL .kick{font-family:var(--display);font-weight:600;font-size:clamp(26px,4vw,44px);line-height:1.02;letter-spacing:-.02em;text-transform:none;color:var(--ink);gap:14px}
+.snaphL .kick .stripe{width:34px;flex:none}
 .snaphR{display:flex;flex-direction:column;align-items:flex-end;text-align:right;min-width:0}
 .snaphR .big{margin-top:0}
 .snaphR .snapsub{margin-top:9px;max-width:62ch}
@@ -840,6 +844,13 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
 .hsec .pl{flex:none;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#fff;padding:5px 12px;border-radius:999px;box-shadow:0 8px 20px -10px rgba(0,0,0,.55)}
 .hsec .pl.na{background:rgba(120,132,165,.28);border:1px dashed rgba(255,255,255,.3);color:#aab7e2;box-shadow:none}
 .hsec .pl.soon{background:rgba(237,255,33,.14);border:1px solid rgba(237,255,33,.35);color:#EDFF21;box-shadow:none}
+.hsecrow{display:flex;align-items:center;gap:12px}
+.hsecrow .hsec{flex:1;min-width:0}
+.hsec.new{outline:2px dashed #EF343A;outline-offset:3px}
+.hnew{flex:none;display:inline-flex;align-items:center;gap:7px;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:#EF343A;color:#fff;padding:6px 13px;border-radius:999px;box-shadow:0 10px 26px -10px rgba(239,52,58,.75);transition:opacity .4s ease,transform .4s ease;white-space:nowrap}
+.hnew i{width:7px;height:7px;border-radius:50%;background:#fff;animation:ppulse 1.6s ease-in-out infinite}
+.hnew.gone{opacity:0;transform:scale(.75)}
+@keyframes ppulse{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.55)}50%{box-shadow:0 0 0 6px rgba(255,255,255,0)}}
 .hsec:disabled{cursor:default}
 .hsec:disabled .no,.hsec:disabled .tt{opacity:.55}
 .hsec.me{cursor:pointer;transition:transform .2s ease,background .2s ease,box-shadow .2s ease}
@@ -847,7 +858,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
 /* SPEA section under the hero: summary card + pop-down full record */
 .pptype{margin-top:16px}
 .ppsumhead{display:flex;align-items:center;gap:10px}
-.ppsum .ppsump{margin:10px 0 0;font-size:13.5px;line-height:1.75;color:var(--ink-dim);max-width:78ch}
+.ppsum .ppsump{margin:10px 0 0;font-size:13.5px;line-height:1.75;color:var(--ink-dim)}
 .ppsum .oexpbtn{padding:12px 6px 0}
 .oexpbtn.open .oexpchev{transform:rotate(180deg)}
 .pptbody{display:grid;grid-template-rows:0fr;transition:grid-template-rows .5s cubic-bezier(.4,0,.2,1)}
@@ -1104,7 +1115,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
         <span class="subtle" id="cov-asof"></span>
       </div>
       <div class="snaphR">
-        <h2 class="big">Who has been <em>observed</em>, and who has not.</h2>
+        <h2 class="big">Who has been <em>observed</em>.</h2>
       </div>
     </div>
 
@@ -1146,7 +1157,8 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
         <span class="kick"><span class="stripe"></span>Observations</span>
       </div>
       <div class="snaphR">
-        <h2 class="big">R3 Observations</h2>
+        <!-- empty until an R3 Obs selection is made; future observation types set their own name -->
+        <h2 class="big" id="obsTitle"></h2>
       </div>
     </div>
 
@@ -1219,7 +1231,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
   <section class="view" id="v-portal" hidden>
     <div class="head snaphead">
       <div class="snaphL"><span class="kick"><span class="stripe"></span>Teacher portal</span></div>
-      <div class="snaphR"><h2 class="big">Teacher portal</h2></div>
+      <div class="snaphR"><h2 class="big" id="portalTitle">All</h2></div>
     </div>
     <!-- ONE control row: back (page state) + search-first + quiet section filters -->
     <div class="tabsrow">
@@ -1268,6 +1280,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
     </div>
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
+        <div class="vrow"><span class="vtag">v0.60</span><span class="vnote">Portal hero stripped to identity: the "AIS Sharjah . Teacher portal" kicker and the overall judgement chip are gone (no R3 result lives in the hero). Nothing renders below the hero until the teacher opens a section; clicking SPEA R3 slides in the round stack. New-approval awareness: an approval the teacher has not seen yet shows a pulsing RED "New Notification" badge beside the section row (with a count when more than one) and the row itself wears a dashed red ring; opening the section marks it seen, the badge fades and the ring drops. Seen state lives in Supabase (portal_seen), so the badge reads the same on every device; it is per teacher until Google SSO makes it per user. Board headers unified: the left board name (Snapshot, Coverage, Observations, Teacher portal) now wears the same display serif as the right title with the gradient stripe centred beside it; Coverage's title is trimmed to "Who has been observed."; the Observations title stays empty until an R3 Obs selection is made; the Teacher portal title mirrors the state (section chip while browsing, the teacher's name on their page). The portal round summary now fills the full card width (the old 78-character cap left the right half of the card empty).</span></div>
         <div class="vrow"><span class="vtag">v0.59</span><span class="vnote">Portal hero rearranged to the numbered section list (Igor's order): Probationary Observations, OTP &amp; APR (Self-Assessment), Lesson Observations (APR), SPEA R3 Observation, Classroom Profiling ESCM, Walkthroughs, and Links and Files + AI Chat (coming soon). The list sits left of the staff portrait; each row will carry its own judgement scale, so today only SPEA R3 shows its judgement word (and opens the round stack below), the others sit greyed as Not assessed and the last row is marked Coming soon. The full-width coverage rail is retired.</span></div>
         <div class="vrow"><span class="vtag">v0.58</span><span class="vnote">Coaching notes went per-round. The Observations drill-down now shows one Next Steps block per round (June's full note and February's new minimal note), each with its own Draft/Approved badge and its own Edit, Approve and Make Doc buttons; approving one round never touches another. February's notes were seeded as neutral one-line drafts built only from structured facts (subject + judgement word, never the observer's verbatim text). The Teacher portal shows the round STACK: one summary card per APPROVED round, newest first, each opening into only that round's session cards, gauges and full note. This also fixes the leak where an unapproved February session card rode along inside an approved June record.</span></div>
         <div class="vrow"><span class="vtag">v0.57</span><span class="vnote">Portal hero card cleaned up per Igor. The Assessment coverage rail now spans the full width of the hero at the bottom; lit tiles carry real judgement abbreviations (O, VG, G, A, W, VW instead of a lone first letter) and the type labels read as words (SPEA R3, Walkthrough, Probation, Lesson Obs, ESCM, OTP &amp; APR, Notes, Files). The hero kicker is simply "AIS Sharjah . Teacher portal" (the card is the whole portal's identity, not an R3 artefact) and the "Open in Observations" button is gone: teachers will never have access to the admin boards. Both teacher-search pills lost the decoy "Search" prefix (clicking it did nothing); the input now fills the pill with "Type a teacher name..." as the placeholder. And the intro's yellow star now matches its word: both the star and "Stops" are the readable mustard #FFBA14 (the drifting hero stars keep the approved sheet yellow).</span></div>
@@ -1348,7 +1361,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
   </div>
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.59</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.60</span></span>
   </div>
 </div>
 
@@ -1825,15 +1838,18 @@ const PGROUPS=[['secondary','Secondary'],['primary','Primary'],['kindy','Kindy']
 function pInitials(name){const p=String(name||'').trim().split(/\s+/);return (((p[0]||'')[0]||'')+((p[p.length-1]||'')[0]||'')).toUpperCase();}
 function pAlpha(col,a){return String(col).replace('rgb(','rgba(').replace(')',','+a+')');}  // rampAt returns rgb(...)
 const PSTAR=(c,x,y,d)=>`<svg class="pstar" viewBox="0 0 24 24" style="color:${c};left:${x};top:${y};animation-delay:${d}s"><path fill="currentColor" d="M12 1.6l2.7 6.9 7.3.4-5.7 4.7 1.9 7.1L12 16.8l-6.2 3.9 1.9-7.1L2 8.9l7.3-.4z"/></svg>`;
+function setPortalTitle(){const el=byId('portalTitle');if(!el)return;
+  if(portalId!=null){const t=teacherById(portalId);if(t){el.textContent=t.name;return;}}
+  const s=PSECS.find(([k])=>k===portalSec);el.textContent=s?s[1]:'All';}   // right title mirrors the state: chip name while browsing, teacher name on a page
 function portalLayout(){const page=portalId!=null;
-  byId('portalBrowse').hidden=page;byId('portalPage').hidden=!page;byId('portalBack').hidden=!page;byId('pFilters').hidden=page;}
+  byId('portalBrowse').hidden=page;byId('portalPage').hidden=!page;byId('portalBack').hidden=!page;byId('pFilters').hidden=page;setPortalTitle();}
 function renderPortal(){renderPortalFilters();
   if(portalId!=null){const t=teacherById(portalId);if(t){renderPortalPage(t);portalLayout();return;}portalId=null;}
   renderPortalBrowse();portalLayout();}
 function renderPortalFilters(){const host=byId('pFilters');if(host.dataset.built)return;host.dataset.built='1';
   host.innerHTML=PSECS.map(([k,l])=>`<button class="flt${portalSec===k?' on':''}" data-sec="${k}" type="button">${l}</button>`).join('');
   host.querySelectorAll('[data-sec]').forEach(b=>b.onclick=()=>{portalSec=b.dataset.sec;
-    host.querySelectorAll('[data-sec]').forEach(x=>x.classList.toggle('on',x.dataset.sec===portalSec));renderPortalBrowse();});}
+    host.querySelectorAll('[data-sec]').forEach(x=>x.classList.toggle('on',x.dataset.sec===portalSec));renderPortalBrowse();setPortalTitle();});}
 function pFaceCard(t){const ov=t.n_obs?teacherAvg(t):null;
   const chip=ov!=null?`<span class="pfchip" style="background:${pAlpha(rampAt(ov),.82)}">${wordOf(ov)}</span>`:'<span class="pfchip" style="background:rgba(90,100,130,.55)">Not assessed</span>';
   const sub=[t.dept?t.dept+(t.dept_role==='head'?' . head':''):null,t.section||null].filter(Boolean).join(' . ');
@@ -1854,25 +1870,37 @@ function renderPortalBrowse(){const q=(byId('psearch').value||'').toLowerCase();
     `<div class="psecthead"><h3>${g.l}</h3><small>${g.rows.length} teacher${g.rows.length===1?'':'s'}</small></div><div class="pwall">${g.rows.map(pFaceCard).join('')}</div>`).join('')
     ||'<div style="padding:18px;color:var(--ink-faint);font-size:13px">No teachers match.</div>';
   host.querySelectorAll('.pface').forEach(c=>c.onclick=()=>openPortalTeacher(c.dataset.id,c));}
+/* rounds whose coaching note is APPROVED, newest first; "seen" = Supabase portal_seen (migrate_11,
+   cross-device). Per TEACHER, not per viewer, until SSO adds per-user rows (Igor accepted 2026-07-04).
+   SEEN stays null until get_portal_seen lands, so no badge can flash from stale assumptions. */
+let SEEN=null;   // teacher_id -> Set(round) already viewed on the portal
+function ppApproved(t){return roundsChrono().reverse().filter(rd=>{const nn=nsGet(t,rd);return nn&&nn.status==='approved';});}
+function ppUnseen(t){if(!SEEN)return [];const s=SEEN[t.id];return ppApproved(t).filter(r=>!s||!s.has(r));}
+function ppMarkSeen(t){if(!SEEN)SEEN={};(SEEN[t.id]=SEEN[t.id]||new Set());ppApproved(t).forEach(r=>SEEN[t.id].add(r));   // optimistic
+  sbRpc('portal_mark_seen',{p_teacher_id:t.id}).catch(()=>{});}   // write lands behind; silent on failure
 function renderPortalPage(t){const host=byId('portalPage');const ov=t.n_obs?teacherAvg(t):null;
   const meta=[t.section||null,t.dept?t.dept+(t.dept_role==='head'?' (head)':''):null,
     t.n_obs?(t.n_obs+(t.n_obs===1?' observation':' observations')+' . June '+t.n_june+' . February '+t.n_feb):'No observations recorded yet this year'].filter(Boolean).join('   .   ');
-  const chip=ov!=null?`<span class="pchip" style="background:${rampAt(ov)}">${wordOf(ov)}</span>`:'<span class="pchip na">Not assessed</span>';
   const frame=`<div class="pframe">${t.photo_url?`<img src="${esc(t.photo_url)}" alt="" onerror="this.outerHTML='<span class=pin>${esc(pInitials(t.name))}</span>'">`:`<span class="pin">${esc(pInitials(t.name))}</span>`}
     ${PSTAR('#EF343A','-16px','-14px',0)}${PSTAR('#1257FF','-22px','72%',1.4)}${PSTAR('#EDFF21','92%','-18px',.7)}</div>`;
-  // The hero menu (v0.59): the numbered section list sits LEFT (photo stays right), one row per
+  // The hero menu (v0.59/60): the numbered section list sits LEFT (photo stays right), one row per
   // school ask in Igor's order. Only SPEA R3 is live and clickable; each future section will carry
   // its own judgement scale, so the others stay greyed Not assessed until their pipelines land.
+  // v0.60: an unseen approval shows a pulsing red "New Notification" badge beside the row + a
+  // dashed red ring on it (seen state = Supabase portal_seen, cross-device; per-user after SSO).
+  const unseen=ppUnseen(t);
   const list=`<div class="hsecs">${PORTAL_SECTIONS.map((sec,i)=>{
     const live=sec.live&&ov!=null;
+    const hasNew=live&&unseen.length>0;   // red badge OUTSIDE the row + dashed red ring on it
+    const badge=hasNew?`<span class="hnew"><i></i>${unseen.length>1?unseen.length+' New Notifications':'New Notification'}</span>`:'';
     const pill=live?`<span class="pl" style="background:${rampAt(ov)}">${wordOf(ov)}</span>`
       :sec.soon?'<span class="pl soon">Coming soon</span>':'<span class="pl na">Not assessed</span>';
     const sub=live?`<small>Evidence on record . ${t.n_obs} observation${t.n_obs===1?'':'s'}</small>`:'';
-    return `<button type="button" class="hsec${live?' me':''}" data-ptype="${sec.key}"${live?'':' disabled'}><span class="no">${String(i+1).padStart(2,'0')}</span><span class="tt">${sec.label}${sub}</span>${pill}</button>`;}).join('')}</div>`;
+    return `<div class="hsecrow"><button type="button" class="hsec${live?' me':''}${hasNew?' new':''}" data-ptype="${sec.key}"${live?'':' disabled'}><span class="no">${String(i+1).padStart(2,'0')}</span><span class="tt">${sec.label}${sub}</span>${pill}</button>${badge}</div>`;}).join('')}</div>`;
   // SPEA section under the hero (v0.58 = the ROUND STACK): one card per round whose coaching note
   // is APPROVED, newest first; each card = that round's summary + a pop-down with ONLY that round's
   // session cards + note (teacher view). Unapproved rounds are absent entirely.
-  const apprRounds=roundsChrono().reverse().filter(rd=>{const nn=nsGet(t,rd);return nn&&nn.status==='approved';});
+  const apprRounds=ppApproved(t);
   const stack=apprRounds.length?apprRounds.map((rd,i)=>{const nn=nsGet(t,rd);
     return `<div class="pptype" id="ppType${i}">
       <div class="panel ppsum"><div class="ppsumhead"><div class="ey" style="margin:0">SPEA R3 Observation . ${esc(rd.replace(/^R3\s+/,''))} . summary</div><span class="ns-badge approved">Approved</span></div>
@@ -1887,13 +1915,11 @@ function renderPortalPage(t){const host=byId('portalPage');const ov=t.n_obs?teac
       <div class="ns-empty">${t.n_obs?'Your observation summary appears here once your observer approves it.':'No observations recorded yet this year.'}</div></div></div>`;
   host.innerHTML=`<div class="pband">
       <div>
-        <div class="bkick">AIS Sharjah . Teacher portal</div>
         <h2 class="bname">${esc(t.name)}</h2>
         <div class="bmeta">${esc(meta)}</div>
-        <div class="pchiprow">${chip}<span class="psubnote">Overall . best evidence wins</span></div>
         ${list}
       </div>${frame}</div>
-    <div id="ppStack">${stack}</div>`;
+    <div id="ppStack" hidden>${stack}</div>`;
   apprRounds.forEach((rd,i)=>{   // teacher-view copies per round (built at render, freeze-safe)
     const fo=t.observations.filter(o=>o.round===rd);
     const t2={...t,observations:fo,n_obs:fo.length};   // n_obs drives the All-card counter
@@ -1902,8 +1928,15 @@ function renderPortalPage(t){const host=byId('portalPage');const ov=t.n_obs?teac
     buildArc(t2,'svgArcP'+i,progScore,progAvg,false);buildArc(t2,'svgArcTP'+i,teachScore,teachAvg,true);
     renderNextSteps(t2,byId('ppNextSteps'+i),{teacherView:true,round:rd});
     const more=byId('ppMore'+i);more.onclick=()=>{const open=byId('ppType'+i).classList.toggle('open');more.classList.toggle('open',open);};});
+  // nothing shows below the hero until the teacher opens a section; opening marks its approvals seen
   host.querySelectorAll('[data-ptype]').forEach(b=>{if(b.disabled)return;
-    b.onclick=()=>byId('ppStack').scrollIntoView({behavior:'smooth',block:'start'});});}
+    b.onclick=()=>{const s=byId('ppStack');
+      if(s.hidden){s.hidden=false;reveal('#ppStack .panel',.05);}
+      ppMarkSeen(t);
+      b.classList.remove('new');   // the dashed red ring drops the moment they view it
+      const nb=b.parentElement.querySelector('.hnew');
+      if(nb&&!nb.classList.contains('gone')){nb.classList.add('gone');setTimeout(()=>nb.remove(),450);}
+      s.scrollIntoView({behavior:'smooth',block:'start'});};});}
   // "Open in Observations" removed v0.57: the portal is the teacher-facing surface; the admin
   // Observations board is not theirs to reach (the board's own "Teacher portal" link stays).
 function openPortalTeacher(id,cardEl){portalId=id;
@@ -2094,6 +2127,17 @@ async function loadNextSteps(){if(!SB_URL||SB_URL.indexOf('http')!==0)return;
     if(current==='teacher'&&!byId('obsDetail').hidden&&selectedId!=null)renderNextStepsBoard(teacherById(selectedId));
     if(current==='portal'&&portalId!=null){const t=teacherById(portalId);if(t)renderPortalPage(t);}
   }catch(e){/* silent: keep baked, no error UI */}}
+/* portal seen-state (get_portal_seen, migrate_11): which approved rounds each teacher has already
+   viewed. Loaded with the live data so the New Notification badge reads the same on every device. */
+async function loadPortalSeen(){if(!SB_URL||SB_URL.indexOf('http')!==0)return;
+  try{const ctrl=new AbortController(),to=setTimeout(()=>ctrl.abort(),7000);
+    const r=await fetch(SB_URL.replace(/\/+$/,'')+'/rest/v1/rpc/get_portal_seen',
+      {method:'POST',headers:{apikey:SB_KEY,Authorization:'Bearer '+SB_KEY,'Content-Type':'application/json'},body:'{}',signal:ctrl.signal});
+    clearTimeout(to);if(!r.ok)return;const arr=await r.json();if(!Array.isArray(arr))return;
+    const m={};for(const x of arr)(m[x.teacher_id]=m[x.teacher_id]||new Set()).add(x.round);
+    SEEN=m;
+    if(current==='portal'&&portalId!=null){const t=teacherById(portalId);if(t)renderPortalPage(t);}
+  }catch(e){/* silent: badge simply stays absent, no error UI */}}
 const I_CHECK='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.6l3.4 3.4L13 4.6"/></svg>';
 const I_ARROW='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11L11 5M6.2 5H11v4.8"/></svg>';
 let snapPhase='primary_kindy';
@@ -2844,9 +2888,10 @@ byId('r3ObsBtn').onclick=e=>{e.stopPropagation();const open=byId('obsMenu').hidd
 byId('obsMenu').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;e.stopPropagation();
   if(b.dataset.sub==='school'){const s=byId('subSchool');s.hidden=!s.hidden;if(!s.hidden)reveal('#subSchool .obsmi2',.04);return;}
   if(b.dataset.sub==='dept'){const s=byId('subDept');if(s.hidden)buildDeptMenu();s.hidden=!s.hidden;if(!s.hidden)reveal('#subDept .obsmi2',.04);return;}
-  if(b.dataset.dept){setObsMenu(false);enterDeptView(b.dataset.dept);return;}
-  if(b.dataset.act==='teacher'){setObsMenu(false);enterTeacherLevel();return;}
-  if(b.dataset.act==='placeholder'){setObsMenu(false);showPlaceholder(b.dataset.kick,b.dataset.title,b.dataset.note);return;}});
+  if(b.dataset.dept){setObsMenu(false);setObsTitle();enterDeptView(b.dataset.dept);return;}
+  if(b.dataset.act==='teacher'){setObsMenu(false);setObsTitle();enterTeacherLevel();return;}
+  if(b.dataset.act==='placeholder'){setObsMenu(false);setObsTitle();showPlaceholder(b.dataset.kick,b.dataset.title,b.dataset.note);return;}});
+function setObsTitle(){const el=byId('obsTitle');if(el)el.textContent='R3 Observations';}   // appears on the first R3 Obs pick; future observation types write their own name
 document.addEventListener('click',()=>setObsMenu(false));   // click anywhere else closes the menu
 byId('tsearch').addEventListener('input',()=>{renderTlist();layoutObs();});
 byId('fltNoobs').onclick=()=>{fltNoobs=!fltNoobs;byId('fltNoobs').classList.toggle('on',fltNoobs);renderTlist();};
@@ -3024,6 +3069,7 @@ loadLive();loadSettings();
 initRefPanel();
 loadNarrative();
 loadNextSteps();
+loadPortalSeen();
 </script>
 </body>
 </html>

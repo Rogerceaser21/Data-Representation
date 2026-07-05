@@ -5,6 +5,13 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.60 . 2026-07-05
+- **Portal hero stripped to identity.** The "AIS Sharjah . Teacher portal" kicker and the overall judgement chip are gone (no R3 result belongs in the hero). Nothing renders below the hero until the teacher opens a section; clicking SPEA R3 slides in the round stack.
+- **New-approval awareness.** An approval the teacher has not seen yet shows a pulsing red "New Notification" badge beside the section row (with a count when more than one) and the row wears a dashed red ring; opening the section marks it seen, the badge fades and the ring drops. Seen state lives in Supabase (`portal_seen` + `portal_mark_seen` / `get_portal_seen` anon RPCs, `~/AIS-Data-Dashboard/db/migrate_11_portal_seen.sql`), so the badge reads the same on every device. Per teacher until Google SSO makes it per user.
+- **Board headers unified.** The left board name (Snapshot, Coverage, Observations, Teacher portal) now wears the same display serif as the right title, gradient stripe centred beside it. Coverage's title is trimmed to "Who has been observed."; the Observations title stays empty until an R3 Obs selection is made; the Teacher portal title mirrors the state (section chip while browsing, the teacher's name on their page).
+- **Portal round summary fills the full card width.** Dropped the leftover 78-character cap on `.ppsump` that left the right half of the approved SPEA summary card empty.
+- Scope: Teacher portal + board headers. Snapshot, Coverage, Observations drill-down, reports, data untouched. Rollback: `dash-v0.59`.
+
 ## v0.59 . 2026-07-04
 - **Portal hero = the numbered section list.** The hero left side now lists every school ask in Igor's order: 01 Probationary Observations, 02 OTP & APR (Self-Assessment), 03 Lesson Observations (APR), 04 SPEA R3 Observation, 05 Classroom Profiling ESCM, 06 Walkthroughs, 07 Links and Files + AI Chat (Coming soon). Each row carries a judgement pill on its own scale; only SPEA R3 is live today (judgement word, evidence count, click opens the round stack below), the rest sit greyed Not assessed. The staff portrait stays on the right; the full-width coverage rail is retired. Department matrix columns unchanged.
 - Scope: portal hero only. Round stack (v0.58), boards, data untouched. Rollback: `dash-v0.58`.
