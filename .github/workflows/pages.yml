@@ -1,0 +1,64 @@
+name: Deploy to GitHub Pages
+
+# Self-healing Pages deploy. Replaces GitHub's default "deploy from a branch"
+# build so we can auto-retry the publish step, which intermittently returns
+# "Deployment failed, try again later" from GitHub's own backend
+# (actions/deploy-pages issues #406 / #418). Build uploads the artifact once;
+# the deploy job retries the publish in place (never re-uploads, which would
+# trip the duplicate-artifact bug in upload-pages-artifact #97).
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:        # manual re-deploy, no code change needed
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time; queue rather than cancel so a live production deploy
+# is never killed mid-publish (the state that can wedge the Pages backend).
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload site artifact       # whole repo root, same URLs as today
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: https://rogerceaser21.github.io/Data-Representation/
+    steps:
+      - name: Publish (attempt 1)
+        id: t1
+        uses: actions/deploy-pages@v5
+        continue-on-error: true
+      - name: Wait before retry
+        if: steps.t1.outcome == 'failure'
+        run: sleep 30
+      - name: Publish (attempt 2)
+        id: t2
+        if: steps.t1.outcome == 'failure'
+        uses: actions/deploy-pages@v5
+        continue-on-error: true
+      - name: Wait before final retry
+        if: steps.t1.outcome == 'failure' && steps.t2.outcome == 'failure'
+        run: sleep 30
+      - name: Publish (attempt 3, final)
+        id: t3
+        if: steps.t1.outcome == 'failure' && steps.t2.outcome == 'failure'
+        uses: actions/deploy-pages@v5
