@@ -788,6 +788,24 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
 /* autoplay toggle in Settings */
 #autoplayToggle.on .sw{background:var(--g)}
 #autoplayToggle.on .sw::after{left:23px}
+/* v0.61 round regeneration (admin only) */
+#regenPanel .regrow{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin-top:6px}
+#regenPanel .regrow label{display:flex;flex-direction:column;gap:5px;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-mid)}
+#regenPanel .regrow input,#regenPanel .regrow select{padding:9px 11px;border:1px solid var(--edge);border-radius:10px;background:var(--panel-2);color:var(--ink);font-size:14px;min-width:180px}
+.regbtn{padding:10px 18px;border:0;border-radius:10px;color:#fff;font-weight:800;font-size:13px;cursor:pointer;letter-spacing:.01em}
+.regbtn.start{background:var(--b)}
+.regbtn.pub{background:var(--g)}
+.regbtn.ghost{background:transparent;border:1px solid var(--edge);color:var(--ink-dim)}
+.regbtn[disabled]{opacity:.45;cursor:default}
+.regstat{margin-top:16px;border:1px solid var(--edge);border-radius:12px;padding:14px 16px;background:var(--panel)}
+.regstat .rshead{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.regstat .rstatus{font-weight:800;letter-spacing:.03em;text-transform:uppercase;font-size:13px}
+.regstat .rround{color:var(--ink-mid);font-size:12px}
+.regbar{height:7px;border-radius:99px;background:var(--edge-soft);overflow:hidden;margin:10px 0}
+.regbar>i{display:block;height:100%;background:var(--g);transition:width .4s}
+.reglog{font-size:11.5px;line-height:1.55;color:var(--ink-mid);max-height:120px;overflow:auto;margin-top:8px;font-family:ui-monospace,SFMono-Regular,monospace;white-space:pre-wrap}
+.regjudge{font-size:12px;color:var(--ink-dim);margin-top:8px}
+.regacts{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
 /* ============ PRINT / Save-as-PDF (view-aware; components never split a page) ============ */
 @media print{
   *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;transition:none!important}   /* FIX 1: browsers strip background colours in print by default -> force them so bars/dots/swatches/gauges/navy cover all show; kill transitions so bars print at final size */
@@ -1278,8 +1296,19 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
         <p class="subtle" style="margin-top:14px;line-height:1.6">These choices are saved for everyone, on every device, so the field can be calm for a governor session and lively for a launch. The light or dark theme is the round button, top right.</p>
       </div>
     </div>
+      <div class="panel" id="regenPanel" style="margin-top:14px">
+        <div class="ey">Round regeneration</div>
+        <p class="subtle" style="line-height:1.6;margin:6px 0 4px">When a new inspection round has fully landed (the R3 form writes to Supabase) and you have set the round, this regenerates every AI-written surface for that round, the Snapshot narrative and insights, the report references, the recommendations and every teacher's coaching note, then holds it for your review before anything goes live. It runs the certified pipeline (Claude Sonnet 5, every quote checked verbatim, judged for fabrication); nothing that fails the checks can be published.</p>
+        <div class="regrow">
+          <label>Round<input id="regRound" type="text" placeholder="e.g. R3 Nov 26" autocomplete="off"></label>
+          <label>Engine<select id="regEngine"><option value="api">Cloud (API key)</option><option value="claude-code">This Mac (Max plan) . soon</option></select></label>
+          <button class="regbtn start" id="regStart" type="button">Start regeneration</button>
+        </div>
+        <div id="regStatus" class="regstat" hidden></div>
+      </div>
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
+        <div class="vrow"><span class="vtag">v0.61</span><span class="vnote">Round regeneration, admin only. Settings gains a Round regeneration panel: when a new inspection round has landed and been set, one button regenerates every AI-written surface for that round (the Snapshot narrative and insights, the report references, the recommendations and every teacher's coaching note) on the certified pipeline, holds the result for your review, and publishes it to the live dashboard only on your approval. The panel shows the job's live status, stage and progress with a Cancel, and a Publish to live button once the run clears the verbatim and fabrication checks. Runs headless through the cloud API key; the Mac Max-plan route follows. Nothing reaches the live boards until you press Publish.</span></div>
         <div class="vrow"><span class="vtag">v0.60</span><span class="vnote">Portal hero stripped to identity: the "AIS Sharjah . Teacher portal" kicker and the overall judgement chip are gone (no R3 result lives in the hero). Nothing renders below the hero until the teacher opens a section; clicking SPEA R3 slides in the round stack. New-approval awareness: an approval the teacher has not seen yet shows a pulsing RED "New Notification" badge beside the section row (with a count when more than one) and the row itself wears a dashed red ring; opening the section marks it seen, the badge fades and the ring drops. Seen state lives in Supabase (portal_seen), so the badge reads the same on every device; it is per teacher until Google SSO makes it per user. Board headers unified: the left board name (Snapshot, Coverage, Observations, Teacher portal) now wears the same display serif as the right title with the gradient stripe centred beside it; Coverage's title is trimmed to "Who has been observed."; the Observations title stays empty until an R3 Obs selection is made; the Teacher portal title mirrors the state (section chip while browsing, the teacher's name on their page). The portal round summary now fills the full card width (the old 78-character cap left the right half of the card empty).</span></div>
         <div class="vrow"><span class="vtag">v0.59</span><span class="vnote">Portal hero rearranged to the numbered section list (Igor's order): Probationary Observations, OTP &amp; APR (Self-Assessment), Lesson Observations (APR), SPEA R3 Observation, Classroom Profiling ESCM, Walkthroughs, and Links and Files + AI Chat (coming soon). The list sits left of the staff portrait; each row will carry its own judgement scale, so today only SPEA R3 shows its judgement word (and opens the round stack below), the others sit greyed as Not assessed and the last row is marked Coming soon. The full-width coverage rail is retired.</span></div>
         <div class="vrow"><span class="vtag">v0.58</span><span class="vnote">Coaching notes went per-round. The Observations drill-down now shows one Next Steps block per round (June's full note and February's new minimal note), each with its own Draft/Approved badge and its own Edit, Approve and Make Doc buttons; approving one round never touches another. February's notes were seeded as neutral one-line drafts built only from structured facts (subject + judgement word, never the observer's verbatim text). The Teacher portal shows the round STACK: one summary card per APPROVED round, newest first, each opening into only that round's session cards, gauges and full note. This also fixes the leak where an unapproved February session card rode along inside an approved June record.</span></div>
@@ -1361,7 +1390,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
   </div>
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.60</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.61</span></span>
   </div>
 </div>
 
@@ -2699,7 +2728,7 @@ function showBoard(b,opts={}){
   if(b==='coverage'){renderCoverage();animateStats();reveal('#v-coverage .panel',.04);}
   if(b==='teacher'){selectedId=null;byId('tsearch').value='';fltNoobs=false;byId('fltNoobs').classList.remove('on');setObsMenu(false);setObs('hub');reveal('#v-teacher .panel',.06);}
   if(b==='portal'){portalId=null;renderPortal();reveal('#v-portal .panel',.05);}
-  if(b==='settings')reveal('#v-settings .panel',.08);
+  if(b==='settings'){reveal('#v-settings .panel',.08);regenInit();}
   if(b!=='teacher'&&!opts.force)window.scrollTo({top:0,behavior:'smooth'});
 }
 /* pick a teacher from the search list -> show their detail (we're already in the Observations view) */
@@ -2811,6 +2840,40 @@ if(byId('setUnlock')){
   byId('setGateClose').onclick=closeSettingsGate;
   byId('setGate').addEventListener('click',e=>{if(e.target===byId('setGate'))closeSettingsGate();});   // click the dim to dismiss
 }
+
+/* ---- v0.61 round regeneration (admin Settings): enqueue -> poll -> review -> publish ---- */
+let regPollTimer=null;
+function regActive(s){return ['queued','claimed','running','publish_requested','publishing'].indexOf(s)>-1;}
+async function regenInit(){const rr=byId('regRound');if(rr&&!rr.value){try{const cr=await sbRpc('get_current_round',{});if(typeof cr==='string'&&cr)rr.placeholder='current round: '+cr;}catch(e){}}regPoll();}
+async function regPoll(){if(!adminPw){if(regPollTimer){clearTimeout(regPollTimer);regPollTimer=null;}return;}
+  let res;try{res=await sbRpc('admin_get_regen_jobs',{p_password:adminPw,p_limit:1});}catch(e){res=null;}
+  const box=byId('regStatus');if(!box)return;const job=res&&res.success&&res.jobs&&res.jobs[0];
+  if(!job){box.hidden=true;if(regPollTimer){clearTimeout(regPollTimer);regPollTimer=null;}return;}
+  renderRegJob(job);if(regPollTimer)clearTimeout(regPollTimer);if(regActive(job.status))regPollTimer=setTimeout(regPoll,3500);}
+function regLabel(s){return ({queued:'Queued',claimed:'Starting',running:'Running',ready:'Ready for review',publish_requested:'Publishing',publishing:'Publishing',published:'Published',failed:'Failed',cancelled:'Cancelled'})[s]||s;}
+function regColor(s){return s==='ready'?'var(--b)':s==='published'?'var(--g)':s==='failed'?'var(--r)':s==='cancelled'?'var(--ink-mid)':'var(--y)';}
+function renderRegJob(job){const box=byId('regStatus');box.hidden=false;
+  const log=(job.log||[]).slice(-6).map(l=>'. '+((l&&l.msg)||'')).join('\n');
+  const j=job.judge||{};const jl=(j.gates!=null)?('checks: gates '+j.gates+(j.composite!=null?', score '+j.composite:'')):'';
+  let acts='';if(job.status==='ready')acts+='<button class="regbtn pub" id="regPub" type="button">Publish to live</button>';
+  if(regActive(job.status))acts+='<button class="regbtn ghost" id="regCancel" type="button">Cancel</button>';
+  if(['published','failed','cancelled'].indexOf(job.status)>-1)acts+='<button class="regbtn ghost" id="regClear" type="button">Dismiss</button>';
+  box.innerHTML='<div class="rshead"><span class="rstatus" style="color:'+regColor(job.status)+'">'+regLabel(job.status)+'</span><span class="rround">'+esc(job.round||'')+' . '+esc(job.engine||'')+'</span></div>'+
+    '<div class="regbar"><i style="width:'+(job.progress||0)+'%"></i></div>'+
+    (job.stage?'<div class="rround">'+esc(job.stage)+'</div>':'')+
+    (jl?'<div class="regjudge">'+esc(jl)+'</div>':'')+
+    (job.error?'<div class="regjudge" style="color:var(--r)">'+esc(job.error)+'</div>':'')+
+    (log?'<div class="reglog">'+esc(log)+'</div>':'')+
+    (acts?'<div class="regacts">'+acts+'</div>':'');
+  const pb=byId('regPub');if(pb)pb.onclick=()=>regDo('admin_request_publish',{p_password:adminPw,p_job_id:job.id},'Publish this round to the live dashboard now? Everyone with the dashboard will see it.');
+  const cb=byId('regCancel');if(cb)cb.onclick=()=>regDo('admin_cancel_regen',{p_password:adminPw,p_job_id:job.id},'Cancel this job?');
+  const cl=byId('regClear');if(cl)cl.onclick=()=>{const b=byId('regStatus');if(b)b.hidden=true;};}
+async function regDo(fn,params,msg){if(msg&&!confirm(msg))return;try{const r=await sbRpc(fn,params);if(r&&r.success===false)alert(r.error||'failed');}catch(e){alert('network error');}regPoll();}
+if(byId('regStart')){byId('regStart').onclick=async()=>{if(!adminPw){requireAdmin(()=>{const b=byId('regStart');if(b)b.click();});return;}
+  const round=(byId('regRound').value||'').trim(),engine=byId('regEngine').value||'api',btn=byId('regStart');btn.disabled=true;
+  try{const r=await sbRpc('admin_enqueue_regen',{p_password:adminPw,p_round:round||null,p_engine:engine,p_pipelines:null});
+    if(r&&r.success===false)alert(r.error||'could not start');else{byId('regStatus').hidden=false;regPoll();}}catch(e){alert('network error');}
+  btn.disabled=false;};}
 
 /* board rail */
 document.querySelectorAll('.pill').forEach(p=>p.onclick=()=>showBoard(p.dataset.board));
