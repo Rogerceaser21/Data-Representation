@@ -22,6 +22,10 @@ function doPost(e) {
     }
     const data = JSON.parse(e.postData.contents);
 
+    // v0.50: Evidence Pad extraction shares this endpoint (same simple-request
+    // CORS path as submits). One page image per call; never touches the Sheet.
+    if (data && data.action === 'extract_pad') return handlePadExtract(data);
+
     const ss = SpreadsheetApp.openById(getSheetId());
     let sheet = ss.getSheetByName(SHEET_NAME_SUBMISSIONS);
     if (!sheet) sheet = ss.insertSheet(SHEET_NAME_SUBMISSIONS);
@@ -36,6 +40,16 @@ function doPost(e) {
            .setBackground('#143642')
            .setFontColor('#ffffff');
       sheet.setColumnWidths(1, columns.length, 140);
+    } else if (sheet.getLastColumn() < columns.length) {
+      // v0.50: heal the header when columns were appended to getR3Columns()
+      // (evidence_pad_id). Existing rows keep their positions; only the new
+      // trailing header cells are written.
+      const from = sheet.getLastColumn();
+      sheet.getRange(1, from + 1, 1, columns.length - from)
+           .setValues([columns.slice(from)])
+           .setFontWeight('bold')
+           .setBackground('#143642')
+           .setFontColor('#ffffff');
     }
 
     const submittedAt = data.submitted_at || new Date().toISOString();
@@ -148,6 +162,16 @@ function sendSubmissionEmail(ss, recordId, recordToken, submittedAt, data) {
   };
   if (inspectorEmail && inspectorEmail.indexOf('@') > -1) {
     opts.cc = inspectorEmail;
+  }
+
+  // v0.50: attach the Evidence Pad pages (fetched with the service key from the
+  // private bucket) so the backup email carries the raw pad. Silent on failure;
+  // the email still goes out without attachments.
+  try {
+    const padBlobs = fetchPadImages(data.evidence_pad_id);
+    if (padBlobs.length) opts.attachments = padBlobs;
+  } catch (padErr) {
+    Logger.log('Pad attach failed: ' + padErr.message);
   }
 
   MailApp.sendEmail(opts);

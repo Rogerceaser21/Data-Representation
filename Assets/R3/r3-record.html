@@ -19,6 +19,9 @@
 <!-- Tom Select 2.6.1 (vendored locally in lib/ so the form works on any network, v0.19) -->
 <link href="lib/tom-select.css" rel="stylesheet">
 <script src="lib/tom-select.complete.min.js"></script>
+<!-- Evidence Pad canvas stack (v0.50): Konva 9.3.22 + perfect-freehand 1.2.3, vendored in lib/ -->
+<script src="lib/konva.min.js"></script>
+<script src="lib/perfect-freehand.js"></script>
 <style>
 /* ===========================================
    THEME TOKENS · LIGHT default (form-context)
@@ -1346,6 +1349,221 @@ textarea.long-text:focus { border-color: var(--rate-success); }
 @media (hover: none) {
   .float-link:hover { border-color: var(--rule); color: var(--paper-dim); transform: none; }
 }
+/* ===========================================================
+   EVIDENCE PAD (v0.50) · full-screen scribble pad
+   Photos from camera/library + Apple Pencil ink (Konva +
+   perfect-freehand, vendored in lib/). Pencil-first: Scribble
+   stays live in the form's text fields; on the pad canvas raw
+   ink wins (touch-action none + touchmove preventDefault).
+   =========================================================== */
+.float-link.pad {
+  right: clamp(0.7rem, 1.4vw, 1.2rem);
+  top: calc(clamp(0.7rem, 1.4vw, 1.2rem) + 2.7rem);
+  border-color: var(--ais-yellow);
+}
+.float-link.pad:hover { border-color: var(--ais-yellow); }
+
+.pad-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 980;
+  display: none;
+  flex-direction: column;
+  background: var(--page-bg);
+}
+.pad-modal.open { display: flex; }
+
+.pad-top {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.9rem;
+  border-bottom: 1px solid var(--rule);
+  background: var(--card-bg);
+}
+.pad-title {
+  font-family: var(--display-font);
+  font-weight: 600;
+  color: var(--paper);
+  font-size: 1.02rem;
+  margin-right: auto;
+  white-space: nowrap;
+}
+.pad-title em { font-style: italic; color: var(--ais-blue); }
+
+.pad-btn {
+  appearance: none;
+  border: 1px solid var(--rule);
+  background: var(--surface-mid);
+  color: var(--paper-dim);
+  border-radius: 999px;
+  font-family: var(--body-font);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 0.42rem 0.85rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.pad-btn:hover { border-color: var(--ais-yellow); color: var(--paper); }
+.pad-btn:disabled { opacity: 0.45; cursor: default; }
+.pad-btn .icon { width: 1.05em; height: 1.05em; display: block; }
+.pad-btn.primary {
+  background: var(--paper);
+  border-color: var(--paper);
+  color: var(--card-bg);
+}
+.pad-btn.primary:hover { background: var(--paper-dim); }
+
+.pad-tools {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+  padding: 0.5rem 0.9rem;
+  border-bottom: 1px solid var(--rule);
+  background: var(--card-bg);
+}
+.pad-tools .sep { width: 1px; height: 1.6rem; background: var(--rule); margin: 0 0.15rem; }
+.pad-tool {
+  appearance: none;
+  border: 1px solid var(--rule);
+  background: transparent;
+  color: var(--paper-dim);
+  border-radius: 10px;
+  width: 2.35rem;
+  height: 2.35rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.pad-tool .icon { width: 1.15rem; height: 1.15rem; display: block; }
+.pad-tool[hidden] { display: none; }
+.pad-tool.is-active {
+  background: var(--paper);
+  border-color: var(--paper);
+  color: var(--card-bg);
+}
+.pad-swatch {
+  appearance: none;
+  border: 2px solid var(--rule);
+  border-radius: 50%;
+  width: 1.55rem;
+  height: 1.55rem;
+  cursor: pointer;
+  padding: 0;
+}
+.pad-swatch.is-active { border-color: var(--ais-yellow); transform: scale(1.12); }
+.pad-pageind {
+  font-family: var(--body-font);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--paper-mid);
+  min-width: 3.2em;
+  text-align: center;
+}
+
+.pad-stage-wrap {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem;
+  overflow: hidden;
+}
+.pad-stage {
+  background: #ffffff;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  box-shadow: var(--shadow-card);
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.pad-foot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.9rem calc(0.55rem + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--rule);
+  background: var(--card-bg);
+}
+
+/* Extract review step: sits over the stage area, same chrome */
+.pad-review {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: none;
+  flex-direction: column;
+  background: var(--page-bg);
+}
+.pad-review.open { display: flex; }
+.pad-review-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 1rem clamp(0.8rem, 4vw, 2.4rem) 1.4rem;
+}
+.pad-review-intro {
+  font-family: var(--body-font);
+  font-size: 0.86rem;
+  color: var(--paper-mid);
+  margin: 0.2rem auto 1rem;
+  max-width: 640px;
+}
+.pad-review-group {
+  max-width: 640px;
+  margin: 0 auto 1rem;
+  background: var(--card-bg);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  padding: 0.8rem 0.95rem;
+}
+.pad-review-group label.head {
+  display: flex;
+  align-items: center;
+  gap: 0.55em;
+  font-family: var(--body-font);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--paper);
+  cursor: pointer;
+}
+.pad-review-group label.head input { width: 1.05rem; height: 1.05rem; accent-color: var(--paper); }
+.pad-review-group textarea {
+  width: 100%;
+  margin-top: 0.55rem;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--navy-card);
+  color: var(--paper);
+  font-family: var(--body-font);
+  font-size: 0.92rem;
+  line-height: 1.45;
+  padding: 0.6rem 0.7rem;
+  min-height: 5.5em;
+  resize: vertical;
+}
+.pad-review-group.is-off textarea { opacity: 0.4; }
+
+/* The pad never appears in the teacher viewer or in print (covered by the
+   existing body.is-viewer .float-link and @media print .float-link rules);
+   belt-and-braces for the modal itself: */
+body.is-viewer .pad-modal { display: none !important; }
+@media print { .pad-modal { display: none !important; } }
+
 /* v0.43: the teacher-viewer build (window.R3_VIEWER → body.is-viewer) hides
    all inspector tools: quick-links, New observation, and Reset (which would
    wipe the loaded record off the screen). Scoped to the viewer so inspectors
@@ -1663,6 +1881,119 @@ body.is-viewer .cog-btn { display: none; }
       <div class="admin-status" id="admin-status-settings"></div>
     </div>
   </div>
+</div>
+
+<!-- Evidence Pad (v0.50): floating launcher (mirrors the quick-links; hidden in
+     the viewer build via body.is-viewer .float-link) + the full-screen pad. -->
+<button class="float-link pad" id="pad-open" type="button" title="Open the Evidence Pad: photos + Apple Pencil notes">
+  <svg class="fl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M12 19l7-7 3 3-7 7-3-3z"/>
+    <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
+    <path d="M2 2l7.586 7.586"/>
+    <circle cx="11" cy="11" r="2"/>
+  </svg>
+  <span>Evidence Pad</span>
+</button>
+
+<div class="pad-modal" id="pad-modal" role="dialog" aria-modal="true" aria-label="Evidence pad">
+  <div class="pad-top">
+    <span class="pad-title">Evidence <em>Pad</em></span>
+    <button class="pad-btn" type="button" id="pad-cam-btn">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+        <circle cx="12" cy="13" r="4"/>
+      </svg>
+      Take photo
+    </button>
+    <button class="pad-btn" type="button" id="pad-lib-btn">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+        <circle cx="8.5" cy="8.5" r="1.5"/>
+        <path d="M21 15l-5-5L5 21"/>
+      </svg>
+      Add photos
+    </button>
+    <button class="pad-btn primary" type="button" id="pad-done">Done</button>
+  </div>
+
+  <div class="pad-tools">
+    <button class="pad-tool" type="button" id="pad-tool-select" title="Move / resize photos" aria-label="Select tool">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/>
+      </svg>
+    </button>
+    <button class="pad-tool is-active" type="button" id="pad-tool-pen" title="Pen" aria-label="Pen tool">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+      </svg>
+    </button>
+    <button class="pad-tool" type="button" id="pad-tool-high" title="Highlighter" aria-label="Highlighter tool">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M9 11l-6 6v3h9l3-3"/>
+        <path d="M22 12l-4.6 4.6a2 2 0 0 1-2.8 0l-5.2-5.2a2 2 0 0 1 0-2.8L14 4"/>
+      </svg>
+    </button>
+    <button class="pad-tool" type="button" id="pad-tool-erase" title="Eraser (removes whole strokes)" aria-label="Eraser tool">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M20 20H7L3 16a1.5 1.5 0 0 1 0-2.1L13.9 3a1.5 1.5 0 0 1 2.1 0l5 5a1.5 1.5 0 0 1 0 2.1L13 18"/>
+        <path d="M6.5 10.5l7 7"/>
+      </svg>
+    </button>
+    <span class="sep"></span>
+    <button class="pad-swatch is-active" type="button" data-color="#143642" style="background:#143642" title="Navy pen" aria-label="Navy pen"></button>
+    <button class="pad-swatch" type="button" data-color="#1257FF" style="background:#1257FF" title="Blue pen" aria-label="Blue pen"></button>
+    <button class="pad-swatch" type="button" data-color="#EF343A" style="background:#EF343A" title="Red pen" aria-label="Red pen"></button>
+    <span class="sep"></span>
+    <button class="pad-tool" type="button" id="pad-undo" title="Undo last stroke" aria-label="Undo last stroke">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M9 14L4 9l5-5"/>
+        <path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>
+      </svg>
+    </button>
+    <button class="pad-tool" type="button" id="pad-del-photo" title="Remove selected photo" aria-label="Remove selected photo" hidden>
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
+      </svg>
+    </button>
+    <span class="sep"></span>
+    <button class="pad-tool" type="button" id="pad-page-prev" title="Previous page" aria-label="Previous page">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <span class="pad-pageind" id="pad-pageind">1 / 1</span>
+    <button class="pad-tool" type="button" id="pad-page-next" title="Next page" aria-label="Next page">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+    <button class="pad-tool" type="button" id="pad-page-add" title="Add a page" aria-label="Add a page">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+    </button>
+  </div>
+
+  <div class="pad-stage-wrap" id="pad-stage-wrap" style="position:relative;">
+    <div class="pad-stage" id="pad-stage"></div>
+
+    <div class="pad-review" id="pad-review">
+      <div class="pad-review-scroll" id="pad-review-scroll">
+        <p class="pad-review-intro">Read from your pad. Check each block, edit freely, then add the ticked blocks to the form. Nothing is added until you tap <strong>Add to form</strong>.</p>
+        <div id="pad-review-groups"></div>
+      </div>
+      <div class="pad-foot">
+        <button class="pad-btn" type="button" id="pad-review-back">Back to pad</button>
+        <button class="pad-btn primary" type="button" id="pad-review-apply">Add to form</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="pad-foot">
+    <button class="pad-btn primary" type="button" id="pad-extract">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/>
+      </svg>
+      <span id="pad-extract-label">Extract to form</span>
+    </button>
+  </div>
+
+  <input type="file" id="pad-cam-input" accept="image/jpeg,image/png" capture="environment" hidden>
+  <input type="file" id="pad-lib-input" accept="image/jpeg,image/png" multiple hidden>
 </div>
 
 <form class="form-container" id="r3-form" autocomplete="on" novalidate>
@@ -2027,7 +2358,7 @@ body.is-viewer .cog-btn { display: none; }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.49</a></span>
+    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.50</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -2200,6 +2531,7 @@ body.is-viewer .cog-btn { display: none; }
     if (typeof refreshSubjectOptions === 'function') refreshSubjectOptions();
     // v0.25: re-apply mandatory defaults (Evidence Type = Lesson).
     if (typeof applyMandatoryDefaults === 'function') applyMandatoryDefaults();
+    EvidencePad.reset();   // v0.50: Reset wipes the Evidence Pad draft too
     showSaved();
     updateSubmitState();
   });
@@ -2298,6 +2630,672 @@ body.is-viewer .cog-btn { display: none; }
     roundIn.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); save(); } });
   })();
 
+  /* === Evidence Pad (v0.50) ========================================= */
+  // Full-screen scribble pad: photos from the iPad camera / library, Apple
+  // Pencil pressure ink (Konva + perfect-freehand, vendored in lib/), an
+  // IndexedDB draft that survives a tab death mid-lesson, upload of the
+  // flattened pages + ink vectors to the PRIVATE evidence-pads bucket at
+  // submit time, and an extract step (Claude vision via the same Apps
+  // Script endpoint, one page per parallel call) that transcribes the
+  // handwriting into the four free-text fields behind a review step.
+  //
+  // Coexistence with iPadOS Scribble (deliberate split): the form's text
+  // fields keep native Scribble handwriting-to-text; on the pad canvas the
+  // system Scribble recogniser would steal pen strokes, so the stage uses
+  // touch-action:none + a touchmove preventDefault (the known workaround;
+  // there is no official web opt-out). Ink accepts pen + mouse pointers
+  // only; fingers move photos in Select mode and never draw (palm safety).
+  const EvidencePad = (function () {
+    const PAGE_W = 1000, PAGE_H = 1414;          // logical page space (A4 portrait)
+    const EXPORT_RATIO = 1280 / PAGE_H;          // flatten: long edge ≈ 1280px
+    const PHOTO_MAX_EDGE = 1280;                 // capture downscale (photos are context, not the record)
+    const IDB_NAME = 'ais-r3-pad-v1', IDB_STORE = 'pads', IDB_KEY = 'draft';
+    const HIGH_COLOR = '#FFBA14';
+    const TARGET_LABELS = {
+      focus_context:     'Focus / Context',
+      observer_notes:    'Observer notes',
+      summary_strengths: 'Summary of Strengths',
+      summary_weakness:  'Summary of Weakness'
+    };
+
+    const libsOk = !!(window.Konva && window.PerfectFreehand);
+
+    // ---------- state ----------
+    const blankPage = () => ({ photos: [], strokes: [] });
+    let state = { id: '', cur: 0, pages: [blankPage()] };
+    let tool = 'pen';
+    let penColor = '#143642';
+    let stage = null, photoLayer = null, inkLayer = null, transformer = null;
+    let fit = 1;                                  // display scale (stage px per logical unit)
+    let live = null;                              // in-flight stroke {points, path, tool, color, pen}
+    let selectedPhoto = null;                     // Konva.Image currently selected
+    const urlCache = new Map();                   // photo id -> object URL
+    let saveTimer = null;
+    let opened = false;
+
+    function rid() {
+      const b = new Uint8Array(16);
+      crypto.getRandomValues(b);
+      return Array.from(b, x => x.toString(16).padStart(2, '0')).join('');
+    }
+
+    // ---------- IndexedDB draft (photos as ArrayBuffers; never Blobs — WebKit) ----------
+    function idb() {
+      return new Promise((res, rej) => {
+        const req = indexedDB.open(IDB_NAME, 1);
+        req.onupgradeneeded = () => req.result.createObjectStore(IDB_STORE);
+        req.onsuccess = () => res(req.result);
+        req.onerror = () => rej(req.error);
+      });
+    }
+    async function idbPut(val) {
+      try {
+        const db = await idb();
+        await new Promise((res, rej) => {
+          const tx = db.transaction(IDB_STORE, 'readwrite');
+          tx.objectStore(IDB_STORE).put(val, IDB_KEY);
+          tx.oncomplete = res; tx.onerror = () => rej(tx.error);
+        });
+        db.close();
+      } catch (e) {}
+    }
+    async function idbGet() {
+      try {
+        const db = await idb();
+        const val = await new Promise((res, rej) => {
+          const req = db.transaction(IDB_STORE, 'readonly').objectStore(IDB_STORE).get(IDB_KEY);
+          req.onsuccess = () => res(req.result); req.onerror = () => rej(req.error);
+        });
+        db.close();
+        return val || null;
+      } catch (e) { return null; }
+    }
+    async function idbDel() {
+      try {
+        const db = await idb();
+        await new Promise((res, rej) => {
+          const tx = db.transaction(IDB_STORE, 'readwrite');
+          tx.objectStore(IDB_STORE).delete(IDB_KEY);
+          tx.oncomplete = res; tx.onerror = () => rej(tx.error);
+        });
+        db.close();
+      } catch (e) {}
+    }
+    function scheduleDraftSave() {
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(() => { idbPut(state); }, 500);
+    }
+
+    function padHasContent() {
+      return state.pages.some(p => p.photos.length || p.strokes.length);
+    }
+
+    // ---------- geometry / rendering ----------
+    function strokeOutline(s) {
+      const opts = s.tool === 'high'
+        ? { size: 26, thinning: 0, smoothing: 0.6, streamline: 0.5, simulatePressure: false }
+        : { size: 5.5, thinning: 0.55, smoothing: 0.5, streamline: 0.35, simulatePressure: !s.pen };
+      return window.PerfectFreehand.getStroke(s.points, opts);
+    }
+    // Canvas-native outline fill (Konva's SVG-path parser rejects the implicit
+    // repeated-Q form the perfect-freehand helper emits, so trace it directly).
+    function strokeNode(s) {
+      const outline = strokeOutline(s);
+      return new Konva.Shape({
+        id: s.id,
+        sceneFunc: function (ctx, shape) {
+          if (outline.length < 2) return;
+          ctx.beginPath();
+          ctx.moveTo(outline[0][0], outline[0][1]);
+          for (let i = 1; i < outline.length; i++) {
+            const p = outline[i], n = outline[(i + 1) % outline.length];
+            ctx.quadraticCurveTo(p[0], p[1], (p[0] + n[0]) / 2, (p[1] + n[1]) / 2);
+          }
+          ctx.closePath();
+          ctx.fillStrokeShape(shape);
+        },
+        fill: s.color,
+        opacity: s.tool === 'high' ? 0.38 : 1,
+        globalCompositeOperation: s.tool === 'high' ? 'multiply' : 'source-over',
+        listening: false,
+        perfectDrawEnabled: false
+      });
+    }
+    function photoURL(ph) {
+      if (!urlCache.has(ph.id)) {
+        urlCache.set(ph.id, URL.createObjectURL(new Blob([ph.buf], { type: 'image/jpeg' })));
+      }
+      return urlCache.get(ph.id);
+    }
+    function loadImg(src) {
+      return new Promise((res, rej) => {
+        const img = new Image();
+        img.onload = () => res(img);
+        img.onerror = rej;
+        img.src = src;
+      });
+    }
+
+    // Renders one logical page into a stage. Returns a promise that resolves
+    // once every photo bitmap has landed (needed before toDataURL).
+    async function renderPage(targetStage, page, opts) {
+      const interactive = !!(opts && opts.interactive);
+      targetStage.destroyChildren();
+      const pLayer = new Konva.Layer({ listening: interactive });
+      const iLayer = new Konva.Layer({ listening: false });
+      targetStage.add(pLayer, iLayer);
+
+      const jobs = page.photos.map(async ph => {
+        const img = await loadImg(photoURL(ph));
+        const node = new Konva.Image({
+          id: ph.id, image: img,
+          x: ph.x, y: ph.y, width: ph.w, height: ph.h,
+          scaleX: ph.scaleX || 1, scaleY: ph.scaleY || 1,
+          rotation: ph.rotation || 0,
+          draggable: interactive && tool === 'select',
+          shadowColor: 'rgba(20,54,66,0.35)', shadowBlur: 10, shadowOffsetY: 3
+        });
+        if (interactive) {
+          node.on('dragend transformend', () => {
+            ph.x = node.x(); ph.y = node.y();
+            ph.scaleX = node.scaleX(); ph.scaleY = node.scaleY();
+            ph.rotation = node.rotation();
+            scheduleDraftSave();
+          });
+        }
+        pLayer.add(node);
+      });
+      await Promise.all(jobs);
+
+      page.strokes.forEach(s => iLayer.add(strokeNode(s)));
+      if (interactive) {
+        photoLayer = pLayer; inkLayer = iLayer;
+        transformer = new Konva.Transformer({
+          rotateEnabled: true, flipEnabled: false,
+          enabledAnchors: ['top-left', 'top-right', 'bottom-left', 'bottom-right'],
+          anchorSize: 14, borderStroke: '#1257FF', anchorStroke: '#1257FF'
+        });
+        pLayer.add(transformer);
+        selectedPhoto = null;
+        syncDelBtn();
+      }
+      targetStage.batchDraw();
+    }
+
+    function curPage() { return state.pages[state.cur]; }
+
+    function refreshPageIndicator() {
+      const el = document.getElementById('pad-pageind');
+      if (el) el.textContent = (state.cur + 1) + ' / ' + state.pages.length;
+    }
+
+    async function showPage() {
+      refreshPageIndicator();
+      if (stage) await renderPage(stage, curPage(), { interactive: true });
+    }
+
+    // ---------- stage setup + input ----------
+    function sizeStage() {
+      const wrap = document.getElementById('pad-stage-wrap');
+      const availW = wrap.clientWidth - 28, availH = wrap.clientHeight - 28;   // wrap padding + breathing room
+      fit = Math.max(0.2, Math.min(availW / PAGE_W, availH / PAGE_H));
+      stage.width(PAGE_W * fit);
+      stage.height(PAGE_H * fit);
+      stage.scale({ x: fit, y: fit });
+    }
+
+    function toLogical(evt) {
+      const r = stage.container().getBoundingClientRect();
+      return [
+        (evt.clientX - r.left) / fit,
+        (evt.clientY - r.top) / fit,
+        (evt.pointerType === 'pen' && evt.pressure) ? evt.pressure : 0.5
+      ];
+    }
+
+    function eraseAt(evt) {
+      const r = stage.container().getBoundingClientRect();
+      const x = (evt.clientX - r.left) / fit, y = (evt.clientY - r.top) / fit;
+      const page = curPage();
+      const R = 14; // logical hit radius
+      for (let i = page.strokes.length - 1; i >= 0; i--) {
+        const hit = page.strokes[i].points.some(p => {
+          const dx = p[0] - x, dy = p[1] - y;
+          return dx * dx + dy * dy < R * R;
+        });
+        if (hit) {
+          const dead = page.strokes.splice(i, 1)[0];
+          const node = inkLayer && inkLayer.findOne('#' + dead.id);
+          if (node) node.destroy();
+          if (inkLayer) inkLayer.batchDraw();
+          scheduleDraftSave();
+          return;
+        }
+      }
+    }
+
+    function wireStageInput() {
+      const el = stage.container();
+      // Scribble mitigation: without this, iPadOS steals pen strokes that look
+      // like handwriting (no official opt-out; touch-action alone is not enough).
+      el.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+
+      el.addEventListener('pointerdown', e => {
+        if (tool === 'erase') { e.preventDefault(); eraseAt(e); return; }
+        if (tool !== 'pen' && tool !== 'high') return;           // select: Konva handles it
+        if (e.pointerType === 'touch') return;                    // fingers never draw
+        e.preventDefault();
+        try { el.setPointerCapture(e.pointerId); } catch (err) {}
+        live = {
+          id: rid().slice(0, 12),
+          tool: tool,
+          color: tool === 'high' ? HIGH_COLOR : penColor,
+          pen: e.pointerType === 'pen',
+          points: [toLogical(e)],
+          node: null
+        };
+      });
+      el.addEventListener('pointermove', e => {
+        if (tool === 'erase' && (e.buttons & 1)) { eraseAt(e); return; }
+        if (!live) return;
+        e.preventDefault();
+        let events = [];
+        if (typeof e.getCoalescedEvents === 'function') { try { events = e.getCoalescedEvents(); } catch (err) {} }
+        if (!events.length) events = [e];
+        events.forEach(ev => live.points.push(toLogical(ev)));
+        if (live.node) live.node.destroy();
+        live.node = strokeNode(live);
+        inkLayer.add(live.node);
+        inkLayer.batchDraw();
+      });
+      const finish = e => {
+        if (!live) return;
+        if (live.points.length > 1) {
+          curPage().strokes.push({ id: live.id, tool: live.tool, color: live.color, pen: live.pen, points: live.points });
+          scheduleDraftSave();
+        } else if (live.node) {
+          live.node.destroy();
+          inkLayer.batchDraw();
+        }
+        live = null;
+      };
+      el.addEventListener('pointerup', finish);
+      el.addEventListener('pointercancel', finish);
+
+      // Photo selection (Select mode only)
+      stage.on('click tap', e => {
+        if (tool !== 'select' || !transformer) return;
+        if (e.target instanceof Konva.Image) {
+          selectedPhoto = e.target;
+          transformer.nodes([e.target]);
+        } else {
+          selectedPhoto = null;
+          transformer.nodes([]);
+        }
+        photoLayer.batchDraw();
+        syncDelBtn();
+      });
+    }
+
+    function syncDelBtn() {
+      const b = document.getElementById('pad-del-photo');
+      if (b) b.hidden = !(tool === 'select' && selectedPhoto);
+    }
+
+    function setTool(next) {
+      tool = next;
+      ['select', 'pen', 'high', 'erase'].forEach(t => {
+        const b = document.getElementById('pad-tool-' + t);
+        if (b) b.classList.toggle('is-active', t === tool);
+      });
+      if (photoLayer) {
+        photoLayer.listening(tool === 'select');
+        photoLayer.getChildren(n => n instanceof Konva.Image).forEach(n => n.draggable(tool === 'select'));
+        if (tool !== 'select' && transformer) { transformer.nodes([]); selectedPhoto = null; }
+        photoLayer.batchDraw();
+      }
+      syncDelBtn();
+    }
+
+    // ---------- photos in ----------
+    async function fileToPhoto(file, index) {
+      let bmp;
+      try {
+        bmp = await createImageBitmap(file, { imageOrientation: 'from-image' });
+      } catch (e) {
+        // very old WebKit or odd container: <img> decode fallback
+        bmp = await loadImg(URL.createObjectURL(file));
+      }
+      const scale = Math.min(1, PHOTO_MAX_EDGE / Math.max(bmp.width, bmp.height));
+      const w = Math.max(1, Math.round(bmp.width * scale));
+      const h = Math.max(1, Math.round(bmp.height * scale));
+      const c = document.createElement('canvas');
+      c.width = w; c.height = h;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#ffffff';                   // HEIC/PNG alpha → white
+      ctx.fillRect(0, 0, w, h);
+      ctx.drawImage(bmp, 0, 0, w, h);
+      if (bmp.close) bmp.close();
+      const blob = await new Promise(r => c.toBlob(r, 'image/jpeg', 0.72));
+      if (!blob) return null;
+      const buf = await blob.arrayBuffer();
+      // place at ~62% page width, cascading so stacked photos stay grabbable
+      const dispW = PAGE_W * 0.62;
+      const dispH = dispW * (h / w);
+      const n = curPage().photos.length + index;
+      return {
+        id: rid(), buf: buf, w: dispW, h: dispH,
+        x: PAGE_W * 0.19 + (n % 4) * 26, y: PAGE_H * 0.06 + (n % 4) * 30,
+        scaleX: 1, scaleY: 1, rotation: 0
+      };
+    }
+
+    async function addFiles(fileList) {
+      const files = Array.from(fileList || []).slice(0, 8);
+      let i = 0;
+      for (const f of files) {
+        try {
+          const ph = await fileToPhoto(f, i++);
+          if (ph) curPage().photos.push(ph);
+        } catch (e) {}
+      }
+      scheduleDraftSave();
+      await showPage();
+      setTool('select');
+    }
+
+    // ---------- flatten / upload / extract ----------
+    async function flattenPages() {
+      // Renders every non-empty page into a hidden stage; returns base64 JPEGs.
+      const holder = document.createElement('div');
+      holder.style.cssText = 'position:fixed;left:-99999px;top:0;';
+      document.body.appendChild(holder);
+      const off = new Konva.Stage({ container: holder, width: PAGE_W, height: PAGE_H });
+      const out = [];
+      try {
+        for (const page of state.pages) {
+          if (!page.photos.length && !page.strokes.length) continue;
+          await renderPage(off, page, { interactive: false });
+          // white paper behind the ink (JPEG has no alpha)
+          const bg = new Konva.Layer({ listening: false });
+          bg.add(new Konva.Rect({ x: 0, y: 0, width: PAGE_W, height: PAGE_H, fill: '#ffffff' }));
+          off.add(bg);
+          bg.moveToBottom();
+          off.batchDraw();
+          const dataURL = off.toDataURL({ mimeType: 'image/jpeg', quality: 0.8, pixelRatio: EXPORT_RATIO });
+          out.push(dataURL.slice(dataURL.indexOf(',') + 1));
+        }
+      } finally {
+        off.destroy();
+        holder.remove();
+      }
+      return out;
+    }
+
+    function b64ToBlob(b64, type) {
+      const bin = atob(b64);
+      const arr = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+      return new Blob([arr], { type: type });
+    }
+
+    async function uploadPad(padId, pageB64s) {
+      const headers = { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY };
+      const puts = pageB64s.map((b64, i) =>
+        fetch(SB_URL + '/storage/v1/object/evidence-pads/' + padId + '/page-' + String(i + 1).padStart(2, '0') + '.jpg', {
+          method: 'POST',
+          headers: Object.assign({ 'Content-Type': 'image/jpeg' }, headers),
+          body: b64ToBlob(b64, 'image/jpeg')
+        }).catch(() => null));
+      // ink vectors ride along for future re-editing (photo bytes live in the JPEGs)
+      const vectors = {
+        v: 1, pad: padId,
+        pages: state.pages.map(p => ({
+          strokes: p.strokes,
+          photos: p.photos.map(ph => ({ id: ph.id, x: ph.x, y: ph.y, w: ph.w, h: ph.h, scaleX: ph.scaleX, scaleY: ph.scaleY, rotation: ph.rotation }))
+        }))
+      };
+      puts.push(fetch(SB_URL + '/storage/v1/object/evidence-pads/' + padId + '/ink.json', {
+        method: 'POST',
+        headers: Object.assign({ 'Content-Type': 'application/json' }, headers),
+        body: JSON.stringify(vectors)
+      }).catch(() => null));
+      await Promise.race([
+        Promise.allSettled(puts),
+        new Promise(r => setTimeout(r, 10000))     // never hold a submit hostage
+      ]);
+    }
+
+    // Called by submitForm: uploads the pad (if any, if possible) and returns
+    // the pad id to stamp on the record. Never throws; '' when there is no pad.
+    async function commitForSubmit() {
+      if (!libsOk || !padHasContent()) return '';
+      if (!state.id) state.id = rid();
+      try {
+        if (SB_URL && SB_KEY) {
+          const pages = await flattenPages();
+          if (pages.length) await uploadPad(state.id, pages);
+        }
+      } catch (e) {}
+      return state.id;
+    }
+
+    async function extractPage(b64) {
+      const attempt = async () => {
+        const resp = await fetch(WEB_APP_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'extract_pad', image: b64 }),
+          redirect: 'follow'
+        });
+        const out = await resp.json();
+        if (!out.success) throw new Error(out.error || 'extract failed');
+        return out.items || [];
+      };
+      try { return await attempt(); }
+      catch (e) { return await attempt(); }        // one silent retry per page
+    }
+
+    async function runExtract() {
+      const btn = document.getElementById('pad-extract');
+      const label = document.getElementById('pad-extract-label');
+      if (!padHasContent()) { showToast('The pad is empty — add a photo or some notes first.', ''); return; }
+      btn.disabled = true;
+      label.textContent = 'Reading pad…';
+      try {
+        const pages = await flattenPages();
+        let done = 0;
+        const settle = await Promise.allSettled(pages.map(async b64 => {
+          const items = await extractPage(b64);
+          done++;
+          label.textContent = 'Reading pad… ' + done + ' / ' + pages.length;
+          return items;
+        }));
+        const items = [];
+        settle.forEach(s => { if (s.status === 'fulfilled') items.push.apply(items, s.value); });
+        if (!items.length) {
+          const anyFailed = settle.some(s => s.status === 'rejected');
+          showToast(anyFailed ? 'Could not read the pad — check the connection and try again.'
+                              : 'No handwriting found on the pad.', anyFailed ? 'error' : '');
+          return;
+        }
+        openReview(items);
+      } finally {
+        btn.disabled = false;
+        label.textContent = 'Extract to form';
+      }
+    }
+
+    // ---------- review + apply ----------
+    function openReview(items) {
+      const groups = {};
+      items.forEach(it => {
+        (groups[it.target] = groups[it.target] || []).push(String(it.text || '').trim());
+      });
+      const host = document.getElementById('pad-review-groups');
+      host.innerHTML = '';
+      Object.keys(TARGET_LABELS).forEach(target => {
+        if (!groups[target] || !groups[target].length) return;
+        const wrap = document.createElement('div');
+        wrap.className = 'pad-review-group';
+        wrap.dataset.target = target;
+        const head = document.createElement('label');
+        head.className = 'head';
+        const cb = document.createElement('input');
+        cb.type = 'checkbox'; cb.checked = true;
+        cb.addEventListener('change', () => wrap.classList.toggle('is-off', !cb.checked));
+        head.appendChild(cb);
+        head.appendChild(document.createTextNode(TARGET_LABELS[target]));
+        const ta = document.createElement('textarea');
+        ta.value = groups[target].join('\n');
+        wrap.appendChild(head);
+        wrap.appendChild(ta);
+        host.appendChild(wrap);
+      });
+      document.getElementById('pad-review').classList.add('open');
+    }
+
+    function applyReview() {
+      let applied = 0;
+      document.querySelectorAll('#pad-review-groups .pad-review-group').forEach(wrap => {
+        const cb = wrap.querySelector('input[type="checkbox"]');
+        const text = wrap.querySelector('textarea').value.trim();
+        if (!cb.checked || !text) return;
+        const field = FORM.querySelector('[name="' + wrap.dataset.target + '"]');
+        if (!field) return;
+        field.value = field.value.trim() ? field.value.trim() + '\n\n' + text : text;
+        field.dispatchEvent(new Event('input', { bubbles: true }));
+        applied++;
+      });
+      document.getElementById('pad-review').classList.remove('open');
+      if (applied) {
+        closePad();
+        showToast('Pad notes added to the form.', 'success');
+      }
+    }
+
+    // ---------- open / close / reset ----------
+    async function openPad() {
+      if (!libsOk) return;
+      document.getElementById('pad-modal').classList.add('open');
+      opened = true;
+      if (!stage) {
+        stage = new Konva.Stage({ container: 'pad-stage', width: PAGE_W, height: PAGE_H });
+        wireStageInput();
+        window.addEventListener('resize', () => { if (opened && stage) { sizeStage(); stage.batchDraw(); } });
+      }
+      sizeStage();
+      await showPage();
+      setTool(tool);
+    }
+    function closePad() {
+      document.getElementById('pad-modal').classList.remove('open');
+      document.getElementById('pad-review').classList.remove('open');
+      opened = false;
+      idbPut(state);                               // flush the draft on the way out
+    }
+
+    async function reset() {
+      urlCache.forEach(u => URL.revokeObjectURL(u));
+      urlCache.clear();
+      state = { id: '', cur: 0, pages: [blankPage()] };
+      await idbDel();
+      if (opened) await showPage(); else refreshPageIndicator();
+    }
+
+    // ---------- wiring ----------
+    function init() {
+      const openBtn = document.getElementById('pad-open');
+      if (!openBtn) return;
+      // Record views never get a pad; silent-hide too if a lib failed to load.
+      if (CLOSED_RECORD_VIEW || !libsOk) { openBtn.hidden = true; return; }
+
+      openBtn.addEventListener('click', openPad);
+      document.getElementById('pad-done').addEventListener('click', closePad);
+
+      document.getElementById('pad-cam-btn').addEventListener('click', () => document.getElementById('pad-cam-input').click());
+      document.getElementById('pad-lib-btn').addEventListener('click', () => document.getElementById('pad-lib-input').click());
+      ['pad-cam-input', 'pad-lib-input'].forEach(id => {
+        const inp = document.getElementById(id);
+        inp.addEventListener('change', async () => {
+          await addFiles(inp.files);
+          inp.value = '';
+        });
+      });
+
+      ['select', 'pen', 'high', 'erase'].forEach(t => {
+        document.getElementById('pad-tool-' + t).addEventListener('click', () => setTool(t));
+      });
+      document.querySelectorAll('.pad-swatch').forEach(sw => {
+        sw.addEventListener('click', () => {
+          penColor = sw.dataset.color;
+          document.querySelectorAll('.pad-swatch').forEach(s => s.classList.toggle('is-active', s === sw));
+          if (tool !== 'pen') setTool('pen');
+        });
+      });
+
+      document.getElementById('pad-undo').addEventListener('click', () => {
+        const page = curPage();
+        if (!page.strokes.length) return;
+        const dead = page.strokes.pop();
+        const node = inkLayer && inkLayer.findOne('#' + dead.id);
+        if (node) { node.destroy(); inkLayer.batchDraw(); }
+        scheduleDraftSave();
+      });
+      document.getElementById('pad-del-photo').addEventListener('click', () => {
+        if (!selectedPhoto) return;
+        const page = curPage();
+        const idx = page.photos.findIndex(p => p.id === selectedPhoto.id());
+        if (idx > -1) {
+          const [dead] = page.photos.splice(idx, 1);
+          const u = urlCache.get(dead.id);
+          if (u) { URL.revokeObjectURL(u); urlCache.delete(dead.id); }
+        }
+        transformer.nodes([]);
+        selectedPhoto = null;
+        syncDelBtn();
+        scheduleDraftSave();
+        showPage();
+      });
+
+      document.getElementById('pad-page-prev').addEventListener('click', () => {
+        if (state.cur > 0) { state.cur--; scheduleDraftSave(); showPage(); }
+      });
+      document.getElementById('pad-page-next').addEventListener('click', () => {
+        if (state.cur < state.pages.length - 1) { state.cur++; scheduleDraftSave(); showPage(); }
+      });
+      document.getElementById('pad-page-add').addEventListener('click', () => {
+        state.pages.push(blankPage());
+        state.cur = state.pages.length - 1;
+        scheduleDraftSave();
+        showPage();
+      });
+
+      document.getElementById('pad-extract').addEventListener('click', runExtract);
+      document.getElementById('pad-review-back').addEventListener('click', () => {
+        document.getElementById('pad-review').classList.remove('open');
+      });
+      document.getElementById('pad-review-apply').addEventListener('click', applyReview);
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden' && padHasContent()) idbPut(state);
+      });
+
+      // Restore a mid-lesson draft (the bfcache handler reloads the page, so
+      // this load path is also the restore path).
+      idbGet().then(saved => {
+        if (saved && saved.pages && saved.pages.some(p => (p.photos && p.photos.length) || (p.strokes && p.strokes.length))) {
+          state = saved;
+          refreshPageIndicator();
+        }
+      });
+    }
+
+    init();
+
+    return { commitForSubmit, reset, hasContent: padHasContent };
+  })();
+
   /* === Cloud submit + lock + closed-record viewer ================== */
   const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbx3efKiQzs2MSwESEuNBCceXr5FqBCXuk1IgSzPFbOVgLSc3fvXy40e8V9lhw_KH0z2nQ/exec';
   const REQUIRED_FIELDS = ['teacher', 'inspector', 'curriculum', 'school', 'subject', 'date', 'time_in', 'time_out', 'evidence_type'];
@@ -2383,6 +3381,7 @@ body.is-viewer .cog-btn { display: none; }
       delete submitBtn.dataset.locked;
     }
     try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    EvidencePad.reset();   // v0.50: a finished observation clears its Evidence Pad too
     // v0.24: school just got cleared by the reset loop above; let Subject
     // reflect that (back to disabled "Select School first" state).
     if (typeof refreshSubjectOptions === 'function') refreshSubjectOptions();
@@ -2427,6 +3426,11 @@ body.is-viewer .cog-btn { display: none; }
     btn.disabled = true;
     const prevText = btn.textContent;
     btn.textContent = 'Saving…';
+
+    // v0.50: Evidence Pad — flatten + upload the pad (if any) to the private
+    // bucket, then stamp its id on the record. Never throws, never blocks:
+    // a failed upload still submits, with the id marking that a pad existed.
+    data.evidence_pad_id = await EvidencePad.commitForSubmit();
 
     try {
       const resp = await fetch(WEB_APP_URL, {

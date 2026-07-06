@@ -76,7 +76,9 @@ function getR3Columns() {
     judgementCols.push('j_' + cat + '_c');
   });
 
-  const tail = ['summary_strengths', 'summary_weakness', 'observer_notes', 'school', 'record_token'];
+  // v0.50: evidence_pad_id appended (Evidence Pad · links the row to the pad
+  // pages stored in the private Supabase bucket). Append-only, per the rule above.
+  const tail = ['summary_strengths', 'summary_weakness', 'observer_notes', 'school', 'record_token', 'evidence_pad_id'];
 
   return header.concat(judgementCols, tail);
 }
@@ -107,4 +109,36 @@ const INGEST_RPC_PATH = '/rest/v1/rpc/ingest_r3';
 
 function getSupabaseSecret() {
   return PropertiesService.getScriptProperties().getProperty('SUPABASE_SECRET_KEY');
+}
+
+/**
+ * Evidence Pad (v0.50): private Supabase Storage bucket holding the pad pages
+ * (JPEG) + ink vectors (JSON) per pad id. Written by the form (anon INSERT-only
+ * policy), read back here with the service key for the backup-email attachments.
+ */
+const PAD_BUCKET = 'evidence-pads';
+
+/**
+ * Anthropic API key for the Evidence Pad extraction (v0.50). Lives in Supabase
+ * app_config under 'anthropic_api_key' (RLS-locked, no anon path exposes it;
+ * seeded/rotated by ~/AIS-Data-Dashboard/db/seed_anthropic_key.mjs) so no
+ * Script Property has to be set by hand. Fetched with the service key and
+ * cached for an hour. Returns null when unavailable (extraction then reports
+ * a silent failure; the form degrades to typing/Scribble).
+ */
+function getAnthropicKey() {
+  const cache = CacheService.getScriptCache();
+  const cached = cache.get('ANTHROPIC_API_KEY');
+  if (cached) return cached;
+  const secret = getSupabaseSecret();
+  if (!secret) return null;
+  const resp = UrlFetchApp.fetch(
+    SUPABASE_URL + '/rest/v1/app_config?select=value&key=eq.anthropic_api_key',
+    { headers: { apikey: secret, Authorization: 'Bearer ' + secret }, muteHttpExceptions: true }
+  );
+  if (resp.getResponseCode() !== 200) return null;
+  const rows = JSON.parse(resp.getContentText());
+  const key = rows && rows[0] && rows[0].value;
+  if (key) cache.put('ANTHROPIC_API_KEY', key, 3600);
+  return key || null;
 }
