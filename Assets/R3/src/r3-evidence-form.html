@@ -1475,14 +1475,28 @@ textarea.long-text:focus { border-color: var(--rate-success); }
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0;
+  padding: 12px;                       /* keep in sync with PAD_GUTTER in the JS */
   overflow: hidden;
 }
 .pad-stage {
   background: #ffffff;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  overflow: hidden;                    /* clips the canvas to the rounded corners */
+  box-shadow: 0 6px 22px -10px rgba(20, 54, 66, 0.35);
   touch-action: none;
   -webkit-user-select: none;
   user-select: none;
+}
+
+/* v0.52: full-screen toggle (browser Fullscreen API) in the pad footer.
+   Hidden when the platform doesn't support it (e.g. iPhone Safari). */
+.pad-foot { position: relative; }
+.pad-fs {
+  position: absolute;
+  right: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 /* v0.51: per-field pad launchers — a small pen pill beside each extractable
@@ -2015,6 +2029,12 @@ body.is-viewer .cog-btn { display: none; }
       </svg>
       <span id="pad-extract-label">Extract to form</span>
     </button>
+    <button class="pad-tool pad-fs" type="button" id="pad-fs" title="Full screen (more writing space)" aria-label="Toggle full screen">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M16 3h3a2 2 0 0 1 2 2v3"/>
+        <path d="M8 21H5a2 2 0 0 1-2-2v-3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/>
+      </svg>
+    </button>
   </div>
 
   <input type="file" id="pad-cam-input" accept="image/jpeg,image/png" capture="environment" hidden>
@@ -2383,7 +2403,7 @@ body.is-viewer .cog-btn { display: none; }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.51</a></span>
+    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.52</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -2881,17 +2901,23 @@ body.is-viewer .cog-btn { display: none; }
     // A page's logical space is frozen the first time it is shown (= the full
     // stage area on this device/orientation). After that the page fit-scales,
     // so nothing is lost if the iPad rotates mid-lesson.
+    const PAD_GUTTER = 12;                       // breathing room around the white page (matches .pad-stage-wrap padding)
+    function stageAvail() {
+      const wrap = document.getElementById('pad-stage-wrap');
+      return [Math.max(280, wrap.clientWidth - 2 * PAD_GUTTER),
+              Math.max(280, wrap.clientHeight - 2 * PAD_GUTTER)];
+    }
     function ensurePageDims(page) {
       if (page.w && page.h) return;
-      const wrap = document.getElementById('pad-stage-wrap');
-      page.w = Math.max(320, wrap.clientWidth);
-      page.h = Math.max(320, wrap.clientHeight);
+      const a = stageAvail();
+      page.w = a[0];
+      page.h = a[1];
     }
     function sizeStage() {
-      const wrap = document.getElementById('pad-stage-wrap');
       const page = curPage();
       ensurePageDims(page);
-      fit = Math.max(0.2, Math.min(wrap.clientWidth / page.w, wrap.clientHeight / page.h));
+      const a = stageAvail();
+      fit = Math.max(0.2, Math.min(a[0] / page.w, a[1] / page.h));
       stage.width(page.w * fit);
       stage.height(page.h * fit);
       stage.scale({ x: fit, y: fit });
@@ -3259,6 +3285,13 @@ body.is-viewer .cog-btn { display: none; }
       document.getElementById('pad-modal').classList.remove('open');
       document.getElementById('pad-review').classList.remove('open');
       opened = false;
+      // leaving the pad also leaves full screen (back to the normal form view)
+      try {
+        if (document.fullscreenElement || document.webkitFullscreenElement) {
+          const p = (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+          if (p && p.catch) p.catch(() => {});
+        }
+      } catch (e) {}
       idbPut(state);                               // flush the draft on the way out
     }
 
@@ -3285,6 +3318,32 @@ body.is-viewer .cog-btn { display: none; }
       openBtn.addEventListener('click', openPad);
       fieldBtns.forEach(b => b.addEventListener('click', () => openPadAt(b.dataset.padTarget)));
       document.getElementById('pad-done').addEventListener('click', closePad);
+
+      // Full-screen toggle (Fullscreen API; iPad Safari supports it, iPhone
+      // doesn't — hide the button where unsupported). Re-fit on change so the
+      // page grabs the extra space.
+      const fsBtn = document.getElementById('pad-fs');
+      const fsRoot = document.documentElement;
+      if (!(fsRoot.requestFullscreen || fsRoot.webkitRequestFullscreen)) {
+        fsBtn.hidden = true;
+      } else {
+        const fsEl = () => document.fullscreenElement || document.webkitFullscreenElement;
+        fsBtn.addEventListener('click', () => {
+          try {
+            // both calls may return a promise that rejects when the platform
+            // says no — swallow it (never a visible error, hard rule 12)
+            const p = fsEl()
+              ? (document.exitFullscreen || document.webkitExitFullscreen).call(document)
+              : (fsRoot.requestFullscreen || fsRoot.webkitRequestFullscreen).call(fsRoot);
+            if (p && p.catch) p.catch(() => {});
+          } catch (e) {}
+        });
+        ['fullscreenchange', 'webkitfullscreenchange'].forEach(ev =>
+          document.addEventListener(ev, () => {
+            fsBtn.classList.toggle('is-active', !!fsEl());
+            if (opened && stage) { sizeStage(); stage.batchDraw(); }
+          }));
+      }
 
       document.getElementById('pad-cam-btn').addEventListener('click', () => document.getElementById('pad-cam-input').click());
       document.getElementById('pad-lib-btn').addEventListener('click', () => document.getElementById('pad-lib-input').click());
