@@ -1370,6 +1370,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
   display: none;
   flex-direction: column;
   background: var(--page-bg);
+  overscroll-behavior: none;             /* v0.53: never chain scroll to the form */
 }
 .pad-modal.open { display: flex; }
 
@@ -1524,6 +1525,81 @@ body.is-viewer .pad-field-btn { display: none !important; }
 @media print { .pad-field-btn { display: none !important; } }
 @media (hover: none) {
   .pad-field-btn:hover { color: var(--paper-dim); transform: none; }
+}
+
+/* v0.53: "you have evidence here" state — green when the field's textarea has
+   text OR its pad page has ink/photos. Same treatment on the floating launcher. */
+.pad-field-btn.has-evi,
+.float-link.pad.has-evi { border-color: var(--rate-success); color: var(--rate-success); }
+.pad-field-btn.has-evi:hover { color: var(--rate-success-deep); }
+
+/* v0.53: while the pad (or the pad-pages lightbox) is open the form is frozen —
+   no scroll-through, nothing moves behind. top is set inline to -scrollY. */
+body.pad-lock {
+  position: fixed;
+  left: 0;
+  right: 0;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* v0.53: record-view attachment pill — shown ONLY when a locked record carries
+   pad pages for that section (stays visible in the teacher viewer, unlike the
+   editing-only .pad-field-btn). */
+.pad-attach {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  margin-left: 0.55em;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--rule);
+  background: var(--surface-mid);
+  color: var(--paper-dim);
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.pad-attach:hover { border-color: var(--ais-yellow); color: var(--paper); }
+.pad-attach .icon { width: 1rem; height: 1rem; display: block; }
+@media print { .pad-attach { display: none !important; } }
+
+/* v0.53: pad-pages lightbox (record views) */
+.pad-view {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+  flex-direction: column;
+  background: var(--page-bg);
+  overscroll-behavior: none;
+}
+.pad-view.open { display: flex; }
+.pad-view-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 1rem clamp(0.8rem, 4vw, 2.4rem) calc(1.4rem + env(safe-area-inset-bottom, 0px));
+}
+.pad-view-scroll img {
+  display: block;
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto 1rem;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  box-shadow: 0 6px 22px -10px rgba(20, 54, 66, 0.35);
+  background: #fff;
+}
+.pad-view-loading {
+  font-family: var(--body-font);
+  font-size: 0.88rem;
+  color: var(--paper-mid);
+  text-align: center;
+  padding: 2rem 0;
 }
 
 .pad-foot {
@@ -2041,6 +2117,16 @@ body.is-viewer .cog-btn { display: none; }
   <input type="file" id="pad-lib-input" accept="image/jpeg,image/png" multiple hidden>
 </div>
 
+<!-- v0.53: pad-pages lightbox — record views only. Opened by the .pad-attach
+     pills; images are fetched token-gated from the backend (?action=pad_image). -->
+<div class="pad-view" id="pad-view" role="dialog" aria-modal="true" aria-label="Evidence pad pages">
+  <div class="pad-top">
+    <span class="pad-title" id="pad-view-title">Evidence <em>Pad</em></span>
+    <button class="pad-btn primary" type="button" id="pad-view-close">Close</button>
+  </div>
+  <div class="pad-view-scroll" id="pad-view-scroll"></div>
+</div>
+
 <form class="form-container" id="r3-form" autocomplete="on" novalidate>
   <!-- Submitted / closed-record banner (hidden until submit success or ?id=... fetched) -->
   <div class="submitted-banner" id="submitted-banner" role="status">
@@ -2184,7 +2270,7 @@ body.is-viewer .cog-btn { display: none; }
        FOCUS / CONTEXT
        ============================================ -->
   <section class="form-section">
-    <h2 class="section-title">Focus / <em>Context</em><button type="button" class="pad-field-btn" data-pad-target="focus_context" title="Open the Evidence Pad on the Focus / Context page" aria-label="Open the Evidence Pad on the Focus / Context page"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button></h2>
+    <h2 class="section-title">Focus / <em>Context</em><button type="button" class="pad-field-btn" data-pad-target="focus_context" title="Open the Evidence Pad on the Focus / Context page" aria-label="Open the Evidence Pad on the Focus / Context page"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></button><button type="button" class="pad-attach" data-pad-target="focus_context" hidden title="View the handwritten pad pages for this section" aria-label="View the handwritten pad pages for this section"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button></h2>
     <p class="src-path">Main purpose of the inspection activity.</p>
     <textarea name="focus_context" id="focus_context" class="long-text" rows="4" placeholder="Notes…"></textarea>
   </section>
@@ -2193,7 +2279,7 @@ body.is-viewer .cog-btn { display: none; }
        OBSERVER NOTES
        ============================================ -->
   <section class="form-section">
-    <h2 class="section-title">Observer <em>Notes</em><button type="button" class="pad-field-btn" data-pad-target="observer_notes" title="Open the Evidence Pad on the Observer Notes page" aria-label="Open the Evidence Pad on the Observer Notes page"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button></h2>
+    <h2 class="section-title">Observer <em>Notes</em><button type="button" class="pad-field-btn" data-pad-target="observer_notes" title="Open the Evidence Pad on the Observer Notes page" aria-label="Open the Evidence Pad on the Observer Notes page"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></button><button type="button" class="pad-attach" data-pad-target="observer_notes" hidden title="View the handwritten pad pages for this section" aria-label="View the handwritten pad pages for this section"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button></h2>
     <textarea name="observer_notes" id="observer_notes" class="long-text" rows="4" placeholder="Notes…"></textarea>
   </section>
 
@@ -2382,14 +2468,14 @@ body.is-viewer .cog-btn { display: none; }
        SUMMARIES
        ============================================ -->
   <section class="form-section">
-    <h2 class="section-title">Summary of <em>Strengths</em><button type="button" class="pad-field-btn" data-pad-target="summary_strengths" title="Open the Evidence Pad on the Summary of Strengths page" aria-label="Open the Evidence Pad on the Summary of Strengths page"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button></h2>
+    <h2 class="section-title">Summary of <em>Strengths</em><button type="button" class="pad-field-btn" data-pad-target="summary_strengths" title="Open the Evidence Pad on the Summary of Strengths page" aria-label="Open the Evidence Pad on the Summary of Strengths page"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></button><button type="button" class="pad-attach" data-pad-target="summary_strengths" hidden title="View the handwritten pad pages for this section" aria-label="View the handwritten pad pages for this section"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button></h2>
     <textarea name="summary_strengths" id="summary_strengths" class="long-text" rows="4" placeholder="Notes…"></textarea>
   </section>
 
   <section class="form-section">
     <div class="summary-with-timeout">
       <div class="summary-block">
-        <h2 class="section-title">Summary of <em>Weakness</em><button type="button" class="pad-field-btn" data-pad-target="summary_weakness" title="Open the Evidence Pad on the Summary of Weakness page" aria-label="Open the Evidence Pad on the Summary of Weakness page"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button></h2>
+        <h2 class="section-title">Summary of <em>Weakness</em><button type="button" class="pad-field-btn" data-pad-target="summary_weakness" title="Open the Evidence Pad on the Summary of Weakness page" aria-label="Open the Evidence Pad on the Summary of Weakness page"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></button><button type="button" class="pad-attach" data-pad-target="summary_weakness" hidden title="View the handwritten pad pages for this section" aria-label="View the handwritten pad pages for this section"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button></h2>
         <textarea name="summary_weakness" id="summary_weakness" class="long-text" rows="4" placeholder="Notes…"></textarea>
       </div>
       <div class="timeout-block">
@@ -2403,7 +2489,7 @@ body.is-viewer .cog-btn { display: none; }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.52</a></span>
+    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.53</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -2690,6 +2776,22 @@ body.is-viewer .cog-btn { display: none; }
   // touch-action:none + a touchmove preventDefault (the known workaround;
   // there is no official web opt-out). Ink accepts pen + mouse pointers
   // only; fingers move photos in Select mode and never draw (palm safety).
+  /* v0.53: freeze the form while a full-screen surface (pad / pad lightbox) is
+     up — iOS otherwise chains touch scrolling through to the page behind. */
+  let scrollLockY = 0;
+  function lockFormScroll() {
+    if (document.body.classList.contains('pad-lock')) return;
+    scrollLockY = window.scrollY || window.pageYOffset || 0;
+    document.body.style.top = -scrollLockY + 'px';
+    document.body.classList.add('pad-lock');
+  }
+  function unlockFormScroll() {
+    if (!document.body.classList.contains('pad-lock')) return;
+    document.body.classList.remove('pad-lock');
+    document.body.style.top = '';
+    window.scrollTo(0, scrollLockY);
+  }
+
   const EvidencePad = (function () {
     const EXPORT_EDGE = 1280;                    // flatten: long edge ≈ 1280px
     const PHOTO_MAX_EDGE = 1280;                 // capture downscale (photos are context, not the record)
@@ -2779,10 +2881,26 @@ body.is-viewer .cog-btn { display: none; }
     function scheduleDraftSave() {
       clearTimeout(saveTimer);
       saveTimer = setTimeout(() => { idbPut(state); }, 500);
+      refreshEviState();
     }
 
     function padHasContent() {
       return state.pages.some(p => p.photos.length || p.strokes.length);
+    }
+
+    // v0.53: green "evidence here" state — a field's pen pill lights up when
+    // its textarea has text OR its pad pages carry ink/photos; the floating
+    // launcher lights up when the pad holds anything at all.
+    function refreshEviState() {
+      const openBtn = document.getElementById('pad-open');
+      if (openBtn) openBtn.classList.toggle('has-evi', padHasContent());
+      TARGETS.forEach(t => {
+        const btn = document.querySelector('.pad-field-btn[data-pad-target="' + t + '"]');
+        if (!btn) return;
+        const padHas = state.pages.some(p => p.target === t && (p.photos.length || p.strokes.length));
+        const field = FORM.querySelector('[name="' + t + '"]');
+        btn.classList.toggle('has-evi', padHas || !!(field && field.value.trim()));
+      });
     }
 
     // ---------- geometry / rendering ----------
@@ -3265,6 +3383,7 @@ body.is-viewer .cog-btn { display: none; }
     // ---------- open / close / reset ----------
     async function openPad() {
       if (!libsOk) return;
+      lockFormScroll();                            // v0.53: the pad is its own screen
       document.getElementById('pad-modal').classList.add('open');
       opened = true;
       if (!stage) {
@@ -3285,6 +3404,8 @@ body.is-viewer .cog-btn { display: none; }
       document.getElementById('pad-modal').classList.remove('open');
       document.getElementById('pad-review').classList.remove('open');
       opened = false;
+      unlockFormScroll();
+      refreshEviState();                           // v0.53: reflect any new pad content
       // leaving the pad also leaves full screen (back to the normal form view)
       try {
         if (document.fullscreenElement || document.webkitFullscreenElement) {
@@ -3300,6 +3421,7 @@ body.is-viewer .cog-btn { display: none; }
       urlCache.clear();
       state = { id: '', cur: 0, pages: freshPages() };
       await idbDel();
+      refreshEviState();
       if (opened) await showPage(); else refreshPageIndicator();
     }
 
@@ -3430,7 +3552,14 @@ body.is-viewer .cog-btn { display: none; }
           state = saved;
           refreshPageIndicator();
         }
+        refreshEviState();
       });
+
+      // typing in one of the four textareas flips its pill green (and back)
+      FORM.addEventListener('input', e => {
+        if (e.target && TARGETS.indexOf(e.target.name) > -1) refreshEviState();
+      });
+      refreshEviState();
     }
 
     init();
@@ -3695,11 +3824,115 @@ body.is-viewer .cog-btn { display: none; }
         if (ts && sel && sel.value) ts.setValue(sel.value, true);
       });
       lockForm(rec.record_id, rec.submitted_at, 'closed');
+      initPadAttachments(result.pad_files, token);   // v0.53: pad pages, if any
       showToast('Record loaded · ' + (rec.teacher || rec.record_id), 'success');
     } catch (err) {
       showToast('Could not load record: ' + (err.message || err), 'error');
     }
   }
+
+  /* v0.53: Evidence-Pad pages on a locked record.
+     The record fetch returns pad_files (the pad's JPEG names, listed server-side
+     with the service key). Each name is slug-prefixed with its form field
+     ("focus-context-2.jpg" → focus_context), so a paperclip pill appears next to
+     the matching section title; tapping it opens a lightbox whose images are
+     fetched one by one via ?action=pad_image — token-gated exactly like the
+     record text itself. Legacy v0.50 pads (page-NN.jpg, no field prefix) attach
+     to Observer Notes as the catch-all. */
+  const PAD_SLUG_TARGETS = {
+    'focus-context':     'focus_context',
+    'observer-notes':    'observer_notes',
+    'summary-strengths': 'summary_strengths',
+    'summary-weakness':  'summary_weakness'
+  };
+  const PAD_VIEW_LABELS = {
+    focus_context:     'Focus / Context',
+    observer_notes:    'Observer Notes',
+    summary_strengths: 'Summary of Strengths',
+    summary_weakness:  'Summary of Weakness'
+  };
+  const padViewCache = new Map();          // file name → data URI
+  let padViewToken = '';
+  let padViewFiles = {};                   // target → [names]
+  let padViewSeq = 0;                      // invalidates stale async loads
+
+  function initPadAttachments(files, token) {
+    if (!files || !files.length || !token) return;
+    padViewToken = token;
+    padViewFiles = {};
+    files.forEach(function(n) {
+      const name = String(n || '');
+      if (!/^[a-z0-9-]+\.jpg$/.test(name)) return;
+      const base = name.replace(/\.jpg$/, '').replace(/-\d+$/, '');
+      const target = PAD_SLUG_TARGETS[base] || (base === 'page' ? 'observer_notes' : '');
+      if (!target) return;
+      (padViewFiles[target] = padViewFiles[target] || []).push(name);
+    });
+    Object.keys(padViewFiles).forEach(function(target) {
+      const btn = document.querySelector('.pad-attach[data-pad-target="' + target + '"]');
+      if (btn) btn.hidden = false;
+    });
+  }
+
+  async function openPadView(target) {
+    const files = padViewFiles[target] || [];
+    if (!files.length) return;
+    const seq = ++padViewSeq;
+    const scroll = document.getElementById('pad-view-scroll');
+    document.getElementById('pad-view-title').innerHTML =
+      'Evidence <em>Pad</em> · ' + (PAD_VIEW_LABELS[target] || 'Pages');
+    scroll.innerHTML = '<div class="pad-view-loading">Loading the pad pages…</div>';
+    lockFormScroll();
+    document.getElementById('pad-view').classList.add('open');
+    try {
+      const uris = await Promise.all(files.map(fetchPadImage));
+      if (seq !== padViewSeq) return;                    // superseded / closed
+      scroll.innerHTML = '';
+      uris.forEach(function(uri) {
+        const img = document.createElement('img');
+        img.src = uri;
+        img.alt = 'Evidence pad page';
+        scroll.appendChild(img);
+      });
+    } catch (e) {
+      if (seq !== padViewSeq) return;
+      closePadView();
+      showToast('Could not load the pad pages — check the connection and try again.', 'error');
+    }
+  }
+
+  async function fetchPadImage(name) {
+    if (padViewCache.has(name)) return padViewCache.get(name);
+    const url = WEB_APP_URL + '?action=pad_image&token=' + encodeURIComponent(padViewToken) +
+                '&name=' + encodeURIComponent(name);
+    const attempt = async () => {
+      const ctrl = new AbortController();
+      const timer = setTimeout(function() { ctrl.abort(); }, 20000);
+      try {
+        const resp = await fetch(url, { redirect: 'follow', signal: ctrl.signal });
+        const out = await resp.json();
+        if (!out.success || !out.data) throw new Error(out.error || 'no image');
+        return 'data:' + (out.mime || 'image/jpeg') + ';base64,' + out.data;
+      } finally { clearTimeout(timer); }
+    };
+    let uri;
+    try { uri = await attempt(); }
+    catch (e) { uri = await attempt(); }               // one silent retry
+    padViewCache.set(name, uri);
+    return uri;
+  }
+
+  function closePadView() {
+    padViewSeq++;
+    document.getElementById('pad-view').classList.remove('open');
+    document.getElementById('pad-view-scroll').innerHTML = '';
+    unlockFormScroll();
+  }
+
+  document.querySelectorAll('.pad-attach').forEach(function(b) {
+    b.addEventListener('click', function() { openPadView(b.dataset.padTarget); });
+  });
+  document.getElementById('pad-view-close').addEventListener('click', closePadView);
 
   // On load: if URL has ?id=AIS-R3-...&token=..., fetch & render in read-only mode.
   // Token is required by the backend for any record view (v0.29 secure-by-link).

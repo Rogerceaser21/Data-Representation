@@ -169,36 +169,58 @@ function handlePadExtract(data) {
 }
 
 /**
- * Fetches a pad's page JPEGs from the private bucket (service key; anon has
- * no read path). Returns [] on any problem so the caller's email still sends.
+ * Lists a pad's page JPEG names in the private bucket (service key; anon has
+ * no read path). Returns [] on any problem. v0.53: also feeds the locked
+ * record view (pad_files on the record fetch + name whitelist for pad_image).
  */
-function fetchPadImages(padId) {
+function listPadFiles(padId) {
   const out = [];
   const id = String(padId || '').trim();
   if (!/^[a-f0-9]{32}$/.test(id)) return out;   // client pad ids are 32-hex
   const secret = getSupabaseSecret();
   if (!secret) return out;
-  const headers = { apikey: secret, Authorization: 'Bearer ' + secret };
 
   const listResp = UrlFetchApp.fetch(SUPABASE_URL + '/storage/v1/object/list/' + PAD_BUCKET, {
     method: 'post',
     contentType: 'application/json',
-    headers: headers,
+    headers: { apikey: secret, Authorization: 'Bearer ' + secret },
     payload: JSON.stringify({ prefix: id, limit: 24, sortBy: { column: 'name', order: 'asc' } }),
     muteHttpExceptions: true
   });
   if (listResp.getResponseCode() !== 200) return out;
 
-  const files = JSON.parse(listResp.getContentText());
-  files.forEach(function(f) {
-    if (!f || !/\.jpg$/.test(String(f.name || ''))) return;
-    const r = UrlFetchApp.fetch(
-      SUPABASE_URL + '/storage/v1/object/' + PAD_BUCKET + '/' + id + '/' + f.name,
-      { headers: headers, muteHttpExceptions: true }
-    );
-    if (r.getResponseCode() === 200) {
-      out.push(r.getBlob().setName('evidence-pad-' + f.name));
-    }
+  JSON.parse(listResp.getContentText()).forEach(function(f) {
+    if (f && /\.jpg$/.test(String(f.name || ''))) out.push(String(f.name));
+  });
+  return out;
+}
+
+/**
+ * Fetches ONE pad page as raw bytes, or null. Name must already be validated
+ * against listPadFiles by the caller (v0.53 record-view image endpoint).
+ */
+function fetchPadImageBytes(padId, name) {
+  const id = String(padId || '').trim();
+  const n = String(name || '').trim();
+  if (!/^[a-f0-9]{32}$/.test(id) || !/^[a-z0-9-]+\.jpg$/.test(n)) return null;
+  const secret = getSupabaseSecret();
+  if (!secret) return null;
+  const r = UrlFetchApp.fetch(
+    SUPABASE_URL + '/storage/v1/object/' + PAD_BUCKET + '/' + id + '/' + n,
+    { headers: { apikey: secret, Authorization: 'Bearer ' + secret }, muteHttpExceptions: true }
+  );
+  return r.getResponseCode() === 200 ? r.getBlob() : null;
+}
+
+/**
+ * Fetches a pad's page JPEGs as email attachments. Returns [] on any problem
+ * so the caller's email still sends.
+ */
+function fetchPadImages(padId) {
+  const out = [];
+  listPadFiles(padId).forEach(function(name) {
+    const blob = fetchPadImageBytes(padId, name);
+    if (blob) out.push(blob.setName('evidence-pad-' + name));
   });
   return out;
 }

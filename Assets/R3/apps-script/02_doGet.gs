@@ -20,6 +20,12 @@ function doGet(e) {
       return jsonOut({ success: true, options: getDropdownOptions() });
     }
 
+    // v0.53: one Evidence-Pad page for a locked record. Token-gated exactly
+    // like the record fetch (hard rule 10); any non-match is a generic miss.
+    if (params.action === 'pad_image') {
+      return jsonOut(getPadImageForToken(params.token, params.name));
+    }
+
     // v0.46: a record is fetched by its UNIQUE record_token. Accept either a
     // legacy ?id=...&token=... link or a token-only ?token=... link.
     if (params.token || params.id) {
@@ -90,9 +96,50 @@ function getRecordById(id, token) {
       }
       record[h] = v;
     });
-    return { success: true, data: record };
+    // v0.53: if the record carries an Evidence Pad, list its page names so the
+    // record view can show per-field attachment pills (images themselves are
+    // fetched one by one via ?action=pad_image, same token gate).
+    const out = { success: true, data: record };
+    const padCol = headers.indexOf('evidence_pad_id');
+    const padId = padCol > -1 ? String(values[r][padCol] || '').trim() : '';
+    if (padId) {
+      try { out.pad_files = listPadFiles(padId); } catch (e) { /* record still loads */ }
+    }
+    return out;
   }
   return { success: false, error: 'Record not found' };
+}
+
+/**
+ * v0.53: returns one pad page (base64 JPEG) for a locked record. The caller
+ * must present the record's unique token; the requested name must be one of
+ * that pad's own files. Every failure path returns the same generic miss so
+ * nothing can be probed (mirrors getRecordById).
+ */
+function getPadImageForToken(token, name) {
+  const miss = { success: false, error: 'Record not found' };
+  const givenToken = String(token || '').trim();
+  const wantName = String(name || '').trim();
+  if (!givenToken || !/^[a-z0-9-]+\.jpg$/.test(wantName)) return miss;
+
+  const ss = SpreadsheetApp.openById(getSheetId());
+  const sheet = ss.getSheetByName(SHEET_NAME_SUBMISSIONS);
+  if (!sheet || sheet.getLastRow() < 2) return miss;
+  const values = sheet.getDataRange().getValues();
+  const headers = values[0];
+  const tokenCol = headers.indexOf('record_token');
+  const padCol = headers.indexOf('evidence_pad_id');
+  if (tokenCol < 0 || padCol < 0) return miss;
+
+  for (var r = 1; r < values.length; r++) {
+    if (String(values[r][tokenCol] || '').trim() !== givenToken) continue;
+    const padId = String(values[r][padCol] || '').trim();
+    if (!padId || listPadFiles(padId).indexOf(wantName) < 0) return miss;
+    const blob = fetchPadImageBytes(padId, wantName);
+    if (!blob) return miss;
+    return { success: true, mime: 'image/jpeg', data: Utilities.base64Encode(blob.getBytes()) };
+  }
+  return miss;
 }
 
 /**
