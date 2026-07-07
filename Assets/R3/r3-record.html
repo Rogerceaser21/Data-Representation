@@ -1466,6 +1466,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
   color: var(--paper-mid);
   min-width: 3.2em;
   text-align: center;
+  white-space: nowrap;
 }
 
 .pad-stage-wrap {
@@ -1474,17 +1475,41 @@ textarea.long-text:focus { border-color: var(--rate-success); }
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.7rem;
+  padding: 0;
   overflow: hidden;
 }
 .pad-stage {
   background: #ffffff;
-  border: 1px solid var(--rule);
-  border-radius: 6px;
-  box-shadow: var(--shadow-card);
   touch-action: none;
   -webkit-user-select: none;
   user-select: none;
+}
+
+/* v0.51: per-field pad launchers — a small pen pill beside each extractable
+   section title (Focus/Context, Observer Notes, both Summaries). Opens the
+   Evidence Pad on that field's named page. */
+.pad-field-btn {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  margin-left: 0.55em;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--ais-yellow);
+  background: var(--surface-mid);
+  color: var(--paper-dim);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+.pad-field-btn:hover { color: var(--paper); transform: translateY(-1px); }
+.pad-field-btn .icon { width: 1.05rem; height: 1.05rem; display: block; }
+body.is-viewer .pad-field-btn { display: none !important; }
+@media print { .pad-field-btn { display: none !important; } }
+@media (hover: none) {
+  .pad-field-btn:hover { color: var(--paper-dim); transform: none; }
 }
 
 .pad-foot {
@@ -2139,7 +2164,7 @@ body.is-viewer .cog-btn { display: none; }
        FOCUS / CONTEXT
        ============================================ -->
   <section class="form-section">
-    <h2 class="section-title">Focus / <em>Context</em></h2>
+    <h2 class="section-title">Focus / <em>Context</em><button type="button" class="pad-field-btn" data-pad-target="focus_context" title="Open the Evidence Pad on the Focus / Context page" aria-label="Open the Evidence Pad on the Focus / Context page"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button></h2>
     <p class="src-path">Main purpose of the inspection activity.</p>
     <textarea name="focus_context" id="focus_context" class="long-text" rows="4" placeholder="Notes…"></textarea>
   </section>
@@ -2148,7 +2173,7 @@ body.is-viewer .cog-btn { display: none; }
        OBSERVER NOTES
        ============================================ -->
   <section class="form-section">
-    <h2 class="section-title">Observer <em>Notes</em></h2>
+    <h2 class="section-title">Observer <em>Notes</em><button type="button" class="pad-field-btn" data-pad-target="observer_notes" title="Open the Evidence Pad on the Observer Notes page" aria-label="Open the Evidence Pad on the Observer Notes page"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button></h2>
     <textarea name="observer_notes" id="observer_notes" class="long-text" rows="4" placeholder="Notes…"></textarea>
   </section>
 
@@ -2337,14 +2362,14 @@ body.is-viewer .cog-btn { display: none; }
        SUMMARIES
        ============================================ -->
   <section class="form-section">
-    <h2 class="section-title">Summary of <em>Strengths</em></h2>
+    <h2 class="section-title">Summary of <em>Strengths</em><button type="button" class="pad-field-btn" data-pad-target="summary_strengths" title="Open the Evidence Pad on the Summary of Strengths page" aria-label="Open the Evidence Pad on the Summary of Strengths page"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button></h2>
     <textarea name="summary_strengths" id="summary_strengths" class="long-text" rows="4" placeholder="Notes…"></textarea>
   </section>
 
   <section class="form-section">
     <div class="summary-with-timeout">
       <div class="summary-block">
-        <h2 class="section-title">Summary of <em>Weakness</em></h2>
+        <h2 class="section-title">Summary of <em>Weakness</em><button type="button" class="pad-field-btn" data-pad-target="summary_weakness" title="Open the Evidence Pad on the Summary of Weakness page" aria-label="Open the Evidence Pad on the Summary of Weakness page"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button></h2>
         <textarea name="summary_weakness" id="summary_weakness" class="long-text" rows="4" placeholder="Notes…"></textarea>
       </div>
       <div class="timeout-block">
@@ -2358,7 +2383,7 @@ body.is-viewer .cog-btn { display: none; }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.50</a></span>
+    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.51</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -2646,23 +2671,33 @@ body.is-viewer .cog-btn { display: none; }
   // there is no official web opt-out). Ink accepts pen + mouse pointers
   // only; fingers move photos in Select mode and never draw (palm safety).
   const EvidencePad = (function () {
-    const PAGE_W = 1000, PAGE_H = 1414;          // logical page space (A4 portrait)
-    const EXPORT_RATIO = 1280 / PAGE_H;          // flatten: long edge ≈ 1280px
+    const EXPORT_EDGE = 1280;                    // flatten: long edge ≈ 1280px
     const PHOTO_MAX_EDGE = 1280;                 // capture downscale (photos are context, not the record)
-    const IDB_NAME = 'ais-r3-pad-v1', IDB_STORE = 'pads', IDB_KEY = 'draft';
+    const IDB_NAME = 'ais-r3-pad-v2', IDB_STORE = 'pads', IDB_KEY = 'draft';
     const HIGH_COLOR = '#FFBA14';
+    const TARGETS = ['focus_context', 'observer_notes', 'summary_strengths', 'summary_weakness'];
     const TARGET_LABELS = {
       focus_context:     'Focus / Context',
       observer_notes:    'Observer notes',
       summary_strengths: 'Summary of Strengths',
       summary_weakness:  'Summary of Weakness'
     };
+    const TARGET_SLUGS = {
+      focus_context:     'focus-context',
+      observer_notes:    'observer-notes',
+      summary_strengths: 'summary-strengths',
+      summary_weakness:  'summary-weakness'
+    };
 
     const libsOk = !!(window.Konva && window.PerfectFreehand);
 
     // ---------- state ----------
-    const blankPage = () => ({ photos: [], strokes: [] });
-    let state = { id: '', cur: 0, pages: [blankPage()] };
+    // v0.51: one named page per extractable form field ("+" adds overflow pages
+    // for the current field). Each page freezes its logical size (w/h) from the
+    // stage area the first time it is shown, so ink survives rotation via fit-scale.
+    const blankPage = (target) => ({ target: target, photos: [], strokes: [], w: 0, h: 0 });
+    const freshPages = () => TARGETS.map(blankPage);
+    let state = { id: '', cur: 0, pages: freshPages() };
     let tool = 'pen';
     let penColor = '#143642';
     let stage = null, photoLayer = null, inkLayer = null, transformer = null;
@@ -2824,23 +2859,41 @@ body.is-viewer .cog-btn { display: none; }
 
     function curPage() { return state.pages[state.cur]; }
 
+    // "Focus / Context", or "Focus / Context 2" for overflow pages of a field
+    function pageLabel(page, idx) {
+      let n = 0, ord = 0;
+      state.pages.forEach((p, i) => { if (p.target === page.target) { n++; if (i <= idx) ord = n; } });
+      const base = TARGET_LABELS[page.target] || 'Page';
+      return n > 1 ? base + ' ' + ord : base;
+    }
+
     function refreshPageIndicator() {
       const el = document.getElementById('pad-pageind');
-      if (el) el.textContent = (state.cur + 1) + ' / ' + state.pages.length;
+      if (el) el.textContent = pageLabel(curPage(), state.cur) + ' · ' + (state.cur + 1) + '/' + state.pages.length;
     }
 
     async function showPage() {
       refreshPageIndicator();
-      if (stage) await renderPage(stage, curPage(), { interactive: true });
+      if (stage) { sizeStage(); await renderPage(stage, curPage(), { interactive: true }); }
     }
 
     // ---------- stage setup + input ----------
+    // A page's logical space is frozen the first time it is shown (= the full
+    // stage area on this device/orientation). After that the page fit-scales,
+    // so nothing is lost if the iPad rotates mid-lesson.
+    function ensurePageDims(page) {
+      if (page.w && page.h) return;
+      const wrap = document.getElementById('pad-stage-wrap');
+      page.w = Math.max(320, wrap.clientWidth);
+      page.h = Math.max(320, wrap.clientHeight);
+    }
     function sizeStage() {
       const wrap = document.getElementById('pad-stage-wrap');
-      const availW = wrap.clientWidth - 28, availH = wrap.clientHeight - 28;   // wrap padding + breathing room
-      fit = Math.max(0.2, Math.min(availW / PAGE_W, availH / PAGE_H));
-      stage.width(PAGE_W * fit);
-      stage.height(PAGE_H * fit);
+      const page = curPage();
+      ensurePageDims(page);
+      fit = Math.max(0.2, Math.min(wrap.clientWidth / page.w, wrap.clientHeight / page.h));
+      stage.width(page.w * fit);
+      stage.height(page.h * fit);
       stage.scale({ x: fit, y: fit });
     }
 
@@ -2980,12 +3033,14 @@ body.is-viewer .cog-btn { display: none; }
       if (!blob) return null;
       const buf = await blob.arrayBuffer();
       // place at ~62% page width, cascading so stacked photos stay grabbable
-      const dispW = PAGE_W * 0.62;
+      const page = curPage();
+      ensurePageDims(page);
+      const dispW = page.w * 0.62;
       const dispH = dispW * (h / w);
-      const n = curPage().photos.length + index;
+      const n = page.photos.length + index;
       return {
         id: rid(), buf: buf, w: dispW, h: dispH,
-        x: PAGE_W * 0.19 + (n % 4) * 26, y: PAGE_H * 0.06 + (n % 4) * 30,
+        x: page.w * 0.19 + (n % 4) * 26, y: page.h * 0.06 + (n % 4) * 30,
         scaleX: 1, scaleY: 1, rotation: 0
       };
     }
@@ -3006,27 +3061,29 @@ body.is-viewer .cog-btn { display: none; }
 
     // ---------- flatten / upload / extract ----------
     async function flattenPages() {
-      // Renders every non-empty page into a hidden stage; returns base64 JPEGs.
+      // Renders every non-empty page into a hidden stage; returns
+      // [{ target, b64 }] JPEGs, one per page, tagged with its form field.
       const holder = document.createElement('div');
       holder.style.cssText = 'position:fixed;left:-99999px;top:0;';
       document.body.appendChild(holder);
-      const off = new Konva.Stage({ container: holder, width: PAGE_W, height: PAGE_H });
       const out = [];
       try {
         for (const page of state.pages) {
           if (!page.photos.length && !page.strokes.length) continue;
+          ensurePageDims(page);
+          const off = new Konva.Stage({ container: holder, width: page.w, height: page.h });
           await renderPage(off, page, { interactive: false });
           // white paper behind the ink (JPEG has no alpha)
           const bg = new Konva.Layer({ listening: false });
-          bg.add(new Konva.Rect({ x: 0, y: 0, width: PAGE_W, height: PAGE_H, fill: '#ffffff' }));
+          bg.add(new Konva.Rect({ x: 0, y: 0, width: page.w, height: page.h, fill: '#ffffff' }));
           off.add(bg);
           bg.moveToBottom();
           off.batchDraw();
-          const dataURL = off.toDataURL({ mimeType: 'image/jpeg', quality: 0.8, pixelRatio: EXPORT_RATIO });
-          out.push(dataURL.slice(dataURL.indexOf(',') + 1));
+          const dataURL = off.toDataURL({ mimeType: 'image/jpeg', quality: 0.8, pixelRatio: EXPORT_EDGE / Math.max(page.w, page.h) });
+          out.push({ target: page.target, b64: dataURL.slice(dataURL.indexOf(',') + 1) });
+          off.destroy();
         }
       } finally {
-        off.destroy();
         holder.remove();
       }
       return out;
@@ -3039,18 +3096,23 @@ body.is-viewer .cog-btn { display: none; }
       return new Blob([arr], { type: type });
     }
 
-    async function uploadPad(padId, pageB64s) {
+    async function uploadPad(padId, pages) {
       const headers = { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY };
-      const puts = pageB64s.map((b64, i) =>
-        fetch(SB_URL + '/storage/v1/object/evidence-pads/' + padId + '/page-' + String(i + 1).padStart(2, '0') + '.jpg', {
+      const counts = {};
+      const puts = pages.map(p => {
+        const n = counts[p.target] = (counts[p.target] || 0) + 1;
+        const name = (TARGET_SLUGS[p.target] || 'page') + (n > 1 ? '-' + n : '') + '.jpg';
+        return fetch(SB_URL + '/storage/v1/object/evidence-pads/' + padId + '/' + name, {
           method: 'POST',
           headers: Object.assign({ 'Content-Type': 'image/jpeg' }, headers),
-          body: b64ToBlob(b64, 'image/jpeg')
-        }).catch(() => null));
+          body: b64ToBlob(p.b64, 'image/jpeg')
+        }).catch(() => null);
+      });
       // ink vectors ride along for future re-editing (photo bytes live in the JPEGs)
       const vectors = {
-        v: 1, pad: padId,
+        v: 2, pad: padId,
         pages: state.pages.map(p => ({
+          target: p.target, w: p.w, h: p.h,
           strokes: p.strokes,
           photos: p.photos.map(ph => ({ id: ph.id, x: ph.x, y: ph.y, w: ph.w, h: ph.h, scaleX: ph.scaleX, scaleY: ph.scaleY, rotation: ph.rotation }))
         }))
@@ -3080,12 +3142,12 @@ body.is-viewer .cog-btn { display: none; }
       return state.id;
     }
 
-    async function extractPage(b64) {
+    async function extractPage(page) {
       const attempt = async () => {
         const resp = await fetch(WEB_APP_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({ action: 'extract_pad', image: b64 }),
+          body: JSON.stringify({ action: 'extract_pad', image: page.b64, target: page.target }),
           redirect: 'follow'
         });
         const out = await resp.json();
@@ -3105,8 +3167,8 @@ body.is-viewer .cog-btn { display: none; }
       try {
         const pages = await flattenPages();
         let done = 0;
-        const settle = await Promise.allSettled(pages.map(async b64 => {
-          const items = await extractPage(b64);
+        const settle = await Promise.allSettled(pages.map(async page => {
+          const items = await extractPage(page);
           done++;
           label.textContent = 'Reading pad… ' + done + ' / ' + pages.length;
           return items;
@@ -3180,13 +3242,18 @@ body.is-viewer .cog-btn { display: none; }
       document.getElementById('pad-modal').classList.add('open');
       opened = true;
       if (!stage) {
-        stage = new Konva.Stage({ container: 'pad-stage', width: PAGE_W, height: PAGE_H });
+        stage = new Konva.Stage({ container: 'pad-stage', width: 100, height: 100 });
         wireStageInput();
         window.addEventListener('resize', () => { if (opened && stage) { sizeStage(); stage.batchDraw(); } });
       }
-      sizeStage();
-      await showPage();
+      await showPage();                            // sizes the stage to the current page
       setTool(tool);
+    }
+    // Per-field launcher: jump to that field's first page, then open.
+    async function openPadAt(target) {
+      const idx = state.pages.findIndex(p => p.target === target);
+      if (idx > -1) state.cur = idx;
+      await openPad();
     }
     function closePad() {
       document.getElementById('pad-modal').classList.remove('open');
@@ -3198,7 +3265,7 @@ body.is-viewer .cog-btn { display: none; }
     async function reset() {
       urlCache.forEach(u => URL.revokeObjectURL(u));
       urlCache.clear();
-      state = { id: '', cur: 0, pages: [blankPage()] };
+      state = { id: '', cur: 0, pages: freshPages() };
       await idbDel();
       if (opened) await showPage(); else refreshPageIndicator();
     }
@@ -3207,10 +3274,16 @@ body.is-viewer .cog-btn { display: none; }
     function init() {
       const openBtn = document.getElementById('pad-open');
       if (!openBtn) return;
+      const fieldBtns = document.querySelectorAll('.pad-field-btn');
       // Record views never get a pad; silent-hide too if a lib failed to load.
-      if (CLOSED_RECORD_VIEW || !libsOk) { openBtn.hidden = true; return; }
+      if (CLOSED_RECORD_VIEW || !libsOk) {
+        openBtn.hidden = true;
+        fieldBtns.forEach(b => { b.hidden = true; });
+        return;
+      }
 
       openBtn.addEventListener('click', openPad);
+      fieldBtns.forEach(b => b.addEventListener('click', () => openPadAt(b.dataset.padTarget)));
       document.getElementById('pad-done').addEventListener('click', closePad);
 
       document.getElementById('pad-cam-btn').addEventListener('click', () => document.getElementById('pad-cam-input').click());
@@ -3265,8 +3338,12 @@ body.is-viewer .cog-btn { display: none; }
         if (state.cur < state.pages.length - 1) { state.cur++; scheduleDraftSave(); showPage(); }
       });
       document.getElementById('pad-page-add').addEventListener('click', () => {
-        state.pages.push(blankPage());
-        state.cur = state.pages.length - 1;
+        // overflow page for the CURRENT field, inserted after its last page
+        const target = curPage().target;
+        let at = state.cur;
+        while (at + 1 < state.pages.length && state.pages[at + 1].target === target) at++;
+        state.pages.splice(at + 1, 0, blankPage(target));
+        state.cur = at + 1;
         scheduleDraftSave();
         showPage();
       });
@@ -3281,10 +3358,16 @@ body.is-viewer .cog-btn { display: none; }
         if (document.visibilityState === 'hidden' && padHasContent()) idbPut(state);
       });
 
+      // v0.51 renamed the draft store (field-named page schema); drop the stale v1 DB.
+      try { indexedDB.deleteDatabase('ais-r3-pad-v1'); } catch (e) {}
+
       // Restore a mid-lesson draft (the bfcache handler reloads the page, so
-      // this load path is also the restore path).
+      // this load path is also the restore path). Only v2-shaped drafts count:
+      // every page must carry a known field target.
       idbGet().then(saved => {
-        if (saved && saved.pages && saved.pages.some(p => (p.photos && p.photos.length) || (p.strokes && p.strokes.length))) {
+        if (saved && saved.pages && saved.pages.length
+            && saved.pages.every(p => p && TARGET_LABELS[p.target])
+            && saved.pages.some(p => (p.photos && p.photos.length) || (p.strokes && p.strokes.length))) {
           state = saved;
           refreshPageIndicator();
         }

@@ -1,13 +1,16 @@
 /**
- * Evidence Pad extraction + storage fetch (v0.50).
+ * Evidence Pad extraction + storage fetch (v0.50; field-scoped pages v0.51).
  *
  * handlePadExtract: routed from doPost when the form sends
- *   { action: 'extract_pad', image: <base64 JPEG, no data: prefix> }
+ *   { action: 'extract_pad', image: <base64 JPEG, no data: prefix>, target: <field> }
  * One pad PAGE per call; the form fans pages out in parallel, so each call
  * stays far inside UrlFetchApp's ~60s outbound cap. The page image (Apple
  * Pencil handwriting, sometimes around photos of the board/slides/handouts)
- * goes to Claude (claude-sonnet-5, vision) with a forced JSON schema, and the
- * transcribed notes come back grouped into the four R3 free-text targets.
+ * goes to Claude (claude-sonnet-5, vision) with a forced JSON schema.
+ * v0.51: each pad page belongs to ONE form field (the form sends `target`),
+ * so the model only transcribes; no classification guessing. A request
+ * without `target` (pre-v0.51 form during deploy skew) falls back to the
+ * v0.50 classify-into-four-fields behaviour.
  * The form shows the result in a review step; nothing is auto-inserted.
  *
  * Responses (mirrors the submit contract):
@@ -22,6 +25,13 @@
 const PAD_EXTRACT_MODEL = 'claude-sonnet-5';
 
 const PAD_EXTRACT_TARGETS = ['focus_context', 'observer_notes', 'summary_strengths', 'summary_weakness'];
+
+const PAD_EXTRACT_LABELS = {
+  focus_context:     'Focus / Context (the main purpose of the inspection activity)',
+  observer_notes:    'Observer Notes (running observations during the lesson)',
+  summary_strengths: 'Summary of Strengths (things that went well, effective practice)',
+  summary_weakness:  'Summary of Weakness (areas to develop, problems, coaching suggestions)'
+};
 
 const PAD_EXTRACT_SCHEMA = {
   type: 'object',
@@ -42,6 +52,41 @@ const PAD_EXTRACT_SCHEMA = {
   required: ['items'],
   additionalProperties: false
 };
+
+// v0.51 field-scoped page: transcription only, no target field to guess
+const PAD_EXTRACT_SCHEMA_TARGETED = {
+  type: 'object',
+  properties: {
+    items: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          text: { type: 'string' }
+        },
+        required: ['text'],
+        additionalProperties: false
+      }
+    }
+  },
+  required: ['items'],
+  additionalProperties: false
+};
+
+function padExtractTargetedPrompt(target) {
+  return [
+    'You are reading ONE page of a handwritten evidence pad from a school lesson observation at AIS Sharjah.',
+    'An observer wrote notes with an Apple Pencil, often around photos of the classroom board, slides or handouts, with arrows linking notes to photos or to other notes.',
+    '',
+    'This whole page belongs to ONE form field: ' + (PAD_EXTRACT_LABELS[target] || target) + '.',
+    'Transcribe ALL the handwriting on this page for that field. Rules:',
+    '- Transcribe faithfully in the observer\'s own words; fix only obvious letter-level slips.',
+    '- Turn arrows and layout into readable prose (e.g. "Referring to the challenge slide: ...").',
+    '- Use a photo\'s content only when a note refers to it (to name what the note points at); never describe photos no note refers to.',
+    '- Each distinct note becomes one item; keep each item one readable sentence or short line.',
+    '- If the page is blank or has no readable handwriting, return an empty items array. Never invent content.'
+  ].join('\n');
+}
 
 const PAD_EXTRACT_PROMPT = [
   'You are reading ONE page of a handwritten evidence pad from a school lesson observation at AIS Sharjah.',
@@ -70,16 +115,20 @@ function handlePadExtract(data) {
     const key = getAnthropicKey();
     if (!key) return jsonOut({ success: false, error: 'extraction unavailable' });
 
+    // v0.51: page tied to one form field -> transcription-only prompt/schema.
+    // No target (older form during deploy skew) -> v0.50 classification.
+    const target = PAD_EXTRACT_TARGETS.indexOf(String(data.target || '')) > -1 ? String(data.target) : '';
+
     const payload = {
       model: PAD_EXTRACT_MODEL,
       max_tokens: 3000,
       thinking: { type: 'disabled' },
-      output_config: { format: { type: 'json_schema', schema: PAD_EXTRACT_SCHEMA } },
+      output_config: { format: { type: 'json_schema', schema: target ? PAD_EXTRACT_SCHEMA_TARGETED : PAD_EXTRACT_SCHEMA } },
       messages: [{
         role: 'user',
         content: [
           { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: image } },
-          { type: 'text', text: PAD_EXTRACT_PROMPT }
+          { type: 'text', text: target ? padExtractTargetedPrompt(target) : PAD_EXTRACT_PROMPT }
         ]
       }]
     };
@@ -105,9 +154,14 @@ function handlePadExtract(data) {
     let text = '';
     (msg.content || []).forEach(function(b) { if (b.type === 'text') text += b.text; });
     const parsed = JSON.parse(text);   // schema-enforced JSON
-    const items = (parsed && parsed.items || []).filter(function(it) {
-      return it && PAD_EXTRACT_TARGETS.indexOf(it.target) > -1 && String(it.text || '').trim();
-    });
+    const items = (parsed && parsed.items || [])
+      .map(function(it) {
+        // targeted pages carry no per-item target; stamp the page's field
+        return it && target ? { target: target, text: it.text } : it;
+      })
+      .filter(function(it) {
+        return it && PAD_EXTRACT_TARGETS.indexOf(it.target) > -1 && String(it.text || '').trim();
+      });
     return jsonOut({ success: true, items: items });
   } catch (err) {
     return jsonOut({ success: false, error: String(err && err.message || err) });
