@@ -5,6 +5,13 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.63 . 2026-07-07
+- **Round regeneration, Route B (This Mac / Max plan) enabled.** The Engine picker's "This Mac (Max plan)" option is now live and the default. It regenerates through Claude Code on the Max plan (`claude -p`), pinned to the same certified Claude Sonnet 5, at no API-dollar cost. "Cloud (API key)" stays available as the fast path.
+- **Transport.** A `claude -p` branch was added to the shared caller (`~/AIS-Data-Dashboard/db/bench_llm.mjs`): same `genJSON()` interface, dispatched by the `REGEN_ENGINE` env var. It runs headless against the Max-plan login (macOS Keychain), strips any API key / managed gateway from the child env so it never bills the API, describes the JSON schema in the prompt (no API-side enforcement), and parses + shape-checks + retries. Concurrency is throttled for the Max plan's usage windows with backoff.
+- **Runner + resume.** `regen_runner.mjs` now accepts `claude-code` jobs and passes the engine to the pipelines. A run interrupted by a usage window or a sleeping Mac **resumes**: per-pipeline done-markers skip finished stages and `regen_coach.mjs` checkpoints each teacher's note, so a re-run continues where it left off. Same anti-fabrication gates and judge as Route A; nothing publishes unless it passes.
+- **Operate it.** Run `node ~/AIS-Data-Dashboard/db/regen_runner.mjs` on the Mac (or install the LaunchAgent; see `db/REGEN_RUNNER.md`), signed in to the Max plan. A one-time auth self-check and the full runbook are in that README.
+- Scope: admin Settings regeneration + the local tooling. R3 form and every other board untouched. Rollback: `dash-v0.62`.
+
 ## v0.62 . 2026-07-07
 - **Round regeneration, safer controls.** The Round field is now a **picker** of the rounds that actually exist in the data (plus the round set now), newest first, defaulting to the current round. Free text is gone, so a round can no longer be mistyped into a bad label.
 - **"Already generated" guard.** Choosing a round shows its state under the picker: a fresh round reads *"Not yet generated, safe to generate"*; a round that already has writing shows how many narrative items and coaching notes exist and, on Start, requires an explicit confirm, because regenerating rewrites the Snapshot and report wording (it reads a little differently). Approved coaching notes are always kept.
