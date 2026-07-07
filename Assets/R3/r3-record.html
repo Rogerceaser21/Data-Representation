@@ -1594,67 +1594,6 @@ body.is-viewer .pad-field-btn { display: none !important; }
   background: var(--card-bg);
 }
 
-/* Extract review step: sits over the stage area, same chrome */
-.pad-review {
-  position: absolute;
-  inset: 0;
-  z-index: 5;
-  display: none;
-  flex-direction: column;
-  background: var(--page-bg);
-}
-.pad-review.open { display: flex; }
-.pad-review-scroll {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
-  padding: 1rem clamp(0.8rem, 4vw, 2.4rem) 1.4rem;
-}
-.pad-review-intro {
-  font-family: var(--body-font);
-  font-size: 0.86rem;
-  color: var(--paper-mid);
-  margin: 0.2rem auto 1rem;
-  max-width: 640px;
-}
-.pad-review-group {
-  max-width: 640px;
-  margin: 0 auto 1rem;
-  background: var(--card-bg);
-  border: 1px solid var(--rule);
-  border-radius: 12px;
-  padding: 0.8rem 0.95rem;
-}
-.pad-review-group label.head {
-  display: flex;
-  align-items: center;
-  gap: 0.55em;
-  font-family: var(--body-font);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--paper);
-  cursor: pointer;
-}
-.pad-review-group label.head input { width: 1.05rem; height: 1.05rem; accent-color: var(--paper); }
-.pad-review-group textarea {
-  width: 100%;
-  margin-top: 0.55rem;
-  border: 1px solid var(--rule);
-  border-radius: 8px;
-  background: var(--navy-card);
-  color: var(--paper);
-  font-family: var(--body-font);
-  font-size: 0.92rem;
-  line-height: 1.45;
-  padding: 0.6rem 0.7rem;
-  min-height: 5.5em;
-  resize: vertical;
-}
-.pad-review-group.is-off textarea { opacity: 0.4; }
 
 /* The pad never appears in the teacher viewer or in print (covered by the
    existing body.is-viewer .float-link and @media print .float-link rules);
@@ -2068,17 +2007,6 @@ body.is-viewer .cog-btn { display: none; }
 
   <div class="pad-stage-wrap" id="pad-stage-wrap" style="position:relative;">
     <div class="pad-stage" id="pad-stage"></div>
-
-    <div class="pad-review" id="pad-review">
-      <div class="pad-review-scroll" id="pad-review-scroll">
-        <p class="pad-review-intro">Read from your pad. Check each block, edit freely, then add the ticked blocks to the form. Nothing is added until you tap <strong>Add to form</strong>.</p>
-        <div id="pad-review-groups"></div>
-      </div>
-      <div class="pad-foot">
-        <button class="pad-btn" type="button" id="pad-review-back">Back to pad</button>
-        <button class="pad-btn primary" type="button" id="pad-review-apply">Add to form</button>
-      </div>
-    </div>
   </div>
 
   <div class="pad-foot">
@@ -2466,7 +2394,7 @@ body.is-viewer .cog-btn { display: none; }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.54</a></span>
+    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.55</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -2759,7 +2687,7 @@ body.is-viewer .cog-btn { display: none; }
      scroll gestures that don't belong to one of the pad's own scroll areas. */
   function containScroll(el) {
     const handler = function (e) {
-      if (e.target && e.target.closest && e.target.closest('.pad-review-scroll, .pad-view-scroll')) return;
+      if (e.target && e.target.closest && e.target.closest('.pad-view-scroll')) return;
       e.preventDefault();
     };
     el.addEventListener('touchmove', handler, { passive: false });
@@ -3178,31 +3106,36 @@ body.is-viewer .cog-btn { display: none; }
     }
 
     // ---------- flatten / upload / extract ----------
-    async function flattenPages() {
-      // Renders every non-empty page into a hidden stage; returns
-      // [{ target, b64 }] JPEGs, one per page, tagged with its form field.
+    // Renders ONE non-empty page into a hidden stage; returns { target, b64 }
+    // or null for an empty page.
+    async function flattenPage(page) {
+      if (!page.photos.length && !page.strokes.length) return null;
       const holder = document.createElement('div');
       holder.style.cssText = 'position:fixed;left:-99999px;top:0;';
       document.body.appendChild(holder);
-      const out = [];
       try {
-        for (const page of state.pages) {
-          if (!page.photos.length && !page.strokes.length) continue;
-          ensurePageDims(page);
-          const off = new Konva.Stage({ container: holder, width: page.w, height: page.h });
-          await renderPage(off, page, { interactive: false });
-          // white paper behind the ink (JPEG has no alpha)
-          const bg = new Konva.Layer({ listening: false });
-          bg.add(new Konva.Rect({ x: 0, y: 0, width: page.w, height: page.h, fill: '#ffffff' }));
-          off.add(bg);
-          bg.moveToBottom();
-          off.batchDraw();
-          const dataURL = off.toDataURL({ mimeType: 'image/jpeg', quality: 0.8, pixelRatio: EXPORT_EDGE / Math.max(page.w, page.h) });
-          out.push({ target: page.target, b64: dataURL.slice(dataURL.indexOf(',') + 1) });
-          off.destroy();
-        }
+        ensurePageDims(page);
+        const off = new Konva.Stage({ container: holder, width: page.w, height: page.h });
+        await renderPage(off, page, { interactive: false });
+        // white paper behind the ink (JPEG has no alpha)
+        const bg = new Konva.Layer({ listening: false });
+        bg.add(new Konva.Rect({ x: 0, y: 0, width: page.w, height: page.h, fill: '#ffffff' }));
+        off.add(bg);
+        bg.moveToBottom();
+        off.batchDraw();
+        const dataURL = off.toDataURL({ mimeType: 'image/jpeg', quality: 0.8, pixelRatio: EXPORT_EDGE / Math.max(page.w, page.h) });
+        off.destroy();
+        return { target: page.target, b64: dataURL.slice(dataURL.indexOf(',') + 1) };
       } finally {
         holder.remove();
+      }
+    }
+
+    async function flattenPages() {
+      const out = [];
+      for (const page of state.pages) {
+        const flat = await flattenPage(page);
+        if (flat) out.push(flat);
       }
       return out;
     }
@@ -3276,81 +3209,117 @@ body.is-viewer .cog-btn { display: none; }
       catch (e) { return await attempt(); }        // one silent retry per page
     }
 
+    /* ---------- auto extract + apply (v0.55) ----------
+       The pad no longer waits for a button: whenever the observer leaves a
+       page (page switch, Done), any page whose content changed is transcribed
+       in the background and the text is written into that field's textarea as
+       soon as it arrives. Per page we remember:
+         xh/xt = content hash + text of the last EXTRACTION (the cache)
+         ah/at = content hash + text last APPLIED to the field
+       Re-extraction of an edited page REPLACES its previously inserted block
+       (if still present verbatim) instead of appending a duplicate. All of it
+       persists in the draft, so nothing re-runs after a reload. */
+    const inflight = new Map();                    // page → running job
+
+    function pageHash(p) {
+      // photo transforms are part of the hash (coarsely) — repositioning can
+      // reveal previously covered content, which must trigger a re-read
+      return p.strokes.map(s => s.id).join(',') + '|' + p.photos.map(ph =>
+        ph.id + ':' + Math.round(ph.x / 40) + ',' + Math.round(ph.y / 40) + ',' +
+        Math.round((ph.scaleX || 1) * 10) + ',' + Math.round((ph.rotation || 0) / 15)
+      ).join(',');
+    }
+
+    function applyTextToField(page, hash, text, quiet) {
+      const field = FORM.querySelector('[name="' + page.target + '"]');
+      if (!field) return;
+      if (text) {
+        const prev = String(page.at || '');
+        if (prev && field.value.indexOf(prev) > -1) {
+          field.value = field.value.replace(prev, text);   // update, don't duplicate
+        } else {
+          field.value = field.value.trim() ? field.value.trim() + '\n\n' + text : text;
+        }
+        field.dispatchEvent(new Event('input', { bubbles: true }));
+        if (!quiet) showToast('Pad notes added to ' + TARGET_LABELS[page.target] + '.', 'success');
+      }
+      page.ah = hash;                              // blank/unreadable pages count as done
+      page.at = text;
+      scheduleDraftSave();
+    }
+
+    // Extract one page (if its content changed) and put the text in its field.
+    // Silent on failure — the next trigger (or the submit backstop) retries.
+    function extractAndApply(page, quiet) {
+      if (!page.photos.length && !page.strokes.length) return Promise.resolve();
+      const h = pageHash(page);
+      if (page.ah === h) return Promise.resolve();           // already in the form
+      if (inflight.has(page)) return inflight.get(page);
+      const job = (async () => {
+        let text;
+        if (page.xh === h && typeof page.xt === 'string') {
+          text = page.xt;                                    // cached transcription
+        } else {
+          const flat = await flattenPage(page);
+          if (!flat) return;
+          const items = await extractPage(flat);
+          if (pageHash(page) !== h) return;                  // page changed mid-flight
+          text = items.map(it => String(it.text || '').trim()).filter(Boolean).join('\n');
+          page.xh = h;
+          page.xt = text;
+          scheduleDraftSave();
+        }
+        if (state.pages.indexOf(page) < 0) return;           // pad was reset mid-flight
+        applyTextToField(page, h, text, quiet);
+      })();
+      inflight.set(page, job.finally(() => inflight.delete(page)));
+      return inflight.get(page);
+    }
+
+    // Background trigger — never surfaces a failure.
+    function extractAndApplySilently(page) {
+      extractAndApply(page, false).catch(() => {});
+    }
+
+    // Submit backstop: everything still un-applied gets extracted + applied
+    // now, capped so a submission is never held hostage (the pad images upload
+    // regardless, so nothing is lost even on total failure).
+    async function applyPendingToForm(capMs) {
+      if (!libsOk || !padHasContent()) return;
+      try {
+        await Promise.race([
+          Promise.allSettled(state.pages.map(p => extractAndApply(p, true))),
+          new Promise(r => setTimeout(r, capMs || 20000))
+        ]);
+      } catch (e) {}
+    }
+
+    // Manual "do it now" button — same pipeline, with progress + a summary.
     async function runExtract() {
       const btn = document.getElementById('pad-extract');
       const label = document.getElementById('pad-extract-label');
       if (!padHasContent()) { showToast('The pad is empty — add a photo or some notes first.', ''); return; }
+      const pending = state.pages.filter(p => (p.photos.length || p.strokes.length) && p.ah !== pageHash(p));
+      if (!pending.length) { showToast('Pad notes are already in the form.', 'success'); return; }
       btn.disabled = true;
       label.textContent = 'Reading pad…';
       try {
-        const pages = await flattenPages();
         let done = 0;
-        const settle = await Promise.allSettled(pages.map(async page => {
-          const items = await extractPage(page);
+        const settle = await Promise.allSettled(pending.map(async page => {
+          await extractAndApply(page, true);
           done++;
-          label.textContent = 'Reading pad… ' + done + ' / ' + pages.length;
-          return items;
+          label.textContent = 'Reading pad… ' + done + ' / ' + pending.length;
         }));
-        const items = [];
-        settle.forEach(s => { if (s.status === 'fulfilled') items.push.apply(items, s.value); });
-        if (!items.length) {
-          const anyFailed = settle.some(s => s.status === 'rejected');
-          showToast(anyFailed ? 'Could not read the pad — check the connection and try again.'
-                              : 'No handwriting found on the pad.', anyFailed ? 'error' : '');
-          return;
+        const failed = settle.filter(s => s.status === 'rejected').length;
+        if (failed) {
+          showToast('Could not read part of the pad — check the connection and try again.', 'error');
+        } else {
+          const added = pending.some(p => p.at);
+          showToast(added ? 'Pad notes added to the form.' : 'No handwriting found on the pad.', added ? 'success' : '');
         }
-        openReview(items);
       } finally {
         btn.disabled = false;
         label.textContent = 'Extract to form';
-      }
-    }
-
-    // ---------- review + apply ----------
-    function openReview(items) {
-      const groups = {};
-      items.forEach(it => {
-        (groups[it.target] = groups[it.target] || []).push(String(it.text || '').trim());
-      });
-      const host = document.getElementById('pad-review-groups');
-      host.innerHTML = '';
-      Object.keys(TARGET_LABELS).forEach(target => {
-        if (!groups[target] || !groups[target].length) return;
-        const wrap = document.createElement('div');
-        wrap.className = 'pad-review-group';
-        wrap.dataset.target = target;
-        const head = document.createElement('label');
-        head.className = 'head';
-        const cb = document.createElement('input');
-        cb.type = 'checkbox'; cb.checked = true;
-        cb.addEventListener('change', () => wrap.classList.toggle('is-off', !cb.checked));
-        head.appendChild(cb);
-        head.appendChild(document.createTextNode(TARGET_LABELS[target]));
-        const ta = document.createElement('textarea');
-        ta.value = groups[target].join('\n');
-        wrap.appendChild(head);
-        wrap.appendChild(ta);
-        host.appendChild(wrap);
-      });
-      document.getElementById('pad-review').classList.add('open');
-    }
-
-    function applyReview() {
-      let applied = 0;
-      document.querySelectorAll('#pad-review-groups .pad-review-group').forEach(wrap => {
-        const cb = wrap.querySelector('input[type="checkbox"]');
-        const text = wrap.querySelector('textarea').value.trim();
-        if (!cb.checked || !text) return;
-        const field = FORM.querySelector('[name="' + wrap.dataset.target + '"]');
-        if (!field) return;
-        field.value = field.value.trim() ? field.value.trim() + '\n\n' + text : text;
-        field.dispatchEvent(new Event('input', { bubbles: true }));
-        applied++;
-      });
-      document.getElementById('pad-review').classList.remove('open');
-      if (applied) {
-        closePad();
-        showToast('Pad notes added to the form.', 'success');
       }
     }
 
@@ -3375,8 +3344,10 @@ body.is-viewer .cog-btn { display: none; }
     }
     function closePad() {
       document.getElementById('pad-modal').classList.remove('open');
-      document.getElementById('pad-review').classList.remove('open');
       opened = false;
+      // v0.55: transcribe anything new in the background; text lands in the
+      // fields as soon as it's ready (usually before the observer notices).
+      state.pages.forEach(extractAndApplySilently);
       refreshEviState();                           // v0.53: reflect any new pad content
       idbPut(state);                               // flush the draft on the way out
     }
@@ -3453,13 +3424,20 @@ body.is-viewer .cog-btn { display: none; }
       });
 
       document.getElementById('pad-page-prev').addEventListener('click', () => {
-        if (state.cur > 0) { state.cur--; scheduleDraftSave(); showPage(); }
+        if (state.cur > 0) {
+          extractAndApplySilently(curPage());      // v0.55: transcribe the page being left
+          state.cur--; scheduleDraftSave(); showPage();
+        }
       });
       document.getElementById('pad-page-next').addEventListener('click', () => {
-        if (state.cur < state.pages.length - 1) { state.cur++; scheduleDraftSave(); showPage(); }
+        if (state.cur < state.pages.length - 1) {
+          extractAndApplySilently(curPage());
+          state.cur++; scheduleDraftSave(); showPage();
+        }
       });
       document.getElementById('pad-page-add').addEventListener('click', () => {
         // overflow page for the CURRENT field, inserted after its last page
+        extractAndApplySilently(curPage());
         const target = curPage().target;
         let at = state.cur;
         while (at + 1 < state.pages.length && state.pages[at + 1].target === target) at++;
@@ -3470,10 +3448,6 @@ body.is-viewer .cog-btn { display: none; }
       });
 
       document.getElementById('pad-extract').addEventListener('click', runExtract);
-      document.getElementById('pad-review-back').addEventListener('click', () => {
-        document.getElementById('pad-review').classList.remove('open');
-      });
-      document.getElementById('pad-review-apply').addEventListener('click', applyReview);
 
       document.addEventListener('visibilitychange', () => {
         if (document.visibilityState === 'hidden' && padHasContent()) idbPut(state);
@@ -3504,7 +3478,7 @@ body.is-viewer .cog-btn { display: none; }
 
     init();
 
-    return { commitForSubmit, reset, hasContent: padHasContent };
+    return { commitForSubmit, applyPendingToForm, reset, hasContent: padHasContent };
   })();
 
   /* === Cloud submit + lock + closed-record viewer ================== */
@@ -3618,6 +3592,19 @@ body.is-viewer .cog-btn { display: none; }
 
     if (!confirm('Save and lock this R3 evidence form? Cannot be edited after.')) return;
 
+    const prevText = btn.textContent;
+
+    // v0.55: BACKSTOP — any pad handwriting not yet in its text field is
+    // extracted and applied now, BEFORE the payload is built (downstream AI /
+    // reports read the fields; a locked form must never hold unextracted ink).
+    // Usually instant (background extraction pre-caches); capped at 20s and a
+    // total failure still submits — the pad images upload regardless.
+    if (EvidencePad.hasContent()) {
+      btn.disabled = true;
+      btn.textContent = 'Reading pad…';
+      await EvidencePad.applyPendingToForm(20000);
+    }
+
     // Build payload — preserves every input value, including blank radios as "".
     const data = {};
     FORM.querySelectorAll('input, textarea, select').forEach(el => {
@@ -3635,7 +3622,6 @@ body.is-viewer .cog-btn { display: none; }
     translateOpaqueTomSelectsToText(data);
 
     btn.disabled = true;
-    const prevText = btn.textContent;
     btn.textContent = 'Saving…';
 
     // v0.50: Evidence Pad — flatten + upload the pad (if any) to the private
