@@ -1490,15 +1490,6 @@ textarea.long-text:focus { border-color: var(--rate-success); }
   user-select: none;
 }
 
-/* v0.52: full-screen toggle (browser Fullscreen API) in the pad footer.
-   Hidden when the platform doesn't support it (e.g. iPhone Safari). */
-.pad-foot { position: relative; }
-.pad-fs {
-  position: absolute;
-  right: 0.9rem;
-  top: 50%;
-  transform: translateY(-50%);
-}
 
 /* v0.51: per-field pad launchers — a small pen pill beside each extractable
    section title (Focus/Context, Observer Notes, both Summaries). Opens the
@@ -1532,16 +1523,6 @@ body.is-viewer .pad-field-btn { display: none !important; }
 .pad-field-btn.has-evi,
 .float-link.pad.has-evi { border-color: var(--rate-success); color: var(--rate-success); }
 .pad-field-btn.has-evi:hover { color: var(--rate-success-deep); }
-
-/* v0.53: while the pad (or the pad-pages lightbox) is open the form is frozen —
-   no scroll-through, nothing moves behind. top is set inline to -scrollY. */
-body.pad-lock {
-  position: fixed;
-  left: 0;
-  right: 0;
-  width: 100%;
-  overflow: hidden;
-}
 
 /* v0.53: record-view attachment pill — shown ONLY when a locked record carries
    pad pages for that section (stays visible in the teacher viewer, unlike the
@@ -1582,6 +1563,7 @@ body.pad-lock {
   min-height: 0;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
   padding: 1rem clamp(0.8rem, 4vw, 2.4rem) calc(1.4rem + env(safe-area-inset-bottom, 0px));
 }
 .pad-view-scroll img {
@@ -1627,6 +1609,7 @@ body.pad-lock {
   min-height: 0;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
   padding: 1rem clamp(0.8rem, 4vw, 2.4rem) 1.4rem;
 }
 .pad-review-intro {
@@ -2105,12 +2088,6 @@ body.is-viewer .cog-btn { display: none; }
       </svg>
       <span id="pad-extract-label">Extract to form</span>
     </button>
-    <button class="pad-tool pad-fs" type="button" id="pad-fs" title="Full screen (more writing space)" aria-label="Toggle full screen">
-      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M16 3h3a2 2 0 0 1 2 2v3"/>
-        <path d="M8 21H5a2 2 0 0 1-2-2v-3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/>
-      </svg>
-    </button>
   </div>
 
   <input type="file" id="pad-cam-input" accept="image/jpeg,image/png" capture="environment" hidden>
@@ -2489,7 +2466,7 @@ body.is-viewer .cog-btn { display: none; }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.53</a></span>
+    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.54</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -2776,20 +2753,17 @@ body.is-viewer .cog-btn { display: none; }
   // touch-action:none + a touchmove preventDefault (the known workaround;
   // there is no official web opt-out). Ink accepts pen + mouse pointers
   // only; fingers move photos in Select mode and never draw (palm safety).
-  /* v0.53: freeze the form while a full-screen surface (pad / pad lightbox) is
-     up — iOS otherwise chains touch scrolling through to the page behind. */
-  let scrollLockY = 0;
-  function lockFormScroll() {
-    if (document.body.classList.contains('pad-lock')) return;
-    scrollLockY = window.scrollY || window.pageYOffset || 0;
-    document.body.style.top = -scrollLockY + 'px';
-    document.body.classList.add('pad-lock');
-  }
-  function unlockFormScroll() {
-    if (!document.body.classList.contains('pad-lock')) return;
-    document.body.classList.remove('pad-lock');
-    document.body.style.top = '';
-    window.scrollTo(0, scrollLockY);
+  /* v0.54: stop touch/wheel scrolling on a full-screen surface from chaining
+     through to the form behind it. Never repositions the body (v0.53's
+     position-fixed lock offset the whole pad on iPad Safari); it only swallows
+     scroll gestures that don't belong to one of the pad's own scroll areas. */
+  function containScroll(el) {
+    const handler = function (e) {
+      if (e.target && e.target.closest && e.target.closest('.pad-review-scroll, .pad-view-scroll')) return;
+      e.preventDefault();
+    };
+    el.addEventListener('touchmove', handler, { passive: false });
+    el.addEventListener('wheel', handler, { passive: false });
   }
 
   const EvidencePad = (function () {
@@ -3383,7 +3357,6 @@ body.is-viewer .cog-btn { display: none; }
     // ---------- open / close / reset ----------
     async function openPad() {
       if (!libsOk) return;
-      lockFormScroll();                            // v0.53: the pad is its own screen
       document.getElementById('pad-modal').classList.add('open');
       opened = true;
       if (!stage) {
@@ -3404,15 +3377,7 @@ body.is-viewer .cog-btn { display: none; }
       document.getElementById('pad-modal').classList.remove('open');
       document.getElementById('pad-review').classList.remove('open');
       opened = false;
-      unlockFormScroll();
       refreshEviState();                           // v0.53: reflect any new pad content
-      // leaving the pad also leaves full screen (back to the normal form view)
-      try {
-        if (document.fullscreenElement || document.webkitFullscreenElement) {
-          const p = (document.exitFullscreen || document.webkitExitFullscreen).call(document);
-          if (p && p.catch) p.catch(() => {});
-        }
-      } catch (e) {}
       idbPut(state);                               // flush the draft on the way out
     }
 
@@ -3440,32 +3405,7 @@ body.is-viewer .cog-btn { display: none; }
       openBtn.addEventListener('click', openPad);
       fieldBtns.forEach(b => b.addEventListener('click', () => openPadAt(b.dataset.padTarget)));
       document.getElementById('pad-done').addEventListener('click', closePad);
-
-      // Full-screen toggle (Fullscreen API; iPad Safari supports it, iPhone
-      // doesn't — hide the button where unsupported). Re-fit on change so the
-      // page grabs the extra space.
-      const fsBtn = document.getElementById('pad-fs');
-      const fsRoot = document.documentElement;
-      if (!(fsRoot.requestFullscreen || fsRoot.webkitRequestFullscreen)) {
-        fsBtn.hidden = true;
-      } else {
-        const fsEl = () => document.fullscreenElement || document.webkitFullscreenElement;
-        fsBtn.addEventListener('click', () => {
-          try {
-            // both calls may return a promise that rejects when the platform
-            // says no — swallow it (never a visible error, hard rule 12)
-            const p = fsEl()
-              ? (document.exitFullscreen || document.webkitExitFullscreen).call(document)
-              : (fsRoot.requestFullscreen || fsRoot.webkitRequestFullscreen).call(fsRoot);
-            if (p && p.catch) p.catch(() => {});
-          } catch (e) {}
-        });
-        ['fullscreenchange', 'webkitfullscreenchange'].forEach(ev =>
-          document.addEventListener(ev, () => {
-            fsBtn.classList.toggle('is-active', !!fsEl());
-            if (opened && stage) { sizeStage(); stage.batchDraw(); }
-          }));
-      }
+      containScroll(document.getElementById('pad-modal'));   // v0.54: no scroll-through
 
       document.getElementById('pad-cam-btn').addEventListener('click', () => document.getElementById('pad-cam-input').click());
       document.getElementById('pad-lib-btn').addEventListener('click', () => document.getElementById('pad-lib-input').click());
@@ -3882,7 +3822,6 @@ body.is-viewer .cog-btn { display: none; }
     document.getElementById('pad-view-title').innerHTML =
       'Evidence <em>Pad</em> · ' + (PAD_VIEW_LABELS[target] || 'Pages');
     scroll.innerHTML = '<div class="pad-view-loading">Loading the pad pages…</div>';
-    lockFormScroll();
     document.getElementById('pad-view').classList.add('open');
     try {
       const uris = await Promise.all(files.map(fetchPadImage));
@@ -3926,13 +3865,13 @@ body.is-viewer .cog-btn { display: none; }
     padViewSeq++;
     document.getElementById('pad-view').classList.remove('open');
     document.getElementById('pad-view-scroll').innerHTML = '';
-    unlockFormScroll();
   }
 
   document.querySelectorAll('.pad-attach').forEach(function(b) {
     b.addEventListener('click', function() { openPadView(b.dataset.padTarget); });
   });
   document.getElementById('pad-view-close').addEventListener('click', closePadView);
+  containScroll(document.getElementById('pad-view'));        // v0.54: no scroll-through
 
   // On load: if URL has ?id=AIS-R3-...&token=..., fetch & render in read-only mode.
   // Token is required by the backend for any record view (v0.29 secure-by-link).
