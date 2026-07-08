@@ -496,6 +496,9 @@ body {
   z-index: 90;
   display: flex;
   gap: clamp(0.4rem, 0.7vw, 0.55rem);
+  /* v0.56: --vv-shift pins the bar to the VISIBLE bottom while iPad Chrome's
+     collapsing toolbar moves the layout-viewport bottom mid-scroll. */
+  transform: translateY(var(--vv-shift, 0px));
 }
 .action-btn {
   cursor: pointer;
@@ -695,12 +698,13 @@ body.is-locked .action-btn.new { display: inline-flex; }
   transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
   -webkit-backdrop-filter: blur(6px);
           backdrop-filter: blur(6px);
+  transform: translateY(var(--vv-shift, 0px));   /* v0.56: visible-bottom pin */
 }
 .theme-toggle:hover {
   background: var(--surface-strong);
   color: var(--paper);
   border-color: var(--rate-success);
-  transform: scale(1.06);
+  transform: translateY(var(--vv-shift, 0px)) scale(1.06);
 }
 .theme-toggle .icon { width: 1.05em; height: 1.05em; display: block; }
 .theme-toggle .icon-sun { display: block; }
@@ -1299,7 +1303,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
     background: var(--surface-mid);
     color: var(--paper-dim);
     border-color: var(--rule);
-    transform: none;
+    transform: translateY(var(--vv-shift, 0px));   /* v0.56: keep the pin on touch */
   }
   .su-toggle label:hover {
     border-color: var(--rule);
@@ -1628,12 +1632,13 @@ body.is-viewer #btn-reset { display: none; }
   transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
   -webkit-backdrop-filter: blur(6px);
           backdrop-filter: blur(6px);
+  transform: translateY(var(--vv-shift, 0px));   /* v0.56: visible-bottom pin */
 }
 .cog-btn:hover {
   background: var(--surface-strong);
   color: var(--paper);
   border-color: var(--rate-success);
-  transform: scale(1.06);
+  transform: translateY(var(--vv-shift, 0px)) scale(1.06);
 }
 .cog-btn .icon { width: 1.05em; height: 1.05em; display: block; }
 body.is-viewer .cog-btn { display: none; }
@@ -2394,7 +2399,7 @@ body.is-viewer .cog-btn { display: none; }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.55</a></span>
+    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.56</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -2438,6 +2443,31 @@ body.is-viewer .cog-btn { display: none; }
         applyTheme(next, true);
       });
     }
+  })();
+
+  /* === Visible-bottom pin (v0.56) =================================
+     iPad Chrome's collapsing bottom toolbar moves the layout-viewport
+     bottom mid-scroll, so the bottom-fixed controls (Reset / Save & Lock,
+     cog, theme) ride up the page. visualViewport reports the REAL visible
+     box; --vv-shift nudges the controls back onto it. Gaps > 200px mean
+     the on-screen keyboard — leave the controls alone then (they would
+     float mid-screen above it). Enhancement only: without visualViewport
+     the var stays 0px and everything behaves exactly as before. */
+  (function pinBottomControls() {
+    const vv = window.visualViewport;
+    if (!vv) return;
+    let raf = 0;
+    function apply() {
+      raf = 0;
+      let gap = window.innerHeight - vv.height - vv.offsetTop;
+      if (!isFinite(gap) || gap < 0 || gap > 200) gap = 0;
+      document.documentElement.style.setProperty('--vv-shift', (-Math.round(gap)) + 'px');
+    }
+    function queue() { if (!raf) raf = requestAnimationFrame(apply); }
+    vv.addEventListener('resize', queue);
+    vv.addEventListener('scroll', queue);
+    window.addEventListener('scroll', queue, { passive: true });
+    apply();
   })();
 
   /* === S/U toggle: click selected radio again to clear ============= */
@@ -2731,6 +2761,7 @@ body.is-viewer .cog-btn { display: none; }
     const urlCache = new Map();                   // photo id -> object URL
     let saveTimer = null;
     let opened = false;
+    let padScrollY = 0;                           // v0.56: form scroll spot to restore on close
 
     function rid() {
       const b = new Uint8Array(16);
@@ -3326,7 +3357,14 @@ body.is-viewer .cog-btn { display: none; }
     // ---------- open / close / reset ----------
     async function openPad() {
       if (!libsOk) return;
+      // v0.56: register the fixed overlay at scroll origin. Opening it while the
+      // page is scrolled leaves iPad Safari/Chrome compositing the overlay short
+      // (form shows through below) and hit-testing its buttons LOWER than they
+      // paint. The jump is invisible (the pad covers the screen before paint);
+      // closePad restores the exact spot before the form reappears.
+      padScrollY = window.scrollY || document.documentElement.scrollTop || 0;
       document.getElementById('pad-modal').classList.add('open');
+      window.scrollTo(0, 0);
       opened = true;
       if (!stage) {
         stage = new Konva.Stage({ container: 'pad-stage', width: 100, height: 100 });
@@ -3343,6 +3381,7 @@ body.is-viewer .cog-btn { display: none; }
       await openPad();
     }
     function closePad() {
+      window.scrollTo(0, padScrollY);            // v0.56: restore BEFORE the pad hides (same paint)
       document.getElementById('pad-modal').classList.remove('open');
       opened = false;
       // v0.55: transcribe anything new in the background; text lands in the
@@ -3781,6 +3820,7 @@ body.is-viewer .cog-btn { display: none; }
   let padViewToken = '';
   let padViewFiles = {};                   // target → [names]
   let padViewSeq = 0;                      // invalidates stale async loads
+  let padViewScrollY = 0;                  // v0.56: page scroll spot to restore on close
 
   function initPadAttachments(files, token) {
     if (!files || !files.length || !token) return;
@@ -3808,7 +3848,11 @@ body.is-viewer .cog-btn { display: none; }
     document.getElementById('pad-view-title').innerHTML =
       'Evidence <em>Pad</em> · ' + (PAD_VIEW_LABELS[target] || 'Pages');
     scroll.innerHTML = '<div class="pad-view-loading">Loading the pad pages…</div>';
+    // v0.56: same scroll-origin trick as openPad — a fixed overlay opened on a
+    // scrolled page renders offset on iPad (short paint + taps landing low).
+    padViewScrollY = window.scrollY || document.documentElement.scrollTop || 0;
     document.getElementById('pad-view').classList.add('open');
+    window.scrollTo(0, 0);
     try {
       const uris = await Promise.all(files.map(fetchPadImage));
       if (seq !== padViewSeq) return;                    // superseded / closed
@@ -3849,6 +3893,7 @@ body.is-viewer .cog-btn { display: none; }
 
   function closePadView() {
     padViewSeq++;
+    window.scrollTo(0, padViewScrollY);          // v0.56: restore BEFORE the lightbox hides
     document.getElementById('pad-view').classList.remove('open');
     document.getElementById('pad-view-scroll').innerHTML = '';
   }
