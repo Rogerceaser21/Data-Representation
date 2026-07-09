@@ -122,4 +122,49 @@ Implication for the fix: S1 is attacked most robustly by REMOVING the ingredient
 
 ---
 
-(Task 5 appends below.)
+## Task 5 · Pad architecture: in-document swap vs separate page vs hardened overlay (S3/N1)
+
+Evaluated against the actual code (line refs at 8f02836) by a Sonnet 5 agent (code reading + web checks).
+
+### (a) In-document swap (form hidden while pad open)
+
+- Hide `#r3-form` (2040), `.action-bar` (2410), theme toggle (1862), admin cog (1893) while `.pad-modal.open`; pad stays `position:fixed` unchanged; document scroll extent collapses to ~viewport, so Chrome gets NO scroll deltas (toolbar stable) and nothing can scroll under the pad.
+- Verified against the code: Tom Select instances survive display:none (JS state + DOM persist; close any open dropdown first, `dropdownParent:'body'` at 3996); autosave unaffected (hidden fields get no events); Konva sizing reads only the pad's own `#pad-stage-wrap` (2955-2975), untouched; `extractAndApplySilently` writes `field.value` + dispatches events, works on hidden elements; the only two getBoundingClientRect calls are the Konva container (2978, 2987); photo inputs live inside the pad (2026-2027).
+- REQUIRED extra: `body { min-height:100vh }` (105) is NOT scoped to pad state; hiding children does not collapse it. Needs `body.pad-open { min-height:0; padding:0 }` (or a global `svh/dvh` swap) or the architecture silently fails.
+- Scroll restore: while the pad is open nothing can change scrollY (no scrollable extent, no text inputs in the pad), so `scrollTo(0, savedY)` on close restores against an identical layout = strongest restore guarantee of the three.
+
+### (b) True separate page/URL
+
+- BLOCKER 1: `applyTextToField`/`extractAndApply`/`commitForSubmit` (3264-3326, 3215) write into the same-document FORM; a separate page needs a cross-page reconciliation layer (BroadcastChannel or IndexedDB handoff) rebuilt and kept correct against the submit backstop. ~1200 lines of pad module would fork (2700-3900).
+- BLOCKER 2 (deciding): full page navigation mid-observation is network-dependent; a WiFi hiccup shows Chrome's native error page, unsuppressable = direct hard rule 12 violation. All existing resilience patterns are within-page.
+- Build: third artifact in `encrypt.sh`; StatiCrypt "remember me" carryover across two separately encrypted files is UNVERIFIED (localStorage keys are origin-scoped but hash is per-payload).
+- IndexedDB `ais-r3-pad-v2` (2730) IS origin-shared, so state sharing is possible in principle; everything else makes it the worst option.
+
+### (c) Hardened overlay (keep fixed overlay + research fixes)
+
+- Smallest change: toggle `html,body{overflow:hidden}` while pad open (NOT the banned v0.54 position-fixed body lock; the ban comment at 2714-2717 covers repositioning, not overflow) + swap body `100vh` -> `svh/dvh`.
+- Residual: WebKit 240860 defeats body overflow:hidden when visual viewport < layout viewport (keyboard up); pad has no text inputs so co-occurrence is unlikely but unmeasured. The scrollTo save/restore stays exposed to pre-existing stale-inset state (S1 risk window unchanged vs v0.56). Form content still exists underneath.
+
+### Comparison table
+
+| Criterion | (a) swap | (b) separate page | (c) hardened overlay |
+|---|---|---|---|
+| Kills S3 scroll-under | yes | yes | partial (240860 caveat) |
+| Kills N1 toolbar-cover (scroll-driven trigger) | mostly | best in theory | mostly |
+| Kills S1 contribution | yes | yes (new nav unknowns) | partial |
+| No-Fullscreen / no-body-repositioning bans | yes | yes | yes |
+| Exact scroll restore | high confidence | medium (browser nav restore) | medium (as today) |
+| Hard rule 12 | low risk | ELEVATED (native nav error page) | low risk |
+| StatiCrypt build | none | third artifact + unverified gate carryover | none |
+| Konva/Pencil | none | fork ~1200 lines | none |
+| Implementation size | small-medium (openPad/closePad 3358-3392 + body.pad-open CSS + hide 4 elements) | large | small |
+
+### Recommendation
+
+**Build (a) in-document swap**, with (c)'s `100svh/dvh` body sizing folded in as the S1 baseline fix and (c) as fallback if (a) hits an unforeseen cost. (b) solves nothing (a) does not, at much higher cost and a hard-rule-12 violation.
+
+Top 3 unknowns only an on-device test resolves: (1) does content-collapse stop Chrome toolbar re-expansion on NON-scroll triggers (edge swipe, focus); (2) can stale keyboard inset from typing seconds BEFORE openPad still corrupt the restore (argues for blur + settle-delay in openPad); (3) TomSelect dropdown position quirks across display:none toggles in live WebKit.
+
+---
+
+(End of research findings; synthesis in `.planning/2026-07-09-ipad-chrome-research-synthesis.md`.)
