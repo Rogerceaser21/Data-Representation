@@ -69,4 +69,4 @@ Serves AIS-Data-Dashboard task `09018a59`. Doc-only branch `research/ipad-chrome
 
 ## Appended findings
 
-(Research tasks 2-5 append their findings below this line.)
+Research findings live in the companion doc `.planning/2026-07-09-ipad-chrome-research-findings.md` (one section per research task). Task 2 (Chrome-on-iPadOS viewport model) landed 2026-07-09: root architecture = Chrome iOS must coarsely resize its WKWebView on toolbar changes (no per-frame hooks, Bokand explainer), `min-height:100vh` reserves the LARGEST viewport so the body always overflows when the toolbar is expanded, `interactive-widget` meta is unsupported on iOS WebKit, and iOS 26 has a live `visualViewport.offsetTop` stuck-offset regression (WebKit 297779) that persists in Chrome. Direct Chrome-vs-Safari answer in that doc.
