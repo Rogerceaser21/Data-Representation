@@ -103,6 +103,10 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   min-height: 100vh;
+  min-height: 100svh;  /* v0.57: vh = LARGEST viewport on iPad Chrome, which
+                          guarantees scrollable overflow while the toolbar is
+                          expanded; svh sizes to the always-visible minimum.
+                          Older WebKit ignores this line and keeps 100vh. */
   padding: clamp(1rem, 2.5vw, 2rem) clamp(0.6rem, 2vw, 1.5rem);
   padding-bottom: clamp(5rem, 8vw, 7rem);
   transition: background 0.3s ease, color 0.3s ease;
@@ -2481,6 +2485,27 @@ body.is-viewer .cog-btn { display: none; }
     window.addEventListener('scroll', queue, { passive: true });
     apply();
   })();
+
+  /* === Keyboard-dismiss re-settle (v0.57) ==========================
+     WKWebView adds the keyboard height to the scrollable extent ADDITIVELY
+     and cleans it up late/buggily (the "scroll forever into the void" bug on
+     iPad Chrome); on iOS 26 visualViewport can also strand a stuck offset.
+     After the keyboard leaves, a micro-nudge makes the engine re-derive its
+     scroll bookkeeping and the clamp rescues a position stranded past the
+     real content. Enhancement only; skipped while the pad owns the screen. */
+  document.addEventListener('focusout', (e) => {
+    const t = e.target;
+    if (!t || !t.tagName) return;
+    if (t.tagName !== 'TEXTAREA' && t.tagName !== 'INPUT' && t.tagName !== 'SELECT') return;
+    setTimeout(() => {
+      if (document.body.classList.contains('pad-open')) return;
+      const ae = document.activeElement;
+      if (ae && (ae.tagName === 'TEXTAREA' || ae.tagName === 'INPUT' || ae.tagName === 'SELECT')) return; // keyboard still up
+      window.scrollBy(0, -1); window.scrollBy(0, 1);
+      const max = Math.max(0, document.scrollingElement.scrollHeight - window.innerHeight);
+      if (window.scrollY > max) window.scrollTo(0, max);
+    }, 350);
+  });
 
   /* === S/U toggle: click selected radio again to clear ============= */
   document.querySelectorAll('.su-toggle input[type="radio"]').forEach(radio => {
