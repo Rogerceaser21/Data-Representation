@@ -90,4 +90,36 @@ Sources rated: architectural chain = named Chromium engineer + Chromium source h
 
 ---
 
-(Tasks 4-5 append below.)
+## Task 4 · Infinite scroll / stale scroll extent in Chrome iPadOS (S1)
+
+### (a) Known WKWebView stale-extent bugs
+
+- WKWebView subscribes to keyboard notifications and calls private `-[UIScrollView _adjustForAutomaticKeyboardInfo]`, ADDING keyboard height to the existing bottom `contentInset` (additive, not max'd with the toolbar inset) = the scrollable range grows by roughly keyboard height while an input is focused (https://gist.github.com/jamesreggio/d5233dba36b184ba3af3).
+- Dismissal-time cleanup of that inset has a documented buggy history: WebKit 192564 "keyboard dismissal leaves WKWebView content offscreen / space at the bottom of the screen" (fixed 2019 for that instance, same class recurs); fek.io reports the persisted gap does NOT self-heal without reload or a manual contentOffset reset (https://bugs.webkit.org/show_bug.cgi?id=192564, https://fek.io/blog/nasty-scroll-bug-in-the-wk-web-view-in-i-os-12/).
+- `window.scrollTo()` in WKWebView lands at wrong positions depending on `contentInsetAdjustmentBehavior`; regressed repeatedly across iOS versions, still open (https://bugs.webkit.org/show_bug.cgi?id=182710).
+- WKWebView ignores `scrollView.contentInset` when computing its internal layout viewport, so a nonzero inset can inflate the effective scrollable range independent of document height (https://rick38yip.medium.com/wkwebview-weird-spacing-issue-in-ios-13-54a4fc686f72).
+- Cordova/Quasar WKWebView hosts report the same empty-space-at-bottom family, NOT reproducible in Safari itself (https://github.com/apache/cordova-plugin-wkwebview-engine/issues/71, https://github.com/quasarframework/quasar/issues/6695). Chrome iOS is architecturally the same host category.
+
+### (b)+(c) 100vh's role
+
+- `min-height:100vh` (vh = LARGEST viewport) alone produces only a small toolbar-height overhang (tens of px), affecting iOS Chrome too (https://www.bram.us/2020/05/06/100vh-in-safari-on-ios/, https://github.com/gatsbyjs/gatsby/issues/14590). The screen-or-more void needs the (a) inset staleness stacked on top.
+- Switching body to `100svh`/`100dvh` (iOS 15.4+) removes the baseline overhang but likely does NOT alone fix the large void (different layer: CSS sizing vs native UIScrollView inset bookkeeping).
+
+### (e) overscroll-behavior
+
+- Nominally supported since Safari 16 (2022) but documented unreliable on the ROOT scroller in WKWebView browsers; Chrome iOS pull-to-refresh/rubber-band ignores it (https://github.com/ebidel/demos/issues/6). Cannot be the fix for S1.
+
+### Reproduction theory for S1 (numbered; sourced vs hypothesis marked)
+
+1. Form open in Chrome iPad, toolbar expanded; body `min-height:100vh` gives a small permanent overhang [sourced].
+2. Focus a textarea near the form bottom; WKWebView adds keyboard-height bottom contentInset, additively [sourced].
+3. Programmatic `scrollTo(0,0)` (pad open) executes against that inflated inset state; WKWebView scrollTo has documented inset-dependent bookkeeping errors [sourced mechanism, hypothesis for this sequence].
+4. Keyboard dismissed via accessory strip; inset cleanup is the known-buggy path, residual bottom gap persists [sourced class].
+5. `scrollTo(0, savedY)` (pad close) restores against stale bookkeeping; content lands high, the leftover inset/extent below stays scrollable [hypothesis from sourced sub-mechanisms].
+6. Chrome's own toolbar insets stack on top and `overscroll-behavior` cannot clamp the root scroller, so the void persists instead of rubber-banding back [partially sourced].
+
+Implication for the fix: S1 is attacked most robustly by REMOVING the ingredients: no scrollable document behind the pad (kills the programmatic scrollTo-during-inset-transitions), body sized `100svh/dvh` not `100vh`, and avoiding scrollTo while keyboard state is in flux (blur inputs + settle-delay before any programmatic scroll). A corrective micro-scroll after keyboard dismissal (`scrollBy(0,-1);scrollBy(0,1)`) is the documented nudge for stale bookkeeping.
+
+---
+
+(Task 5 appends below.)
