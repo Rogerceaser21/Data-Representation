@@ -103,6 +103,10 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   min-height: 100vh;
+  min-height: 100svh;  /* v0.57: vh = LARGEST viewport on iPad Chrome, which
+                          guarantees scrollable overflow while the toolbar is
+                          expanded; svh sizes to the always-visible minimum.
+                          Older WebKit ignores this line and keeps 100vh. */
   padding: clamp(1rem, 2.5vw, 2rem) clamp(0.6rem, 2vw, 1.5rem);
   padding-bottom: clamp(5rem, 8vw, 7rem);
   transition: background 0.3s ease, color 0.3s ease;
@@ -1378,6 +1382,26 @@ textarea.long-text:focus { border-color: var(--rate-success); }
 }
 .pad-modal.open { display: flex; }
 
+/* v0.57: in-document swap — while the pad (or the pad-view lightbox) is open,
+   the form leaves the layout and the body collapses to the viewport, so the
+   document has NO scrollable extent: nothing can scroll behind the pad, no
+   scroll indicator on the pad edge, and iPad Chrome's toolbar gets no scroll
+   deltas to react to. Display-only: the body is never repositioned (v0.54 ban
+   respected). closePad restores display first, then the exact scroll spot. */
+body.pad-open { min-height: 0; padding: 0; }
+body.pad-open .form-container,
+body.pad-open .action-bar,
+body.pad-open .theme-toggle,
+body.pad-open .cog-btn { display: none; }
+
+/* v0.57: while the keyboard owns the screen there is no correct pin for
+   fixed bottom controls (iOS pans them like static content mid-typing), so
+   they hide entirely and return once the keyboard settles (body.kb-open is
+   set on focusin of keyboard-opening fields, removed 350ms after blur). */
+body.kb-open .action-bar,
+body.kb-open .theme-toggle,
+body.kb-open .cog-btn { opacity: 0; pointer-events: none; }
+
 .pad-top {
   display: flex;
   align-items: center;
@@ -1759,6 +1783,16 @@ body.is-viewer .cog-btn { display: none; }
 .admin-status.ok { color: var(--rate-success); font-weight: 600; }
 .admin-status.bad { color: var(--ais-red); font-weight: 600; }
 .admin-step[hidden] { display: none; }
+/* v0.57: admin-only viewport diagnostics */
+.admin-diag { margin-top: 1.1rem; border-top: 1px solid var(--rule); padding-top: 0.8rem; }
+.admin-diag-title {
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--paper-mid);
+}
+.admin-diag pre {
+  margin: 0.4rem 0 0; font-family: var(--body-font);
+  font-size: 0.78rem; line-height: 1.55; color: var(--paper-dim); white-space: pre-wrap;
+}
 
 /* === Loading overlay (v0.31) ====================================== */
 .form-loading {
@@ -1921,6 +1955,13 @@ body.is-viewer .cog-btn { display: none; }
         <button class="admin-btn" type="button" id="admin-save">Save</button>
       </div>
       <div class="admin-status" id="admin-status-settings"></div>
+      <!-- v0.57: viewport diagnostics — admin-only readout of the numbers the
+           iPad fixes depend on; no published source measures the accessory-
+           strip state, so Igor reads them here on-device. -->
+      <div class="admin-diag">
+        <span class="admin-diag-title">Viewport diagnostics</span>
+        <pre id="admin-diag-out"></pre>
+      </div>
     </div>
   </div>
 </div>
@@ -2399,7 +2440,7 @@ body.is-viewer .cog-btn { display: none; }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.56</a></span>
+    <span>Form · R3 Evidence · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">v0.57</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -2445,30 +2486,70 @@ body.is-viewer .cog-btn { display: none; }
     }
   })();
 
-  /* === Visible-bottom pin (v0.56) =================================
-     iPad Chrome's collapsing bottom toolbar moves the layout-viewport
-     bottom mid-scroll, so the bottom-fixed controls (Reset / Save & Lock,
-     cog, theme) ride up the page. visualViewport reports the REAL visible
-     box; --vv-shift nudges the controls back onto it. Gaps > 200px mean
-     the on-screen keyboard — leave the controls alone then (they would
-     float mid-screen above it). Enhancement only: without visualViewport
+  /* === Visible-bottom pin (v0.56, rebuilt v0.57) ===================
+     iPad Chrome's collapsing toolbar moves the layout-viewport bottom
+     mid-scroll, so the bottom-fixed controls (Reset / Save & Lock, cog,
+     theme) ride up the page. visualViewport reports the REAL visible box;
+     --vv-shift nudges the controls back onto it. v0.57: the reference is
+     documentElement.clientHeight (WKWebView reports stale/bogus innerHeight,
+     WebKit 170595); reads are deferred by a DOUBLE rAF (same-tick reads race
+     stale values, WebKit 237851); the gap is clamped to [0,120] instead of
+     the old >200px keyboard bail — keyboard states now hide the controls
+     entirely (body.kb-open below). Enhancement only: without visualViewport
      the var stays 0px and everything behaves exactly as before. */
   (function pinBottomControls() {
     const vv = window.visualViewport;
     if (!vv) return;
-    let raf = 0;
+    let queued = false;
     function apply() {
-      raf = 0;
-      let gap = window.innerHeight - vv.height - vv.offsetTop;
-      if (!isFinite(gap) || gap < 0 || gap > 200) gap = 0;
+      queued = false;
+      if (document.body.classList.contains('kb-open')) return;   // hidden anyway
+      let gap = document.documentElement.clientHeight - vv.height - vv.offsetTop;
+      if (!isFinite(gap)) gap = 0;
+      gap = Math.min(120, Math.max(0, gap));
       document.documentElement.style.setProperty('--vv-shift', (-Math.round(gap)) + 'px');
     }
-    function queue() { if (!raf) raf = requestAnimationFrame(apply); }
+    function queue() {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(() => requestAnimationFrame(apply));
+    }
     vv.addEventListener('resize', queue);
     vv.addEventListener('scroll', queue);
     window.addEventListener('scroll', queue, { passive: true });
     apply();
   })();
+
+  /* === Keyboard states (v0.57) =====================================
+     While the keyboard owns the screen iOS pans position:fixed elements
+     like static content — there is NO correct pin. So the bottom controls
+     hide entirely (body.kb-open) while a keyboard-opening field is focused.
+     On the way out, WKWebView also strands stale scrollable extent (its
+     keyboard inset is added additively and cleaned up late — the "scroll
+     forever into the void" bug) and iOS 26 can leave a stuck visualViewport
+     offset: after settle, a micro-nudge makes the engine re-derive its
+     scroll bookkeeping and the clamp rescues a stranded position.
+     Enhancement only; rule 12 safe (no UI, no errors). */
+  function opensKeyboard(el) {
+    if (!el || !el.tagName) return false;
+    if (el.tagName === 'TEXTAREA' || el.isContentEditable) return true;
+    if (el.tagName !== 'INPUT') return false;
+    return ['text', 'search', 'email', 'tel', 'url', 'number', 'password', 'date', 'time'].includes(el.type);
+  }
+  document.addEventListener('focusin', (e) => {
+    if (opensKeyboard(e.target)) document.body.classList.add('kb-open');
+  });
+  document.addEventListener('focusout', (e) => {
+    if (!opensKeyboard(e.target)) return;
+    setTimeout(() => {
+      if (opensKeyboard(document.activeElement)) return;         // keyboard still up
+      document.body.classList.remove('kb-open');
+      if (document.body.classList.contains('pad-open')) return;  // pad owns the screen
+      window.scrollBy(0, -1); window.scrollBy(0, 1);
+      const max = Math.max(0, document.scrollingElement.scrollHeight - window.innerHeight);
+      if (window.scrollY > max) window.scrollTo(0, max);
+    }, 350);
+  });
 
   /* === S/U toggle: click selected radio again to clear ============= */
   document.querySelectorAll('.su-toggle input[type="radio"]').forEach(radio => {
@@ -2652,7 +2733,41 @@ body.is-viewer .cog-btn { display: none; }
       modal.classList.add('open');
       setTimeout(() => pwInput.focus(), 40);
     };
-    const close = () => { adminPw = ''; pwInput.value = ''; modal.classList.remove('open'); };
+    const close = () => { adminPw = ''; pwInput.value = ''; modal.classList.remove('open'); diagStop(); };
+
+    // v0.57: viewport diagnostics — live numbers for the states no published
+    // source measures (hardware-keyboard accessory strip etc.). Runs ONLY
+    // while the unlocked settings step is visible; zero cost otherwise.
+    const diagOut = document.getElementById('admin-diag-out');
+    let diagTimer = 0;
+    function diagTick() {
+      if (!diagOut || stepSet.hidden || !modal.classList.contains('open')) return;
+      const vv = window.visualViewport;
+      diagOut.textContent =
+        'innerHeight   ' + window.innerHeight +
+        '\nclientHeight  ' + document.documentElement.clientHeight +
+        '\nvv.height     ' + (vv ? Math.round(vv.height * 10) / 10 : 'n/a') +
+        '\nvv.offsetTop  ' + (vv ? Math.round(vv.offsetTop * 10) / 10 : 'n/a') +
+        '\nscrollHeight  ' + document.scrollingElement.scrollHeight +
+        '\n--vv-shift    ' + (document.documentElement.style.getPropertyValue('--vv-shift') || '0px') +
+        '\nbody classes  ' + (document.body.className || '(none)');
+    }
+    function diagStart() {
+      diagStop();
+      diagTick();
+      diagTimer = setInterval(diagTick, 1000);
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', diagTick);
+        window.visualViewport.addEventListener('scroll', diagTick);
+      }
+    }
+    function diagStop() {
+      if (diagTimer) { clearInterval(diagTimer); diagTimer = 0; }
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', diagTick);
+        window.visualViewport.removeEventListener('scroll', diagTick);
+      }
+    }
 
     cog.addEventListener('click', open);
     document.getElementById('admin-cancel').addEventListener('click', close);
@@ -2673,6 +2788,7 @@ body.is-viewer .cog-btn { display: none; }
         roundIn.value = round || '';
         stepPw.hidden = true; stepSet.hidden = false;
         setStatus(statusPw, '');
+        diagStart();                              // v0.57: live viewport readout
         setTimeout(() => roundIn.focus(), 40);
       } catch (e) {
         setStatus(statusPw, 'Could not reach the server. Try again.', 'bad');
@@ -2722,6 +2838,21 @@ body.is-viewer .cog-btn { display: none; }
     };
     el.addEventListener('touchmove', handler, { passive: false });
     el.addEventListener('wheel', handler, { passive: false });
+  }
+
+  /* v0.57: park the keyboard before any pad open. WKWebView adds the keyboard
+     height to the scrollable extent (additively) and cleans it up late, so any
+     scroll save/jump made while that state is in flux reads corrupted values
+     (the "endless void" bug). Blurring also closes any open Tom Select
+     dropdown (its control input loses focus). No-op when nothing is focused. */
+  async function blurAndSettle() {
+    const ae = document.activeElement;
+    if (ae && (ae.tagName === 'TEXTAREA' || ae.tagName === 'INPUT' ||
+               ae.tagName === 'SELECT' || ae.isContentEditable)) {
+      ae.blur();
+      await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+      await new Promise(r => setTimeout(r, 120));
+    }
   }
 
   const EvidencePad = (function () {
@@ -3357,13 +3488,14 @@ body.is-viewer .cog-btn { display: none; }
     // ---------- open / close / reset ----------
     async function openPad() {
       if (!libsOk) return;
-      // v0.56: register the fixed overlay at scroll origin. Opening it while the
-      // page is scrolled leaves iPad Safari/Chrome compositing the overlay short
-      // (form shows through below) and hit-testing its buttons LOWER than they
-      // paint. The jump is invisible (the pad covers the screen before paint);
-      // closePad restores the exact spot before the form reappears.
+      // v0.57: park the keyboard first (WKWebView inset corruption, see helper),
+      // save the spot, then swap the form OUT of the layout (body.pad-open) so
+      // the document has no scrollable extent while the pad is up. closePad
+      // restores the form and the exact spot before the pad hides.
+      await blurAndSettle();
       padScrollY = window.scrollY || document.documentElement.scrollTop || 0;
       document.getElementById('pad-modal').classList.add('open');
+      document.body.classList.add('pad-open');
       window.scrollTo(0, 0);
       opened = true;
       if (!stage) {
@@ -3381,6 +3513,7 @@ body.is-viewer .cog-btn { display: none; }
       await openPad();
     }
     function closePad() {
+      document.body.classList.remove('pad-open'); // v0.57: form back in layout FIRST
       window.scrollTo(0, padScrollY);            // v0.56: restore BEFORE the pad hides (same paint)
       document.getElementById('pad-modal').classList.remove('open');
       opened = false;
@@ -3848,10 +3981,12 @@ body.is-viewer .cog-btn { display: none; }
     document.getElementById('pad-view-title').innerHTML =
       'Evidence <em>Pad</em> · ' + (PAD_VIEW_LABELS[target] || 'Pages');
     scroll.innerHTML = '<div class="pad-view-loading">Loading the pad pages…</div>';
-    // v0.56: same scroll-origin trick as openPad — a fixed overlay opened on a
-    // scrolled page renders offset on iPad (short paint + taps landing low).
+    // v0.56/v0.57: same swap as openPad — park the keyboard, save the spot,
+    // then take the page out of the layout so nothing can scroll behind.
+    await blurAndSettle();
     padViewScrollY = window.scrollY || document.documentElement.scrollTop || 0;
     document.getElementById('pad-view').classList.add('open');
+    document.body.classList.add('pad-open');
     window.scrollTo(0, 0);
     try {
       const uris = await Promise.all(files.map(fetchPadImage));
@@ -3893,6 +4028,7 @@ body.is-viewer .cog-btn { display: none; }
 
   function closePadView() {
     padViewSeq++;
+    document.body.classList.remove('pad-open');  // v0.57: page back in layout FIRST
     window.scrollTo(0, padViewScrollY);          // v0.56: restore BEFORE the lightbox hides
     document.getElementById('pad-view').classList.remove('open');
     document.getElementById('pad-view-scroll').innerHTML = '';
