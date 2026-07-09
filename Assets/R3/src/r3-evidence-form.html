@@ -1783,6 +1783,16 @@ body.is-viewer .cog-btn { display: none; }
 .admin-status.ok { color: var(--rate-success); font-weight: 600; }
 .admin-status.bad { color: var(--ais-red); font-weight: 600; }
 .admin-step[hidden] { display: none; }
+/* v0.57: admin-only viewport diagnostics */
+.admin-diag { margin-top: 1.1rem; border-top: 1px solid var(--rule); padding-top: 0.8rem; }
+.admin-diag-title {
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--paper-mid);
+}
+.admin-diag pre {
+  margin: 0.4rem 0 0; font-family: var(--body-font);
+  font-size: 0.78rem; line-height: 1.55; color: var(--paper-dim); white-space: pre-wrap;
+}
 
 /* === Loading overlay (v0.31) ====================================== */
 .form-loading {
@@ -1945,6 +1955,13 @@ body.is-viewer .cog-btn { display: none; }
         <button class="admin-btn" type="button" id="admin-save">Save</button>
       </div>
       <div class="admin-status" id="admin-status-settings"></div>
+      <!-- v0.57: viewport diagnostics — admin-only readout of the numbers the
+           iPad fixes depend on; no published source measures the accessory-
+           strip state, so Igor reads them here on-device. -->
+      <div class="admin-diag">
+        <span class="admin-diag-title">Viewport diagnostics</span>
+        <pre id="admin-diag-out"></pre>
+      </div>
     </div>
   </div>
 </div>
@@ -2716,7 +2733,41 @@ body.is-viewer .cog-btn { display: none; }
       modal.classList.add('open');
       setTimeout(() => pwInput.focus(), 40);
     };
-    const close = () => { adminPw = ''; pwInput.value = ''; modal.classList.remove('open'); };
+    const close = () => { adminPw = ''; pwInput.value = ''; modal.classList.remove('open'); diagStop(); };
+
+    // v0.57: viewport diagnostics — live numbers for the states no published
+    // source measures (hardware-keyboard accessory strip etc.). Runs ONLY
+    // while the unlocked settings step is visible; zero cost otherwise.
+    const diagOut = document.getElementById('admin-diag-out');
+    let diagTimer = 0;
+    function diagTick() {
+      if (!diagOut || stepSet.hidden || !modal.classList.contains('open')) return;
+      const vv = window.visualViewport;
+      diagOut.textContent =
+        'innerHeight   ' + window.innerHeight +
+        '\nclientHeight  ' + document.documentElement.clientHeight +
+        '\nvv.height     ' + (vv ? Math.round(vv.height * 10) / 10 : 'n/a') +
+        '\nvv.offsetTop  ' + (vv ? Math.round(vv.offsetTop * 10) / 10 : 'n/a') +
+        '\nscrollHeight  ' + document.scrollingElement.scrollHeight +
+        '\n--vv-shift    ' + (document.documentElement.style.getPropertyValue('--vv-shift') || '0px') +
+        '\nbody classes  ' + (document.body.className || '(none)');
+    }
+    function diagStart() {
+      diagStop();
+      diagTick();
+      diagTimer = setInterval(diagTick, 1000);
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', diagTick);
+        window.visualViewport.addEventListener('scroll', diagTick);
+      }
+    }
+    function diagStop() {
+      if (diagTimer) { clearInterval(diagTimer); diagTimer = 0; }
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', diagTick);
+        window.visualViewport.removeEventListener('scroll', diagTick);
+      }
+    }
 
     cog.addEventListener('click', open);
     document.getElementById('admin-cancel').addEventListener('click', close);
@@ -2737,6 +2788,7 @@ body.is-viewer .cog-btn { display: none; }
         roundIn.value = round || '';
         stepPw.hidden = true; stepSet.hidden = false;
         setStatus(statusPw, '');
+        diagStart();                              // v0.57: live viewport readout
         setTimeout(() => roundIn.focus(), 40);
       } catch (e) {
         setStatus(statusPw, 'Could not reach the server. Try again.', 'bad');
