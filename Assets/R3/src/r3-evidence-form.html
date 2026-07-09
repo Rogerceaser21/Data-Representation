@@ -1378,6 +1378,18 @@ textarea.long-text:focus { border-color: var(--rate-success); }
 }
 .pad-modal.open { display: flex; }
 
+/* v0.57: in-document swap — while the pad (or the pad-view lightbox) is open,
+   the form leaves the layout and the body collapses to the viewport, so the
+   document has NO scrollable extent: nothing can scroll behind the pad, no
+   scroll indicator on the pad edge, and iPad Chrome's toolbar gets no scroll
+   deltas to react to. Display-only: the body is never repositioned (v0.54 ban
+   respected). closePad restores display first, then the exact scroll spot. */
+body.pad-open { min-height: 0; padding: 0; }
+body.pad-open .form-container,
+body.pad-open .action-bar,
+body.pad-open .theme-toggle,
+body.pad-open .cog-btn { display: none; }
+
 .pad-top {
   display: flex;
   align-items: center;
@@ -2724,6 +2736,21 @@ body.is-viewer .cog-btn { display: none; }
     el.addEventListener('wheel', handler, { passive: false });
   }
 
+  /* v0.57: park the keyboard before any pad open. WKWebView adds the keyboard
+     height to the scrollable extent (additively) and cleans it up late, so any
+     scroll save/jump made while that state is in flux reads corrupted values
+     (the "endless void" bug). Blurring also closes any open Tom Select
+     dropdown (its control input loses focus). No-op when nothing is focused. */
+  async function blurAndSettle() {
+    const ae = document.activeElement;
+    if (ae && (ae.tagName === 'TEXTAREA' || ae.tagName === 'INPUT' ||
+               ae.tagName === 'SELECT' || ae.isContentEditable)) {
+      ae.blur();
+      await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+      await new Promise(r => setTimeout(r, 120));
+    }
+  }
+
   const EvidencePad = (function () {
     const EXPORT_EDGE = 1280;                    // flatten: long edge ≈ 1280px
     const PHOTO_MAX_EDGE = 1280;                 // capture downscale (photos are context, not the record)
@@ -3357,13 +3384,14 @@ body.is-viewer .cog-btn { display: none; }
     // ---------- open / close / reset ----------
     async function openPad() {
       if (!libsOk) return;
-      // v0.56: register the fixed overlay at scroll origin. Opening it while the
-      // page is scrolled leaves iPad Safari/Chrome compositing the overlay short
-      // (form shows through below) and hit-testing its buttons LOWER than they
-      // paint. The jump is invisible (the pad covers the screen before paint);
-      // closePad restores the exact spot before the form reappears.
+      // v0.57: park the keyboard first (WKWebView inset corruption, see helper),
+      // save the spot, then swap the form OUT of the layout (body.pad-open) so
+      // the document has no scrollable extent while the pad is up. closePad
+      // restores the form and the exact spot before the pad hides.
+      await blurAndSettle();
       padScrollY = window.scrollY || document.documentElement.scrollTop || 0;
       document.getElementById('pad-modal').classList.add('open');
+      document.body.classList.add('pad-open');
       window.scrollTo(0, 0);
       opened = true;
       if (!stage) {
@@ -3381,6 +3409,7 @@ body.is-viewer .cog-btn { display: none; }
       await openPad();
     }
     function closePad() {
+      document.body.classList.remove('pad-open'); // v0.57: form back in layout FIRST
       window.scrollTo(0, padScrollY);            // v0.56: restore BEFORE the pad hides (same paint)
       document.getElementById('pad-modal').classList.remove('open');
       opened = false;
@@ -3848,10 +3877,12 @@ body.is-viewer .cog-btn { display: none; }
     document.getElementById('pad-view-title').innerHTML =
       'Evidence <em>Pad</em> · ' + (PAD_VIEW_LABELS[target] || 'Pages');
     scroll.innerHTML = '<div class="pad-view-loading">Loading the pad pages…</div>';
-    // v0.56: same scroll-origin trick as openPad — a fixed overlay opened on a
-    // scrolled page renders offset on iPad (short paint + taps landing low).
+    // v0.56/v0.57: same swap as openPad — park the keyboard, save the spot,
+    // then take the page out of the layout so nothing can scroll behind.
+    await blurAndSettle();
     padViewScrollY = window.scrollY || document.documentElement.scrollTop || 0;
     document.getElementById('pad-view').classList.add('open');
+    document.body.classList.add('pad-open');
     window.scrollTo(0, 0);
     try {
       const uris = await Promise.all(files.map(fetchPadImage));
@@ -3893,6 +3924,7 @@ body.is-viewer .cog-btn { display: none; }
 
   function closePadView() {
     padViewSeq++;
+    document.body.classList.remove('pad-open');  // v0.57: page back in layout FIRST
     window.scrollTo(0, padViewScrollY);          // v0.56: restore BEFORE the lightbox hides
     document.getElementById('pad-view').classList.remove('open');
     document.getElementById('pad-view-scroll').innerHTML = '';
