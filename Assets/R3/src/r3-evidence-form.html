@@ -1394,6 +1394,14 @@ body.pad-open .action-bar,
 body.pad-open .theme-toggle,
 body.pad-open .cog-btn { display: none; }
 
+/* v0.57: while the keyboard owns the screen there is no correct pin for
+   fixed bottom controls (iOS pans them like static content mid-typing), so
+   they hide entirely and return once the keyboard settles (body.kb-open is
+   set on focusin of keyboard-opening fields, removed 350ms after blur). */
+body.kb-open .action-bar,
+body.kb-open .theme-toggle,
+body.kb-open .cog-btn { opacity: 0; pointer-events: none; }
+
 .pad-top {
   display: flex;
   align-items: center;
@@ -2461,46 +2469,65 @@ body.is-viewer .cog-btn { display: none; }
     }
   })();
 
-  /* === Visible-bottom pin (v0.56) =================================
-     iPad Chrome's collapsing bottom toolbar moves the layout-viewport
-     bottom mid-scroll, so the bottom-fixed controls (Reset / Save & Lock,
-     cog, theme) ride up the page. visualViewport reports the REAL visible
-     box; --vv-shift nudges the controls back onto it. Gaps > 200px mean
-     the on-screen keyboard — leave the controls alone then (they would
-     float mid-screen above it). Enhancement only: without visualViewport
+  /* === Visible-bottom pin (v0.56, rebuilt v0.57) ===================
+     iPad Chrome's collapsing toolbar moves the layout-viewport bottom
+     mid-scroll, so the bottom-fixed controls (Reset / Save & Lock, cog,
+     theme) ride up the page. visualViewport reports the REAL visible box;
+     --vv-shift nudges the controls back onto it. v0.57: the reference is
+     documentElement.clientHeight (WKWebView reports stale/bogus innerHeight,
+     WebKit 170595); reads are deferred by a DOUBLE rAF (same-tick reads race
+     stale values, WebKit 237851); the gap is clamped to [0,120] instead of
+     the old >200px keyboard bail — keyboard states now hide the controls
+     entirely (body.kb-open below). Enhancement only: without visualViewport
      the var stays 0px and everything behaves exactly as before. */
   (function pinBottomControls() {
     const vv = window.visualViewport;
     if (!vv) return;
-    let raf = 0;
+    let queued = false;
     function apply() {
-      raf = 0;
-      let gap = window.innerHeight - vv.height - vv.offsetTop;
-      if (!isFinite(gap) || gap < 0 || gap > 200) gap = 0;
+      queued = false;
+      if (document.body.classList.contains('kb-open')) return;   // hidden anyway
+      let gap = document.documentElement.clientHeight - vv.height - vv.offsetTop;
+      if (!isFinite(gap)) gap = 0;
+      gap = Math.min(120, Math.max(0, gap));
       document.documentElement.style.setProperty('--vv-shift', (-Math.round(gap)) + 'px');
     }
-    function queue() { if (!raf) raf = requestAnimationFrame(apply); }
+    function queue() {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(() => requestAnimationFrame(apply));
+    }
     vv.addEventListener('resize', queue);
     vv.addEventListener('scroll', queue);
     window.addEventListener('scroll', queue, { passive: true });
     apply();
   })();
 
-  /* === Keyboard-dismiss re-settle (v0.57) ==========================
-     WKWebView adds the keyboard height to the scrollable extent ADDITIVELY
-     and cleans it up late/buggily (the "scroll forever into the void" bug on
-     iPad Chrome); on iOS 26 visualViewport can also strand a stuck offset.
-     After the keyboard leaves, a micro-nudge makes the engine re-derive its
-     scroll bookkeeping and the clamp rescues a position stranded past the
-     real content. Enhancement only; skipped while the pad owns the screen. */
+  /* === Keyboard states (v0.57) =====================================
+     While the keyboard owns the screen iOS pans position:fixed elements
+     like static content — there is NO correct pin. So the bottom controls
+     hide entirely (body.kb-open) while a keyboard-opening field is focused.
+     On the way out, WKWebView also strands stale scrollable extent (its
+     keyboard inset is added additively and cleaned up late — the "scroll
+     forever into the void" bug) and iOS 26 can leave a stuck visualViewport
+     offset: after settle, a micro-nudge makes the engine re-derive its
+     scroll bookkeeping and the clamp rescues a stranded position.
+     Enhancement only; rule 12 safe (no UI, no errors). */
+  function opensKeyboard(el) {
+    if (!el || !el.tagName) return false;
+    if (el.tagName === 'TEXTAREA' || el.isContentEditable) return true;
+    if (el.tagName !== 'INPUT') return false;
+    return ['text', 'search', 'email', 'tel', 'url', 'number', 'password', 'date', 'time'].includes(el.type);
+  }
+  document.addEventListener('focusin', (e) => {
+    if (opensKeyboard(e.target)) document.body.classList.add('kb-open');
+  });
   document.addEventListener('focusout', (e) => {
-    const t = e.target;
-    if (!t || !t.tagName) return;
-    if (t.tagName !== 'TEXTAREA' && t.tagName !== 'INPUT' && t.tagName !== 'SELECT') return;
+    if (!opensKeyboard(e.target)) return;
     setTimeout(() => {
-      if (document.body.classList.contains('pad-open')) return;
-      const ae = document.activeElement;
-      if (ae && (ae.tagName === 'TEXTAREA' || ae.tagName === 'INPUT' || ae.tagName === 'SELECT')) return; // keyboard still up
+      if (opensKeyboard(document.activeElement)) return;         // keyboard still up
+      document.body.classList.remove('kb-open');
+      if (document.body.classList.contains('pad-open')) return;  // pad owns the screen
       window.scrollBy(0, -1); window.scrollBy(0, 1);
       const max = Math.max(0, document.scrollingElement.scrollHeight - window.innerHeight);
       if (window.scrollY > max) window.scrollTo(0, max);
