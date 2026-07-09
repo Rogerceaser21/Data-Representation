@@ -53,4 +53,41 @@ Sources rated: architectural chain = named Chromium engineer + Chromium source h
 
 ---
 
-(Tasks 3-5 append below.)
+## Task 3 · Keyboard + bottom-fixed controls on iPadOS Chrome (S2)
+
+### (a) iPad keyboard variants and the visual viewport
+
+- Docked software keyboard: classic "resizes-visual" case, shrinks `visualViewport.height` / raises `offsetTop`, layout viewport untouched (https://developer.chrome.com/blog/viewport-resize-behavior).
+- Floating + split keyboards: NO authoritative doc on whether they fire visualViewport resize at all; native-UIKit guidance treats them as needing no avoidance, implying no reliable occlusion signal (https://vp0.com/blogs/floating-keyboard-avoidance-ui-ipad, native-focused, inference only).
+- Hardware-keyboard accessory/shortcut strip and the Apple Pencil Scribble bar: NOTHING published measures their visualViewport effect. Confirmed to exist and eat screen space (https://www.technetexperts.com/hide-ios-input-bar/), no web API to suppress on a plain page. **This is exactly the S2 trigger state and it is unmeasured anywhere; on-device instrumentation is required** (see recommendation).
+
+### (b) What happens during focus auto-scroll
+
+- iOS pans the VISUAL viewport inside the untouched layout viewport to reveal a focused input; `position:fixed` elements stay anchored to the layout viewport, so they visually drift, "start behaving like position:static" while the keyboard is open (https://github.com/w3c/csswg-drafts/issues/7475, https://medium.com/@im_rahul/safari-and-position-fixed-978122be5f29). A CSSWG fix (exclude keyboard from the fixed viewport) is proposed, unshipped.
+- Stale-read race: reading `visualViewport` synchronously inside its own `resize`/`scroll` handler can return stale values (`offsetTop === 0`); documented fix = defer the read by `setTimeout(50)` or DOUBLE `requestAnimationFrame` (WebKit bug 237851, https://bugs.webkit.org/show_bug.cgi?id=237851). The v0.56 `pinBottomControls` reads in the same tick (one rAF, queued from the event) = exposed to this race.
+- Updates lag: iOS "only updates after scroll has finished", so any translateY correction lags the pan mid-gesture (https://www.bram.us/2021/09/13/prevent-items-from-being-hidden-underneath-the-virtual-keyboard-by-means-of-the-virtualkeyboard-api/).
+
+### (c) Reference values
+
+- `window.innerHeight` is NOT a safe reference in Chrome iPadOS: WKWebView reports bogus/stale innerHeight (WebKit bug 170595, open since 2017, comment 2025-03-21 confirms it persists in Chrome on iOS); historically WKWebView even SUBTRACTED keyboard height from innerHeight while Safari did not (bug 150401) (https://bugs.webkit.org/show_bug.cgi?id=170595, https://bugs.webkit.org/show_bug.cgi?id=150401).
+- Community consensus: `visualViewport.height + offsetTop` is the sole source of truth; innerHeight only as unshrunk baseline (https://martijnhols.nl/blog/how-to-get-document-height-ios-safari-osk, https://mathix.dev/blog/fix-html-elements-on-top-of-the-ios-keyboard-using-html-css-js).
+- `dvh`/`svh`/`lvh` DO NOT track the keyboard (only browser-chrome collapse), so they are irrelevant to S2 (relevant to S1 instead) (https://www.bram.us/2021/07/08/the-large-small-and-dynamic-viewports/).
+- VERDICT on v0.56: the formula `innerHeight - vv.height - vv.offsetTop` is the community-standard recipe (bram.us, saricden, mathix.dev all converge on it). S2 persists because (i) the `innerHeight` reference is unreliable in WKWebView/Chrome, (ii) the read races stale values in the same tick, (iii) during keyboard pan fixed elements drift regardless, and (iv) the iOS 26 stuck-offset regression leaves a permanent phantom gap after keyboard dismissal on affected builds.
+
+### (d) Battle-tested patterns + failure modes
+
+1. Top-anchored pin: `top = vv.offsetTop + vv.height` with `translateY(-100%)`, updated on vv resize+scroll, read DEFERRED by double-rAF (https://saricden.com/how-to-make-fixed-elements-respect-the-virtual-keyboard-on-ios + WebKit 237851). Failure modes: overscroll needs clamping; iOS updates only after scroll settles (transient drift); still wrong mid-pan.
+2. VirtualKeyboard API / `env(keyboard-inset-height)`: NOT shipped in WebKit at all, Chromium-Android-only, and buggy even there. Dead end for iOS (https://zouhir.org/blog/virtual-keyboard-api/, https://developer.mozilla.org/en-US/docs/Web/API/VirtualKeyboard_API).
+3. Sticky-in-flow footer (wrapper sticky + inner absolute + scroll compensation): avoids some fixed breakage but still needs JS compensation and blur handling; not keyboard-immune (https://www.codemzy.com/blog/sticky-fixed-header-ios-keyboard-fix).
+4. Hide-while-focused: hide the bottom controls on `focusin`, reshow on `focusout` after a keyboard-settle delay. Simple, kills every keyboard-state misplacement by never showing controls in that state. Pitfalls: `focusout` fires before the dismiss animation ends (reshow delayed ~300ms); the hardware-keyboard accessory strip can exist WITHOUT a DOM focus event the page sees, so this cannot be the ONLY mechanism.
+5. Continuous rAF polling: no evidence it beats event-driven + deferred reads; wasted battery. Winning pattern = event-driven + double-rAF read (WebKit 237851).
+
+### Candidate fixes for S2 (input for synthesis)
+
+- FIX A (recommended combo): rebuild the pin on `visualViewport` ONLY (drop `window.innerHeight`; baseline from `document.documentElement.clientHeight` at load or `100lvh`), anchor via top+translateY(-100%) equivalent, defer reads by double-rAF, clamp negatives, micro-nudge `scrollBy(0,-1);scrollBy(0,1)` after `focusout` to break the iOS 26 stuck-offset state. PLUS hide the three controls while a text field is focused (keyboard state = controls absent, nothing to misplace). Trade-offs: more code on a hot path; hide/show flicker ~300ms after blur; still cannot fix the unmeasured accessory-strip-only state.
+- FIX B (structural): stop fixing the controls over content near the keyboard entirely: move Reset / Save & Lock into the document flow at the form's end (sticky footer inside the form card), keep only cog+theme floating. During keyboard states in-flow elements never drift. Trade-offs: visual design change (Igor approval needed); controls no longer omnipresent while scrolling; sticky still needs the wrapper pattern if it must FLOAT.
+- Either fix needs an INSTRUMENTATION step first: a temporary hidden debug readout (admin-gated, not user-visible; hard rule 12) logging `vv.height/offsetTop/innerHeight/clientHeight` on Igor's iPad in the accessory-strip state, because no published source measures it.
+
+---
+
+(Tasks 4-5 append below.)
