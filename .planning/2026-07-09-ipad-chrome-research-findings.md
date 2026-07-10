@@ -193,4 +193,35 @@ Focus a textarea in iPad Chrome, press ONLY the keyboard dismiss key, then read 
 
 ---
 
+## P2 Task 9 · Landscape geometry + the unscrollable-page steady state (F1) · 2026-07-10
+
+Sonnet 5 researcher + Opus 4.8 adversarial refuter.
+
+### Research findings (sourced)
+
+- Content rendering UNDER the browser top bar with ROTATION as the only repair is the documented signature of WKWebView's stale unobscuredContentRect: WebKit 170595 (open since 2017, WKWebView-only so Chrome-hit/Safari-immune): "During rotation, WebKit sends a visible rect update with an unobscuredContentRect that hasn't been updated... We really need to round-trip through the web process with the new size before we can reliably compute rects" (https://bugs.webkit.org/show_bug.cgi?id=170595).
+- iOS 26 active regression: a floating bar covers page content in Safari AND Chrome, users report "rotate horizontally then back" as the fix (https://discussions.apple.com/thread/256156706, Oct-Dec 2025); iOS 26 bottom-gap variant: fixed inset:0 overlays fail to reach true edges (https://github.com/mui/material-ui/issues/46953).
+- Chrome iOS: 100vh/svh/dvh can ALL collapse to the same wrong value depending on an internal "Fullscreen Smooth Scrolling" experiment (https://issues.chromium.org/issues/40944174, vs Chrome 119). svh is best practice, NOT a guarantee on Chrome iOS.
+- env(safe-area-inset-top) reflects DEVICE geometry (notch/status bar), NOT the browser toolbar; useless against Chrome's toolbar (https://css-tricks.com/the-notch-and-css/).
+- Toolbar on an unscrollable page: no deltas = toolbar does not MOVE (stays in whatever state it was); landscape forces the address bar to the TOP with no user placement choice (https://support.google.com/chrome/answer/14181646).
+- Programmatic rotation-mimicking nudges (resize dispatch, double-rAF, 1px height flip): NO documented success reproducing the full round-trip re-layout; only time-based waits/polling and getBoundingClientRect-forced reflows have any traction (WebKit 170595 comments). Rotate-to-fix is a user workaround with no JS equivalent.
+- Leaving ~1-2px scrollable extent to keep scroll machinery alive: documented in adjacent patterns (scroll-chaining prevention), unverified for keeping Chrome's toolbar collapsible (https://dev.to/mpuckett/the-holy-grail-web-app-shell-with-header-and-footer-for-iphone-549j).
+- Gaps: no published iPad-Chrome toolbar px heights portrait/landscape (measure on device); no direct iPad-Chrome toolbar-collapse benchmark (inferred from shared WebKit stack).
+
+### Opus 4.8 adversarial refuter verdict: REFUTED AS STATED (the "swap caused F1" attribution)
+
+Timeline kills the causal claim: the toolbar covered the pad buttons ALREADY in v0.56 (symptom map N1) on a scrollable page, and v0.56 also did scrollTo(0,0) on open. The body collapse does not change the fixed overlay's geometry at all. "Unscrollable" does not pin the toolbar EXPANDED; it pins it in whatever state it was at open and REMOVES the scroll-collapse escape.
+
+Ranked F1 mechanisms:
+1. M2 stale rect at pad open: blurAndSettle clears DOM focus but CANNOT force the OS keyboard closed (Task 8), so the inset:0 overlay can be laid out against a rect wrong by the toolbar+keyboard delta (WebKit 170595 / 297779 family). Fits: landscape worse (same absolute error = larger fraction of a short viewport, Done falls inside the covered band; portrait clears), rotation repairs (forced full re-layout).
+2. M1 + stuckness story: version-independent overlay-under-native-toolbar (app-layer chrome paints over any z-index), which v0.56 users could escape by scrolling (toolbar collapses); v0.57's swap removed that escape = "page gets stuck". The swap caused a REGRESSION IN RECOVERABILITY, not the coverage.
+3. The literal claim (swap forces toolbar expanded => covers): weakest, contradicted by the timeline.
+
+### Decisive on-device observations (one state each)
+
+- Pad open in LANDSCAPE with Done covered: is the pad full-height with the toolbar painted ON TOP (M1) or is the pad itself shifted/short with a gap band (M2)? Diagnostics in that state: innerHeight / clientHeight / vv.height / vv.offsetTop + pad-modal getBoundingClientRect (top ~0 + height ~clientHeight = M1; offsetTop stuck > 0 or rect short by ~toolbar+kb = M2).
+- One-bit control: does Done get covered on a COLD pad open (no prior typing)? Cold = M1; only-after-keyboard = M2.
+
+---
+
 (End of research findings; synthesis v2 in `.planning/2026-07-10-ipad-chrome-synthesis-v2.md`.)
