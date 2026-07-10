@@ -224,4 +224,40 @@ Ranked F1 mechanisms:
 
 ---
 
+## P2 Task 10 · Adversarial audit of the v0.57 code paths · 2026-07-10
+
+Opus 4.8 primary auditor + Sonnet 5 independent second opinion, same file (aeff1e2), read separately. THE TWO CONVERGED on all three failures. Line refs verified by both.
+
+### F2 · Save & Lock vanishes (CONVERGED, highest confidence)
+
+- `body.kb-open` CSS (1401-1403) makes the three controls `opacity:0 + pointer-events:none` from the moment ANY keyboard field gets focus (2539-2541). Removal ONLY via focusout + 350ms (2542-2552).
+- Stuck paths: (i) keyboard dismissed via the dismiss key / strip WITHOUT blur -> focusout never fires -> kb-open sticky for the session; (ii) HARDWARE keyboard: no software keyboard ever shows, controls hidden the entire typing session; (iii) APPLE PENCIL SCRIBBLE into a textarea: focus without any keyboard at all -> controls vanish during normal pen writing (Sonnet find; directly relevant to Igor's Pencil workflow).
+- The tap-to-revive walk matches Igor EXACTLY: with pointer-events:none the first tap on Save & Lock passes THROUGH the invisible button, lands behind it, blurs the field, 350ms later the button returns; the second tap works. Two taps minimum by design.
+- Safe paths verified: focus chains (350ms recheck), admin modal close, pad-open ordering in the timeout (kb-open removal wins before the pad guard).
+
+### F3 · Void persists + buttons return after taps (CONVERGED)
+
+- The ONLY void cleanup (nudge + clamp, 2548-2550) lives inside focusout: never runs on no-blur dismissal (same root as F2).
+- Even when it runs: the clamp measures against the INFLATED scrollHeight and uses window.innerHeight (2549), the exact value the file's own pin avoids as bogus (2493-2494 vs 2507) -> clamp no-ops against the corrupted extent.
+- The 1px nudge is a NO-OP at scroll boundaries (scrollY 0 or max): no scroll delta -> no scroll event -> pinBottomControls.queue never re-fires -> --vv-shift stays frozen (the 2506 kb-open bail froze it all session). "Buttons reappear after a few taps" = the user's taps ARE the missing events the fix logic depends on but never generates itself (Sonnet find).
+- Type -> open pad -> close pad: the focusout timer SKIPS the clamp while pad-open (2547), so the one safety net is disabled for exactly the likeliest void flow; closePad blindly scrollTo(0, padScrollY) with no re-validation (3517).
+
+### F1 · Pad Done covered, page stuck, rotation repairs (CONVERGED + two new paths)
+
+- Structural: `.pad-modal` is `inset:0` fixed with NO top compensation of any kind: no safe-area-inset-top (grep = 0 hits; only -bottom exists at 1595/1620), no --vv-shift on the pad chrome, no svh sizing, no orientationchange handler anywhere (grep = 0); the only resize listener just resizes the Konva canvas (3504). The bottom controls got the entire v0.56/v0.57 pinning treatment; the pad's TOP row got nothing.
+- openPad scrolls to 0 + collapses the document (3499, 1391); Chrome's toolbar sits over the layout-viewport top where .pad-top/#pad-done live (1405, 1999); containScroll preventDefaults every pan inside the pad (2834-2841) so there is NO gesture escape = "stuck"; rotation is the only full re-layout = "repair".
+- NEW PATH 1 (Opus): async openPad has NO try/catch (3489-3508); if showPage/Konva throws after body.pad-open is set (3498), the form is display:none with no pad painted = blank stuck page, nothing removes the class. openPadView HAS an error exit (4003); openPad does not (asymmetry).
+- NEW PATH 2 (Opus): pen-pill launch (openPadAt 3510) moves focus to the BUTTON first, so blurAndSettle (2848-2856) sees a non-keyboard activeElement and NO-OPS: the settle it was built for is skipped in the most common launch flow, and padScrollY (3496) is read mid-inset-flux -> closePad restores a corrupted spot.
+- Race (Opus): Done tapped during the settle window (~150-170ms before pad-open is set) -> closePad runs first, deferred openPad then sets pad-open anyway = pad opens after the user closed it.
+
+### Second-opinion deltas
+
+No contradictions. Sonnet added Scribble-triggers-kb-open + nudge-no-op-at-boundaries + clamp-vs-inflated-extent timing; Opus added the no-try/catch stuck page, the openPadAt settle-skip, the Done-during-settle race, and verified three suspect paths as actually safe (focus chains, admin close, kb/pad timeout ordering).
+
+### Converged root sentence
+
+The v0.57 code equates "keyboard gone" with "focusout fired" and "overlay covers the screen" with "layout viewport is correct"; neither holds on iPad, and the pad's top edge never received the viewport compensation the bottom controls got.
+
+---
+
 (End of research findings; synthesis v2 in `.planning/2026-07-10-ipad-chrome-synthesis-v2.md`.)
