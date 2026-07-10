@@ -167,4 +167,30 @@ Top 3 unknowns only an on-device test resolves: (1) does content-collapse stop C
 
 ---
 
-(End of research findings; synthesis in `.planning/2026-07-09-ipad-chrome-research-synthesis.md`.)
+## P2 Task 8 · iPadOS keyboard dismissal without blur (F2/F3 suspect) · 2026-07-10
+
+Phase-2, after Igor's v0.57 on-device failures (F1 pad Done covered in landscape; F2 Save & Lock vanishes, tap revives; F3 void persists + bottom buttons vanish/return on taps). Sonnet 5 researcher + Opus 4.8 adversarial refuter.
+
+### Research findings (sourced)
+
+- No single canonical source states "the iPadOS dismiss key never fires blur". Composite evidence both ways: Apple forums iOS-13 regression where blur fired only after tapping another element (https://developer.apple.com/forums/thread/123777); React 26160: hide-key fired NATIVE blur in Safari, React synthetic missed it (https://github.com/facebook/react/issues/26160); React 28492: iOS Chrome outlier at the framework layer (https://github.com/facebook/react/issues/28492); Chromium 492894 comment asserts the OPPOSITE: "the blur event is raised in Chrome on iOS (as well as Safari)" on keyboard-hide (https://bugs.chromium.org/p/chromium/issues/detail?id=492894).
+- visualViewport.resize fires on keyboard hide REGARDLESS of blur, but settles late: 100ms-1s (https://martijnhols.nl/blog/how-to-get-document-height-ios-safari-osk, https://github.com/semmel/on-screen-keyboard-detector); iOS 26 leaves ~24px stuck offset, Chrome iOS lags Safari on the reset ("fixed on Safari latest beta, Chrome on iOS still an issue", WebKit 297779 comment).
+- Production keyboard detection WITHOUT focus events: viewport-delta thresholds; Discourse uses 150px generally and 75px on iPad specifically because the hardware-keyboard ACCESSORY BAR is ~55px (https://github.com/discourse/discourse/pull/18298/files). iPad keyboard heights: 264pt portrait / 352pt landscape (https://federicabenacquista.medium.com/list-of-the-official-ios-keyboards-heights-and-how-to-calculate-them-c2b844ef54b9). on-screen-keyboard-detector: visualViewport-only suffices on Safari, Chrome iOS needs focusin/focusout/resize/visibilitychange layered (https://github.com/semmel/on-screen-keyboard-detector).
+- element.blur() from script does NOT reliably dismiss the iOS keyboard (DOM focus and OS keyboard are decoupled in WKWebView; gesture-origin required) (https://developer.apple.com/forums/thread/104771, https://bugs.webkit.org/show_bug.cgi?id=142757). Direct consequence: v0.57's blurAndSettle clears DOM focus but may leave the keyboard UP when the pad opens.
+- Gaps: floating/split keyboard and swipe-dismiss blur behaviour undocumented for plain web pages; portrait-vs-landscape event timing undocumented.
+
+### Opus 4.8 adversarial refuter verdict: UNDECIDED, leaning REFUTED-AS-STATED
+
+Ranked alternatives (code-verified at aeff1e2):
+- A1 (strongest): F2 is the v0.57 DESIGN, not the dismiss key. focusin hides Save & Lock the moment a field is focused (2539-2541, CSS 1401-1403); the revival tap is the NORMAL native blur path working (tap non-focusable -> activeElement=body -> kb-open removed). Dismiss-without-blur is not needed to reproduce Igor's F2 report.
+- A2: our code uses NATIVE focusout; the strongest "no blur" evidence is React-synthetic and off-target; the native-level datapoint says iOS DOES blur on keyboard-hide.
+- A3: the claim conflates "v0.57's mitigation did not run" with "cause of the void". F3's root remains the WKWebView stale keyboard inset (pre-dates the kb logic); dismiss-without-blur at most explains the mitigation not triggering.
+- A4 (new mechanism): pinBottomControls BAILS while kb-open (2506), freezing --vv-shift for the whole keyboard session; late visualViewport updates are ignored until kb-open clears, so the bar can sit translated off the visible box even after opacity returns; a later tap/scroll re-fires the queue and "brings it back": matches "reappear after a few taps".
+
+### Decisive on-device measurement (one gesture)
+
+Focus a textarea in iPad Chrome, press ONLY the keyboard dismiss key, then read (console or diagnostics): did focusout fire; activeElement tag; body.kb-open; --vv-shift. focusout+BODY+kb-open false = claim REFUTED (F2 = hide-design bug, F3 = WKWebView inset). No focusout+TEXTAREA+kb-open true = claim CONFIRMED. Either way A1/A4 need fixing.
+
+---
+
+(End of research findings; synthesis v2 in `.planning/2026-07-10-ipad-chrome-synthesis-v2.md`.)
