@@ -1394,10 +1394,12 @@ body.pad-open .action-bar,
 body.pad-open .theme-toggle,
 body.pad-open .cog-btn { display: none; }
 
-/* v0.57: while the keyboard owns the screen there is no correct pin for
-   fixed bottom controls (iOS pans them like static content mid-typing), so
-   they hide entirely and return once the keyboard settles (body.kb-open is
-   set on focusin of keyboard-opening fields, removed 350ms after blur). */
+/* v0.57/v0.58: while the keyboard owns the screen there is no correct pin
+   for fixed bottom controls (iOS pans them like static content mid-typing),
+   so they hide entirely and return once the keyboard settles. v0.58:
+   body.kb-open is driven by the visualViewport height DELTA (keyboard
+   really on screen), not focus events; Scribble and hardware keyboards
+   never trigger it. ?d=nokb disables the hiding. */
 body.kb-open .action-bar,
 body.kb-open .theme-toggle,
 body.kb-open .cog-btn { opacity: 0; pointer-events: none; }
@@ -2486,6 +2488,19 @@ body.is-viewer .cog-btn { display: none; }
     }
   })();
 
+  /* === Diagnostic kill switches (v0.58) ============================
+     ?d=<comma-list> URL param, read ONCE at load, zero UI (rule 12).
+     Each v0.58 mechanism can be disabled one-suspect-off on the device:
+     nokb (no control hiding) · nonudge (no void cleanup) · nopin (no
+     bottom pin) · noswap (pad as plain overlay) · scrollhair (keep ~2px
+     scrollable extent while the pad is open). Unknown values ignored. */
+  const DIAG = (function () {
+    try {
+      const d = new URLSearchParams(window.location.search).get('d');
+      return new Set(d ? d.split(',').map(s => s.trim()).filter(Boolean) : []);
+    } catch (e) { return new Set(); }
+  })();
+
   /* === Visible-bottom pin (v0.56, rebuilt v0.57) ===================
      iPad Chrome's collapsing toolbar moves the layout-viewport bottom
      mid-scroll, so the bottom-fixed controls (Reset / Save & Lock, cog,
@@ -2520,36 +2535,78 @@ body.is-viewer .cog-btn { display: none; }
     apply();
   })();
 
-  /* === Keyboard states (v0.57) =====================================
+  /* === Keyboard states (v0.58) =====================================
      While the keyboard owns the screen iOS pans position:fixed elements
-     like static content — there is NO correct pin. So the bottom controls
-     hide entirely (body.kb-open) while a keyboard-opening field is focused.
-     On the way out, WKWebView also strands stale scrollable extent (its
-     keyboard inset is added additively and cleaned up late — the "scroll
-     forever into the void" bug) and iOS 26 can leave a stuck visualViewport
-     offset: after settle, a micro-nudge makes the engine re-derive its
-     scroll bookkeeping and the clamp rescues a stranded position.
-     Enhancement only; rule 12 safe (no UI, no errors). */
+     like static content; there is NO correct pin, so the bottom controls
+     hide entirely (body.kb-open). v0.57 keyed this on focusin/focusout,
+     which fails on iPad three ways: Scribble and hardware keyboards focus
+     fields with NO on-screen keyboard (controls vanished during normal pen
+     use), and the keyboard-dismiss key hides the keyboard WITHOUT blurring
+     (controls never returned; the "tap the page to revive" bug). v0.58
+     keys the state on the visualViewport height DELTA instead: keyboard
+     counts as open only while vv.height sits more than KB_DELTA below the
+     session baseline (iPad keyboard ~264pt portrait / ~352pt landscape;
+     the accessory strip ~55px and Chrome's toolbar ~100px stay below).
+     Focus events remain as fast-path hint checks only; they never set
+     state themselves. Removal rides the vv-resize close signal + settle,
+     which fires regardless of blur; the void rescue (nudge + clamp) runs
+     there. Baseline tracks the largest vv.height seen and re-derives
+     after rotation. window.__kbEngine exposes state for the admin
+     diagnostics readout. ?d=nokb disables the hiding (state still
+     tracked). Enhancement only; rule 12 safe (no UI, no errors). */
   function opensKeyboard(el) {
     if (!el || !el.tagName) return false;
     if (el.tagName === 'TEXTAREA' || el.isContentEditable) return true;
     if (el.tagName !== 'INPUT') return false;
     return ['text', 'search', 'email', 'tel', 'url', 'number', 'password', 'date', 'time'].includes(el.type);
   }
-  document.addEventListener('focusin', (e) => {
-    if (opensKeyboard(e.target)) document.body.classList.add('kb-open');
-  });
-  document.addEventListener('focusout', (e) => {
-    if (!opensKeyboard(e.target)) return;
-    setTimeout(() => {
-      if (opensKeyboard(document.activeElement)) return;         // keyboard still up
-      document.body.classList.remove('kb-open');
+  (function keyboardEngine() {
+    const vv = window.visualViewport;
+    const state = {
+      baseline: vv ? vv.height : document.documentElement.clientHeight,
+      open: false,
+      disabled: DIAG.has('nokb')
+    };
+    window.__kbEngine = state;
+    if (!vv) return;
+    const KB_DELTA = 150;
+    let settleTimer = null;
+    function kbDown() { return state.baseline - vv.height > KB_DELTA; }
+    function sync() {
+      if (vv.height > state.baseline) state.baseline = vv.height;
+      if (kbDown()) {
+        if (settleTimer) { clearTimeout(settleTimer); settleTimer = null; }
+        state.open = true;
+        if (!state.disabled) document.body.classList.add('kb-open');
+      } else if (state.open && !settleTimer) {
+        settleTimer = setTimeout(() => {
+          settleTimer = null;
+          if (kbDown()) return;                                  // keyboard came back mid-settle
+          state.open = false;
+          document.body.classList.remove('kb-open');
+          afterKeyboardClose();
+        }, 350);
+      }
+    }
+    function afterKeyboardClose() {
+      /* WKWebView strands stale scrollable extent on keyboard close (its
+         keyboard inset is added additively and cleaned up late; the
+         "scroll forever into the void" bug) and iOS 26 can leave a stuck
+         visualViewport offset: a micro-nudge makes the engine re-derive
+         its scroll bookkeeping and the clamp rescues a stranded position. */
       if (document.body.classList.contains('pad-open')) return;  // pad owns the screen
       window.scrollBy(0, -1); window.scrollBy(0, 1);
       const max = Math.max(0, document.scrollingElement.scrollHeight - window.innerHeight);
       if (window.scrollY > max) window.scrollTo(0, max);
-    }, 350);
-  });
+    }
+    vv.addEventListener('resize', sync);
+    window.addEventListener('orientationchange', () => {
+      setTimeout(() => { state.baseline = vv.height; sync(); }, 400);  // re-baseline after rotate
+    });
+    function hint() { setTimeout(sync, 100); setTimeout(sync, 400); }
+    document.addEventListener('focusin', (e) => { if (opensKeyboard(e.target)) hint(); });
+    document.addEventListener('focusout', (e) => { if (opensKeyboard(e.target)) hint(); });
+  })();
 
   /* === S/U toggle: click selected radio again to clear ============= */
   document.querySelectorAll('.su-toggle input[type="radio"]').forEach(radio => {
