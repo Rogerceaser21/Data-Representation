@@ -2514,7 +2514,7 @@ body.is-viewer .cog-btn { display: none; }
      the var stays 0px and everything behaves exactly as before. */
   (function pinBottomControls() {
     const vv = window.visualViewport;
-    if (!vv) return;
+    if (!vv || DIAG.has('nopin')) return;    // ?d=nopin: plain fixed fallback, --vv-shift stays 0
     let queued = false;
     function apply() {
       queued = false;
@@ -2532,6 +2532,7 @@ body.is-viewer .cog-btn { display: none; }
     vv.addEventListener('resize', queue);
     vv.addEventListener('scroll', queue);
     window.addEventListener('scroll', queue, { passive: true });
+    window.__pinApply = queue;   // v0.58: keyboard engine re-drives the pin on kb-close
     apply();
   })();
 
@@ -2588,16 +2589,35 @@ body.is-viewer .cog-btn { display: none; }
         }, 350);
       }
     }
-    function afterKeyboardClose() {
+    function cleanupVoid() {
       /* WKWebView strands stale scrollable extent on keyboard close (its
          keyboard inset is added additively and cleaned up late; the
          "scroll forever into the void" bug) and iOS 26 can leave a stuck
          visualViewport offset: a micro-nudge makes the engine re-derive
-         its scroll bookkeeping and the clamp rescues a stranded position. */
+         its scroll bookkeeping and the clamp rescues a stranded position.
+         v0.58: boundary-safe nudge (a no-op scrollBy generates no scroll
+         event, which is exactly what the frozen state needs); clamp
+         against documentElement.clientHeight (innerHeight is the stale
+         value WKWebView lies about, WebKit 170595); ends by re-driving
+         the pin instead of waiting for accidental scroll events. */
       if (document.body.classList.contains('pad-open')) return;  // pad owns the screen
-      window.scrollBy(0, -1); window.scrollBy(0, 1);
-      const max = Math.max(0, document.scrollingElement.scrollHeight - window.innerHeight);
+      if (state.open) return;                  // keyboard reopened before the +1s recheck
+      const y0 = window.scrollY;
+      window.scrollBy(0, -1);
+      if (window.scrollY === y0) {                               // top boundary: scrollBy was a no-op
+        window.scrollTo(0, y0 + 2); window.scrollTo(0, y0);
+      } else {
+        window.scrollBy(0, 1);
+      }
+      const max = Math.max(0, document.scrollingElement.scrollHeight - document.documentElement.clientHeight);
       if (window.scrollY > max) window.scrollTo(0, max);
+      if (window.__pinApply) window.__pinApply();
+    }
+    function afterKeyboardClose() {
+      if (window.__pinApply) window.__pinApply();                // re-drive the pin on every kb-close
+      if (DIAG.has('nonudge')) return;                           // ?d=nonudge: no void cleanup
+      cleanupVoid();
+      setTimeout(cleanupVoid, 1000);                             // late inset cleanup re-check
     }
     vv.addEventListener('resize', sync);
     window.addEventListener('orientationchange', () => {
