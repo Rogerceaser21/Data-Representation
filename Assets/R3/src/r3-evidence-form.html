@@ -1389,6 +1389,11 @@ textarea.long-text:focus { border-color: var(--rate-success); }
    deltas to react to. Display-only: the body is never repositioned (v0.54 ban
    respected). closePad restores display first, then the exact scroll spot. */
 body.pad-open { min-height: 0; padding: 0; }
+
+/* v0.58 experiment (?d=scrollhair): keep a hairline of scrollable extent while
+   the pad is open, so a small scroll can still collapse Chrome's toolbar off
+   the pad's top edge (A/B vs the zero-extent default, which freezes it). */
+body.scrollhair.pad-open { min-height: calc(100vh + 2px); min-height: calc(100svh + 2px); }
 body.pad-open .form-container,
 body.pad-open .action-bar,
 body.pad-open .theme-toggle,
@@ -2064,6 +2069,9 @@ body.is-viewer .cog-btn { display: none; }
       </svg>
       <span id="pad-extract-label">Extract to form</span>
     </button>
+    <!-- v0.58: Done duplicated on the bottom edge — the top row can sit under
+         Chrome's toolbar in landscape; the bottom bar carries the working pin. -->
+    <button class="pad-btn primary" type="button" id="pad-done-bottom">Done</button>
   </div>
 
   <input type="file" id="pad-cam-input" accept="image/jpeg,image/png" capture="environment" hidden>
@@ -2078,6 +2086,10 @@ body.is-viewer .cog-btn { display: none; }
     <button class="pad-btn primary" type="button" id="pad-view-close">Close</button>
   </div>
   <div class="pad-view-scroll" id="pad-view-scroll"></div>
+  <!-- v0.58: Close duplicated on the bottom edge (same reason as the pad's). -->
+  <div class="pad-foot">
+    <button class="pad-btn primary" type="button" id="pad-view-close-bottom">Close</button>
+  </div>
 </div>
 
 <form class="form-container" id="r3-form" autocomplete="on" novalidate>
@@ -2500,6 +2512,7 @@ body.is-viewer .cog-btn { display: none; }
       return new Set(d ? d.split(',').map(s => s.trim()).filter(Boolean) : []);
     } catch (e) { return new Set(); }
   })();
+  if (DIAG.has('scrollhair')) document.body.classList.add('scrollhair');
 
   /* === Visible-bottom pin (v0.56, rebuilt v0.57) ===================
      iPad Chrome's collapsing toolbar moves the layout-viewport bottom
@@ -2584,6 +2597,7 @@ body.is-viewer .cog-btn { display: none; }
           settleTimer = null;
           if (kbDown()) return;                                  // keyboard came back mid-settle
           state.open = false;
+          state.closedAt = Date.now();                           // read by blurAndSettle (v0.58)
           document.body.classList.remove('kb-open');
           afterKeyboardClose();
         }, 350);
@@ -2827,7 +2841,19 @@ body.is-viewer .cog-btn { display: none; }
         '\nvv.offsetTop  ' + (vv ? Math.round(vv.offsetTop * 10) / 10 : 'n/a') +
         '\nscrollHeight  ' + document.scrollingElement.scrollHeight +
         '\n--vv-shift    ' + (document.documentElement.style.getPropertyValue('--vv-shift') || '0px') +
-        '\nbody classes  ' + (document.body.className || '(none)');
+        '\nbody classes  ' + (document.body.className || '(none)') +
+        '\npad rect      ' + (function () {                       // v0.58: F1 one-bit test
+          const r = document.getElementById('pad-modal').getBoundingClientRect();
+          const last = window.__padRect;
+          return 'top ' + Math.round(r.top) + ' · h ' + Math.round(r.height) +
+                 (last ? ' | at open: top ' + last.top + ' · h ' + last.h + ' @ ' + last.at : '');
+        })() +
+        '\nkb engine     ' + (window.__kbEngine
+          ? (window.__kbEngine.open ? 'open' : 'closed') +
+            ' · baseline ' + Math.round(window.__kbEngine.baseline) +
+            (window.__kbEngine.disabled ? ' · nokb' : '')
+          : 'n/a') +
+        '\n?d switches   ' + (DIAG.size ? Array.from(DIAG).join(',') : '(none)');
     }
     function diagStart() {
       diagStop();
@@ -2924,9 +2950,17 @@ body.is-viewer .cog-btn { display: none; }
      dropdown (its control input loses focus). No-op when nothing is focused. */
   async function blurAndSettle() {
     const ae = document.activeElement;
-    if (ae && (ae.tagName === 'TEXTAREA' || ae.tagName === 'INPUT' ||
-               ae.tagName === 'SELECT' || ae.isContentEditable)) {
-      ae.blur();
+    const isField = !!(ae && (ae.tagName === 'TEXTAREA' || ae.tagName === 'INPUT' ||
+               ae.tagName === 'SELECT' || ae.isContentEditable));
+    /* v0.58: the pen-pill launcher steals focus before this runs, so the
+       activeElement check alone missed a keyboard that is up or still
+       dismissing (padScrollY then reads mid-inset-flux values). Also settle
+       whenever the vv-delta engine says the keyboard is open or closed
+       within the last ~1.2s. */
+    const kb = window.__kbEngine;
+    const kbFlux = !!(kb && (kb.open || (kb.closedAt && Date.now() - kb.closedAt < 1200)));
+    if (isField) ae.blur();
+    if (isField || kbFlux) {
       await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
       await new Promise(r => setTimeout(r, 120));
     }
@@ -3563,25 +3597,54 @@ body.is-viewer .cog-btn { display: none; }
     }
 
     // ---------- open / close / reset ----------
+    const SWAP = !DIAG.has('noswap');            // ?d=noswap: v0.56-style plain overlay (A/B)
+    let opening = false, openCancelled = false;  // v0.58: race guard for the settle window
+    /* v0.58: the cog panel is unreachable while the pad covers the screen, so
+       the F1 diagnostics sample the pad rect AT open (+ after settle/resize)
+       and park it on window.__padRect for the admin readout to show later. */
+    function samplePadRect() {
+      const r = document.getElementById('pad-modal').getBoundingClientRect();
+      window.__padRect = { top: Math.round(r.top), h: Math.round(r.height), at: new Date().toTimeString().slice(0, 8) };
+    }
     async function openPad() {
-      if (!libsOk) return;
+      if (!libsOk || opening) return;
       // v0.57: park the keyboard first (WKWebView inset corruption, see helper),
       // save the spot, then swap the form OUT of the layout (body.pad-open) so
       // the document has no scrollable extent while the pad is up. closePad
       // restores the form and the exact spot before the pad hides.
-      await blurAndSettle();
-      padScrollY = window.scrollY || document.documentElement.scrollTop || 0;
-      document.getElementById('pad-modal').classList.add('open');
-      document.body.classList.add('pad-open');
-      window.scrollTo(0, 0);
-      opened = true;
-      if (!stage) {
-        stage = new Konva.Stage({ container: 'pad-stage', width: 100, height: 100 });
-        wireStageInput();
-        window.addEventListener('resize', () => { if (opened && stage) { sizeStage(); stage.batchDraw(); } });
+      // v0.58: whole body in try/catch — an error after body.pad-open was set
+      // used to leave a blank stuck page (nothing removed the class). Any
+      // failure now restores the form silently (rule 12).
+      opening = true; openCancelled = false;
+      try {
+        await blurAndSettle();
+        if (openCancelled) return;               // Done landed during the settle window
+        padScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+        document.getElementById('pad-modal').classList.add('open');
+        if (SWAP) {
+          document.body.classList.add('pad-open');
+          window.scrollTo(0, 0);
+        }
+        opened = true;
+        if (!stage) {
+          stage = new Konva.Stage({ container: 'pad-stage', width: 100, height: 100 });
+          wireStageInput();
+          window.addEventListener('resize', () => { if (opened && stage) { sizeStage(); stage.batchDraw(); samplePadRect(); } });
+        }
+        await showPage();                        // sizes the stage to the current page
+        setTool(tool);
+        samplePadRect();
+        setTimeout(() => { if (opened) samplePadRect(); }, 600);
+      } catch (e) {
+        if (document.body.classList.contains('pad-open')) {
+          document.body.classList.remove('pad-open');
+          window.scrollTo(0, padScrollY);
+        }
+        document.getElementById('pad-modal').classList.remove('open');
+        opened = false;
+      } finally {
+        opening = false;
       }
-      await showPage();                            // sizes the stage to the current page
-      setTool(tool);
     }
     // Per-field launcher: jump to that field's first page, then open.
     async function openPadAt(target) {
@@ -3590,8 +3653,11 @@ body.is-viewer .cog-btn { display: none; }
       await openPad();
     }
     function closePad() {
-      document.body.classList.remove('pad-open'); // v0.57: form back in layout FIRST
-      window.scrollTo(0, padScrollY);            // v0.56: restore BEFORE the pad hides (same paint)
+      if (opening) { openCancelled = true; return; }  // v0.58: cancel a pending open
+      if (SWAP) {
+        document.body.classList.remove('pad-open'); // v0.57: form back in layout FIRST
+        window.scrollTo(0, padScrollY);            // v0.56: restore BEFORE the pad hides (same paint)
+      }
       document.getElementById('pad-modal').classList.remove('open');
       opened = false;
       // v0.55: transcribe anything new in the background; text lands in the
@@ -3625,6 +3691,7 @@ body.is-viewer .cog-btn { display: none; }
       openBtn.addEventListener('click', openPad);
       fieldBtns.forEach(b => b.addEventListener('click', () => openPadAt(b.dataset.padTarget)));
       document.getElementById('pad-done').addEventListener('click', closePad);
+      document.getElementById('pad-done-bottom').addEventListener('click', closePad);  // v0.58
       containScroll(document.getElementById('pad-modal'));   // v0.54: no scroll-through
 
       document.getElementById('pad-cam-btn').addEventListener('click', () => document.getElementById('pad-cam-input').click());
@@ -4063,8 +4130,10 @@ body.is-viewer .cog-btn { display: none; }
     await blurAndSettle();
     padViewScrollY = window.scrollY || document.documentElement.scrollTop || 0;
     document.getElementById('pad-view').classList.add('open');
-    document.body.classList.add('pad-open');
-    window.scrollTo(0, 0);
+    if (!DIAG.has('noswap')) {                         // v0.58 A/B, same as the pad
+      document.body.classList.add('pad-open');
+      window.scrollTo(0, 0);
+    }
     try {
       const uris = await Promise.all(files.map(fetchPadImage));
       if (seq !== padViewSeq) return;                    // superseded / closed
@@ -4105,8 +4174,10 @@ body.is-viewer .cog-btn { display: none; }
 
   function closePadView() {
     padViewSeq++;
-    document.body.classList.remove('pad-open');  // v0.57: page back in layout FIRST
-    window.scrollTo(0, padViewScrollY);          // v0.56: restore BEFORE the lightbox hides
+    if (!DIAG.has('noswap')) {
+      document.body.classList.remove('pad-open');  // v0.57: page back in layout FIRST
+      window.scrollTo(0, padViewScrollY);          // v0.56: restore BEFORE the lightbox hides
+    }
     document.getElementById('pad-view').classList.remove('open');
     document.getElementById('pad-view-scroll').innerHTML = '';
   }
@@ -4115,6 +4186,7 @@ body.is-viewer .cog-btn { display: none; }
     b.addEventListener('click', function() { openPadView(b.dataset.padTarget); });
   });
   document.getElementById('pad-view-close').addEventListener('click', closePadView);
+  document.getElementById('pad-view-close-bottom').addEventListener('click', closePadView);  // v0.58
   containScroll(document.getElementById('pad-view'));        // v0.54: no scroll-through
 
   // On load: if URL has ?id=AIS-R3-...&token=..., fetch & render in read-only mode.
