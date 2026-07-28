@@ -95,6 +95,9 @@ Data-Representation/                          github.com/Rogerceaser21/Data-Repr
 │   ├── apps-script-photos/                    staff-photo Drive->Supabase mirror (clasp, admin.user, daily 03:00 trigger; README has setup)
 │   └── assets/                                ais-white.png + ais-navy.png + snapshot-cover.jpg + story/ illustrated motifs (public, non-sensitive)
 ├── dashboard-previews/                        dashboard design concepts · spea-dashboard.html = dashboard-v1 (parked); built from index.html slides 3-4
+├── video/
+│   ├── staff-voice/                           PUBLISHED companion page + mp4 + srt + poster (Pages, ungated, anonymised)
+│   └── staff-voice-src/                       HyperFrames project · edit template/composition.html then run scripts/build.mjs; brand.md = the reusable AIS video look; README.md = build chain + the one-request TTS rule
 ├── README.md                                 STALE (still describes v0.1 pitch only)
 ├── CLAUDE.md                                 this file
 └── .gitignore
@@ -235,6 +238,7 @@ Once Igor has weighed a concern and made a call, **execute**; don't re-raise the
 |---|---|
 | This repo | `github.com/Rogerceaser21/Data-Representation` (private) |
 | Live deck | https://rogerceaser21.github.io/Data-Representation/ |
+| Staff Voice video + page | https://rogerceaser21.github.io/Data-Representation/video/staff-voice/ (tags `video-v1.2`, `page-v1.2`) |
 | **Focus OS (task list)** ||
 | Linked project | `AIS-Data-Dashboard` (id `4617bb5f-91da-4c14-a9dc-3b05aa0de972`) · holds this repo's task list; read/written by the `handoff_load` / `handoff_write` skills. The old `SPEA Dashboard` project was deleted 2026-06-23. |
 | **Lesson Observation** ||
