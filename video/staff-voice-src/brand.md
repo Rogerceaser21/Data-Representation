@@ -83,11 +83,17 @@ Count-ups are driven from the timeline so a seek is deterministic.
 Gemini TTS, `gemini-2.5-flash-preview-tts`, voice **Charon**, with a director's note
 asking for a measured British accent at 160 wpm.
 
-**Fix the pace by re-asking, never by stretching.** Generate a line, measure its
-words per minute, and if it misses the target, generate it again with a nudged
-direction. Time-stretching a take by more than about 3% smears the formants and the
-line stops sounding like the same narrator, which is audible as a voice change
-mid-video. `scripts/tts.mjs` does the re-asking; `scripts/fit.mjs` is capped at 3%.
+**Generate the entire script in ONE request, then split the audio locally.** Gemini
+re-derives speaker identity on every request, so one request per line produces one
+narrator per line. This is a documented, Google-acknowledged, unfixed behaviour with
+no determinism control (temperature and top_k/top_p are ignored for TTS). Measured
+on the AIS script, per-line generation put neighbouring scenes 2.02 dB apart in
+long-term spectrum; a single take with drift EQ puts them 1.08 dB apart, which is
+below the 1.6 dB floor that different wording alone produces.
+
+Fix pace by re-asking for the take, never by stretching it: a stretch beyond a few
+percent smears the formants, and a *varying* stretch is exactly what makes a voice
+seem to change mid-video. One global tempo for one take is safe; per-line tempo is not.
 
 ## Never
 

@@ -10,27 +10,48 @@ Everything on screen is the Observation Dashboard's own CSS, lifted from
 ## Regenerating
 
 ```bash
-node scripts/tts.mjs      # narration, one wav per scene (skips existing; --force to redo all)
-node scripts/fit.mjs      # trim, concat, write timings.json + narration.srt
-node scripts/build.mjs    # stamp the timings into index.html
-npm run check             # lint + layout + motion + contrast
-npm run render            # -> renders/*.mp4
+node scripts/tts-single.mjs   # the WHOLE script in one request -> audio/full.wav
+node scripts/split.mjs        # cut it into scenes, write timings.json + narration.srt
+python3 scripts/deflutter.py  # flatten the take's slow timbre drift
+node scripts/build.mjs        # stamp the timings into index.html
+npm run check                 # lint + layout + motion + contrast
+npm run render                # -> renders/*.mp4
 ```
 
-`scripts/tts.mjs` reads `GEMINI_API_KEY` from `~/AIS-Data-Dashboard/.env`.
+`tts-single.mjs` reads `GEMINI_API_KEY` from `~/AIS-Data-Dashboard/.env`.
 
-To change a line: edit `scenes.json`, delete that scene's wav, then run tts, fit
-and build. **Edit `template/composition.html`, never `index.html`** — the latter is
-generated. Scene windows and every animation cue are derived from the narration
-track, so a line that gets longer moves its scene and its animation together.
+To change a line: edit `scenes.json`, then run all four scripts. **Edit
+`template/composition.html`, never `index.html`** — the latter is generated. Scene
+windows and every animation cue are derived from the narration track, so a line
+that gets longer moves its scene and its animation with it.
 
-### Pace
+### Why one request, and never one per scene
 
-The narrator must sound the same in every scene. That means the pace is fixed at
-generation time, not afterwards: `tts.mjs` measures each take's words per minute
-and re-asks with a nudged direction until it lands near 165, and `fit.mjs` is
-capped at +/-3% correction. Stretching a take further than that smears the voice
-and it stops sounding like the same person. Do not raise that cap.
+Gemini emits audio autoregressively with the speaker identity as soft in-context
+conditioning, **re-derived on every request**. Generating a line at a time gives a
+different performance each time, even with an identical voice and an identical
+prompt, and the result sounds like two narrators taking turns. Google documents the
+symptom, documents no determinism control (Vertex *ignores* temperature/top_k/top_p),
+and staff acknowledged it on their forum in Sept 2025 and June 2026 without a fix.
+
+Measured on this script, comparing each scene's long-term spectrum. The "phonetic
+floor" is how much the same take differs from itself on different words, 1.6 dB:
+
+| | adjacent scenes | far-apart scenes |
+|---|---|---|
+| one request per scene | 2.02 dB (random jumps) | 1.95 dB |
+| one request, split | 1.32 dB | 2.97 dB (slow drift) |
+| one request, split, drift EQ | **1.08 dB** | 2.66 dB |
+
+Neighbouring scenes now differ *less than the same voice differs from itself*.
+What remains is a slow gradient from open to close, which the ear tracks far less
+than a jump. `deflutter.py` reduces it by EQ-matching each scene to the take's
+average colour; that is linear filtering, so it changes tone and never timing.
+
+**Do not go back to per-line generation, and do not time-stretch by more than a few
+percent.** Both reintroduce the two-narrators effect. Pace is set by re-asking for
+the take (`tts-single.mjs` measures wpm and pushes the direction slower), and
+`split.mjs` applies at most one global tempo to the whole take.
 
 ## Files
 
