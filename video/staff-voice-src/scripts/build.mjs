@@ -28,7 +28,7 @@ const TOTAL_END = +(t.total + TAIL).toFixed(2);
 t.scenes.forEach((s, i) => {
   const start = starts[i];
   const end = i + 1 < starts.length ? starts[i + 1] : TOTAL_END;
-  win[s.id] = { start, dur: +(end - start).toFixed(2), narr: s.start };
+  win[s.id] = { start, dur: +(end - start).toFixed(2), narr: s.start, narrDur: s.dur };
 });
 const TOTAL = Math.ceil(t.total + TAIL);
 
@@ -40,7 +40,8 @@ html = html.replace(/\{\{(START|DUR):([a-z0-9_]+)\}\}/g, (m, kind, id) => {
 });
 if (missing.length) { console.error('unknown scene id in template:', [...new Set(missing)].join(', ')); process.exit(1); }
 
-const cues = Object.fromEntries(Object.entries(win).map(([k, v]) => [k, v.narr]));
+// {start, dur} per scene so cues can be absolute (at) or proportional (atf)
+const cues = Object.fromEntries(Object.entries(win).map(([k, v]) => [k, { start: v.narr, dur: v.narrDur }]));
 html = html.replace('{{TIMINGS}}', JSON.stringify(cues))
   .replace(/\{\{TOTAL\}\}/g, String(TOTAL));
 

@@ -1,8 +1,10 @@
 # Staff Voice video · sfp-feedback
 
-A 3m31s narrated explainer of the R3 pipeline and where Steve's two KPIs (session
-evaluation, reflection and action plan) fit into it. Built for Steve, Dave and
-Hayden. Companion HTML page lives in `../page/`.
+A three-minute narrated explainer of the R3 pipeline and where Steve's two KPIs
+(session evaluation, reflection and action plan) fit into it. Built for Steve,
+Dave and Hayden. Companion HTML page lives in `../staff-voice/`. v1.3 cut the
+v1.2 4m00s edition to 3m00s: tighter wording (611 -> 552 words, every scene,
+number and claim kept), trimmed intra-scene pauses, and one modest global tempo.
 
 Everything on screen is the Observation Dashboard's own CSS, lifted from
 `dashboard/src/index.html`, so the video shows the product rather than a mockup.
@@ -10,17 +12,26 @@ Everything on screen is the Observation Dashboard's own CSS, lifted from
 ## Regenerating
 
 ```bash
-node scripts/tts-single.mjs   # the WHOLE script in one request -> audio/full.wav
-node scripts/split.mjs        # cut it into scenes, write timings.json + narration.srt
-python3 scripts/deflutter.py  # flatten the take's slow timbre drift
-node scripts/build.mjs        # stamp the timings into index.html
-npm run check                 # lint + layout + motion + contrast
-npm run render                # -> renders/*.mp4
+node scripts/tts-single.mjs      # the WHOLE script in one request -> audio/full.wav
+node scripts/split.mjs           # cut into scenes, ONE global tempo, timings.json + srt
+python3 scripts/tighten.py       # shrink intra-scene pauses, recompute timings + srt
+python3 scripts/deflutter.py     # flatten the take's slow timbre drift. Run ONCE per recut
+python3 scripts/voiceconsist.py  # PROVE the voice is consistent before accepting the take
+node scripts/build.mjs           # stamp the timings into index.html
+npm run check                    # lint + layout + motion + contrast
+npm run render                   # -> renders/*.mp4
 ```
 
 `tts-single.mjs` reads `GEMINI_API_KEY` from `~/AIS-Data-Dashboard/.env`.
 
-To change a line: edit `scenes.json`, then run all four scripts. **Edit
+**Takes vary; score before accepting.** One request removes per-line drift, but
+individual takes still differ in how much the voice wanders across the length of
+the take. Building v1.3 the first take measured 3.6 dB between two adjacent
+scenes even after drift EQ (audibly a register shift) and was discarded; the next
+one measured 1.1 dB and shipped. If `voiceconsist.py` reports an adjacent max
+much above the phonetic floor, regenerate the take rather than shipping it.
+
+To change a line: edit `scenes.json`, then run all the scripts above. **Edit
 `template/composition.html`, never `index.html`** — the latter is generated. Scene
 windows and every animation cue are derived from the narration track, so a line
 that gets longer moves its scene and its animation with it.
@@ -58,8 +69,11 @@ the take (`tts-single.mjs` measures wpm and pushes the direction slower), and
 | File | What it is |
 |---|---|
 | `scenes.json` | The script. One entry per scene, plus the voice and the director's note. |
-| `scripts/tts.mjs` | Gemini TTS, `gemini-2.5-flash-preview-tts`, voice Charon, pace-targeted. |
-| `scripts/fit.mjs` | Silence trim, +/-3% correction, concat, SRT. |
+| `scripts/tts-single.mjs` | Gemini TTS, one request for the whole script, pace-targeted retries. |
+| `scripts/split.mjs` | Cuts the take into scenes, ONE global tempo, timings.json + SRT. |
+| `scripts/tighten.py` | Shrinks intra-scene pauses (silence-only cuts), recomputes timings + SRT. |
+| `scripts/deflutter.py` | EQ-matches each scene to the take's average colour. Run once per recut. |
+| `scripts/voiceconsist.py` | Measures scene-to-scene voice consistency; run before accepting a take. |
 | `scripts/build.mjs` | Stamps `timings.json` into the template to produce `index.html`. |
 | `template/composition.html` | **The composition you edit.** 14 scenes on one track. |
 | `index.html` | Generated. Do not edit. |

@@ -20,8 +20,14 @@ const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..')
 const SRC = path.join(ROOT, 'audio', 'full.wav');
 const cfg = JSON.parse(fs.readFileSync(path.join(ROOT, 'scenes.json'), 'utf8'));
 
-const TARGET_WPM = 167;   // the pace signed off on v1.1, measured the same way
-const KEEP_GAP = 0.62;    // breath left between scenes
+// v1.3: this metric counts intra-scene pauses as speech, so the right value
+// depends on how pausy the take is; 193 lands the shipped v1.3 take (552
+// words, a pausy 176-wpm read) at 3m00 total after tighten.py. A regenerated
+// take WILL need retuning: check the printed master length, and score voice
+// consistency per take before accepting one (the v1.3 first take measured
+// adj_max 3.6 dB post-EQ and was discarded; the shipped one 1.2 dB).
+const TARGET_WPM = 193;
+const KEEP_GAP = 0.45;    // breath left between scenes (0.62 through v1.2)
 const LEAD = 0.9;         // silence before the first word
 const TAIL = 1.6;
 

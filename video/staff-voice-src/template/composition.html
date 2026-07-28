@@ -443,7 +443,10 @@
       /* Cue times are derived from the narration track, injected at build time,
          so re-cutting a line moves the animation with it. */
       var NARR = {{TIMINGS}};
-      function at(id, off) { return NARR[id] + (off || 0); }
+      function at(id, off) { return NARR[id].start + (off || 0); }
+      // proportional cue: frac of the scene's narration length, so a shorter
+      // line compresses its choreography instead of losing the tail of it
+      function atf(id, frac) { return NARR[id].start + frac * NARR[id].dur; }
 
       window.__timelines = window.__timelines || {};
       var tl = gsap.timeline({ paused: true });
@@ -469,9 +472,9 @@
       /* 2 . intake */
       tl.from('#sc02 .shead', { opacity: 0, y: 16, duration: 0.7 }, at('s02_intake', -0.4))
         .from('#s2form', { opacity: 0, x: -28, duration: 0.9, ease: 'power2.out' }, at('s02_intake', 0.1))
-        .from('#s2nums .numtile', { opacity: 0, y: 22, duration: 0.7, stagger: 0.5 }, at('s02_intake', 3.7));
-      countUp('#s2nums .big-n', at('s02_intake', 3.9), 1.5);
-      tl.from('#s2note', { opacity: 0, duration: 0.7 }, at('s02_intake', 7.7));
+        .from('#s2nums .numtile', { opacity: 0, y: 22, duration: 0.7, stagger: 0.5 }, atf('s02_intake', 0.177));
+      countUp('#s2nums .big-n', atf('s02_intake', 0.187), 1.5);
+      tl.from('#s2note', { opacity: 0, duration: 0.7 }, atf('s02_intake', 0.368));
 
       /* 3 . board */
       tl.from('#sc03 .shead', { opacity: 0, y: 16, duration: 0.7 }, at('s03_board', -0.4))
@@ -480,15 +483,15 @@
       document.querySelectorAll('#s3histo .hb').forEach(function (b, i) {
         tl.fromTo(b, { height: '0%' }, { height: b.dataset.h + '%', duration: 0.9, ease: 'power2.out' }, at('s03_board', 1.2) + i * 0.13);
       });
-      tl.from('#sc03 .osseg', { opacity: 0, y: 12, duration: 0.7 }, at('s03_board', 3.2));
+      tl.from('#sc03 .osseg', { opacity: 0, y: 12, duration: 0.7 }, atf('s03_board', 0.227));
 
       /* 4 . evidence */
       tl.from('#sc04 .shead', { opacity: 0, y: 16, duration: 0.7 }, at('s04_evidence', -0.4))
         .from('#s4claim', { opacity: 0, y: 20, duration: 0.8 }, at('s04_evidence', 0.0))
-        .from('#s4claim .refmk', { opacity: 0, scale: 0.4, duration: 0.5, stagger: 0.12, ease: 'back.out(2)' }, at('s04_evidence', 2.3))
-        .fromTo('#s4panel', { xPercent: 104 }, { xPercent: 0, duration: 0.95, ease: 'power3.out' }, at('s04_evidence', 5.3))
-        .from('#s4panel .refcard', { opacity: 0, y: 18, duration: 0.7, stagger: 0.3 }, at('s04_evidence', 6.1))
-        .from('#s4note', { opacity: 0, duration: 0.7 }, at('s04_evidence', 12.4));
+        .from('#s4claim .refmk', { opacity: 0, scale: 0.4, duration: 0.5, stagger: 0.12, ease: 'back.out(2)' }, atf('s04_evidence', 0.135))
+        .fromTo('#s4panel', { xPercent: 104 }, { xPercent: 0, duration: 0.95, ease: 'power3.out' }, atf('s04_evidence', 0.312))
+        .from('#s4panel .refcard', { opacity: 0, y: 18, duration: 0.7, stagger: 0.3 }, atf('s04_evidence', 0.359))
+        .from('#s4note', { opacity: 0, duration: 0.7 }, atf('s04_evidence', 0.730));
 
       /* 5 . loop */
       tl.from('#sc05 .shead', { opacity: 0, y: 16, duration: 0.7 }, at('s05_loop', -0.4))
@@ -498,35 +501,35 @@
       tl.from('#sc06 .shead', { opacity: 0, y: 16, duration: 0.7 }, at('s06_coach', -0.4))
         .from('#s6card', { opacity: 0, y: 22, duration: 0.8, ease: 'power2.out' }, at('s06_coach', 0.1))
         .from('#s6lad .ns-cell', { opacity: 0, scaleX: 0.3, duration: 0.45, stagger: 0.05, ease: 'power2.out' }, at('s06_coach', 1.4))
-        .from('#s6lad .ns-lad-mv', { opacity: 0, x: 12, duration: 0.6, stagger: 0.25 }, at('s06_coach', 2.2))
-        .from('#s6sum', { opacity: 0, duration: 0.7 }, at('s06_coach', 3.4))
+        .from('#s6lad .ns-lad-mv', { opacity: 0, x: 12, duration: 0.6, stagger: 0.25 }, atf('s06_coach', 0.108))
+        .from('#s6sum', { opacity: 0, duration: 0.7 }, atf('s06_coach', 0.167))
         /* The whole focus card lands on "it carries the rubric line": both columns
            together, because a half-populated card reads as broken, not as pending. */
-        .from('#s6fc', { opacity: 0, y: 18, duration: 0.8, ease: 'power2.out' }, at('s06_coach', 4.2));
+        .from('#s6fc', { opacity: 0, y: 18, duration: 0.8, ease: 'power2.out' }, atf('s06_coach', 0.207));
 
       /* 7 . gap */
       tl.from('#s6flow', { opacity: 0, duration: 0.7 }, at('s06_gap', -0.4))
         .from('#s6h', { opacity: 0, y: 22, duration: 0.9, ease: 'power2.out' }, at('s06_gap', 0.4))
-        .from('#s6list .bl-row', { opacity: 0, x: -18, duration: 0.6, stagger: 1.15 }, at('s06_gap', 4.6));
+        .from('#s6list .bl-row', { opacity: 0, x: -18, duration: 0.6, stagger: 1.15 }, atf('s06_gap', 0.352));
 
       /* 8 . kpi 1 */
       tl.from('#sc08 .shead', { opacity: 0, y: 16, duration: 0.7 }, at('s07_kpi1', -0.4))
         .from('#s7flow .fstep', { opacity: 0, duration: 0.5, stagger: 0.09 }, at('s07_kpi1', 0.0))
         .fromTo('#s7new', { scale: 0.9, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.7, ease: 'back.out(1.6)' }, at('s07_kpi1', 0.8))
         .from('#s7form', { opacity: 0, y: 22, duration: 0.8 }, at('s07_kpi1', 1.8))
-        .from('#s7bi', { opacity: 0, x: 22, duration: 0.8 }, at('s07_kpi1', 6.1));
+        .from('#s7bi', { opacity: 0, x: 22, duration: 0.8 }, atf('s07_kpi1', 0.395));
 
       /* 9 . kpi 2 */
       tl.from('#sc09 .shead', { opacity: 0, y: 16, duration: 0.7 }, at('s08_kpi2', -0.4))
         .from('#s8grid .sixcard', { opacity: 0, y: 24, duration: 0.7, stagger: 2.1, ease: 'power2.out' }, at('s08_kpi2', 1.5))
-        .from('#s8note', { opacity: 0, duration: 0.7 }, at('s08_kpi2', 19.1));
+        .from('#s8note', { opacity: 0, duration: 0.7 }, atf('s08_kpi2', 0.892));
 
       /* 10 . strategies */
       tl.from('#sc10 .shead', { opacity: 0, y: 16, duration: 0.7 }, at('s09_strategies', -0.4))
         .from('#s9left', { opacity: 0, x: -26, duration: 0.85 }, at('s09_strategies', 0.2))
         .from('#s9right', { opacity: 0, x: 26, duration: 0.85 }, at('s09_strategies', 1.5))
-        .fromTo('#sc10 .mapline', { scaleX: 0 }, { scaleX: 1, duration: 0.55, stagger: 0.3 }, at('s09_strategies', 3.1))
-        .from('#s9note', { opacity: 0, duration: 0.7 }, at('s09_strategies', 16.9));
+        .fromTo('#sc10 .mapline', { scaleX: 0 }, { scaleX: 1, duration: 0.55, stagger: 0.3 }, atf('s09_strategies', 0.146))
+        .from('#s9note', { opacity: 0, duration: 0.7 }, atf('s09_strategies', 0.799));
 
       /* 11 . leadership */
       tl.from('#sc11 .shead', { opacity: 0, y: 16, duration: 0.7 }, at('s10_leadership', -0.4))
@@ -534,12 +537,12 @@
       document.querySelectorAll('#s10dist .dt').forEach(function (b, i) {
         tl.fromTo(b, { width: '0%' }, { width: b.dataset.w + '%', duration: 0.85, ease: 'power2.out' }, at('s10_leadership', 0.9) + i * 0.16);
       });
-      tl.from('#s10right .icard', { opacity: 0, x: 22, duration: 0.7, stagger: 1.5 }, at('s10_leadership', 5.1));
+      tl.from('#s10right .icard', { opacity: 0, x: 22, duration: 0.7, stagger: 1.5 }, atf('s10_leadership', 0.297));
 
       /* 12 . middle leaders */
       tl.from('#sc12 .shead', { opacity: 0, y: 16, duration: 0.7 }, at('s11_middle', -0.4))
         .from('#s11left .trow', { opacity: 0, x: -16, duration: 0.5, stagger: 0.14 }, at('s11_middle', 0.1))
-        .from('#s11right', { opacity: 0, x: 22, duration: 0.8 }, at('s11_middle', 2.6));
+        .from('#s11right', { opacity: 0, x: 22, duration: 0.8 }, atf('s11_middle', 0.248));
 
       /* 13 . payoff */
       tl.from('#sc13 .shead', { opacity: 0, y: 16, duration: 0.7 }, at('s12_plp', -0.4))
@@ -548,8 +551,8 @@
 
       /* 14 . close */
       tl.from('#s13h', { opacity: 0, y: 22, duration: 1.0, ease: 'power2.out' }, at('s13_close', -0.3))
-        .from('#s13flow .fstep', { opacity: 0, y: 20, duration: 0.6, stagger: 0.5 }, at('s13_close', 2.9))
-        .from('#sc14 .foot-brand', { opacity: 0, duration: 0.9 }, at('s13_close', 8.4));
+        .from('#s13flow .fstep', { opacity: 0, y: 20, duration: 0.6, stagger: 0.5 }, atf('s13_close', 0.167))
+        .from('#sc14 .foot-brand', { opacity: 0, duration: 0.9 }, atf('s13_close', 0.483));
 
       window.__timelines['main'] = tl;
     </script>

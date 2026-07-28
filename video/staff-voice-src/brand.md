@@ -95,6 +95,12 @@ Fix pace by re-asking for the take, never by stretching it: a stretch beyond a f
 percent smears the formants, and a *varying* stretch is exactly what makes a voice
 seem to change mid-video. One global tempo for one take is safe; per-line tempo is not.
 
+**Score every take before accepting it.** Takes from the same prompt differ in how
+much the voice wanders across the length of the take: building v1.3, one take
+measured 3.6 dB between adjacent scenes even after drift EQ (an audible register
+shift) and the next measured 1.1 dB. Run `voiceconsist.py` and regenerate rather
+than ship a take whose adjacent-scene distance sits above the phonetic floor.
+
 ## Never
 
 - Never show a real teacher name. Invented names only.
