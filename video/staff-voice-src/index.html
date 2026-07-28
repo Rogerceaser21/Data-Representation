@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,500;1,600&display=block" rel="stylesheet" />
+    <link rel="stylesheet" href="styles/dashboard.css" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="213" data-width="1920" data-height="1080">
+
+      <audio id="narration" class="clip" data-start="0" data-duration="213" data-volume="1" src="assets/narration.mp3"></audio>
+
+      <div class="bgwash" style="z-index:0"></div>
+
+      <!-- ============ 1 . COVER ============ -->
+      <section class="scene navy clip" id="sc01" data-start="0" data-duration="9.32" data-track-index="1" style="justify-content:space-between;padding:96px 104px">
+        <div class="sbody">
+        <div class="stars" id="coverStars" data-layout-allow-overflow></div>
+        <div style="position:relative;z-index:2">
+          <div class="crest" id="coverCrest" style="margin-bottom:38px"></div>
+          <div class="coverk">AIS Sharjah &middot; Teaching and Learning</div>
+          <h1 class="coverh">From observation to<br />a plan for <em>every teacher</em></h1>
+          <div class="covstripe" id="covStripe"></div>
+        </div>
+        <div class="covsub" style="position:relative;z-index:2">The R3 pipeline as it runs today, and where staff voice fits into it.</div>
+      </div>
+      </section>
+
+      <!-- ============ 2 . ONE INTAKE ============ -->
+      <section class="scene top clip" id="sc02" data-start="9.32" data-duration="19.54" data-track-index="1">
+        <div class="sbody">
+        <div class="shead">
+          <div class="kick"><i class="stripe"></i> One intake</div>
+          <h2>Every observation, <em>one form</em></h2>
+        </div>
+        <div style="display:grid;grid-template-columns:520px 1fr;gap:64px;align-items:center">
+          <div class="formcard" id="s2form">
+            <div class="fcttl">R3 Evidence Form</div>
+            <div class="fcsub">AIS Sharjah &middot; inspection round June 2026</div>
+            <div class="ffield"><label>Teacher observed</label><div class="fin">Sarah Whitfield</div></div>
+            <div class="ffield"><label>Subject / date</label><div class="fin">Mathematics &nbsp;&middot;&nbsp; 17 June 2026</div></div>
+            <div class="ffield" style="margin-bottom:8px"><label>Students make progress</label>
+              <div class="scalerow">
+                <b>1</b><b>2</b><b class="on" style="background:var(--r3)">3</b><b>4</b><b>5</b><b>6</b>
+              </div>
+            </div>
+            <div class="subtle" style="margin-top:14px">10 judgements &middot; evidence &middot; strengths &middot; areas to develop</div>
+          </div>
+          <div>
+            <div class="numgrid" id="s2nums">
+              <div class="numtile"><div class="big-n" data-count="168">0</div><div class="ml">Submissions</div></div>
+              <div class="numtile"><div class="big-n" data-count="110" style="color:var(--y)">0</div><div class="ml">Distinct lessons</div></div>
+              <div class="numtile"><div class="big-n" data-count="104">0</div><div class="ml">Teachers</div></div>
+            </div>
+            <div class="pill-note" id="s2note" style="margin-top:44px">Co-observed lessons merged &middot; best evidence wins</div>
+          </div>
+        </div>
+      </div>
+      </section>
+
+      <!-- ============ 3 . THE BOARD ============ -->
+      <section class="scene top clip" id="sc03" data-start="28.86" data-duration="13.69" data-track-index="1">
+        <div class="sbody">
+        <div class="shead">
+          <div class="kick"><i class="stripe"></i> Snapshot &middot; R3 June 26</div>
+          <h2>The round <em>at a glance</em></h2>
+        </div>
+        <div style="display:grid;grid-template-columns:430px 1fr;gap:26px;align-items:stretch">
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <div class="panel stat s3card"><div class="v" data-count="110">0</div><div class="l">Lessons observed</div><div class="s">June 2026 sweep</div></div>
+            <div class="panel stat s3card"><div class="v" data-count="104">0</div><div class="l">Teachers seen</div><div class="s">across both phases</div></div>
+            <div class="panel stat accent s3card"><div class="v">3.22</div><div class="l">Average progress</div><div class="s">best rating per teacher, then averaged</div></div>
+          </div>
+          <div class="panel s3card">
+            <div class="ey-bold" style="margin-bottom:18px">Where the judgements sit</div>
+            <div class="histo" id="s3histo">
+              <div class="hbar"><div class="hc">8</div><div class="hb" data-h="22" style="background:var(--r1)"></div><div class="hw">Outstanding</div></div>
+              <div class="hbar"><div class="hc">21</div><div class="hb" data-h="58" style="background:var(--r2)"></div><div class="hw">Very Good</div></div>
+              <div class="hbar"><div class="hc">25</div><div class="hb" data-h="69" style="background:var(--r3)"></div><div class="hw">Good</div></div>
+              <div class="hbar"><div class="hc">36</div><div class="hb" data-h="100" style="background:var(--r4)"></div><div class="hw">Acceptable</div></div>
+              <div class="hbar"><div class="hc">7</div><div class="hb" data-h="19" style="background:var(--r5)"></div><div class="hw">Weak</div></div>
+              <div class="hbar"><div class="hc">4</div><div class="hb" data-h="11" style="background:var(--r6)"></div><div class="hw">Very Weak</div></div>
+            </div>
+            <div class="osseg" style="margin-top:22px">
+              <div class="osramp">
+                <div class="rc"><div class="sw" style="background:var(--r1)"></div><div class="lb">Outstanding</div></div>
+                <div class="rc"><div class="sw" style="background:var(--r2)"></div><div class="lb">Very Good</div></div>
+                <div class="rc"><div class="sw" style="background:var(--r3)"></div><div class="lb">Good</div></div>
+                <div class="rc"><div class="sw" style="background:var(--r4)"></div><div class="lb">Acceptable</div></div>
+                <div class="rc"><div class="sw" style="background:var(--r5)"></div><div class="lb">Weak</div></div>
+                <div class="rc"><div class="sw" style="background:var(--r6)"></div><div class="lb">Very Weak</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </section>
+
+      <!-- ============ 4 . EVIDENCE DISCIPLINE ============ -->
+      <section class="scene top clip" id="sc04" data-start="42.55" data-duration="18.07" data-track-index="1" style="padding-right:0">
+        <div class="sbody">
+        <div class="shead" style="padding-right:104px">
+          <div class="kick"><i class="stripe"></i> Every claim is traceable</div>
+          <h2>Open the number, <em>see the lesson</em></h2>
+        </div>
+        <div style="display:block">
+          <div style="padding-right:576px">
+            <div class="panel" id="s4claim">
+              <div class="swhead" style="color:var(--g)"><i class="swdot" style="background:var(--g)"></i><b>What is working</b></div>
+              <div class="swev">Evidence base &middot; 48 lessons, Primary &amp; Kindy</div>
+              <div class="swsum">Questioning is used to check understanding rather than to move the lesson along, and in the strongest lessons teachers follow an answer with a second question that asks the student to justify it.<span class="refmk">1</span><span class="refmk">2</span><span class="refmk">3</span></div>
+              <div class="blist">
+                <div class="brow"><span class="bm"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="var(--g)" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Modelling is explicit and the success criteria stay visible throughout<span class="refmk">4</span></span></div>
+                <div class="brow"><span class="bm"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="var(--g)" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Relationships are warm and routines are established, so time is not lost at transitions<span class="refmk">5</span></span></div>
+              </div>
+            </div>
+            <div class="pill-note" id="s4note" style="margin-top:26px">More than 600 references behind the June round</div>
+          </div>
+          <div class="refpanel" id="s4panel" style="height:771px;border-radius:18px 0 0 18px" data-layout-allow-overflow>
+            <div class="refhd">
+              <div>
+                <div class="rk">Insights &middot; source</div>
+                <div class="rt">Questioning used to check understanding</div>
+              </div>
+              <div class="refx">&times;</div>
+            </div>
+            <div class="refbody">
+              <div class="refmethod"><b>How this is counted.</b> Lessons where the inspector's evidence names questioning as a strength, deduplicated so a co-observed lesson counts once.</div>
+              <div class="refcard">
+                <div class="refmeta"><i class="rdot" style="background:var(--r2)"></i><span class="rarea">Mathematics</span><span>&middot;</span><span>17 June 2026</span><span>&middot;</span><span>Very Good</span></div>
+                <div class="refq">"Questions were targeted and followed up. Students were asked to explain their reasoning before the teacher moved on."</div>
+                <div class="refwhy"><b>Why this counts.</b> The follow-up question, not the first question, is what the criterion asks for.</div>
+                <a class="reflink">Open the R3 record &rarr;</a>
+              </div>
+              <div class="refcard">
+                <div class="refmeta"><i class="rdot" style="background:var(--r3)"></i><span class="rarea">English</span><span>&middot;</span><span>18 June 2026</span><span>&middot;</span><span>Good</span></div>
+                <div class="refq">"Checked understanding across the room before moving on, including students who had not volunteered."</div>
+                <div class="refwhy"><b>Why this counts.</b> Checking beyond volunteers is the behaviour the descriptor names.</div>
+                <a class="reflink">Open the R3 record &rarr;</a>
+              </div>
+            </div>
+            <div class="reffoot">Sources are shown without identifying details. Teacher names are never displayed in a reference.</div>
+          </div>
+        </div>
+      </div>
+      </section>
+
+      <!-- ============ 5 . THE LOOP TODAY ============ -->
+      <section class="scene clip" id="sc05" data-start="60.62" data-duration="18.81" data-track-index="1">
+        <div class="sbody">
+        <div class="shead">
+          <div class="kick"><i class="stripe"></i> The loop today</div>
+          <h2>Four steps, <em>already running</em></h2>
+        </div>
+        <div class="flowstrip" id="s5flow">
+          <div class="fstep"><div class="fn">01</div><div class="ft">Observation filed</div><div class="fs">R3 form, on the inspector's iPad, in the lesson.</div></div>
+          <div class="fstep"><div class="fn">02</div><div class="ft">Teacher given feedback</div><div class="fs">The conversation that follows the lesson.</div></div>
+          <div class="fstep"><div class="fn">03</div><div class="ft">Observer approves the plan</div><div class="fs">An analysis and a suggested coaching plan, which they approve, edit or rewrite.</div></div>
+          <div class="fstep"><div class="fn">04</div><div class="ft">Teacher receives it</div><div class="fs">Every suggestion referenced back to our Student Progress Rubric.</div></div>
+        </div>
+      </div>
+      </section>
+
+      <!-- ============ 6 . THE GAP ============ -->
+      <section class="scene clip" id="sc06" data-start="79.43" data-duration="15.82" data-track-index="1">
+        <div class="sbody">
+        <div class="flowstrip" id="s6flow" style="margin-bottom:52px">
+          <div class="fstep dim"><div class="fn">01</div><div class="ft">Observation filed</div></div>
+          <div class="fstep dim"><div class="fn">02</div><div class="ft">Teacher given feedback</div></div>
+          <div class="fstep dim"><div class="fn">03</div><div class="ft">Observer approves the plan</div></div>
+          <div class="fstep dim"><div class="fn">04</div><div class="ft">Teacher receives it</div></div>
+        </div>
+        <div class="beat-h" id="s6h" style="max-width:30ch;font-size:54px">We capture how a session was rated.<br /><em>We do not capture the teacher.</em></div>
+        <div class="bl-list" id="s6list" style="margin-top:34px">
+          <div class="bl-row"><span class="bm"><svg viewBox="0 0 24 24"><path d="M5 12h14" stroke="var(--r5)" stroke-width="2.6" fill="none" stroke-linecap="round"/></svg></span><span>What they made of it</span></div>
+          <div class="bl-row"><span class="bm"><svg viewBox="0 0 24 24"><path d="M5 12h14" stroke="var(--r5)" stroke-width="2.6" fill="none" stroke-linecap="round"/></svg></span><span>What they expect to struggle with</span></div>
+          <div class="bl-row"><span class="bm"><svg viewBox="0 0 24 24"><path d="M5 12h14" stroke="var(--r5)" stroke-width="2.6" fill="none" stroke-linecap="round"/></svg></span><span>What they intend to do differently on Monday morning</span></div>
+        </div>
+      </div>
+      </section>
+
+      <!-- ============ 7 . KPI 1 ============ -->
+      <section class="scene top clip" id="sc07" data-start="95.25" data-duration="14.07" data-track-index="1">
+        <div class="sbody">
+        <div class="shead">
+          <div class="kick"><i class="stripe"></i> Addition one</div>
+          <h2>An evaluation of <em>the session itself</em></h2>
+        </div>
+        <div class="flowstrip five" id="s7flow" style="margin-bottom:38px">
+          <div class="fstep dim"><div class="fn">01</div><div class="ft">Observation filed</div></div>
+          <div class="fstep new" id="s7new"><span class="ftag">New</span><div class="fn">02</div><div class="ft">Session evaluation</div><div class="fs">Completed by the teacher.</div></div>
+          <div class="fstep dim"><div class="fn">03</div><div class="ft">Feedback</div></div>
+          <div class="fstep dim"><div class="fn">04</div><div class="ft">Observer approves the plan</div></div>
+          <div class="fstep dim"><div class="fn">05</div><div class="ft">Teacher receives it</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:560px 1fr;gap:56px;align-items:start">
+          <div class="formcard" id="s7form">
+            <div class="fcttl">Professional learning &middot; session evaluation</div>
+            <div class="fcsub">Completed by the teacher &middot; two minutes</div>
+            <div class="ffield"><label>The session was relevant to my classroom</label><div class="scalerow"><b>1</b><b class="on" style="background:var(--r2)">2</b><b>3</b><b>4</b><b>5</b><b>6</b></div></div>
+            <div class="ffield"><label>The strategies were modelled clearly</label><div class="scalerow"><b>1</b><b>2</b><b class="on" style="background:var(--r3)">3</b><b>4</b><b>5</b><b>6</b></div></div>
+            <div class="ffield" style="margin-bottom:0"><label>Anything the session did not cover</label><div class="fin ph">Free text</div></div>
+          </div>
+          <div>
+            <div class="bi" id="s7bi"><span class="bn">&rarr;</span><p>It sits <b>before</b> the coaching plan is drafted, so that the observer, and the analysis, both see it first.</p></div>
+            <div class="pill-note" style="margin-top:26px">Proposed &middot; not yet live</div>
+          </div>
+        </div>
+      </div>
+      </section>
+
+      <!-- ============ 8 . KPI 2 ============ -->
+      <section class="scene top clip" id="sc08" data-start="109.32" data-duration="23.15" data-track-index="1">
+        <div class="sbody">
+        <div class="shead">
+          <div class="kick"><i class="stripe"></i> Addition two</div>
+          <h2>A reflection, and <em>an action plan</em></h2>
+        </div>
+        <div class="sixgrid" id="s8grid">
+          <div class="sixcard"><span class="sn">1</span><p>What the teacher took from the session</p></div>
+          <div class="sixcard"><span class="sn">2</span><p>The challenges they expect when they apply it</p></div>
+          <div class="sixcard"><span class="sn">3</span><p>Their own ideas for getting past those challenges</p></div>
+          <div class="sixcard"><span class="sn">4</span><p>How they will use it in their classroom</p></div>
+          <div class="sixcard"><span class="sn">5</span><p>What they need from their middle leader</p></div>
+          <div class="sixcard"><span class="sn">6</span><p>What they expect to change in student learning, and over what timeframe</p></div>
+        </div>
+        <div class="pill-note" id="s8note" style="margin-top:34px">Proposed &middot; placement in the flow is yours to set</div>
+      </div>
+      </section>
+
+      <!-- ============ 9 . FIVE STRATEGIES ============ -->
+      <section class="scene top clip" id="sc09" data-start="132.47" data-duration="22.43" data-track-index="1">
+        <div class="sbody">
+        <div class="shead">
+          <div class="kick"><i class="stripe"></i> Ready made, not improvised</div>
+          <h2>Five strategies, mapped to <em>the rubric</em></h2>
+        </div>
+        <div class="maprow">
+          <div class="panel" id="s9left">
+            <div class="ey-bold" style="margin-bottom:16px">AIS Student Progress Rubric</div>
+            <div class="blist">
+              <div class="brow"><span class="bm"><svg viewBox="0 0 24 24"><path d="M4 12h16" stroke="var(--b)" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg></span><span>Students know what success looks like before they begin</span></div>
+              <div class="brow"><span class="bm"><svg viewBox="0 0 24 24"><path d="M4 12h16" stroke="var(--b)" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg></span><span>Questioning checks understanding rather than moves the lesson on</span></div>
+              <div class="brow"><span class="bm"><svg viewBox="0 0 24 24"><path d="M4 12h16" stroke="var(--b)" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg></span><span>Work is adapted so every group is stretched</span></div>
+              <div class="brow"><span class="bm"><svg viewBox="0 0 24 24"><path d="M4 12h16" stroke="var(--b)" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg></span><span>Students talk to each other about the learning, not only to the teacher</span></div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:26px;align-items:center;padding:0 6px">
+            <div class="mapline" style="width:54px" id="s9l1"></div>
+            <div class="mapline" style="width:54px" id="s9l2"></div>
+            <div class="mapline" style="width:54px" id="s9l3"></div>
+            <div class="mapline" style="width:54px" id="s9l4"></div>
+          </div>
+          <div class="panel" id="s9right">
+            <div class="ey-bold" style="margin-bottom:16px">Coaching strategies &middot; with worked examples</div>
+            <div class="blist">
+              <div class="brow"><span class="bm"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="var(--y)" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Success criteria written with the class, kept visible</span></div>
+              <div class="brow"><span class="bm"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="var(--y)" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Cold call plus a follow-up "how do you know?"</span></div>
+              <div class="brow"><span class="bm"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="var(--y)" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>One task, three entry points</span></div>
+              <div class="brow"><span class="bm"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="var(--y)" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Structured talk: pair, compare, then report</span></div>
+              <div class="brow"><span class="bm"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="var(--y)" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Exit ticket that names the next lesson's starting point</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="pill-note" id="s9note" style="margin-top:30px">Built on the AIS Teaching and Learning Agenda &middot; the observer edits, the teacher receives</div>
+      </div>
+      </section>
+
+      <!-- ============ 10 . WHAT LEADERSHIP SEES ============ -->
+      <section class="scene top clip" id="sc10" data-start="154.90" data-duration="17.35" data-track-index="1">
+        <div class="sbody">
+        <div class="shead">
+          <div class="kick"><i class="stripe"></i> What leadership sees</div>
+          <h2>Themes, <em>not a folder of replies</em></h2>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:start">
+          <div class="panel" id="s10left">
+            <div class="swhead" style="color:var(--r5)"><i class="swdot" style="background:var(--r5)"></i><b>What staff are asking for</b></div>
+            <div class="swev">Illustrative &middot; the staff forms are not live yet</div>
+            <div class="dist" id="s10dist">
+              <div class="drow"><span class="dk">Time to plan together</span><span class="dt" data-w="100" style="background:var(--r4)"></span><span class="dv">&nbsp;</span></div>
+              <div class="drow"><span class="dk">Modelling in my subject</span><span class="dt" data-w="78" style="background:var(--r4)"></span><span class="dv">&nbsp;</span></div>
+              <div class="drow"><span class="dk">Ready made resources</span><span class="dt" data-w="61" style="background:var(--r3)"></span><span class="dv">&nbsp;</span></div>
+              <div class="drow"><span class="dk">A second observation</span><span class="dt" data-w="34" style="background:var(--r3)"></span><span class="dv">&nbsp;</span></div>
+            </div>
+          </div>
+          <div id="s10right">
+            <div class="icard"><span class="inum">1</span><p>The same challenge is named by teachers who sat in different sessions, which points at timetable, not at the training.<span class="refmk">1</span><span class="refmk">2</span></p></div>
+            <div class="icard dev"><span class="inum">2</span><p>Where a strategy is not being used, the reason given is most often class size rather than confidence.<span class="refmk">3</span></p></div>
+            <div class="icard"><span class="inum">3</span><p>Teachers who name a specific timeframe for the change are the ones who also name the support they need.<span class="refmk">4</span></p></div>
+          </div>
+        </div>
+      </div>
+      </section>
+
+      <!-- ============ 11 . MIDDLE LEADERS ============ -->
+      <section class="scene top clip" id="sc11" data-start="172.25" data-duration="12.02" data-track-index="1">
+        <div class="sbody">
+        <div class="shead">
+          <div class="kick"><i class="stripe"></i> Middle leaders</div>
+          <h2>Their team, <em>and nobody else's</em></h2>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:start">
+          <div class="panel" id="s11left">
+            <div class="ey">Mathematics &middot; 5 teachers</div>
+            <div class="tlist">
+              <div class="trow"><span class="nm">Sarah Whitfield<small>Secondary &middot; 2 observations</small></span><span class="tchip" style="background:var(--r2)">Very Good</span></div>
+              <div class="trow"><span class="nm">Daniel Okoro<small>Secondary &middot; 1 observation</small></span><span class="tchip" style="background:var(--r3)">Good</span></div>
+              <div class="trow"><span class="nm">Mei Lin Chua<small>Secondary &middot; 2 observations</small></span><span class="tchip" style="background:var(--r1)">Outstanding</span></div>
+              <div class="trow"><span class="nm">Adam Rafferty<small>Secondary &middot; 1 observation</small></span><span class="tchip" style="background:var(--r4)">Acceptable</span></div>
+              <div class="trow"><span class="nm">Priya Raghavan<small>Secondary &middot; 1 observation</small></span><span class="tchip" style="background:var(--r3)">Good</span></div>
+            </div>
+          </div>
+          <div class="panel" id="s11right">
+            <div class="swhead" style="color:var(--b)"><i class="swdot" style="background:var(--b)"></i><b>Ready for the conversation</b></div>
+            <div class="swev">Illustrative &middot; drawn from the teacher's own reflection</div>
+            <div class="ofield" style="margin-bottom:16px"><div class="ofl">They said they would</div><p>Build success criteria with the class rather than hand them out.</p></div>
+            <div class="ofield" style="margin-bottom:16px"><div class="ofl">They asked for</div><p>One modelled lesson in their own subject before half term.</p></div>
+            <div class="ofield"><div class="ofl">They expect to see</div><p>More students starting independently, within four weeks.</p></div>
+          </div>
+        </div>
+      </div>
+      </section>
+
+      <!-- ============ 12 . THE PAYOFF ============ -->
+      <section class="scene top clip" id="sc12" data-start="184.27" data-duration="12.24" data-track-index="1">
+        <div class="sbody">
+        <div class="shead">
+          <div class="kick"><i class="stripe"></i> For the teacher</div>
+          <h2>A plan <em>of their own</em></h2>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:start">
+          <div class="panel" id="s12left">
+            <div class="ey">Next steps &middot; Sarah Whitfield</div>
+            <div class="ocard" style="margin-bottom:12px">
+              <div class="odrow"><span class="odn">Students make progress</span><span class="osw" style="background:var(--r2)"></span><span class="odv">Very Good</span></div>
+              <div class="odrow"><span class="odn">Teaching</span><span class="osw" style="background:var(--r3)"></span><span class="odv">Good</span></div>
+            </div>
+            <div class="ofield"><div class="ofl">From the rubric</div><p>"Questioning checks understanding rather than moves the lesson on."</p></div>
+          </div>
+          <div id="s12right">
+            <div class="icard"><span class="inum">&rarr;</span><p><b>The move.</b> Follow every answer with one question that asks the student to justify it.</p></div>
+            <div class="icard"><span class="inum">&rarr;</span><p><b>Look for.</b> Students referring back to the success criteria without being prompted.</p></div>
+            <div class="icard"><span class="inum">&rarr;</span><p><b>In their words.</b> "I want them starting without me. Four weeks."<span class="refmk">1</span></p></div>
+          </div>
+        </div>
+      </div>
+      </section>
+
+      <!-- ============ 13 . CLOSE ============ -->
+      <section class="scene clip" id="sc13" data-start="196.51" data-duration="16.49" data-track-index="1">
+        <div class="sbody">
+        <div class="beat-h" id="s13h" style="max-width:26ch;font-size:58px">The two forms are new.<br /><em>The architecture is not.</em></div>
+        <div class="flowstrip five" id="s13flow" style="margin-top:56px">
+          <div class="fstep"><div class="ft">One intake</div><div class="fs">R3 and the staff forms, same pipeline</div></div>
+          <div class="fstep"><div class="ft">Same evidence rules</div><div class="fs">Every claim carries its sources</div></div>
+          <div class="fstep"><div class="ft">Same dashboard</div><div class="fs">By role, by team, by school</div></div>
+          <div class="fstep"><div class="ft">Same privacy layer</div><div class="fs">The data stays in our own database</div></div>
+          <div class="fstep new"><span class="ftag">Next</span><div class="ft">Student surveys</div><div class="fs">On the same rails</div></div>
+        </div>
+        <div class="foot-brand"><i class="lg" id="footLogo"></i> AIS Sharjah &middot; Teaching and Learning</div>
+      </div>
+      </section>
+    </div>
+
+    <script>
+      /* Deterministic star field for the cover (no Math.random: seeded LCG). */
+      (function () {
+        var host = document.getElementById('coverStars');
+        var seed = 20260728, n = 130, html = '';
+        function rnd() { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296; }
+        for (var i = 0; i < n; i++) {
+          var s = 1 + rnd() * 2.2, x = rnd() * 100, y = rnd() * 100, o = 0.18 + rnd() * 0.62;
+          html += '<i style="left:' + x.toFixed(2) + '%;top:' + y.toFixed(2) + '%;width:' + s.toFixed(2) +
+            'px;height:' + s.toFixed(2) + 'px;opacity:' + o.toFixed(2) + '"></i>';
+        }
+        host.innerHTML = html;
+        document.getElementById('coverCrest').style.backgroundImage = "url('assets/ais-white.png')";
+        document.getElementById('footLogo').style.backgroundImage = "url('assets/ais-navy.png')";
+      })();
+
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+
+      /* Count-ups are driven by the timeline (onUpdate fires on seek), so a rendered
+         frame at time t always shows the same number. */
+      function countUp(sel, at, dur) {
+        document.querySelectorAll(sel).forEach(function (el, i) {
+          var target = +el.dataset.count;
+          var o = { v: 0 };
+          tl.to(o, {
+            v: target, duration: dur || 1.4, ease: 'power2.out',
+            onUpdate: function () { el.textContent = Math.round(o.v); }
+          }, at + i * 0.28);
+        });
+      }
+
+      /* 1 . cover */
+      tl.from('#coverCrest', { opacity: 0, y: 18, duration: 1.0, ease: 'power2.out' }, 0.15)
+        .from('#sc01 .coverk', { opacity: 0, y: 14, duration: 0.8 }, 0.5)
+        .from('#sc01 .coverh', { opacity: 0, y: 26, duration: 1.1, ease: 'power3.out' }, 0.75)
+        .from('#covStripe', { scaleX: 0, duration: 0.9, ease: 'power2.out' }, 1.5)
+        .from('#sc01 .covsub', { opacity: 0, y: 12, duration: 0.9 }, 1.9)
+        .to('#coverStars', { y: -26, duration: 9.3, ease: 'none' }, 0);
+
+      /* 2 . intake */
+      tl.from('#sc02 .shead', { opacity: 0, y: 16, duration: 0.7 }, 9.5)
+        .from('#s2form', { opacity: 0, x: -28, duration: 0.9, ease: 'power2.out' }, 10.0)
+        .from('#s2nums .numtile', { opacity: 0, y: 22, duration: 0.7, stagger: 0.5 }, 13.6);
+      countUp('#s2nums .big-n', 13.8, 1.5);
+      tl.from('#s2note', { opacity: 0, duration: 0.7 }, 17.6);
+
+      /* 3 . board */
+      tl.from('#sc03 .shead', { opacity: 0, y: 16, duration: 0.7 }, 29.0)
+        .from('#sc03 .s3card', { opacity: 0, y: 20, duration: 0.7, stagger: 0.16 }, 29.4);
+      countUp('#sc03 .stat .v[data-count]', 29.8, 1.3);
+      document.querySelectorAll('#s3histo .hb').forEach(function (b, i) {
+        tl.fromTo(b, { height: '0%' }, { height: b.dataset.h + '%', duration: 0.9, ease: 'power2.out' }, 30.6 + i * 0.13);
+      });
+      tl.from('#sc03 .osseg', { opacity: 0, y: 12, duration: 0.7 }, 32.6);
+
+      /* 4 . evidence */
+      tl.from('#sc04 .shead', { opacity: 0, y: 16, duration: 0.7 }, 42.7)
+        .from('#s4claim', { opacity: 0, y: 20, duration: 0.8 }, 43.1)
+        .from('#s4claim .refmk', { opacity: 0, scale: 0.4, duration: 0.5, stagger: 0.12, ease: 'back.out(2)' }, 45.4)
+        .fromTo('#s4panel', { xPercent: 104 }, { xPercent: 0, duration: 0.95, ease: 'power3.out' }, 48.4)
+        .from('#s4panel .refcard', { opacity: 0, y: 18, duration: 0.7, stagger: 0.3 }, 49.2)
+        .from('#s4note', { opacity: 0, duration: 0.7 }, 55.5);
+
+      /* 5 . loop */
+      tl.from('#sc05 .shead', { opacity: 0, y: 16, duration: 0.7 }, 60.8)
+        .from('#s5flow .fstep', { opacity: 0, y: 26, duration: 0.75, stagger: 1.5, ease: 'power2.out' }, 61.6);
+
+      /* 6 . gap */
+      tl.from('#s6flow', { opacity: 0, duration: 0.7 }, 79.6)
+        .from('#s6h', { opacity: 0, y: 22, duration: 0.9, ease: 'power2.out' }, 80.4)
+        .from('#s6list .bl-row', { opacity: 0, x: -18, duration: 0.6, stagger: 1.15 }, 84.6);
+
+      /* 7 . kpi 1 */
+      tl.from('#sc07 .shead', { opacity: 0, y: 16, duration: 0.7 }, 95.4)
+        .from('#s7flow .fstep', { opacity: 0, duration: 0.5, stagger: 0.09 }, 95.8)
+        .fromTo('#s7new', { scale: 0.9, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.7, ease: 'back.out(1.6)' }, 96.6)
+        .from('#s7form', { opacity: 0, y: 22, duration: 0.8 }, 97.6)
+        .from('#s7bi', { opacity: 0, x: 22, duration: 0.8 }, 101.9);
+
+      /* 8 . kpi 2 */
+      tl.from('#sc08 .shead', { opacity: 0, y: 16, duration: 0.7 }, 109.5)
+        .from('#s8grid .sixcard', { opacity: 0, y: 24, duration: 0.7, stagger: 2.1, ease: 'power2.out' }, 111.4)
+        .from('#s8note', { opacity: 0, duration: 0.7 }, 129.0);
+
+      /* 9 . strategies */
+      tl.from('#sc09 .shead', { opacity: 0, y: 16, duration: 0.7 }, 132.7)
+        .from('#s9left', { opacity: 0, x: -26, duration: 0.85 }, 133.3)
+        .from('#s9right', { opacity: 0, x: 26, duration: 0.85 }, 134.6)
+        .fromTo('#sc09 .mapline', { scaleX: 0 }, { scaleX: 1, duration: 0.55, stagger: 0.3 }, 136.2)
+        .from('#s9note', { opacity: 0, duration: 0.7 }, 150.0);
+
+      /* 10 . leadership */
+      tl.from('#sc10 .shead', { opacity: 0, y: 16, duration: 0.7 }, 155.1)
+        .from('#s10left', { opacity: 0, y: 20, duration: 0.8 }, 155.6);
+      document.querySelectorAll('#s10dist .dt').forEach(function (b, i) {
+        tl.fromTo(b, { width: '0%' }, { width: b.dataset.w + '%', duration: 0.85, ease: 'power2.out' }, 156.4 + i * 0.16);
+      });
+      tl.from('#s10right .icard', { opacity: 0, x: 22, duration: 0.7, stagger: 1.5 }, 160.6);
+
+      /* 11 . middle leaders */
+      tl.from('#sc11 .shead', { opacity: 0, y: 16, duration: 0.7 }, 172.4)
+        .from('#s11left .trow', { opacity: 0, x: -16, duration: 0.5, stagger: 0.14 }, 172.9)
+        .from('#s11right', { opacity: 0, x: 22, duration: 0.8 }, 175.4);
+
+      /* 12 . payoff */
+      tl.from('#sc12 .shead', { opacity: 0, y: 16, duration: 0.7 }, 184.4)
+        .from('#s12left', { opacity: 0, y: 20, duration: 0.8 }, 184.9)
+        .from('#s12right .icard', { opacity: 0, x: 22, duration: 0.65, stagger: 1.5 }, 186.6);
+
+      /* 13 . close */
+      tl.from('#s13h', { opacity: 0, y: 22, duration: 1.0, ease: 'power2.out' }, 196.8)
+        .from('#s13flow .fstep', { opacity: 0, y: 20, duration: 0.6, stagger: 0.5 }, 200.0)
+        .from('#sc13 .foot-brand', { opacity: 0, duration: 0.9 }, 205.5);
+
+      window.__timelines['main'] = tl;
+    </script>
+  </body>
+</html>

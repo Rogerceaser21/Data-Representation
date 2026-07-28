@@ -1,0 +1,98 @@
+{
+  "total": 211.408,
+  "gap": 0.62,
+  "lead": 0.9,
+  "scenes": [
+    {
+      "id": "s01_cover",
+      "title": "Cover",
+      "text": "From lesson observation to a plan for every teacher. Here is what the system does today, and where staff voice fits into it.",
+      "start": 0.9,
+      "dur": 8.353
+    },
+    {
+      "id": "s02_intake",
+      "title": "One intake",
+      "text": "Every R3 lesson observation is filed on one form. In the June round that was a hundred and sixty eight submissions, because inspectors observed in pairs. The system resolves those into a hundred and ten distinct lessons, across a hundred and four teachers. Nothing is typed twice, and nothing is counted twice.",
+      "start": 9.873,
+      "dur": 18.917
+    },
+    {
+      "id": "s03_board",
+      "title": "One board",
+      "text": "Those lessons land on one board. Leadership sees the round at a glance. How many lessons. How many teachers. Where the judgements sit on the six point scale. What is working, and where to focus next.",
+      "start": 29.41,
+      "dur": 13.075
+    },
+    {
+      "id": "s04_evidence",
+      "title": "Evidence discipline",
+      "text": "Every claim on that board carries a number. Open it, and you get the lessons behind the claim, the inspector's own words, and a link to the locked record. More than six hundred of those references sit behind the June round alone. No statement stands on its own.",
+      "start": 43.105,
+      "dur": 17.443
+    },
+    {
+      "id": "s05_loop",
+      "title": "The loop today",
+      "text": "From there the loop runs in four steps. The observation is filed. The teacher is given feedback. The observer receives an analysis and a suggested coaching plan, which they approve, edit, or rewrite. And the teacher receives that plan, with every suggestion referenced back to our own Student Progress Rubric.",
+      "start": 61.168,
+      "dur": 18.193
+    },
+    {
+      "id": "s06_gap",
+      "title": "The gap",
+      "text": "What the loop does not hear yet is the teacher. We capture how a session was rated. We do not capture what the teacher made of it, what they expect to struggle with, or what they intend to do differently on Monday morning.",
+      "start": 79.981,
+      "dur": 15.203
+    },
+    {
+      "id": "s07_kpi1",
+      "title": "KPI 1",
+      "text": "So, the first addition. An evaluation of the professional learning session itself. Short, and completed by the teacher. It sits before the coaching plan is drafted, so that the observer, and the analysis, both see it first.",
+      "start": 95.804,
+      "dur": 13.446
+    },
+    {
+      "id": "s08_kpi2",
+      "title": "KPI 2",
+      "text": "The second addition. A reflection, and an action plan. Six things. What the teacher took from the session. The challenges they expect when they apply it. Their own ideas for getting past those challenges. How they will use it in their classroom. What they need from their middle leader. And what they expect to change in student learning, and over what timeframe.",
+      "start": 109.87,
+      "dur": 22.531
+    },
+    {
+      "id": "s09_strategies",
+      "title": "Five strategies",
+      "text": "Each of those answers meets something ready made. Five coaching strategies, with worked examples, mapped point by point onto the Student Progress Rubric, and built on our own Teaching and Learning Agenda. The observer and the analysis draw from the same shelf. The teacher gets something that is recognisably ours, and it takes the observer minutes rather than an evening.",
+      "start": 133.021,
+      "dur": 21.806
+    },
+    {
+      "id": "s10_leadership",
+      "title": "What leadership sees",
+      "text": "Then the staff responses get the same treatment as the observation data. Themes across the school, rather than a folder of individual replies. Where support is being asked for. Which challenges repeat, and where. All of it carrying its references, exactly as the observation claims do.",
+      "start": 155.447,
+      "dur": 16.73
+    },
+    {
+      "id": "s11_middle",
+      "title": "Middle leaders",
+      "text": "Middle leaders see their own team, and nobody else's. Not a report to read through. A starting point for a coaching conversation, with the teacher's own words already in front of them.",
+      "start": 172.797,
+      "dur": 11.408
+    },
+    {
+      "id": "s12_plp",
+      "title": "The payoff",
+      "text": "Which gives every teacher the same thing the observation already gives them. A plan of their own, built from their own lesson and their own words, in language the school already uses.",
+      "start": 184.825,
+      "dur": 11.62
+    },
+    {
+      "id": "s13_close",
+      "title": "Close",
+      "text": "The two forms are new. The architecture is not. Same intake, same evidence rules, same dashboard, same privacy layer, with the data staying in our own database. Student surveys run on the same rails next.",
+      "start": 197.065,
+      "dur": 12.743
+    }
+  ]
+}
