@@ -14,6 +14,9 @@
     <div id="root" data-composition-id="main" data-start="0" data-duration="{{TOTAL}}" data-width="1920" data-height="1080">
 
       <audio id="narration" class="clip" data-start="0" data-duration="{{TOTAL}}" data-volume="1" src="assets/narration.mp3"></audio>
+      <!-- bgm ships PRE-BAKED at its final level (-31 LUFS, ~15 dB under the narrator)
+           with its fades already in the file, so what previews is what renders -->
+      <audio id="bgm" class="clip" data-start="0" data-duration="{{TOTAL}}" data-volume="1" src="assets/music.mp3"></audio>
 
       <div class="bgwash" style="z-index:0"></div>
 
@@ -111,7 +114,7 @@
               <div class="panel" id="s4claim">
                 <div class="swhead" style="color:var(--g)"><i class="swdot" style="background:var(--g)"></i><b>What is working</b></div>
                 <div class="swev">Evidence base &middot; 48 lessons, Primary &amp; Kindy</div>
-                <div class="swsum">Questioning is used to check understanding rather than to move the lesson along, and in the strongest lessons teachers follow an answer with a second question that asks the student to justify it.<span class="refmk">1</span><span class="refmk">2</span><span class="refmk">3</span></div>
+                <div class="swsum">Questioning is used to check understanding rather than to move the lesson along, and in the strongest lessons teachers follow an answer with a second question that asks the student to justify it.<span class="refmk" id="s4mk">1</span><span class="refmk">2</span><span class="refmk">3</span></div>
                 <div class="blist">
                   <div class="brow"><span class="bm"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="var(--g)" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Modelling is explicit and the success criteria stay visible throughout<span class="refmk">4</span></span></div>
                   <div class="brow"><span class="bm"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="var(--g)" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Relationships are warm and routines are established, so time is not lost at transitions<span class="refmk">5</span></span></div>
@@ -180,7 +183,7 @@
             </div>
             <div class="ns-ladders" id="s6lad">
               <div class="ns-lad">
-                <div class="ns-lad-top"><span class="ns-lad-name">Progress in Lessons</span><span class="ns-lad-mv">Acceptable<span class="a">&rarr;</span>Good</span></div>
+                <div class="ns-lad-top"><span class="ns-lad-name">Progress in Lessons</span><span class="ns-lad-mv" id="s6mv">Acceptable<span class="a">&rarr;</span>Good</span></div>
                 <div class="ns-track">
                   <div class="ns-cell" style="--c:var(--r6)"></div>
                   <div class="ns-cell" style="--c:var(--r5)"></div>
@@ -447,6 +450,16 @@
       // proportional cue: frac of the scene's narration length, so a shorter
       // line compresses its choreography instead of losing the tail of it
       function atf(id, frac) { return NARR[id].start + frac * NARR[id].dur; }
+      // v1.4 spotlight: soft gold ring + slight lift while the narrator names the
+      // element, then release. Resting state is the natural one, so a frozen
+      // ticker shows plain content (enhancement only).
+      function spotlight(sel, when, hold) {
+        tl.fromTo(sel, { boxShadow: '0 0 0 0px rgba(201,137,12,0)' },
+          { boxShadow: '0 0 0 3px rgba(201,137,12,.85), 0 0 26px 2px rgba(201,137,12,.28)',
+            scale: 1.03, duration: 0.45, ease: 'power2.out', immediateRender: false }, when)
+          .to(sel, { boxShadow: '0 0 0 0px rgba(201,137,12,0)', scale: 1,
+            duration: 0.6, ease: 'power2.inOut' }, when + (hold || 2.0));
+      }
 
       window.__timelines = window.__timelines || {};
       var tl = gsap.timeline({ paused: true });
@@ -475,6 +488,7 @@
         .from('#s2nums .numtile', { opacity: 0, y: 22, duration: 0.7, stagger: 0.5 }, atf('s02_intake', 0.177));
       countUp('#s2nums .big-n', atf('s02_intake', 0.187), 1.5);
       tl.from('#s2note', { opacity: 0, duration: 0.7 }, atf('s02_intake', 0.368));
+      spotlight('#s2nums .numtile:nth-child(2)', atf('s02_intake', 0.53));   // "a hundred and ten distinct lessons"
 
       /* 3 . board */
       tl.from('#sc03 .shead', { opacity: 0, y: 16, duration: 0.7 }, at('s03_board', -0.4))
@@ -492,6 +506,7 @@
         .fromTo('#s4panel', { xPercent: 104 }, { xPercent: 0, duration: 0.95, ease: 'power3.out' }, atf('s04_evidence', 0.312))
         .from('#s4panel .refcard', { opacity: 0, y: 18, duration: 0.7, stagger: 0.3 }, atf('s04_evidence', 0.359))
         .from('#s4note', { opacity: 0, duration: 0.7 }, atf('s04_evidence', 0.730));
+      spotlight('#s4mk', atf('s04_evidence', 0.22));                         // "carries a number"
 
       /* 5 . loop */
       tl.from('#sc05 .shead', { opacity: 0, y: 16, duration: 0.7 }, at('s05_loop', -0.4))
@@ -506,6 +521,10 @@
         /* The whole focus card lands on "it carries the rubric line": both columns
            together, because a half-populated card reads as broken, not as pending. */
         .from('#s6fc', { opacity: 0, y: 18, duration: 0.8, ease: 'power2.out' }, atf('s06_coach', 0.207));
+      spotlight('#s6mv', atf('s06_coach', 0.38));                            // "the plan targets Good"
+      spotlight('#s6fc .ns-move', atf('s06_coach', 0.53), 2.4);              // "one concrete move"
+      tl.to('#s6fc .fc-l > *:not(.ns-move)', { opacity: 0.55, duration: 0.45 }, atf('s06_coach', 0.53))
+        .to('#s6fc .fc-l > *:not(.ns-move)', { opacity: 1, duration: 0.6 }, atf('s06_coach', 0.53) + 2.4);
 
       /* 7 . gap */
       tl.from('#s6flow', { opacity: 0, duration: 0.7 }, at('s06_gap', -0.4))
@@ -523,6 +542,7 @@
       tl.from('#sc09 .shead', { opacity: 0, y: 16, duration: 0.7 }, at('s08_kpi2', -0.4))
         .from('#s8grid .sixcard', { opacity: 0, y: 24, duration: 0.7, stagger: 2.1, ease: 'power2.out' }, at('s08_kpi2', 1.5))
         .from('#s8note', { opacity: 0, duration: 0.7 }, atf('s08_kpi2', 0.892));
+      spotlight('#s8grid .sixcard:nth-child(5)', atf('s08_kpi2', 0.68), 2.2); // "what they need from their middle leader"
 
       /* 10 . strategies */
       tl.from('#sc10 .shead', { opacity: 0, y: 16, duration: 0.7 }, at('s09_strategies', -0.4))

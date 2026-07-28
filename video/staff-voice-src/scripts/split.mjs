@@ -20,13 +20,13 @@ const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..')
 const SRC = path.join(ROOT, 'audio', 'full.wav');
 const cfg = JSON.parse(fs.readFileSync(path.join(ROOT, 'scenes.json'), 'utf8'));
 
-// v1.3: this metric counts intra-scene pauses as speech, so the right value
-// depends on how pausy the take is; 193 lands the shipped v1.3 take (552
-// words, a pausy 176-wpm read) at 3m00 total after tighten.py. A regenerated
-// take WILL need retuning: check the printed master length, and score voice
-// consistency per take before accepting one (the v1.3 first take measured
-// adj_max 3.6 dB post-EQ and was discarded; the shipped one 1.2 dB).
-const TARGET_WPM = 193;
+// v1.4: NO tempo. Igor heard the v1.3 +10.6% lift as a sped-up narrator, so
+// the take ships at its natural recorded pace and the video runs ~3m15
+// instead of 3m00 (his call). TARGET_WPM is kept only as a guard against a
+// wildly off take; the snap below turns any correction under 3% into exactly
+// 1.0. Score voice consistency per take before accepting one (the v1.3 first
+// take measured adj_max 3.6 dB post-EQ and was discarded).
+const TARGET_WPM = 175;
 const KEEP_GAP = 0.45;    // breath left between scenes (0.62 through v1.2)
 const LEAD = 0.9;         // silence before the first word
 const TAIL = 1.6;
@@ -67,7 +67,8 @@ const head = gaps.length ? silences(SRC, '-35dB', 1.2).filter(g => g.start < 0.5
 const speech = total - gapTime - head;
 const wpm = words / speech * 60;
 // atempo multiplies speed: wpm_new = wpm_old * tempo. Read fast -> tempo < 1.
-const tempo = Math.min(1.15, Math.max(0.82, TARGET_WPM / wpm));
+let tempo = Math.min(1.15, Math.max(0.82, TARGET_WPM / wpm));
+if (Math.abs(tempo - 1) < 0.03) tempo = 1;   // v1.4: natural pace, no stretch
 console.log(`pace: ${wpm.toFixed(0)} wpm of speech -> one global atempo of ${tempo.toFixed(3)} for ${TARGET_WPM}`);
 
 // --- retime + normalise the whole take ONCE, then cut ----------------------

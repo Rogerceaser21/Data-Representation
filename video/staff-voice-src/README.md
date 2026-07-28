@@ -1,10 +1,20 @@
 # Staff Voice video · sfp-feedback
 
-A three-minute narrated explainer of the R3 pipeline and where Steve's two KPIs
+A 3m15s narrated explainer of the R3 pipeline and where Steve's two KPIs
 (session evaluation, reflection and action plan) fit into it. Built for Steve,
 Dave and Hayden. Companion HTML page lives in `../staff-voice/`. v1.3 cut the
-v1.2 4m00s edition to 3m00s: tighter wording (611 -> 552 words, every scene,
-number and claim kept), trimmed intra-scene pauses, and one modest global tempo.
+v1.2 4m00s edition to 3m00s (tighter wording, 611 -> 552 words, every scene,
+number and claim kept; trimmed intra-scene pauses; one global tempo). v1.4
+removed the tempo entirely (Igor heard the +10.6% as a sped-up narrator, so the
+take ships at its natural recorded pace, 3m15), added a low music bed, and
+added five gold spotlight moments where the narration names an on-screen element.
+
+**Music:** `assets/music.mp3` is "Ambient - Ambient Music" by SolarFLEX from
+Pixabay (id 569592, Pixabay Content License: free for commercial use, no
+attribution required), trimmed to length, faded, and pre-baked to -31 LUFS
+(~15 dB under the -16 LUFS narrator) so what previews is what renders. To swap
+the track, replace the file with another bed processed the same way; do not
+raise its level without re-checking the narrator stays fully intelligible.
 
 Everything on screen is the Observation Dashboard's own CSS, lifted from
 `dashboard/src/index.html`, so the video shows the product rather than a mockup.
