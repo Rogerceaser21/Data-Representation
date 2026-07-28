@@ -58,7 +58,7 @@ section.blk{margin-top:52px}
 .stat .s{font-size:11px;color:var(--ink-faint);margin-top:3px}
 .stat.accent .v{color:var(--y)}
 .histo{display:flex;align-items:flex-end;gap:10px;height:170px;width:100%}
-.hbar{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
+.hbar{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
 .hbar .hc{font-family:var(--display);font-weight:600;font-size:15px;font-variant-numeric:tabular-nums;margin-bottom:6px}
 .hbar .hb{width:100%;max-width:54px;border-radius:8px 8px 0 0;min-height:3px}
 .hbar .hw{font-size:10px;font-weight:600;color:var(--ink-mid);margin-top:8px;text-align:center;line-height:1.2}
@@ -93,6 +93,62 @@ section.blk{margin-top:52px}
 .pill-note{display:inline-flex;align-items:center;gap:8px;font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-mid);border:1px dashed var(--edge);border-radius:30px;padding:7px 15px}
 .themeico{position:fixed;top:clamp(.7rem,1.4vw,1.2rem);right:clamp(.7rem,1.4vw,1.2rem);z-index:50;width:2.3rem;height:2.3rem;border-radius:50%;border:1px solid var(--edge);background:var(--panel-2);color:var(--ink-dim);display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(6px)}
 .themeico:hover{color:var(--ink);border-color:var(--y)}
+
+/* ===== coaching note (dashboard v0.50 "Next Steps & Improvement") ===== */
+.ns-head{display:flex;align-items:center;gap:11px;flex-wrap:wrap;margin-bottom:4px}
+.ns-badge{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-radius:20px;padding:3px 10px;color:var(--ink-mid);background:var(--panel-2);border:1px solid var(--edge)}
+.oround{font-size:10px;font-weight:700;letter-spacing:.04em;color:var(--ink-mid);background:var(--panel-2);border:1px solid var(--edge-soft);border-radius:7px;padding:2px 9px;white-space:nowrap}
+.ns-who{margin-left:auto;font-size:12.5px;color:var(--ink-faint)}
+@media(max-width:640px){.ns-who{margin-left:0;width:100%}}
+.ns-ladders{display:grid;grid-template-columns:1fr 1fr;gap:12px 22px;margin:16px 0 18px}
+@media(max-width:680px){.ns-ladders{grid-template-columns:1fr}}
+.ns-lad-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px}
+.ns-lad-name{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-mid)}
+.ns-lad-mv{font-size:12.5px;font-weight:800;color:var(--ink);white-space:nowrap}
+.ns-lad-mv .a{color:var(--ink-faint);font-weight:600;margin:0 5px}
+.ns-track{display:grid;grid-template-columns:repeat(6,1fr);gap:4px}
+.ns-cell{height:10px;border-radius:5px;background:var(--c);opacity:.16}
+.ns-cell.cur{opacity:1}
+.ns-cell.tgt{opacity:1;box-shadow:0 0 0 2px var(--panel-2),0 0 0 4px var(--c)}
+.ns-sum{font-size:14px;line-height:1.6;color:var(--ink-dim);margin:0 0 14px}
+.ns-chip{display:inline-flex;align-items:center;font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:3px 10px;border-radius:999px;color:var(--cc);background:color-mix(in srgb,var(--cc) 13%,transparent);border:1px solid color-mix(in srgb,var(--cc) 30%,transparent)}
+.fc{display:grid;grid-template-columns:1.45fr 1fr;border:1px solid var(--edge-soft);border-radius:14px;overflow:hidden;border-left:3px solid var(--cc)}
+@media(max-width:680px){.fc{grid-template-columns:1fr}}
+.fc-l{padding:15px 17px;background:var(--panel)}
+.fc-r{padding:15px 17px;background:color-mix(in srgb,var(--ink) 4%,transparent);border-left:1px solid var(--edge-soft)}
+@media(max-width:680px){.fc-r{border-left:0;border-top:1px solid var(--edge-soft)}}
+.fc .ns-move{font-size:14.5px;font-weight:800;line-height:1.45;color:var(--ink);margin:9px 0 0}
+.fc-rlab{font-size:9.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:3px}
+.ns-look{font-size:13.5px;line-height:1.55;color:var(--ink);margin:9px 0 0}
+.ns-look b{font-weight:800}
+.ns-tech{font-size:13.5px;line-height:1.6;color:var(--ink);margin:9px 0 0}
+.ns-src{font-size:11.5px;line-height:1.4;margin:8px 0 0;color:var(--ink-faint)}
+.ns-rub{font-size:13px;line-height:1.55;color:var(--ink-dim);margin:8px 0 0}
+.ns-rub b{color:var(--ink);font-weight:700}
+.ns-q{margin:9px 0 0;padding:2px 0 2px 12px;border-left:2px solid var(--edge);font-size:13px;line-height:1.58;color:var(--ink-dim);font-style:italic}
+
+/* ===== sources: inline markers + the panel they open ===== */
+.refmk{display:inline-flex;align-items:center;justify-content:center;min-width:17px;height:17px;padding:0 5px;margin-left:5px;transform:translateY(-1px);
+  font-size:10.5px;font-weight:700;line-height:1;color:#8d6207;background:var(--panel-2);border:1px solid var(--edge);border-radius:7px;vertical-align:middle}
+.srcgrid{display:grid;grid-template-columns:1fr 400px;gap:18px;align-items:start}
+@media(max-width:900px){.srcgrid{grid-template-columns:1fr}}
+.srcpanel{background:var(--bg-2);border:1px solid var(--edge);border-radius:18px;overflow:hidden;box-shadow:0 24px 60px -42px var(--shadow)}
+.refhd{padding:18px 20px 14px;border-bottom:1px solid var(--edge-soft)}
+.refhd .rk{font-size:9.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#8d6207}
+.refhd .rt{font-family:var(--display);font-size:15.5px;font-weight:600;line-height:1.3;color:var(--ink);margin-top:7px}
+.refbody{padding:14px 18px 18px;display:flex;flex-direction:column;gap:12px}
+.refmethod{font-size:11.5px;line-height:1.5;color:var(--ink-mid);background:var(--panel-2);border:1px solid var(--edge-soft);border-left:2px solid var(--y);border-radius:9px;padding:9px 11px}
+.refmethod b{color:var(--ink-dim);font-weight:700}
+.refcard{background:var(--panel-2);border:1px solid var(--edge);border-radius:14px;padding:12px 13px}
+.refmeta{display:flex;flex-wrap:wrap;gap:5px 9px;align-items:center;font-size:11px;font-weight:600;color:var(--ink-mid);margin-bottom:8px}
+.refmeta .rdot{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+.refmeta .rarea{color:var(--ink)}
+.refq{font-family:var(--display);font-size:13.5px;line-height:1.5;color:var(--ink-dim);font-style:italic}
+.refwhy{margin-top:9px;font-size:11.5px;line-height:1.5;color:var(--ink-mid);border-top:1px dashed var(--edge-soft);padding-top:8px}
+.refwhy b{color:var(--ink);font-weight:700}
+.reflink{display:inline-block;margin-top:10px;font-size:11.5px;font-weight:700;color:#8d6207;text-decoration:none}
+.reffoot{padding:11px 20px 16px;border-top:1px solid var(--edge-soft);font-size:10.5px;line-height:1.45;color:var(--ink-faint)}
+.swsum{font-size:14px;color:var(--ink-dim);line-height:1.6;margin-bottom:15px;padding-bottom:14px;border-bottom:1px solid var(--edge-soft)}
 </style>
 </head>
 <body>
@@ -160,7 +216,100 @@ section.blk{margin-top:52px}
       <div class="fstep"><div class="fn">03</div><div class="ft">Observer approves the plan</div><div class="fs">An analysis and a suggested coaching plan, which the observer approves, edits or rewrites.</div></div>
       <div class="fstep"><div class="fn">04</div><div class="ft">Teacher receives it</div><div class="fs">Every suggestion referenced back to the AIS Student Progress Rubric.</div></div>
     </div>
-    <p class="note">Every claim the board makes carries a numbered marker. Opening it shows the lessons behind the claim, the inspector's own words, and a link to the locked record. More than six hundred of those references sit behind the June round. References never name a teacher.</p>
+  </section>
+
+  <section class="blk">
+    <div class="kick"><i class="stripe"></i> What the observer receives</div>
+    <h2 class="sec">Acceptable, <em>and how to reach Good</em></h2>
+    <p class="lead">Step three of that loop is not a paragraph of advice. It is a note built from the teacher's own lesson, showing where they sit now, the band above, and the specific change that closes the gap. The observer approves it, edits it, or writes their own.</p>
+    <div class="panel" style="margin-top:22px">
+      <div class="ns-head">
+        <div class="ey" style="margin:0">Next Steps &amp; Improvement</div>
+        <span class="oround">R3 June 26</span>
+        <span class="ns-badge">Draft</span>
+        <span class="ns-who">Sarah Whitfield &middot; Mathematics</span>
+      </div>
+      <div class="ns-ladders">
+        <div>
+          <div class="ns-lad-top"><span class="ns-lad-name">Progress in Lessons</span><span class="ns-lad-mv">Acceptable<span class="a">&rarr;</span>Good</span></div>
+          <div class="ns-track">
+            <div class="ns-cell" style="--c:var(--r6)"></div>
+            <div class="ns-cell" style="--c:var(--r5)"></div>
+            <div class="ns-cell cur" style="--c:var(--r4)"></div>
+            <div class="ns-cell tgt" style="--c:var(--r3)"></div>
+            <div class="ns-cell" style="--c:var(--r2)"></div>
+            <div class="ns-cell" style="--c:var(--r1)"></div>
+          </div>
+        </div>
+        <div>
+          <div class="ns-lad-top"><span class="ns-lad-name">Facilitating better progress</span><span class="ns-lad-mv">Good<span class="a">&rarr;</span>Very Good</span></div>
+          <div class="ns-track">
+            <div class="ns-cell" style="--c:var(--r6)"></div>
+            <div class="ns-cell" style="--c:var(--r5)"></div>
+            <div class="ns-cell" style="--c:var(--r4)"></div>
+            <div class="ns-cell cur" style="--c:var(--r3)"></div>
+            <div class="ns-cell tgt" style="--c:var(--r2)"></div>
+            <div class="ns-cell" style="--c:var(--r1)"></div>
+          </div>
+        </div>
+      </div>
+      <p class="ns-sum">Questioning is the lever here. The evidence shows understanding being checked with the students who volunteer, and the lesson moving on before the rest have answered. One change to the questioning routine moves this from Acceptable to Good.</p>
+      <div class="fc" style="--cc:var(--b)">
+        <div class="fc-l">
+          <span class="ns-chip">Questioning</span>
+          <p class="ns-move">Follow every answer with one question that asks the student to justify it, before you move on.</p>
+          <p class="ns-look"><b>Look for</b><br />Students explaining their reasoning without being asked twice, including those who did not volunteer.</p>
+          <p class="ns-tech">Cold call, then "how do you know?". Name the student, pause, then ask the follow-up, so the whole class stays with the thinking rather than waiting for the answer.</p>
+          <p class="ns-src">Technique source: Tips for Teachers &rarr;</p>
+        </div>
+        <div class="fc-r">
+          <div class="fc-rlab">Grounded in</div>
+          <p class="ns-rub">In the AIS OTP Progress Rubric, to facilitate better than expected progress at a <b>Good</b> level, the teacher checks understanding through targeted questioning and adapts the lesson in response. View the rubric &rarr;</p>
+          <div class="fc-rlab" style="margin-top:12px">From your lesson</div>
+          <div class="ns-q">"Questions were mostly directed at volunteers, and the pace moved on before all students had answered."</div>
+        </div>
+      </div>
+      <p class="note">Structure and wording as the dashboard generates them. Every note is drawn from that teacher's own evidence and the AIS OTP Progress Rubric, and carries a written-out technique with its source. The teacher shown is invented.</p>
+    </div>
+  </section>
+
+  <section class="blk">
+    <div class="kick"><i class="stripe"></i> Every claim is traceable</div>
+    <h2 class="sec">Open the number, <em>see the lesson</em></h2>
+    <p class="lead">Nothing on the board is an assertion. Each claim carries numbered markers, and opening one shows the lessons behind it, the inspector's own words, why it counts, and a link to the locked R3 record. More than six hundred of these references sit behind the June round alone.</p>
+    <div class="srcgrid" style="margin-top:22px">
+      <div class="panel">
+        <div class="swhead" style="color:var(--g)"><i class="swdot" style="background:var(--g)"></i><b>What is working</b></div>
+        <div class="swev">Evidence base &middot; 48 lessons, Primary &amp; Kindy</div>
+        <div class="swsum">Questioning is used to check understanding rather than to move the lesson along, and in the strongest lessons teachers follow an answer with a second question that asks the student to justify it.<span class="refmk">1</span><span class="refmk">2</span><span class="refmk">3</span></div>
+        <div class="blist">
+          <div class="brow"><span class="bm"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="var(--g)" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Modelling is explicit and the success criteria stay visible throughout<span class="refmk">4</span></span></div>
+          <div class="brow"><span class="bm"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="var(--g)" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Relationships are warm and routines are established, so time is not lost at transitions<span class="refmk">5</span></span></div>
+        </div>
+      </div>
+      <div class="srcpanel">
+        <div class="refhd">
+          <div class="rk">Insights &middot; source</div>
+          <div class="rt">Questioning used to check understanding</div>
+        </div>
+        <div class="refbody">
+          <div class="refmethod"><b>How this is counted.</b> Lessons where the inspector's evidence names questioning as a strength, deduplicated so a co-observed lesson counts once.</div>
+          <div class="refcard">
+            <div class="refmeta"><i class="rdot" style="background:var(--r2)"></i><span class="rarea">Mathematics</span><span>&middot;</span><span>17 June 2026</span><span>&middot;</span><span>Very Good</span></div>
+            <div class="refq">"Questions were targeted and followed up. Students were asked to explain their reasoning before the teacher moved on."</div>
+            <div class="refwhy"><b>Why this counts.</b> The follow-up question, not the first question, is what the criterion asks for.</div>
+            <a class="reflink">Open the R3 record &rarr;</a>
+          </div>
+          <div class="refcard">
+            <div class="refmeta"><i class="rdot" style="background:var(--r3)"></i><span class="rarea">English</span><span>&middot;</span><span>18 June 2026</span><span>&middot;</span><span>Good</span></div>
+            <div class="refq">"Checked understanding across the room before moving on, including students who had not volunteered."</div>
+            <div class="refwhy"><b>Why this counts.</b> Checking beyond volunteers is the behaviour the descriptor names.</div>
+            <a class="reflink">Open the R3 record &rarr;</a>
+          </div>
+        </div>
+        <div class="reffoot">Sources are shown without identifying details. Teacher names are never displayed in a reference.</div>
+      </div>
+    </div>
   </section>
 
   <section class="blk">
