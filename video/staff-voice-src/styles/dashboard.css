@@ -174,7 +174,7 @@ body{font-family:var(--body);color:var(--ink);-webkit-font-smoothing:antialiased
 /* The board's components are drawn for an 1180px column. Rather than restyle them
    (which would stop being the product), the whole column is scaled up to fill the
    frame, so every proportion inside is exactly the dashboard's. */
-.sbody{width:1330px;zoom:1.40;display:flex;flex-direction:column;justify-content:center}
+.sbody{width:1150px;zoom:1.62;display:flex;flex-direction:column;justify-content:center}
 .scene.top .sbody{justify-content:flex-start;padding-top:8px}
 .scene.navy .sbody{height:740px;justify-content:space-between}
 /* full-frame layers opt out of the column scale */
@@ -217,3 +217,93 @@ body{font-family:var(--body);color:var(--ink);-webkit-font-smoothing:antialiased
 .mapline{height:1px;background:linear-gradient(90deg,transparent,var(--edge),transparent)}
 .foot-brand{position:absolute;left:104px;bottom:56px;display:flex;align-items:center;gap:14px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);font-weight:700}
 .foot-brand .lg{width:26px;height:26px;background-size:contain;background-repeat:no-repeat;background-position:center}
+
+/* ===== readability pass (video only) =====================================
+   The board's small text is tuned for a laptop at arm's length. On a projected
+   1080p frame the 10-13px classes are the ones that lose people, so they are
+   lifted here on top of the column scale. Layout classes are untouched, so the
+   components keep their proportions. */
+.scene .stat .l{font-size:14.5px}
+.scene .stat .s{font-size:13px}
+.scene .subtle{font-size:14.5px}
+.scene .ey{font-size:12px;letter-spacing:.15em}
+.scene .ey-bold{font-size:13.5px}
+.scene .kick{font-size:13px}
+.scene .swev{font-size:12.5px}
+.scene .swsum{font-size:15px}
+.scene .brow{font-size:15px}
+.scene .icard p{font-size:15px}
+.scene .icard{padding:17px 20px 17px 54px}
+.scene .fstep .ft{font-size:19px}
+.scene .fstep .fs{font-size:15px}
+.scene .fstep .fn{font-size:28px}
+.scene .fstep .ftag{font-size:11px}
+.scene .hbar .hw{font-size:12px}
+.scene .hbar .hc{font-size:18px}
+.scene .osseg .osramp .rc .lb{font-size:13.5px}
+.scene .drow .dk{font-size:13.5px}
+.scene .trow .nm{font-size:16px}
+.scene .trow .nm small{font-size:13px}
+.scene .tchip{font-size:12.5px;padding:5px 13px}
+.scene .odn,.scene .odv{font-size:15px}
+.scene .ofield .ofl{font-size:11px}
+.scene .ofield p{font-size:15px}
+.scene .refmeta{font-size:12.5px}
+.scene .refq{font-size:15px}
+.scene .refwhy,.scene .refmethod{font-size:13px}
+.scene .reflink{font-size:13px}
+.scene .reffoot{font-size:12px}
+.scene .refhd .rk{font-size:11.5px}
+.scene .refhd .rt{font-size:18px}
+.scene .refmk{min-width:19px;height:19px;font-size:12px}
+.scene .ffield label{font-size:12px}
+.scene .ffield .fin{font-size:16px}
+.scene .scalerow b{font-size:15px}
+.scene .formcard .fcttl{font-size:24px}
+.scene .formcard .fcsub{font-size:13.5px}
+.scene .pill-note{font-size:13px}
+.scene .sixcard p{font-size:17px}
+.scene .numtile .ml{font-size:14px}
+.scene .bi p{font-size:18px}
+
+/* ===== coaching note (v0.50 "Next Steps & Improvement"), from the dashboard ===== */
+.ns-head{display:flex;align-items:center;gap:11px;margin-bottom:4px}
+.ns-badge{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;border-radius:20px;padding:3px 10px}
+.ns-badge.draft{color:var(--ink-mid);background:var(--panel-2);border:1px solid var(--edge)}
+.oround{font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--ink-mid);background:var(--panel-2);border:1px solid var(--edge-soft);border-radius:7px;padding:2px 9px;white-space:nowrap}
+.ns-ladders{display:grid;grid-template-columns:1fr 1fr;gap:12px 22px;margin:14px 0 18px}
+.ns-lad-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px}
+.ns-lad-name{font-size:11.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-mid)}
+.ns-lad-mv{font-size:14px;font-weight:800;color:var(--ink);white-space:nowrap}
+.ns-lad-mv .a{color:var(--ink-faint);font-weight:600;margin:0 5px}
+.ns-track{display:grid;grid-template-columns:repeat(6,1fr);gap:4px}
+.ns-cell{height:11px;border-radius:5px;background:var(--c);opacity:.16}
+.ns-cell.cur{opacity:1}
+.ns-cell.tgt{opacity:1;box-shadow:0 0 0 2px var(--panel-2),0 0 0 4px var(--c)}
+.ns-sum{font-size:15px;line-height:1.6;color:var(--ink-dim);margin:0 0 14px}
+.ns-chip{display:inline-flex;align-items:center;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:3px 10px;border-radius:999px;color:var(--cc);background:color-mix(in srgb,var(--cc) 13%,transparent);border:1px solid color-mix(in srgb,var(--cc) 30%,transparent);white-space:nowrap}
+.fc{display:grid;grid-template-columns:1.45fr 1fr;border:1px solid var(--edge-soft);border-radius:14px;overflow:hidden;border-left:3px solid var(--cc)}
+.fc-l{padding:15px 17px;background:var(--panel)}
+.fc-r{padding:15px 17px;background:color-mix(in srgb,var(--ink) 4%,transparent);border-left:1px solid var(--edge-soft)}
+.fc .ns-move{font-size:16px;font-weight:800;line-height:1.45;color:var(--ink);margin:9px 0 0}
+.fc-rlab{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:3px}
+.ns-look{font-size:15px;line-height:1.55;color:var(--ink);margin:9px 0 0}
+.ns-look b{font-weight:800}
+.ns-tech{font-size:15px;line-height:1.6;color:var(--ink);margin:9px 0 0}
+.ns-src{font-size:12.5px;line-height:1.4;margin:8px 0 0;color:var(--ink-faint)}
+.ns-rub{font-size:14px;line-height:1.55;color:var(--ink-dim);margin:8px 0 0}
+.ns-rub b{color:var(--ink);font-weight:700}
+.ns-q{margin:9px 0 0;padding:2px 0 2px 12px;border-left:2px solid var(--edge);font-size:14px;line-height:1.58;color:var(--ink-dim);font-style:italic}
+
+/* Scene 4 at the larger type scale: the sources drawer is wider in real pixels,
+   so the heading has to wrap before it rather than run under it. */
+#sc04 .shead{padding-right:470px}
+#sc04 .shead h2{max-width:15ch}
+
+/* Scene 8: the five-step strip plus the form card is the tallest stack in the
+   video; tightened so the card cannot reach the bottom edge at this type scale. */
+#sc08 .flowstrip{margin-bottom:22px}
+#sc08 .fstep{padding:16px 18px}
+#sc08 .formcard{padding:20px 22px}
+#sc08 .ffield{margin-bottom:11px}
+.scene .fstep .ftag{color:#3a2801}

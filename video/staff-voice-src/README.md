@@ -10,28 +10,41 @@ Everything on screen is the Observation Dashboard's own CSS, lifted from
 ## Regenerating
 
 ```bash
-node scripts/tts.mjs      # narration, one wav per scene (skips existing)
-node scripts/fit.mjs      # even out pace, build assets/narration.wav|mp3 + narration.srt
+node scripts/tts.mjs      # narration, one wav per scene (skips existing; --force to redo all)
+node scripts/fit.mjs      # trim, concat, write timings.json + narration.srt
+node scripts/build.mjs    # stamp the timings into index.html
 npm run check             # lint + layout + motion + contrast
 npm run render            # -> renders/*.mp4
 ```
 
-`scripts/tts.mjs` reads `GEMINI_API_KEY` from `~/AIS-Data-Dashboard/.env`. To change
-a line, edit `scenes.json`, delete that scene's wav, and re-run both scripts. Scene
-timings in `index.html` come from `timings.json`, so if a line's length changes the
-`data-start` / `data-duration` values and the GSAP cue times need updating to match.
+`scripts/tts.mjs` reads `GEMINI_API_KEY` from `~/AIS-Data-Dashboard/.env`.
+
+To change a line: edit `scenes.json`, delete that scene's wav, then run tts, fit
+and build. **Edit `template/composition.html`, never `index.html`** — the latter is
+generated. Scene windows and every animation cue are derived from the narration
+track, so a line that gets longer moves its scene and its animation together.
+
+### Pace
+
+The narrator must sound the same in every scene. That means the pace is fixed at
+generation time, not afterwards: `tts.mjs` measures each take's words per minute
+and re-asks with a nudged direction until it lands near 165, and `fit.mjs` is
+capped at +/-3% correction. Stretching a take further than that smears the voice
+and it stops sounding like the same person. Do not raise that cap.
 
 ## Files
 
 | File | What it is |
 |---|---|
 | `scenes.json` | The script. One entry per scene, plus the voice and the director's note. |
-| `scripts/tts.mjs` | Gemini TTS, `gemini-2.5-flash-preview-tts`, voice Charon. |
-| `scripts/fit.mjs` | Silence trim, pace normalisation to 165 wpm, concat, SRT. |
+| `scripts/tts.mjs` | Gemini TTS, `gemini-2.5-flash-preview-tts`, voice Charon, pace-targeted. |
+| `scripts/fit.mjs` | Silence trim, +/-3% correction, concat, SRT. |
+| `scripts/build.mjs` | Stamps `timings.json` into the template to produce `index.html`. |
+| `template/composition.html` | **The composition you edit.** 14 scenes on one track. |
+| `index.html` | Generated. Do not edit. |
 | `timings.json` | Where each scene lands on the master audio track. Generated. |
 | `narration.srt` | Subtitles, supplied separately (not burned in). Generated. |
 | `styles/dashboard.css` | Dashboard components, verbatim. Video-only rules are marked. |
-| `index.html` | The composition. 13 scenes on one track. |
 | `brand.md` | The AIS look, for any future HyperFrames video. Edit this, not compositions. |
 
 ## Numbers on screen

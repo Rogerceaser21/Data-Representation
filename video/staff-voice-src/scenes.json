@@ -29,6 +29,11 @@
       "text": "From there the loop runs in four steps. The observation is filed. The teacher is given feedback. The observer receives an analysis and a suggested coaching plan, which they approve, edit, or rewrite. And the teacher receives that plan, with every suggestion referenced back to our own Student Progress Rubric."
     },
     {
+      "id": "s06_coach",
+      "title": "The coaching plan",
+      "text": "This is what the observer actually receives. This teacher is Acceptable on progress in lessons, and the plan targets Good. It carries the rubric line for that level, one concrete move, what to look for in the next lesson, and where the technique comes from. The observer approves it, edits it, or writes their own."
+    },
+    {
       "id": "s06_gap",
       "title": "The gap",
       "text": "What the loop does not hear yet is the teacher. We capture how a session was rated. We do not capture what the teacher made of it, what they expect to struggle with, or what they intend to do differently on Monday morning."

@@ -31,8 +31,11 @@ for (const s of cfg.scenes) {
   const words = s.text.split(/\s+/).length;
   const d0 = dur(trimmed);
   // atempo multiplies speed: wpm_new = wpm_old * tempo. Read fast -> tempo < 1.
+  // HARD CAP at +/-3%: beyond that the stretch smears the formants and the line
+  // stops sounding like the same narrator (the v1 bug). Pace is fixed in tts.mjs
+  // by re-asking for the take, not here.
   let tempo = TARGET_WPM / (words / d0 * 60);
-  tempo = Math.min(1.18, Math.max(0.86, tempo));
+  tempo = Math.min(1.03, Math.max(0.97, tempo));
   const out = path.join(N, `${s.id}.wav`);
   ff(['-i', trimmed, '-af', `atempo=${tempo.toFixed(4)},loudnorm=I=-16:TP=-1.5:LRA=11`, '-ar', '24000', '-ac', '1', out]);
   fs.unlinkSync(trimmed);

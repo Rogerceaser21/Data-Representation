@@ -55,8 +55,13 @@ Dark theme swaps to Fraunces + Sora. Keep the pairing; don't substitute.
 ## Scale
 
 Components are drawn for an 1180px column. In a 1920x1080 composition, wrap each
-scene's content in `.sbody { width:1330px; zoom:1.40 }` rather than restyling the
+scene's content in `.sbody { width:1150px; zoom:1.62 }` rather than restyling the
 components, so every internal proportion stays the dashboard's.
+
+On top of that, lift the board's small classes (anything at 10-13px: card
+sub-text, evidence lines, table rows, labels, quotes) by roughly a third. Video is
+watched from across a room, often by people who will not lean in. See the
+"readability pass" block in `styles/dashboard.css`.
 
 ## Card style
 
@@ -76,8 +81,13 @@ Count-ups are driven from the timeline so a seek is deterministic.
 ## Voice
 
 Gemini TTS, `gemini-2.5-flash-preview-tts`, voice **Charon**, with a director's note
-asking for a measured British accent at 160 wpm. Normalise every line to one target
-pace afterwards (see `scripts/fit.mjs`) so the read does not drift scene to scene.
+asking for a measured British accent at 160 wpm.
+
+**Fix the pace by re-asking, never by stretching.** Generate a line, measure its
+words per minute, and if it misses the target, generate it again with a nudged
+direction. Time-stretching a take by more than about 3% smears the formants and the
+line stops sounding like the same narrator, which is audible as a voice change
+mid-video. `scripts/tts.mjs` does the re-asking; `scripts/fit.mjs` is capped at 3%.
 
 ## Never
 
