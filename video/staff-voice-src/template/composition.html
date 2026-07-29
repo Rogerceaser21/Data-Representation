@@ -425,12 +425,22 @@
           <div class="foot-brand"><i class="lg" id="footLogo"></i> AIS Sharjah &middot; Teaching and Learning</div>
         </div>
       </section>
+
+      <!-- ============ 15 . END CARD (silent, back to the cover) ============ -->
+      <section class="scene navy clip" id="sc15" data-start="{{START:s14_end}}" data-duration="{{DUR:s14_end}}" data-track-index="1">
+        <div class="sbody" style="justify-content:center">
+          <div class="stars" id="endStars" data-layout-allow-overflow></div>
+          <div style="position:relative;z-index:2">
+            <div class="coverk">AIS Sharjah &middot; Teaching and Learning</div>
+            <h1 class="coverh" id="s14h" style="font-size:62px;line-height:1.14;max-width:23ch">Every number, form and plan in this film is set out in full on <em>the rest of this page</em>.</h1>
+          </div>
+        </div>
+      </section>
     </div>
 
     <script>
-      /* Deterministic star field for the cover (no Math.random: seeded LCG). */
+      /* Deterministic star field for the cover and the end card (no Math.random: seeded LCG). */
       (function () {
-        var host = document.getElementById('coverStars');
         var seed = 20260728, n = 130, html = '';
         function rnd() { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296; }
         for (var i = 0; i < n; i++) {
@@ -438,7 +448,8 @@
           html += '<i style="left:' + x.toFixed(2) + '%;top:' + y.toFixed(2) + '%;width:' + s.toFixed(2) +
             'px;height:' + s.toFixed(2) + 'px;opacity:' + o.toFixed(2) + '"></i>';
         }
-        host.innerHTML = html;
+        document.getElementById('coverStars').innerHTML = html;
+        document.getElementById('endStars').innerHTML = html;
         document.getElementById('coverCrest').style.backgroundImage = "url('assets/ais-white.png')";
         document.getElementById('footLogo').style.backgroundImage = "url('assets/ais-navy.png')";
       })();
@@ -573,6 +584,10 @@
       tl.from('#s13h', { opacity: 0, y: 22, duration: 1.0, ease: 'power2.out' }, at('s13_close', -0.3))
         .from('#s13flow .fstep', { opacity: 0, y: 20, duration: 0.6, stagger: 0.5 }, atf('s13_close', 0.167))
         .from('#sc14 .foot-brand', { opacity: 0, duration: 0.9 }, atf('s13_close', 0.483));
+
+      /* 15 . end card (silent, held after the narration) */
+      tl.from('#sc15 .coverk', { opacity: 0, y: 14, duration: 0.9 }, at('s14_end', 0.3))
+        .from('#s14h', { opacity: 0, y: 22, duration: 1.1, ease: 'power2.out' }, at('s14_end', 0.6));
 
       window.__timelines['main'] = tl;
     </script>

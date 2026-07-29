@@ -10,6 +10,7 @@
 //   {{START:id}} {{DUR:id}}   scene window, seconds
 //   {{TOTAL}}                 composition duration
 //   {{TIMINGS}}               the timings object, for at(id, offset) in the timeline
+// Ids come from timings.json, plus the synthetic silent end card "s14_end".
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -18,6 +19,7 @@ const t = JSON.parse(fs.readFileSync(path.join(ROOT, 'timings.json'), 'utf8'));
 
 const LEAD = 0.55;   // a scene appears this long before its first word
 const TAIL = 1.6;    // hold after the last word
+const ENDCARD = 8;   // silent text-only end card, held after the tail
 
 // Scene windows: each runs from just before its own line to just before the next.
 // Rounded first, then durations from the rounded values, so scenes abut exactly
@@ -30,7 +32,12 @@ t.scenes.forEach((s, i) => {
   const end = i + 1 < starts.length ? starts[i + 1] : TOTAL_END;
   win[s.id] = { start, dur: +(end - start).toFixed(2), narr: s.start, narrDur: s.dur };
 });
-const TOTAL = Math.ceil(t.total + TAIL);
+// The end card has no narration line, so its window is synthetic: it takes over
+// exactly where the last scene ends and holds for ENDCARD. Registered in `win`
+// like a real scene, so the template gets {{START/DUR:s14_end}} and the timeline
+// gets at('s14_end', off) with no special case.
+win.s14_end = { start: TOTAL_END, dur: ENDCARD, narr: TOTAL_END, narrDur: ENDCARD };
+const TOTAL = Math.ceil(t.total + TAIL) + ENDCARD;
 
 let html = fs.readFileSync(path.join(ROOT, 'template/composition.html'), 'utf8');
 const missing = [];
@@ -46,7 +53,7 @@ html = html.replace('{{TIMINGS}}', JSON.stringify(cues))
   .replace(/\{\{TOTAL\}\}/g, String(TOTAL));
 
 fs.writeFileSync(path.join(ROOT, 'index.html'), html);
-console.log(`index.html written · ${t.scenes.length} scenes · ${TOTAL}s`);
+console.log(`index.html written · ${Object.keys(win).length} scenes · ${TOTAL}s`);
 for (const [id, v] of Object.entries(win)) {
   console.log(`  ${id.padEnd(16)} ${String(v.start).padStart(6)} -> ${String(+(v.start + v.dur).toFixed(2)).padStart(6)}  (${v.dur}s)`);
 }

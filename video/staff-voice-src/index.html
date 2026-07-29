@@ -11,12 +11,12 @@
   </head>
   <body>
     <!-- GENERATED FILE. Edit template/composition.html and run: node scripts/build.mjs -->
-    <div id="root" data-composition-id="main" data-start="0" data-duration="195" data-width="1920" data-height="1080">
+    <div id="root" data-composition-id="main" data-start="0" data-duration="203" data-width="1920" data-height="1080">
 
-      <audio id="narration" class="clip" data-start="0" data-duration="195" data-volume="1" src="assets/narration.mp3"></audio>
+      <audio id="narration" class="clip" data-start="0" data-duration="203" data-volume="1" src="assets/narration.mp3"></audio>
       <!-- bgm ships PRE-BAKED at its final level (-31 LUFS, ~15 dB under the narrator)
            with its fades already in the file, so what previews is what renders -->
-      <audio id="bgm" class="clip" data-start="0" data-duration="195" data-volume="1" src="assets/music.mp3"></audio>
+      <audio id="bgm" class="clip" data-start="0" data-duration="203" data-volume="1" src="assets/music.mp3"></audio>
 
       <div class="bgwash" style="z-index:0"></div>
 
@@ -425,12 +425,22 @@
           <div class="foot-brand"><i class="lg" id="footLogo"></i> AIS Sharjah &middot; Teaching and Learning</div>
         </div>
       </section>
+
+      <!-- ============ 15 . END CARD (silent, back to the cover) ============ -->
+      <section class="scene navy clip" id="sc15" data-start="194.79" data-duration="8" data-track-index="1">
+        <div class="sbody" style="justify-content:center">
+          <div class="stars" id="endStars" data-layout-allow-overflow></div>
+          <div style="position:relative;z-index:2">
+            <div class="coverk">AIS Sharjah &middot; Teaching and Learning</div>
+            <h1 class="coverh" id="s14h" style="font-size:62px;line-height:1.14;max-width:23ch">Every number, form and plan in this film is set out in full on <em>the rest of this page</em>.</h1>
+          </div>
+        </div>
+      </section>
     </div>
 
     <script>
-      /* Deterministic star field for the cover (no Math.random: seeded LCG). */
+      /* Deterministic star field for the cover and the end card (no Math.random: seeded LCG). */
       (function () {
-        var host = document.getElementById('coverStars');
         var seed = 20260728, n = 130, html = '';
         function rnd() { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296; }
         for (var i = 0; i < n; i++) {
@@ -438,14 +448,15 @@
           html += '<i style="left:' + x.toFixed(2) + '%;top:' + y.toFixed(2) + '%;width:' + s.toFixed(2) +
             'px;height:' + s.toFixed(2) + 'px;opacity:' + o.toFixed(2) + '"></i>';
         }
-        host.innerHTML = html;
+        document.getElementById('coverStars').innerHTML = html;
+        document.getElementById('endStars').innerHTML = html;
         document.getElementById('coverCrest').style.backgroundImage = "url('assets/ais-white.png')";
         document.getElementById('footLogo').style.backgroundImage = "url('assets/ais-navy.png')";
       })();
 
       /* Cue times are derived from the narration track, injected at build time,
          so re-cutting a line moves the animation with it. */
-      var NARR = {"s01_cover":{"start":0.9,"dur":8.681},"s02_intake":{"start":10.031,"dur":18.112},"s03_board":{"start":28.593,"dur":12.126},"s04_evidence":{"start":41.169,"dur":14.193},"s05_loop":{"start":55.812,"dur":16.642},"s06_coach":{"start":72.904,"dur":16.668},"s06_gap":{"start":90.022,"dur":10.22},"s07_kpi1":{"start":100.692,"dur":12.018},"s08_kpi2":{"start":113.16,"dur":16.918},"s09_strategies":{"start":130.528,"dur":17.079},"s10_leadership":{"start":148.057,"dur":13.434},"s11_middle":{"start":161.941,"dur":8.819},"s12_plp":{"start":171.209,"dur":8.107},"s13_close":{"start":179.766,"dur":11.828}};
+      var NARR = {"s01_cover":{"start":0.9,"dur":8.681},"s02_intake":{"start":10.031,"dur":18.112},"s03_board":{"start":28.593,"dur":12.126},"s04_evidence":{"start":41.169,"dur":14.193},"s05_loop":{"start":55.812,"dur":16.642},"s06_coach":{"start":72.904,"dur":16.668},"s06_gap":{"start":90.022,"dur":10.22},"s07_kpi1":{"start":100.692,"dur":12.018},"s08_kpi2":{"start":113.16,"dur":16.918},"s09_strategies":{"start":130.528,"dur":17.079},"s10_leadership":{"start":148.057,"dur":13.434},"s11_middle":{"start":161.941,"dur":8.819},"s12_plp":{"start":171.209,"dur":8.107},"s13_close":{"start":179.766,"dur":11.828},"s14_end":{"start":194.79,"dur":8}};
       function at(id, off) { return NARR[id].start + (off || 0); }
       // proportional cue: frac of the scene's narration length, so a shorter
       // line compresses its choreography instead of losing the tail of it
@@ -573,6 +584,10 @@
       tl.from('#s13h', { opacity: 0, y: 22, duration: 1.0, ease: 'power2.out' }, at('s13_close', -0.3))
         .from('#s13flow .fstep', { opacity: 0, y: 20, duration: 0.6, stagger: 0.5 }, atf('s13_close', 0.167))
         .from('#sc14 .foot-brand', { opacity: 0, duration: 0.9 }, atf('s13_close', 0.483));
+
+      /* 15 . end card (silent, held after the narration) */
+      tl.from('#sc15 .coverk', { opacity: 0, y: 14, duration: 0.9 }, at('s14_end', 0.3))
+        .from('#s14h', { opacity: 0, y: 22, duration: 1.1, ease: 'power2.out' }, at('s14_end', 0.6));
 
       window.__timelines['main'] = tl;
     </script>

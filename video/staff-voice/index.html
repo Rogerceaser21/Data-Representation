@@ -53,6 +53,7 @@ h1.big em,h2.sec em{font-style:italic;color:var(--y)}
 .cols-2{grid-template-columns:repeat(2,1fr)}
 @media(max-width:820px){.cols-3,.cols-2{grid-template-columns:1fr}}
 section.blk{margin-top:52px}
+.mast+section.blk{margin-top:16px}
 .stat .v{font-family:var(--display);font-weight:600;font-size:clamp(32px,4.4vw,48px);line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 .stat .l{font-size:12px;color:var(--ink-dim);margin-top:8px;font-weight:600}
 .stat .s{font-size:11px;color:var(--ink-faint);margin-top:3px}
@@ -86,8 +87,11 @@ section.blk{margin-top:52px}
 .swdot{width:11px;height:11px;border-radius:50%;flex:none;box-shadow:0 0 0 4px color-mix(in srgb,currentColor 16%,transparent)}
 .swhead b{font-family:var(--display);font-weight:600;font-size:18px;color:var(--ink)}
 .swev{font-size:10.5px;color:var(--ink-faint);font-weight:600;margin-bottom:13px}
-.vid{position:relative;border:1px solid var(--edge);border-radius:18px;overflow:hidden;background:#000;box-shadow:0 30px 70px -50px var(--shadow)}
+.vid{position:relative;border:1px solid var(--edge);border-radius:18px;overflow:hidden;background:#000;box-shadow:0 30px 70px -50px var(--shadow);transition:box-shadow .3s ease}
 .vid video{width:100%;display:block}
+/* while the video is playing it pins under the masthead, released by the wrapper's end */
+.vidwrap{margin-top:22px}
+.vidwrap.is-playing .vid{position:sticky;top:var(--vidtop,86px);z-index:20;box-shadow:0 26px 60px -28px var(--shadow)}
 .note{font-size:12.5px;color:var(--ink-faint);line-height:1.6;margin-top:12px}
 .foot{margin-top:56px;padding-top:18px;border-top:1px solid var(--edge);font-size:11.5px;color:var(--ink-faint);line-height:1.6;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
 .pill-note{display:inline-flex;align-items:center;gap:8px;font-size:11.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-mid);border:1px dashed var(--edge);border-radius:30px;padding:7px 15px}
@@ -163,11 +167,9 @@ section.blk{margin-top:52px}
 
   <section class="blk">
     <div class="kick"><i class="stripe"></i> The proposal in one page</div>
-    <h1 class="big">From observation to a plan for <em>every teacher</em></h1>
-    <p class="lead">The R3 pipeline already takes a lesson observation and turns it into a referenced coaching plan for the teacher. This page sets out the two additions Steve asked for, an evaluation of the professional learning session and a reflection with an action plan, and shows where each one sits in the flow that is already running.</p>
   </section>
 
-  <section class="blk">
+  <div class="vidwrap" id="vidWrap">
     <div class="vid">
       <video controls preload="metadata" poster="assets/poster.jpg">
         <source src="assets/sfp-feedback.mp4" type="video/mp4">
@@ -175,37 +177,42 @@ section.blk{margin-top:52px}
       </video>
     </div>
     <p class="note">Just over three minutes. Subtitles are supplied as a separate file alongside the video.</p>
-  </section>
 
-  <section class="blk">
-    <div class="kick"><i class="stripe"></i> What runs today</div>
-    <h2 class="sec">One intake, <em>one board</em></h2>
-    <div class="grid cols-3" style="margin-top:22px">
-      <div class="panel stat"><div class="v">110</div><div class="l">Lessons observed</div><div class="s">June 2026 sweep, deduplicated from 168 submissions</div></div>
-      <div class="panel stat"><div class="v">104</div><div class="l">Teachers seen</div><div class="s">Primary &amp; Kindy 46 &middot; Secondary 58</div></div>
-      <div class="panel stat accent"><div class="v">3.22</div><div class="l">Average progress</div><div class="s">best rating per teacher, then averaged</div></div>
-    </div>
-    <div class="panel" style="margin-top:14px">
-      <div class="ey-bold" style="margin-bottom:16px">Where the judgements sit</div>
-      <div class="histo">
-        <div class="hbar"><div class="hc">8</div><div class="hb" style="height:22%;background:var(--r1)"></div><div class="hw">Outstanding</div></div>
-        <div class="hbar"><div class="hc">21</div><div class="hb" style="height:58%;background:var(--r2)"></div><div class="hw">Very Good</div></div>
-        <div class="hbar"><div class="hc">25</div><div class="hb" style="height:69%;background:var(--r3)"></div><div class="hw">Good</div></div>
-        <div class="hbar"><div class="hc">36</div><div class="hb" style="height:100%;background:var(--r4)"></div><div class="hw">Acceptable</div></div>
-        <div class="hbar"><div class="hc">7</div><div class="hb" style="height:19%;background:var(--r5)"></div><div class="hw">Weak</div></div>
-        <div class="hbar"><div class="hc">4</div><div class="hb" style="height:11%;background:var(--r6)"></div><div class="hw">Very Weak</div></div>
+    <section class="blk">
+      <h1 class="big">From observation to a plan for <em>every teacher</em></h1>
+      <p class="lead">The R3 pipeline already takes a lesson observation and turns it into a referenced coaching plan for the teacher. This page sets out the two additions Steve asked for, an evaluation of the professional learning session and a reflection with an action plan, and shows where each one sits in the flow that is already running.</p>
+    </section>
+
+    <section class="blk">
+      <div class="kick"><i class="stripe"></i> What runs today</div>
+      <h2 class="sec">One intake, <em>one board</em></h2>
+      <div class="grid cols-3" style="margin-top:22px">
+        <div class="panel stat"><div class="v">110</div><div class="l">Lessons observed</div><div class="s">June 2026 sweep, deduplicated from 168 submissions</div></div>
+        <div class="panel stat"><div class="v">104</div><div class="l">Teachers seen</div><div class="s">Primary &amp; Kindy 46 &middot; Secondary 58</div></div>
+        <div class="panel stat accent"><div class="v">3.22</div><div class="l">Average progress</div><div class="s">best rating per teacher, then averaged</div></div>
       </div>
-      <div class="osramp">
-        <div class="rc"><div class="sw" style="background:var(--r1)"></div><div class="lb">Outstanding</div></div>
-        <div class="rc"><div class="sw" style="background:var(--r2)"></div><div class="lb">Very Good</div></div>
-        <div class="rc"><div class="sw" style="background:var(--r3)"></div><div class="lb">Good</div></div>
-        <div class="rc"><div class="sw" style="background:var(--r4)"></div><div class="lb">Acceptable</div></div>
-        <div class="rc"><div class="sw" style="background:var(--r5)"></div><div class="lb">Weak</div></div>
-        <div class="rc"><div class="sw" style="background:var(--r6)"></div><div class="lb">Very Weak</div></div>
+      <div class="panel" style="margin-top:14px">
+        <div class="ey-bold" style="margin-bottom:16px">Where the judgements sit</div>
+        <div class="histo">
+          <div class="hbar"><div class="hc">8</div><div class="hb" style="height:22%;background:var(--r1)"></div><div class="hw">Outstanding</div></div>
+          <div class="hbar"><div class="hc">21</div><div class="hb" style="height:58%;background:var(--r2)"></div><div class="hw">Very Good</div></div>
+          <div class="hbar"><div class="hc">25</div><div class="hb" style="height:69%;background:var(--r3)"></div><div class="hw">Good</div></div>
+          <div class="hbar"><div class="hc">36</div><div class="hb" style="height:100%;background:var(--r4)"></div><div class="hw">Acceptable</div></div>
+          <div class="hbar"><div class="hc">7</div><div class="hb" style="height:19%;background:var(--r5)"></div><div class="hw">Weak</div></div>
+          <div class="hbar"><div class="hc">4</div><div class="hb" style="height:11%;background:var(--r6)"></div><div class="hw">Very Weak</div></div>
+        </div>
+        <div class="osramp">
+          <div class="rc"><div class="sw" style="background:var(--r1)"></div><div class="lb">Outstanding</div></div>
+          <div class="rc"><div class="sw" style="background:var(--r2)"></div><div class="lb">Very Good</div></div>
+          <div class="rc"><div class="sw" style="background:var(--r3)"></div><div class="lb">Good</div></div>
+          <div class="rc"><div class="sw" style="background:var(--r4)"></div><div class="lb">Acceptable</div></div>
+          <div class="rc"><div class="sw" style="background:var(--r5)"></div><div class="lb">Weak</div></div>
+          <div class="rc"><div class="sw" style="background:var(--r6)"></div><div class="lb">Very Weak</div></div>
+        </div>
+        <p class="note">Figures are read live from the dashboard's own aggregation, not retyped. Co-observed lessons are collapsed into one lesson, best evidence winning, so a lesson seen by two inspectors counts once.</p>
       </div>
-      <p class="note">Figures are read live from the dashboard's own aggregation, not retyped. Co-observed lessons are collapsed into one lesson, best evidence winning, so a lesson seen by two inspectors counts once.</p>
-    </div>
-  </section>
+    </section>
+  </div>
 
   <section class="blk">
     <div class="kick"><i class="stripe"></i> The loop today</div>
@@ -427,6 +434,22 @@ section.blk{margin-top:52px}
     r.setAttribute('data-theme', next);
     b.innerHTML = next === 'light' ? '&#9788;' : '&#9789;';
   });
+
+  /* pin the video under the masthead while it plays, released by the wrapper's end */
+  var vw = document.getElementById('vidWrap'),
+      vid = vw ? vw.querySelector('video') : null,
+      mast = document.querySelector('.mast');
+  function vidTop() {
+    if (!mast) return;
+    r.style.setProperty('--vidtop', (mast.getBoundingClientRect().height + 24) + 'px');
+  }
+  if (vid) {
+    vidTop();
+    window.addEventListener('resize', vidTop);
+    vid.addEventListener('play', function () { vw.classList.add('is-playing'); });
+    vid.addEventListener('pause', function () { vw.classList.remove('is-playing'); });
+    vid.addEventListener('ended', function () { vw.classList.remove('is-playing'); });
+  }
 </script>
 </body>
 </html>
