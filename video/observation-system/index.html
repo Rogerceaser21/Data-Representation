@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>The AIS Observation System · Video</title>
+<style>
+  :root { --navy: #0c1f33; --cream: #f4efe6; --gold: #c9890c; }
+  * { margin: 0; box-sizing: border-box; }
+  body { background: var(--navy); color: var(--cream); font-family: Georgia, 'Times New Roman', serif;
+         min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+         justify-content: center; padding: 28px 16px; gap: 18px; }
+  .k { font-family: system-ui, sans-serif; font-size: 12px; letter-spacing: .22em;
+       text-transform: uppercase; color: #8fa1b3; }
+  h1 { font-size: clamp(20px, 3.2vw, 30px); font-weight: 500; font-style: italic; text-align: center; }
+  h1 em { color: var(--gold); font-style: italic; }
+  video { width: min(1280px, 96vw); aspect-ratio: 16 / 9; background: #000;
+          border-radius: 10px; box-shadow: 0 18px 60px rgba(0,0,0,.45); }
+  .f { font-family: system-ui, sans-serif; font-size: 12px; color: #6d8095; }
+</style>
+</head>
+<body>
+  <div class="k">AIS Sharjah · The Observation System</div>
+  <h1>From a single lesson to <em>a plan for every teacher</em></h1>
+  <video controls preload="metadata" poster="poster.jpg" crossorigin="anonymous">
+    <source src="observation-system.mp4" type="video/mp4">
+    <track kind="subtitles" srclang="en" label="English" src="narration.vtt">
+  </video>
+  <div class="f">video-v2.0 · 4m30 · June R3 round shown as a worked example</div>
+</body>
+</html>
