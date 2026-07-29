@@ -1,0 +1,66 @@
+/* ---------------------------------------------------------------------------
+   sc07 . the dashboard story: the password gate, then the Snapshot Story frame.
+   Gate values are dashboard/password-template.html at its clamp maxima, scaled
+   x1.5 for a 1920 frame (the same trick .sbody plays with zoom on the board).
+   Gate resting state is OPACITY 0 so a frozen frame shows the finished board.
+   --------------------------------------------------------------------------- */
+#sc07 .s7gate{position:absolute;inset:0;z-index:40;opacity:0;display:flex;flex-direction:column;padding:96px;
+  font-family:'Inter',system-ui,sans-serif;
+  background:radial-gradient(circle at 12% 20%,rgba(18,87,255,.18),transparent 38%),
+             radial-gradient(circle at 88% 80%,rgba(239,52,58,.15),transparent 40%),
+             radial-gradient(circle at 80% 12%,rgba(255,186,20,.10),transparent 32%),#0a0d1f}
+/* min-height 60px is the height the dropped mark used to give this row: the rule
+   keeps the divider and the hero exactly where they were, no amputated header */
+#sc07 .s7gtop{display:flex;justify-content:space-between;align-items:center;min-height:60px;font-size:24px;letter-spacing:.18em;
+  text-transform:uppercase;font-weight:600;color:#cdd0e0;padding-bottom:24px;border-bottom:1px solid rgba(255,255,255,.06)}
+#sc07 .s7gleft{display:inline-flex;align-items:center}
+#sc07 .s7ghero{flex:1;display:flex;align-items:center;justify-content:center;min-height:0}
+#sc07 .s7gcard{width:900px;background:#11162e;border:1px solid rgba(255,255,255,.10);border-radius:29px;padding:76px;
+  box-shadow:0 45px 90px -30px rgba(0,0,0,.7);position:relative;overflow:hidden}
+#sc07 .s7gcard::before{content:"";position:absolute;top:0;left:0;right:0;height:6px;background:linear-gradient(90deg,#EF343A,#FFBA14,#1257FF)}
+#sc07 .s7gcard::after{content:"";position:absolute;top:0;right:0;width:90px;height:90px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,186,20,.18),transparent 70%)}
+#sc07 .s7gkick{font-weight:700;font-size:19.5px;letter-spacing:.32em;text-transform:uppercase;color:#EF343A;
+  display:inline-flex;align-items:center;gap:.7em;margin-bottom:26px;white-space:nowrap}
+#sc07 .s7gstripe{width:53px;height:5px;border-radius:2px;background:linear-gradient(90deg,#EF343A,#FFBA14,#1257FF)}
+#sc07 .s7gtitle{font-family:'Lora',Georgia,serif;font-weight:700;font-size:82px;line-height:1;letter-spacing:-.018em;color:#f2efe6;margin:0 0 24px}
+#sc07 .s7gtitle em{font-style:italic;font-weight:400;color:#FFBA14;padding-right:.08em;display:inline-block}
+#sc07 .s7gsub{font-family:'Lora',Georgia,serif;font-style:italic;font-weight:400;font-size:31px;line-height:1.4;color:#cdd0e0;margin:0 0 44px;max-width:38ch}
+#sc07 .s7gfield{position:relative;display:flex;align-items:center;background:rgba(255,255,255,.05);
+  border:2px solid rgba(255,255,255,.10);border-radius:17px;padding:26px 48px 26px 30px;margin-bottom:26px}
+#sc07 .s7gdots{display:flex;align-items:center;gap:13px;height:26px}
+#sc07 .s7gdots i{width:13px;height:13px;border-radius:50%;background:#f2efe6;display:block}
+#sc07 .s7geye{position:absolute;right:26px;top:50%;margin-top:-14px;width:28px;height:28px;opacity:.7}
+#sc07 .s7gbtn{display:block;width:100%;background:#FFBA14;color:#0a0d1f;border:0;border-radius:999px;padding:28px 48px;
+  font-family:'Inter',system-ui,sans-serif;font-size:28px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  box-shadow:0 18px 36px -15px rgba(255,186,20,.4)}
+
+/* ---- beat 2 . the board ---- */
+#sc07 .s7top{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:18px}
+#sc07 .shead h2{font-size:46px}
+#sc07 .s7tabs{display:flex;align-items:center;gap:10px;flex:none;padding-bottom:6px}
+#sc07 .s7tab{height:38px;border-radius:22px;font-size:14px;font-weight:600;padding:0 18px;display:inline-flex;align-items:center;
+  background:var(--panel-2);border:1px solid var(--edge-soft);box-shadow:0 2px 12px -5px var(--shadow);color:var(--ink-mid)}
+#sc07 .s7tab.on{color:var(--ink);border-color:var(--edge);font-weight:700}
+#sc07 .s7present{height:38px;border-radius:22px;font-size:14px;font-weight:700;padding:0 20px;display:inline-flex;align-items:center;
+  background:var(--y);border:1px solid var(--y);color:#3a2801;box-shadow:0 10px 26px -14px var(--shadow)}
+#sc07 .s7grid{display:grid;grid-template-columns:330px 1fr;gap:16px;align-items:stretch}
+#sc07 .s7col{display:flex;flex-direction:column;gap:12px}
+#sc07 .s7col .stat{padding:16px 20px}
+#sc07 .s7col .stat .v{font-size:46px}
+#sc07 .s7gaugecard{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 22px 16px}
+#sc07 .allgauge{display:flex;align-items:center;justify-content:center}
+#sc07 .s7arc .arcw{font-family:var(--display);font-weight:600;font-style:italic}
+#sc07 .s7dcard{display:flex;flex-direction:column}
+/* SEAS dot sort, from renderDotSort. The product's CSS keyframe fly-in is dropped
+   on purpose: GSAP owns the entrance here so the render stays seek deterministic. */
+#sc07 .dsrow{display:flex;align-items:flex-end;justify-content:space-around;gap:6px;width:100%}
+#sc07 .dscol{display:flex;flex-direction:column;align-items:center}
+#sc07 .dsstack{position:relative}
+#sc07 .dsdot{position:absolute;left:0;border-radius:50%}
+#sc07 .dsword{font-size:14px;font-weight:600;color:var(--ink-mid);margin-top:14px;text-align:center;font-family:var(--display);line-height:1.1;max-width:11ch}
+#sc07 .dscount{font-size:19px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;font-family:var(--display);margin-top:4px}
+#sc07 .s7rail{display:flex;align-items:center;gap:24px;margin-top:14px}
+#sc07 .s7beat{display:inline-flex;align-items:center;gap:9px;font-size:15px;font-weight:700;color:var(--ink);
+  border:1px solid var(--edge);border-radius:30px;padding:7px 16px;background:var(--panel-2)}
+#sc07 .s7bd{width:10px;height:10px;border-radius:50%;flex:none}

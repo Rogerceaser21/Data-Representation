@@ -1,0 +1,28 @@
+/* ============ 14 . TRUST ===================================================
+   Governance register: the dashboard's own .panel grammar, monochrome navy
+   ink, no ramp colour anywhere. Nothing here is a new component; the cards
+   are .panel with a lock glyph and the strip is .panel split by a hairline.
+   ========================================================================== */
+#sc14 .s14row{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:stretch}
+#sc14 .s14card{position:relative;display:flex;flex-direction:column;padding:24px 24px 22px}
+#sc14 .s14n{position:absolute;top:18px;right:22px;font-family:var(--display);font-style:italic;
+  font-weight:600;font-size:25px;line-height:1;color:var(--ink-faint)}
+#sc14 .s14lock{width:52px;height:52px;border-radius:15px;border:1px solid var(--edge);
+  background:var(--panel-2);color:var(--ink);display:flex;align-items:center;
+  justify-content:center;margin-bottom:17px}
+#sc14 .s14lock svg{width:27px;height:27px;display:block;overflow:visible}
+#sc14 .s14t{font-family:var(--display);font-weight:600;font-size:22px;line-height:1.18;
+  letter-spacing:-.012em;color:var(--ink);margin-bottom:9px}
+#sc14 .s14s{font-size:14.5px;line-height:1.6;color:var(--ink-dim);flex:1}
+#sc14 .s14m{margin-top:15px;padding-top:11px;border-top:1px solid var(--edge-soft);
+  font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-mid)}
+
+#sc14 .s14strip{margin-top:20px;display:grid;grid-template-columns:auto 1fr;gap:32px;
+  align-items:center;padding:20px 24px}
+#sc14 .s14chips{display:flex;gap:9px;margin-top:2px}
+#sc14 .s14chips span{font-size:13.5px;font-weight:700;color:var(--ink);white-space:nowrap;
+  border:1px solid var(--edge);border-radius:30px;padding:7px 15px;background:var(--panel-2)}
+#sc14 .s14right{border-left:1px solid var(--edge-soft);padding-left:30px}
+#sc14 .s14line{font-family:var(--display);font-weight:600;font-size:22px;line-height:1.26;
+  letter-spacing:-.012em;color:var(--ink)}
+#sc14 .s14sub{font-size:14.5px;color:var(--ink-mid);margin-top:7px}

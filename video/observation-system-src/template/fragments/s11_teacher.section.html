@@ -1,0 +1,132 @@
+<!-- ============ 11 . THE TEACHER VIEW ============ -->
+      <section class="scene top clip" id="sc11" data-start="{{START:s11_teacher}}" data-duration="{{DUR:s11_teacher}}" data-track-index="1">
+        <div class="sbody">
+
+          <div class="s11top" id="s11top">
+            <div class="kick"><i class="stripe"></i> Observations &middot; teacher drill-down</div>
+            <div class="thead">
+              <span class="tavatar" id="s11av"><img src="assets/faces/face-01.jpg" alt="" /></span>
+              <span class="who">
+                <h2>Eleanor Whitfield</h2>
+                <div class="meta">3 observations &nbsp;&middot;&nbsp; English &nbsp;&middot;&nbsp; Secondary &nbsp;&middot;&nbsp; June 2 &nbsp;&middot;&nbsp; February 1</div>
+              </span>
+              <span class="bigj">
+                <div class="l">Overall &middot; all observations</div>
+                <div class="v" id="s11ov" style="color:rgb(160,126,21)">Acceptable</div>
+              </span>
+              <span class="ill-tag">Illustrative record</span>
+            </div>
+          </div>
+
+          <!-- All observations: Student Progress gauge | merged Spectrum | Teaching gauge -->
+          <div class="ocard all" id="s11all">
+            <div class="allhead">
+              <span class="ey-bold gtitle">Student Progress</span>
+              <div class="owho"><span class="ey-bold">All observations</span><small>3 observations &middot; averaged</small></div>
+              <span class="ey-bold gtitle">Teaching</span>
+            </div>
+            <div class="allmain">
+              <div class="allgauge"><svg id="s11arcP" viewBox="0 20 240 200" width="150" height="125"></svg></div>
+              <div class="allleft">
+                <div class="orampfull">
+                  <div class="ospec osseg">
+                    <div class="osdots" style="height:30px">
+                      <span class="osd" style="left:41.67%;bottom:0px;background:var(--r3)"></span>
+                      <span class="osd" style="left:58.33%;bottom:0px;background:var(--r4)"></span>
+                      <span class="osd" style="left:58.33%;bottom:14px;background:var(--r4)"></span>
+                    </div>
+                    <div class="osramp">
+                      <div class="rc"><div class="sw" style="background:var(--r1)"></div><div class="lb">Outstanding</div></div>
+                      <div class="rc"><div class="sw" style="background:var(--r2)"></div><div class="lb">Very Good</div></div>
+                      <div class="rc"><div class="sw" style="background:var(--r3)"></div><div class="lb">Good</div></div>
+                      <div class="rc"><div class="sw" style="background:var(--r4)"></div><div class="lb">Acceptable</div></div>
+                      <div class="rc"><div class="sw" style="background:var(--r5)"></div><div class="lb">Weak</div></div>
+                      <div class="rc"><div class="sw" style="background:var(--r6)"></div><div class="lb">Very Weak</div></div>
+                    </div>
+                    <div class="osflagrow"><span class="osflag" id="s11flag" style="left:52.78%;border-bottom-color:rgb(160,126,21)"></span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="allgauge"><svg id="s11arcT" viewBox="0 20 240 200" width="150" height="125"></svg></div>
+            </div>
+          </div>
+
+          <div class="s11grid">
+
+            <!-- one session, its inspection details and its skills -->
+            <div class="ocard session" id="s11sess">
+              <div class="octop">
+                <div class="otopcols open">
+                  <div class="ocol inspection">
+                    <div class="ocolhd"><span class="ocolttl">Inspection details</span><span class="oround">R3 June 26</span></div>
+                    <div class="ocolbody"><div class="ocolbody-in">
+                      <div class="odrow"><span class="odn">Inspector</span><span class="odv">J. Carver &middot; June 26</span></div>
+                      <div class="odrow"><span class="odn">Subject</span><span class="odv">English</span></div>
+                      <div class="odrow"><span class="odn">Area</span><span class="odv">Secondary &middot; Year 9</span></div>
+                    </div></div>
+                  </div>
+                  <div class="ocol skills">
+                    <div class="ocolhd"><span class="ocolttl">Skills observed</span></div>
+                    <div class="ocolbody"><div class="ocolbody-in">
+                      <div class="odrow"><span class="odn">Progress</span><span class="odv">Acceptable</span><i class="osw" style="background:var(--r4)"></i></div>
+                      <div class="odrow"><span class="odn">Teaching</span><span class="odv">Good</span><i class="osw" style="background:var(--r3)"></i></div>
+                      <div class="odrow"><span class="odn">Assessment</span><span class="odv">Good</span><i class="osw" style="background:var(--r3)"></i></div>
+                    </div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- the coaching note: current to target, one move, grounded in the rubric -->
+            <div class="panel s11coach" id="s11coach">
+              <div class="ns-head">
+                <div class="ns-title">
+                  <div class="ey" style="margin:0">Next Steps &amp; Improvement</div>
+                  <span class="oround">R3 June 26</span>
+                  <span class="s11flip">
+                    <span class="ns-badge draft">Draft</span>
+                    <span class="ns-badge approved" id="s11appr">Approved</span>
+                  </span>
+                </div>
+              </div>
+              <div class="ns-ladders" id="s11lad">
+                <div class="ns-lad">
+                  <div class="ns-lad-top"><span class="ns-lad-name">Progress in Lessons</span><span class="ns-lad-mv">Acceptable<span class="a">&rarr;</span>Good</span></div>
+                  <div class="ns-track">
+                    <div class="ns-cell" style="--c:var(--r6)"></div>
+                    <div class="ns-cell" style="--c:var(--r5)"></div>
+                    <div class="ns-cell cur" style="--c:var(--r4)"></div>
+                    <div class="ns-cell tgt" style="--c:var(--r3)"></div>
+                    <div class="ns-cell" style="--c:var(--r2)"></div>
+                    <div class="ns-cell" style="--c:var(--r1)"></div>
+                  </div>
+                </div>
+                <div class="ns-lad">
+                  <div class="ns-lad-top"><span class="ns-lad-name">Facilitating better progress</span><span class="ns-lad-mv">Good<span class="a">&rarr;</span>Very Good</span></div>
+                  <div class="ns-track">
+                    <div class="ns-cell" style="--c:var(--r6)"></div>
+                    <div class="ns-cell" style="--c:var(--r5)"></div>
+                    <div class="ns-cell" style="--c:var(--r4)"></div>
+                    <div class="ns-cell cur" style="--c:var(--r3)"></div>
+                    <div class="ns-cell tgt" style="--c:var(--r2)"></div>
+                    <div class="ns-cell" style="--c:var(--r1)"></div>
+                  </div>
+                </div>
+              </div>
+              <p class="ns-sum" id="s11sum">Drafted from her own lessons, then checked word for word against the record.</p>
+              <div class="fc" id="s11fc" style="--cc:var(--b)">
+                <div class="fc-l">
+                  <span class="ns-chip">Questioning</span>
+                  <p class="ns-move">Follow every answer with one question that asks the student to justify it, before you move on.</p>
+                  <p class="ns-look"><b>Look for</b> students explaining their reasoning without being asked twice.</p>
+                </div>
+                <div class="fc-r">
+                  <div class="fc-rlab">Grounded in</div>
+                  <p class="ns-rub">In the school's Progress Rubric, at a <b>Good</b> level the teacher checks understanding through targeted questioning.</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>

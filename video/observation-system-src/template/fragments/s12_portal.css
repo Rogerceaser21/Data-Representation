@@ -1,0 +1,75 @@
+/* ============================================================================
+   12 . THE TEACHER PORTAL  (#sc12)
+   Two beats in one stage. Beat 1 = the yearbook wall (.pwall/.pface/.scrim/
+   .pfchip). Beat 2 = the portal page (.pband hero + .pframe portrait + the
+   numbered .hsecs section list with the .hnew notification badge), which sits
+   OVER the wall as a full-frame layer and enters with a GSAP .from(), so the
+   resting state of the scene is the finished portal page.
+   Values are the product's own (dashboard/src/index.html), scoped here because
+   styles/dashboard.css does not carry the portal component sheet. The clamp()
+   sizes resolve to their maxima at this width, exactly as on the board.
+   ========================================================================== */
+
+#sc12 .s12stage{position:relative;width:100%}
+
+/* ---- beat 1 . the yearbook wall ---- */
+#sc12 .psecthead{display:flex;align-items:baseline;gap:12px;margin:0 0 12px}
+#sc12 .psecthead h3{font-family:var(--display);font-style:italic;font-weight:600;font-size:23px;margin:0}
+#sc12 .psecthead small{color:var(--ink-faint);font-size:13px;letter-spacing:.06em}   /* LIFT 11 -> 13 */
+#sc12 .pwall{display:grid;grid-template-columns:repeat(9,1fr);gap:14px}
+#sc12 .pface{position:relative;aspect-ratio:2/3;border-radius:18px;overflow:hidden;border:1px solid var(--edge-soft);
+  background:var(--panel-2);box-shadow:0 16px 36px -20px var(--shadow);padding:0;width:100%}
+/* law 5 crop: object-fit:cover + object-position:50% 18% in a box wider than the
+   2:3 source, so the chest-level ID badges never reach the frame */
+#sc12 .pface img{position:absolute;top:0;left:-44%;width:188%;height:100%;object-fit:cover;object-position:50% 18%;display:block}
+#sc12 .pface .scrim{position:absolute;inset:auto 0 0 0;padding:30px 11px 10px;background:linear-gradient(transparent,rgba(8,12,30,.86));color:#fff}
+#sc12 .pface .nm{font-family:var(--display);font-weight:600;font-size:13px;line-height:1.15;display:block}
+#sc12 .pface .sub{font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;opacity:.78;margin-top:2px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#sc12 .pfchip{position:absolute;top:8px;right:8px;font-size:9px;font-weight:800;letter-spacing:.05em;padding:4px 8px;border-radius:9px;color:#fff}
+#sc12 .ill-tag{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);
+  border:1px dashed var(--edge);border-radius:20px;padding:5px 11px;white-space:nowrap;margin-left:auto}
+
+/* ---- beat 2 . the portal page, full frame over the wall ---- */
+#sc12 .s12page{position:absolute;left:-70px;right:-70px;top:-300px;bottom:-300px;z-index:6;
+  display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(1200px 700px at 78% 16%,rgba(18,87,255,.06),transparent 60%),
+             radial-gradient(900px 600px at 6% 88%,rgba(46,161,90,.05),transparent 55%),var(--bg)}
+#sc12 .s12pagein{width:1150px}
+/* the band's clamp() padding maxes at 54px on a 1920 frame; at the video's column
+   scale that is 87 real pixels of air, so the hero is trimmed to fit 1080 */
+#sc12 .pband{position:relative;border-radius:26px;overflow:hidden;padding:36px 40px;
+  background:radial-gradient(900px 420px at 18% -18%,#16224a,transparent),radial-gradient(700px 420px at 108% 118%,#101a3c,transparent),#0a0e22;
+  border:1px solid rgba(255,255,255,.1);box-shadow:0 40px 90px -30px rgba(6,8,22,.65);color:#eef1fb;
+  display:grid;grid-template-columns:1fr auto;gap:clamp(20px,4vw,56px);align-items:center}
+#sc12 .pband .bkick{font-size:11.5px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:#8fa2d8}   /* LIFT 10.5 -> 11.5 */
+#sc12 .pband .bname{font-family:var(--display);font-style:italic;font-weight:600;font-size:56px;
+  line-height:1;letter-spacing:-.02em;margin:8px 0 10px;color:#fff;text-shadow:0 6px 40px rgba(0,0,0,.45)}
+#sc12 .pband .bmeta{color:#aab7e2;font-size:15px}   /* LIFT 13.5 -> 15 */
+#sc12 .pframe{position:relative;width:clamp(180px,24vw,250px);aspect-ratio:2/3;border-radius:20px;flex:none;background:#fff;
+  padding:9px;box-shadow:0 30px 70px -20px rgba(0,0,0,.6);transform:rotate(1.6deg)}
+#sc12 .pframe .s12shot{display:block;position:relative;width:100%;height:100%;border-radius:13px;overflow:hidden}
+#sc12 .pframe .s12shot img{position:absolute;top:0;left:-44%;width:188%;height:100%;object-fit:cover;object-position:50% 18%;display:block}
+#sc12 .pstar{position:absolute;width:22px;height:22px;filter:drop-shadow(0 0 8px currentColor)}
+
+/* the numbered section list = the portal menu */
+/* max-width 600 on the board; 700 here so the live row's sub line stays on one
+   line at the video's type scale */
+#sc12 .hsecs{margin-top:16px;display:flex;flex-direction:column;gap:6px;max-width:700px}
+#sc12 .hsec{display:flex;align-items:center;gap:13px;text-align:left;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);border-radius:13px;padding:8px 14px}
+#sc12 .hsec .no{font-family:var(--display);font-style:italic;font-weight:600;font-size:15px;color:#8fa2d8;width:24px;flex:none}
+#sc12 .hsec .tt{font-size:13.5px;font-weight:600;color:#eef1fb;margin-right:auto;line-height:1.25}   /* LIFT 13 -> 13.5 */
+#sc12 .hsec .tt small{display:block;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#8fa2d8;margin-top:2px}
+#sc12 .hsec .pl{flex:none;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#fff;padding:5px 12px;border-radius:999px;box-shadow:0 8px 20px -10px rgba(0,0,0,.55)}
+#sc12 .hsec .pl.na{background:rgba(120,132,165,.28);border:1px dashed rgba(255,255,255,.3);color:#aab7e2;box-shadow:none}
+#sc12 .hsec .pl.soon{background:rgba(237,255,33,.14);border:1px solid rgba(237,255,33,.35);color:#EDFF21;box-shadow:none}
+#sc12 .hsec .dim{opacity:.55}
+#sc12 .hsecrow{display:flex;align-items:center;gap:12px}
+#sc12 .hsecrow .hsec{flex:1;min-width:0}
+#sc12 .hsec.new{outline:2px dashed #EF343A;outline-offset:3px}
+#sc12 .hnew{flex:none;display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:800;letter-spacing:.08em;
+  text-transform:uppercase;background:#EF343A;color:#fff;padding:6px 13px;border-radius:999px;
+  box-shadow:0 10px 26px -10px rgba(239,52,58,.75);white-space:nowrap}
+#sc12 .hnew i{width:7px;height:7px;border-radius:50%;background:#fff;display:block}
+
+#sc12 .s12cap{margin-top:22px}

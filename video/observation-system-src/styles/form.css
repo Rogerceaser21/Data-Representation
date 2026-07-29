@@ -1,0 +1,1865 @@
+/* R3 Evidence Form CSS, extracted VERBATIM from Assets/R3/src/r3-evidence-form.html (v0.58). Product truth: do not restyle. */
+
+/* ===========================================
+   THEME TOKENS · LIGHT default (form-context)
+   =========================================== */
+:root {
+  --display-font: 'Lora', Georgia, 'Times New Roman', serif;
+  --body-font: 'Inter', system-ui, -apple-system, sans-serif;
+
+  --navy: #143642;
+  --navy-elev: #ffffff;
+  --navy-card: #f4f3ee;
+  --navy-edge: #e3e2dc;
+  --paper: #143642;
+  --paper-dim: #3a4f59;
+  --paper-mid: #6b7e85;
+  --paper-faint: #9aa6ac;
+
+  --ais-red: #EF343A;
+  --ais-blue: #1257FF;
+  --ais-yellow: #FFBA14;
+  --rate-success: #2ea15a;
+  --rate-success-deep: #0f5f30;
+  --rate-unsuccess: #d68a1a;
+  --rate-unsuccess-deep: #b06d10;
+
+  --rule: rgba(20, 54, 66, 0.14);
+  --rule-soft: rgba(20, 54, 66, 0.07);
+  --page-bg: #efece2;
+  --card-bg: #ffffff;
+  --row-tint: rgba(20, 54, 66, 0.025);
+  --section-tint: rgba(20, 54, 66, 0.055);
+  --surface-soft: rgba(20, 54, 66, 0.025);
+  --surface-mid: rgba(20, 54, 66, 0.045);
+  --surface-strong: rgba(20, 54, 66, 0.08);
+  --shadow-card: 0 14px 36px -18px rgba(20, 54, 66, 0.22), 0 2px 6px -3px rgba(20, 54, 66, 0.08);
+
+  --title: clamp(1.85rem, 3.4vw, 2.6rem);
+  --section: clamp(1.15rem, 1.8vw, 1.4rem);
+  --label: clamp(0.7rem, 0.95vw, 0.8rem);
+  --body: clamp(0.95rem, 1.25vw, 1.05rem);
+  --small: clamp(0.78rem, 1.05vw, 0.88rem);
+  --tiny: clamp(0.72rem, 0.95vw, 0.8rem);
+}
+
+/* Dark theme — same vibe as the deck */
+:root[data-theme="dark"] {
+  --display-font: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --body-font: 'Source Sans 3', system-ui, -apple-system, sans-serif;
+  --navy: #0a0d1f;
+  --navy-elev: #11162e;
+  --navy-card: #131938;
+  --navy-edge: #1c244d;
+  --paper: #f2efe6;
+  --paper-dim: #cdd0e0;
+  --paper-mid: #9ea3bf;
+  --paper-faint: #6c7290;
+  --rule: rgba(255, 255, 255, 0.10);
+  --rule-soft: rgba(255, 255, 255, 0.06);
+  --page-bg: #04061a;
+  --card-bg: #11162e;
+  --row-tint: rgba(255, 255, 255, 0.025);
+  --section-tint: rgba(255, 255, 255, 0.05);
+  --surface-soft: rgba(255, 255, 255, 0.03);
+  --surface-mid: rgba(255, 255, 255, 0.05);
+  --surface-strong: rgba(255, 255, 255, 0.08);
+  --rate-success: #3CBB6C;
+  --rate-success-deep: #1e7a3f;
+  --rate-unsuccess: #ff9a4d;
+  --rate-unsuccess-deep: #c46810;
+  --shadow-card: 0 18px 48px -20px rgba(0, 0, 0, 0.55), 0 3px 8px -3px rgba(0, 0, 0, 0.4);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--body-font);
+  background: var(--page-bg);
+  color: var(--paper);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  min-height: 100vh;
+  min-height: 100svh;  /* v0.57: vh = LARGEST viewport on iPad Chrome, which
+                          guarantees scrollable overflow while the toolbar is
+                          expanded; svh sizes to the always-visible minimum.
+                          Older WebKit ignores this line and keeps 100vh. */
+  padding: clamp(1rem, 2.5vw, 2rem) clamp(0.6rem, 2vw, 1.5rem);
+  padding-bottom: clamp(5rem, 8vw, 7rem);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* ===========================================
+   FORM CONTAINER (paper-like card)
+   =========================================== */
+.form-container {
+  max-width: 980px;
+  margin: 0 auto;
+  background: var(--card-bg);
+  border: 1px solid var(--rule);
+  border-radius: clamp(0.5rem, 0.9vw, 0.8rem);
+  box-shadow: var(--shadow-card);
+  padding: clamp(1.4rem, 3vw, 2.6rem);
+  position: relative;
+  overflow: hidden;
+}
+.form-container::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, var(--ais-red), var(--ais-yellow), var(--ais-blue));
+}
+
+/* ===========================================
+   HEADER
+   =========================================== */
+.form-header {
+  display: flex; flex-direction: column;
+  gap: clamp(0.7rem, 1.3vw, 1.1rem);
+  padding-bottom: clamp(1rem, 2vw, 1.6rem);
+  margin-bottom: clamp(1.2rem, 2.4vw, 2rem);
+  border-bottom: 1px solid var(--rule);
+}
+.brand-row {
+  display: flex; align-items: center;
+  gap: clamp(0.6rem, 1.2vw, 1rem);
+}
+.brand-row img {
+  height: clamp(48px, 7vw, 72px);
+  width: auto;
+  display: block;
+}
+.form-title-block { display: flex; flex-direction: column; gap: 0.25rem; }
+.form-eyebrow {
+  font-family: var(--body-font);
+  font-size: var(--label);
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--ais-red);
+  display: inline-flex; align-items: center; gap: 0.7em;
+}
+.form-eyebrow .stripe {
+  width: clamp(1.8rem, 2.6vw, 2.4rem);
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--ais-red), var(--ais-yellow), var(--rate-success));
+}
+.form-title {
+  font-family: var(--display-font);
+  font-weight: 700;
+  font-size: var(--title);
+  line-height: 1.05;
+  letter-spacing: -0.012em;
+  color: var(--paper);
+  margin: 0;
+}
+.form-title em {
+  font-style: italic; font-weight: 400; color: var(--rate-success-deep);
+}
+:root[data-theme="dark"] .form-title em { color: var(--rate-success); }
+.src-path {
+  font-family: var(--body-font);
+  font-style: italic;
+  font-size: var(--small);
+  color: var(--paper-mid);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* ===========================================
+   SECTIONS
+   =========================================== */
+.form-section { margin-bottom: clamp(1.2rem, 2vw, 1.8rem); }
+.section-title {
+  font-family: var(--display-font);
+  font-weight: 600;
+  font-size: var(--section);
+  color: var(--paper);
+  margin: 0 0 clamp(0.5rem, 0.95vw, 0.8rem) 0;
+  letter-spacing: -0.005em;
+}
+.section-title em { font-style: italic; font-weight: 400; color: var(--ais-red); }
+
+/* ===========================================
+   TOP INFO GRID
+   =========================================== */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(0.5rem, 1vw, 0.85rem);
+  border: 1px solid var(--rule);
+  border-radius: clamp(0.4rem, 0.7vw, 0.6rem);
+  overflow: hidden;
+  background: var(--row-tint);
+}
+.info-cell {
+  padding: clamp(0.55rem, 1.1vw, 0.9rem) clamp(0.7rem, 1.3vw, 1.05rem);
+  border-right: 1px solid var(--rule-soft);
+  border-bottom: 1px solid var(--rule-soft);
+  display: flex; flex-direction: column; gap: 0.3rem;
+  background: var(--card-bg);
+}
+.info-cell:nth-child(3n) { border-right: none; }
+.info-cell:nth-last-child(-n+3) { border-bottom: none; }
+.info-cell label {
+  font-family: var(--body-font);
+  font-size: var(--label);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--paper-mid);
+}
+.info-cell input {
+  font-family: var(--display-font);
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  color: var(--paper);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid transparent;
+  padding: 0.15rem 0;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+.info-cell input::placeholder { color: var(--paper-faint); font-style: italic; }
+.info-cell input:focus { border-bottom-color: var(--rate-success); }
+
+/* iPad / iOS Safari renders <input type="date|time"> with no chrome when empty.
+   Force a visible dashed underline so they read as tappable (v0.32). */
+.info-cell input[type="date"],
+.info-cell input[type="time"] {
+  border-bottom: 1px dashed var(--rule);
+  min-height: 1.8rem;
+  padding: 0.3em 0;
+}
+.info-cell input[type="date"]:focus,
+.info-cell input[type="time"]:focus {
+  border-bottom-style: solid;
+  border-bottom-color: var(--rate-success);
+}
+
+/* ===========================================
+   CRITERIA TABLE
+   =========================================== */
+.criteria-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--rule);
+  border-radius: clamp(0.4rem, 0.7vw, 0.6rem);
+  overflow: hidden;
+  background: var(--card-bg);
+  table-layout: fixed;
+}
+.criteria-table thead th {
+  font-family: var(--body-font);
+  font-size: var(--label);
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--paper-mid);
+  background: var(--section-tint);
+  padding: clamp(0.55rem, 1.1vw, 0.9rem) clamp(0.6rem, 1.1vw, 0.95rem);
+  text-align: left;
+  border-bottom: 1px solid var(--rule);
+}
+.criteria-table thead th.center { text-align: center; }
+.criteria-table tbody tr.section-head td {
+  font-family: var(--display-font);
+  font-weight: 600;
+  font-size: clamp(1rem, 1.4vw, 1.18rem);
+  color: var(--paper);
+  background: var(--section-tint);
+  padding: clamp(0.55rem, 1.1vw, 0.85rem) clamp(0.7rem, 1.3vw, 1.05rem);
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  letter-spacing: -0.005em;
+}
+.criteria-table tbody tr.section-head:first-child td { border-top: none; }
+.criteria-table tbody td {
+  padding: clamp(0.5rem, 0.95vw, 0.75rem) clamp(0.6rem, 1.1vw, 0.95rem);
+  vertical-align: top;
+  border-bottom: 1px solid var(--rule-soft);
+}
+.criteria-table tbody tr:last-child td { border-bottom: none; }
+.criteria-table tbody tr.crit:nth-of-type(odd) td { background: var(--row-tint); }
+.criteria-table tbody tr.crit:hover td { background: var(--surface-soft); }
+.criteria-table .col-crit {
+  font-family: var(--body-font);
+  font-size: var(--body);
+  color: var(--paper);
+  line-height: 1.4;
+  padding-right: 0.5rem;
+}
+.criteria-table .col-crit .num {
+  font-family: var(--display-font);
+  font-style: italic;
+  font-weight: 600;
+  color: var(--paper-mid);
+  margin-right: 0.25em;
+}
+.criteria-table .col-su { width: clamp(3.2rem, 5.5vw, 4.4rem); text-align: center; }
+.criteria-table .col-comments { width: 45%; }
+.criteria-table .col-comments textarea {
+  width: 100%;
+  min-height: 2.6rem;
+  font-family: var(--body-font);
+  font-size: var(--small);
+  color: var(--paper);
+  background: transparent;
+  border: 1px solid var(--rule-soft);
+  border-radius: clamp(0.3rem, 0.5vw, 0.45rem);
+  padding: 0.4rem 0.55rem;
+  line-height: 1.4;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.criteria-table .col-comments textarea::placeholder { color: var(--paper-faint); font-style: italic; }
+.criteria-table .col-comments textarea:focus {
+  border-color: var(--rate-success);
+  background: var(--card-bg);
+}
+
+/* col widths */
+.criteria-table colgroup .c-crit { width: 38%; }
+.criteria-table colgroup .c-s,
+.criteria-table colgroup .c-u { width: 8%; }
+.criteria-table colgroup .c-comments { width: 46%; }
+
+/* ===========================================
+   S / U TOGGLE  (radio styled as pill buttons)
+   =========================================== */
+.su-toggle {
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.su-toggle input { position: absolute; opacity: 0; pointer-events: none; }
+.su-toggle label {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: clamp(2rem, 3.2vw, 2.5rem);
+  height: clamp(2rem, 3.2vw, 2.5rem);
+  border-radius: 50%;
+  background: var(--surface-soft);
+  border: 1.5px solid var(--rule);
+  font-family: var(--display-font);
+  font-weight: 700;
+  font-style: italic;
+  font-size: clamp(0.95rem, 1.3vw, 1.1rem);
+  color: var(--paper-mid);
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.12s ease;
+}
+.su-toggle label:hover {
+  border-color: var(--paper-dim);
+  color: var(--paper);
+  transform: scale(1.04);
+}
+.su-toggle input[value="S"]:checked + label {
+  background: var(--rate-success);
+  border-color: var(--rate-success-deep);
+  color: white;
+  box-shadow: 0 4px 12px -4px rgba(46, 161, 90, 0.5);
+}
+.su-toggle input[value="U"]:checked + label {
+  background: var(--rate-unsuccess);
+  border-color: var(--rate-unsuccess-deep);
+  color: white;
+  box-shadow: 0 4px 12px -4px rgba(214, 138, 26, 0.5);
+}
+.su-toggle input:focus-visible + label {
+  outline: 2px solid var(--rate-success);
+  outline-offset: 2px;
+}
+
+/* ===========================================
+   OVERALL IMPRESSIONS
+   =========================================== */
+.overall-block {
+  background: var(--row-tint);
+  border: 1px solid var(--rule);
+  border-radius: clamp(0.4rem, 0.7vw, 0.6rem);
+  padding: clamp(0.8rem, 1.5vw, 1.2rem);
+}
+.overall-block textarea {
+  width: 100%;
+  min-height: 7rem;
+  font-family: var(--body-font);
+  font-size: var(--body);
+  color: var(--paper);
+  background: var(--card-bg);
+  border: 1px solid var(--rule);
+  border-radius: clamp(0.3rem, 0.5vw, 0.45rem);
+  padding: clamp(0.6rem, 1vw, 0.85rem);
+  line-height: 1.5;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+.overall-block textarea:focus { border-color: var(--rate-success); }
+.overall-block textarea::placeholder { color: var(--paper-faint); font-style: italic; }
+
+/* ===========================================
+   FEEDBACK GIVEN + SIGNATURES
+   =========================================== */
+.feedback-line {
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: 0.4rem 0.8rem;
+  font-family: var(--body-font);
+  font-size: var(--body);
+  color: var(--paper);
+  padding: clamp(0.7rem, 1.3vw, 1rem);
+  background: var(--row-tint);
+  border: 1px solid var(--rule);
+  border-radius: clamp(0.4rem, 0.7vw, 0.6rem);
+  margin-bottom: clamp(0.8rem, 1.4vw, 1.2rem);
+}
+.feedback-line input[type="date"] {
+  font-family: var(--body-font);
+  font-size: var(--body);
+  color: var(--paper);
+  background: var(--card-bg);
+  border: 1px solid var(--rule);
+  border-radius: clamp(0.3rem, 0.5vw, 0.4rem);
+  padding: 0.3rem 0.55rem;
+  outline: none;
+}
+.signature-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr clamp(7rem, 14vw, 10rem);
+  gap: clamp(0.5rem, 1vw, 0.85rem);
+  border: 1px solid var(--rule);
+  border-radius: clamp(0.4rem, 0.7vw, 0.6rem);
+  overflow: hidden;
+  background: var(--row-tint);
+}
+.signature-cell {
+  padding: clamp(0.7rem, 1.3vw, 1rem) clamp(0.8rem, 1.4vw, 1.1rem);
+  background: var(--card-bg);
+  border-right: 1px solid var(--rule-soft);
+  display: flex; flex-direction: column; gap: 0.3rem;
+}
+.signature-cell:last-child { border-right: none; }
+.signature-cell label {
+  font-family: var(--body-font);
+  font-size: var(--label);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--paper-mid);
+}
+.signature-cell input {
+  font-family: var(--display-font);
+  font-style: italic;
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  color: var(--paper);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--rule);
+  padding: 0.4rem 0 0.15rem 0;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+.signature-cell input:focus { border-bottom-color: var(--rate-success); }
+.signature-cell .hint {
+  font-family: var(--body-font);
+  font-style: italic;
+  font-size: var(--tiny);
+  color: var(--paper-faint);
+}
+
+/* ===========================================
+   ACTION BAR (floating bottom-right pill cluster)
+   =========================================== */
+.action-bar {
+  position: fixed;
+  bottom: clamp(0.7rem, 1.4vw, 1.2rem);
+  right: clamp(0.7rem, 1.4vw, 1.2rem);
+  z-index: 90;
+  display: flex;
+  gap: clamp(0.4rem, 0.7vw, 0.55rem);
+  /* v0.56: --vv-shift pins the bar to the VISIBLE bottom while iPad Chrome's
+     collapsing toolbar moves the layout-viewport bottom mid-scroll. */
+  transform: translateY(var(--vv-shift, 0px));
+}
+.action-btn {
+  cursor: pointer;
+  display: inline-flex; align-items: center; gap: 0.55em;
+  font-family: var(--body-font);
+  font-size: clamp(0.7rem, 0.92vw, 0.82rem);
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding: 0.5em 1.1em;
+  border-radius: 999px;
+  border: 1px solid var(--rule);
+  color: var(--paper-dim);
+  background: var(--card-bg);
+  box-shadow: 0 8px 20px -10px rgba(20, 54, 66, 0.25);
+  transition: opacity 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  -webkit-backdrop-filter: blur(6px);
+          backdrop-filter: blur(6px);
+}
+.action-btn:hover {
+  color: var(--rate-success);
+  border-color: var(--rate-success);
+  transform: translateY(-1px);
+}
+.action-btn.primary {
+  background: var(--rate-success);
+  border-color: var(--rate-success-deep);
+  color: white;
+  box-shadow: 0 10px 24px -8px rgba(46, 161, 90, 0.45);
+}
+.action-btn.primary:hover {
+  background: var(--rate-success-deep);
+  border-color: var(--rate-success-deep);
+  color: white;
+}
+.action-btn::before {
+  content: ""; width: 0.85em; height: 0.85em;
+  background: currentColor;
+  flex-shrink: 0;
+}
+.action-btn.primary::before {
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.action-btn.secondary::before {
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* Submit (Save & Lock) button — deeper green, primary action when in draft */
+.action-btn.submit {
+  background: var(--rate-success-deep);
+  border-color: var(--rate-success-deep);
+  color: white;
+  box-shadow: 0 10px 24px -8px rgba(15, 95, 48, 0.45);
+}
+.action-btn.submit:hover {
+  background: var(--rate-success);
+  border-color: var(--rate-success);
+  color: white;
+}
+.action-btn.submit:disabled,
+.action-btn.submit.disabled {
+  background: var(--surface-mid);
+  border-color: var(--rule);
+  color: var(--paper-faint);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+.action-btn.submit::before {
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.action-btn.new::before {
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* ===========================================
+   SUBMITTED BANNER + LOCK STATE
+   =========================================== */
+.submitted-banner {
+  display: none;
+  background: linear-gradient(135deg, rgba(46,161,90,0.12), rgba(46,161,90,0.04));
+  border: 1px solid rgba(46,161,90,0.32);
+  border-left: 4px solid var(--rate-success);
+  border-radius: clamp(0.4rem, 0.7vw, 0.6rem);
+  padding: clamp(0.75rem, 1.4vw, 1.1rem) clamp(0.9rem, 1.6vw, 1.3rem);
+  margin-bottom: clamp(1rem, 1.8vw, 1.5rem);
+  align-items: center;
+  gap: clamp(0.65rem, 1.2vw, 1rem);
+  flex-wrap: wrap;
+}
+.submitted-banner.is-active { display: flex; }
+.submitted-banner .check {
+  width: 1.7em; height: 1.7em;
+  border-radius: 50%;
+  background: var(--rate-success);
+  color: white;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-weight: 700;
+  font-size: 1em;
+  flex-shrink: 0;
+}
+.submitted-banner .stack {
+  display: flex; flex-direction: column; gap: 0.1em;
+  min-width: 0;
+}
+.submitted-banner .title {
+  font-family: var(--display-font);
+  font-weight: 600;
+  font-size: clamp(1rem, 1.4vw, 1.2rem);
+  color: var(--rate-success-deep);
+  letter-spacing: -0.005em;
+}
+:root[data-theme="dark"] .submitted-banner .title { color: var(--rate-success); }
+.submitted-banner .meta {
+  font-family: var(--body-font);
+  font-size: var(--small);
+  color: var(--paper-mid);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Locked-form visual treatment */
+.form-container.is-locked .info-cell input,
+.form-container.is-locked .criteria-table textarea,
+.form-container.is-locked .overall-block textarea,
+.form-container.is-locked .feedback-line input,
+.form-container.is-locked .signature-cell input {
+  cursor: not-allowed;
+  background: var(--row-tint);
+  color: var(--paper);
+  opacity: 1;
+}
+.form-container.is-locked .info-cell input:focus,
+.form-container.is-locked .signature-cell input:focus,
+.form-container.is-locked .criteria-table textarea:focus,
+.form-container.is-locked .overall-block textarea:focus {
+  border-bottom-color: var(--rule);
+  border-color: var(--rule);
+}
+.form-container.is-locked .su-toggle label { cursor: not-allowed; }
+.form-container.is-locked .su-toggle input:not(:checked) + label {
+  opacity: 0.3;
+  pointer-events: none;
+}
+.form-container.is-locked .form-footer .save-status { display: none; }
+
+/* Action-bar swaps when form is locked */
+body.is-locked .action-btn.submit,
+body.is-locked .action-btn.secondary { display: none; }
+.action-btn.new { display: none; }
+body.is-locked .action-btn.new { display: inline-flex; }
+
+/* Toast — error / success feedback */
+.toast {
+  position: fixed;
+  bottom: clamp(4rem, 8vw, 6rem);
+  right: clamp(0.7rem, 1.4vw, 1.2rem);
+  z-index: 110;
+  padding: 0.7em 1.05em;
+  border-radius: 8px;
+  background: var(--card-bg);
+  border: 1px solid var(--rule);
+  box-shadow: 0 12px 32px -12px rgba(20,54,66,0.32);
+  font-family: var(--body-font);
+  font-size: var(--small);
+  color: var(--paper);
+  max-width: 360px;
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.toast.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.toast.error { border-color: rgba(214,138,26,0.5); color: var(--rate-unsuccess-deep); }
+.toast.success { border-color: rgba(46,161,90,0.5); color: var(--rate-success-deep); }
+
+/* ===========================================
+   THEME TOGGLE  (mirrors deck style)
+   =========================================== */
+.theme-toggle {
+  position: fixed;
+  bottom: clamp(0.7rem, 1.4vw, 1.2rem);
+  /* v0.48: shifted right of the admin cog (which now holds the corner) */
+  left: calc(clamp(0.7rem, 1.4vw, 1.2rem) + clamp(2rem, 2.4vw, 2.4rem) + 0.5rem);
+  z-index: 100;
+  width: clamp(2rem, 2.4vw, 2.4rem);
+  height: clamp(2rem, 2.4vw, 2.4rem);
+  border-radius: 50%;
+  border: 1px solid var(--rule);
+  background: var(--surface-mid);
+  color: var(--paper-dim);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; padding: 0;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  -webkit-backdrop-filter: blur(6px);
+          backdrop-filter: blur(6px);
+  transform: translateY(var(--vv-shift, 0px));   /* v0.56: visible-bottom pin */
+}
+.theme-toggle:hover {
+  background: var(--surface-strong);
+  color: var(--paper);
+  border-color: var(--rate-success);
+  transform: translateY(var(--vv-shift, 0px)) scale(1.06);
+}
+.theme-toggle .icon { width: 1.05em; height: 1.05em; display: block; }
+.theme-toggle .icon-sun { display: block; }
+.theme-toggle .icon-moon { display: none; }
+:root[data-theme="dark"] .theme-toggle .icon-sun { display: none; }
+:root[data-theme="dark"] .theme-toggle .icon-moon { display: block; }
+
+/* ===========================================
+   VERSION + STATUS
+   =========================================== */
+.form-footer {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: clamp(1.2rem, 2.2vw, 1.8rem);
+  padding-top: clamp(0.8rem, 1.4vw, 1.2rem);
+  border-top: 1px solid var(--rule);
+  font-family: var(--body-font);
+  font-size: var(--tiny);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--paper-faint);
+  font-weight: 600;
+}
+.form-footer .save-status {
+  display: inline-flex; align-items: center; gap: 0.5em;
+  color: var(--paper-mid);
+}
+.form-footer .save-status .pulse {
+  width: 0.5em; height: 0.5em; border-radius: 50%;
+  background: var(--rate-success);
+  box-shadow: 0 0 6px var(--rate-success);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.form-footer .save-status.is-active .pulse { opacity: 1; }
+.form-footer a {
+  color: var(--paper-faint);
+  text-decoration: none;
+  border-bottom: 1px dotted var(--rule);
+}
+.form-footer a:hover { color: var(--rate-success); border-bottom-color: var(--rate-success); }
+
+/* ===========================================
+   RESPONSIVE
+   =========================================== */
+@media (max-width: 760px) {
+  .info-grid { grid-template-columns: 1fr 1fr; }
+  .info-cell:nth-child(3n) { border-right: 1px solid var(--rule-soft); }
+  .info-cell:nth-child(2n) { border-right: none; }
+  .info-cell:nth-last-child(-n+3) { border-bottom: 1px solid var(--rule-soft); }
+  .info-cell:nth-last-child(-n+2) { border-bottom: none; }
+
+  .criteria-table colgroup .c-crit { width: auto; }
+  .criteria-table colgroup .c-s,
+  .criteria-table colgroup .c-u { width: auto; }
+  .criteria-table colgroup .c-comments { width: auto; }
+  .criteria-table { table-layout: auto; }
+  .criteria-table thead { display: none; }
+  .criteria-table tbody tr.crit {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    grid-template-areas: "crit s u" "comments comments comments";
+    gap: 0.5rem;
+    padding: 0.7rem 0.55rem;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .criteria-table tbody tr.crit td { border: none; padding: 0; }
+  .criteria-table tbody tr.crit td.col-crit { grid-area: crit; }
+  .criteria-table tbody tr.crit td:nth-child(2) { grid-area: s; }
+  .criteria-table tbody tr.crit td:nth-child(3) { grid-area: u; }
+  .criteria-table tbody tr.crit td.col-comments { grid-area: comments; }
+  .criteria-table tbody tr.crit:nth-of-type(odd) td { background: transparent; }
+  .criteria-table tbody tr.crit:nth-of-type(odd) { background: var(--row-tint); }
+
+  .signature-grid { grid-template-columns: 1fr; }
+  .signature-cell { border-right: none; border-bottom: 1px solid var(--rule-soft); }
+  .signature-cell:last-child { border-bottom: none; }
+}
+
+/* ===========================================
+   PRINT  (clean PDF output)
+   =========================================== */
+@media print {
+  @page { size: A4; margin: 1.4cm 1.4cm; }
+  :root { color-scheme: light; }
+  html, body {
+    background: white !important;
+    color: #143642 !important;
+    padding: 0 !important;
+  }
+  .theme-toggle, .action-bar, .form-footer .save-status, .form-footer a, .float-link { display: none !important; }
+  .form-container {
+    max-width: 100%;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    border-radius: 0;
+    background: white;
+  }
+  .form-container::before { display: none; }
+  .form-section { break-inside: avoid; page-break-inside: avoid; }
+  .criteria-table tbody tr.section-head { break-after: avoid; page-break-after: avoid; }
+  .criteria-table tbody tr.crit { break-inside: avoid; page-break-inside: avoid; }
+  /* Render form values cleanly: no input borders, no resize handles, no calendar icons. */
+  input, textarea {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    resize: none !important;
+    color: #143642 !important;
+    -webkit-appearance: none;
+       -moz-appearance: none;
+            appearance: none;
+  }
+  input[type="date"]::-webkit-calendar-picker-indicator,
+  input[type="date"]::-webkit-inner-spin-button { display: none; }
+  textarea { overflow: visible !important; min-height: auto !important; }
+  .info-cell input,
+  .signature-cell input { border-bottom: 1px solid #143642 !important; }
+  .su-toggle input[value="S"]:checked + label {
+    background: white !important;
+    color: #0f5f30 !important;
+    border: 2px solid #0f5f30 !important;
+    box-shadow: none !important;
+  }
+  .su-toggle input[value="U"]:checked + label {
+    background: white !important;
+    color: #b06d10 !important;
+    border: 2px solid #b06d10 !important;
+    box-shadow: none !important;
+  }
+  .su-toggle input:not(:checked) + label {
+    background: transparent !important;
+    color: #6b7e85 !important;
+    border: 1px dashed #cccccc !important;
+  }
+  .form-footer {
+    color: #6b7e85 !important;
+    border-top: 1px solid #cccccc !important;
+  }
+}
+
+/* ===========================================
+   R3 EVIDENCE FORM · additions
+   =========================================== */
+
+/* Wider info-grid for R3 (some cells span 2 or 3 columns) */
+.info-grid-r3 .info-cell-full { grid-column: span 3; }
+.info-grid-r3 .info-cell-span-2 { grid-column: span 2; }
+
+/* Summary of Weakness + Time Out side-by-side at the bottom (v0.32).
+   Time Out keeps the same visual width as a normal info-cell (1/3 of the
+   info-grid). Collapses to stacked on narrow viewports. */
+.summary-with-timeout {
+  display: grid;
+  grid-template-columns: 5fr 1fr;
+  gap: clamp(0.8rem, 1.6vw, 1.4rem);
+  align-items: start;
+}
+.summary-with-timeout .timeout-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding-top: calc(var(--section-title-height, 2.4rem));
+}
+.summary-with-timeout .timeout-block label {
+  font-family: var(--body-font);
+  font-size: clamp(0.7rem, 0.95vw, 0.85rem);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--paper-mid);
+}
+.summary-with-timeout .timeout-block input {
+  font-family: var(--display-font);
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  color: var(--paper);
+  background: transparent;
+  border: none;
+  border-bottom: 1px dashed var(--rule);
+  min-height: 1.8rem;
+  padding: 0.3em 0;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+.summary-with-timeout .timeout-block input:focus {
+  border-bottom-style: solid;
+  border-bottom-color: var(--rate-success);
+}
+@media (max-width: 720px) {
+  .summary-with-timeout { grid-template-columns: 1fr; }
+  .summary-with-timeout .timeout-block { padding-top: 0; }
+}
+.info-grid-r3 .info-cell-spacer {
+  background: transparent;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+}
+
+/* Inline pill-group fits inside a single .info-cell (Curriculum, v0.16) */
+.pill-group-inline {
+  padding-top: 0.1rem;
+  padding-bottom: 0.1rem;
+}
+.pill-group-inline .pill {
+  padding: 0.4rem 0.85rem;
+  font-size: var(--small);
+}
+
+/* Red asterisk on required-field labels and section titles (v0.17, generalised v0.25) */
+.required-field::after {
+  content: ' *';
+  color: var(--ais-red);
+  font-weight: 700;
+}
+
+/* ===========================================
+   Tom Select theme overrides · v0.19
+   Tom Select (vendored locally in lib/) handles the searchable dropdowns
+   for Teacher, Inspector, Subject. The library brings its own .ts-*
+   classes; these overrides re-skin them to match the form's aesthetic
+   (display font, transparent backgrounds, green focus underline, card
+   styling on the dropdown).
+   =========================================== */
+.ts-wrapper { width: 100%; }
+.ts-wrapper .ts-control {
+  font-family: var(--display-font);
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  color: var(--paper);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--rule);
+  border-radius: 0;
+  padding: 0.4rem 0;
+  min-height: 2.4rem;
+  box-shadow: none;
+  cursor: pointer;
+}
+.ts-wrapper.focus .ts-control,
+.ts-wrapper.dropdown-active .ts-control {
+  border-bottom-color: var(--rate-success);
+  box-shadow: none;
+}
+.ts-wrapper .ts-control > input {
+  font-family: var(--display-font);
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  color: var(--paper);
+  background: transparent;
+  /* v0.20: keep the search input on the same row as the selected .item so
+     .ts-control doesn't grow vertically with a wrapped-around 7rem-wide input. */
+  min-width: 0 !important;
+  flex: 1 1 0;
+}
+.ts-wrapper .ts-control > input::placeholder {
+  color: var(--paper-faint);
+  font-style: italic;
+}
+
+/* v0.20: clear_button plugin × button styled to match the form */
+.ts-wrapper .clear-button {
+  color: var(--paper-mid);
+  opacity: 0.55;
+  transition: opacity 0.15s ease, color 0.15s ease;
+  cursor: pointer;
+  right: 0.25rem;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+.ts-wrapper:hover .clear-button,
+.ts-wrapper .clear-button:hover {
+  opacity: 1;
+  color: var(--paper);
+}
+.ts-wrapper.disabled .clear-button { display: none; }
+.ts-wrapper .ts-control .item {
+  font-family: var(--display-font);
+  font-weight: 600;
+  color: var(--paper);
+  background: transparent;
+  padding: 0;
+  border: none;
+}
+.ts-wrapper.single .ts-control:not(.rtl)::after {
+  /* Tom Select's default caret arrow. Subtle, matching paper-mid tint. */
+  border-top-color: var(--paper-mid);
+}
+.ts-wrapper.disabled .ts-control,
+.ts-wrapper.disabled .ts-control > input,
+.ts-wrapper.disabled .ts-control .item {
+  background: var(--row-tint);
+  color: var(--paper);
+  opacity: 1;
+  cursor: not-allowed;
+}
+.ts-wrapper.disabled .ts-control { border-bottom-color: var(--rule); }
+
+.ts-dropdown {
+  font-family: var(--body-font);
+  font-size: var(--small);
+  background: var(--card-bg);
+  color: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 0 0 0.4rem 0.4rem;
+  box-shadow: 0 12px 28px -12px rgba(20, 54, 66, 0.22);
+  margin-top: 0.1rem;
+  z-index: 40;
+}
+.ts-dropdown .ts-dropdown-content { max-height: 280px; }
+.ts-dropdown .option {
+  padding: 0.6rem 0.8rem;
+  color: var(--paper);
+  border-bottom: 1px solid var(--rule-soft);
+  font-weight: 500;
+}
+.ts-dropdown .option:last-child { border-bottom: none; }
+.ts-dropdown .active {
+  background: var(--surface-mid);
+  color: var(--paper);
+}
+.ts-dropdown .selected {
+  background: var(--rate-success);
+  color: white;
+  font-weight: 600;
+}
+.ts-dropdown .selected.active {
+  background: var(--rate-success-deep);
+  color: white;
+}
+.ts-dropdown .no-results,
+.ts-dropdown .create {
+  padding: 0.6rem 0.8rem;
+  color: var(--paper-mid);
+  font-style: italic;
+}
+.ts-dropdown .optgroup-header {
+  padding: 0.4rem 0.8rem;
+  color: var(--paper-mid);
+  font-size: var(--tiny);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  background: var(--surface-soft);
+}
+/* iPad zoom-prevention: bump font to 16px on coarse pointers (only the
+   <input> needs this; options don't trigger zoom because they're not text
+   inputs). v0.27: number-picker option text relaxes to 14px so word labels
+   like "Kindy" and "Prep" fit inside the compact pill cells. */
+@media (pointer: coarse) {
+  .ts-control,
+  .ts-control > input,
+  .ts-control .item {
+    font-size: 16px !important;
+  }
+  .ts-dropdown .option {
+    font-size: 15px !important;
+  }
+  .ts-dropdown.number-picker .option {
+    font-size: 14px !important;
+  }
+}
+
+/* Single-select pill group (Evidence Type) */
+.pill-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.4rem 0;
+}
+.pill {
+  font-family: var(--body-font);
+  font-size: var(--small);
+  font-weight: 500;
+  padding: 0.5rem 0.95rem;
+  border-radius: 999px;
+  border: 1px dashed var(--rule);
+  background: transparent;
+  color: var(--paper-mid);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.pill:hover { background: var(--surface-mid); color: var(--paper); }
+.pill.is-selected {
+  background: var(--rate-success);
+  color: white;
+  border: 1px solid var(--rate-success-deep);
+  font-weight: 600;
+}
+.pill:disabled { cursor: default; opacity: 0.6; }
+form.is-locked .pill { pointer-events: none; opacity: 0.7; }
+
+/* Number pickers: compact Tom Select button per cell, dropdown is a 5-col
+   grid of numbered cells. Trigger control stays the same size; popover
+   overlays the form (renders attached to body) when tapped. v0.23. */
+.ts-dropdown.number-picker .ts-dropdown-content {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.35rem;
+  padding: 0.5rem;
+  max-height: 320px;
+}
+.ts-dropdown.number-picker .option {
+  padding: 0.55rem 0.15rem;
+  text-align: center;
+  font-weight: 600;
+  font-size: var(--small);
+  font-variant-numeric: tabular-nums;
+  border-radius: 6px;
+  border: 1px dashed var(--rule);
+  background: transparent;
+  color: var(--paper);
+  /* v0.27: ensure word-length labels (Kindy, Prep) fit without overflow */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ts-dropdown.number-picker .option.active {
+  background: var(--surface-mid);
+  border-color: var(--paper-dim);
+}
+.ts-dropdown.number-picker .option.selected {
+  background: var(--rate-success);
+  color: white;
+  border: 1px solid var(--rate-success-deep);
+}
+.ts-dropdown.number-picker .option.selected.active {
+  background: var(--rate-success-deep);
+}
+
+/* Judgement legend */
+.judgement-legend {
+  font-size: var(--small);
+  color: var(--paper-mid);
+  margin: 0 0 0.7rem 0;
+}
+.judgement-legend strong {
+  color: var(--paper);
+  font-weight: 700;
+  margin-right: 0.15em;
+}
+
+/* Judgement key (v0.36): 6-column scale reference under the Judgements
+   heading. Each cell ties a number to its quality label, proportion band
+   and percentage range. Uses the form's existing tokens; reflows on narrow
+   viewports so each number stays paired with its band. */
+.judgement-key {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.5rem;
+  margin: 0 0 1rem 0;
+}
+.jk-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  text-align: center;
+  padding: 0.6rem 0.4rem;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--row-tint);
+}
+.jk-num {
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 6px;
+  background: var(--ais-yellow);
+  color: #143642;
+  font-weight: 800;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.jk-quality { font-weight: 700; color: var(--paper); font-size: var(--small); line-height: 1.2; }
+.jk-term { color: var(--paper-mid); font-size: var(--small); line-height: 1.2; }
+.jk-range { color: var(--paper-mid); font-size: var(--small); line-height: 1.2; white-space: nowrap; }
+
+@media (max-width: 680px) {
+  .judgement-key { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 380px) {
+  .judgement-key { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Judgement table column widths */
+.judgement-table col.c-crit { width: 32%; }
+.judgement-table col.c-judge { width: 30%; }
+.judgement-table col.c-comments { width: 38%; }
+.judgement-table tbody td { vertical-align: middle; }
+.judgement-table .col-judge { padding: 0.3rem 0.5rem; }
+
+/* Rate row (1-6 single-select buttons) */
+.rate-row {
+  display: flex;
+  gap: 0.3rem;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+}
+.rate {
+  min-width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 6px;
+  border: 1px dashed var(--rule);
+  background: transparent;
+  color: var(--paper-mid);
+  font-family: var(--body-font);
+  font-weight: 600;
+  font-size: var(--small);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.rate:hover { background: var(--surface-mid); color: var(--paper); }
+.rate.is-selected {
+  background: var(--rate-success);
+  color: white;
+  border: 1px solid var(--rate-success-deep);
+}
+form.is-locked .rate { pointer-events: none; opacity: 0.7; }
+
+/* Long-text textarea (focus/context + summaries) */
+textarea.long-text {
+  width: 100%;
+  font-family: var(--body-font);
+  font-size: var(--body);
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--rule);
+  border-radius: 0.4rem;
+  background: var(--card-bg);
+  color: var(--paper);
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s ease;
+  line-height: 1.5;
+}
+textarea.long-text::placeholder { color: var(--paper-faint); font-style: italic; }
+textarea.long-text:focus { border-color: var(--rate-success); }
+
+/* Print overrides for R3 components */
+@media print {
+  .pill.is-selected,
+  .rate.is-selected {
+    background: white !important;
+    color: #0f5f30 !important;
+    border: 2px solid #0f5f30 !important;
+  }
+  .pill:not(.is-selected),
+  .rate:not(.is-selected) {
+    background: transparent !important;
+    color: #6b7e85 !important;
+    border: 1px dashed #cccccc !important;
+  }
+  /* Print Tom Select as plain text */
+  .ts-wrapper .ts-control {
+    border-bottom: 1px solid #143642 !important;
+    background: transparent !important;
+  }
+  .ts-dropdown { display: none !important; }
+  .ts-wrapper.single .ts-control:not(.rtl)::after { display: none !important; }
+  textarea.long-text { background: white !important; border-color: #cccccc !important; }
+}
+
+/* ===========================================
+   iPad / Safari touch hardening (v0.19)
+   Applied to every interactive control. Tom Select handles its own touch
+   behaviour internally so we don't need to harden .ts-* classes here.
+   =========================================== */
+.pill,
+.rate,
+.action-btn,
+.theme-toggle,
+.su-toggle label {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(20, 54, 66, 0.06);
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+@media (pointer: coarse) {
+  input, textarea {
+    font-size: 16px !important;
+  }
+}
+@media (hover: none) {
+  .pill:hover, .rate:hover {
+    background: transparent;
+    color: var(--paper-mid);
+  }
+  .action-btn:hover {
+    color: var(--paper-dim);
+    border-color: var(--rule);
+    transform: none;
+  }
+  .theme-toggle:hover {
+    background: var(--surface-mid);
+    color: var(--paper-dim);
+    border-color: var(--rule);
+    transform: translateY(var(--vv-shift, 0px));   /* v0.56: keep the pin on touch */
+  }
+  .su-toggle label:hover {
+    border-color: var(--rule);
+    color: var(--paper-mid);
+    transform: none;
+  }
+}
+
+/* Floating link buttons (v0.38): Agenda (left) + Check Teacher (right).
+   Fixed so they float independently of the form; open in a new tab so an
+   inspector mid-form never loses entries. Only on the form, never on the
+   StatiCrypt gate (separate file). */
+.float-link {
+  position: fixed;
+  top: clamp(0.7rem, 1.4vw, 1.2rem);
+  z-index: 100;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  padding: 0.5rem 0.95rem;
+  border-radius: 999px;
+  border: 1px solid var(--rule);
+  background: var(--surface-mid);
+  color: var(--paper-dim);
+  font-family: var(--body-font);
+  font-size: clamp(0.72rem, 1.4vw, 0.85rem);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(6px);
+          backdrop-filter: blur(6px);
+  box-shadow: 0 4px 14px -6px rgba(20, 54, 66, 0.25);
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+.float-link:hover {
+  border-color: var(--ais-yellow);
+  color: var(--paper);
+  transform: translateY(-1px);
+}
+.float-link .fl-icon { width: 1.05em; height: 1.05em; display: block; flex-shrink: 0; }
+.float-link.agenda { left: clamp(0.7rem, 1.4vw, 1.2rem); }
+.float-link.check  { right: clamp(0.7rem, 1.4vw, 1.2rem); }   /* mirrors Agenda's inset */
+@media (max-width: 560px) {
+  .float-link { font-size: 0.68rem; padding: 0.38rem 0.66rem; gap: 0.35em; }
+}
+@media (hover: none) {
+  .float-link:hover { border-color: var(--rule); color: var(--paper-dim); transform: none; }
+}
+/* ===========================================================
+   EVIDENCE PAD (v0.50) · full-screen scribble pad
+   Photos from camera/library + Apple Pencil ink (Konva +
+   perfect-freehand, vendored in lib/). Pencil-first: Scribble
+   stays live in the form's text fields; on the pad canvas raw
+   ink wins (touch-action none + touchmove preventDefault).
+   =========================================================== */
+.float-link.pad {
+  right: clamp(0.7rem, 1.4vw, 1.2rem);
+  top: calc(clamp(0.7rem, 1.4vw, 1.2rem) + 2.7rem);
+  border-color: var(--ais-yellow);
+}
+.float-link.pad:hover { border-color: var(--ais-yellow); }
+
+.pad-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 980;
+  display: none;
+  flex-direction: column;
+  background: var(--page-bg);
+  overscroll-behavior: none;             /* v0.53: never chain scroll to the form */
+}
+.pad-modal.open { display: flex; }
+
+/* v0.57: in-document swap — while the pad (or the pad-view lightbox) is open,
+   the form leaves the layout and the body collapses to the viewport, so the
+   document has NO scrollable extent: nothing can scroll behind the pad, no
+   scroll indicator on the pad edge, and iPad Chrome's toolbar gets no scroll
+   deltas to react to. Display-only: the body is never repositioned (v0.54 ban
+   respected). closePad restores display first, then the exact scroll spot. */
+body.pad-open { min-height: 0; padding: 0; }
+
+/* v0.58 experiment (?d=scrollhair): keep a hairline of scrollable extent while
+   the pad is open, so a small scroll can still collapse Chrome's toolbar off
+   the pad's top edge (A/B vs the zero-extent default, which freezes it). */
+body.scrollhair.pad-open { min-height: calc(100vh + 2px); min-height: calc(100svh + 2px); }
+body.pad-open .form-container,
+body.pad-open .action-bar,
+body.pad-open .theme-toggle,
+body.pad-open .cog-btn { display: none; }
+
+/* v0.57/v0.58: while the keyboard owns the screen there is no correct pin
+   for fixed bottom controls (iOS pans them like static content mid-typing),
+   so they hide entirely and return once the keyboard settles. v0.58:
+   body.kb-open is driven by the visualViewport height DELTA (keyboard
+   really on screen), not focus events; Scribble and hardware keyboards
+   never trigger it. ?d=nokb disables the hiding. */
+body.kb-open .action-bar,
+body.kb-open .theme-toggle,
+body.kb-open .cog-btn { opacity: 0; pointer-events: none; }
+
+.pad-top {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.9rem;
+  border-bottom: 1px solid var(--rule);
+  background: var(--card-bg);
+}
+.pad-title {
+  font-family: var(--display-font);
+  font-weight: 600;
+  color: var(--paper);
+  font-size: 1.02rem;
+  margin-right: auto;
+  white-space: nowrap;
+}
+.pad-title em { font-style: italic; color: var(--ais-blue); }
+
+.pad-btn {
+  appearance: none;
+  border: 1px solid var(--rule);
+  background: var(--surface-mid);
+  color: var(--paper-dim);
+  border-radius: 999px;
+  font-family: var(--body-font);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 0.42rem 0.85rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.pad-btn:hover { border-color: var(--ais-yellow); color: var(--paper); }
+.pad-btn:disabled { opacity: 0.45; cursor: default; }
+.pad-btn .icon { width: 1.05em; height: 1.05em; display: block; }
+.pad-btn.primary {
+  background: var(--paper);
+  border-color: var(--paper);
+  color: var(--card-bg);
+}
+.pad-btn.primary:hover { background: var(--paper-dim); }
+
+.pad-tools {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+  padding: 0.5rem 0.9rem;
+  border-bottom: 1px solid var(--rule);
+  background: var(--card-bg);
+}
+.pad-tools .sep { width: 1px; height: 1.6rem; background: var(--rule); margin: 0 0.15rem; }
+.pad-tool {
+  appearance: none;
+  border: 1px solid var(--rule);
+  background: transparent;
+  color: var(--paper-dim);
+  border-radius: 10px;
+  width: 2.35rem;
+  height: 2.35rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.pad-tool .icon { width: 1.15rem; height: 1.15rem; display: block; }
+.pad-tool[hidden] { display: none; }
+.pad-tool.is-active {
+  background: var(--paper);
+  border-color: var(--paper);
+  color: var(--card-bg);
+}
+.pad-swatch {
+  appearance: none;
+  border: 2px solid var(--rule);
+  border-radius: 50%;
+  width: 1.55rem;
+  height: 1.55rem;
+  cursor: pointer;
+  padding: 0;
+}
+.pad-swatch.is-active { border-color: var(--ais-yellow); transform: scale(1.12); }
+.pad-pageind {
+  font-family: var(--body-font);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--paper-mid);
+  min-width: 3.2em;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.pad-stage-wrap {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;                       /* keep in sync with PAD_GUTTER in the JS */
+  overflow: hidden;
+}
+.pad-stage {
+  background: #ffffff;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  overflow: hidden;                    /* clips the canvas to the rounded corners */
+  box-shadow: 0 6px 22px -10px rgba(20, 54, 66, 0.35);
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+
+/* v0.51: per-field pad launchers — a small pen pill beside each extractable
+   section title (Focus/Context, Observer Notes, both Summaries). Opens the
+   Evidence Pad on that field's named page. */
+.pad-field-btn {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  margin-left: 0.55em;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--ais-yellow);
+  background: var(--surface-mid);
+  color: var(--paper-dim);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+.pad-field-btn:hover { color: var(--paper); transform: translateY(-1px); }
+.pad-field-btn .icon { width: 1.05rem; height: 1.05rem; display: block; }
+body.is-viewer .pad-field-btn { display: none !important; }
+@media print { .pad-field-btn { display: none !important; } }
+@media (hover: none) {
+  .pad-field-btn:hover { color: var(--paper-dim); transform: none; }
+}
+
+/* v0.53: "you have evidence here" state — green when the field's textarea has
+   text OR its pad page has ink/photos. Same treatment on the floating launcher. */
+.pad-field-btn.has-evi,
+.float-link.pad.has-evi { border-color: var(--rate-success); color: var(--rate-success); }
+.pad-field-btn.has-evi:hover { color: var(--rate-success-deep); }
+
+/* v0.53: record-view attachment pill — shown ONLY when a locked record carries
+   pad pages for that section (stays visible in the teacher viewer, unlike the
+   editing-only .pad-field-btn). */
+.pad-attach {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  margin-left: 0.55em;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--rule);
+  background: var(--surface-mid);
+  color: var(--paper-dim);
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.pad-attach:hover { border-color: var(--ais-yellow); color: var(--paper); }
+.pad-attach .icon { width: 1rem; height: 1rem; display: block; }
+@media print { .pad-attach { display: none !important; } }
+
+/* v0.53: pad-pages lightbox (record views) */
+.pad-view {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+  flex-direction: column;
+  background: var(--page-bg);
+  overscroll-behavior: none;
+}
+.pad-view.open { display: flex; }
+.pad-view-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  padding: 1rem clamp(0.8rem, 4vw, 2.4rem) calc(1.4rem + env(safe-area-inset-bottom, 0px));
+}
+.pad-view-scroll img {
+  display: block;
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto 1rem;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  box-shadow: 0 6px 22px -10px rgba(20, 54, 66, 0.35);
+  background: #fff;
+}
+.pad-view-loading {
+  font-family: var(--body-font);
+  font-size: 0.88rem;
+  color: var(--paper-mid);
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.pad-foot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.9rem calc(0.55rem + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--rule);
+  background: var(--card-bg);
+}
+
+
+/* The pad never appears in the teacher viewer or in print (covered by the
+   existing body.is-viewer .float-link and @media print .float-link rules);
+   belt-and-braces for the modal itself: */
+body.is-viewer .pad-modal { display: none !important; }
+@media print { .pad-modal { display: none !important; } }
+
+/* v0.43: the teacher-viewer build (window.R3_VIEWER → body.is-viewer) hides
+   all inspector tools: quick-links, New observation, and Reset (which would
+   wipe the loaded record off the screen). Scoped to the viewer so inspectors
+   keep their post-submit New observation button on the gated form. */
+body.is-viewer .float-link,
+body.is-viewer #btn-new,
+body.is-viewer #btn-reset { display: none; }
+
+/* === Admin settings (v0.47): discreet cog + password-gated panel ==== */
+/* v0.48: cog moved to the bottom-LEFT corner, matched to the theme toggle (which
+   shifts right to sit beside it) so the two circular controls read as a pair. */
+.cog-btn {
+  position: fixed;
+  bottom: clamp(0.7rem, 1.4vw, 1.2rem);
+  left: clamp(0.7rem, 1.4vw, 1.2rem);
+  z-index: 100;
+  width: clamp(2rem, 2.4vw, 2.4rem);
+  height: clamp(2rem, 2.4vw, 2.4rem);
+  border-radius: 50%;
+  border: 1px solid var(--rule);
+  background: var(--surface-mid);
+  color: var(--paper-dim);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; padding: 0;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  -webkit-backdrop-filter: blur(6px);
+          backdrop-filter: blur(6px);
+  transform: translateY(var(--vv-shift, 0px));   /* v0.56: visible-bottom pin */
+}
+.cog-btn:hover {
+  background: var(--surface-strong);
+  color: var(--paper);
+  border-color: var(--rate-success);
+  transform: translateY(var(--vv-shift, 0px)) scale(1.06);
+}
+.cog-btn .icon { width: 1.05em; height: 1.05em; display: block; }
+body.is-viewer .cog-btn { display: none; }
+
+/* v0.49: restyled to the form's own design tokens (card-bg / paper ink / AIS
+   accents / serif display font), mirroring the eyebrow, labels, inputs and
+   action buttons used everywhere else. The earlier build used non-existent vars
+   (--ink, --paper-2) and painted the card with --paper (the navy INK colour),
+   so it rendered as illegible navy-on-navy. */
+.admin-modal {
+  position: fixed; inset: 0; z-index: 10000;
+  display: none; align-items: center; justify-content: center;
+  background: rgba(10, 13, 31, 0.5);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+          backdrop-filter: blur(10px) saturate(140%);
+  padding: 1.2rem;
+}
+.admin-modal.open { display: flex; }
+.admin-card {
+  position: relative;
+  overflow: hidden;
+  width: min(430px, 100%);
+  background: var(--card-bg);
+  border: 1px solid var(--navy-edge);
+  border-radius: clamp(0.8rem, 1.4vw, 1.1rem);
+  box-shadow: var(--shadow-card);
+  padding: clamp(1.5rem, 2.4vw, 1.9rem);
+  color: var(--paper);
+}
+/* signature AIS gradient top-bar, same as the form masthead */
+.admin-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--ais-red), var(--ais-yellow), var(--rate-success));
+}
+.admin-card .admin-eyebrow {
+  font-family: var(--body-font);
+  font-size: var(--label);
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--ais-red);
+  display: inline-flex; align-items: center; gap: 0.7em;
+  margin-bottom: 0.85rem;
+}
+.admin-card .admin-eyebrow::before {
+  content: '';
+  width: clamp(1.6rem, 2.4vw, 2.1rem); height: 3px; border-radius: 2px;
+  background: linear-gradient(90deg, var(--ais-red), var(--ais-yellow), var(--rate-success));
+}
+.admin-card h2 {
+  font-family: var(--display-font);
+  font-weight: 700;
+  font-size: clamp(1.3rem, 2.1vw, 1.6rem);
+  line-height: 1.08;
+  letter-spacing: -0.012em;
+  color: var(--paper);
+  margin: 0 0 0.2rem;
+}
+.admin-card label {
+  display: block;
+  font-family: var(--body-font);
+  font-size: var(--label);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--paper-mid);
+  margin: 1.1rem 0 0.4rem;
+}
+.admin-card input {
+  width: 100%; box-sizing: border-box;
+  font-family: var(--display-font);
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  color: var(--paper);
+  background: var(--row-tint);
+  border: 1px solid var(--rule);
+  border-radius: clamp(0.45rem, 0.8vw, 0.6rem);
+  padding: 0.6rem 0.8rem;
+  outline: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.admin-card input::placeholder { color: var(--paper-faint); font-style: italic; }
+.admin-card input:focus { border-color: var(--rate-success); background: var(--card-bg); }
+.admin-row { display: flex; gap: 0.6rem; margin-top: 1.3rem; }
+/* base = primary (green) action; .ghost = secondary outline. Mirrors .action-btn. */
+.admin-btn {
+  flex: 1;
+  cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--body-font);
+  font-size: clamp(0.7rem, 0.92vw, 0.82rem);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 0.65em 1.1em;
+  border-radius: 999px;
+  border: 1px solid var(--rate-success-deep);
+  background: var(--rate-success);
+  color: #fff;
+  box-shadow: 0 10px 24px -10px rgba(46, 161, 90, 0.45);
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+.admin-btn:hover { background: var(--rate-success-deep); transform: translateY(-1px); }
+.admin-btn.ghost {
+  background: var(--card-bg);
+  border-color: var(--rule);
+  color: var(--paper-dim);
+  box-shadow: none;
+}
+.admin-btn.ghost:hover { color: var(--paper); border-color: var(--paper-mid); background: var(--surface-mid); }
+.admin-btn:disabled { opacity: 0.45; cursor: default; transform: none; }
+.admin-status {
+  min-height: 1.1rem; margin-top: 0.9rem;
+  font-family: var(--body-font);
+  font-size: var(--small);
+  color: var(--paper-mid);
+}
+.admin-status.ok { color: var(--rate-success); font-weight: 600; }
+.admin-status.bad { color: var(--ais-red); font-weight: 600; }
+.admin-step[hidden] { display: none; }
+/* v0.57: admin-only viewport diagnostics */
+.admin-diag { margin-top: 1.1rem; border-top: 1px solid var(--rule); padding-top: 0.8rem; }
+.admin-diag-title {
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--paper-mid);
+}
+.admin-diag pre {
+  margin: 0.4rem 0 0; font-family: var(--body-font);
+  font-size: 0.78rem; line-height: 1.55; color: var(--paper-dim); white-space: pre-wrap;
+}
+
+/* === Loading overlay (v0.31) ====================================== */
+.form-loading {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(239, 236, 226, 0.55);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+          backdrop-filter: blur(14px) saturate(140%);
+  transition: opacity 320ms ease, visibility 320ms ease;
+  opacity: 1;
+  visibility: visible;
+}
+:root[data-theme="dark"] .form-loading {
+  background: rgba(10, 13, 31, 0.55);
+}
+.form-loading.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.form-loading-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  padding: 32px 44px;
+  background: rgba(255, 255, 255, 0.42);
+  border: 1px solid var(--rule);
+  border-radius: 18px;
+  box-shadow: 0 24px 48px -20px rgba(20, 54, 66, 0.22);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+          backdrop-filter: blur(22px) saturate(160%);
+  position: relative;
+  overflow: hidden;
+}
+:root[data-theme="dark"] .form-loading-card {
+  background: rgba(17, 22, 46, 0.5);
+  box-shadow: 0 24px 48px -20px rgba(0, 0, 0, 0.55);
+}
+.form-loading-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--ais-red, #EF343A), var(--ais-yellow), #1257FF);
+  opacity: 0.85;
+}
+.form-loading-spinner {
+  color: var(--ais-yellow);
+  display: block;
+  filter: drop-shadow(0 4px 10px rgba(255, 186, 20, 0.35));
+}
+.form-loading-spinner .ring-spin {
+  transform-origin: 32px 32px;
+  animation: form-loading-spin 1.05s linear infinite;
+}
+@keyframes form-loading-spin {
+  to { transform: rotate(360deg); }
+}
+.form-loading-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+}
+.form-loading-label .dot {
+  width: 0.4em;
+  height: 0.4em;
+  border-radius: 50%;
+  background: var(--ais-yellow);
+  box-shadow: 0 0 8px var(--ais-yellow);
+  animation: form-loading-pulse 1.4s ease-in-out infinite;
+}
+@keyframes form-loading-pulse {
+  0%, 100% { opacity: 0.35; transform: scale(0.85); }
+  50%      { opacity: 1;    transform: scale(1.1); }
+}
+

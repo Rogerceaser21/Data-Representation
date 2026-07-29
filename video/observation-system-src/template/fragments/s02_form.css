@@ -1,0 +1,281 @@
+/* ============================================================================
+   FORM ACT (sc02 form, sc03 scale, sc04 pad)
+   The R3 Evidence Form rebuilt from its own stylesheet, styles/form.css, which
+   was extracted VERBATIM from Assets/R3/src/r3-evidence-form.html (v0.58).
+   Token values and component rules below are copied from that file unchanged
+   except for four video-only, documented departures:
+     1. type scale: --label/--small/--body/--tiny are lifted one notch, the same
+        readability pass dashboard.css already carries (the form's 12.8-14px
+        classes are tuned for an iPad at arm's length, not a projected frame).
+        --body is carried as --fbody so it cannot collide with dashboard.css's
+        own --body font-family token.
+     2. surface width: the product's page column is max-width:980px; here the
+        card is 1480px and the whole device is scaled to the frame, so every
+        proportion inside stays the product's while the frame is filled.
+     3. every `transition:` is dropped. A CSS transition on a GSAP-driven
+        property makes a seeked render non-deterministic.
+     4. .form-container / .info-grid overflow is visible so the Tom Select
+        dropdown can hang below its cell the way the real one does (the real
+        one escapes by rendering attached to <body>).
+   ========================================================================== */
+
+#sc02, #sc03, #sc04 {
+  /* --- form.css :root, light theme, VERBATIM values --- */
+  --display-font: 'Lora', Georgia, 'Times New Roman', serif;
+  --body-font: 'Inter', system-ui, -apple-system, sans-serif;
+  --navy: #143642;
+  --paper: #143642;
+  --paper-dim: #3a4f59;
+  --paper-mid: #6b7e85;
+  --paper-faint: #5f6e77;  /* was #9aa6ac; darkened for WCAG AA on the light card (check t=75 fails) */
+  --ais-red: #EF343A;
+  --ais-blue: #1257FF;
+  --ais-yellow: #FFBA14;
+  --rate-success: #2ea15a;
+  --rate-success-deep: #0f5f30;
+  --rate-unsuccess: #d68a1a;
+  --rate-unsuccess-deep: #b06d10;
+  --rule: rgba(20, 54, 66, 0.14);
+  --rule-soft: rgba(20, 54, 66, 0.07);
+  --page-bg: #efece2;
+  --card-bg: #ffffff;
+  --row-tint: rgba(20, 54, 66, 0.025);
+  --section-tint: rgba(20, 54, 66, 0.055);
+  --surface-soft: rgba(20, 54, 66, 0.025);
+  --surface-mid: rgba(20, 54, 66, 0.045);
+  --surface-strong: rgba(20, 54, 66, 0.08);
+  --shadow-card: 0 14px 36px -18px rgba(20, 54, 66, 0.22), 0 2px 6px -3px rgba(20, 54, 66, 0.08);
+  --title: clamp(1.85rem, 3.4vw, 2.6rem);
+  --section: clamp(1.15rem, 1.8vw, 1.4rem);
+  /* video readability pass (departure 1) */
+  --label: 0.95rem;
+  --fbody: 1.15rem;
+  --small: 1.1rem;
+  --tiny: 0.9rem;
+
+  background: var(--page-bg);
+  color: var(--paper);
+  font-family: var(--body-font);
+}
+
+/* One device geometry for the whole act, so the surface never changes size
+   across the three cuts. 1516 = 1480 card + 2 x 18 bezel. */
+#sc02 .sbody, #sc03 .sbody, #sc04 .sbody { width: 1516px; zoom: 1.03; justify-content: center; }
+#sc02 .dev, #sc03 .dev, #sc04 .dev {
+  position: relative;
+  padding: 18px;
+  border-radius: 30px;
+  background: linear-gradient(158deg, #2e343c, #161a1f);
+  box-shadow: 0 46px 92px -44px rgba(20, 54, 66, .62), inset 0 0 0 1px rgba(255, 255, 255, .10);
+}
+
+/* FORM CONTAINER (paper-like card) */
+#sc02 .form-container, #sc03 .form-container {
+  width: 100%;
+  min-height: 950px;   /* one screen height for the whole act, see s04 pad */
+  background: var(--card-bg);
+  border: 1px solid var(--rule);
+  border-radius: clamp(0.5rem, 0.9vw, 0.8rem);
+  box-shadow: var(--shadow-card);
+  padding: clamp(1.4rem, 3vw, 2.6rem);
+  position: relative;
+}
+#sc02 .form-container::before, #sc03 .form-container::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  border-radius: 12px 12px 0 0;
+  background: linear-gradient(90deg, var(--ais-red), var(--ais-yellow), var(--ais-blue));
+}
+
+/* HEADER */
+#sc02 .form-header {
+  display: flex; flex-direction: column;
+  gap: clamp(0.7rem, 1.3vw, 1.1rem);
+  padding-bottom: clamp(1rem, 2vw, 1.6rem);
+  margin-bottom: clamp(1.2rem, 2.4vw, 2rem);
+  border-bottom: 1px solid var(--rule);
+}
+/* No mark sits in this row (client: no school identity on screen), so the row
+   carries the height the mark used to set, clamp(48px, 7vw, 72px). Keeping that
+   min-height means the header block, the rule under it and every row of the
+   info grid below land on exactly the same y as before the mark was dropped. */
+#sc02 .brand-row {
+  display: flex; align-items: center;
+  gap: clamp(0.6rem, 1.2vw, 1rem);
+  min-height: clamp(48px, 7vw, 72px);
+}
+/* eyebrow + title are now the only weight on the left, so they get a touch more
+   air between them; the block measures ~68px, still inside the 72px row */
+#sc02 .form-title-block { display: flex; flex-direction: column; gap: 0.4rem; }
+#sc02 .form-eyebrow {
+  font-family: var(--body-font);
+  font-size: var(--label);
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--ais-red);
+  display: inline-flex; align-items: center; gap: 0.7em;
+}
+#sc02 .form-eyebrow .stripe {
+  width: clamp(1.8rem, 2.6vw, 2.4rem); height: 3px; border-radius: 2px;
+  background: linear-gradient(90deg, var(--ais-red), var(--ais-yellow), var(--rate-success));
+}
+#sc02 .form-title {
+  font-family: var(--display-font);
+  /* product is 700; the composition loads Lora 400/600, so 600 renders real
+     glyphs instead of a synthesised bold */
+  font-weight: 600;
+  font-size: var(--title);
+  line-height: 1.05;
+  letter-spacing: -0.012em;
+  color: var(--paper);
+  margin: 0;
+}
+#sc02 .form-title em { font-style: italic; font-weight: 400; color: var(--rate-success-deep); }
+
+/* SECTION TITLES (shared with sc03/sc04) */
+#sc02 .section-title, #sc03 .section-title, #sc04 .section-title {
+  font-family: var(--display-font);
+  font-weight: 600;
+  font-size: var(--section);
+  color: var(--paper);
+  margin: 0;
+  letter-spacing: -0.005em;
+}
+#sc03 .section-title em, #sc04 .section-title em { font-style: italic; font-weight: 400; color: var(--ais-red); }
+
+/* required-field asterisk */
+#sc02 .required-field::after, #sc03 .required-field::after { content: ' *'; color: var(--ais-red); font-weight: 700; }
+
+/* Illustrative tag (law 3): quiet, never competes with the product chrome */
+#sc02 .ill-tag, #sc03 .ill-tag, #sc04 .ill-tag {
+  margin-left: auto;
+  font-family: var(--body-font);
+  font-size: var(--tiny);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--paper-faint);
+  border: 1px dashed var(--rule);
+  border-radius: 999px;
+  padding: 0.3rem 0.75rem;
+  white-space: nowrap;
+}
+
+/* TOP INFO GRID */
+#sc02 .info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(0.5rem, 1vw, 0.85rem);
+  border: 1px solid var(--rule);
+  border-radius: clamp(0.4rem, 0.7vw, 0.6rem);
+  background: var(--row-tint);
+}
+#sc02 .info-cell {
+  position: relative;
+  padding: clamp(0.55rem, 1.1vw, 0.9rem) clamp(0.7rem, 1.3vw, 1.05rem);
+  border-right: 1px solid var(--rule-soft);
+  border-bottom: 1px solid var(--rule-soft);
+  display: flex; flex-direction: column; gap: 0.3rem;
+  background: var(--card-bg);
+}
+#sc02 .info-cell:nth-child(3n) { border-right: none; }
+#sc02 .info-cell:nth-last-child(-n+3) { border-bottom: none; }
+#sc02 .info-cell label {
+  font-family: var(--body-font);
+  font-size: var(--label);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--paper-mid);
+}
+/* the product's .info-cell input, rendered as static text */
+#sc02 .info-cell .val {
+  font-family: var(--display-font);
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  color: var(--paper);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid transparent;
+  padding: 0.15rem 0;
+  width: 100%;
+}
+/* date / time inputs keep the dashed underline the product forces on iOS */
+#sc02 .info-cell .val.stamp {
+  border-bottom: 1px dashed var(--rule);
+  min-height: 1.8rem;
+  padding: 0.3em 0;
+}
+
+/* Tom Select control + dropdown (form.css theme overrides, v0.19) */
+#sc02 .ts-wrapper { width: 100%; }
+#sc02 .ts-control {
+  position: relative;
+  display: flex; align-items: center;
+  font-family: var(--display-font);
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  color: var(--paper);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--rule);
+  border-radius: 0;
+  padding: 0.4rem 0;
+  min-height: 2.4rem;
+  box-shadow: none;
+}
+#sc02 .ts-control .item { font-family: var(--display-font); font-weight: 600; color: var(--paper); background: transparent; padding: 0; border: none; }
+#sc02 .ts-control .ts-ph { position: absolute; left: 0; top: 50%; transform: translateY(-50%); color: var(--paper-faint); font-style: italic; opacity: 0; }
+/* Tom Select's default caret, tinted by the form's override */
+#sc02 .ts-control::after {
+  content: ""; position: absolute; right: 4px; top: 50%; margin-top: -2px;
+  border: 5px solid transparent; border-top-color: var(--paper-mid);
+}
+/* the open cell has to own a stacking context, or the grid cells that come
+   after it in DOM order paint over the dropdown hanging out of it */
+#sc02 #s2teacher { z-index: 70; }
+#sc02 #s2teacher .ts-control { border-bottom-color: var(--rate-success); }
+#sc02 .ts-dropdown {
+  position: absolute;
+  left: clamp(0.7rem, 1.3vw, 1.05rem);
+  right: clamp(0.7rem, 1.3vw, 1.05rem);
+  top: calc(100% - 12px);
+  z-index: 60;
+  transform-origin: top center;
+  opacity: 0;                       /* resting state = the closed dropdown */
+  font-family: var(--body-font);
+  font-size: var(--small);
+  background: var(--card-bg);
+  color: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 0 0 0.4rem 0.4rem;
+  box-shadow: 0 12px 28px -12px rgba(20, 54, 66, 0.22);
+  margin-top: 0.1rem;
+  overflow: hidden;
+}
+#sc02 .ts-dropdown .option { padding: 0.6rem 0.8rem; color: var(--paper); border-bottom: 1px solid var(--rule-soft); font-weight: 500; }
+#sc02 .ts-dropdown .option:last-child { border-bottom: none; }
+#sc02 .ts-dropdown .selected { background: var(--rate-success); color: #fff; font-weight: 600; }
+
+/* Single-select pill group */
+#sc02 .pill-group { display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0.4rem 0; }
+#sc02 .pill-group-inline { padding-top: 0.1rem; padding-bottom: 0.1rem; }
+#sc02 .pill {
+  font-family: var(--body-font);
+  font-size: var(--small);
+  font-weight: 500;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  border: 1px dashed var(--rule);
+  background: transparent;
+  color: var(--paper-mid);
+}
+#sc02 .pill.is-selected { background: var(--rate-success); color: #fff; border: 1px solid var(--rate-success-deep); font-weight: 600; }
+
+/* closing note strip (video only, in the product's own register) */
+#sc02 .fnote {
+  display: flex; align-items: center; gap: 10px;
+  margin-top: 18px;
+  font-family: var(--body-font);
+  font-size: var(--small);
+  color: var(--paper-mid);
+}
+#sc02 .fnote .fdot { width: 9px; height: 9px; border-radius: 50%; background: var(--rate-success); flex: none; }

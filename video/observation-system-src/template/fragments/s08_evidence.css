@@ -1,0 +1,14 @@
+/* ---------------------------------------------------------------------------
+   sc08 . the claim, its marker, and the sources drawer. Panel, marker and drawer
+   classes are the dashboard's own (styles/dashboard.css); only the scene layout
+   and the illustrative tag live here.
+   --------------------------------------------------------------------------- */
+#sc08 .shead{padding-right:470px}
+#sc08 .shead h2{max-width:15ch}
+#sc08 #s8claim .swsum{margin-bottom:0;padding-bottom:14px}
+#sc08 .numtile{align-items:flex-start;text-align:left;margin-top:26px}
+#sc08 .numtile .big-n{font-size:82px;color:var(--y)}
+#sc08 .numtile .ml{margin-top:2px}
+#sc08 #s8note{margin-top:26px}
+#sc08 .ill-tag{display:inline-flex;align-items:center;margin-left:8px;font-size:11px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-faint);border:1px dashed var(--edge);border-radius:20px;padding:2px 9px;vertical-align:middle}

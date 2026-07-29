@@ -1,0 +1,43 @@
+/* ---------------------------------------------------------------------------
+   sc09 . slopegraph + transition matrix, both rebuilt from renderSlope and
+   renderMmx. Green is movement toward band 1: the SEAS scale is inverted, so a
+   line that rises on the board is a teacher who improved.
+   The numbers on this board are ILLUSTRATIVE (see the tag under the title): the
+   February baseline in the live data is a seeded mock, so a real compare would
+   not be honest evidence.
+   --------------------------------------------------------------------------- */
+#sc09 .shead{margin-bottom:20px}
+#sc09 .shead h2{font-size:46px}
+#sc09 .ill-tag{display:inline-flex;align-items:center;margin-top:12px;font-size:12px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-faint);border:1px dashed var(--edge);border-radius:20px;padding:5px 13px}
+#sc09 .s9grid{display:grid;grid-template-columns:1.02fr 1fr;gap:18px;align-items:stretch}
+#sc09 #s9slopecard{display:flex;flex-direction:column}
+/* the slope card is stretched to the matrix's height, so the graph centres in it
+   rather than sitting against the top edge with a void underneath */
+#sc09 .slopewrap{flex:1;min-height:0;display:flex;align-items:center;width:100%}
+#sc09 .slope{width:100%;height:100%;display:block;overflow:visible}
+#sc09 .slope .sl-line{fill:none;stroke-width:1.7;opacity:.52}
+#sc09 .slaxis{font-family:var(--display);font-size:17px;font-weight:600;font-style:italic;letter-spacing:.01em}
+#sc09 .slband{font-family:var(--body);font-size:12px;font-weight:600;fill:var(--ink-mid);letter-spacing:.01em}
+#sc09 .mmxwrap{overflow:hidden}
+#sc09 .mmx{display:grid;gap:4px;grid-template-columns:96px repeat(6,minmax(30px,1fr)) 44px}
+#sc09 .mmx .mc{display:flex;align-items:center;justify-content:center;min-height:36px;border-radius:7px;font-family:var(--display);
+  font-weight:600;font-size:17px;font-variant-numeric:tabular-nums;color:var(--ink);border:1px solid transparent}
+#sc09 .mmx .mc.diag{border-color:var(--edge)}
+#sc09 .mmx .mh{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:3px;font-family:var(--body);
+  font-size:10.5px;font-weight:700;letter-spacing:.02em;color:var(--ink-mid);text-transform:uppercase;text-align:center;line-height:1.05;padding:2px}
+#sc09 .mmx .msw{width:11px;height:11px;border-radius:3px}
+#sc09 .mmx .mtot{color:var(--ink-mid);font-size:14px;background:var(--panel-2);font-style:normal}
+#sc09 .mmx .mcorner{font-family:var(--body);font-size:10px;color:var(--ink-faint);text-transform:none;letter-spacing:.02em;font-weight:600}
+#sc09 .s9foot{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-top:20px}
+#sc09 #s9note{flex:none}
+#sc09 .s9chips{display:flex;align-items:center;gap:12px}
+#sc09 .s9chips .subtle{white-space:nowrap;margin-left:6px}
+#sc09 .mchip{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:700;letter-spacing:.02em;color:var(--ink);
+  border:1px solid var(--edge);border-radius:30px;padding:8px 17px;background:var(--panel-2)}
+#sc09 .mchip b{font-family:var(--display);font-size:20px;font-variant-numeric:tabular-nums}
+#sc09 .mchip.up{border-color:color-mix(in srgb,var(--g) 55%,transparent)}
+#sc09 .mchip.up b{color:var(--g)}
+#sc09 .mchip.dn{border-color:color-mix(in srgb,var(--r6) 45%,transparent)}
+#sc09 .mchip.dn b{color:var(--r6)}
+#sc09 .mchip.flat b{color:var(--ink-mid)}

@@ -1,0 +1,22 @@
+/* ---------------------------------------------------------------------------
+   sc10 . coverage: the product's four stat tiles plus the coverage ring
+   (renderRing geometry, drawn at 152px instead of 120px for the frame).
+   --------------------------------------------------------------------------- */
+#sc10 .shead h2{font-size:46px}
+#sc10 .stat.warn .v{color:var(--r5)}
+#sc10 #s10row{margin-top:16px;align-items:stretch}
+#sc10 .s10span2{grid-column:span 2}
+#sc10 #s10ring{display:flex;flex-direction:column;justify-content:center}
+#sc10 .ringwrap{display:flex;align-items:center;gap:22px}
+#sc10 .ringwrap svg{flex:none}
+#sc10 .ringwrap .rl .pct{font-family:var(--display);font-weight:600;font-size:38px;line-height:1;font-variant-numeric:tabular-nums}
+#sc10 .ringwrap .rl .tx{font-size:15px;color:var(--ink-dim);margin-top:6px;line-height:1.45}
+#sc10 .ringwrap .rl .tx b{color:var(--ink);font-weight:700}
+/* the "not yet observed" list, styled as renderNoobs builds it */
+#sc10 .s10names{display:grid;grid-template-columns:1fr 1fr;gap:11px 24px;margin:2px 0 14px}
+#sc10 .s10names span{font-size:15px;font-weight:600;color:var(--ink-dim);display:flex;align-items:center;gap:8px}
+#sc10 .s10names i{width:7px;height:7px;border-radius:50%;background:var(--r5);flex:none}
+#sc10 #s10more{max-width:52ch}
+#sc10 .ill-tag{display:inline-flex;align-items:center;margin-left:9px;font-size:11px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-faint);border:1px dashed var(--edge);border-radius:20px;padding:2px 9px}
+#sc10 #s10note{margin-top:20px;align-self:flex-start}

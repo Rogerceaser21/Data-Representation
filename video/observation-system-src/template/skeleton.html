@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,500;1,600&display=block" rel="stylesheet" />
+    <link rel="stylesheet" href="styles/dashboard.css" />
+    <link rel="stylesheet" href="styles/scenes.css" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  </head>
+  <body>
+    <!-- GENERATED FILE. Edit template/composition.html and run: node scripts/build.mjs -->
+    <div id="root" data-composition-id="main" data-start="0" data-duration="{{TOTAL}}" data-width="1920" data-height="1080">
+
+      <audio id="narration" class="clip" data-start="0" data-duration="{{TOTAL}}" data-volume="1" src="assets/narration.mp3"></audio>
+
+      <div class="bgwash" style="z-index:0"></div>
+
+      <!-- ============ 1 . COVER ============ -->
+      <section class="scene navy clip" id="sc01" data-start="{{START:s01_cover}}" data-duration="{{DUR:s01_cover}}" data-track-index="1">
+        <div class="sbody">
+          <div class="stars" id="coverStars" data-layout-allow-overflow></div>
+          <div style="position:relative;z-index:2">
+            <div class="coverk">The Observation System</div>
+            <h1 class="coverh">From a single lesson to<br />a plan for <em>every teacher</em></h1>
+            <div class="covstripe" id="covStripe"></div>
+          </div>
+          <div class="covsub" style="position:relative;z-index:2">The whole journey: the R3 Evidence Form, the pipeline, and the dashboard.</div>
+        </div>
+      </section>
+
+      <!-- @@SECTION:s02_form@@ -->
+      <!-- @@SECTION:s03_scale@@ -->
+      <!-- @@SECTION:s04_pad@@ -->
+      <!-- @@SECTION:s05_lock@@ -->
+      <!-- @@SECTION:s06_pipeline@@ -->
+      <!-- @@SECTION:s07_story@@ -->
+      <!-- @@SECTION:s08_evidence@@ -->
+      <!-- @@SECTION:s09_movement@@ -->
+      <!-- @@SECTION:s10_coverage@@ -->
+      <!-- @@SECTION:s11_teacher@@ -->
+      <!-- @@SECTION:s12_portal@@ -->
+      <!-- @@SECTION:s13_report@@ -->
+      <!-- @@SECTION:s14_trust@@ -->
+
+      <!-- ============ 15 . CLOSE ============ -->
+      <section class="scene clip" id="sc15" data-start="{{START:s15_close}}" data-duration="{{DUR:s15_close}}" data-track-index="1">
+        <div class="sbody">
+          <div class="beat-h" id="s15h" style="max-width:24ch;font-size:56px">A lesson observed. Evidence kept.<br /><em>A plan in the teacher's hand.</em></div>
+          <div class="flowstrip three" id="s15flow" style="margin-top:48px">
+            <div class="fstep"><div class="ft">One system</div><div class="fs">Form, pipeline, dashboard</div></div>
+            <div class="fstep"><div class="ft">Built inside a school</div><div class="fs">Running live, in real classrooms</div></div>
+            <div class="fstep new"><span class="ftag">Ready</span><div class="ft">Ready to travel</div><div class="fs">Same rails for any school</div></div>
+          </div>
+          <div class="beat-h" id="s15bns" style="margin-top:54px;font-size:64px">Better <em>never</em> stops.</div>
+        </div>
+      </section>
+
+      <!-- ============ 16 . END CARD (silent, back to the cover) ============ -->
+      <section class="scene navy clip" id="sc16" data-start="{{START:s16_end}}" data-duration="{{DUR:s16_end}}" data-track-index="1">
+        <div class="sbody" style="justify-content:center">
+          <div class="stars" id="endStars" data-layout-allow-overflow></div>
+          <div style="position:relative;z-index:2">
+            <div class="coverk">The Observation System</div>
+            <h1 class="coverh" id="s16h" style="font-size:62px;line-height:1.14;max-width:22ch">Better <em>never</em> stops.</h1>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      /* Deterministic star field for the cover and the end card (no Math.random: seeded LCG). */
+      (function () {
+        var seed = 20260729, n = 130, html = '';
+        function rnd() { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296; }
+        for (var i = 0; i < n; i++) {
+          var s = 1 + rnd() * 2.2, x = rnd() * 100, y = rnd() * 100, o = 0.18 + rnd() * 0.62;
+          html += '<i style="left:' + x.toFixed(2) + '%;top:' + y.toFixed(2) + '%;width:' + s.toFixed(2) +
+            'px;height:' + s.toFixed(2) + 'px;opacity:' + o.toFixed(2) + '"></i>';
+        }
+        document.getElementById('coverStars').innerHTML = html;
+        document.getElementById('endStars').innerHTML = html;
+      })();
+
+      /* Cue times are derived from the narration track, injected at build time,
+         so re-cutting a line moves the animation with it. */
+      var NARR = {{TIMINGS}};
+      function at(id, off) { return NARR[id].start + (off || 0); }
+      // proportional cue: frac of the scene's narration length, so a shorter
+      // line compresses its choreography instead of losing the tail of it
+      function atf(id, frac) { return NARR[id].start + frac * NARR[id].dur; }
+      // spotlight: soft gold ring + slight lift while the narrator names the
+      // element, then release. Resting state is the natural one (enhancement only).
+      function spotlight(sel, when, hold) {
+        tl.fromTo(sel, { boxShadow: '0 0 0 0px rgba(201,137,12,0)' },
+          { boxShadow: '0 0 0 3px rgba(201,137,12,.85), 0 0 26px 2px rgba(201,137,12,.28)',
+            scale: 1.03, duration: 0.45, ease: 'power2.out', immediateRender: false }, when)
+          .to(sel, { boxShadow: '0 0 0 0px rgba(201,137,12,0)', scale: 1,
+            duration: 0.6, ease: 'power2.inOut' }, when + (hold || 2.0));
+      }
+
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+
+      function countUp(sel, when, dur) {
+        document.querySelectorAll(sel).forEach(function (el, i) {
+          var target = +el.dataset.count, o = { v: 0 };
+          tl.to(o, {
+            v: target, duration: dur || 1.4, ease: 'power2.out',
+            onUpdate: function () { el.textContent = Math.round(o.v); }
+          }, when + i * 0.28);
+        });
+      }
+
+      /* 1 . cover */
+      tl.from('#sc01 .coverk', { opacity: 0, y: 14, duration: 0.8 }, at('s01_cover', -0.4))
+        .from('#sc01 .coverh', { opacity: 0, y: 26, duration: 1.1, ease: 'power3.out' }, at('s01_cover', -0.15))
+        .from('#covStripe', { scaleX: 0, duration: 0.9, ease: 'power2.out' }, at('s01_cover', 0.6))
+        .from('#sc01 .covsub', { opacity: 0, y: 12, duration: 0.9 }, at('s01_cover', 1.0))
+        .to('#coverStars', { y: -26, duration: 9.3, ease: 'none' }, 0);
+
+      /* @@CUES:s02_form@@ */
+      /* @@CUES:s03_scale@@ */
+      /* @@CUES:s04_pad@@ */
+      /* @@CUES:s05_lock@@ */
+      /* @@CUES:s06_pipeline@@ */
+      /* @@CUES:s07_story@@ */
+      /* @@CUES:s08_evidence@@ */
+      /* @@CUES:s09_movement@@ */
+      /* @@CUES:s10_coverage@@ */
+      /* @@CUES:s11_teacher@@ */
+      /* @@CUES:s12_portal@@ */
+      /* @@CUES:s13_report@@ */
+      /* @@CUES:s14_trust@@ */
+
+      /* 15 . close */
+      tl.from('#s15h', { opacity: 0, y: 20, duration: 0.9, ease: 'power3.out' }, at('s15_close', -0.3))
+        .from('#s15flow .fstep', { opacity: 0, y: 18, duration: 0.7, stagger: 0.22 }, at('s15_close', 0.9))
+        .from('#s15bns', { opacity: 0, y: 24, duration: 0.9, ease: 'power3.out' }, atf('s15_close', 0.86));   // "Better never stops" = words 23-25 of 25; visual lands ON the phrase, end card echoes it
+
+      /* 16 . end card (silent, held after the narration) */
+      tl.from('#sc16 .coverk', { opacity: 0, y: 12, duration: 0.8 }, at('s16_end', 0.6))
+        .from('#s16h', { opacity: 0, y: 22, duration: 1.1, ease: 'power3.out' }, at('s16_end', 0.9))
+        .to('#endStars', { y: -18, duration: 7.0, ease: 'none' }, at('s16_end', 0.2));
+
+      window.__timelines['main'] = tl;
+    </script>
+  </body>
+</html>

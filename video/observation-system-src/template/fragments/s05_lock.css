@@ -1,0 +1,155 @@
+/* ============ 5 . SAVE AND LOCK ============================================
+   The R3 Evidence Form's own paper card. Token VALUES are verbatim from
+   styles/form.css (light theme); the clamp() sizes are resolved to their
+   maxima and then divided by the .sbody zoom (1.62) so the card renders at
+   the product's designed pixel size on the 1920 stage.
+
+   Freeze law: the scene ENDS on a clean, ready form, so the resting CSS state
+   IS the clean form. Everything that only exists mid scene (filled values,
+   green fills, the submitted banner, the locked action group, the tooltip,
+   the press, the ripple, the wipe) rests at opacity 0 and is driven by
+   explicit fromTo pairs in the cue block.
+   ========================================================================== */
+#sc05{
+  /* form.css tokens, verbatim */
+  --paper:#143642; --paper-dim:#3a4f59; --paper-mid:#6b7e85; --paper-faint:#9aa6ac;
+  --ais-red:#EF343A; --ais-yellow:#FFBA14; --ais-blue:#1257FF;
+  --rate-success:#2ea15a; --rate-success-deep:#0f5f30;
+  --rule:rgba(20,54,66,0.14); --rule-soft:rgba(20,54,66,0.07);
+  --card-bg:#ffffff; --row-tint:rgba(20,54,66,0.025); --section-tint:rgba(20,54,66,0.055);
+  --form-display:'Lora',Georgia,'Times New Roman',serif;
+  --form-body:'Inter',system-ui,-apple-system,sans-serif;
+}
+#sc05 .s5wrap{display:grid;grid-template-columns:1fr 296px;gap:26px;align-items:stretch}
+
+/* ---- paper card (.form-container) ---- */
+#sc05 .s5paper{
+  position:relative;background:var(--card-bg);border:1px solid var(--rule);
+  border-radius:9px;padding:22px 24px 56px;overflow:hidden;
+  box-shadow:0 14px 36px -18px rgba(20,54,66,0.22),0 2px 6px -3px rgba(20,54,66,0.08);
+}
+#sc05 .s5rail{position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--ais-red),var(--ais-yellow),var(--ais-blue))}
+#sc05 .s5edge{position:absolute;inset:0;border:2px solid rgba(46,161,90,.42);
+  border-radius:9px;opacity:0;pointer-events:none;z-index:5}
+
+/* ---- submitted banner. Its slot is reserved so the lock never shifts layout ---- */
+#sc05 .s5bslot{position:relative;height:46px;margin-bottom:12px}
+#sc05 .s5banner{
+  position:absolute;inset:0;display:flex;align-items:center;gap:11px;opacity:0;
+  background:linear-gradient(135deg,rgba(46,161,90,0.12),rgba(46,161,90,0.04));
+  border:1px solid rgba(46,161,90,0.32);border-left:4px solid var(--rate-success);
+  border-radius:7px;padding:0 13px;
+}
+#sc05 .s5chk{width:21px;height:21px;border-radius:50%;background:var(--rate-success);
+  color:#fff;display:inline-flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:11px;flex:none;line-height:1}
+#sc05 .s5stack{display:flex;flex-direction:column;gap:2px;min-width:0}
+#sc05 .s5btitle{font-family:var(--form-display);font-weight:600;font-size:13.5px;
+  line-height:1.2;color:var(--rate-success-deep);letter-spacing:-.005em}
+#sc05 .s5bmeta{font-family:var(--form-body);font-size:10px;color:var(--paper-mid);
+  font-variant-numeric:tabular-nums;line-height:1.3}
+
+/* ---- header (.form-header) ----
+   No mark in the row, so the title block is the whole header. min-height holds
+   the row at the 44px it measured before, which keeps the rule, the info grid
+   and the absolutely placed action cluster on their original baselines. */
+#sc05 .s5head{display:flex;align-items:center;min-height:44px;padding-bottom:13px;
+  margin-bottom:14px;border-bottom:1px solid var(--rule)}
+#sc05 .s5tblock{display:flex;flex-direction:column;gap:5px}
+#sc05 .s5eyebrow{font-family:var(--form-body);font-size:8.6px;font-weight:700;
+  letter-spacing:.28em;text-transform:uppercase;color:var(--ais-red);
+  display:inline-flex;align-items:center;gap:.7em}
+#sc05 .s5stripe{width:23px;height:3px;border-radius:2px;
+  background:linear-gradient(90deg,var(--ais-red),var(--ais-yellow),var(--rate-success))}
+#sc05 .s5title{font-family:var(--form-display);font-weight:700;font-size:26px;
+  line-height:1.05;letter-spacing:-.012em;color:var(--paper)}
+#sc05 .s5title em{font-style:italic;font-weight:400;color:var(--rate-success-deep)}
+
+/* ---- top info grid (.info-grid / .info-cell) ---- */
+#sc05 .s5grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
+  border:1px solid var(--rule);border-radius:7px;overflow:hidden;background:var(--row-tint)}
+#sc05 .s5cell{padding:8px 11px;background:var(--card-bg);display:flex;
+  flex-direction:column;gap:3px;min-height:46px}
+#sc05 .s5cell label{font-family:var(--form-body);font-size:8.6px;font-weight:700;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--paper-mid);line-height:1.2}
+#sc05 .s5v{font-family:var(--form-display);font-size:13.5px;line-height:1.4;
+  color:var(--paper);opacity:0}
+
+/* ---- judgement rows (.criteria-table / .rate-row) ---- */
+#sc05 .s5sect{font-family:var(--form-display);font-weight:600;font-size:15px;
+  color:var(--paper);margin:14px 0 7px;letter-spacing:-.005em}
+#sc05 .s5crit{border:1px solid var(--rule);border-radius:7px;overflow:hidden;background:var(--card-bg)}
+#sc05 .s5crow{display:grid;grid-template-columns:1fr 176px;align-items:center;gap:14px;
+  padding:7px 13px;border-bottom:1px solid var(--rule-soft)}
+#sc05 .s5crow:last-child{border-bottom:0}
+#sc05 .s5crow.alt{background:var(--row-tint)}
+#sc05 .s5chead{background:var(--section-tint);font-family:var(--form-body);font-size:8.6px;
+  font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--paper-mid);
+  border-bottom:1px solid var(--rule)}
+#sc05 .s5cn{font-family:var(--form-body);font-size:12px;line-height:1.4;color:var(--paper)}
+#sc05 .s5cn i{font-family:var(--form-display);font-style:italic;font-weight:600;
+  color:var(--paper-mid);margin-right:.3em}
+#sc05 .s5rr{display:flex;gap:5px}
+#sc05 .s5rate{position:relative;flex:1;min-width:21px;height:21px;border-radius:5px;
+  border:1px dashed var(--rule);background:transparent;color:var(--paper-mid);
+  font-family:var(--form-body);font-weight:600;font-size:9.5px;
+  display:inline-flex;align-items:center;justify-content:center}
+#sc05 .s5sel{position:absolute;inset:-1px;border-radius:6px;background:var(--rate-success);
+  border:1px solid var(--rate-success-deep);color:#fff;font-weight:600;font-size:9.5px;
+  font-style:normal;display:flex;align-items:center;justify-content:center;opacity:0}
+
+/* ---- illustrative tag ---- */
+#sc05 .ill-tag{position:absolute;left:24px;bottom:20px;font-family:var(--form-body);
+  font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--paper-faint);border:1px dashed var(--rule);border-radius:20px;padding:3px 10px}
+
+/* ---- floating action cluster (.action-bar / .action-btn), masks verbatim ---- */
+#sc05 .s5bar{position:absolute;right:24px;bottom:16px;display:grid;z-index:4}
+#sc05 .s5grp{grid-area:1/1;justify-self:end;display:flex;align-items:center;gap:6px}
+#sc05 #s5locked{opacity:0}
+#sc05 .s5btn{display:inline-flex;align-items:center;gap:.55em;font-family:var(--form-body);
+  font-size:9.5px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
+  padding:.55em 1.15em;border-radius:999px;border:1px solid var(--rule);
+  color:var(--paper-dim);background:var(--card-bg);white-space:nowrap;
+  box-shadow:0 8px 20px -10px rgba(20,54,66,0.25)}
+#sc05 .s5btn::before{content:"";width:.85em;height:.85em;background:currentColor;flex-shrink:0}
+#sc05 .s5sec::before{
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5'/%3E%3C/svg%3E") center / contain no-repeat}
+#sc05 .s5submit{position:relative;overflow:hidden;background:var(--rate-success-deep);
+  border-color:var(--rate-success-deep);color:#fff;
+  box-shadow:0 10px 24px -8px rgba(15,95,48,0.45)}
+#sc05 .s5submit::before{
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / contain no-repeat}
+#sc05 .s5new::before{
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E") center / contain no-repeat}
+#sc05 .s5press{position:absolute;inset:0;border-radius:999px;background:rgba(0,0,0,.22);opacity:0}
+#sc05 .s5ripple{position:absolute;left:50%;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;
+  border-radius:50%;background:rgba(255,255,255,.6);opacity:0}
+#sc05 .s5tip{position:absolute;right:2px;bottom:34px;opacity:0;
+  font-family:var(--form-body);font-size:9.5px;font-weight:600;letter-spacing:.01em;
+  color:#fff;background:var(--paper);border-radius:6px;padding:5px 10px;white-space:nowrap}
+
+/* ---- the 0.6s soft reset sweep ---- */
+#sc05 .s5wipe{position:absolute;top:0;bottom:0;left:0;width:46%;opacity:0;pointer-events:none;z-index:6;
+  background:linear-gradient(100deg,rgba(255,255,255,0),rgba(255,255,255,.94) 48%,rgba(255,255,255,0))}
+
+/* ---- the morning's filed records ---- */
+#sc05 .s5side{display:flex;flex-direction:column;gap:9px;padding-top:2px}
+#sc05 .s5chip{border:1px solid var(--rule);border-radius:10px;background:var(--card-bg);
+  padding:10px 13px;display:flex;flex-direction:column;gap:3px;
+  box-shadow:0 10px 26px -20px rgba(20,54,66,.32)}
+#sc05 .s5chip.is-new{border-color:rgba(46,161,90,.42);box-shadow:0 10px 26px -16px rgba(46,161,90,.5)}
+#sc05 .s5cid{font-family:var(--form-body);font-size:11px;font-weight:700;color:var(--paper);
+  font-variant-numeric:tabular-nums;letter-spacing:.005em}
+#sc05 .s5cm{font-family:var(--form-body);font-size:10px;font-weight:600;color:var(--paper-mid)}
+/* the list runs on past the frame: two blank ruled chips, no invented data */
+#sc05 .s5ghosts{display:flex;flex-direction:column;gap:9px}
+#sc05 .s5gh{opacity:.5}
+#sc05 .s5gh2{opacity:.24}
+#sc05 .s5gl{display:block;height:8px;border-radius:4px;background:var(--rule);width:74%}
+#sc05 .s5gs{display:block;height:6px;border-radius:3px;background:var(--rule-soft);width:44%}
+#sc05 .s5side .pill-note{margin-top:auto;align-self:flex-start}

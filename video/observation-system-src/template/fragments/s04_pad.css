@@ -1,0 +1,221 @@
+/* ============================================================================
+   sc04 . the Evidence Pad
+   Pad chrome copied from styles/form.css (EVIDENCE PAD v0.50 block). Video-only
+   departures on top of the four listed in s02_form.css: .pad-modal is in flow
+   inside the device instead of position:fixed over the page, and the three
+   fixed-px type sizes in the pad chrome (0.8 / 1.02 / 0.78 rem) get the same
+   readability lift the tokens do.
+   ========================================================================== */
+
+#sc04 .pad-modal {
+  position: relative;
+  width: 100%;
+  height: 950px;                 /* same screen height as the sc02/sc03 card */
+  display: flex;
+  flex-direction: column;
+  background: var(--page-bg);
+  border-radius: clamp(0.5rem, 0.9vw, 0.8rem);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+
+#sc04 .pad-top {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.55rem 0.9rem;
+  border-bottom: 1px solid var(--rule);
+  background: var(--card-bg);
+}
+#sc04 .pad-title {
+  font-family: var(--display-font);
+  font-weight: 600;
+  color: var(--paper);
+  font-size: 1.2rem;             /* product 1.02rem */
+  margin-right: auto;
+  white-space: nowrap;
+}
+#sc04 .pad-title em { font-style: italic; color: var(--ais-blue); }
+#sc04 .ill-tag { margin-left: 0; margin-right: 0.2rem; }
+
+#sc04 .pad-btn {
+  appearance: none;
+  border: 1px solid var(--rule);
+  background: var(--surface-mid);
+  color: var(--paper-dim);
+  border-radius: 999px;
+  font-family: var(--body-font);
+  font-size: 0.92rem;            /* product 0.8rem */
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 0.42rem 0.85rem;
+  display: inline-flex; align-items: center; gap: 0.4em;
+  white-space: nowrap;
+}
+#sc04 .pad-btn .icon { width: 1.05em; height: 1.05em; display: block; }
+#sc04 .pad-btn.primary { background: var(--paper); border-color: var(--paper); color: var(--card-bg); }
+
+#sc04 .pad-tools {
+  display: flex; align-items: center; gap: 0.45rem;
+  flex-wrap: wrap;
+  padding: 0.5rem 0.9rem;
+  border-bottom: 1px solid var(--rule);
+  background: var(--card-bg);
+}
+#sc04 .pad-tools .sep { width: 1px; height: 1.6rem; background: var(--rule); margin: 0 0.15rem; }
+#sc04 .pad-tool {
+  appearance: none;
+  border: 1px solid var(--rule);
+  background: transparent;
+  color: var(--paper-dim);
+  border-radius: 10px;
+  width: 2.35rem; height: 2.35rem;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+#sc04 .pad-tool .icon { width: 1.15rem; height: 1.15rem; display: block; }
+#sc04 .pad-tool.is-active { background: var(--paper); border-color: var(--paper); color: var(--card-bg); }
+#sc04 .pad-swatch {
+  appearance: none;
+  border: 2px solid var(--rule);
+  border-radius: 50%;
+  width: 1.55rem; height: 1.55rem;
+  padding: 0;
+}
+#sc04 .pad-swatch.is-active { border-color: var(--ais-yellow); transform: scale(1.12); }
+#sc04 .pad-pageind {
+  font-family: var(--body-font);
+  font-size: 0.9rem;             /* product 0.78rem */
+  font-weight: 700;
+  color: var(--paper-mid);
+  min-width: 3.2em;
+  text-align: center;
+  white-space: nowrap;
+  margin: 0 0.2rem;
+}
+
+#sc04 .pad-stage-wrap {
+  flex: 1; min-height: 0;
+  display: flex; align-items: center; justify-content: center;
+  padding: 12px;
+  overflow: hidden;
+}
+#sc04 .pad-stage {
+  position: relative;
+  width: 100%; height: 100%;
+  background: #ffffff;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 6px 22px -10px rgba(20, 54, 66, 0.35);
+}
+
+#sc04 .pad-foot {
+  position: relative;
+  display: flex; align-items: center; justify-content: center; gap: 0.6rem;
+  padding: 0.55rem 0.9rem;
+  border-top: 1px solid var(--rule);
+  background: var(--card-bg);
+}
+#sc04 .pad-save {
+  position: absolute; left: 20px; top: 0; bottom: 0;
+  display: flex; align-items: center;
+  font-family: var(--body-font);
+  font-size: var(--tiny);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--rate-success-deep);
+}
+
+/* ---- the ink layer ------------------------------------------------------ */
+/* resting state is the finished page: strokes drawn, ghosted back behind the
+   typed text once the transcription has landed */
+#sc04 .padink {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  opacity: 0.12;
+  overflow: visible;
+}
+#sc04 .padink .hw {
+  fill: none;
+  stroke: #143642;
+  stroke-width: 3.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+#sc04 .padink .hl {
+  fill: rgba(255, 186, 20, 0.42);
+  transform-box: fill-box;
+  transform-origin: left center;
+}
+
+/* ---- the photo kept alongside the ink ----------------------------------- */
+#sc04 .pad-photo {
+  position: absolute; top: 330px; right: 58px;
+  width: 330px;
+  padding: 12px 12px 0;
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  box-shadow: 0 18px 40px -20px rgba(20, 54, 66, 0.5);
+  transform: rotate(-3deg);
+}
+#sc04 .pad-photo .ph-img { border-radius: 2px; overflow: hidden; background: #f2f5f7; }
+#sc04 .pad-photo .ph-img svg { width: 100%; height: auto; display: block; }
+#sc04 .pad-photo .ph-cap {
+  font-family: var(--display-font);
+  font-style: italic;
+  font-size: var(--small);
+  color: var(--paper-mid);
+  text-align: center;
+  padding: 12px 0 16px;
+}
+
+/* ---- the typed transcription -------------------------------------------- */
+/* the typed block lands exactly over the first lines of ink, so the crossfade
+   reads as "this became that" rather than as two unrelated blocks */
+#sc04 .pad-typed { position: absolute; left: 44px; top: 96px; width: 940px; }
+#sc04 .pad-typed .section-title { margin-bottom: 12px; }
+#sc04 .long-text {
+  width: 100%;
+  font-family: var(--body-font);
+  font-size: var(--fbody);
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--rule);
+  border-radius: 0.4rem;
+  background: var(--card-bg);
+  color: var(--paper);
+  line-height: 1.5;
+  box-shadow: 0 10px 30px -22px rgba(20, 54, 66, 0.6);
+}
+
+#sc04 .padcap {
+  position: absolute; left: 46px; bottom: 26px;
+  font-family: var(--body-font);
+  font-size: var(--tiny);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--paper-faint);
+  border: 1px dashed var(--rule);
+  border-radius: 999px;
+  padding: 0.35rem 0.85rem;
+}
+
+/* ---- toast (form.css) ---------------------------------------------------- */
+#sc04 .toast {
+  position: absolute;
+  bottom: 84px; right: 30px;
+  z-index: 110;
+  padding: 0.7em 1.05em;
+  border-radius: 8px;
+  background: var(--card-bg);
+  border: 1px solid var(--rule);
+  box-shadow: 0 12px 32px -12px rgba(20, 54, 66, 0.32);
+  font-family: var(--body-font);
+  font-size: var(--small);
+  color: var(--paper);
+  max-width: 420px;
+}
+#sc04 .toast.success { border-color: rgba(46, 161, 90, 0.5); color: var(--rate-success-deep); }
+
+/* WCAG AA: deepen the gold accent within this scene only (em measured 4.02:1 on the cream head) */
+#sc04 .shead h2 em, #sc04 h2 em { color: #a8730a; }

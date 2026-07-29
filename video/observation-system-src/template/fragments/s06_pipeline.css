@@ -1,0 +1,77 @@
+/* ============ 6 . ONE TAP, FILED FOUR WAYS =================================
+   The machine room beat: the only navy scene between the form act and the
+   dashboard act. Dark ink tokens are the dashboard's own dark-theme values,
+   verbatim from styles/dashboard.css :root, scoped to this section so the
+   shared components (.panel, .kick, .pill-note, .shead) render correctly on
+   navy without touching a dashboard rule.
+   ========================================================================== */
+#sc06{
+  --panel:rgba(12,16,36,.66); --panel-2:rgba(18,23,48,.78);
+  --edge:rgba(255,255,255,.12); --edge-soft:rgba(255,255,255,.06);
+  --ink:#eef1fb; --ink-dim:#b3bad6; --ink-mid:#878fb4; --ink-faint:#5f6790;
+  --y:#FFBA14; --b:#3f7bff; --r:#EF343A; --g:#3CBB6C;
+  --shadow:rgba(0,0,0,.5);
+  /* body's `color` was already computed against the light token, so the scene
+     has to re-resolve it or inherited text (the h2) stays navy on navy */
+  color:var(--ink);
+}
+/* the navy shell is sized for the cover beat; this scene is a normal stack */
+#sc06 .sbody{height:auto;justify-content:flex-start;padding-top:8px}
+
+#sc06 .s6stage{display:grid;grid-template-columns:288px 152px 1fr;align-items:center}
+
+/* ---- the locked record ---- */
+#sc06 .s6node{position:relative;border:1px solid var(--edge);border-radius:18px;
+  background:var(--panel);padding:22px 24px 24px;backdrop-filter:blur(6px);
+  box-shadow:0 24px 60px -42px var(--shadow)}
+#sc06 .s6nic{width:50px;height:50px;border-radius:14px;border:1px solid var(--edge);
+  background:var(--panel-2);color:var(--ink);display:flex;align-items:center;
+  justify-content:center;margin-bottom:15px}
+#sc06 .s6nic svg{width:25px;height:25px}
+#sc06 .s6nt{font-family:var(--display);font-weight:600;font-size:27px;line-height:1.05;
+  letter-spacing:-.02em;color:var(--ink)}
+#sc06 .s6nid{font-size:12.5px;font-weight:600;color:var(--ink-mid);margin-top:7px;
+  font-variant-numeric:tabular-nums;letter-spacing:.01em}
+#sc06 .s6nchip{display:inline-flex;align-items:center;margin-top:14px;font-size:10.5px;
+  font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--g);
+  border:1px solid color-mix(in srgb,var(--g) 42%,transparent);
+  background:color-mix(in srgb,var(--g) 12%,transparent);border-radius:20px;padding:5px 12px}
+#sc06 .ill-tag{position:absolute;top:16px;right:18px;font-size:9px;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);
+  border:1px dashed var(--edge);border-radius:20px;padding:3px 9px}
+
+/* ---- the fan. Dasharray is larger than any of the four path lengths, so
+       offset 0 is fully drawn and offset 460 is fully hidden. ---- */
+#sc06 .s6link{display:flex;align-items:center;justify-content:center}
+#sc06 .s6link svg{display:block;overflow:visible}
+#sc06 .s6p{fill:none;stroke:rgba(60,187,108,.52);stroke-width:1.6;stroke-linecap:round;
+  stroke-dasharray:460;stroke-dashoffset:0}
+
+/* ---- the four destinations ---- */
+#sc06 .s6cards{display:flex;flex-direction:column;gap:14px}
+#sc06 .s6card{position:relative;height:96px;border:1px solid var(--edge);border-radius:16px;
+  background:var(--panel);box-shadow:0 18px 44px -34px var(--shadow)}
+#sc06 .s6in{position:absolute;inset:0;display:grid;grid-template-columns:46px 1fr auto;
+  align-items:center;gap:16px;padding:0 20px}
+#sc06 .s6ic{width:46px;height:46px;border-radius:13px;border:1px solid var(--edge);
+  background:var(--panel-2);color:var(--ink-dim);display:flex;align-items:center;justify-content:center}
+#sc06 .s6ic svg{width:22px;height:22px}
+#sc06 .s6t{font-size:18px;font-weight:600;color:var(--ink);line-height:1.25}
+#sc06 .s6s{font-size:13.5px;color:var(--ink-mid);line-height:1.45;margin-top:3px;max-width:62ch}
+#sc06 .s6tag{display:inline-flex;align-items:center;gap:8px;font-size:10.5px;font-weight:800;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--ink-mid);white-space:nowrap;
+  border:1px solid var(--edge);border-radius:20px;padding:6px 13px;background:var(--panel-2)}
+#sc06 .s6dot{width:7px;height:7px;border-radius:50%;background:var(--g);flex:none;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--g) 18%,transparent)}
+
+/* the retry beat sits in the same slot as the tag it replaces, so nothing moves */
+/* top offset is done with margin, not transform, so GSAP owns the transform */
+#sc06 .s6warn{position:absolute;right:20px;top:50%;margin-top:-13.5px;opacity:0;
+  display:inline-flex;align-items:center;gap:8px;font-size:10.5px;font-weight:800;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--y);white-space:nowrap;
+  border:1px solid color-mix(in srgb,var(--y) 45%,transparent);border-radius:20px;
+  padding:6px 13px;background:color-mix(in srgb,var(--y) 12%,transparent)}
+#sc06 .s6wdot{width:7px;height:7px;border-radius:50%;background:var(--y);flex:none;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--y) 20%,transparent)}
+
+#sc06 .pill-note{margin-top:26px;align-self:flex-start}

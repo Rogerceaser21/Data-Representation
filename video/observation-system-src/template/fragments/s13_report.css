@@ -1,0 +1,69 @@
+/* ============================================================================
+   13 . REPORTS AND REGENERATION  (#sc13)
+   Left: the governance report as the board renders it (renderSimpleReport:
+   .rep-top / .rep-kick / h2.big / .rep-meta / .rep-scope-all / .rep-method /
+   .rep-h / .rep-sum / .rep-bl with numbered .refmk markers), monochrome navy on
+   white. Right: the branded Google Doc the export builds. Below: the v0.61 round
+   regeneration strip (.regbar). Rule values are the product's own, scoped here
+   because styles/dashboard.css does not carry the report component sheet.
+   ========================================================================== */
+
+#sc13 .shead{margin-bottom:16px}
+#sc13 .shead h2{font-size:40px}
+#sc13 .s13row{display:grid;grid-template-columns:1fr 300px;gap:34px;align-items:start;margin-bottom:12px}
+
+/* ---- the report page (paper) ---- */
+#sc13 .s13page{background:#fff;border:1px solid var(--edge);border-radius:16px;padding:16px 22px;
+  box-shadow:0 24px 60px -42px var(--shadow);color:var(--ink)}
+#sc13 .rep-top{display:flex;justify-content:space-between;align-items:flex-start;gap:18px}
+#sc13 .rep-th{flex:1;min-width:0}
+#sc13 .rep-kick{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-mid);margin-bottom:2px}
+#sc13 .s13page .big{font-size:30px;margin-top:4px}
+#sc13 .s13page .big em{color:var(--ink);text-shadow:none;font-style:italic}
+#sc13 .rep-meta{font-size:13px;color:var(--ink-mid);margin-top:8px}
+#sc13 .rep-scope-all{margin:10px 0;font-size:15px;color:var(--ink);padding:13px 17px;background:var(--panel);
+  border:1px solid var(--edge-soft);border-radius:14px}
+#sc13 .rep-method{font-size:13px;line-height:1.6;color:var(--ink-mid);background:var(--panel);border:1px solid var(--edge-soft);
+  border-left:3px solid var(--edge);border-radius:10px;padding:11px 15px;margin-bottom:12px}
+#sc13 .rep-sec{margin-bottom:0}
+#sc13 .rep-h{font-family:var(--display);font-weight:600;font-size:26px;color:var(--ink);margin:0 0 4px;padding-bottom:9px;
+  border-bottom:2px solid var(--edge-soft);letter-spacing:-.01em}
+#sc13 .rep-grp{margin-top:14px}
+#sc13 .rep-sum{font-size:16px;line-height:1.5;color:var(--ink);margin:0 0 12px;font-weight:600}
+#sc13 .rep-bl{margin:0;padding-left:20px}
+#sc13 .rep-bl li{font-size:14px;line-height:1.55;color:var(--ink);margin-bottom:5px}
+#sc13 .repexport{font-size:13px;font-weight:700;color:var(--bg);background:var(--ink);border:0;border-radius:24px;
+  padding:9px 17px;display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+#sc13 .repexport svg{width:15px;height:15px}
+#sc13 .rtabset{display:inline-flex;gap:4px;background:var(--panel);border:1px solid var(--edge-soft);border-radius:22px;padding:4px;margin-top:12px}
+#sc13 .rtab{font-size:13px;font-weight:600;height:30px;padding:0 16px;display:inline-flex;align-items:center;
+  border:1px solid transparent;border-radius:18px;background:transparent;color:var(--ink-mid)}
+#sc13 .rtab.on{background:var(--panel-2);color:var(--ink);border-color:var(--edge-soft);box-shadow:0 2px 12px -5px var(--shadow)}
+
+/* ---- the Google Doc cover (the navy the export ships) ---- */
+#sc13 .s13doc{position:relative;overflow:hidden;width:300px;aspect-ratio:1/1.414;border-radius:16px;padding:30px 28px;
+  background:radial-gradient(900px 420px at 18% -18%,#16224a,transparent),radial-gradient(700px 420px at 108% 118%,#101a3c,transparent),#0a0e22;
+  border:1px solid rgba(255,255,255,.1);box-shadow:0 40px 90px -30px rgba(6,8,22,.65);color:#eef1fb;
+  display:flex;flex-direction:column}
+/* the cover's title block used to start 72px down (a 46px mark + its 26px margin).
+   The mark is gone; the same 72px is kept as head air so the cover reads as a
+   deliberate cover page and the block below it holds its original rhythm. */
+#sc13 .s13dk{font-size:11px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:#8fa2d8;margin-top:72px}
+#sc13 .s13dt{font-family:var(--display);font-weight:600;font-size:30px;line-height:1.12;letter-spacing:-.02em;color:#fff;margin-top:12px}
+#sc13 .s13dt em{font-style:italic}
+#sc13 .s13drule{width:56px;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--y),var(--g),var(--b));margin:18px 0}
+#sc13 .s13ds{font-size:14px;line-height:1.5;color:#aab7e2}
+#sc13 .s13df{margin-top:auto;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8fa2d8}
+#sc13 .s13sheen{position:absolute;top:-20%;bottom:-20%;left:-40%;right:-40%;pointer-events:none;
+  background:linear-gradient(100deg,transparent 42%,rgba(255,255,255,.18) 50%,transparent 58%);transform:translateX(140%)}
+
+/* ---- round regeneration strip (v0.61) ---- */
+#sc13 .s13regen{padding:12px 18px}
+#sc13 .s13regrow{display:flex;align-items:center;gap:14px}
+#sc13 .s13reglab{font-size:14px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:var(--ink)}
+#sc13 .s13regsub{font-size:13px;color:var(--ink-mid)}
+#sc13 .s13chk{margin-left:auto;font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--g);background:color-mix(in srgb,var(--g) 13%,transparent);border:1px solid color-mix(in srgb,var(--g) 30%,transparent);
+  border-radius:999px;padding:4px 11px;white-space:nowrap}
+#sc13 .regbar{height:7px;border-radius:99px;background:var(--edge-soft);overflow:hidden;margin:11px 0 0}
+#sc13 .regbar > i{display:block;height:100%;width:100%;background:var(--g);border-radius:99px}
