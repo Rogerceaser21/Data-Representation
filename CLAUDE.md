@@ -267,6 +267,7 @@ Once Igor has weighed a concern and made a call, **execute**; don't re-raise the
 | Web App `/exec` | `https://script.google.com/macros/s/AKfycbzoxepKzA8vSQkDd0_OEl65EVw017BCC_kFhxSJueP5nZqTQYMtLVMuUr_vpILdavQ4/exec` |
 | **Other** ||
 | Sibling design-precedent | `../Export Ready HTML AIS Report/` (academic report, StatiCrypt, ship.sh workflow) |
+| Sibling video pipeline | `../Video-Factory/` (reusable explainer-video PLAYBOOK + knowledge docs; holds a verbatim copy of the shipped Staff Voice v1.5 as its worked sample) |
 | Sibling deployed | `github.com/Rogerceaser21/sample-student-report` |
 
 ## Self-learning
