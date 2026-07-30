@@ -90,9 +90,15 @@ parts = []
 lead = f"{WORK}/lead.wav"
 sh(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-f", "lavfi",
     "-i", "anullsrc=r=24000:cl=mono", "-t", str(tim["lead"]), lead])
-gap = f"{WORK}/gap.wav"
-sh(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-f", "lavfi",
-    "-i", "anullsrc=r=24000:cl=mono", "-t", str(tim["gap"]), gap])
+# v2.2: per-boundary gaps (act-turn music holds from timings.json survive the rebuild)
+gap_files = {}
+def gap_for(sec):
+    k = f"{sec:.2f}"
+    if k not in gap_files:
+        gap_files[k] = f"{WORK}/gap{k}.wav"
+        sh(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-f", "lavfi",
+            "-i", "anullsrc=r=24000:cl=mono", "-t", k, gap_files[k]])
+    return gap_files[k]
 parts.append(lead)
 for i, s in enumerate(scenes):
     entries = ";".join(f"entry({fc:.0f},{g:.2f})" for fc, g in zip(BANDS, corr[i]))
@@ -100,7 +106,7 @@ for i, s in enumerate(scenes):
     sh(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-i", f"{WORK}/s{i:02d}.wav",
         "-af", f"firequalizer=gain_entry='{entries}'", "-ar", "24000", "-ac", "1", out])
     parts.append(out)
-    if i < len(scenes) - 1: parts.append(gap)
+    if i < len(scenes) - 1: parts.append(gap_for(tim.get("holds", {}).get(s["id"], tim["gap"])))
 tail = f"{WORK}/tail.wav"
 tail_len = max(0.1, tim["total"] - (scenes[-1]["start"] + scenes[-1]["dur"]))
 sh(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-f", "lavfi",

@@ -1,9 +1,15 @@
 {
-  "total": 263.17,
+  "total": 272.97,
   "gap": 0.45,
-  "lead": 0.9,
+  "lead": 2.5,
   "source": "single take",
   "tempo": 1,
+  "holds": {
+    "s01_cover": 2,
+    "s06_pipeline": 3,
+    "s10_coverage": 2.5,
+    "s14_trust": 2.5
+  },
   "tightened": {
     "long_to": 0.45,
     "short_to": 0.22,
@@ -14,105 +20,105 @@
       "id": "s01_cover",
       "title": "Cover",
       "text": "Every school observes lessons. Very few can show what happens next. This is the Observation System: one route from a single lesson, to evidence, to a plan for every teacher. Here is the whole journey.",
-      "start": 0.9,
+      "start": 2.5,
       "dur": 14.267
     },
     {
       "id": "s02_form",
       "title": "The form",
       "text": "It starts in the classroom, on an iPad. The observer opens one form. Teacher, subject, class and timing come from live dropdowns, fed by the school's own staff directory, so nothing is typed from memory and no list is ever out of date. Class composition is a few taps. The whole context of the lesson, captured in under a minute.",
-      "start": 15.617,
+      "start": 18.767,
       "dur": 21.71
     },
     {
       "id": "s03_scale",
       "title": "The regulator's scale",
       "text": "Judgements use the regulator's own six point scale, from Outstanding to Very Weak, with the same proportion bands inspectors already use. Ten criteria, from attainment and progress to teaching and leadership, each with room for a comment. The form speaks the language of inspection, because it was built from it.",
-      "start": 37.777,
+      "start": 40.927,
       "dur": 18.148
     },
     {
       "id": "s04_pad",
       "title": "Evidence Pad",
       "text": "Real observation notes are handwritten. So the form has an Evidence Pad. The observer writes with Apple Pencil, keeps photos of the board or the pupils' work alongside, and the system reads the handwriting and types it into the right field, usually before the lesson ends. Transcription only, never judgement; the ratings stay human. And every stroke survives a closed lid, mid lesson.",
-      "start": 56.375,
+      "start": 59.525,
       "dur": 22.193
     },
     {
       "id": "s05_lock",
       "title": "Save and Lock",
       "text": "When it is done, Save and Lock. The record gets an ID, freezes, and can never be edited again. Three seconds later the form is clean and ready for the next lesson. Observers file back to back all morning; a full inspection week runs on this one screen.",
-      "start": 79.019,
+      "start": 82.169,
       "dur": 14.675
     },
     {
       "id": "s06_pipeline",
       "title": "One tap, filed four ways",
       "text": "One tap files everything, four ways at once. The record lands in a spreadsheet the school already owns. It mirrors into a live database, duplicate proof by design. A branded backup email goes to leadership with the locked record link. And the handwriting itself is archived in private storage. If any step fails, it retries quietly. Nobody in a school ever sees an error.",
-      "start": 94.143,
+      "start": 97.293,
       "dur": 20.182
     },
     {
       "id": "s07_story",
       "title": "The dashboard story",
       "text": "Now the other end of the pipeline. The dashboard opens with a password, because everything inside is real. As an example, here is one school's June round. The story plays itself: a hundred and eleven lessons, a hundred and five teachers, counted up live from the records. Where judgements sit on the six point scale. What is working. Where to focus next. And one tap presents it full screen, built to run itself in a governors' meeting.",
-      "start": 114.776,
+      "start": 120.476,
       "dur": 23.945
     },
     {
       "id": "s08_evidence",
       "title": "Evidence behind every claim",
       "text": "Every written claim carries a small number. Open it, and there are the lessons behind the claim: subject, date, judgement, and the inspector's words, verbatim. Over six hundred references sit behind a single round. Nothing on this dashboard is an opinion without its evidence.",
-      "start": 139.17,
+      "start": 144.87,
       "dur": 13.742
     },
     {
       "id": "s09_movement",
       "title": "Movement between rounds",
       "text": "Rounds compare shows movement. Every teacher seen in both rounds is a line, from where they were to where they are, green when they moved toward Outstanding. A transition matrix counts the improvements, the holds and the declines. This is the question governors actually ask: is teaching getting better? Answered from the records.",
-      "start": 153.362,
+      "start": 159.062,
       "dur": 16.555
     },
     {
       "id": "s10_coverage",
       "title": "Coverage",
       "text": "Coverage answers the other question: who has been seen? Teachers on the register, teachers observed, lessons per teacher, and who is still waiting, so no one is invisible for a term.",
-      "start": 170.367,
+      "start": 176.067,
       "dur": 9.677
     },
     {
       "id": "s11_teacher",
       "title": "The teacher view",
       "text": "Drill into any teacher and the record follows. Two gauges, student progress and teaching, averaged across every observation. Each session, its skills and its notes, one card each. And below them, a coaching plan: drafted by AI from that teacher's own lessons, checked word for word against the source, grounded in the school's own rubric, and approved by a human coach before the teacher ever sees it.",
-      "start": 180.494,
+      "start": 188.244,
       "dur": 20.932
     },
     {
       "id": "s12_portal",
       "title": "The teacher portal",
       "text": "Teachers have their own door. A portal for every member of staff: their photograph, their record, and a notification when a new plan is approved. What they see is deliberately thinner than what leadership sees. No observer's rough notes, no other teachers, only their own approved record and their own next steps.",
-      "start": 201.876,
+      "start": 209.626,
       "dur": 16.24
     },
     {
       "id": "s13_report",
       "title": "Reports and regeneration",
       "text": "For the leadership table, one button turns the round into a governance report, simple or in depth, and a second builds it as a branded Google Doc, references attached, teachers anonymised by construction. When a new round lands, one more button rewrites the analysis for it, machine checked before anyone can publish.",
-      "start": 218.566,
+      "start": 226.316,
       "dur": 16.037
     },
     {
       "id": "s14_trust",
       "title": "Trust",
       "text": "Underneath, three locks. A password for the school. A second, server verified password for administrators. And a unique key for every single record. The whole system runs on the tools a school already pays for: Google Workspace, a database, and static hosting. No servers to maintain, no per seat licences, and the data stays in accounts the school controls.",
-      "start": 235.053,
+      "start": 242.803,
       "dur": 18.421
     },
     {
       "id": "s15_close",
       "title": "Close",
       "text": "From a lesson observed, to evidence, to a plan in the teacher's hand. One system, built inside a school, ready to travel. Better never stops.",
-      "start": 253.924,
+      "start": 263.724,
       "dur": 7.647
     }
   ]

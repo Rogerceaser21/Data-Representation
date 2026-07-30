@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=1920, height=1080" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,500;1,600&display=block" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,500;1,600&family=Shadows+Into+Light&display=block" rel="stylesheet" />
     <link rel="stylesheet" href="styles/dashboard.css" />
     <link rel="stylesheet" href="styles/scenes.css" />
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
@@ -15,6 +15,8 @@
     <div id="root" data-composition-id="main" data-start="0" data-duration="{{TOTAL}}" data-width="1920" data-height="1080">
 
       <audio id="narration" class="clip" data-start="0" data-duration="{{TOTAL}}" data-volume="1" src="assets/narration.mp3"></audio>
+      <!-- bgm ships PRE-BAKED: Lyria 3 Pro bed (drive1), ducked against this exact narration, fades in the file, so preview = render -->
+      <audio id="bgm" class="clip" data-start="0" data-duration="{{TOTAL}}" data-volume="1" src="assets/music.mp3"></audio>
 
       <div class="bgwash" style="z-index:0"></div>
 
@@ -356,13 +358,14 @@
           <div class="pad-stage" id="s4stage">
 
             <svg class="padink" id="s4ink" viewBox="0 0 1456 718" preserveAspectRatio="xMinYMin meet" aria-hidden="true">
-              <rect class="hl" id="s4hl" x="60" y="372" width="486" height="52" rx="6" />
+              <rect class="hl" id="s4hl" x="88" y="266" width="575" height="48" rx="6" />
               <!-- authored cursive: arches, ascender loops and descenders, with word gaps (m) -->
-              <path class="hw" data-len="1800" d="M 70 190 q 5 -52 11 -2 q 6 44 13 2 q 6 -20 13 0 q 8 -30 18 0 q 7 26 15 0 q 6 -20 13 0 q 8 -30 18 0 m 16 0 q 8 -30 18 0 q 6 -20 13 0 q 7 26 15 0 q 8 -30 18 0 q 6 -20 13 0 m 14 0 q 8 -30 18 0 q 5 -52 11 -2 q 6 44 13 2 q 6 -20 13 0 q 7 26 15 0 q 8 -30 18 0 q 6 -20 13 0 m 16 0 q 6 -20 13 0 q 8 -30 18 0 q 6 -20 13 0 q 6 34 13 1 q 4 -26 11 -1 q 8 -30 18 0 m 14 0 q 8 -30 18 0 q 7 26 15 0 q 6 -20 13 0 q 5 -52 11 -2 q 6 44 13 2 q 8 -30 18 0 m 16 0 q 5 -16 11 0 q 6 -20 13 0 q 8 -30 18 0 q 6 -20 13 0 m 14 0 q 8 -30 18 0 q 5 -52 11 -2 q 6 44 13 2 q 6 -20 13 0 q 7 26 15 0 q 8 -30 18 0 q 6 -20 13 0" />
-              <path class="hw" data-len="1900" d="M 70 300 q 8 -30 18 0 q 6 -20 13 0 q 7 26 15 0 q 8 -30 18 0 q 6 -20 13 0 m 16 0 q 6 -20 13 0 q 8 -30 18 0 q 6 -20 13 0 q 6 34 13 1 q 4 -26 11 -1 q 8 -30 18 0 m 14 0 q 5 -52 11 -2 q 6 44 13 2 q 6 -20 13 0 q 8 -30 18 0 q 7 26 15 0 q 6 -20 13 0 q 8 -30 18 0 m 16 0 q 8 -30 18 0 q 7 26 15 0 q 6 -20 13 0 q 5 -52 11 -2 q 6 44 13 2 q 8 -30 18 0 m 14 0 q 8 -30 18 0 q 5 -52 11 -2 q 6 44 13 2 q 6 -20 13 0 q 7 26 15 0 q 8 -30 18 0 q 6 -20 13 0 m 16 0 q 8 -30 18 0 q 6 -20 13 0 q 7 26 15 0 q 8 -30 18 0 q 6 -20 13 0 m 14 0 q 5 -16 11 0 q 6 -20 13 0 q 8 -30 18 0 q 6 -20 13 0 m 16 0 q 6 -20 13 0 q 8 -30 18 0 q 6 -20 13 0 q 6 34 13 1 q 4 -26 11 -1 q 8 -30 18 0" />
-              <path class="hw" data-len="1450" d="M 70 410 q 8 -30 18 0 q 5 -52 11 -2 q 6 44 13 2 q 6 -20 13 0 q 7 26 15 0 q 8 -30 18 0 q 6 -20 13 0 m 14 0 q 8 -30 18 0 q 7 26 15 0 q 6 -20 13 0 q 5 -52 11 -2 q 6 44 13 2 q 8 -30 18 0 m 16 0 q 8 -30 18 0 q 6 -20 13 0 q 7 26 15 0 q 8 -30 18 0 q 6 -20 13 0 m 14 0 q 6 -20 13 0 q 8 -30 18 0 q 6 -20 13 0 q 6 34 13 1 q 4 -26 11 -1 q 8 -30 18 0 m 16 0 q 5 -52 11 -2 q 6 44 13 2 q 6 -20 13 0 q 8 -30 18 0 q 7 26 15 0 q 6 -20 13 0 q 8 -30 18 0 m 14 0 q 5 -16 11 0 q 6 -20 13 0 q 8 -30 18 0 q 6 -20 13 0" />
-              <path class="hw" data-len="900" d="M 70 520 q 6 -20 13 0 q 8 -30 18 0 q 6 -20 13 0 q 6 34 13 1 q 4 -26 11 -1 q 8 -30 18 0 m 16 0 q 8 -30 18 0 q 6 -20 13 0 q 7 26 15 0 q 8 -30 18 0 q 6 -20 13 0 m 14 0 q 5 -16 11 0 q 6 -20 13 0 q 8 -30 18 0 q 6 -20 13 0 m 16 0 q 8 -30 18 0 q 5 -52 11 -2 q 6 44 13 2 q 6 -20 13 0 q 7 26 15 0 q 8 -30 18 0 q 6 -20 13 0" />
-            </svg>
+              <defs><clipPath id="s4cp0"><rect class="hwrect" x="60" y="112" width="1456" height="112" /></clipPath><clipPath id="s4cp1"><rect class="hwrect" x="60" y="222" width="1456" height="112" /></clipPath><clipPath id="s4cp2"><rect class="hwrect" x="60" y="332" width="1456" height="112" /></clipPath><clipPath id="s4cp3"><rect class="hwrect" x="60" y="442" width="1456" height="112" /></clipPath></defs>
+              <text class="hw" x="70" y="190" clip-path="url(#s4cp0)">Success Criteria and Learning Intention, clearly visible.</text>
+              <text class="hw" x="70" y="300" clip-path="url(#s4cp1)">Teacher is walking and interacting with</text>
+              <text class="hw" x="70" y="410" clip-path="url(#s4cp2)">different student groups effectively.</text>
+              <text class="hw" x="70" y="520" clip-path="url(#s4cp3)">Learning groups are differentiated well.</text>
+                                                      </svg>
 
             <div class="pad-photo" id="s4photo">
               <div class="ph-img">
@@ -378,7 +381,7 @@
 
             <div class="pad-typed" id="s4typed">
               <h2 class="section-title">Observer <em>Notes</em></h2>
-              <div class="long-text">Starter recalled last lesson's vocabulary and most students answered in full sentences. Teacher checked understanding with three targeted questions before moving on. Two groups needed a second example before they could start independently.</div>
+              <div class="long-text">Success Criteria and Learning Intention, clearly visible. Teacher is walking and interacting with different student groups effectively. Learning groups are differentiated well.</div>
             </div>
 
             <div class="padcap" id="s4cap">AI transcription &middot; judgements stay human</div>
@@ -1249,14 +1252,15 @@ tl.from('#s4dev', { opacity: 0, y: 26, scale: 0.985, duration: 0.9, ease: 'power
 
 /* "the observer writes with Apple Pencil": the ink draws itself, line by line.
    Resting state is the finished page, so the tween ends on dashoffset 0. */
-document.querySelectorAll('#s4ink .hw').forEach(function (p, i) {
-  var L = 0;
-  try { L = p.getTotalLength(); } catch (e) { L = 0; }
-  if (!L || !isFinite(L)) L = +p.dataset.len || 1200;
-  p.style.strokeDasharray = L;
-  p.style.strokeDashoffset = 0;
-  tl.fromTo(p, { strokeDashoffset: L },
-    { strokeDashoffset: 0, duration: 1.15, ease: 'none' }, atf('s04_pad', 0.21) + i * 0.45);
+document.querySelectorAll('#s4ink .hwrect').forEach(function (r, i) {
+  // handwriting-font lines reveal left to right as if written; resting state is
+  // the full rect (finished page), so a frozen frame always shows complete notes
+  // default immediateRender (true): before the writing beat the line is BLANK
+  // (from-state width 0), during it wipes on, after it rests full. Matches how
+  // the stroke ink behaved in v2.0/v2.1. immediateRender:false made each line
+  // sit fully written, vanish at its beat, then rewrite (caught in render QA).
+  tl.fromTo(r, { attr: { width: 0 } },
+    { attr: { width: 1456 }, duration: 1.15, ease: 'none' }, atf('s04_pad', 0.21) + i * 0.45);
 });
 
 tl.from('#s4photo', { opacity: 0, y: -52, rotate: -11, duration: 0.75, ease: 'back.out(1.3)' }, atf('s04_pad', 0.30))

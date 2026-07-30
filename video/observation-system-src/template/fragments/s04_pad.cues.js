@@ -11,14 +11,15 @@ tl.from('#s4dev', { opacity: 0, y: 26, scale: 0.985, duration: 0.9, ease: 'power
 
 /* "the observer writes with Apple Pencil": the ink draws itself, line by line.
    Resting state is the finished page, so the tween ends on dashoffset 0. */
-document.querySelectorAll('#s4ink .hw').forEach(function (p, i) {
-  var L = 0;
-  try { L = p.getTotalLength(); } catch (e) { L = 0; }
-  if (!L || !isFinite(L)) L = +p.dataset.len || 1200;
-  p.style.strokeDasharray = L;
-  p.style.strokeDashoffset = 0;
-  tl.fromTo(p, { strokeDashoffset: L },
-    { strokeDashoffset: 0, duration: 1.15, ease: 'none' }, atf('s04_pad', 0.21) + i * 0.45);
+document.querySelectorAll('#s4ink .hwrect').forEach(function (r, i) {
+  // handwriting-font lines reveal left to right as if written; resting state is
+  // the full rect (finished page), so a frozen frame always shows complete notes
+  // default immediateRender (true): before the writing beat the line is BLANK
+  // (from-state width 0), during it wipes on, after it rests full. Matches how
+  // the stroke ink behaved in v2.0/v2.1. immediateRender:false made each line
+  // sit fully written, vanish at its beat, then rewrite (caught in render QA).
+  tl.fromTo(r, { attr: { width: 0 } },
+    { attr: { width: 1456 }, duration: 1.15, ease: 'none' }, atf('s04_pad', 0.21) + i * 0.45);
 });
 
 tl.from('#s4photo', { opacity: 0, y: -52, rotate: -11, duration: 0.75, ease: 'back.out(1.3)' }, atf('s04_pad', 0.30))

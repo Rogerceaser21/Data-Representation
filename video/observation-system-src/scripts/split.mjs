@@ -28,7 +28,11 @@ const cfg = JSON.parse(fs.readFileSync(path.join(ROOT, 'scenes.json'), 'utf8'));
 // take measured adj_max 3.6 dB post-EQ and was discarded).
 const TARGET_WPM = 196;   // G2 standing call: natural pace, no processing; this take measured 196 so the factor snaps to 1.0
 const KEEP_GAP = 0.45;    // breath left between scenes (0.62 through v1.2)
-const LEAD = 0.9;         // silence before the first word
+// v2.2 music-only holds: at act turns the gap widens so the bed can lift (every
+// measured reference film breathes 2-5s at section turns; ours never did, which
+// is half of why two bed rounds read as inaudible). Keys = scene the hold FOLLOWS.
+const HOLDS = { s01_cover: 2.0, s06_pipeline: 3.0, s10_coverage: 2.5, s14_trust: 2.5 };
+const LEAD = 2.5;         // cold open: music owns the head (2026-07-30, measured pro practice 1.2-3.0s)
 const TAIL = 1.6;
 
 const ff = (args) => spawnSync('ffmpeg', ['-hide_banner', '-loglevel', 'error', '-y', ...args], { encoding: 'utf8' });
@@ -120,8 +124,15 @@ segs.forEach((s) => {
   }
 });
 
-const sil = path.join(WORK, 'gap.wav');
-ff(['-f', 'lavfi', '-i', 'anullsrc=r=24000:cl=mono', '-t', String(KEEP_GAP), sil]);
+const gapFiles = {};
+const gapFor = (sec) => {
+  const k = sec.toFixed(2);
+  if (!gapFiles[k]) {
+    gapFiles[k] = path.join(WORK, `gap${k}.wav`);
+    ff(['-f', 'lavfi', '-i', 'anullsrc=r=24000:cl=mono', '-t', k, gapFiles[k]]);
+  }
+  return gapFiles[k];
+};
 const lead = path.join(WORK, 'lead.wav');
 ff(['-f', 'lavfi', '-i', 'anullsrc=r=24000:cl=mono', '-t', String(LEAD), lead]);
 const tail = path.join(WORK, 'tail.wav');
@@ -133,7 +144,7 @@ let t = LEAD;
 segs.forEach((s, i) => {
   scenes.push({ id: s.id, title: s.title, text: s.text, start: +t.toFixed(3), dur: +s.dur.toFixed(3) });
   parts.push(s.file); t += s.dur;
-  if (i < segs.length - 1) { parts.push(sil); t += KEEP_GAP; }
+  if (i < segs.length - 1) { const g = HOLDS[s.id] ?? KEEP_GAP; parts.push(gapFor(g)); t += g; }
 });
 parts.push(tail); t += TAIL;
 
@@ -145,7 +156,7 @@ ff(['-i', master, '-b:a', '128k', path.join(ROOT, 'assets', 'narration.mp3')]);
 fs.rmSync(WORK, { recursive: true, force: true });
 const grand = +t.toFixed(3);
 fs.writeFileSync(path.join(ROOT, 'timings.json'),
-  JSON.stringify({ total: grand, gap: KEEP_GAP, lead: LEAD, source: 'single take', tempo: +tempo.toFixed(4), scenes }, null, 2));
+  JSON.stringify({ total: grand, gap: KEEP_GAP, holds: HOLDS, lead: LEAD, source: 'single take', tempo: +tempo.toFixed(4), scenes }, null, 2));
 
 // --- subtitles ---------------------------------------------------------------
 const fmt = (x) => {

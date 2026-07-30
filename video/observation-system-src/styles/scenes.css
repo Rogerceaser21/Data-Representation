@@ -538,11 +538,11 @@
   overflow: visible;
 }
 #sc04 .padink .hw {
-  fill: none;
-  stroke: #143642;
-  stroke-width: 3.4;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  /* Shadows Into Light (OFL, free commercial): real-handwriting-derived print, proper kerning */
+  font-family: 'Shadows Into Light', sans-serif;
+  font-size: 53px;
+  fill: #143642;
+  stroke: none;
 }
 #sc04 .padink .hl {
   fill: rgba(255, 186, 20, 0.42);
