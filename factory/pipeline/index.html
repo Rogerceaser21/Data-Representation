@@ -600,7 +600,7 @@ footer .ramp{margin-bottom:18px}
     <li><a href="#music">My music</a></li>
     <li><a href="#whatif">What if</a></li>
     <li><a href="#stages">11 steps</a></li>
-    <li><a href="#replay">16 misses</a></li>
+    <li><a href="#replay">17 misses</a></li>
     <li><a href="#steer">Cheat sheet</a></li>
     <li><a href="#rules">Rules</a></li>
     <li><a href="#glossary">Glossary</a></li>
@@ -620,7 +620,7 @@ footer .ramp{margin-bottom:18px}
         <div><b>4</b><span>Gates</span></div>
         <div><b>11</b><span>Automatic steps</span></div>
         <div><b>3</b><span>Approved tracks</span></div>
-        <div><b>16</b><span>Recorded misses</span></div>
+        <div><b>17</b><span>Recorded misses</span></div>
       </div>
     </div>
   </div>
@@ -1158,7 +1158,8 @@ footer .ramp{margin-bottom:18px}
             <h4>What happens</h4>
             <ul>
               <li>The one long recording is cut into scenes at its longest silences.</li>
-              <li>A safety cap slows any scene reading faster than 192 words a minute. It can never speed one up.</li>
+              <li>The pace check reads the speed of EVERY scene, not the average. The average hides the AI voice's habit of starting calm and racing toward the end.</li>
+              <li>A safety brake slows any scene that reads faster than the video's own opening scenes. The brake calibrates itself to each new recording. It can never speed a scene up.</li>
               <li>A second pass trims dead air inside scenes. That takes about 28 seconds off four minutes.</li>
               <li>A third pass evens out slow tone drift. It runs exactly once.</li>
             </ul>
@@ -1470,8 +1471,8 @@ footer .ramp{margin-bottom:18px}
   <div class="wrap">
     <div class="sechead">
       <p class="kicker">The record</p>
-      <h2>16 times it went wrong (and what now stops it)</h2>
-      <p class="deck">Every one is real, from two shipped videos and one trial. None are hypothetical.</p>
+      <h2>17 times it went wrong (and what now stops it)</h2>
+      <p class="deck">Every one is real, from three shipped versions and one trial. None are hypothetical.</p>
     </div>
 
     <div class="grouphead">
@@ -1575,6 +1576,19 @@ footer .ramp{margin-bottom:18px}
         <span class="what">A local voice engine was trialled and lost.</span>
         <span class="chips"><span class="chip stage">Step 2 Take</span><span class="chip nogate">No gate</span></span>
         <span class="fix"><span class="fixlab">Now</span>Gemini stays the narrator until new evidence, and the trial is written down so nobody reopens it.</span>
+      </li>
+    </ul>
+
+    <div class="grouphead">
+      <h3>v2.3 rebuild</h3>
+      <span>one entry</span>
+    </div>
+
+    <ul class="misslist" style="counter-reset:m 16">
+      <li>
+        <span class="what">The narration started calm and sped up scene by scene, and the average speed number hid it. Igor's ear caught what the meters missed.</span>
+        <span class="chips"><span class="chip stage">Step 3 Cut and pace</span><span class="chip nogate">No gate</span></span>
+        <span class="fix"><span class="fixlab">Now</span>The pace check reads every scene, not the average, and the brake calibrates itself to each recording's own opening. A leftover setting from an older video can no longer weaken it.</span>
       </li>
     </ul>
   </div>
