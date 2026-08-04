@@ -29,8 +29,12 @@
 #sc09 .mmx .msw{width:11px;height:11px;border-radius:3px}
 #sc09 .mmx .mtot{color:var(--ink-mid);font-size:14px;background:var(--panel-2);font-style:normal}
 #sc09 .mmx .mcorner{font-family:var(--body);font-size:10px;color:var(--ink-faint);text-transform:none;letter-spacing:.02em;font-weight:600}
-#sc09 .s9foot{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-top:20px}
-#sc09 #s9note{flex:none}
+#sc09 .s9foot{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-top:14px}
+/* The three questions governors actually ask, one chip each, on their OWN row.
+   Measured: the stat chips + the "86 teachers" line + these three pills come to
+   1328px of natural width against a 1150px column, so the single foot row would
+   have wrapped. Right aligned, where the one question pill used to sit. */
+#sc09 .s9qs{display:flex;gap:10px;flex:none;justify-content:flex-end;margin-top:18px}
 #sc09 .s9chips{display:flex;align-items:center;gap:12px}
 #sc09 .s9chips .subtle{white-space:nowrap;margin-left:6px}
 #sc09 .mchip{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:700;letter-spacing:.02em;color:var(--ink);

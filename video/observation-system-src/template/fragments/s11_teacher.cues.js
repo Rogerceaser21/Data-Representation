@@ -46,26 +46,45 @@
       tl.from('#s11top', { opacity: 0, y: 16, duration: 0.7 }, at('s11_teacher', -0.4))
         .from('#s11all', { opacity: 0, y: 18, duration: 0.8, ease: 'power2.out' }, at('s11_teacher', 0.1))
         /* "Two gauges, student progress and teaching" */
-        .from('#s11arcP .arcfill', { opacity: 0, duration: 0.45, stagger: 0.018, ease: 'none' }, atf('s11_teacher', 0.13))
-        .from('#s11arcT .arcfill', { opacity: 0, duration: 0.45, stagger: 0.018, ease: 'none' }, atf('s11_teacher', 0.13))
-        .from('#s11all .osramp', { scaleX: 0, transformOrigin: 'left center', duration: 0.6, ease: 'power2.out' }, atf('s11_teacher', 0.17))
+        .from('#s11arcP .arcfill', { opacity: 0, duration: 0.45, stagger: 0.018, ease: 'none' }, atf('s11_teacher', 0.113))
+        .from('#s11arcT .arcfill', { opacity: 0, duration: 0.45, stagger: 0.018, ease: 'none' }, atf('s11_teacher', 0.113))
+        .from('#s11all .osramp', { scaleX: 0, transformOrigin: 'left center', duration: 0.6, ease: 'power2.out' }, atf('s11_teacher', 0.161))
         /* "averaged across every observation" */
-        .from('#sc11 .arcword', { opacity: 0, duration: 0.6 }, atf('s11_teacher', 0.20))
-        .from('#sc11 .arcdot', { opacity: 0, scale: 0.4, duration: 0.4, stagger: 0.09, ease: 'back.out(2)' }, atf('s11_teacher', 0.21))
-        .from('#s11all .osd', { opacity: 0, y: -8, scale: 0.4, duration: 0.4, stagger: 0.1, ease: 'back.out(2)' }, atf('s11_teacher', 0.22))
-        .from('#s11flag', { opacity: 0, y: -6, duration: 0.5 }, atf('s11_teacher', 0.25))
+        .from('#sc11 .arcword', { opacity: 0, duration: 0.6 }, atf('s11_teacher', 0.197))
+        .from('#sc11 .arcdot', { opacity: 0, scale: 0.4, duration: 0.4, stagger: 0.09, ease: 'back.out(2)' }, atf('s11_teacher', 0.207))
+        .from('#s11all .osd', { opacity: 0, y: -8, scale: 0.4, duration: 0.4, stagger: 0.1, ease: 'back.out(2)' }, atf('s11_teacher', 0.217))
+        .from('#s11flag', { opacity: 0, y: -6, duration: 0.5 }, atf('s11_teacher', 0.247))
         /* "Each session, its skills and its notes, one card each" */
-        .from('#s11sess', { opacity: 0, x: -18, duration: 0.7, ease: 'power2.out' }, atf('s11_teacher', 0.29))
-        .from('#s11sess .odrow', { opacity: 0, x: -10, duration: 0.45, stagger: 0.07 }, atf('s11_teacher', 0.32))
+        .from('#s11sess', { opacity: 0, x: -18, duration: 0.7, ease: 'power2.out' }, atf('s11_teacher', 0.254))
+        .from('#s11sess .odrow', { opacity: 0, x: -10, duration: 0.45, stagger: 0.07 }, atf('s11_teacher', 0.28))
         /* "And below them, a coaching plan" */
-        .from('#s11coach', { opacity: 0, y: 18, duration: 0.8, ease: 'power2.out' }, atf('s11_teacher', 0.40))
-        .from('#s11lad .ns-cell', { opacity: 0, scaleX: 0.3, duration: 0.4, stagger: 0.04, ease: 'power2.out' }, atf('s11_teacher', 0.43))
-        .from('#s11lad .ns-lad-mv', { opacity: 0, x: 10, duration: 0.5, stagger: 0.18 }, atf('s11_teacher', 0.45))
-        .from('#s11sum', { opacity: 0, duration: 0.6 }, atf('s11_teacher', 0.455))
+        .from('#s11coach', { opacity: 0, y: 18, duration: 0.8, ease: 'power2.out' }, atf('s11_teacher', 0.394))
+        .from('#s11lad .ns-cell', { opacity: 0, scaleX: 0.3, duration: 0.4, stagger: 0.04, ease: 'power2.out' }, atf('s11_teacher', 0.42))
+        .from('#s11lad .ns-lad-mv', { opacity: 0, x: 10, duration: 0.5, stagger: 0.18 }, atf('s11_teacher', 0.43))
+        .from('#s11sum', { opacity: 0, duration: 0.6 }, atf('s11_teacher', 0.44))
         /* the focus card lands as ONE unit: a half-populated card reads as broken */
-        .from('#s11fc', { opacity: 0, y: 16, duration: 0.7, ease: 'power2.out' }, atf('s11_teacher', 0.47))
-        /* "approved by a human coach before the teacher ever sees it" */
-        .from('#s11appr', { opacity: 0, scale: 0.86, duration: 0.5, ease: 'back.out(1.7)' }, atf('s11_teacher', 0.85));
-      spotlight('#s11coach', atf('s11_teacher', 0.49), 2.4);                    // "drafted by AI from that teacher's own lessons"
-      tl.to('#s11all, #s11sess', { opacity: 0.5, duration: 0.45 }, atf('s11_teacher', 0.49))
-        .to('#s11all, #s11sess', { opacity: 1, duration: 0.6 }, atf('s11_teacher', 0.49) + 2.4);
+        .from('#s11fc', { opacity: 0, y: 16, duration: 0.7, ease: 'power2.out' }, atf('s11_teacher', 0.45))
+        /* "checked word for word against the source": the summary line lifts to
+           full ink and releases back to its resting --ink-dim */
+        .to('#s11sum', { color: '#14233f', duration: 0.45, ease: 'power2.out' }, atf('s11_teacher', 0.592))
+        .to('#s11sum', { color: '#3a4a66', duration: 0.6, ease: 'power2.inOut' }, atf('s11_teacher', 0.592) + 1.2)
+        /* "grounded in the school's own rubric": the Grounded in column's rail
+           lifts to --y. Inset shadow, so the resting frame carries no rail. */
+        .fromTo('#s11fc .fc-r', { boxShadow: 'inset 3px 0 0 0 rgba(201,137,12,0)' },
+          { boxShadow: 'inset 3px 0 0 0 rgba(201,137,12,.9)', duration: 0.5, ease: 'power2.out', immediateRender: false }, atf('s11_teacher', 0.690))
+        .to('#s11fc .fc-r', { boxShadow: 'inset 3px 0 0 0 rgba(201,137,12,0)', duration: 0.6, ease: 'power2.inOut' }, atf('s11_teacher', 0.690) + 1.4)
+        /* "then amended if needed" */
+        .from('#s11amd', { opacity: 0, scale: 0.86, duration: 0.5, ease: 'back.out(1.7)' }, atf('s11_teacher', 0.775))
+        /* the badge box holds ONE state at a time: each earlier word is off before
+           the next one starts, so no two words ever paint in the same box. The
+           hand-offs are fromTo(immediateRender:false), so the resting state is the
+           final one: Draft and Amended at 0, Approved alone and visible. */
+        .fromTo('#s11draft', { opacity: 1 },
+          { opacity: 0, duration: 0.28, ease: 'power2.in', immediateRender: false }, atf('s11_teacher', 0.775) - 0.28)
+        .fromTo('#s11amd', { opacity: 1 },
+          { opacity: 0, duration: 0.28, ease: 'power2.in', immediateRender: false }, atf('s11_teacher', 0.845) - 0.28)
+        /* "and approved by the teacher coach before the teacher ever sees it" */
+        .from('#s11appr', { opacity: 0, scale: 0.86, duration: 0.5, ease: 'back.out(1.7)' }, atf('s11_teacher', 0.845));
+      spotlight('#s11coach', atf('s11_teacher', 0.479), 2.4);                   // "drafted by AI from that teacher's own lessons"
+      tl.to('#s11all, #s11sess', { opacity: 0.5, duration: 0.45 }, atf('s11_teacher', 0.479))
+        .to('#s11all, #s11sess', { opacity: 1, duration: 0.6 }, atf('s11_teacher', 0.479) + 2.4);

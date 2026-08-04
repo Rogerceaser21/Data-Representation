@@ -26,7 +26,7 @@ const cfg = JSON.parse(fs.readFileSync(path.join(ROOT, 'scenes.json'), 'utf8'));
 // wildly off take; the snap below turns any correction under 3% into exactly
 // 1.0. Score voice consistency per take before accepting one (the v1.3 first
 // take measured adj_max 3.6 dB post-EQ and was discarded).
-const TARGET_WPM = 196;   // G2 standing call: natural pace, no processing; this take measured 196 so the factor snaps to 1.0
+const TARGET_WPM = 185;   // G2 standing call: natural pace, no processing; the v2.3 take measured 185 (slower than v2.2's shipped 196) so the factor snaps to 1.0
 const KEEP_GAP = 0.45;    // breath left between scenes (0.62 through v1.2)
 // v2.2 music-only holds: at act turns the gap widens so the bed can lift (every
 // measured reference film breathes 2-5s at section turns; ours never did, which
@@ -85,7 +85,13 @@ const bodyDur = dur(body);
 
 // Re-detect on the retimed audio rather than mapping timestamps through the
 // stretch: fewer moving parts, and the thresholds are the ones that matter.
-const bAll = silences(body, '-35dB', 1.2).map(g => ({ ...g, len: g.end - g.start }));
+// sweep the same ladder as the first detection: loudnorm lifts gap floors, a fixed
+// -35dB/1.2 misses pauses that only read at -38dB/1.0 (v2.3 take, 2026-08-04)
+let bAll = [];
+for (const [noise, d] of [['-35dB', 1.2], ['-38dB', 1.0], ['-32dB', 1.4], ['-40dB', 0.9]]) {
+  bAll = silences(body, noise, d).map(g => ({ ...g, len: g.end - g.start }));
+  if (bAll.length >= want) break;
+}
 const bGaps = bAll.filter(g => g.start > 0.5 && g.end < bodyDur - 0.3)
   .sort((a, b) => b.len - a.len).slice(0, want).sort((a, b) => a.start - b.start);
 if (bGaps.length !== want) { console.error(`retimed audio has ${bGaps.length} breaks, need ${want}`); process.exit(1); }
@@ -110,7 +116,7 @@ cfg.scenes.forEach((s, i) => {
 // performance, corrected DOWNWARD only, so speaker identity cannot drift. Scenes faster
 // than PACE_CAP slow back to it; nothing is ever sped up; corrections under 3% snap to
 // none; floor 0.84 keeps the worst correction gentle. Re-scored after (score_take.py).
-const PACE_CAP = 192;
+const PACE_CAP = 160;  // v2.3 Igor call 2026-08-04: brake every scene back to the opening's pace (s02 = 168 gross = the "170" feel he approved); 192 was calibrated for the faster v2.2 take and let a 159->210 ramp through
 segs.forEach((s) => {
   const w = s.text.split(/\s+/).length;
   const sceneWpm = w / (s.dur / 60);

@@ -141,7 +141,10 @@
   margin: 0;
   letter-spacing: -0.005em;
 }
-#sc03 .section-title em, #sc04 .section-title em { font-style: italic; font-weight: 400; color: var(--ais-red); }
+/* the section-title em is 22.4px, so it is judged at the 4.5:1 bar, and --ais-red
+   lands at 4.02:1 on the white pad stage. --r is the light theme's own red, the
+   same hue one notch deeper, and clears it. The brand red stays everywhere else. */
+#sc03 .section-title em, #sc04 .section-title em { font-style: italic; font-weight: 400; color: var(--r); }
 
 /* required-field asterisk */
 #sc02 .required-field::after, #sc03 .required-field::after { content: ' *'; color: var(--ais-red); font-weight: 700; }

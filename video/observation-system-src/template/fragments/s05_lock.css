@@ -4,15 +4,22 @@
    maxima and then divided by the .sbody zoom (1.62) so the card renders at
    the product's designed pixel size on the 1920 stage.
 
-   Freeze law: the scene ENDS on a clean, ready form, so the resting CSS state
-   IS the clean form. Everything that only exists mid scene (filled values,
-   green fills, the submitted banner, the locked action group, the tooltip,
-   the press, the ripple, the wipe) rests at opacity 0 and is driven by
-   explicit fromTo pairs in the cue block.
+   Freeze law: the scene ENDS locked ("everything is saved, ready for review"),
+   so the resting CSS state IS the LOCKED card: the filled values and the green
+   selections sit at the product's locked 0.7, the cells and the info grid
+   carry the locked tint, the submitted banner, the green edge and the locked
+   action group are visible. Only what exists mid scene rests hidden: the draft
+   action group (opacity 0), the press and the ripple. Every entrance runs INTO
+   those resting values with .from(), so a frozen frame reads finished.
    ========================================================================== */
 #sc05{
-  /* form.css tokens, verbatim */
-  --paper:#143642; --paper-dim:#3a4f59; --paper-mid:#6b7e85; --paper-faint:#9aa6ac;
+  /* form.css tokens, verbatim except the two quiet inks, which carry the same
+     WCAG AA departure s02_form.css documents: the product's values are tuned for
+     an iPad at arm's length and land under 4.5:1 once this card is projected.
+     --paper-mid was #6b7e85 (4.24:1 on the white card, 3.85:1 on the section
+     tint), --paper-faint was #9aa6ac (2.49:1). #5f6e77 is the value s02_form.css
+     already carries for this pass, and clears 4.7:1 on every surface here. */
+  --paper:#143642; --paper-dim:#3a4f59; --paper-mid:#5f6e77; --paper-faint:#5f6e77;
   --ais-red:#EF343A; --ais-yellow:#FFBA14; --ais-blue:#1257FF;
   --rate-success:#2ea15a; --rate-success-deep:#0f5f30;
   --rule:rgba(20,54,66,0.14); --rule-soft:rgba(20,54,66,0.07);
@@ -31,17 +38,19 @@
 #sc05 .s5rail{position:absolute;top:0;left:0;right:0;height:3px;
   background:linear-gradient(90deg,var(--ais-red),var(--ais-yellow),var(--ais-blue))}
 #sc05 .s5edge{position:absolute;inset:0;border:2px solid rgba(46,161,90,.42);
-  border-radius:9px;opacity:0;pointer-events:none;z-index:5}
+  border-radius:9px;pointer-events:none;z-index:5}                 /* rests visible: locked */
 
 /* ---- submitted banner. Its slot is reserved so the lock never shifts layout ---- */
 #sc05 .s5bslot{position:relative;height:46px;margin-bottom:12px}
 #sc05 .s5banner{
-  position:absolute;inset:0;display:flex;align-items:center;gap:11px;opacity:0;
+  position:absolute;inset:0;display:flex;align-items:center;gap:11px;   /* rests visible: locked */
   background:linear-gradient(135deg,rgba(46,161,90,0.12),rgba(46,161,90,0.04));
   border:1px solid rgba(46,161,90,0.32);border-left:4px solid var(--rate-success);
   border-radius:7px;padding:0 13px;
 }
-#sc05 .s5chk{width:21px;height:21px;border-radius:50%;background:var(--rate-success);
+/* the disc carries white text, so it takes the deep green: --rate-success put the
+   tick at 3.3:1. Same pair the banner title already uses. */
+#sc05 .s5chk{width:21px;height:21px;border-radius:50%;background:var(--rate-success-deep);
   color:#fff;display:inline-flex;align-items:center;justify-content:center;
   font-weight:700;font-size:11px;flex:none;line-height:1}
 #sc05 .s5stack{display:flex;flex-direction:column;gap:2px;min-width:0}
@@ -57,8 +66,10 @@
 #sc05 .s5head{display:flex;align-items:center;min-height:44px;padding-bottom:13px;
   margin-bottom:14px;border-bottom:1px solid var(--rule)}
 #sc05 .s5tblock{display:flex;flex-direction:column;gap:5px}
+/* --ais-red measures 4.02:1 on the white card at 8.6px; --r is the light theme's
+   own red, the same hue one notch deeper, as in s02_form.css's .section-title em */
 #sc05 .s5eyebrow{font-family:var(--form-body);font-size:8.6px;font-weight:700;
-  letter-spacing:.28em;text-transform:uppercase;color:var(--ais-red);
+  letter-spacing:.28em;text-transform:uppercase;color:var(--r);
   display:inline-flex;align-items:center;gap:.7em}
 #sc05 .s5stripe{width:23px;height:3px;border-radius:2px;
   background:linear-gradient(90deg,var(--ais-red),var(--ais-yellow),var(--rate-success))}
@@ -67,14 +78,15 @@
 #sc05 .s5title em{font-style:italic;font-weight:400;color:var(--rate-success-deep)}
 
 /* ---- top info grid (.info-grid / .info-cell) ---- */
+/* the grid and its cells rest on the LOCKED tint (draft is #ffffff / 0.025) */
 #sc05 .s5grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
-  border:1px solid var(--rule);border-radius:7px;overflow:hidden;background:var(--row-tint)}
-#sc05 .s5cell{padding:8px 11px;background:var(--card-bg);display:flex;
+  border:1px solid var(--rule);border-radius:7px;overflow:hidden;background:rgba(20,54,66,0.075)}
+#sc05 .s5cell{padding:8px 11px;background:#f9fafa;display:flex;
   flex-direction:column;gap:3px;min-height:46px}
 #sc05 .s5cell label{font-family:var(--form-body);font-size:8.6px;font-weight:700;
   letter-spacing:.18em;text-transform:uppercase;color:var(--paper-mid);line-height:1.2}
 #sc05 .s5v{font-family:var(--form-display);font-size:13.5px;line-height:1.4;
-  color:var(--paper);opacity:0}
+  color:var(--paper);opacity:.7}                   /* rests at the product's locked opacity */
 
 /* ---- judgement rows (.criteria-table / .rate-row) ---- */
 #sc05 .s5sect{font-family:var(--form-display);font-weight:600;font-size:15px;
@@ -95,9 +107,13 @@
   border:1px dashed var(--rule);background:transparent;color:var(--paper-mid);
   font-family:var(--form-body);font-weight:600;font-size:9.5px;
   display:inline-flex;align-items:center;justify-content:center}
-#sc05 .s5sel{position:absolute;inset:-1px;border-radius:6px;background:var(--rate-success);
+/* the box's own number, wrapped so it can be released independently of the chip
+   that covers it (see s05_lock.cues.js). Purely a handle: no type of its own. */
+#sc05 .s5num{display:inline-flex;align-items:center;justify-content:center;font:inherit;line-height:1}
+/* white text again, so the same deep green as .s5chk (was 3.3:1 on --rate-success) */
+#sc05 .s5sel{position:absolute;inset:-1px;border-radius:6px;background:var(--rate-success-deep);
   border:1px solid var(--rate-success-deep);color:#fff;font-weight:600;font-size:9.5px;
-  font-style:normal;display:flex;align-items:center;justify-content:center;opacity:0}
+  font-style:normal;display:flex;align-items:center;justify-content:center;opacity:.7}
 
 /* ---- illustrative tag ---- */
 #sc05 .ill-tag{position:absolute;left:24px;bottom:20px;font-family:var(--form-body);
@@ -107,7 +123,7 @@
 /* ---- floating action cluster (.action-bar / .action-btn), masks verbatim ---- */
 #sc05 .s5bar{position:absolute;right:24px;bottom:16px;display:grid;z-index:4}
 #sc05 .s5grp{grid-area:1/1;justify-self:end;display:flex;align-items:center;gap:6px}
-#sc05 #s5locked{opacity:0}
+#sc05 #s5draft{opacity:0}        /* the draft cluster is the mid scene state now */
 #sc05 .s5btn{display:inline-flex;align-items:center;gap:.55em;font-family:var(--form-body);
   font-size:9.5px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
   padding:.55em 1.15em;border-radius:999px;border:1px solid var(--rule);
@@ -129,13 +145,6 @@
 #sc05 .s5press{position:absolute;inset:0;border-radius:999px;background:rgba(0,0,0,.22);opacity:0}
 #sc05 .s5ripple{position:absolute;left:50%;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;
   border-radius:50%;background:rgba(255,255,255,.6);opacity:0}
-#sc05 .s5tip{position:absolute;right:2px;bottom:34px;opacity:0;
-  font-family:var(--form-body);font-size:9.5px;font-weight:600;letter-spacing:.01em;
-  color:#fff;background:var(--paper);border-radius:6px;padding:5px 10px;white-space:nowrap}
-
-/* ---- the 0.6s soft reset sweep ---- */
-#sc05 .s5wipe{position:absolute;top:0;bottom:0;left:0;width:46%;opacity:0;pointer-events:none;z-index:6;
-  background:linear-gradient(100deg,rgba(255,255,255,0),rgba(255,255,255,.94) 48%,rgba(255,255,255,0))}
 
 /* ---- the morning's filed records ---- */
 #sc05 .s5side{display:flex;flex-direction:column;gap:9px;padding-top:2px}
@@ -146,10 +155,3 @@
 #sc05 .s5cid{font-family:var(--form-body);font-size:11px;font-weight:700;color:var(--paper);
   font-variant-numeric:tabular-nums;letter-spacing:.005em}
 #sc05 .s5cm{font-family:var(--form-body);font-size:10px;font-weight:600;color:var(--paper-mid)}
-/* the list runs on past the frame: two blank ruled chips, no invented data */
-#sc05 .s5ghosts{display:flex;flex-direction:column;gap:9px}
-#sc05 .s5gh{opacity:.5}
-#sc05 .s5gh2{opacity:.24}
-#sc05 .s5gl{display:block;height:8px;border-radius:4px;background:var(--rule);width:74%}
-#sc05 .s5gs{display:block;height:6px;border-radius:3px;background:var(--rule-soft);width:44%}
-#sc05 .s5side .pill-note{margin-top:auto;align-self:flex-start}

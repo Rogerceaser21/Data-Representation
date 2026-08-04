@@ -1,8 +1,13 @@
 <!-- ============ 7 . THE DASHBOARD STORY ============ -->
       <section class="scene top clip" id="sc07" data-start="{{START:s07_story}}" data-duration="{{DUR:s07_story}}" data-track-index="1">
 
-        <!-- beat 1 . the gate, rebuilt from dashboard/password-template.html -->
-        <div class="s7gate" id="s7gate">
+        <!-- beat 1 . the gate, rebuilt from dashboard/password-template.html.
+             The gate is an opaque full-frame layer (inset:0 over a solid #0a0d1f)
+             and the board is deliberately rendered BEHIND it, so the lifting gate
+             uncovers a finished board (see the cues file). Its top bar therefore
+             crosses the board's head during the wipe: that layering is the design,
+             not a collision. -->
+        <div class="s7gate" id="s7gate" data-layout-allow-overlap>
           <div class="s7gtop">
             <span class="s7gleft">Lesson Observation Programme</span>
             <span>Term 3 &middot; 2025/2026</span>
@@ -51,6 +56,29 @@
             <span class="s7beat"><i class="s7bd" style="background:var(--g)"></i>What is working</span>
             <span class="s7beat"><i class="s7bd" style="background:var(--r5)"></i>Where to focus next</span>
             <span class="subtle">Every beat drawn from the locked records, nothing retyped.</span>
+          </div>
+
+          <!-- beat 3 . present mode: that round's findings in full screen, built
+               from the board's own parts at presentation scale. Every figure is
+               MIRRORED at load from the board's own [data-count] / gauge caption
+               (see the cues file); nothing is retyped here, so a build time
+               recompute moves the board and this frame together. The frame is an
+               opaque full-screen layer OVER the board (its own --bg fill), so its
+               text sitting above the board's is the design, not a collision. -->
+          <div class="s7pres" id="s7pres" data-layout-allow-overflow data-layout-allow-overlap>
+            <div class="s7presin">
+              <div class="kick"><i class="stripe"></i> Snapshot &middot; R3 June 26 &middot; as an example, one school</div>
+              <h2 class="s7presh">The round <em>plays itself</em></h2>
+              <div class="s7presnums">
+                <div class="panel stat"><div class="v" data-mirror="#s7stats .stat:nth-child(1) .v">&nbsp;</div><div class="l">Lessons observed</div></div>
+                <div class="panel stat"><div class="v" data-mirror="#s7stats .stat:nth-child(2) .v">&nbsp;</div><div class="l">Teachers seen</div></div>
+                <div class="panel s7presg"><div class="gauge-cap"><div class="gv" data-mirror="#sc07 .s7gaugecard .gauge-cap .gv">&nbsp;</div><div class="gl">average progress</div></div></div>
+              </div>
+              <div class="s7presbeats">
+                <span class="s7beat"><i class="s7bd" style="background:var(--g)"></i>What is working</span>
+                <span class="s7beat"><i class="s7bd" style="background:var(--r5)"></i>Where to focus next</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>

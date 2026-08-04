@@ -24,7 +24,10 @@
 #sc11 .bigj{text-align:right}
 #sc11 .bigj .l{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-mid);font-weight:700}   /* LIFT 10.5 -> 12 */
 #sc11 .bigj .v{font-family:var(--display);font-style:italic;font-weight:600;font-size:32px;line-height:1.05}
-#sc11 .ill-tag{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);
+/* --ink-faint measures 3.77:1 on the scene wash here, so every faint-ink label in
+   this section carries --ink-mid instead: same blue-grey, one notch deeper, the
+   projector-legibility pass dashboard.css already runs on the board's inks. */
+#sc11 .ill-tag{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-mid);
   border:1px dashed var(--edge);border-radius:20px;padding:5px 11px;white-space:nowrap}
 
 /* ---- All-observations card: gauge | spectrum | gauge ---- */
@@ -32,7 +35,7 @@
 #sc11 .allhead{display:grid;grid-template-columns:150px 1fr 150px;gap:24px;align-items:start}
 #sc11 .allhead .gtitle{text-align:center}
 #sc11 .allhead .owho{text-align:center}
-#sc11 .allhead .owho small{display:block;font-size:13px;color:var(--ink-faint);font-weight:600;margin-top:3px;letter-spacing:0;text-transform:none}
+#sc11 .allhead .owho small{display:block;font-size:13px;color:var(--ink-mid);font-weight:600;margin-top:3px;letter-spacing:0;text-transform:none}
 #sc11 .allmain{display:grid;grid-template-columns:150px 1fr 150px;gap:24px;align-items:end;margin-top:10px}
 #sc11 .allgauge{display:flex;align-items:center;justify-content:center}
 #sc11 .allleft .orampfull{margin-top:0}
@@ -65,11 +68,18 @@
 /* ---- coaching note ---- */
 #sc11 .s11coach{padding:14px 16px}
 #sc11 .ns-title{display:flex;align-items:center;gap:10px}
-#sc11 .ns-badge.approved{color:var(--g);background:#e4f3ea;border:1px solid var(--edge-soft)}
-/* Draft sits behind Approved in the same box: the resting state is Approved (the
-   final state), and the approval pops in over the draft on the narrator's word. */
+/* WCAG AA on the pale badge fills: the badge inks are deepened to the palette's
+   own deep pair (--r1 is the light ramp's deep green, #8d6207 the deep gold the
+   scene set already uses for .refmk/.reflink). Measured 2.88:1 and 2.59:1 with
+   --g / --y; the fills are unchanged. */
+#sc11 .ns-badge.approved{color:var(--r1);background:#e4f3ea;border:1px solid var(--edge-soft)}
+#sc11 .ns-badge.amended{color:#8d6207;background:color-mix(in srgb,var(--y) 14%,transparent);border:1px solid var(--edge-soft)}
+/* Draft, Amended and Approved share one box: the resting state is Approved (the
+   final state), and each earlier word is taken out as the next one lands, so the
+   box only ever paints one state (see the hand-off cues in s11_teacher.cues.js). */
 #sc11 .s11flip{position:relative;display:inline-flex}
-#sc11 .s11flip .ns-badge.draft{position:absolute;left:0;top:0}
+#sc11 .s11flip .ns-badge.draft,
+#sc11 .s11flip .ns-badge.amended{position:absolute;left:0;top:0}
 #sc11 .s11flip .ns-badge.approved{position:relative;z-index:1}
 #sc11 .ns-ladders{margin:8px 0 10px}
 #sc11 .ns-sum{font-size:14.5px;margin:0 0 10px}
@@ -77,3 +87,17 @@
 #sc11 .fc .ns-move{font-size:16px;margin:8px 0 0}
 #sc11 .ns-look{margin:8px 0 0}
 #sc11 .ns-rub{margin:6px 0 0}
+/* same --ink-faint -> --ink-mid pass as .ill-tag above (measured 4.44:1 / 4.16:1) */
+#sc11 .ns-lad-mv .a{color:var(--ink-mid)}
+#sc11 .fc-rlab{color:var(--ink-mid)}
+/* the accent chip's own 13% wash left its --b ink at 4.42:1; the wash is thinned
+   so the blue stays the product's own accent and the ink clears AA */
+#sc11 .ns-chip{background:color-mix(in srgb,var(--cc) 6%,transparent)}
+
+/* The gauge centre word is painted by buildArc() from the ramp, and the ramp's
+   Good/Acceptable mid-tones land at 3.6:1 / 3.5:1 on this card. Same hues, one
+   notch deeper for the projected frame, the pass dashboard.css already runs on
+   --r2/--r3/--r4. #s11ov and #s11flag carry the same deepened gold inline so the
+   judgement reads as one colour wherever it appears in the scene. */
+#sc11 #s11arcP .arcword{fill:#8d6207}
+#sc11 #s11arcT .arcword{fill:#467326}

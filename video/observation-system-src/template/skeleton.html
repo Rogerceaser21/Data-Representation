@@ -20,19 +20,8 @@
 
       <div class="bgwash" style="z-index:0"></div>
 
-      <!-- ============ 1 . COVER ============ -->
-      <section class="scene navy clip" id="sc01" data-start="{{START:s01_cover}}" data-duration="{{DUR:s01_cover}}" data-track-index="1">
-        <div class="sbody">
-          <div class="stars" id="coverStars" data-layout-allow-overflow></div>
-          <div style="position:relative;z-index:2">
-            <div class="coverk">The Observation System</div>
-            <h1 class="coverh">From a single lesson to<br />a plan for <em>every teacher</em></h1>
-            <div class="covstripe" id="covStripe"></div>
-          </div>
-          <div class="covsub" style="position:relative;z-index:2">The whole journey: the R3 Evidence Form, the pipeline, and the dashboard.</div>
-        </div>
-      </section>
-
+      <!-- ============ 1 . COVER (the journey spine; a fragment like every other scene) ============ -->
+      <!-- @@SECTION:s01_cover@@ -->
       <!-- @@SECTION:s02_form@@ -->
       <!-- @@SECTION:s03_scale@@ -->
       <!-- @@SECTION:s04_pad@@ -->
@@ -116,13 +105,7 @@
         });
       }
 
-      /* 1 . cover */
-      tl.from('#sc01 .coverk', { opacity: 0, y: 14, duration: 0.8 }, at('s01_cover', -0.4))
-        .from('#sc01 .coverh', { opacity: 0, y: 26, duration: 1.1, ease: 'power3.out' }, at('s01_cover', -0.15))
-        .from('#covStripe', { scaleX: 0, duration: 0.9, ease: 'power2.out' }, at('s01_cover', 0.6))
-        .from('#sc01 .covsub', { opacity: 0, y: 12, duration: 0.9 }, at('s01_cover', 1.0))
-        .to('#coverStars', { y: -26, duration: 9.3, ease: 'none' }, 0);
-
+      /* @@CUES:s01_cover@@ */
       /* @@CUES:s02_form@@ */
       /* @@CUES:s03_scale@@ */
       /* @@CUES:s04_pad@@ */

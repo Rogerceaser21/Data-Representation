@@ -1,77 +1,79 @@
 /* 5 . save and lock
-   Arc: a filled draft -> tap -> locked record -> 0.6s soft reset -> clean form.
-   The scene ends where it rests (clean form, draft action bar), so every mid
-   scene state is an explicit fromTo pair with immediateRender:false. */
+   "When it is done, each observation gets its own ID, freezes, and everything
+    is saved, ready for review."   (18 words)
+
+   The line ENDS locked, so the arc is now filled draft -> tap -> locked, and
+   it STOPS there: no reset sweep, no ghost chips, no side note (all three were
+   unspoken beats of the old 48 word line). The locked card is the resting
+   state (see the CSS header), so the mid scene states are the DRAFT ones and
+   the lock beats run into the authored values with .from().
+   Word share: 0.222 "each observation gets its own ID" . 0.500 "ID" .
+   0.556 "freezes" . 0.833 "ready for review". The tap stays absolute, inside
+   the first 1.5s, per motion rules 2. */
 tl.from('#sc05 .shead', { opacity: 0, y: 16, duration: 0.7 }, at('s05_lock', -0.45))
   .from('#s5paper', { opacity: 0, y: 22, duration: 0.85, ease: 'power2.out' }, at('s05_lock', -0.25))
-  /* the draft is already filled when the observer reaches for the button */
+  /* the draft is already filled when the observer reaches for the button: the
+     values come up to FULL, then settle back to the locked 0.7 on "freezes".
+     First tween on these targets, so default immediateRender stamps the blank
+     draft at frame 0 and they fill in on the entrance. */
   .fromTo('#sc05 .s5v', { opacity: 0 },
-    { opacity: 1, duration: 0.5, stagger: 0.05, ease: 'power1.out', immediateRender: false }, at('s05_lock', 0.05))
+    { opacity: 1, duration: 0.5, stagger: 0.05, ease: 'power1.out' }, at('s05_lock', 0.05))
   .fromTo('#sc05 .s5sel', { opacity: 0 },
-    { opacity: 1, duration: 0.34, stagger: 0.09, ease: 'power1.out', immediateRender: false }, at('s05_lock', 0.28))
+    { opacity: 1, duration: 0.34, stagger: 0.09, ease: 'power1.out' }, at('s05_lock', 0.28))
+  /* the rating box under a selection carries the SAME digit as the chip that
+     lands on it (the product's own markup: the chip is an overlay, not a swap).
+     The box's own number is released on exactly the chip's beat, so the draft
+     still shows all six numbers and the locked card never paints two digits in
+     one 21px box. It is the wrapped .s5num that fades, not .s5rate, or the chip
+     inside it would fade with it. Default immediateRender stamps opacity 1 at
+     frame 0, which is the draft state; the resting state is 0, under the chip. */
+  .fromTo('#sc05 .s5rate.sel .s5num', { opacity: 1 },
+    { opacity: 0, duration: 0.34, stagger: 0.09, ease: 'power1.out' }, at('s05_lock', 0.28))
   .from('#sc05 .s5side .ey', { opacity: 0, x: 12, duration: 0.6 }, at('s05_lock', 0.3))
-  /* direct children only: the ghost chips live in .s5ghosts and enter later */
   .from('#sc05 .s5side > .s5chip:not(.is-new)', { opacity: 0, x: 16, duration: 0.6, stagger: 0.14 }, at('s05_lock', 0.42))
-  .from('#sc05 .ill-tag', { opacity: 0, duration: 0.6 }, at('s05_lock', 0.55))
-  .fromTo('#s5tip', { opacity: 0, y: 6 },
-    { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out', immediateRender: false }, at('s05_lock', 0.6));
+  .from('#sc05 .ill-tag', { opacity: 0, duration: 0.6 }, at('s05_lock', 0.55));
 
-spotlight('#s5submit', at('s05_lock', 1.0), 2.0);                        // "Save and Lock"
-
-/* the tap: tooltip clears, the pill takes the press, the ripple runs.
-   Nothing here touches scale or boxShadow, which the spotlight owns. */
-tl.fromTo('#s5tip', { opacity: 1, y: 0 },
-    { opacity: 0, y: 4, duration: 0.3, ease: 'power1.in', immediateRender: false }, at('s05_lock', 1.4))
-  .fromTo('#s5press', { opacity: 0 },
-    { opacity: 1, duration: 0.09, ease: 'none', immediateRender: false }, at('s05_lock', 1.5))
+/* "When it is done": the pill takes the press and the ripple runs. Absolute,
+   inside the entrance window. Nothing here touches scale or boxShadow. */
+tl.fromTo('#s5press', { opacity: 0 },
+    { opacity: 1, duration: 0.09, ease: 'none', immediateRender: false }, at('s05_lock', 0.6))
   .fromTo('#s5press', { opacity: 1 },
-    { opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, at('s05_lock', 1.6))
+    { opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, at('s05_lock', 0.75))
   .fromTo('#s5ripple', { scale: 0, opacity: 0.62 },
-    { scale: 17, opacity: 0, duration: 0.72, ease: 'power2.out', immediateRender: false }, at('s05_lock', 1.53));
+    { scale: 17, opacity: 0, duration: 0.72, ease: 'power2.out', immediateRender: false }, at('s05_lock', 0.63));
 
-/* "The record gets an ID" */
-tl.fromTo('#s5banner', { opacity: 0, y: -10 },
-    { opacity: 1, y: 0, duration: 0.55, ease: 'power3.out', immediateRender: false }, atf('s05_lock', 0.146))
-  .from('#s5bmeta', { opacity: 0, x: -10, duration: 0.5, ease: 'power2.out' }, atf('s05_lock', 0.19));
+/* "each observation gets its own ID": the banner drops in, its meta line
+   slides, and the ID itself takes a colour lift and releases. Cheap emphasis
+   on purpose: the scene is about 7s, and a 2.0s gold ring would own a third
+   of it. */
+tl.from('#s5banner', { opacity: 0, y: -10, duration: 0.55, ease: 'power3.out' }, atf('s05_lock', 0.222))
+  .from('#s5bmeta', { opacity: 0, x: -10, duration: 0.5, ease: 'power2.out' }, atf('s05_lock', 0.26))
+  /* literals are --paper-mid and --rate-success-deep: the lift releases back to
+     the AA value the token now carries (#5f6e77), not the pre-pass #6b7e85, or
+     the meta line would settle one notch lighter than the rest of the card */
+  .fromTo('#s5bmeta', { color: '#5f6e77' },
+    { color: '#0f5f30', duration: 0.35, ease: 'power2.out', immediateRender: false }, atf('s05_lock', 0.47))
+  .to('#s5bmeta', { color: '#5f6e77', duration: 0.55, ease: 'power2.inOut' }, atf('s05_lock', 0.47) + 0.35);
 
-/* "freezes, and can never be edited again": fields tint to the locked surface,
-   the values settle back to the product's locked opacity, the card takes a green edge */
+/* "freezes": the whole lock lands as one snap, everything inside half a second.
+   Cells and grid take the locked tint, the values settle to the product's
+   locked 0.7, the card takes its green edge and the action bar swaps. Each of
+   these ENDS on the resting value, so a freeze after the beat is the authored
+   card and a freeze before it is a legitimate draft. */
+var S5_LOCK = atf('s05_lock', 0.556);
 tl.fromTo('#sc05 .s5cell', { backgroundColor: '#ffffff' },
-    { backgroundColor: '#f9fafa', duration: 0.5, ease: 'power1.out', immediateRender: false }, atf('s05_lock', 0.25))
+    { backgroundColor: '#f9fafa', duration: 0.5, ease: 'power1.out' }, S5_LOCK)
   .fromTo('#s5grid', { backgroundColor: 'rgba(20,54,66,0.025)' },
-    { backgroundColor: 'rgba(20,54,66,0.075)', duration: 0.5, ease: 'power1.out', immediateRender: false }, atf('s05_lock', 0.25))
+    { backgroundColor: 'rgba(20,54,66,0.075)', duration: 0.5, ease: 'power1.out' }, S5_LOCK)
+  /* second tween on the values, so immediateRender:false or GSAP stamps
+     opacity 1 at frame 0 and the draft never reads as blank */
   .fromTo('#sc05 .s5v, #sc05 .s5sel', { opacity: 1 },
-    { opacity: 0.7, duration: 0.5, ease: 'power1.out', immediateRender: false }, atf('s05_lock', 0.25))
-  .fromTo('#s5edge', { opacity: 0 },
-    { opacity: 1, duration: 0.5, ease: 'power2.out', immediateRender: false }, atf('s05_lock', 0.25))
-  /* the action bar swaps to the locked cluster */
+    { opacity: 0.7, duration: 0.5, ease: 'power1.out', immediateRender: false }, S5_LOCK)
+  .from('#s5edge', { opacity: 0, duration: 0.5, ease: 'power2.out' }, S5_LOCK)
   .fromTo('#s5draft', { opacity: 1 },
-    { opacity: 0, duration: 0.28, ease: 'power1.in', immediateRender: false }, atf('s05_lock', 0.275))
-  .fromTo('#s5locked', { opacity: 0, scale: 0.94 },
-    { opacity: 1, scale: 1, duration: 0.42, ease: 'back.out(1.8)', immediateRender: false }, atf('s05_lock', 0.29))
-  .from('#s5chip3', { opacity: 0, y: -14, scale: 0.94, duration: 0.6, ease: 'back.out(1.6)' }, atf('s05_lock', 0.30));
+    { opacity: 0, duration: 0.28, ease: 'power1.in' }, S5_LOCK + 0.16)
+  .from('#s5locked', { opacity: 0, scale: 0.94, duration: 0.42, ease: 'back.out(1.8)' }, S5_LOCK + 0.22);
 
-/* "Three seconds later the form is clean": one 0.6s sweep clears it */
-tl.fromTo('#s5wipe', { xPercent: -132, opacity: 0 },
-    { xPercent: -40, opacity: 1, duration: 0.2, ease: 'none', immediateRender: false }, atf('s05_lock', 0.40))
-  .fromTo('#s5wipe', { xPercent: -40, opacity: 1 },
-    { xPercent: 232, opacity: 0, duration: 0.55, ease: 'none', immediateRender: false }, atf('s05_lock', 0.40) + 0.2)
-  .fromTo('#sc05 .s5v, #sc05 .s5sel', { opacity: 0.7 },
-    { opacity: 0, duration: 0.3, ease: 'power1.in', immediateRender: false }, atf('s05_lock', 0.415))
-  .fromTo('#s5banner', { opacity: 1, y: 0 },
-    { opacity: 0, y: -6, duration: 0.35, ease: 'power1.in', immediateRender: false }, atf('s05_lock', 0.415))
-  .fromTo('#s5edge', { opacity: 1 },
-    { opacity: 0, duration: 0.4, ease: 'power1.in', immediateRender: false }, atf('s05_lock', 0.42))
-  .fromTo('#sc05 .s5cell', { backgroundColor: '#f9fafa' },
-    { backgroundColor: '#ffffff', duration: 0.4, ease: 'power1.out', immediateRender: false }, atf('s05_lock', 0.42))
-  .fromTo('#s5grid', { backgroundColor: 'rgba(20,54,66,0.075)' },
-    { backgroundColor: 'rgba(20,54,66,0.025)', duration: 0.4, ease: 'power1.out', immediateRender: false }, atf('s05_lock', 0.42))
-  .fromTo('#s5locked', { opacity: 1, scale: 1 },
-    { opacity: 0, scale: 0.96, duration: 0.28, ease: 'power1.in', immediateRender: false }, atf('s05_lock', 0.435))
-  .fromTo('#s5draft', { opacity: 0 },
-    { opacity: 1, duration: 0.42, ease: 'power2.out', immediateRender: false }, atf('s05_lock', 0.45));
-
-/* "Observers file back to back all morning; a full inspection week runs on
-   this one screen": the morning's list keeps going past the frame. */
-tl.from('#sc05 .s5gh', { opacity: 0, y: -12, duration: 0.6, stagger: 0.18, ease: 'power2.out' }, atf('s05_lock', 0.665))
-  .from('#s5note', { opacity: 0, y: 10, duration: 0.7, ease: 'power2.out' }, atf('s05_lock', 0.74));
+/* "ready for review": the new entry lands in the morning's list and the card
+   holds. This is the last beat and the resting state of the scene. */
+tl.from('#s5chip3', { opacity: 0, y: -14, scale: 0.94, duration: 0.6, ease: 'back.out(1.6)' }, atf('s05_lock', 0.833));

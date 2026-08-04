@@ -24,7 +24,10 @@
                 <div class="ts-ph" id="s2ph">Tap to browse staff&hellip;</div>
               </div>
             </div>
-            <div class="ts-dropdown" id="s2drop">
+            <!-- the Tom Select popover: it hangs OVER the cells below it, exactly as
+                 the product's does (the real one escapes by rendering on <body>), so
+                 the layering here is the design, not a collision. -->
+            <div class="ts-dropdown" id="s2drop" data-layout-allow-overlap>
               <div class="ts-dropdown-content">
                 <div class="option">Charlotte Braithwaite</div>
                 <div class="option selected" id="s2sel">Eleanor Whitfield</div>

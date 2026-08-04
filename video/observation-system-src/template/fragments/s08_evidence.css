@@ -1,14 +1,38 @@
 /* ---------------------------------------------------------------------------
-   sc08 . the claim, its marker, and the sources drawer. Panel, marker and drawer
-   classes are the dashboard's own (styles/dashboard.css); only the scene layout
-   and the illustrative tag live here.
+   sc08 . the statement, its citation, and the sources drawer. Panel, marker and
+   drawer classes are the dashboard's own (styles/dashboard.css); only the scene
+   layout, the tap ripple and the references strip live here.
    --------------------------------------------------------------------------- */
 #sc08 .shead{padding-right:470px}
-#sc08 .shead h2{max-width:15ch}
+#sc08 .shead h2{max-width:20ch}
 #sc08 #s8claim .swsum{margin-bottom:0;padding-bottom:14px}
-#sc08 .numtile{align-items:flex-start;text-align:left;margin-top:26px}
-#sc08 .numtile .big-n{font-size:82px;color:var(--y)}
-#sc08 .numtile .ml{margin-top:2px}
+
+/* the tap that opens the drawer: the #s5ripple recipe at marker scale. Resting
+   state is invisible, which IS the ripple's final state. */
+#sc08 #s8mk{position:relative}
+#sc08 .taprip{position:absolute;left:50%;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;
+  border-radius:50%;background:rgba(201,137,12,.55);opacity:0;pointer-events:none}
+
+/* the references strip, where the counter used to sit: the dashboard's own .refmk
+   marker at chip size, wrapped, ending in two blank ruled ghost chips so the list
+   visibly runs past the frame. transform:none because GSAP owns the transform on
+   these chips (the base rule nudges them up 1px for inline text). */
+#sc08 .s8cites{margin-top:26px}
+#sc08 .s8citecap{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-mid)}
+#sc08 .s8citegrid{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+#sc08 .s8citegrid .refmk{margin-left:0;transform:none}
+#sc08 .s8citegrid .cghost{display:inline-flex;align-items:center;justify-content:center;min-width:19px;height:19px;
+  padding:0 4px;border:1px solid var(--edge);border-radius:7px;background:var(--panel-2);opacity:.5}
+#sc08 .s8citegrid .cghost i{display:block;width:11px;height:5px;border-radius:3px;background:var(--edge)}
+#sc08 .s8citegrid .cghost.cghost2{opacity:.24}
+#sc08 .s8cites .subtle{margin-top:10px}
+
 #sc08 #s8note{margin-top:26px}
 #sc08 .ill-tag{display:inline-flex;align-items:center;margin-left:8px;font-size:11px;font-weight:700;letter-spacing:.1em;
-  text-transform:uppercase;color:var(--ink-faint);border:1px dashed var(--edge);border-radius:20px;padding:2px 9px;vertical-align:middle}
+  text-transform:uppercase;color:var(--ink-mid);border:1px dashed var(--edge);border-radius:20px;padding:2px 9px;vertical-align:middle}
+
+/* --ink-faint measures 4.44:1 on the claim panel and 4.24:1 in the sources drawer,
+   both under AA. Same blue-grey one notch deeper (--ink-mid), the projector pass
+   dashboard.css already runs on the board's inks. */
+#sc08 .swev{color:var(--ink-mid)}
+#sc08 .reffoot{color:var(--ink-mid)}

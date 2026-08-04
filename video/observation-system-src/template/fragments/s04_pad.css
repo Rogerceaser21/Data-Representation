@@ -84,7 +84,9 @@
   font-family: var(--body-font);
   font-size: 0.9rem;             /* product 0.78rem */
   font-weight: 700;
-  color: var(--paper-mid);
+  /* --paper-mid measures 4.24:1 on the pad's white chrome; --paper-faint is the
+     same family already darkened for AA in s02_form.css, and clears at 5.3:1 */
+  color: var(--paper-faint);
   min-width: 3.2em;
   text-align: center;
   white-space: nowrap;
@@ -164,7 +166,8 @@
   font-family: var(--display-font);
   font-style: italic;
   font-size: var(--small);
-  color: var(--paper-mid);
+  /* same AA pass as .pad-pageind: 4.24:1 on the white photo card */
+  color: var(--paper-faint);
   text-align: center;
   padding: 12px 0 16px;
 }
@@ -172,8 +175,28 @@
 /* ---- the typed transcription -------------------------------------------- */
 /* the typed block lands exactly over the first lines of ink, so the crossfade
    reads as "this became that" rather than as two unrelated blocks */
-#sc04 .pad-typed { position: absolute; left: 44px; top: 96px; width: 940px; }
+/* top was 96px before the typed line was nested in here: the block is raised by
+   exactly the typed field's height plus its margin (62px), so "Observer Notes"
+   keeps its old band above the first ink line instead of landing on top of it */
+#sc04 .pad-typed { position: absolute; left: 44px; top: 34px; width: 940px; }
 #sc04 .pad-typed .section-title { margin-bottom: 12px; }
+/* the typed line: the observer types as well as writes, so the pad opens with
+   one typed field in the same box, above the transcription. Same border and
+   type treatment as .long-text so it reads as a form field, not a caption.
+   Resting clip is the full box; the reveal wipes it in left to right, the same
+   grammar as the ink lines. */
+#sc04 .padtype {
+  font-family: var(--body-font);
+  font-size: var(--fbody);
+  color: var(--paper);
+  background: var(--card-bg);
+  border: 1px solid var(--rule);
+  border-radius: 0.4rem;
+  padding: 0.7rem 0.9rem;
+  margin-bottom: 14px;
+  line-height: 1.5;
+  clip-path: inset(0% 0% 0% 0%);
+}
 #sc04 .long-text {
   width: 100%;
   font-family: var(--body-font);
