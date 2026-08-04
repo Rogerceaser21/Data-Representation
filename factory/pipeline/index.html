@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
-<meta name="description" content="How a brief becomes a shipped film: eleven stages, four Igor gates, two retry loops.">
+<meta name="description" content="You say words at four gates. The factory does the rest.">
 <title>The Video Factory</title>
 <style>
 :root{
@@ -488,19 +488,121 @@ footer .ramp{margin-bottom:18px}
   html{scroll-behavior:auto}
   *,*::before,*::after{transition-duration:.01ms !important;animation-duration:.01ms !important}
 }
+
+/* ---------- hero gate chips ---------- */
+.gatechips{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;
+  margin:38px 0 0;padding:0;list-style:none;
+}
+.gatechip{
+  background:var(--y-wash);border:1.4px solid rgba(201,137,12,.5);
+  border-radius:var(--rad-s);padding:15px 18px;
+}
+.gatechip .glab{
+  display:block;font-size:var(--t-label);letter-spacing:.15em;text-transform:uppercase;
+  color:var(--y-ink);font-weight:700;margin:0 0 5px;
+}
+.gatechip .gname{
+  display:block;font-family:var(--display);font-size:1.12rem;font-weight:600;
+  color:var(--ink);margin:0 0 7px;
+}
+.gatechip .gsay{
+  display:block;font-family:var(--display);font-style:italic;
+  font-size:var(--t-body);color:var(--ink-dim);line-height:1.45;
+}
+
+/* ---------- say lines ---------- */
+.sayline{
+  margin:7px 0 0;padding:9px 13px;
+  background:var(--paper);border:1px solid var(--edge-soft);
+  border-left:3px solid var(--edge);border-radius:0 10px 10px 0;
+  font-family:var(--display);font-style:italic;font-size:var(--t-body);color:var(--ink);
+}
+.sayline b{font-style:normal;font-weight:700}
+
+/* ---------- music library ---------- */
+.trackgrid{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;
+  margin:0 0 26px;padding:0;list-style:none;
+}
+.track{
+  background:var(--panel-2);border:1px solid var(--edge);border-radius:var(--rad-s);
+  padding:13px 15px;font-size:var(--t-meta);color:var(--ink-mid);
+}
+.track b{display:block;font-size:var(--t-body);color:var(--ink);font-weight:600;margin-bottom:2px}
+.track.ok{background:var(--y-wash);border-color:rgba(201,137,12,.55)}
+.oktag{
+  display:inline-block;margin-top:7px;
+  font-size:var(--t-label);letter-spacing:.11em;text-transform:uppercase;font-weight:700;
+  color:var(--y-deep);background:rgba(201,137,12,.16);
+  border:1px solid rgba(201,137,12,.45);border-radius:999px;padding:4px 10px;line-height:1.5;
+}
+.factlist{margin:0 0 24px;padding-left:20px;font-size:var(--t-body);max-width:62ch}
+.factlist li{color:var(--ink-dim);margin:0 0 9px;line-height:1.55}
+
+/* ---------- what if cards ---------- */
+.wcards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:start}
+.wcard{
+  background:var(--panel-2);border:1px solid var(--edge);
+  border-left:4px solid var(--b);border-radius:var(--rad);
+  padding:var(--card-pad);box-shadow:var(--card-shadow);
+}
+.wcard.notyet{border-left-color:var(--ink-faint)}
+.wstate{
+  display:inline-block;margin:0 0 10px;
+  font-size:var(--t-label);letter-spacing:.11em;text-transform:uppercase;font-weight:700;
+  line-height:1.5;border-radius:999px;padding:5px 11px;
+}
+.wstate.yes{background:rgba(46,161,90,.12);color:#1d6b3b;border:1px solid rgba(46,161,90,.32)}
+.wstate.no{background:rgba(88,100,121,.12);color:#4a5568;border:1px solid rgba(88,100,121,.3)}
+.wcard p{font-size:var(--t-body-s);color:var(--ink-dim);margin:0 0 10px;line-height:1.55}
+.wcard ol{margin:0 0 12px;padding-left:20px;font-size:var(--t-body-s)}
+.wcard ol li{color:var(--ink-dim);margin:0 0 7px;line-height:1.5}
+
+/* ---------- compact miss list ---------- */
+.misslist{list-style:none;margin:0;padding:0;counter-reset:m}
+.misslist li{
+  counter-increment:m;position:relative;
+  background:var(--panel-2);border:1px solid var(--edge);border-radius:var(--rad-s);
+  padding:14px 16px 14px 48px;margin:0 0 10px;
+}
+.misslist li::before{
+  content:counter(m);position:absolute;left:15px;top:13px;
+  font-family:var(--display);font-size:16px;color:var(--ink-faint);
+}
+.misslist .what{display:block;font-size:var(--t-body);color:var(--ink);font-weight:600;line-height:1.45}
+.misslist .chips{margin:8px 0 0}
+.misslist .fix{display:block;margin:8px 0 0;font-size:var(--t-body-s);color:var(--ink-dim);line-height:1.5}
+.fixlab{
+  font-size:var(--t-label);letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-faint);font-weight:700;margin-right:8px;
+}
+
+/* ---------- new component responsive ---------- */
+@media (max-width:900px){
+  .wcards{grid-template-columns:1fr}
+  .trackgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:620px){
+  .gatechips{grid-template-columns:1fr}
+  .trackgrid{grid-template-columns:1fr}
+  .wcard{padding:18px 18px}
+}
 </style>
 </head>
 <body>
 
 <nav class="topnav" aria-label="Sections">
   <ol>
-    <li><a href="#hero">The Video Factory</a></li>
+    <li><a href="#hero">The factory</a></li>
     <li><a href="#flow">The flow</a></li>
     <li><a href="#gates">Four gates</a></li>
-    <li><a href="#stages">Eleven stages</a></li>
-    <li><a href="#replay">The 16 misses</a></li>
-    <li><a href="#steer">How to steer</a></li>
-    <li><a href="#rules">Hard rules</a></li>
+    <li><a href="#music">My music</a></li>
+    <li><a href="#whatif">What if</a></li>
+    <li><a href="#stages">11 steps</a></li>
+    <li><a href="#replay">16 misses</a></li>
+    <li><a href="#steer">Cheat sheet</a></li>
+    <li><a href="#rules">Rules</a></li>
     <li><a href="#glossary">Glossary</a></li>
   </ol>
 </nav>
@@ -511,23 +613,40 @@ footer .ramp{margin-bottom:18px}
       <p class="kicker">Pipeline, brief to broadcast</p>
       <h1>The Video<br>Factory</h1>
       <div class="ramp" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
-      <p class="lede">This is how a brief becomes a shipped film.</p>
-      <p class="deck">It runs in eleven stages, numbered 0 to 10 the same way the playbook numbers them, from setup through to closeout. Most run start to finish without stopping. Four stop and wait for Igor, and those four are where he steers the result: the words, the pace, the music, and whether it goes live.</p>
+      <p class="lede">You say words at four gates. The factory does the rest.</p>
     </div>
     <div class="heroaside">
-      <ul class="legend">
-        <li><span class="swatch" aria-hidden="true"></span> Blue is an automatic stage</li>
-        <li><span class="swatch gate" aria-hidden="true"></span> Gold diamond is an Igor gate</li>
-        <li><span class="swatch loop" aria-hidden="true"></span> Red dashed is a retry loop</li>
-      </ul>
       <div class="statline">
-        <div><b>11</b><span>Stages</span></div>
-        <div><b>4</b><span>Igor gates</span></div>
-        <div><b>2</b><span>Automatic retry loops</span></div>
-        <div><b>9</b><span>Hard rules</span></div>
+        <div><b>4</b><span>Gates</span></div>
+        <div><b>11</b><span>Automatic steps</span></div>
+        <div><b>3</b><span>Approved tracks</span></div>
         <div><b>16</b><span>Recorded misses</span></div>
       </div>
     </div>
+  </div>
+  <div class="wrap">
+    <ul class="gatechips">
+      <li class="gatechip">
+        <span class="glab">Gate 1</span>
+        <span class="gname">The words</span>
+        <span class="gsay">"Yes, those are the words, generate the take."</span>
+      </li>
+      <li class="gatechip">
+        <span class="glab">Gate 2</span>
+        <span class="gname">The pace</span>
+        <span class="gsay">"Natural pace at 3m15, ship that one."</span>
+      </li>
+      <li class="gatechip">
+        <span class="glab">Gate 3</span>
+        <span class="gname">The music</span>
+        <span class="gsay">"Use cine1."</span>
+      </li>
+      <li class="gatechip">
+        <span class="glab">Gate 4</span>
+        <span class="gname">Going live</span>
+        <span class="gsay">"The plan ends live, ship it without asking again."</span>
+      </li>
+    </ul>
   </div>
 </header>
 
@@ -536,7 +655,12 @@ footer .ramp{margin-bottom:18px}
     <div class="sechead">
       <p class="kicker">The big flow</p>
       <h2>Setup to closeout, in one line of sight</h2>
-      <p class="deck">Every stage runs in order. The four gold diamonds are where the pipeline stops and waits for a human answer, and gate 4 sits before the push, not after it. The two red loops are the automatic retries, the places the pipeline throws its own work away without being asked. Any gate answer can do the same thing: a rejection at a diamond sends that stage round again too.</p>
+      <p class="deck">Every step runs in order, top to bottom. The four gold diamonds are where it stops and waits for you.</p>
+      <ul class="legend">
+        <li><span class="swatch" aria-hidden="true"></span> Blue is an automatic step</li>
+        <li><span class="swatch gate" aria-hidden="true"></span> Gold diamond is your gate</li>
+        <li><span class="swatch loop" aria-hidden="true"></span> Red dashed is an automatic retry</li>
+      </ul>
     </div>
 
     <figure class="flowfig">
@@ -727,7 +851,7 @@ footer .ramp{margin-bottom:18px}
         <div class="mrow"><div class="mstage"><b><span class="mnum">10</span>Closeout</b><span>tasks, notes, lessons written back</span></div></div>
       </div>
 
-      <figcaption class="flowcap">Stage 4 throws a whole take away and sends stage 2 round again. Stage 6 sends the fix back through the build before anything is called done. Gate 4 sits before the push because shipping authority is agreed when the plan is agreed, not asked for after the video is already live.</figcaption>
+      <figcaption class="flowcap">Step 4 throws a whole take away and sends step 2 round again. Step 6 sends the fix back through the build before anything is called done. Gate 4 sits before the push, not after it. Shipping authority is agreed when the plan is agreed.</figcaption>
     </figure>
   </div>
 </section>
@@ -735,71 +859,161 @@ footer .ramp{margin-bottom:18px}
 <section class="alt" id="gates">
   <div class="wrap">
     <div class="sechead">
-      <p class="kicker">Where the pipeline stops</p>
+      <p class="kicker">Where the factory stops</p>
       <h2>The four gates</h2>
-      <p class="deck">Four stages stop and wait. Everything else runs start to finish without stopping. These four are where the result gets steered: the words, the pace, the music, and whether it goes live.</p>
+      <p class="deck">Four moments need your answer. Everything else runs on its own.</p>
     </div>
 
     <div class="gategrid">
 
       <article class="gatecard">
         <p class="gnum"><span class="dia" aria-hidden="true"></span> Gate 1</p>
-        <h3>Stage 1, Script</h3>
+        <h3>The words</h3>
         <dl>
-          <dt>What Igor decides</dt>
-          <dd>Whether these are the exact words the video will say out loud, before any audio exists</dd>
-          <dt>What lands in front of you</dt>
-          <dd>The full narration text in chat, one block per scene, with the voice and the direction note. Answer it and the recording exists about a minute later</dd>
-          <dt>What a good answer contains</dt>
-          <dd>Either a plain yes, or the specific lines to change and what they should say instead</dd>
-          <dt>Cost of changing your mind</dt>
-          <dd class="cost">Before this gate: free, it is a text edit. After it: the whole recording is made again from scratch, rescored, every animation cue re-timed to the new words, the video re-rendered and the music re-cut to the new length. Hours, not minutes.</dd>
+          <dt>When</dt>
+          <dd>After the script is written, before any voice exists.</dd>
+          <dt>What I decide</dt>
+          <dd>The exact words the video will say out loud.</dd>
+          <dt>Say this</dt>
+          <dd>
+            <div class="sayline"><b>"Yes, those are the words, generate the take."</b></div>
+            <div class="sayline"><b>"Scene 4 line 2 should say this instead: ..."</b></div>
+          </dd>
+          <dt>Costs me</dt>
+          <dd class="cost">2 minutes to answer. Changing your mind later means a full retake: cents plus about an hour of machine time.</dd>
         </dl>
       </article>
 
       <article class="gatecard">
         <p class="gnum"><span class="dia" aria-hidden="true"></span> Gate 2</p>
-        <h3>Stage 3, Cut and pace</h3>
+        <h3>The pace</h3>
         <dl>
-          <dt>What Igor decides</dt>
-          <dd>Whether a slightly rushed delivery is worth a shorter video</dd>
-          <dt>What lands in front of you</dt>
-          <dd>Both cuts as audio you can actually play, each with its real duration, not two numbers to imagine</dd>
-          <dt>What a good answer contains</dt>
-          <dd>A pick from the real options presented, with real durations attached, for example natural pace at 3m15 versus 10 percent faster at 3m00</dd>
-          <dt>Cost of changing your mind</dt>
-          <dd class="cost">After this gate: the audio is recut and every animation cue moves with it, so the video is re-rendered and the music re-cut. No new recording though, so it is cheaper than gate 1.</dd>
+          <dt>When</dt>
+          <dd>After the recording is cut into scenes.</dd>
+          <dt>What I decide</dt>
+          <dd>A slightly rushed delivery, or a longer video. You get both as audio you can play.</dd>
+          <dt>Say this</dt>
+          <dd>
+            <div class="sayline"><b>"Natural pace at 3m15, ship that one."</b></div>
+            <div class="sayline"><b>"Take the 10 percent faster cut at 3m00."</b></div>
+          </dd>
+          <dt>Costs me</dt>
+          <dd class="cost">2 minutes to answer, most of it listening. Changing later costs about an hour of machine time, but no new recording.</dd>
         </dl>
       </article>
 
       <article class="gatecard">
         <p class="gnum"><span class="dia" aria-hidden="true"></span> Gate 3</p>
-        <h3>Stage 7, Music</h3>
+        <h3>The music</h3>
         <dl>
-          <dt>What Igor decides</dt>
-          <dd>The emotional register of the whole video, meaning the mood family (cinematic, upbeat, minimal tech pulse), not just a track</dd>
-          <dt>What lands in front of you</dt>
-          <dd>Three 30 second preview files sent directly, each already mixed under the real narration and labelled with its register and track name. Answer it and the final render is roughly the video's own running time away</dd>
-          <dt>What a good answer contains</dt>
-          <dd>The name of one of the three previews; the useful precedent is v1.4, where "yoga class" rejected the register itself and rewrote the brief</dd>
-          <dt>Cost of changing your mind</dt>
-          <dd class="cost">After this gate: a new bed is generated or picked, mixed and baked to the full length, and the video re-rendered. The narration is untouched, so this is the cheapest of the three to redo.</dd>
+          <dt>When</dt>
+          <dd>After the video renders, before the final mix.</dd>
+          <dt>What I decide</dt>
+          <dd>The mood of the whole video, not just one track.</dd>
+          <dt>Say this</dt>
+          <dd>
+            <div class="sayline"><b>"Use cine1."</b></div>
+            <div class="sayline"><b>"Preview two, the cinematic one."</b></div>
+          </dd>
+          <dt>Costs me</dt>
+          <dd class="cost">2 minutes to answer. Picking from your library costs nothing. A fresh batch costs about 72 cents and 15 minutes.</dd>
         </dl>
       </article>
 
       <article class="gatecard">
         <p class="gnum"><span class="dia" aria-hidden="true"></span> Gate 4</p>
-        <h3>Stage 9, Ship</h3>
+        <h3>Going live</h3>
         <dl>
-          <dt>What Igor decides</dt>
-          <dd>Decided at the start, not at the end. The default is that the approved plan runs all the way to live without stopping</dd>
-          <dt>What lands in front of you</dt>
-          <dd>Nothing at this point, because it was agreed up front. <strong>You do not watch the finished video before it goes live unless you asked to.</strong> To get a viewing, say the sentence in the cheat sheet at the plan stage: "Build it and stop before the push, I want to see it first."</dd>
-          <dt>What a good answer contains</dt>
-          <dd>A plain statement of whether the approved plan ends with publication</dd>
-          <dt>Cost of changing your mind</dt>
-          <dd class="cost">Asking for a viewing up front costs nothing. Asking after the push means the video is already public, so a change is a new version and a re-publish.</dd>
+          <dt>When</dt>
+          <dd>At the plan stage, before any work starts.</dd>
+          <dt>What I decide</dt>
+          <dd>Whether the approved plan runs all the way to live without stopping.</dd>
+          <dt>Say this</dt>
+          <dd>
+            <div class="sayline"><b>"The plan ends live, ship it without asking again."</b></div>
+            <div class="sayline"><b>"Build it and stop before the push, I want to see it first."</b></div>
+          </dd>
+          <dt>Costs me</dt>
+          <dd class="cost">10 seconds up front. By default nobody shows you the video before the public sees it. Asking for a viewing costs nothing.</dd>
         </dl>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<section id="music">
+  <div class="wrap">
+    <div class="sechead">
+      <p class="kicker">My music</p>
+      <h2>You already own a music library.</h2>
+      <p class="deck">Nine tracks, paid for and stored. Three are approved for any future video.</p>
+    </div>
+
+    <ul class="trackgrid">
+      <li class="track"><b>drive1</b>corporate drive</li>
+      <li class="track"><b>drive2</b>corporate drive</li>
+      <li class="track ok"><b>drive3</b>corporate drive<span class="oktag">Approved</span></li>
+      <li class="track"><b>tech1</b>tech pulse</li>
+      <li class="track"><b>tech2</b>tech pulse</li>
+      <li class="track ok"><b>tech3</b>tech pulse<span class="oktag">Approved</span></li>
+      <li class="track ok"><b>cine1</b>cinematic<span class="oktag">Approved</span></li>
+      <li class="track"><b>cine2</b>cinematic</li>
+      <li class="track"><b>cine3</b>cinematic</li>
+    </ul>
+
+    <ul class="factlist">
+      <li>All nine live in <code>Video-Factory/music-library/sweep-2026-08-03/</code>.</li>
+      <li>You approved cine1, drive3 and tech3 on 2026-08-03, for any future video.</li>
+      <li>A fresh batch of nine new tracks costs about 72 cents and 15 minutes.</li>
+      <li>The raw track is mixed under the voice automatically at build time. It dips while the narrator speaks and rises in the gaps.</li>
+      <li>The v2.2 video used a different drive1 take. That one is kept with the v2.2 video files.</li>
+    </ul>
+
+    <div class="sayline"><b>Say "use cine1" at Gate 3.</b> It costs nothing and skips the whole music round.</div>
+  </div>
+</section>
+
+<section class="alt" id="whatif">
+  <div class="wrap">
+    <div class="sechead">
+      <p class="kicker">Honest answers</p>
+      <h2>What if I want...</h2>
+      <p class="deck">Two of these three do not exist yet. Saying the sentence turns one into a task.</p>
+    </div>
+
+    <div class="wcards">
+
+      <article class="wcard">
+        <span class="wstate yes">Exists today</span>
+        <h3>A different narration for a different audience</h3>
+        <p>Same visuals, new words.</p>
+        <ol>
+          <li>Say the audience and what changes.</li>
+          <li>Approve the new wording at Gate 1.</li>
+          <li>The factory re-records the whole voice in one take, re-times every animation and re-mixes the music.</li>
+        </ol>
+        <p>It never patches single lines. Patching lines is what put two narrators in one video.</p>
+        <p><b>Costs cents plus about an hour of machine time.</b> It ships as a new version. The old one stays live until you swap it.</p>
+      </article>
+
+      <article class="wcard notyet">
+        <span class="wstate no">Not built yet</span>
+        <h3>Stock video footage in the scenes</h3>
+        <p>Where it would slot: step 5, Compose.</p>
+        <p>Scenes can already play video files, so the hard part is done.</p>
+        <p>It needs one build session: a licence-safe source, plus a pattern for where footage sits.</p>
+        <div class="sayline"><b>"Add stock footage, here is an example clip."</b></div>
+        <p style="margin-top:10px">That becomes a task.</p>
+      </article>
+
+      <article class="wcard notyet">
+        <span class="wstate no">Not built yet</span>
+        <h3>Slides like my school decks</h3>
+        <p>No slide deck has come out of the factory yet.</p>
+        <p>The factory already writes HTML and owns the brand look, so slides are a natural sibling product.</p>
+        <div class="sayline"><b>"Make slides from this script."</b></div>
+        <p style="margin-top:10px">That becomes a task.</p>
       </article>
 
     </div>
@@ -809,9 +1023,9 @@ footer .ramp{margin-bottom:18px}
 <section id="stages">
   <div class="wrap">
     <div class="sechead">
-      <p class="kicker">Stage by stage</p>
-      <h2>Eleven stages, opened up</h2>
-      <p class="deck">Each card carries the same four things: what happens, the tools that actually run, what has gone wrong before, and whether there is a gate at the end of it. The numbering runs 0 to 10 because the playbook numbers setup as stage 0, so eleven stages carry ten numbers plus setup. Click or tap any stage to open it.</p>
+      <p class="kicker">Step by step</p>
+      <h2>The 11 automatic steps (open only if curious)</h2>
+      <p class="deck">Nothing here needs you, except at the four gates. Tap a step to open it.</p>
     </div>
 
     <div class="stagelist">
@@ -819,35 +1033,37 @@ footer .ramp{margin-bottom:18px}
       <details class="stage" id="stage-0">
         <summary>
           <span class="snum">0</span>
-          <span class="stitle"><b>Setup</b><span>clone the known good sample</span></span>
-          <span class="autoflag">No Igor gate</span>
+          <span class="stitle"><b>Setup</b><span>copy a video that already works</span></span>
+          <span class="autoflag">No gate</span>
           <span class="plus" aria-hidden="true"></span>
         </summary>
         <div class="sbody">
           <div class="block">
             <h4>What happens</h4>
-            <p>Claude asks one set of questions up front: the topic, who it is for, which product or data it shows, which code repository it ships from, and whether it also gets a web page to sit on. It then copies the frozen worked sample (the Staff Voice video, v1.5) into a temporary working folder and strips out the old voice track, so what remains is a working shell. The sample is used because it is known good: it already passes the lint, layout, motion and contrast checks, and every wiring detail is correct in it. The look is seeded from the house brand file, and the video is built from the real product's stylesheet so it shows the actual product rather than a mock-up.</p>
+            <ul>
+              <li>Claude asks the brief once: topic, audience, what it shows, where it ships, page or no page.</li>
+              <li>It copies the last known good video into a temporary folder and deletes the old voice track.</li>
+              <li>The look comes from the brand file. The visuals are built from the real product's own styling.</li>
+            </ul>
           </div>
           <div class="block">
             <h4>Tools that run</h4>
             <ul class="tools">
-              <li><code>cp -R sample-staff-voice/staff-voice-src</code> <span class="tnote">copies the frozen worked sample as starting point</span></li>
-              <li><code>cp template/scripts/score_take.py scripts/</code> <span class="tnote">adds the voice-quality scorer separately</span></li>
-              <li><code>rm -f assets/narration.* timings.json narration.srt</code> <span class="tnote">deletes the old video's voice files</span></li>
-              <li><code>template/STARTER.md</code> <span class="tnote">written instructions for this clone-and-swap</span></li>
+              <li><code>cp -R sample-staff-voice/staff-voice-src</code> <span class="tnote">copies the known good video</span></li>
+              <li><code>cp template/scripts/score_take.py scripts/</code> <span class="tnote">adds the voice scorer</span></li>
+              <li><code>rm -f assets/narration.*</code> <span class="tnote">deletes the old voice files</span></li>
             </ul>
           </div>
           <div class="block">
             <h4>What can go wrong</h4>
             <ul>
-              <li>Building inside Google Drive. Drive reverts edits made in place, so all work happens in a temporary session folder and is copied back later.</li>
-              <li>Forgetting the scorer. It is not inside the sample project and has to be copied in from the template, or stage 4 has nothing to run.</li>
-              <li>Trying to install packages. This pipeline never installs anything locally; every tool runs on demand at a pinned version.</li>
+              <li>Building inside Google Drive. Drive undoes edits, so work happens in a temporary folder.</li>
+              <li>Forgetting the scorer. Then step 4 has nothing to run.</li>
             </ul>
           </div>
           <div class="autobox">
             <h4>Gate</h4>
-            <p>No Igor gate, and nothing to verify here. Runs start to finish on its own.</p>
+            <p>None. Runs on its own.</p>
           </div>
         </div>
       </details>
@@ -855,33 +1071,38 @@ footer .ramp{margin-bottom:18px}
       <details class="stage" id="stage-1" data-gate="yes">
         <summary>
           <span class="snum">1</span>
-          <span class="stitle"><b>Script</b><span>the words and the real numbers</span></span>
+          <span class="stitle"><b>Script</b><span>the words, plus real numbers</span></span>
           <span class="gflag"><span class="dia" aria-hidden="true"></span> Gate 1</span>
           <span class="plus" aria-hidden="true"></span>
         </summary>
         <div class="sbody">
           <div class="block">
             <h4>What happens</h4>
-            <p>Claude writes the narration into a single file, one entry per scene, along with the chosen voice and a direction note for how it should be read. Length is budgeted by word count: roughly 550 words gives three minutes at a natural reading speed. Any number that appears on screen is calculated by running the product's own code against its own saved data, never typed in by hand; anything that cannot be sourced that way is labelled on screen as proposed or illustrative. Teacher names are always invented.</p>
+            <ul>
+              <li>Claude writes the narration, one block per scene, with a note on how to read it.</li>
+              <li>Roughly 550 words is three minutes.</li>
+              <li>Every number on screen is calculated by the product's own code. Anything else is labelled proposed on screen.</li>
+              <li>Teacher names are always invented.</li>
+            </ul>
           </div>
           <div class="block">
             <h4>Tools that run</h4>
             <ul class="tools">
-              <li><code>scenes.json</code> <span class="tnote">the script file, edited directly</span></li>
-              <li><code>git show origin/main:dashboard/src/index.html</code> <span class="tnote">pulls the product's real, current code</span></li>
+              <li><code>scenes.json</code> <span class="tnote">the script file</span></li>
+              <li><code>git show origin/main:...</code> <span class="tnote">pulls the product's current code</span></li>
             </ul>
           </div>
           <div class="block">
             <h4>What can go wrong</h4>
             <ul>
-              <li>Reading the product code from the wrong copy. The everyday working copy is deliberately out of date by months, so the numbers must come from the published version.</li>
-              <li>Words that change meaning depending on stress (present, live, read, record, project) get the wrong reading from the voice engine, and because the voice is generated in one pass that costs a full re-record. These are reworded before any audio is made.</li>
-              <li>Em dashes and en dashes in on-screen text, which house style forbids everywhere. Ordinary hyphens are fine.</li>
+              <li>Reading the product code from an old copy. The everyday copy is months out of date.</li>
+              <li>Words that flip meaning with stress (present, live, read, record, project). A wrong reading costs the whole recording.</li>
+              <li>Long dashes in on-screen text. House style forbids them. Ordinary hyphens are fine.</li>
             </ul>
           </div>
           <div class="gatebox">
             <h4>Gate</h4>
-            <p><strong>GATE 1: Igor approves the exact wording before any audio is generated.</strong> He is deciding whether these are the words the video will say, out loud, permanently. A good answer is either a plain yes, or the specific lines he wants changed and what they should say instead. Versions have been rejected before for wording changes he did not sanction, and he does check.</p>
+            <p><strong>Gate 1: you approve the exact wording before any audio exists.</strong> Say yes, or name the lines to change and what they should say. Two minutes.</p>
           </div>
         </div>
       </details>
@@ -889,43 +1110,38 @@ footer .ramp{margin-bottom:18px}
       <details class="stage" id="stage-2">
         <summary>
           <span class="snum">2</span>
-          <span class="stitle"><b>Take</b><span>one request, one take</span></span>
-          <span class="autoflag">No Igor gate</span>
+          <span class="stitle"><b>Take</b><span>one request, one recording</span></span>
+          <span class="autoflag">No gate</span>
           <span class="plus" aria-hidden="true"></span>
         </summary>
         <div class="sbody">
           <div class="block">
             <h4>What happens</h4>
-            <p>The whole approved script is sent to the voice engine in one single request, with three-second pauses marking where scenes break. One complete recording of the whole script, made in one request, is called a take <span class="inlinegloss">(it is the unit that gets accepted or thrown away, never a single line)</span>. Sending it whole is what keeps the voice consistent from start to finish. The script measures how fast the result actually speaks, ignoring silences, and if it is off target it asks again with a firmer instruction to slow down, up to five attempts. It takes about a minute and costs a few cents.</p>
+            <ul>
+              <li>The whole approved script goes to the voice engine in one single request.</li>
+              <li>One complete recording of the whole script is called a take. It is accepted or binned as a whole.</li>
+              <li>Sending it whole is what keeps the voice sounding like one person.</li>
+              <li>The script measures the speaking speed and asks again if it is off, up to five attempts.</li>
+              <li>About a minute and a few cents.</li>
+            </ul>
           </div>
           <div class="block">
             <h4>Tools that run</h4>
             <ul class="tools">
-              <li><code>node scripts/tts-single.mjs</code> <span class="tnote">generates the entire narration in one pass</span></li>
+              <li><code>node scripts/tts-single.mjs</code> <span class="tnote">records the whole script in one pass</span></li>
             </ul>
           </div>
           <div class="block">
             <h4>What can go wrong</h4>
             <ul>
-              <li>The voice engine cuts off mid-script, or races. The script detects both and rejects the take rather than passing it on.</li>
-              <li>Generating line by line, or stretching individual lines to fit. Both are banned outright; they are what made earlier versions sound like different people between scenes.</li>
-              <li>Reopening the question of which voice engine to use. A local engine was trialled on 2026-08-03 and lost; Gemini with the Charon narrator stays until there is new evidence.</li>
+              <li>The engine cuts off mid-script or races. The script spots both and rejects the take.</li>
+              <li>Recording line by line, or stretching single lines. Both are banned. That is the two-narrators bug.</li>
+              <li>Reopening the voice engine question. A local engine was tried on 2026-08-03 and lost.</li>
             </ul>
-            <details class="deep">
-              <summary>Engineering rules, for the record</summary>
-              <ul>
-                <li>Two whole versions were rejected because the narrator "sounded like two different people": each line had been generated in its own request, and Gemini re-derives the speaker identity on every request. Rule now: generate the ENTIRE script in one request, split it locally, never regenerate a single line.</li>
-                <li>The per-line generator scripts (<code>tts.mjs</code>, <code>fit.mjs</code>) were deleted outright, because keeping them around meant somebody would eventually "just redo one line" for a typo. Rule: to change a line, edit <code>scenes.json</code> and regenerate the whole take.</li>
-                <li>Setting <code>temperature</code>/<code>topP</code>/<code>topK</code> on the TTS call does nothing for determinism (Vertex ignores them for TTS) and low values made the model produce one sentence then silence. Rule: never set them on a TTS call.</li>
-                <li>The 2026-08-03 local-engine trial (Voicebox) burned a session: cloned voices matched pitch range but read 25 to 30 percent too fast with weak sentence stops, the only steering field (<code>instruct</code>) crashed the app's backend, and Chatterbox Turbo's 9 GB model swamped a 16 GB Mac.</li>
-                <li>The Gemini key lives outside the project and has to stay out of transcripts. Rule: the script reads it from <code>~/AIS-Data-Dashboard/.env</code> itself, never echo, print or copy it into a project file.</li>
-                <li>Sources: tts-voice-law.md, gotchas.md.</li>
-              </ul>
-            </details>
           </div>
           <div class="autobox">
             <h4>Gate</h4>
-            <p>No Igor gate, and nothing to verify here. Runs start to finish on its own.</p>
+            <p>None. Runs on its own.</p>
           </div>
         </div>
       </details>
@@ -933,48 +1149,39 @@ footer .ramp{margin-bottom:18px}
       <details class="stage" id="stage-3" data-gate="yes">
         <summary>
           <span class="snum">3</span>
-          <span class="stitle"><b>Cut and pace</b><span>split, tighten, deflutter</span></span>
+          <span class="stitle"><b>Cut and pace</b><span>split it, tighten it, even it out</span></span>
           <span class="gflag"><span class="dia" aria-hidden="true"></span> Gate 2</span>
           <span class="plus" aria-hidden="true"></span>
         </summary>
         <div class="sbody">
           <div class="block">
             <h4>What happens</h4>
-            <p>The single long recording is cut into scenes at its longest silences. Two speed corrections are applied, in this order. First one global adjustment across the whole recording, snapped to none if it is under 3 percent. Then a safety cap, scene by scene, that can only ever slow a scene down: any scene reading faster than 192 words a minute is pulled back to that ceiling, never below 0.84 of its speed, and corrections under 3 percent snap to none. The cap exists because the voice engine accelerates through a long take, measured at 141 words a minute at the cover ramping to 231 at the tail, which Igor heard as the narrator speeding up and falling off.</p>
-            <p>What the one-take law bans is stretching lines that were <em>generated separately</em>, because that smears the voice into two different people. This is one performance, cut into pieces and only ever slowed, so the speaker cannot drift. The capped take measured better than the uncapped one, not worse.</p>
-            <p>A second pass then trims the dead air inside each scene by removing the middle of each pause and keeping the edges, which typically takes about 28 seconds off a four-minute recording. A third pass evens out slow tonal drift across the recording, and runs exactly once, because running it twice applies the correction twice.</p>
+            <ul>
+              <li>The one long recording is cut into scenes at its longest silences.</li>
+              <li>A safety cap slows any scene reading faster than 192 words a minute. It can never speed one up.</li>
+              <li>A second pass trims dead air inside scenes. That takes about 28 seconds off four minutes.</li>
+              <li>A third pass evens out slow tone drift. It runs exactly once.</li>
+            </ul>
           </div>
           <div class="block">
             <h4>Tools that run</h4>
             <ul class="tools">
-              <li><code>node scripts/split.mjs</code> <span class="tnote">cuts scenes, sets one global speed, then applies the slow-down-only per-scene pace cap (192 wpm ceiling, 0.84 floor)</span></li>
-              <li><code>python3 scripts/tighten.py</code> <span class="tnote">shortens the pauses inside scenes</span></li>
-              <li><code>python3 scripts/deflutter.py</code> <span class="tnote">evens out slow tone drift</span></li>
+              <li><code>node scripts/split.mjs</code> <span class="tnote">cuts scenes and applies the speed cap</span></li>
+              <li><code>python3 scripts/tighten.py</code> <span class="tnote">shortens the pauses</span></li>
+              <li><code>python3 scripts/deflutter.py</code> <span class="tnote">evens out tone</span></li>
             </ul>
           </div>
           <div class="block">
             <h4>What can go wrong</h4>
             <ul>
-              <li>Misreading the speed factor. The setting multiplies speed rather than setting it, so the number the script prints is the one to trust, not the target written in the code.</li>
-              <li>Hand-editing the timing files the scripts produce. They are regenerated by the scripts and hand edits are lost or break sync.</li>
-              <li>Running the drift correction twice on the same cut, which double-applies it.</li>
-              <li>"Fixing" the per-scene pace cap back to a single global factor. It looks like a violation of the one-take law and is not; removing it brings back the narrator who speeds up and falls off.</li>
+              <li>Hand-editing the timing files. The scripts regenerate them, so the edits vanish or break sync.</li>
+              <li>Running the tone pass twice, which applies the correction twice.</li>
+              <li>Removing the per-scene speed cap. That brings back the narrator who speeds up and falls off.</li>
             </ul>
-            <details class="deep">
-              <summary>Engineering rules, for the record</summary>
-              <ul>
-                <li>v1.3 applied a +10.6 percent global speed-up and the client heard it instantly as "sped up". Rule: natural recorded pace ships, and <code>split.mjs</code> snaps any tempo correction under 3 percent to exactly 1.0.</li>
-                <li>v1.1 stretched each line by a different factor (0.86 to 1.15); that smeared the voice by differing amounts per scene and IS the two-narrators bug. Rule: never vary a factor across lines that were generated separately. The per-scene cap added in factory-v1.1 is a different thing: one performance, slow-down only, <code>PACE_CAP</code> 192 wpm, floor 0.84, sub-3 percent snaps to none. The capped take scored better, not worse (ratio 1.00, adj_mean 0.89).</li>
-                <li>The <code>atempo</code> factor was written backwards three separate times in one session: going from 192 wpm to 167 wpm needs 167/192 = 0.87, not the other way up. Rule: read the factor <code>split.mjs</code> prints next to the measured wpm before rendering.</li>
-                <li><code>deflutter.py</code> rewrites the narration file in place and has no self-guard, so running it twice double-applies the tone correction (<code>tighten.py</code> protects itself with a <code>"tightened"</code> flag, deflutter does not). Rule: run it after any recut and exactly once, and track that yourself.</li>
-                <li><code>TARGET_WPM</code> counts pauses inside a scene as speech, so two takes with the same number land at different lengths. Rule: trust the master length <code>split.mjs</code> prints, not the constant.</li>
-                <li>Sources: tts-voice-law.md (one-take law and the pace rules), the pace-cap comment in <code>template/scripts/split.mjs</code>, handoff 2026-07-29.</li>
-              </ul>
-            </details>
           </div>
           <div class="gatebox">
             <h4>Gate</h4>
-            <p><strong>GATE 2: pace against length is Igor's call.</strong> He is deciding whether a slightly rushed delivery is worth a shorter video. A good answer picks one of the real options presented, with real durations attached, for example natural pace at 3m15 versus 10 percent faster at 3m00. On v1.3 he heard a 10.6 percent speed-up and rejected it, and v1.4 removed it, so the trade-off is always put to him with the actual numbers rather than described vaguely.</p>
+            <p><strong>Gate 2: pace against length is your call.</strong> You get both cuts as audio with real durations. Pick one. Two minutes.</p>
           </div>
         </div>
       </details>
@@ -983,41 +1190,37 @@ footer .ramp{margin-bottom:18px}
         <summary>
           <span class="snum">4</span>
           <span class="stitle"><b>Score the voice</b><span>numbers decide, not opinion</span></span>
-          <span class="autoflag">Verification gate</span>
+          <span class="autoflag">Automatic check</span>
           <span class="plus" aria-hidden="true"></span>
         </summary>
         <div class="sbody">
           <div class="block">
             <h4>What happens</h4>
-            <p>Before anything is built around this recording, the voice is measured for consistency. Two scripts compare how different each scene sounds from the scene next to it, against how much natural variation exists inside a single scene. If the gap between neighbouring scenes is smaller than the recording's own natural wobble, the take is consistent enough to keep. If not, the whole take is thrown away and regenerated from stage 2.</p>
+            <ul>
+              <li>Two scripts measure how different each scene sounds from the one next to it.</li>
+              <li>That gets compared against the natural wobble inside a single scene.</li>
+              <li>Smaller than the wobble means the take is one person, so it is kept.</li>
+              <li>Bigger means the whole take is binned and remade from step 2. One minute, one call.</li>
+            </ul>
           </div>
           <div class="block">
             <h4>Tools that run</h4>
             <ul class="tools">
-              <li><code>python3 scripts/voiceconsist.py</code> <span class="tnote">measures scene-to-scene voice consistency</span></li>
+              <li><code>python3 scripts/voiceconsist.py</code> <span class="tnote">measures scene to scene difference</span></li>
               <li><code>python3 scripts/score_take.py</code> <span class="tnote">prints one line of pass numbers</span></li>
             </ul>
           </div>
           <div class="block">
             <h4>What can go wrong</h4>
             <ul>
-              <li>Shipping a take nobody measured. This is banned: the audible register jump the score catches is exactly what got v1.0 and v1.1 rejected by ear.</li>
-              <li>Assuming the drift correction fixed it. The v1.3 first take still measured an audible register shift after correction and had to be regenerated.</li>
-              <li>Skipping the measurement because the last take was fine. Explicitly forbidden; it is one minute and one API call to check.</li>
+              <li>Shipping a take nobody measured. Banned. That jump got two versions rejected by ear.</li>
+              <li>Assuming the tone pass fixed it. On v1.3 it had not.</li>
+              <li>Skipping the check because the last take was fine.</li>
             </ul>
-            <details class="deep">
-              <summary>Engineering rules, for the record</summary>
-              <ul>
-                <li>In v1.3 the first take measured 3.62 dB <span class="inlinegloss">(decibels, the unit for how much louder or different two sounds are)</span> of voice difference between two neighbouring scenes even after the tone fix, the exact audible register jump that got v1.0 and v1.1 rejected. It was thrown away, the next take measured 1.16 dB and shipped.</li>
-                <li>Accepting on a hunch is banned: accept only when the scene-to-scene difference sits below the take's own phonetic floor (about 1.6 dB on this script, meaning how much the same voice differs from itself on different words), no single pair spikes to 2 or 3 times the average, and the ratio is at or under about 1.1.</li>
-                <li>A take reading faster than 210 wpm <span class="inlinegloss">(words per minute)</span> is not a fast reader, it is a truncated take. Rule: reject it.</li>
-                <li>Source: tts-voice-law.md, "The take-scoring gate".</li>
-              </ul>
-            </details>
           </div>
           <div class="autobox">
             <h4>Gate</h4>
-            <p>No Igor gate; a mandatory verification gate. The pipeline does not stop for a human here, but it does not pass either unless the numbers say so: <code>score_take.py</code> decides accept against regenerate, and skipping it is forbidden.</p>
+            <p>No gate for you. An automatic check that must pass before anything moves on.</p>
           </div>
         </div>
       </details>
@@ -1025,46 +1228,38 @@ footer .ramp{margin-bottom:18px}
       <details class="stage" id="stage-5">
         <summary>
           <span class="snum">5</span>
-          <span class="stitle"><b>Compose</b><span>cues pinned to the narration</span></span>
-          <span class="autoflag">No Igor gate</span>
+          <span class="stitle"><b>Compose</b><span>pictures pinned to the words</span></span>
+          <span class="autoflag">No gate</span>
           <span class="plus" aria-hidden="true"></span>
         </summary>
         <div class="sbody">
           <div class="block">
             <h4>What happens</h4>
-            <p>The visuals are written into a template file and then generated into the finished page; the generated file is never edited directly. Every animation is pinned to the narration timings, so visuals land on the words. Early movements are pinned to a fixed number of seconds, and anything landing two seconds or later into a line is pinned to a proportion of that line instead, so a shorter line squeezes its animation rather than losing the end of it. Highlights that ring and lift part of the screen are rationed to five per three-minute video, and the video ends with a silent eight-second end card.</p>
+            <ul>
+              <li>The visuals are written into a template, then generated into the finished file.</li>
+              <li>Every animation is pinned to the voice timings, so pictures land on the words.</li>
+              <li>Late animations are pinned to a share of the line, so a shorter line squeezes instead of losing its end.</li>
+              <li>Highlights are rationed to five per three-minute video. The video ends on a silent eight-second card.</li>
+            </ul>
           </div>
           <div class="block">
             <h4>Tools that run</h4>
             <ul class="tools">
-              <li><code>node scripts/build.mjs</code> <span class="tnote">generates the final composition file</span></li>
-              <li><code>npm run check</code> <span class="tnote">validates the composition automatically</span></li>
-              <li><code>npx hyperframes check --at 150,168,181,196</code> <span class="tnote">inspects specific late timing moments</span></li>
+              <li><code>node scripts/build.mjs</code> <span class="tnote">generates the finished file</span></li>
+              <li><code>npm run check</code> <span class="tnote">automatic pre-render inspection</span></li>
             </ul>
           </div>
           <div class="block">
             <h4>What can go wrong</h4>
             <ul>
               <li>Editing the generated file instead of the template. The next build overwrites it.</li>
-              <li>Adding the end card without re-baking the audio to the new total length, in which case the card plays silent.</li>
-              <li>Motion that leaves things hidden. Movement is decoration only; the resting state has to be the finished, visible state.</li>
+              <li>Adding the end card without re-baking the audio to the new length, so the card plays silent.</li>
+              <li>Motion that leaves things hidden. The resting picture has to be the finished picture.</li>
             </ul>
-            <details class="deep">
-              <summary>Engineering rules, for the record</summary>
-              <ul>
-                <li>Cue edits made directly in the generated <code>index.html</code> worked in preview and vanished on the next build. Rule: edit <code>template/composition.html</code> and re-run the build; <code>timings.json</code> (the file that records where every scene starts and how long it runs) and the subtitle file are generated too, never hand-edited.</li>
-                <li>The v1.2 to v1.3 recut shortened every scene from a 240s to a 180s video, and every hardcoded cue offset broke silently: <code>at('s08_kpi2', 19.1)</code> inside a 15s scene fires after the scene is already gone. Rule: entrances under 1.5s stay absolute, anything at 2.0s or later converts to the proportional <code>atf()</code> form so a shorter line compresses its choreography instead of losing its tail.</li>
-                <li>A six-item stagger at 2.1s spacing ran 12.6s and overran its scene ("bit us"). Rule: staggers keep fixed spacing (scaling them reads as a speed change), but always check the last item still lands inside the scene.</li>
-                <li>A <code>fromTo</code> that is not an element's first tween makes GSAP stamp the FROM state at time zero, so the element sits visibly wrong until its cue fires. Rule: carry <code>immediateRender:false</code> on those, and see miss 14 for what happens when it is carried on the wrong tween.</li>
-                <li>Freeze-safe law, learned from the dashboard: if the timeline never runs (backgrounded tab, a seek landing mid-render) the frame must still read as finished, so entrances use <code>.from()</code> and the resting DOM already carries the real value and label. Star fields use a seeded generator, never <code>Math.random</code>, or the render is not reproducible.</li>
-                <li>Landing a two-column card column by column reads as broken. Rule: land it as one unit.</li>
-                <li>Sources: motion-rules.md, gotchas.md.</li>
-              </ul>
-            </details>
           </div>
           <div class="autobox">
             <h4>Gate</h4>
-            <p>No Igor gate, and nothing to verify here. Runs start to finish on its own.</p>
+            <p>None. Runs on its own.</p>
           </div>
         </div>
       </details>
@@ -1072,48 +1267,40 @@ footer .ramp{margin-bottom:18px}
       <details class="stage" id="stage-6">
         <summary>
           <span class="snum">6</span>
-          <span class="stitle"><b>Render and verify</b><span>frames pulled, audio measured</span></span>
-          <span class="autoflag">Verification gate</span>
+          <span class="stitle"><b>Render and verify</b><span>frames pulled, sound measured</span></span>
+          <span class="autoflag">Automatic check</span>
           <span class="plus" aria-hidden="true"></span>
         </summary>
         <div class="sbody">
           <div class="block">
             <h4>What happens</h4>
-            <p>The video is rendered to a finished file, which takes roughly as long as the video's own running time. Nothing is then taken on trust: still frames are pulled out at the cover, at each highlight and at the end card and actually looked at, and the loudness of specific stretches of audio is measured rather than assumed. Frames are also pulled from inside the animation windows, not only where everything has settled, because an animation can look correct at rest and blink blank halfway through.</p>
-            <p><strong>You do not see the finished video at this point unless you asked for it.</strong> Verifying here means Claude checking pulled frames and measured audio levels, not a viewing by you. To get a viewing before it goes live, say so at the plan stage.</p>
+            <ul>
+              <li>The video renders to a finished file. That takes about as long as the video runs.</li>
+              <li>Still frames are pulled at the cover, at each highlight and at the end card, and looked at.</li>
+              <li>Frames are also pulled from the middle of animations, because a picture can look right at rest and blink in the middle.</li>
+              <li>Loudness is measured, not assumed.</li>
+            </ul>
+            <p><strong>You do not see the video here unless you asked for it.</strong> To get a viewing, say so at the plan stage.</p>
           </div>
           <div class="block">
             <h4>Tools that run</h4>
             <ul class="tools">
-              <li><code>npm run render</code> <span class="tnote">renders the finished video file</span></li>
-              <li><code>ffmpeg -frames:v 1</code> <span class="tnote">extracts single still frames for checking</span></li>
-              <li><code>ffmpeg -af volumedetect</code> <span class="tnote">measures loudness of an audio stretch</span></li>
+              <li><code>npm run render</code> <span class="tnote">renders the finished video</span></li>
+              <li><code>ffmpeg -frames:v 1</code> <span class="tnote">pulls single still frames</span></li>
+              <li><code>ffmpeg -af volumedetect</code> <span class="tnote">measures loudness</span></li>
             </ul>
           </div>
           <div class="block">
             <h4>What can go wrong</h4>
             <ul>
-              <li>Watching the render log for a completion message that never appears, because the renderer holds its output back. The finished file appearing in the renders folder is the real signal.</li>
-              <li>Declaring it correct without pulling frames. Verification is by extracted frame and measured audio, never by assertion.</li>
-              <li>Checking only the settled moments. An animation can sit correct before and after its beat and still blink blank in the middle of it.</li>
+              <li>Waiting for a completion message that never prints. The new file appearing is the real signal.</li>
+              <li>Claiming it is correct without pulling a frame. A green build is not proof.</li>
+              <li>Checking only the settled moments.</li>
             </ul>
-            <details class="deep">
-              <summary>Engineering rules, for the record</summary>
-              <ul>
-                <li><code>npm run render</code> buffers its output, so a watcher tailing the log for "Render complete" waits forever, and <code>renders/</code> already contains older files. Rule: render in the background and wait for a NEW mp4 to appear, budgeting about 1.1x realtime.</li>
-                <li>A 420px-wide screenshot looked clipped and sent someone chasing an overflow bug that did not exist: headless Chrome floors its layout width at 500px. Rule: measure (<code>scrollWidth</code>, <code>hyperframes check</code>), do not diagnose from a narrow screenshot.</li>
-                <li><code>clip_media_fit</code> warnings fired on every build and look like failures; they are the normal state whenever audio is shorter than its window (lead, tail, silent end card). Rule: do NOT "fix" them by stretching audio, that reintroduces the two-narrators bug.</li>
-                <li>Contrast warnings inside components lifted verbatim from the product's own CSS are pre-existing and out of scope. Rule: diff against the previous run and only react to NEW warnings from your own scenes.</li>
-                <li>After a recut, clips collided by a hundredth of a second and lint rejected the whole composition. Rule: round scene starts first, then derive each duration from the rounded values so scenes abut exactly.</li>
-                <li>A duplicate-composition lint error with no obvious cause was a second root-level file carrying <code>data-composition-id</code>. Rule: exactly one composition file at the root, ever.</li>
-                <li>Verification traps repeat often enough that the standing rule is: prove it from the shipped artifact (pull frames, measure audio levels, run the score script), because build, typecheck and lint passes are not visual or audible proof.</li>
-                <li>Source: gotchas.md.</li>
-              </ul>
-            </details>
           </div>
           <div class="autobox">
             <h4>Gate</h4>
-            <p>No Igor gate; a mandatory verification gate. Nothing here waits for a human answer, but nothing moves on either until the proof exists: pulled frames, including frames from inside the animation windows, and measured audio levels.</p>
+            <p>No gate for you. An automatic check: pulled frames and measured sound, or it does not pass.</p>
           </div>
         </div>
       </details>
@@ -1121,60 +1308,40 @@ footer .ramp{margin-bottom:18px}
       <details class="stage" id="stage-7" data-gate="yes">
         <summary>
           <span class="snum">7</span>
-          <span class="stitle"><b>Music</b><span>library first, generate second</span></span>
+          <span class="stitle"><b>Music</b><span>your library first, new tracks second</span></span>
           <span class="gflag"><span class="dia" aria-hidden="true"></span> Gate 3</span>
           <span class="plus" aria-hidden="true"></span>
         </summary>
         <div class="sbody">
           <div class="block">
             <h4>What happens</h4>
-            <p>First the factory music library is checked. Three takes (cine1, drive3, tech3) are already paid for and approved for reuse, so a video in one of those registers <span class="inlinegloss">(register meaning the mood family: cinematic, upbeat, minimal tech pulse)</span> skips generation entirely and goes straight to the mix. Generation only runs for a register the library does not cover.</p>
-            <p>When it does run, the music is generated to order rather than hunted for in stock libraries: three written briefs, one per register, are fed to a music model at about eight cents a take.</p>
-          </div>
-          <div class="block">
-            <h4>What every candidate must pass before you hear it</h4>
             <ul>
-              <li>Actual rhythmic movement. Flat pads score zero on this and read as a yoga class.</li>
-              <li>A steady body between its fade in and its fade out, so it does not swell in the middle of a sentence.</li>
-              <li>Its energy sitting clear of the frequency band the voice occupies.</li>
-              <li>No sung vocals, because words under words are unlistenable.</li>
-              <li>At least as long as the video, so no loop seam has to be hidden.</li>
+              <li>Your music library is checked first. cine1, drive3 and tech3 are paid for and approved, so they skip straight to the mix.</li>
+              <li>New tracks are only made for a mood the library does not cover, at about eight cents a track.</li>
+              <li>Every candidate must have real movement, a steady body, no sung words, and be longer than the video.</li>
+              <li>Survivors are mixed under the same 30 seconds of real narration, so you compare like with like.</li>
             </ul>
-            <p>The survivors are then mixed under the same 30 second slice of the real narration, with a music-only hold inside the slice, so he compares like with like and can actually hear the bed lift.</p>
           </div>
           <div class="block">
             <h4>Tools that run</h4>
             <ul class="tools">
-              <li><code>template/scripts/lyria-sweep.py</code> <span class="tnote">generates music takes to brief</span></li>
-              <li><code>knowledge/music-register-briefs.json</code> <span class="tnote">the three written register briefs</span></li>
+              <li><code>template/scripts/lyria-sweep.py</code> <span class="tnote">generates new tracks to brief</span></li>
+              <li><code>knowledge/music-register-briefs.json</code> <span class="tnote">the three written mood briefs</span></li>
               <li><code>ffmpeg loudnorm</code> and <code>amix</code> <span class="tnote">mixes music under real narration</span></li>
             </ul>
           </div>
           <div class="block">
             <h4>What can go wrong</h4>
             <ul>
-              <li>Going back to free libraries. Two rounds were rejected outright, and one of the sources is blocked to automated access anyway.</li>
-              <li>Picking by ear alone before measuring. Ambient pads consistently fail the movement measurement and were the source of the "makes me fall asleep" verdict.</li>
-              <li>Mixing the music so quietly and so flatly that it cannot be heard at all, which is what happened on the first attempt.</li>
+              <li>Going back to free libraries. Two rounds were rejected outright.</li>
+              <li>Picking by ear before measuring. Flat pads are the "makes me fall asleep" verdict.</li>
+              <li>Mixing the music so quietly it cannot be heard at all.</li>
             </ul>
-            <details class="deep">
-              <summary>Engineering rules, for the record</summary>
-              <ul>
-              <li>v1.4 shipped an ambient pad that satisfied the written brief perfectly and Igor rejected it in one line: "yoga class". Rule: the brief is quiet MOTION (plucks, marimba, piano ostinato), and a near-zero transient rate now disqualifies a track instead of recommending it.</li>
-              <li>Two rounds of free-library beds failed on the MIX as much as the music: a flat, static bed at -31 LUFS <span class="inlinegloss">(LUFS is how loud something FEELS over time, so -31 is very far under the -16 narrator)</span> under wall-to-wall narration is inaudible by construction. Rule (the route that finally passed): generate the bed, give it music-only holds at act turns, and duck it against the narration instead of burying it.</li>
-              <li>Preview clips stopped matching the final render because <code>amix</code> by default quietly drops the narration about 6 dB. Rule: <code>normalize=0</code> is load-bearing in the preview command.</li>
-              <li>A track shorter than the composition has to loop and the seam shows. Rule: prefer a track longer than the video (the v1.5 pick was 209.5s under a 203s composition), or cross-fade a loop deliberately before baking.</li>
-              <li>Eight of nine paid Lyria takes died inside a session scratchpad and cannot be regenerated (the model is non-deterministic). Rule: every paid take, winner or not, is copied into the durable <code>music-library/</code> at generation time, and new videos check that library before paying again.</li>
-              <li>Adding the end card grew the total length and left the card silent because the bed was still cut to the old length. Rule: after <code>TOTAL</code> changes, re-bake the bed with its fade ending at the new total.</li>
-              <li>Verification was being done on the ingredients rather than the result. Rule: measure the finished mp4 (music-only window about -35 dB mean, speech about -16 dB); music-only above about -30 dB means re-bake, never patch the level in the composition.</li>
-              <li>Sources: music-beds.md, motion-rules.md, tts-voice-law.md.</li>
-              </ul>
-            </details>
           </div>
           <div class="gatebox">
             <h4>Gate</h4>
-            <p><strong>GATE 3: Igor listens to three previews and picks one.</strong> He is choosing the emotional register of the whole video, not just a track. A good answer names one of the three. The precedent for rejecting all three is v1.4, where his one-line "yoga class" verdict was aimed at the register (a sustained pad) rather than at that particular track, and it rewrote the brief to quiet motion. The three preview files are sent to him directly, since the working folder is not somewhere he can reach, each labelled with its register and track name.</p>
-            <p style="margin-top:12px">After he picks, that track is baked against the actual narration: low rumble filtered out below 240 Hz, the level set to about -19 LUFS, then ducked automatically so the music dips whenever the narrator speaks and rises again in the gaps, with the fades ending exactly at the video's total length. The ducking and the music-only holds are baked into the file itself, so what he previews is exactly what renders. The result is then measured on the finished video to confirm the music-only stretches sit far below the speech, and the track's name, author and licence are recorded in the project notes. The old route, a static bed at a fixed -31 LUFS with no ducking, is superseded: it is what made two rounds of candidates inaudible.</p>
+            <p><strong>Gate 3: you name the track.</strong> Say "use cine1" and the music round is skipped entirely. Otherwise you get three previews and pick one.</p>
+            <p style="margin-top:10px">After the pick, the track is filtered, levelled and ducked under the voice, with the fades baked to the exact video length. What you preview is what renders.</p>
           </div>
         </div>
       </details>
@@ -1183,46 +1350,37 @@ footer .ramp{margin-bottom:18px}
         <summary>
           <span class="snum">8</span>
           <span class="stitle"><b>Companion page</b><span>video first, sticky while playing</span></span>
-          <span class="autoflag">No Igor gate</span>
+          <span class="autoflag">No gate</span>
           <span class="plus" aria-hidden="true"></span>
         </summary>
         <div class="sbody">
           <div class="block">
             <h4>What happens</h4>
-            <p>If the video gets a web page, the page is built video first: masthead, a short lead-in, then the video, then the headline and the article body. While the video is playing it sticks to the top of the screen as you scroll, and releases when you pause or it ends. The page ships the video, a subtitle file kept separate rather than burned into the picture, a freshly captured poster image and the logo.</p>
+            <ul>
+              <li>If the video gets a web page, the page is built video first: masthead, short lead-in, video, then the headline and the article.</li>
+              <li>The video sticks to the top of the screen while it plays and releases when you pause.</li>
+              <li>The page ships the video, a separate subtitle file, a fresh cover image and the logo.</li>
+            </ul>
           </div>
           <div class="block">
             <h4>Tools that run</h4>
             <ul class="tools">
-              <li><code>knowledge/page-patterns.md</code> <span class="tnote">the layout and code patterns</span></li>
-              <li><code>python3 -m http.server 8765</code> <span class="tnote">serves the page locally, which is what actually runs the server</span></li>
-              <li><code>.claude/launch.json</code> <span class="tnote">attaches the preview pane to that local server (a config with a url and no command attaches)</span></li>
-              <li><code>getBoundingClientRect</code> measurements <span class="tnote">checks real positions while scrolling</span></li>
+              <li><code>knowledge/page-patterns.md</code> <span class="tnote">the layout patterns</span></li>
+              <li><code>python3 -m http.server 8765</code> <span class="tnote">serves the page locally for real testing</span></li>
+              <li><code>getBoundingClientRect</code> <span class="tnote">measures real positions while scrolling</span></li>
             </ul>
           </div>
           <div class="block">
             <h4>What can go wrong</h4>
             <ul>
-              <li>Checking the page by opening the file directly instead of through a local server, which shows a static snapshot with none of the behaviour running.</li>
-              <li>Leaving the video section nested inside another wrapper, which silently breaks the stick-while-playing behaviour.</li>
-              <li>Trusting screenshots. The preview pane can paint stale images, so positions are measured in the page instead.</li>
+              <li>Opening the page as a file instead of through a local server. Nothing runs that way, so it looks broken.</li>
+              <li>Leaving the video nested inside another box, which silently kills the sticky behaviour.</li>
+              <li>Trusting screenshots. They can be stale, so positions are measured in the page.</li>
             </ul>
-            <details class="deep">
-              <summary>Engineering rules, for the record</summary>
-              <ul>
-                <li>Every single "the sticky player is broken" report turned out to be the page opened as a <code>file://</code> snapshot in the app browser, where no JS runs at all. Rule: serve it over localhost before believing any behaviour report.</li>
-                <li>The player was left inside its own <code>&lt;section&gt;</code> and un-stuck immediately, because a sticky element is constrained by its direct parent. Rule: flatten the video out of its section into the wrapper that spans the video plus the following sections.</li>
-                <li>A hardcoded 86px sticky offset overlapped the masthead at phone width, where the mast wraps to two or three rows. Rule: measure mast height plus 24px into a CSS variable on load and on resize.</li>
-                <li>Screenshots from the hidden browser pane came back stale after a resize and contradicted the real geometry. Rule: a screenshot that disagrees with a <code>getBoundingClientRect()</code> reading is the screenshot being wrong, re-measure rather than re-shoot.</li>
-                <li>With the headline above it, the player sat a third of the way down the page. Rule: kicker, then video, then headline and intro below it; and the 52px section rhythm gets cut to 16px directly under the mast because it otherwise reads as a hole.</li>
-                <li>A stale poster image fails silently until somebody loads the page cold. Rule: re-cut the poster frame from the final render on EVERY re-render.</li>
-                <li>Source: page-patterns.md.</li>
-              </ul>
-            </details>
           </div>
           <div class="autobox">
             <h4>Gate</h4>
-            <p>No Igor gate, and nothing to verify here. Runs start to finish on its own.</p>
+            <p>None. Runs on its own.</p>
           </div>
         </div>
       </details>
@@ -1230,42 +1388,38 @@ footer .ramp{margin-bottom:18px}
       <details class="stage" id="stage-9" data-gate="yes">
         <summary>
           <span class="snum">9</span>
-          <span class="stitle"><b>Ship</b><span>fingerprint both sides, then live check</span></span>
+          <span class="stitle"><b>Ship</b><span>fingerprint, push, then check it live</span></span>
           <span class="gflag"><span class="dia" aria-hidden="true"></span> Gate 4</span>
           <span class="plus" aria-hidden="true"></span>
         </summary>
         <div class="sbody">
           <div class="block">
             <h4>What happens</h4>
-            <p>Every file is fingerprinted on both sides before it is committed, so nothing that Drive quietly altered slips through. The video and the page go out as one commit, tagged with a version number. Once the automated publish finishes, the live video is downloaded back down from the public URL and fingerprinted against the local copy, and the live page is checked for a marker string unique to this release.</p>
+            <ul>
+              <li>Every file is fingerprinted on both sides before it is committed, so nothing Drive altered slips through.</li>
+              <li>The video and the page go out as one commit with a version tag.</li>
+              <li>After publishing, the live video is downloaded back and fingerprinted against the local copy.</li>
+              <li>The live page is checked for a marker unique to this release.</li>
+            </ul>
           </div>
           <div class="block">
             <h4>Tools that run</h4>
             <ul class="tools">
-              <li><code>md5 &lt;scratchpad file&gt; &lt;repo file&gt;</code> <span class="tnote">fingerprints each file both sides</span></li>
+              <li><code>md5</code> <span class="tnote">fingerprints each file on both sides</span></li>
               <li><code>git push origin HEAD:main --tags</code> <span class="tnote">publishes video and page together</span></li>
-              <li><code>gh run watch</code> <span class="tnote">waits for the publish to finish</span></li>
-              <li><code>curl</code> plus <code>md5</code> on the live file <span class="tnote">proves the live copy matches</span></li>
+              <li><code>curl</code> plus <code>md5</code> <span class="tnote">proves the live copy matches</span></li>
             </ul>
           </div>
           <div class="block">
             <h4>What can go wrong</h4>
             <ul>
-              <li>Calling it done before the live check. Done means pushed, live fingerprint matched, and the exact link in Igor's hand.</li>
-              <li>Splitting the video and the page across two commits instead of one.</li>
+              <li>Calling it done before the live check. Done means live, verified, and the exact link in your hand.</li>
+              <li>Splitting the video and the page across two commits.</li>
             </ul>
-            <details class="deep">
-              <summary>Engineering rules, for the record</summary>
-              <ul>
-                <li>Files edited inside a Google Drive-backed checkout report success and then silently revert minutes later, and <code>node_modules</code> inside Drive stalls the machine. Rule: build in the session scratchpad, copy into Drive one file at a time at ship time, with an md5 check on both copies.</li>
-                <li>"Shipped" has meant a link that was not live, or a live mp4 that differed from the render that was verified. Rule: one commit covering video and page, tags, push, watch the deploy, then curl the LIVE mp4 and match its md5 to the local render and grep the live page for a marker string, and it is not done until the exact link is in Igor's hand.</li>
-                <li>Source: gotchas.md.</li>
-              </ul>
-            </details>
           </div>
           <div class="gatebox">
             <h4>Gate</h4>
-            <p><strong>GATE 4: shipping authority.</strong> Igor decides this once, in advance, when he approves the plan. If the plan he approved ends with the video going live, it ships without another ask; parking the push at that point just makes him do Claude's job. A good answer states plainly whether the plan ends with publication, and Claude pauses only if the release contains something outward-facing he has not already sanctioned. <strong>The consequence to be clear about: by default nobody shows him the finished video before the public sees it.</strong> Asking for a viewing at the plan stage is what changes that.</p>
+            <p><strong>Gate 4: you decided this at the plan stage.</strong> If the approved plan ends live, it ships without another ask. <strong>By default nobody shows you the video before the public sees it.</strong></p>
           </div>
         </div>
       </details>
@@ -1273,33 +1427,37 @@ footer .ramp{margin-bottom:18px}
       <details class="stage" id="stage-10">
         <summary>
           <span class="snum">10</span>
-          <span class="stitle"><b>Closeout</b><span>tasks, notes, lessons written back</span></span>
-          <span class="autoflag">No Igor gate</span>
+          <span class="stitle"><b>Closeout</b><span>notes and lessons written back</span></span>
+          <span class="autoflag">No gate</span>
           <span class="plus" aria-hidden="true"></span>
         </summary>
         <div class="sbody">
           <div class="block">
             <h4>What happens</h4>
-            <p>The task list for the shipping project is brought up to date: only work that is provably finished gets closed, and no new tasks are invented. The project's own notes, its readme, the memory file and a handoff document for the next session are all refreshed, and the code knowledge map is rebuilt. Anything learned the hard way this time is written back into the Video Factory knowledge files so the next video starts ahead of where this one did.</p>
+            <ul>
+              <li>The task list is brought up to date. Only provably finished work gets closed.</li>
+              <li>Project notes, the readme, the memory file and a handoff for the next session are refreshed.</li>
+              <li>Anything learned the hard way is written into the factory files, so the next video starts ahead.</li>
+            </ul>
           </div>
           <div class="block">
             <h4>Tools that run</h4>
             <ul class="tools">
-              <li>Focus OS task update <span class="tnote">snapshots and closes finished tasks</span></li>
-              <li><code>graphify update .</code> <span class="tnote">rebuilds the project knowledge map</span></li>
+              <li>Focus OS task update <span class="tnote">closes finished tasks</span></li>
+              <li><code>graphify update .</code> <span class="tnote">rebuilds the project map</span></li>
               <li><code>knowledge/gotchas.md</code> <span class="tnote">where new traps get recorded</span></li>
             </ul>
           </div>
           <div class="block">
             <h4>What can go wrong</h4>
             <ul>
-              <li>Closing tasks that are not verifiably done, or creating tasks nobody asked for.</li>
-              <li>Letting a hard-won lesson die in the session instead of writing it into the knowledge files, which means paying for it again next time.</li>
+              <li>Closing tasks that are not verifiably done.</li>
+              <li>Letting a hard-won lesson die in the session, which means paying for it again.</li>
             </ul>
           </div>
           <div class="autobox">
             <h4>Gate</h4>
-            <p>No Igor gate, and nothing to verify here. Runs start to finish on its own.</p>
+            <p>None. Runs on its own.</p>
           </div>
         </div>
       </details>
@@ -1311,244 +1469,114 @@ footer .ramp{margin-bottom:18px}
 <section class="alt" id="replay">
   <div class="wrap">
     <div class="sechead">
-      <p class="kicker">What went wrong, and where</p>
-      <h2>The two videos, replayed</h2>
-      <p class="deck">Two videos have come out of this pipeline: the Staff Voice explainer (v1.0 to v1.5) and the Observation System explainer (v2.0 to v2.2). Plus one side trial on 2026-08-03 that tested a local voice engine against the shipped one. Everything below is a recorded miss, mapped onto the stage it happened in and the gate that should have caught it.</p>
-      <p class="deck"><b>Sixteen misses, every one of them real.</b> Nothing here is hypothetical: each came out of a video that actually shipped, or out of the one trial that closed a question.</p>
+      <p class="kicker">The record</p>
+      <h2>16 times it went wrong (and what now stops it)</h2>
+      <p class="deck">Every one is real, from two shipped videos and one trial. None are hypothetical.</p>
     </div>
-
-    <ul class="taglegend">
-      <li class="readas">Read as</li>
-      <li><span class="tag claude">Claude's miss</span></li>
-      <li><span class="tag process">Process gap</span></li>
-      <li><span class="tag late">Input arrived late</span></li>
-      <li><span class="tag nobody">Nobody's miss</span></li>
-    </ul>
 
     <div class="grouphead">
       <h3>v1.x Staff Voice</h3>
       <span>six misses</span>
     </div>
 
-    <div class="misses">
-
-      <article class="miss">
-        <div class="mhead"><span class="midx">1</span><h4>The narrator sounded like two different people</h4></div>
-        <div class="chips">
-          <span class="chip stage">Stage 2 Take</span>
-          <span class="chip nogate">No Igor gate</span>
-        </div>
-        <p>The first two cuts generated the script one line at a time, and v1.1 additionally time stretched each line by a different factor, between 0.86 and 1.15. Igor rejected both versions because the narrator changed identity between scenes, and the fix was to generate the whole script in one Gemini request and split it locally. <span class="src">(knowledge/tts-voice-law.md)</span></p>
-        <p class="gateline"><b>Gate:</b> No Igor gate. Caught automatically now: stage 4 measures scene-to-scene voice difference, and it did not exist when this happened.</p>
-        <p class="nexttime"><b>Next time</b>The whole script is recorded in one go, and no single line is ever re-recorded or stretched on its own. The scripts that could do that were deleted, so the shortcut is not there to take.</p>
-        <div class="missfoot"><span class="tag claude">Claude's miss</span></div>
-      </article>
-
-      <article class="miss">
-        <div class="mhead"><span class="midx">2</span><h4>The take that measured 3.62 dB</h4></div>
-        <div class="chips">
-          <span class="chip stage">Stage 4 Score the voice</span>
-          <span class="chip nogate">No Igor gate</span>
-        </div>
-        <p>On v1.3 the first take sat 3.62 dB apart between two adjacent scenes even after the tone correction, the same audible register shift that had already caused two rejections. It was measured, binned, and the next take came back at 1.16 dB and shipped, at a cost of one minute and one API call. <span class="src">(knowledge/tts-voice-law.md)</span></p>
-        <p class="gateline"><b>Gate:</b> No Igor gate. Caught automatically now: this is exactly the verification gate at stage 4, which did not exist when it happened.</p>
-        <p class="nexttime"><b>Next time</b>Every recording is scored, and if any one scene sounds much more different from its neighbour than the rest do, the recording is thrown away and made again.</p>
-        <div class="missfoot"><span class="tag process">Process gap</span><span class="tagnote">Closed immediately: scoring stopped being a judgement call and became a mandatory step.</span></div>
-      </article>
-
-      <article class="miss">
-        <div class="mhead"><span class="midx">3</span><h4>The 10.6 percent tempo lift</h4></div>
-        <div class="chips">
-          <span class="chip stage">Stage 3 Cut and pace</span>
-          <span class="chip gate">Gate 2 pace vs length</span>
-        </div>
-        <p>v1.3 sped the whole take up by 10.6 percent to hit a length target, and Igor heard it as sped up immediately. v1.4 removed the lift and shipped at natural pace, and split.mjs now snaps any tempo correction under 3 percent to exactly 1.0. <span class="src">(knowledge/tts-voice-law.md)</span></p>
-        <p class="gateline"><b>Gate:</b> GATE 2 pace vs length. That gate exists so a length trade-off is put in front of Igor with real numbers before it is baked into a render, not discovered by him afterwards.</p>
-        <p class="nexttime"><b>Next time</b>Buy length with pause trimming and tighter wording first, and take any tempo change to Igor as an explicit trade-off before rendering.</p>
-        <div class="missfoot"><span class="tag claude">Claude's miss</span></div>
-      </article>
-
-      <article class="miss">
-        <div class="mhead"><span class="midx">4</span><h4>The atempo factor written backwards three times</h4></div>
-        <div class="chips">
-          <span class="chip stage">Stage 3 Cut and pace</span>
-          <span class="chip nogate">No Igor gate</span>
-        </div>
-        <p>The speed setting multiplies rather than sets, so slowing 192 words a minute to 167 needs 167 divided by 192, not the other way round. It was written backwards three separate times in one session, and each time the recording came out faster instead of slower. <span class="src">(knowledge/tts-voice-law.md)</span></p>
-        <p class="gateline"><b>Gate:</b> No Igor gate. Nothing blocks a backwards number, but the script now prints the factor next to the speed it measured, so the mistake is visible before rendering rather than after.</p>
-        <p class="nexttime"><b>Next time</b>Read the number the script prints, check it points the way you meant, and only then render.</p>
-        <div class="missfoot"><span class="tag claude">Claude's miss</span></div>
-      </article>
-
-      <article class="miss">
-        <div class="mhead"><span class="midx">5</span><h4>The ambient pad that sounded like a yoga class</h4></div>
-        <div class="chips">
-          <span class="chip stage">Stage 7 Music</span>
-          <span class="chip gate">Gate 3 music pick</span>
-        </div>
-        <p>The v1.4 bed was an ambient pad that met the quiet brief perfectly, no melody, nothing in the narrator's range, dynamically flat, and Igor rejected it in one line as a yoga class. The brief was wrong rather than the execution: an explainer bed needs quiet motion, short decay plucks and pizzicato, not sustained tone. <span class="src">(knowledge/music-beds.md)</span></p>
-        <p class="gateline"><b>Gate:</b> GATE 3 music pick, which only works when he hears real candidates mixed under real narration; here the register was settled before he heard anything.</p>
-        <p class="nexttime"><b>Next time</b>Three measured finalists, one per register, each mixed under the same 30 second slice of real narration and picture, and pads disqualify themselves on a transient rate near zero.</p>
-        <div class="missfoot"><span class="tag claude">Claude's miss</span></div>
-      </article>
-
-      <article class="miss">
-        <div class="mhead"><span class="midx">6</span><h4>Calling it done without proof from the artifact</h4></div>
-        <div class="chips">
-          <span class="chip stage">Stage 6 Render and verify</span>
-          <span class="chip nogate">No Igor gate</span>
-        </div>
-        <p>Fixed was claimed from passing builds, lint runs and code reads instead of from the rendered file, and Igor checks, so versions were rejected for exactly this. The rule now is to pull frames out of the render, measure the music-only and speech stretches, and print the recording's score before the word done appears. <span class="src">(knowledge/gotchas.md)</span></p>
-        <p class="gateline"><b>Gate:</b> No Igor gate. Covered now by the verification gate at stage 6: a claim of done that carries no frame and no measurement does not pass.</p>
-        <p class="nexttime"><b>Next time</b>Every claim that something is done comes with proof from the finished file: a picture pulled out of it, a level measured in it, or a score printed from it. A green build is not proof.</p>
-        <div class="missfoot"><span class="tag claude">Claude's miss</span></div>
-      </article>
-
-    </div>
+    <ul class="misslist">
+      <li>
+        <span class="what">The narrator sounded like two different people.</span>
+        <span class="chips"><span class="chip stage">Step 2 Take</span><span class="chip nogate">No gate</span></span>
+        <span class="fix"><span class="fixlab">Now</span>The whole script is recorded in one go, and step 4 measures it.</span>
+      </li>
+      <li>
+        <span class="what">A take had an audible jump between two scenes.</span>
+        <span class="chips"><span class="chip stage">Step 4 Score</span><span class="chip nogate">No gate</span></span>
+        <span class="fix"><span class="fixlab">Now</span>Every take is scored. A bad one is binned and remade for one minute and one call.</span>
+      </li>
+      <li>
+        <span class="what">The video was sped up 10.6 percent and you heard it instantly.</span>
+        <span class="chips"><span class="chip stage">Step 3 Cut and pace</span><span class="chip gate">Gate 2</span></span>
+        <span class="fix"><span class="fixlab">Now</span>Any speed change under 3 percent snaps to none, and the trade-off comes to you with real durations.</span>
+      </li>
+      <li>
+        <span class="what">The speed number was written backwards three times in one session.</span>
+        <span class="chips"><span class="chip stage">Step 3 Cut and pace</span><span class="chip nogate">No gate</span></span>
+        <span class="fix"><span class="fixlab">Now</span>The script prints the factor next to the speed it measured, before anything renders.</span>
+      </li>
+      <li>
+        <span class="what">The music sounded like a yoga class.</span>
+        <span class="chips"><span class="chip stage">Step 7 Music</span><span class="chip gate">Gate 3</span></span>
+        <span class="fix"><span class="fixlab">Now</span>Flat pads disqualify themselves on a movement measurement, before you ever hear them.</span>
+      </li>
+      <li>
+        <span class="what">Done was claimed from a green build, not from the finished file.</span>
+        <span class="chips"><span class="chip stage">Step 6 Render and verify</span><span class="chip nogate">No gate</span></span>
+        <span class="fix"><span class="fixlab">Now</span>Done needs a pulled frame, a measured level or a printed score.</span>
+      </li>
+    </ul>
 
     <div class="grouphead">
       <h3>v2.x Observation System</h3>
       <span>nine misses</span>
     </div>
 
-    <div class="misses">
-
-      <article class="miss">
-        <div class="mhead"><span class="midx">7</span><h4>Present mode read as a gift</h4></div>
-        <div class="chips">
-          <span class="chip stage">Stage 1 Script</span>
-          <span class="chip gate">Gate 1 wording</span>
-        </div>
-        <p>The script said Present mode and Gemini read it with the gift stress, which nobody caught until v2.0 was already live. Because narration is one take, the whole thing had to be regenerated for v2.1, and the wording became one tap presents it. <span class="src">(workspace CLAUDE.md Lessons and handoff-2026-07-29-2340.md)</span></p>
-        <p class="gateline"><b>Gate:</b> GATE 1 wording. The heteronym sweep now happens before Igor is asked to approve the script, so the ambiguous word never reaches the take.</p>
-        <p class="nexttime"><b>Next time</b>Sweep the script for stress ambiguous words (present, live, read, record, project) and reword them to an unambiguous form before any audio is requested.</p>
-        <div class="missfoot"><span class="tag claude">Claude's miss</span></div>
-      </article>
-
-      <article class="miss">
-        <div class="mhead"><span class="midx">8</span><h4>The narrator speeds up and falls off</h4></div>
-        <div class="chips">
-          <span class="chip stage">Stage 3 Cut and pace</span>
-          <span class="chip stage">Measured at Stage 4</span>
-          <span class="chip nogate">No Igor gate</span>
-        </div>
-        <p>The voice engine speeds up through a long recording: three recordings in a row started at 141 words a minute at the cover and reached 231 by the tail, and asking it to hold a steady pace did not fix it. Igor heard it as the narrator changing speed and falling off. The fix was a safety cap applied scene by scene to the pieces cut out of the one recording, which can only ever slow a scene down, never speed one up. <span class="src">(handoff-2026-07-29-2340.md)</span></p>
-        <p class="gateline"><b>Gate:</b> No Igor gate. Caught automatically now: the pace cap runs on every recording, and the capped version scores better than the uncapped one.</p>
-        <p class="nexttime"><b>Next time</b>Check the reading speed of each scene, not just the recording as a whole, and let the cap pull the fast scenes back down.</p>
-        <div class="missfoot"><span class="tag claude">Claude's miss</span><span class="tagnote">The take was accepted without ever checking pace scene by scene.</span></div>
-      </article>
-
-      <article class="miss">
-        <div class="mhead"><span class="midx">9</span><h4>The closing line arrived before its picture</h4></div>
-        <div class="chips">
-          <span class="chip stage">Stage 5 Compose</span>
-          <span class="chip nogate">No Igor gate</span>
-        </div>
-        <p>The final spoken phrase only appeared on screen on the end card, seconds after it was spoken, and Igor read that as the picture being out of sync with the voice. v2.1 timed the visual to the words inside the closing scene itself, with the end card as a follow on. <span class="src">(workspace CLAUDE.md Lessons and handoff-2026-07-29-2340.md)</span></p>
-        <p class="gateline"><b>Gate:</b> No Igor gate, and nothing catches it automatically either. It rests on hard rule 9 being remembered, plus somebody watching the closing seconds.</p>
-        <p class="nexttime"><b>Next time</b>The last thing said gets its moment on screen while it is being said, inside the closing scene. The end card is a bonus, never the payoff.</p>
-        <div class="missfoot"><span class="tag claude">Claude's miss</span></div>
-      </article>
-
-      <article class="miss">
-        <div class="mhead"><span class="midx">10</span><h4>School branding left in an outward facing video</h4></div>
-        <div class="chips">
-          <span class="chip stage">Stage 5 Compose</span>
-          <span class="chip stage">Surfaced at Stage 10</span>
-          <span class="chip nogate">No Igor gate</span>
-        </div>
-        <p>v2.0 went out with school logos, wordmarks, the school name and even invented record ID prefixes on screen, and Igor caught a logo at 3m45 watching it frame by frame. v2.1 stripped every instance while keeping neutral product chrome such as the colour rails and star fields. <span class="src">(handoff-2026-07-29-2340.md)</span></p>
-        <p class="gateline"><b>Gate:</b> No Igor gate, and no script checks it. It is now hard rule 8, checked by eye on the render frames before shipping. It only surfaced in his own review after v2.0 was live.</p>
-        <p class="nexttime"><b>Next time</b>No school logos and no school names in anything that goes outside, by default, and the render frames get checked for them before it ships.</p>
-        <div class="missfoot"><span class="tag late">Input arrived late</span><span class="tagnote">The no branding directive did not exist until he saw v2.0. It is now hard rule 8, so this one is on the pipeline from here on.</span></div>
-      </article>
-
-      <article class="miss">
-        <div class="mhead"><span class="midx">11</span><h4>Two rounds of free library music, both rejected</h4></div>
-        <div class="chips">
-          <span class="chip stage">Stage 7 Music</span>
-          <span class="chip gate">Gate 3 music pick</span>
-        </div>
-        <p>Igor rejected the Incompetech round and then the Mixkit round, saying he could not even hear the bed and that the calm registers made him fall asleep, and v2.0 and v2.1 shipped with no music at all. Both rounds ran the measured screening, so the measurement step was executed; what failed was the register brief behind it and the mix underneath it. <span class="src">(workspace CLAUDE.md Lessons and handoff-2026-07-29-2340.md)</span></p>
-        <p class="gateline"><b>Gate:</b> GATE 3 music pick, which held both times: nothing he rejected ever shipped. It fired twice because the candidates were wrong twice.</p>
-        <p class="nexttime"><b>Next time</b>No third round of free library music. Check the factory's own music shelf first, where three tracks are already paid for and approved, and otherwise have the bed made to order.</p>
-        <div class="missfoot"><span class="tag claude">Claude's miss</span></div>
-      </article>
-
-      <article class="miss">
-        <div class="mhead"><span class="midx">12</span><h4>The bed was inaudible by construction</h4></div>
-        <div class="chips">
-          <span class="chip stage">Stage 7 Music</span>
-          <span class="chip gate">Gate 3 music pick</span>
-        </div>
-        <p>The real cause of both music rejections was half register, half mix. A bed held at one fixed quiet level under wall-to-wall narration cannot be heard at all, and six professional reference films were measured: every one of them lets the narration breathe for two to five seconds at a section turn.</p>
-        <p>v2.2 fixed it with a bed made to order, a mix that dips the music only while the narrator speaks, and deliberate silent gaps where the music comes up on its own. Igor's verdict was "perfect". <span class="src">(knowledge/music-beds.md and handoff-2026-07-30-1405.md)</span></p>
-        <p class="gateline"><b>Gate:</b> GATE 3 music pick, with the added rule that every preview must contain one of those silent gaps, so he actually hears the bed lift instead of guessing at it.</p>
-        <p class="nexttime"><b>Next time</b>Dip the music under the voice rather than burying it, leave it silent gaps at the opening and at each act turn, and cut the previews across one of those gaps.</p>
-        <div class="missfoot"><span class="tag process">Process gap</span><span class="tagnote">The factory's own bake recipe specified the static -31 LUFS bed that made every candidate inaudible, so two rounds of candidates were judged through a broken mix.</span></div>
-      </article>
-
-      <article class="miss">
-        <div class="mhead"><span class="midx">13</span><h4>Two rejected handwriting fonts and a licence trap</h4></div>
-        <div class="chips">
-          <span class="chip stage">Stage 5 Compose</span>
-          <span class="chip nogate">No Igor gate</span>
-        </div>
-        <p>The handwritten ink on the Evidence Pad was built twice with machine-drawing fonts and rejected both times for mechanical, evenly spaced letters. The AI handwriting route that finally looked right was dropped because the handwriting samples it was trained on are licensed for non commercial use only. What shipped was a real handwriting font, free for commercial use, revealed by wiping it on left to right. <span class="src">(handoff-2026-07-30-1405.md)</span></p>
-        <p class="gateline"><b>Gate:</b> No Igor gate, and nothing catches it automatically. The licence risk was surfaced to him before anything was built on it, and he declined it.</p>
-        <p class="nexttime"><b>Next time</b>A real handwriting font with a wipe reveal, print rather than cursive, and anything trained on a non commercial dataset is ruled out of commercial work before it is even demoed.</p>
-        <div class="missfoot"><span class="tag claude">Claude's miss</span><span class="tagnote">Claude's on the two font rounds; the licence check itself was done right and in time.</span></div>
-      </article>
-
-      <article class="miss">
-        <div class="mhead"><span class="midx">14</span><h4>Ink that blinked blank in the middle of its beat</h4></div>
-        <div class="chips">
-          <span class="chip stage">Stage 6 Render and verify</span>
-          <span class="chip nogate">No Igor gate</span>
-        </div>
-        <p>One wrong setting on the writing animation left every handwritten line sitting fully visible, then blanking out at the moment it was meant to be written, then writing itself again. Frames taken before and after the beat looked perfect, so nothing showed until frames were pulled from the middle of the animation. Removing the setting fixed it. <span class="src">(workspace CLAUDE.md Lessons and handoff-2026-07-30-1405.md)</span></p>
-        <p class="gateline"><b>Gate:</b> No Igor gate. Covered now by the verification gate at stage 6, which pulls frames from inside the animation windows and not only where everything has settled.</p>
-        <p class="nexttime"><b>Next time</b>Check animations halfway through, not just before and after. A picture that looks right at rest can still blink in the middle.</p>
-        <div class="missfoot"><span class="tag claude">Claude's miss</span></div>
-      </article>
-
-      <article class="miss">
-        <div class="mhead"><span class="midx">15</span><h4>Eight paid Lyria takes died in a scratchpad</h4></div>
-        <div class="chips">
-          <span class="chip stage">Stage 7 Music</span>
-          <span class="chip stage">Only noticed at Stage 10</span>
-          <span class="chip nogate">No Igor gate</span>
-        </div>
-        <p>The v2.2 music round generated nine paid tracks and only the winner was copied somewhere permanent, so the other eight vanished with the temporary working folder. The model never makes the same thing twice, so they cannot be regenerated, and Igor paid for all nine. <span class="src">(workspace CLAUDE.md Lessons and knowledge/music-beds.md)</span></p>
-        <p class="gateline"><b>Gate:</b> No Igor gate. Now covered by a standing rule at stage 7 rather than by anything automatic: every paid track is written to the permanent music shelf the moment it is made.</p>
-        <p class="nexttime"><b>Next time</b>Anything paid for is saved somewhere permanent the moment it exists, winner or not, with a note of what it is and how it scored.</p>
-        <div class="missfoot"><span class="tag claude">Claude's miss</span></div>
-      </article>
-
-    </div>
+    <ul class="misslist" style="counter-reset:m 6">
+      <li>
+        <span class="what">"Present mode" was read as a gift, and it was already live.</span>
+        <span class="chips"><span class="chip stage">Step 1 Script</span><span class="chip gate">Gate 1</span></span>
+        <span class="fix"><span class="fixlab">Now</span>Stress-ambiguous words are swept and reworded before you approve the script.</span>
+      </li>
+      <li>
+        <span class="what">The narrator sped up through the video and fell off at the end.</span>
+        <span class="chips"><span class="chip stage">Step 3 Cut and pace</span><span class="chip nogate">No gate</span></span>
+        <span class="fix"><span class="fixlab">Now</span>A per-scene speed cap slows the fast scenes back down on every recording.</span>
+      </li>
+      <li>
+        <span class="what">The closing line appeared on screen seconds after it was spoken.</span>
+        <span class="chips"><span class="chip stage">Step 5 Compose</span><span class="chip nogate">No gate</span></span>
+        <span class="fix"><span class="fixlab">Now</span>The last phrase gets its picture inside the closing scene. The end card is a bonus.</span>
+      </li>
+      <li>
+        <span class="what">School logos and names were left in an outward facing video.</span>
+        <span class="chips"><span class="chip stage">Step 5 Compose</span><span class="chip nogate">No gate</span></span>
+        <span class="fix"><span class="fixlab">Now</span>Hard rule 8, checked by eye on the render frames before it ships.</span>
+      </li>
+      <li>
+        <span class="what">Two rounds of free library music, both rejected.</span>
+        <span class="chips"><span class="chip stage">Step 7 Music</span><span class="chip gate">Gate 3</span></span>
+        <span class="fix"><span class="fixlab">Now</span>Your own library is checked first, and beds are made to order after that.</span>
+      </li>
+      <li>
+        <span class="what">The music was too quiet to hear at all.</span>
+        <span class="chips"><span class="chip stage">Step 7 Music</span><span class="chip gate">Gate 3</span></span>
+        <span class="fix"><span class="fixlab">Now</span>The music dips under the voice and gets silent gaps to rise into. Your verdict on that fix: "perfect".</span>
+      </li>
+      <li>
+        <span class="what">Two handwriting fonts rejected, and one licence trap avoided.</span>
+        <span class="chips"><span class="chip stage">Step 5 Compose</span><span class="chip nogate">No gate</span></span>
+        <span class="fix"><span class="fixlab">Now</span>A real handwriting font, print not cursive, and non-commercial datasets are ruled out early.</span>
+      </li>
+      <li>
+        <span class="what">Handwriting blinked blank in the middle of its own animation.</span>
+        <span class="chips"><span class="chip stage">Step 6 Render and verify</span><span class="chip nogate">No gate</span></span>
+        <span class="fix"><span class="fixlab">Now</span>Frames get pulled from inside animations, not only where everything has settled.</span>
+      </li>
+      <li>
+        <span class="what">Eight paid music tracks died in a temporary folder.</span>
+        <span class="chips"><span class="chip stage">Step 7 Music</span><span class="chip nogate">No gate</span></span>
+        <span class="fix"><span class="fixlab">Now</span>Every paid track is saved to your music library the moment it is made, winner or not.</span>
+      </li>
+    </ul>
 
     <div class="grouphead">
       <h3>The 2026-08-03 voice trial</h3>
       <span>one entry</span>
     </div>
 
-    <div class="misses">
-
-      <article class="miss">
-        <div class="mhead"><span class="midx">16</span><h4>The local voice engine that did not beat Gemini</h4></div>
-        <div class="chips">
-          <span class="chip stage">Stage 2 Take</span>
-          <span class="chip nogate">No Igor gate</span>
-        </div>
-        <p>A local voice engine was set up to copy the shipped narrator on this Mac. The copy matched his pitch but read 25 to 30 percent faster with weak stops at the ends of sentences, which is the flat delivery Igor's ear rejects. The only way to direct it crashes the app, and slowing it down by that much is banned under the pace rules, so Gemini stays the narration engine. <span class="src">(knowledge/tts-voice-law.md)</span></p>
-        <p class="gateline"><b>Gate:</b> No Igor gate, and none needed: nothing from the trial was ever put in front of him as a candidate recording.</p>
-        <p class="nexttime"><b>Next time</b>Only revisit if a new release fixes the direction channel, and never on the version that needs more memory than this Mac has.</p>
-        <div class="missfoot"><span class="tag nobody">Nobody's miss</span><span class="tagnote">A budgeted trial that closed an open question and is written down so the next session does not reopen it.</span></div>
-      </article>
-
-    </div>
-
-    <p class="flowcap" style="max-width:70ch;text-align:left;padding-left:0">How this list was built: every entry in the workspace lessons list was read and marked either in scope (video work, mapped above) or out of scope, and the video-work entries are all here, together with the war stories that live in the handoffs and the knowledge docs but never became one line rules.</p>
+    <ul class="misslist" style="counter-reset:m 15">
+      <li>
+        <span class="what">A local voice engine was trialled and lost.</span>
+        <span class="chips"><span class="chip stage">Step 2 Take</span><span class="chip nogate">No gate</span></span>
+        <span class="fix"><span class="fixlab">Now</span>Gemini stays the narrator until new evidence, and the trial is written down so nobody reopens it.</span>
+      </li>
+    </ul>
   </div>
 </section>
 
@@ -1556,49 +1584,45 @@ footer .ramp{margin-bottom:18px}
   <div class="wrap">
     <div class="sechead">
       <p class="kicker">Cheat sheet</p>
-      <h2>How to steer</h2>
-      <p class="deck">Four moments, four answers. Each gate closes fastest when the answer contains the thing the gate is actually asking for, so these are phrases that can be said as they stand.</p>
+      <h2>What to say, when</h2>
+      <p class="deck">Four moments. Say any of these as they stand.</p>
     </div>
 
     <div class="steergrid">
 
       <article class="steer">
-        <p class="gnum">Gate 1, Stage 1, Script</p>
-        <h3>The exact words, permanently</h3>
+        <p class="gnum">Gate 1, the words</p>
         <ul class="says">
-          <li>"Yes, those are the words, generate the take."</li>
-          <li>"Scene 4 line 2 should say this instead: ..."</li>
-          <li>"Change nothing else, only that line, then go."</li>
+          <li><b>"Yes, those are the words, generate the take."</b></li>
+          <li><b>"Scene 4 line 2 should say this instead: ..."</b></li>
+          <li><b>"Change nothing else, only that line, then go."</b></li>
         </ul>
       </article>
 
       <article class="steer">
-        <p class="gnum">Gate 2, Stage 3, Cut and pace</p>
-        <h3>Pace against length</h3>
+        <p class="gnum">Gate 2, the pace</p>
         <ul class="says">
-          <li>"Natural pace at 3m15, ship that one."</li>
-          <li>"Take the 10 percent faster cut at 3m00."</li>
-          <li>"Give me both real durations before I pick."</li>
+          <li><b>"Natural pace at 3m15, ship that one."</b></li>
+          <li><b>"Take the 10 percent faster cut at 3m00."</b></li>
+          <li><b>"Give me both real durations before I pick."</b></li>
         </ul>
       </article>
 
       <article class="steer">
-        <p class="gnum">Gate 3, Stage 7, Music</p>
-        <h3>The register, not just a track</h3>
+        <p class="gnum">Gate 3, the music</p>
         <ul class="says">
-          <li>"Preview two, the cinematic one."</li>
-          <li>"None of the three, the register is wrong, go quiet motion."</li>
-          <li>"Send the previews with a music only hold in the slice."</li>
+          <li><b>"Use cine1."</b></li>
+          <li><b>"Preview two, the cinematic one."</b></li>
+          <li><b>"None of these, the mood is wrong, go quiet motion."</b></li>
         </ul>
       </article>
 
       <article class="steer">
-        <p class="gnum">Gate 4, Stage 9, Ship</p>
-        <h3>Shipping authority, decided in advance</h3>
+        <p class="gnum">Gate 4, going live</p>
         <ul class="says">
-          <li>"The plan ends live, ship it without asking again."</li>
-          <li>"Build it and stop before the push, I want to see it first."</li>
-          <li>"Anything outward facing I have not sanctioned, ask me."</li>
+          <li><b>"The plan ends live, ship it without asking again."</b></li>
+          <li><b>"Build it and stop before the push, I want to see it first."</b></li>
+          <li><b>"Anything outward facing I have not sanctioned, ask me."</b></li>
         </ul>
       </article>
 
@@ -1608,95 +1632,43 @@ footer .ramp{margin-bottom:18px}
 
 <section class="alt" id="rules">
   <div class="wrap">
-    <div class="twocol">
+    <div class="sechead">
+      <p class="kicker">Non negotiable</p>
+      <h2>The nine rules</h2>
+      <p class="deck">Each one was earned by something going wrong.</p>
+    </div>
+    <ol class="rules">
+      <li><strong>One recording, made in one go, measured before it is used.</strong></li>
+      <li><strong>Build the video from the real product's own styling.</strong></li>
+      <li><strong>Every number on screen comes from the product's own code.</strong></li>
+      <li><strong>Never edit the generated file. Edit the template and rebuild.</strong></li>
+      <li><strong>Build outside Google Drive. Copy in with a fingerprint check.</strong></li>
+      <li><strong>Music ships pre-mixed, ducked under the voice, fades baked in.</strong></li>
+      <li><strong>Igor signs off words, pace, music, and anything going outside.</strong></li>
+      <li><strong>No school logos and no school names in outward facing videos.</strong></li>
+      <li><strong>Reword stress-ambiguous words before recording. One bad reading costs everything.</strong></li>
+    </ol>
+  </div>
+</section>
 
-      <div>
-        <div class="sechead">
-          <p class="kicker">Non negotiable</p>
-          <h2>Hard rules in plain words</h2>
-          <p class="deck">The nine rules the pipeline will not break, each earned by something going wrong before.</p>
-        </div>
-        <ol class="rules">
-          <li><strong>One voice recording, made in one go, measured before it is used.</strong> Never recorded line by line, never stretched line by line, never shipped unmeasured. Slowing individual scenes cut out of that one recording is allowed and capped, because the voice cannot drift inside a single performance.</li>
-          <li><strong>The video is built from the real product's own stylesheet</strong>, so what you see is the product, not a drawing of it.</li>
-          <li><strong>Every number on screen is calculated by the product's own code.</strong> Anything that cannot be is labelled proposed or illustrative on screen.</li>
-          <li><strong>Never edit the generated file.</strong> Edit the template and rebuild.</li>
-          <li><strong>Build in a temporary working folder and copy into Google Drive with a fingerprint check</strong>, because Drive reverts edits made in place.</li>
-          <li><strong>Music ships already mixed, ducked under the voice, with its fades baked into the file</strong>, and Igor picks the track from measured previews, so what he previews is what renders.</li>
-          <li><strong>Four things need Igor's sign-off:</strong> script wording, the pace against length trade-off, the music pick, and anything outward-facing. Shipped means pushed, live-verified, and the exact link in his hand.</li>
-          <li><strong>No school logos or school names on screen</strong> in outward-facing videos, even where the product itself shows them. Neutral product styling stays.</li>
-          <li><strong>Sweep the script for words that change meaning with stress before recording</strong> (present, live, read, record, project), because one wrong reading costs the entire recording. The final spoken phrase also gets its visual inside the closing scene, not only on the end card.</li>
-        </ol>
-      </div>
-
-      <div class="gloss-wrap" id="glossary">
-        <div class="sechead">
-          <p class="kicker">The words used here</p>
-          <h2>Glossary</h2>
-          <p class="deck">Everything the pipeline says out loud, in plain terms.</p>
-        </div>
-        <div class="gloss">
-          <p class="gterm"><b>acrossfade (ffmpeg's name for a crossfade)</b> = joining a short track to a copy of itself with a smooth overlap so a looped bed has no audible seam.</p>
-          <p class="gterm"><b>adj_mean / adj_max</b> = two numbers from the take score. adj_mean is how different neighbouring scenes sound on average; adj_max is the worst single pair. A worst pair two or three times the average means one scene jumps, so the recording is thrown away.</p>
-          <p class="gterm"><b>amix / normalize=0</b> = the command that mixes two audio tracks together; without <code>normalize=0</code> it quietly drops the narration about 6 dB and the preview stops matching the final render.</p>
-          <p class="gterm"><b>at() / atf()</b> = the two ways to time a cue: <code>at</code> is a fixed number of seconds into a line, <code>atf</code> is a fraction of the line, so it still lands correctly if the line gets shorter.</p>
-          <p class="gterm"><b>atempo</b> = the ffmpeg speed knob for audio; it MULTIPLIES speed, so slowing down needs a number below 1 (192 wpm to 167 wpm is 0.87).</p>
-          <p class="gterm"><b>bpm</b> = beats per minute, the tempo of a music track.</p>
-          <p class="gterm"><b>clip_media_fit</b> = the harmless warning that an audio clip is shorter than the slot it sits in, normal here because of the lead, tail and silent end card.</p>
-          <p class="gterm"><b>companion page</b> = the web page that carries the video plus the same argument in readable form for people who never press play.</p>
-          <p class="gterm"><b>cue</b> = the instruction that fires an on-screen animation at a specific moment of the narration.</p>
-          <p class="gterm"><b>dB (decibel)</b> = the unit for "how much louder or quieter"; small numbers matter here, 1.6 dB is how much the same voice differs from itself, while 3.62 dB between neighbouring scenes was audible enough to throw a take away.</p>
-          <p class="gterm"><b>deterministic render</b> = the same input always producing the identical output frames, which is why random number generators are banned in the visuals.</p>
-          <p class="gterm"><b>drift</b> = the voice slowly changing character across the video, or jumping between scenes, because the model re-invents the speaker each time it is asked.</p>
-          <p class="gterm"><b>drift EQ (deflutter)</b> = a gentle tone correction that flattens that slow change; it alters colour only, never timing, and must be run exactly once.</p>
-          <p class="gterm"><b>duck-mix</b> = automatically dipping the music whenever the narrator speaks and letting it rise again in the gaps, instead of leaving the music permanently quiet.</p>
-          <p class="gterm"><b>end card</b> = the silent held card after the last spoken word that points viewers at the companion page; adding it lengthens the video and forces a music re-bake.</p>
-          <p class="gterm"><b>ffmpeg / ffprobe</b> = the command-line tools that cut, mix, measure and convert audio and video; ffprobe reads properties, ffmpeg does the work.</p>
-          <p class="gterm"><b>file://</b> = opening a page as a local file rather than through a server; scripts do not run that way, which is why "broken" reports were false alarms.</p>
-          <p class="gterm"><b>formants</b> = the resonances that give a voice its identity; stretching by different amounts smears them, so the voice stops sounding like one person.</p>
-          <p class="gterm"><b>freeze-safe</b> = the rule that if animation never runs, the frozen frame still looks finished, because the resting state IS the final state.</p>
-          <p class="gterm"><b>Gemini / Charon</b> = the text-to-speech model in use and the specific narrator voice chosen from it.</p>
-          <p class="gterm"><b>getBoundingClientRect</b> = the browser measurement of exactly where an element sits on screen, trusted over screenshots.</p>
-          <p class="gterm"><b>GSAP</b> = the animation library driving the on-screen motion timeline.</p>
-          <p class="gterm"><b>headless Chrome</b> = a browser running invisibly for automated screenshots and rendering; it refuses to lay out narrower than 500px.</p>
-          <p class="gterm"><b>heteronym</b> = a word whose meaning changes with where the stress falls (PRESent versus preSENT, live, read, record, project); the model can pick the wrong reading and force a full retake, so these get reworded first.</p>
-          <p class="gterm"><b>highpass</b> = a filter that removes the low rumble below a set frequency (240 Hz for the bed), so the music stops crowding the voice.</p>
-          <p class="gterm"><b>holds</b> = deliberate silent gaps in the narration (cold open, act turns, end card) that exist so the music can be heard on its own for a couple of seconds.</p>
-          <p class="gterm"><b>immediateRender:false</b> = the flag that stops the animation library from applying a "start" state at time zero and leaving the element looking wrong until its cue.</p>
-          <p class="gterm"><b>LEAD / TAIL</b> = the silence deliberately left at the start and end of the narration track.</p>
-          <p class="gterm"><b>ledger / provenance</b> = the written record of where an asset came from (track name, author, id, licence, what was done to it), kept in the shipping README.</p>
-          <p class="gterm"><b>lint / check</b> = the automatic pre-render inspection for overlapping clips, layout problems and contrast issues.</p>
-          <p class="gterm"><b>loudnorm</b> = the ffmpeg filter that normalises a file to a target loudness (LUFS), used to set the narrator level and the bed level.</p>
-          <p class="gterm"><b>LUFS</b> = how loud a track FEELS to a human ear over time, not its peak level. The narrator sits at -16 LUFS. The bed is now baked at about -19 LUFS and ducked under the voice; the old fixed -31 LUFS bed, about 15 dB underneath and never ducked, is superseded because it could not be heard.</p>
-          <p class="gterm"><b>Lyria</b> = the paid Google model used to generate custom music beds; its output is non-deterministic, so every take must be saved.</p>
-          <p class="gterm"><b>md5</b> = a short fingerprint of a file's contents; two files with the same md5 are identical, which is how a live upload is proved to match the local render.</p>
-          <p class="gterm"><b>pace cap</b> = the safety net at stage 3: any scene reading faster than 192 words a minute is slowed back to that ceiling, never below 0.84 of its speed, and only ever downward. It exists because the voice engine accelerates through a long recording.</p>
-          <p class="gterm"><b>phonetic floor</b> = how much the same voice differs from itself just because the words are different (about 1.6 dB on this script). Neighbouring scenes have to sit below it to count as the same person.</p>
-          <p class="gterm"><b>poster frame</b> = the still image shown before the video starts, cut from the final render so the still and the first frame match.</p>
-          <p class="gterm"><b>register (music)</b> = the overall character or mood family of a track (upbeat corporate, minimal tech pulse, cinematic documentary), each with its own tempo and instruments.</p>
-          <p class="gterm"><b>register (voice)</b> = the pitch and tone level a narrator settles into; a "register shift" is the audible jump that got two versions rejected.</p>
-          <p class="gterm"><b>score_take.py</b> = the script that scores a recording and prints the accept-or-regenerate numbers; running it is not optional.</p>
-          <p class="gterm"><b>scratchpad</b> = the temporary working folder outside Google Drive where all building happens, because Drive silently reverts edits made in place.</p>
-          <p class="gterm"><b>split.mjs</b> = the script that cuts the one long recording into scenes, sets the speed, applies the pace cap and writes the timings.</p>
-          <p class="gterm"><b>seek</b> = jumping the video to an arbitrary moment; everything must draw correctly from a cold jump, which is why nothing may depend on animation having already played.</p>
-          <p class="gterm"><b>sidechain (sidechaincompress)</b> = the tool that does the ducking: it listens to the narration track and turns the music down in response to it.</p>
-          <p class="gterm"><b>spectral / timbre</b> = the "colour" of a sound, meaning which frequencies it is made of, measured here to prove two scenes sound like the same person.</p>
-          <p class="gterm"><b>spectral centroid</b> = the brightness measure of a sound, the average frequency where its energy sits; a big spread between scenes means the voice wandered.</p>
-          <p class="gterm"><b>srt</b> = a plain-text subtitle file with timings, shipped alongside the video rather than burned into the picture.</p>
-          <p class="gterm"><b>stagger</b> = starting several similar animations one after another with a fixed delay, so items arrive in sequence rather than all at once.</p>
-          <p class="gterm"><b>sticky</b> = a CSS behaviour that pins an element in place while the page scrolls; here the player pins under the masthead only while it is playing.</p>
-          <p class="gterm"><b>take</b> = one complete generated recording of the whole script, produced by a single request; the unit that gets accepted or thrown away.</p>
-          <p class="gterm"><b>time-stretch</b> = making audio longer or shorter without changing its pitch; doing it to lines that were recorded separately is what made the narrator sound like two people. Slowing scenes cut out of ONE recording does not carry that risk.</p>
-          <p class="gterm"><b>timings.json</b> = the generated file that records where every scene starts and how long it lasts; the animation cues read from it, and it is never hand-edited.</p>
-          <p class="gterm"><b>TOTAL</b> = the full length of the finished composition in seconds; when it changes, the music bed and its fade have to be rebuilt to match.</p>
-          <p class="gterm"><b>transient rate (onsets per second)</b> = how often new notes start; a sustained pad scores near zero, which now disqualifies it as "sleepy".</p>
-          <p class="gterm"><b>TTS</b> = text to speech, the model that turns the written script into the narrator's voice.</p>
-          <p class="gterm"><b>volumedetect</b> = the quick ffmpeg meter used to check whether a region of the finished video is at the expected level.</p>
-          <p class="gterm"><b>worktree</b> = a second working copy of the same repository, used so ship-time work is isolated and pinned to the current main branch.</p>
-          <p class="gterm"><b>wpm</b> = words per minute, the reading pace of the narration; the target is 165 with an accept band of 152 to 178.</p>
-        </div>
-      </div>
-
+<section id="glossary">
+  <div class="wrap gloss-wrap">
+    <div class="sechead">
+      <p class="kicker">The words used here</p>
+      <h2>Glossary</h2>
+      <p class="deck">Ten terms, one line each.</p>
+    </div>
+    <div class="gloss">
+      <p class="gterm"><b>take</b> = one complete recording of the whole script, made in one request.</p>
+      <p class="gterm"><b>gate</b> = a moment the factory stops and waits for your answer.</p>
+      <p class="gterm"><b>mood family (register)</b> = the character of a music track: cinematic, corporate drive, tech pulse.</p>
+      <p class="gterm"><b>ducking</b> = the music dips while the narrator speaks and rises again in the gaps.</p>
+      <p class="gterm"><b>hold</b> = a deliberate silent gap in the narration so the music can be heard alone.</p>
+      <p class="gterm"><b>pace cap</b> = the safety net that slows any scene reading too fast, never speeds one up.</p>
+      <p class="gterm"><b>cue</b> = the instruction that fires an on-screen animation at a chosen moment.</p>
+      <p class="gterm"><b>end card</b> = the silent card held after the last spoken word.</p>
+      <p class="gterm"><b>companion page</b> = the web page that carries the video plus the same argument in writing.</p>
+      <p class="gterm"><b>sweep</b> = one round of generating nine new music tracks to brief, about 72 cents.</p>
     </div>
   </div>
 </section>
@@ -1707,10 +1679,6 @@ footer .ramp{margin-bottom:18px}
     <p>Built 2026-08-04 from PLAYBOOK.md, no external assets.</p>
   </div>
 </footer>
-
-
-
-
 
 </body>
 </html>
