@@ -3,7 +3,7 @@
   <div class="sbody">
     <div class="shead">
       <div class="kick"><i class="stripe"></i> Save and lock</div>
-      <h2>One tap, and the observation <em>freezes</em></h2>
+      <h2>Everything is saved, <em>ready for review</em></h2>
     </div>
 
     <div class="s5wrap">
@@ -46,7 +46,11 @@
             <span class="s5cn"><i>02</i> Students make progress</span>
             <span class="s5rr">
               <span class="s5rate">1</span><span class="s5rate">2</span>
-              <span class="s5rate sel"><span class="s5num">3</span><i class="s5sel">3</i></span>
+              <!-- the chip's own digit and the box's digit are the SAME character
+                   in the SAME 21px box (see s05_lock.cues.js): one crossfades out
+                   exactly as the other crossfades in, so this never shows two
+                   different pieces of text, only one number changing colour. -->
+              <span class="s5rate sel" data-layout-allow-overlap><span class="s5num">3</span><i class="s5sel">3</i></span>
               <span class="s5rate">4</span><span class="s5rate">5</span><span class="s5rate">6</span>
             </span>
           </div>
@@ -54,7 +58,11 @@
             <span class="s5cn"><i>05</i> Teaching</span>
             <span class="s5rr">
               <span class="s5rate">1</span><span class="s5rate">2</span>
-              <span class="s5rate sel"><span class="s5num">3</span><i class="s5sel">3</i></span>
+              <!-- the chip's own digit and the box's digit are the SAME character
+                   in the SAME 21px box (see s05_lock.cues.js): one crossfades out
+                   exactly as the other crossfades in, so this never shows two
+                   different pieces of text, only one number changing colour. -->
+              <span class="s5rate sel" data-layout-allow-overlap><span class="s5num">3</span><i class="s5sel">3</i></span>
               <span class="s5rate">4</span><span class="s5rate">5</span><span class="s5rate">6</span>
             </span>
           </div>
@@ -62,7 +70,11 @@
             <span class="s5cn"><i>06</i> Assessment</span>
             <span class="s5rr">
               <span class="s5rate">1</span><span class="s5rate">2</span><span class="s5rate">3</span>
-              <span class="s5rate sel"><span class="s5num">4</span><i class="s5sel">4</i></span>
+              <!-- the chip's own digit and the box's digit are the SAME character
+                   in the SAME 21px box (see s05_lock.cues.js): one crossfades out
+                   exactly as the other crossfades in, so this never shows two
+                   different pieces of text, only one number changing colour. -->
+              <span class="s5rate sel" data-layout-allow-overlap><span class="s5num">4</span><i class="s5sel">4</i></span>
               <span class="s5rate">5</span><span class="s5rate">6</span>
             </span>
           </div>
@@ -76,7 +88,8 @@
             <span class="s5btn s5submit" id="s5submit">Save &amp; Lock<i class="s5press" id="s5press"></i><i class="s5ripple" id="s5ripple"></i></span>
           </div>
           <div class="s5grp" id="s5locked">
-            <span class="s5btn s5new">New observation</span>
+            <!-- action-bar swap: this opaque button crosses over Save & Lock mid-swap by design -->
+            <span class="s5btn s5new" data-layout-allow-overlap>New observation</span>
           </div>
         </div>
       </div>

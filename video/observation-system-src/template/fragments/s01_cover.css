@@ -1,17 +1,81 @@
-/* A . the journey spine. Navy stage, one drawn route, three lit milestones.
-   Resting state is the FINISHED route: the spine is fully drawn (dashoffset 0),
-   every node is lit, both captions read. Every entrance is a GSAP .from(). */
+/* ===========================================================================
+   THE SPINE SYSTEM . one geometry, five scenes
+   s01 (cover), t1/t2/t3 (step transitions) and s15 (loop close) all opt in
+   with class="jscene" on the section, so the spine is pixel identical
+   wherever it appears. Own the geometry here, never per scene.
 
-#sc01 {
+   GEOMETRY LAW (do not re-space by eye, Igor rejected label-width spacing):
+     line   x 250 -> 1670 at y 640, length 1420, so it is centred on 960
+     nodes  at EXACTLY 25 / 50 / 75 % of the line length
+              250 + 0.25 * 1420 =  605   Observe        (eye)
+              250 + 0.50 * 1420 =  960   Evidence       (doc)
+              250 + 0.75 * 1420 = 1315   Coaching Plan  (chart)
+     labels centred under their own node: .jnode is 320 wide with
+            margin-left -160, so the box centre IS the node x, whatever the
+            label says. Equal spacing, independent of text width.
+
+   Resting state is the FINISHED route: spine fully drawn (dashoffset 0),
+   every node lit, every pulse spent. Every entrance is a GSAP .from().
+   =========================================================================== */
+
+.jscene {
   /* the navy stage wants the dark-theme accents; the light --y (#C9890C) goes
      muddy on #0a1430. Same hue family, board's own dark tokens. */
   --gold: #F0B02A;
   --gold-soft: rgba(240, 176, 42, .55);
 }
 
-#sc01 .jstage { position: absolute; inset: 0; z-index: 2 }
+.jscene .jstage { position: absolute; inset: 0; z-index: 2 }
 
-/* ---- title ---- */
+/* ---- the route group: one transform handle for the whole map ---- */
+.jscene .jroute { position: absolute; inset: 0; transform-origin: 50% 56% }
+.jscene .jglow {
+  position: absolute; left: 130px; right: 130px; top: 380px; height: 520px; border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(closest-side, rgba(240, 176, 42, .155), rgba(240, 176, 42, .05) 55%, transparent 78%);
+}
+.jscene .jsvg { position: absolute; inset: 0 }
+
+.jscene .jtrack { stroke: rgba(255, 255, 255, .12); stroke-width: 2; stroke-linecap: round }
+.jscene .jspine {
+  stroke: var(--gold); stroke-width: 4; stroke-linecap: round;
+  stroke-dasharray: 1420; stroke-dashoffset: 0;      /* resting = fully drawn */
+  filter: drop-shadow(0 0 14px rgba(240, 176, 42, .34));
+}
+.jscene .jcap { fill: var(--gold); filter: drop-shadow(0 0 12px rgba(240, 176, 42, .5)) }
+
+/* the leading edge of the draw. Invisible at rest: it is a transient. */
+.jscene .jtrav {
+  position: absolute; left: 250px; top: 640px; width: 22px; height: 22px; margin: -11px 0 0 -11px;
+  border-radius: 50%; background: #FFD98A; opacity: 0; pointer-events: none;
+  box-shadow: 0 0 30px 10px rgba(240, 176, 42, .5);
+}
+
+/* ---- milestones ---- */
+.jscene .jnode {
+  position: absolute; top: 640px; width: 320px; margin-left: -160px; margin-top: -58px; text-align: center;
+  /* the ring centre, so a step transition can grow a node about its own icon
+     instead of about the label block: scale then moves nothing but size. */
+  transform-origin: 50% 58px;
+}
+.jscene .jring {
+  position: relative; width: 116px; height: 116px; margin: 0 auto; border-radius: 50%;
+  border: 2px solid var(--gold); color: var(--gold);
+  background: radial-gradient(closest-side, #14224b, #0c1734);
+  box-shadow: 0 0 38px rgba(240, 176, 42, .28), inset 0 0 24px rgba(240, 176, 42, .10);
+  display: flex; align-items: center; justify-content: center;
+}
+.jscene .jring > svg { width: 54px; height: 54px; overflow: visible }
+.jscene .jpulse {
+  position: absolute; inset: -10px; border-radius: 50%; border: 2px solid rgba(240, 176, 42, .8);
+  opacity: 0; pointer-events: none;                   /* resting = spent */
+}
+.jscene .jlab {
+  margin-top: 26px; font-family: var(--display); font-weight: 600; font-size: 37px;
+  line-height: 1.1; letter-spacing: -.012em; color: #fff;
+}
+
+/* ---- s01 only: the cover title ---- */
 #sc01 .jhead { position: absolute; left: 0; right: 0; top: 140px; text-align: center }
 #sc01 .jtitle {
   font-family: var(--display); font-weight: 600; font-size: 94px; line-height: 1;
@@ -23,52 +87,33 @@
   background: linear-gradient(90deg, #F0B02A, #3CBB6C, #3f7bff);
 }
 
-/* ---- the route (this whole group is what zooms out at the end) ---- */
-#sc01 .jroute { position: absolute; inset: 0; transform-origin: 50% 56% }
-#sc01 .jglow {
-  position: absolute; left: 130px; right: 130px; top: 380px; height: 520px; border-radius: 50%;
-  pointer-events: none;
-  background: radial-gradient(closest-side, rgba(240, 176, 42, .155), rgba(240, 176, 42, .05) 55%, transparent 78%);
-}
-#sc01 .jsvg { position: absolute; inset: 0 }
+/* ===========================================================================
+   STEP TRANSITIONS (t1 / t2 / t3), built on the spine system above.
+   Each scene opens on the cover's own spine, then one node detaches, flies to
+   the centre of the frame and grows with its label while the rest of the map
+   recedes to a dim strip at the bottom. Final frame: chip + one big node.
+   The flight targets are geometry, so they live in the cues:
+     ring centre goes to (960, 470) at scale 2.2
+     x = 960 - node x   ->  +355 | 0 | -355        y = 470 - 640 = -170
+   The map recedes with scale .78 and y +260 about its own 50% 56% origin,
+   which lands it at y 847 .. 990: clear of the big label (bottom 744).
+   =========================================================================== */
+.tstep { --tstep-accent: #F0B02A }              /* per scene, in t*_step*.css */
 
-#sc01 .jtrack { stroke: rgba(255, 255, 255, .12); stroke-width: 2; stroke-linecap: round }
-#sc01 .jspine {
-  stroke: var(--gold); stroke-width: 4; stroke-linecap: round;
-  stroke-dasharray: 1420; stroke-dashoffset: 0;      /* resting = fully drawn */
-  filter: drop-shadow(0 0 14px rgba(240, 176, 42, .34));
+.tstep .tchiprow { position: absolute; left: 0; right: 0; top: 232px; text-align: center; z-index: 4 }
+.tstep .tchip {
+  display: inline-flex; align-items: center; gap: 14px;
+  font-family: var(--body); font-weight: 700; font-size: 26px; line-height: 1;
+  letter-spacing: .22em; text-transform: uppercase; color: rgba(255, 255, 255, .93);
+  border: 1px solid rgba(255, 255, 255, .20); border-radius: 40px; padding: 14px 30px 14px 26px;
+  background: rgba(255, 255, 255, .05);
 }
-#sc01 .jcap { fill: var(--gold); filter: drop-shadow(0 0 12px rgba(240, 176, 42, .5)) }
-
-/* the leading edge of the draw. Invisible at rest: it is a transient. */
-#sc01 .jtrav {
-  position: absolute; left: 250px; top: 640px; width: 22px; height: 22px; margin: -11px 0 0 -11px;
-  border-radius: 50%; background: #FFD98A; opacity: 0; pointer-events: none;
-  box-shadow: 0 0 30px 10px rgba(240, 176, 42, .5);
-}
-
-/* ---- milestones ---- */
-#sc01 .jnode { position: absolute; top: 640px; width: 320px; margin-left: -160px; margin-top: -58px; text-align: center }
-#sc01 .jring {
-  position: relative; width: 116px; height: 116px; margin: 0 auto; border-radius: 50%;
-  border: 2px solid var(--gold); color: var(--gold);
-  background: radial-gradient(closest-side, #14224b, #0c1734);
-  box-shadow: 0 0 38px rgba(240, 176, 42, .28), inset 0 0 24px rgba(240, 176, 42, .10);
-  display: flex; align-items: center; justify-content: center;
-}
-#sc01 .jring > svg { width: 54px; height: 54px; overflow: visible }
-#sc01 .jpulse {
-  position: absolute; inset: -10px; border-radius: 50%; border: 2px solid rgba(240, 176, 42, .8);
-  opacity: 0; pointer-events: none;                   /* resting = spent */
-}
-#sc01 .jlab {
-  margin-top: 26px; font-family: var(--display); font-weight: 600; font-size: 37px;
-  line-height: 1.1; letter-spacing: -.012em; color: #fff;
+.tstep .tchip i {
+  width: 12px; height: 12px; border-radius: 50%; flex: none;
+  background: var(--tstep-accent); box-shadow: 0 0 16px var(--tstep-accent);
 }
 
-/* ---- closing line ---- */
-#sc01 .jtext {
-  position: absolute; left: 0; right: 0; top: 906px; text-align: center;
-  font-family: var(--display); font-style: italic; font-weight: 500; font-size: 44px;
-  letter-spacing: .004em; color: rgba(255, 255, 255, .87);
-}
+/* the hero node lives in its own route layer at the SAME coordinates as the
+   map, so the scene opens pixel identical to the cover and the flight does
+   not inherit the map's recede. */
+.tstep .theroute { z-index: 3 }

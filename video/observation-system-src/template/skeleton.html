@@ -22,32 +22,32 @@
 
       <!-- ============ 1 . COVER (the journey spine; a fragment like every other scene) ============ -->
       <!-- @@SECTION:s01_cover@@ -->
+      <!-- the three step transitions: the cover's spine hands the stage to one
+           node at a time. Same .jscene geometry, so t1 match cuts from s01. -->
+      <!-- @@SECTION:t1_step1@@ -->
+      <!-- ---- act 1 . the observation itself ---- -->
       <!-- @@SECTION:s02_form@@ -->
       <!-- @@SECTION:s03_scale@@ -->
       <!-- @@SECTION:s04_pad@@ -->
       <!-- @@SECTION:s05_lock@@ -->
       <!-- @@SECTION:s06_pipeline@@ -->
+      <!-- @@SECTION:t2_step2@@ -->
+      <!-- ---- act 2 . the collected evidence: story, the data set, progression,
+                  the references under it, the report, coverage ---- -->
       <!-- @@SECTION:s07_story@@ -->
-      <!-- @@SECTION:s08_evidence@@ -->
+      <!-- the data set: v2.4 scene, sits after the dashboard story in scenes.json -->
+      <!-- @@SECTION:s16_dataset@@ -->
       <!-- @@SECTION:s09_movement@@ -->
+      <!-- @@SECTION:s08_evidence@@ -->
+      <!-- @@SECTION:s13_report@@ -->
       <!-- @@SECTION:s10_coverage@@ -->
+      <!-- @@SECTION:t3_step3@@ -->
+      <!-- ---- act 3 . the coaching plan ---- -->
       <!-- @@SECTION:s11_teacher@@ -->
       <!-- @@SECTION:s12_portal@@ -->
-      <!-- @@SECTION:s13_report@@ -->
-      <!-- @@SECTION:s14_trust@@ -->
 
-      <!-- ============ 15 . CLOSE ============ -->
-      <section class="scene clip" id="sc15" data-start="{{START:s15_close}}" data-duration="{{DUR:s15_close}}" data-track-index="1">
-        <div class="sbody">
-          <div class="beat-h" id="s15h" style="max-width:24ch;font-size:56px">A lesson observed. Evidence kept.<br /><em>A plan in the teacher's hand.</em></div>
-          <div class="flowstrip three" id="s15flow" style="margin-top:48px">
-            <div class="fstep"><div class="ft">One system</div><div class="fs">Form, pipeline, dashboard</div></div>
-            <div class="fstep"><div class="ft">Built inside a school</div><div class="fs">Running live, in real classrooms</div></div>
-            <div class="fstep new"><span class="ftag">Ready</span><div class="ft">Ready to travel</div><div class="fs">Same rails for any school</div></div>
-          </div>
-          <div class="beat-h" id="s15bns" style="margin-top:54px;font-size:64px">Better <em>never</em> stops.</div>
-        </div>
-      </section>
+      <!-- ============ 15 . CLOSE (the loop; a fragment like every other scene) ============ -->
+      <!-- @@SECTION:s15_close@@ -->
 
       <!-- ============ 16 . END CARD (silent, back to the cover) ============ -->
       <section class="scene navy clip" id="sc16" data-start="{{START:s16_end}}" data-duration="{{DUR:s16_end}}" data-track-index="1">
@@ -73,6 +73,10 @@
         }
         document.getElementById('coverStars').innerHTML = html;
         document.getElementById('endStars').innerHTML = html;
+        /* every other navy spine scene (t1/t2/t3, s15) opts in with
+           data-stars-seed and gets the SAME field, so the cuts between them
+           never reshuffle the sky. */
+        document.querySelectorAll('.stars[data-stars-seed]').forEach(function (el) { el.innerHTML = html; });
       })();
 
       /* Cue times are derived from the narration track, injected at build time,
@@ -106,24 +110,24 @@
       }
 
       /* @@CUES:s01_cover@@ */
+      /* @@CUES:t1_step1@@ */
       /* @@CUES:s02_form@@ */
       /* @@CUES:s03_scale@@ */
       /* @@CUES:s04_pad@@ */
       /* @@CUES:s05_lock@@ */
       /* @@CUES:s06_pipeline@@ */
+      /* @@CUES:t2_step2@@ */
       /* @@CUES:s07_story@@ */
-      /* @@CUES:s08_evidence@@ */
+      /* @@CUES:s16_dataset@@ */
       /* @@CUES:s09_movement@@ */
+      /* @@CUES:s08_evidence@@ */
+      /* @@CUES:s13_report@@ */
       /* @@CUES:s10_coverage@@ */
+      /* @@CUES:t3_step3@@ */
       /* @@CUES:s11_teacher@@ */
       /* @@CUES:s12_portal@@ */
-      /* @@CUES:s13_report@@ */
-      /* @@CUES:s14_trust@@ */
 
-      /* 15 . close */
-      tl.from('#s15h', { opacity: 0, y: 20, duration: 0.9, ease: 'power3.out' }, at('s15_close', -0.3))
-        .from('#s15flow .fstep', { opacity: 0, y: 18, duration: 0.7, stagger: 0.22 }, at('s15_close', 0.9))
-        .from('#s15bns', { opacity: 0, y: 24, duration: 0.9, ease: 'power3.out' }, atf('s15_close', 0.86));   // "Better never stops" = words 23-25 of 25; visual lands ON the phrase, end card echoes it
+      /* @@CUES:s15_close@@ */
 
       /* 16 . end card (silent, held after the narration) */
       tl.from('#sc16 .coverk', { opacity: 0, y: 12, duration: 0.8 }, at('s16_end', 0.6))

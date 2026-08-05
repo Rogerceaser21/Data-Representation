@@ -1,5 +1,9 @@
-<!-- ============ A . THE JOURNEY SPINE ============ -->
-<section class="scene navy clip" id="sc01" data-start="{{START:s01_cover}}" data-duration="{{DUR:s01_cover}}" data-track-index="1">
+<!-- ============ A . THE JOURNEY SPINE (cover) ============
+     Geometry law lives in s01_cover.css: the line is centred on 960 and the
+     three nodes sit at 25 / 50 / 75 % of the line length (x = 605 / 960 /
+     1315), so the spacing is equal by construction and is never derived from
+     label width. t1/t2/t3 and s15 reuse these classes and these same x. -->
+<section class="scene navy clip jscene" id="sc01" data-start="{{START:s01_cover}}" data-duration="{{DUR:s01_cover}}" data-track-index="1">
   <div class="stars" id="coverStars" data-layout-allow-overflow></div>
 
   <div class="jstage">
@@ -20,7 +24,7 @@
 
       <div class="jtrav" id="jtrav"></div>
 
-      <div class="jnode" id="jn1" style="left:508px">
+      <div class="jnode" id="jn1" style="left:605px">
         <div class="jring">
           <i class="jpulse"></i>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -31,7 +35,7 @@
         <div class="jlab">Observe</div>
       </div>
 
-      <div class="jnode" id="jn2" style="left:1024px">
+      <div class="jnode" id="jn2" style="left:960px">
         <div class="jring">
           <i class="jpulse"></i>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -43,7 +47,7 @@
         <div class="jlab">Evidence</div>
       </div>
 
-      <div class="jnode" id="jn3" style="left:1541px">
+      <div class="jnode" id="jn3" style="left:1315px">
         <div class="jring">
           <i class="jpulse"></i>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -55,7 +59,5 @@
         <div class="jlab">Coaching Plan</div>
       </div>
     </div>
-
-    <div class="jtext" id="jtext">Here is the whole journey</div>
   </div>
 </section>

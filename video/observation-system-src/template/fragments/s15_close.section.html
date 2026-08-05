@@ -1,0 +1,72 @@
+<!-- ============ 15 . CLOSE (the loop) ============
+     The cover's spine returns, whole and symmetric (same .jscene classes,
+     same line, same node x 605 / 960 / 1315), and this time a return path
+     closes it: an arc below the line from the Coaching Plan node back to the
+     Observe node. The arc is drawn once, on "the journey starts again".
+
+     Loop geometry, symmetric about x 960 like everything else in the system:
+       it leaves the Coaching Plan ring at (1369.5, 659.8), 20 degrees below
+       the line, runs out past that node's label, drops at x 1676 (under the
+       line's own end cap), crosses back at y 940 (175px below the labels),
+       rises at x 244 (under the left cap) and arrives at the Observe ring at
+       (550.5, 659.8) pointing at its centre. Path length 2318, so
+       .jloop carries stroke-dasharray 2320. -->
+<section class="scene navy clip jscene" id="sc15" data-start="{{START:s15_close}}" data-duration="{{DUR:s15_close}}" data-track-index="1">
+  <div class="stars" id="s15stars" data-stars-seed data-layout-allow-overflow></div>
+
+  <div class="jstage">
+    <div class="jroute" id="s15route">
+      <div class="jglow"></div>
+
+      <svg class="jsvg" viewBox="0 0 1920 1080" width="1920" height="1080" fill="none">
+        <line class="jtrack" x1="250" y1="640" x2="1670" y2="640" />
+        <path class="jspine" id="s15spine" d="M250 640 H1670" />
+        <path class="jloop" id="s15loop" d="M1369.5 659.8 C1425.5 679.8 1460 700 1520 700 C1626 700 1676 756 1676 830 C1676 902 1610 940 1490 940 L430 940 C310 940 244 902 244 830 C244 756 294 700 400 700 C460 700 494.5 679.8 550.5 659.8" />
+        <g class="jloopend" id="s15arrow" transform="translate(550.5 659.8) rotate(-20)">
+          <path d="M0 0 L-20 -7.6 L-20 7.6 Z" />
+        </g>
+        <circle class="jcap" cx="250" cy="640" r="8" />
+        <circle class="jcap" cx="1670" cy="640" r="8" />
+      </svg>
+
+      <div class="jtrav" id="s15trav"></div>
+
+      <div class="jnode" id="s15n1" style="left:605px">
+        <div class="jring">
+          <i class="jpulse"></i>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1.8 12S5.6 5.6 12 5.6 22.2 12 22.2 12 18.4 18.4 12 18.4 1.8 12 1.8 12Z" />
+            <circle cx="12" cy="12" r="3.1" />
+          </svg>
+        </div>
+        <div class="jlab">Observe</div>
+      </div>
+
+      <div class="jnode" id="s15n2" style="left:960px">
+        <div class="jring">
+          <i class="jpulse"></i>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7.6 4.2h8.2a2 2 0 0 1 2 2v10.4" />
+            <rect x="3.4" y="7.4" width="12.4" height="12.4" rx="2" />
+            <path d="M6.4 11.4h6.4M6.4 14.2h6.4M6.4 17h4" />
+          </svg>
+        </div>
+        <div class="jlab">Evidence</div>
+      </div>
+
+      <div class="jnode" id="s15n3" style="left:1315px">
+        <div class="jring">
+          <i class="jpulse"></i>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 18.4 8.6 12.8l3.6 3.6L20.4 8.6" />
+            <path d="M15.4 8.6h5v5" />
+            <path d="M3 21.4h18" />
+          </svg>
+        </div>
+        <div class="jlab">Coaching Plan</div>
+      </div>
+    </div>
+
+    <div class="jclose" id="s15bns"><span class="w w1">Better</span> <span class="w w2"><em>never</em></span> <span class="w w3">stops.</span></div>
+  </div>
+</section>

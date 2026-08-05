@@ -5,7 +5,10 @@
           <div class="s11top" id="s11top">
             <div class="kick"><i class="stripe"></i> Observations &middot; teacher drill-down</div>
             <div class="thead">
-              <span class="tavatar" id="s11av"><img src="assets/faces/face-01.jpg" alt="" /></span>
+              <!-- the img is oversized (width:200%, left:-50%) to cover the circular
+                   frame regardless of its native aspect ratio; .tavatar clips it with
+                   overflow:hidden, so the photo never actually shows outside the circle. -->
+              <span class="tavatar" id="s11av" data-layout-allow-overflow><img src="assets/faces/face-01.jpg" alt="" /></span>
               <span class="who">
                 <h2>Eleanor Whitfield</h2>
                 <div class="meta">3 observations &nbsp;&middot;&nbsp; English &nbsp;&middot;&nbsp; Secondary &nbsp;&middot;&nbsp; June 2 &nbsp;&middot;&nbsp; February 1</div>
@@ -114,7 +117,7 @@
                   </div>
                 </div>
               </div>
-              <p class="ns-sum" id="s11sum">Drafted from her own lessons, then checked word for word against the source.</p>
+              <p class="ns-sum" id="s11sum">Drafted from her own lessons, then checked word for word against the observed lesson.</p>
               <div class="fc" id="s11fc" style="--cc:var(--b)">
                 <div class="fc-l">
                   <span class="ns-chip">Questioning</span>

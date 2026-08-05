@@ -12,17 +12,21 @@
   </head>
   <body>
     <!-- GENERATED FILE. Edit template/composition.html and run: node scripts/build.mjs -->
-    <div id="root" data-composition-id="main" data-start="0" data-duration="324" data-width="1920" data-height="1080">
+    <div id="root" data-composition-id="main" data-start="0" data-duration="341" data-width="1920" data-height="1080">
 
-      <audio id="narration" class="clip" data-start="0" data-duration="324" data-volume="1" src="assets/narration.mp3"></audio>
+      <audio id="narration" class="clip" data-start="0" data-duration="341" data-volume="1" src="assets/narration.mp3"></audio>
       <!-- bgm ships PRE-BAKED: Lyria 3 Pro bed (drive1), ducked against this exact narration, fades in the file, so preview = render -->
-      <audio id="bgm" class="clip" data-start="0" data-duration="324" data-volume="1" src="assets/music.mp3"></audio>
+      <audio id="bgm" class="clip" data-start="0" data-duration="341" data-volume="1" src="assets/music.mp3"></audio>
 
       <div class="bgwash" style="z-index:0"></div>
 
       <!-- ============ 1 . COVER (the journey spine; a fragment like every other scene) ============ -->
-      <!-- ============ A . THE JOURNEY SPINE ============ -->
-<section class="scene navy clip" id="sc01" data-start="1.95" data-duration="19.53" data-track-index="1">
+      <!-- ============ A . THE JOURNEY SPINE (cover) ============
+     Geometry law lives in s01_cover.css: the line is centred on 960 and the
+     three nodes sit at 25 / 50 / 75 % of the line length (x = 605 / 960 /
+     1315), so the spacing is equal by construction and is never derived from
+     label width. t1/t2/t3 and s15 reuse these classes and these same x. -->
+<section class="scene navy clip jscene" id="sc01" data-start="1.95" data-duration="17.99" data-track-index="1">
   <div class="stars" id="coverStars" data-layout-allow-overflow></div>
 
   <div class="jstage">
@@ -43,7 +47,7 @@
 
       <div class="jtrav" id="jtrav"></div>
 
-      <div class="jnode" id="jn1" style="left:508px">
+      <div class="jnode" id="jn1" style="left:605px">
         <div class="jring">
           <i class="jpulse"></i>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -54,7 +58,7 @@
         <div class="jlab">Observe</div>
       </div>
 
-      <div class="jnode" id="jn2" style="left:1024px">
+      <div class="jnode" id="jn2" style="left:960px">
         <div class="jring">
           <i class="jpulse"></i>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -66,7 +70,55 @@
         <div class="jlab">Evidence</div>
       </div>
 
-      <div class="jnode" id="jn3" style="left:1541px">
+      <div class="jnode" id="jn3" style="left:1315px">
+        <div class="jring">
+          <i class="jpulse"></i>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 18.4 8.6 12.8l3.6 3.6L20.4 8.6" />
+            <path d="M15.4 8.6h5v5" />
+            <path d="M3 21.4h18" />
+          </svg>
+        </div>
+        <div class="jlab">Coaching Plan</div>
+      </div>
+    </div>
+  </div>
+</section>
+      <!-- the three step transitions: the cover's spine hands the stage to one
+           node at a time. Same .jscene geometry, so t1 match cuts from s01. -->
+      <!-- ============ T1 . STEP ONE (the spine hands over to Observe) ============
+     Opens on the cover's own spine, pixel for pixel: same .jscene classes,
+     same line, same node x (605 / 960 / 1315). The hero node sits in its own
+     .theroute layer at its spine coordinate, so it can leave the map without
+     inheriting the map's recede. -->
+<section class="scene navy clip jscene tstep" id="sct1" data-start="19.94" data-duration="3.98" data-track-index="1">
+  <div class="stars" id="t1stars" data-stars-seed data-layout-allow-overflow></div>
+
+  <div class="jstage" id="t1stage">
+    <!-- the map: line, bed of light, end caps, and the two nodes that stay -->
+    <div class="jroute" id="t1map">
+      <div class="jglow"></div>
+
+      <svg class="jsvg" viewBox="0 0 1920 1080" width="1920" height="1080" fill="none">
+        <line class="jtrack" x1="250" y1="640" x2="1670" y2="640" />
+        <path class="jspine" d="M250 640 H1670" />
+        <circle class="jcap" cx="250" cy="640" r="8" />
+        <circle class="jcap" cx="1670" cy="640" r="8" />
+      </svg>
+
+      <div class="jnode" style="left:960px">
+        <div class="jring">
+          <i class="jpulse"></i>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7.6 4.2h8.2a2 2 0 0 1 2 2v10.4" />
+            <rect x="3.4" y="7.4" width="12.4" height="12.4" rx="2" />
+            <path d="M6.4 11.4h6.4M6.4 14.2h6.4M6.4 17h4" />
+          </svg>
+        </div>
+        <div class="jlab">Evidence</div>
+      </div>
+
+      <div class="jnode" style="left:1315px">
         <div class="jring">
           <i class="jpulse"></i>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -79,11 +131,26 @@
       </div>
     </div>
 
-    <div class="jtext" id="jtext">Here is the whole journey</div>
+    <!-- the hero: node 1, same markup, same coordinate, own layer -->
+    <div class="jroute theroute">
+      <div class="jnode thero" id="t1hero" style="left:605px">
+        <div class="jring">
+          <i class="jpulse"></i>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1.8 12S5.6 5.6 12 5.6 22.2 12 22.2 12 18.4 18.4 12 18.4 1.8 12 1.8 12Z" />
+            <circle cx="12" cy="12" r="3.1" />
+          </svg>
+        </div>
+        <div class="jlab">Observe</div>
+      </div>
+    </div>
+
+    <div class="tchiprow" id="t1chip"><span class="tchip"><i></i>Step 1</span></div>
   </div>
 </section>
+      <!-- ---- act 1 . the observation itself ---- -->
       <!-- ============ 2 . THE FORM (R3 Evidence Form, header + 18 cell context grid) ============ -->
-<section class="scene clip" id="sc02" data-start="21.48" data-duration="22.22" data-track-index="1">
+<section class="scene clip" id="sc02" data-start="23.92" data-duration="21.26" data-track-index="1">
   <div class="sbody">
     <div class="dev" id="s2dev">
       <div class="form-container" id="s2card">
@@ -232,7 +299,7 @@
   </div>
 </section>
       <!-- ============ 3 . THE REGULATORY BODY'S SCALE (judgement key + 10 criteria) ============ -->
-<section class="scene clip" id="sc03" data-start="43.7" data-duration="21.17" data-track-index="1">
+<section class="scene clip" id="sc03" data-start="45.18" data-duration="21.91" data-track-index="1">
   <div class="sbody">
     <div class="dev" id="s3dev">
       <div class="form-container" id="s3card">
@@ -346,7 +413,7 @@
   </div>
 </section>
       <!-- ============ 4 . EVIDENCE PAD (full screen pad, ink -> typed notes) ============ -->
-<section class="scene clip" id="sc04" data-start="64.87" data-duration="21.36" data-track-index="1">
+<section class="scene clip" id="sc04" data-start="67.09" data-duration="23.74" data-track-index="1">
   <div class="sbody">
     <div class="dev" id="s4dev">
       <div class="pad-modal open" id="s4pad">
@@ -462,11 +529,11 @@
   </div>
 </section>
       <!-- ============ 5 . SAVE AND LOCK ============ -->
-<section class="scene top clip" id="sc05" data-start="86.23" data-duration="6.99" data-track-index="1">
+<section class="scene top clip" id="sc05" data-start="90.83" data-duration="6.44" data-track-index="1">
   <div class="sbody">
     <div class="shead">
       <div class="kick"><i class="stripe"></i> Save and lock</div>
-      <h2>One tap, and the observation <em>freezes</em></h2>
+      <h2>Everything is saved, <em>ready for review</em></h2>
     </div>
 
     <div class="s5wrap">
@@ -509,7 +576,11 @@
             <span class="s5cn"><i>02</i> Students make progress</span>
             <span class="s5rr">
               <span class="s5rate">1</span><span class="s5rate">2</span>
-              <span class="s5rate sel"><span class="s5num">3</span><i class="s5sel">3</i></span>
+              <!-- the chip's own digit and the box's digit are the SAME character
+                   in the SAME 21px box (see s05_lock.cues.js): one crossfades out
+                   exactly as the other crossfades in, so this never shows two
+                   different pieces of text, only one number changing colour. -->
+              <span class="s5rate sel" data-layout-allow-overlap><span class="s5num">3</span><i class="s5sel">3</i></span>
               <span class="s5rate">4</span><span class="s5rate">5</span><span class="s5rate">6</span>
             </span>
           </div>
@@ -517,7 +588,11 @@
             <span class="s5cn"><i>05</i> Teaching</span>
             <span class="s5rr">
               <span class="s5rate">1</span><span class="s5rate">2</span>
-              <span class="s5rate sel"><span class="s5num">3</span><i class="s5sel">3</i></span>
+              <!-- the chip's own digit and the box's digit are the SAME character
+                   in the SAME 21px box (see s05_lock.cues.js): one crossfades out
+                   exactly as the other crossfades in, so this never shows two
+                   different pieces of text, only one number changing colour. -->
+              <span class="s5rate sel" data-layout-allow-overlap><span class="s5num">3</span><i class="s5sel">3</i></span>
               <span class="s5rate">4</span><span class="s5rate">5</span><span class="s5rate">6</span>
             </span>
           </div>
@@ -525,7 +600,11 @@
             <span class="s5cn"><i>06</i> Assessment</span>
             <span class="s5rr">
               <span class="s5rate">1</span><span class="s5rate">2</span><span class="s5rate">3</span>
-              <span class="s5rate sel"><span class="s5num">4</span><i class="s5sel">4</i></span>
+              <!-- the chip's own digit and the box's digit are the SAME character
+                   in the SAME 21px box (see s05_lock.cues.js): one crossfades out
+                   exactly as the other crossfades in, so this never shows two
+                   different pieces of text, only one number changing colour. -->
+              <span class="s5rate sel" data-layout-allow-overlap><span class="s5num">4</span><i class="s5sel">4</i></span>
               <span class="s5rate">5</span><span class="s5rate">6</span>
             </span>
           </div>
@@ -539,7 +618,8 @@
             <span class="s5btn s5submit" id="s5submit">Save &amp; Lock<i class="s5press" id="s5press"></i><i class="s5ripple" id="s5ripple"></i></span>
           </div>
           <div class="s5grp" id="s5locked">
-            <span class="s5btn s5new">New observation</span>
+            <!-- action-bar swap: this opaque button crosses over Save & Lock mid-swap by design -->
+            <span class="s5btn s5new" data-layout-allow-overlap>New observation</span>
           </div>
         </div>
       </div>
@@ -554,7 +634,7 @@
   </div>
 </section>
       <!-- ============ 6 . ONE TAP, FILED FOUR WAYS ============ -->
-<section class="scene navy clip" id="sc06" data-start="93.22" data-duration="25.15" data-track-index="1">
+<section class="scene navy clip" id="sc06" data-start="97.27" data-duration="28.03" data-track-index="1">
   <div class="sbody">
     <div class="shead">
       <div class="kick"><i class="stripe"></i> One tap, filed four ways</div>
@@ -631,7 +711,7 @@
             </span>
             <div class="s6tx">
               <div class="s6t">Backup email</div>
-              <div class="s6s">Branded, to the observer, with a link to the locked observation.</div>
+              <div class="s6s">To the observer, for safe keeping, with a link to the observation.</div>
             </div>
             <span class="s6tag" id="s6tag3"><i class="s6dot"></i>To the observer</span>
           </div>
@@ -647,8 +727,8 @@
               </svg>
             </span>
             <div class="s6tx">
-              <div class="s6t">Private storage</div>
-              <div class="s6s">The handwriting itself, every page, kept out of the open.</div>
+              <div class="s6t">Secured storage</div>
+              <div class="s6s">The Evidence Pad handwriting and attached pictures, archived.</div>
             </div>
             <span class="s6tag"><i class="s6dot"></i>Pad archive</span>
           </div>
@@ -659,8 +739,69 @@
     <div class="pill-note" id="s6note">Archived, reviewable if ever needed</div>
   </div>
 </section>
+      <!-- ============ T2 . STEP TWO (the spine hands over to Evidence) ============
+     Same spine, same node x as the cover. Hero is the middle node, so its
+     flight is a pure grow: x stays 0, only y and scale change. -->
+<section class="scene navy clip jscene tstep" id="sct2" data-start="125.3" data-duration="3.91" data-track-index="1">
+  <div class="stars" id="t2stars" data-stars-seed data-layout-allow-overflow></div>
+
+  <div class="jstage" id="t2stage">
+    <div class="jroute" id="t2map">
+      <div class="jglow"></div>
+
+      <svg class="jsvg" viewBox="0 0 1920 1080" width="1920" height="1080" fill="none">
+        <line class="jtrack" x1="250" y1="640" x2="1670" y2="640" />
+        <path class="jspine" d="M250 640 H1670" />
+        <circle class="jcap" cx="250" cy="640" r="8" />
+        <circle class="jcap" cx="1670" cy="640" r="8" />
+      </svg>
+
+      <div class="jnode" style="left:605px">
+        <div class="jring">
+          <i class="jpulse"></i>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1.8 12S5.6 5.6 12 5.6 22.2 12 22.2 12 18.4 18.4 12 18.4 1.8 12 1.8 12Z" />
+            <circle cx="12" cy="12" r="3.1" />
+          </svg>
+        </div>
+        <div class="jlab">Observe</div>
+      </div>
+
+      <div class="jnode" style="left:1315px">
+        <div class="jring">
+          <i class="jpulse"></i>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 18.4 8.6 12.8l3.6 3.6L20.4 8.6" />
+            <path d="M15.4 8.6h5v5" />
+            <path d="M3 21.4h18" />
+          </svg>
+        </div>
+        <div class="jlab">Coaching Plan</div>
+      </div>
+    </div>
+
+    <!-- the hero: node 2, same markup, same coordinate, own layer -->
+    <div class="jroute theroute">
+      <div class="jnode thero" id="t2hero" style="left:960px">
+        <div class="jring">
+          <i class="jpulse"></i>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7.6 4.2h8.2a2 2 0 0 1 2 2v10.4" />
+            <rect x="3.4" y="7.4" width="12.4" height="12.4" rx="2" />
+            <path d="M6.4 11.4h6.4M6.4 14.2h6.4M6.4 17h4" />
+          </svg>
+        </div>
+        <div class="jlab">Evidence</div>
+      </div>
+    </div>
+
+    <div class="tchiprow" id="t2chip"><span class="tchip"><i></i>Step 2</span></div>
+  </div>
+</section>
+      <!-- ---- act 2 . the collected evidence: story, the data set, progression,
+                  the references under it, the report, coverage ---- -->
       <!-- ============ 7 . THE DASHBOARD STORY ============ -->
-      <section class="scene top clip" id="sc07" data-start="118.37" data-duration="29.53" data-track-index="1">
+      <section class="scene top clip" id="sc07" data-start="129.21" data-duration="28.12" data-track-index="1">
 
         <!-- beat 1 . the gate, rebuilt from dashboard/password-template.html.
              The gate is an opaque full-frame layer (inset:0 over a solid #0a0d1f)
@@ -743,12 +884,223 @@
           </div>
         </div>
       </section>
-      <!-- ============ 8 . REFERENCES BEHIND EVERY STATEMENT ============ -->
-      <section class="scene top clip" id="sc08" data-start="147.9" data-duration="22.58" data-track-index="1">
+      <!-- the data set: v2.4 scene, sits after the dashboard story in scenes.json -->
+      <!-- ============ 16 . THE DATA SET (what the school receives) ==================
+     Four deliverables, each one a REAL product surface miniaturised, never a mock:
+       01  the locked observation record   <- #sc05 .s5paper (form.css .form-container)
+       02  the Snapshot story board       <- #sc07 .s7tabs + .panel.stat + .gauge-cap + .osseg
+       03  the Coverage ring              <- #sc10 .ringwrap (renderRing geometry, verbatim)
+       04  the governance report          <- #sc13 .s13page (renderSimpleReport chrome)
+     Each surface is drawn at its own designed pixel size and the whole block is
+     zoomed down (.s16dzoom), the same trick .sbody plays with zoom:1.62, so every
+     internal proportion stays the product's instead of being restyled smaller.
+     Numbers are the computed ones in assets/data/video-data.json: lessons 111,
+     teachers 105, avgBest 3.22 -> "3.2 of 6", coverage reg 149 / observed 105 /
+     not_observed 44 -> 70%. Nothing here is retyped.
+     ========================================================================== -->
+<section class="scene navy clip" id="sc16d" data-start="157.33" data-duration="11.18" data-track-index="1">
+  <div class="sbody">
+    <div class="stars" id="s16dstars" data-layout-allow-overflow></div>
+
+    <div class="shead" id="s16dhead">
+      <div class="s16dkrow">
+        <div class="kick"><i class="stripe"></i> Round complete &middot; R3 June 26</div>
+        <span class="ill-tag" id="s16dill">Illustrative records and statements</span>
+      </div>
+      <h2 id="s16dh">Everything the school <em id="s16dhem">receives</em></h2>
+    </div>
+
+    <div class="s16dgrid">
+
+      <!-- 01 . individual lesson observations: the locked record itself -->
+      <div class="s16dslot">
+        <i class="s16dgh" id="s16dg1"></i>
+        <div class="s16dcard" id="s16dc1">
+          <div class="s16dchead">
+            <span class="s16dcn">01</span>
+            <span class="s16dctx">
+              <span class="s16dct">Individual lesson observations</span>
+              <span class="s16dcs">One locked record per lesson, its own ID</span>
+            </span>
+          </div>
+          <div class="s16dmini">
+            <div class="s16dzoom">
+              <div class="s16dpaper">
+                <i class="s16drail"></i>
+                <div class="s16dbanner">
+                  <span class="s16dchk">&#10003;</span>
+                  <span class="s16dbstack">
+                    <span class="s16dbtitle">Submitted &middot; Cannot be edited</span>
+                    <span class="s16dbmeta">Record ID R3-20260610-091412 &middot; Submitted 10 Jun 2026, 09:14</span>
+                  </span>
+                </div>
+                <div class="s16dfgrid">
+                  <div class="s16dfcell"><label>Teacher</label><span class="s16dfv">Eleanor Whitfield</span></div>
+                  <div class="s16dfcell"><label>Subject</label><span class="s16dfv">English</span></div>
+                  <div class="s16dfcell"><label>Date</label><span class="s16dfv">10 June 2026</span></div>
+                </div>
+                <div class="s16dcrit">
+                  <div class="s16dcrow s16dchead2"><span>Criterion</span><span>Rating 1 to 6</span></div>
+                  <div class="s16dcrow">
+                    <span class="s16dcn2"><i>02</i> Students make progress</span>
+                    <span class="s16drr">
+                      <span class="s16drate">1</span><span class="s16drate">2</span>
+                      <span class="s16drate sel"><i class="s16dsel">3</i></span>
+                      <span class="s16drate">4</span><span class="s16drate">5</span><span class="s16drate">6</span>
+                    </span>
+                  </div>
+                  <div class="s16dcrow alt">
+                    <span class="s16dcn2"><i>05</i> Teaching</span>
+                    <span class="s16drr">
+                      <span class="s16drate">1</span><span class="s16drate">2</span>
+                      <span class="s16drate sel"><i class="s16dsel">3</i></span>
+                      <span class="s16drate">4</span><span class="s16drate">5</span><span class="s16drate">6</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 02 . a snapshot of the round: the Story board's own numbers -->
+      <div class="s16dslot">
+        <i class="s16dgh" id="s16dg2"></i>
+        <div class="s16dcard" id="s16dc2">
+          <div class="s16dchead">
+            <span class="s16dcn">02</span>
+            <span class="s16dctx">
+              <span class="s16dct">A snapshot of the round</span>
+              <span class="s16dcs">The round's own numbers, counted from the records</span>
+            </span>
+          </div>
+          <div class="s16dmini">
+            <div class="s16dzoom">
+              <div class="s16dsnap">
+                <div class="s16dtabs">
+                  <span class="s16dtab on">Story</span><span class="s16dtab">Detail</span>
+                  <span class="s16dpresent">Present</span>
+                </div>
+                <div class="s16dtiles">
+                  <div class="panel stat"><div class="v" data-count="111">0</div><div class="l">Lessons observed</div></div>
+                  <div class="panel stat"><div class="v" data-count="105">0</div><div class="l">Teachers seen</div></div>
+                  <div class="panel s16dgauge"><div class="gauge-cap"><div class="gv">3.2 of 6</div><div class="gl">average progress</div></div></div>
+                </div>
+                <div class="osseg">
+                  <div class="osramp">
+                    <div class="rc"><div class="sw" style="background:var(--r1)"></div><div class="lb">Outstanding</div></div>
+                    <div class="rc"><div class="sw" style="background:var(--r2)"></div><div class="lb">Very Good</div></div>
+                    <div class="rc"><div class="sw" style="background:var(--r3)"></div><div class="lb">Good</div></div>
+                    <div class="rc"><div class="sw" style="background:var(--r4)"></div><div class="lb">Acceptable</div></div>
+                    <div class="rc"><div class="sw" style="background:var(--r5)"></div><div class="lb">Weak</div></div>
+                    <div class="rc"><div class="sw" style="background:var(--r6)"></div><div class="lb">Very Weak</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 03 . coverage: the board's coverage ring, geometry verbatim from #sc10 -->
+      <div class="s16dslot">
+        <i class="s16dgh" id="s16dg3"></i>
+        <div class="s16dcard" id="s16dc3">
+          <div class="s16dchead">
+            <span class="s16dcn">03</span>
+            <span class="s16dctx">
+              <span class="s16dct">Coverage</span>
+              <span class="s16dcs">Who has been seen, and who is still waiting</span>
+            </span>
+          </div>
+          <div class="s16dmini">
+            <div class="s16dzoom">
+              <div class="s16dcov">
+                <div class="s16dringwrap">
+                  <svg width="152" height="152" viewBox="0 0 120 120"><circle cx="60" cy="60" r="46" fill="none" stroke="var(--edge)" stroke-width="13"/><circle id="s16darc" cx="60" cy="60" r="46" fill="none" stroke="var(--g)" stroke-width="13" stroke-linecap="round" transform="rotate(-90 60 60)" stroke-dasharray="289.03" stroke-dashoffset="85.35"/></svg>
+                  <div class="s16drl">
+                    <div class="s16dpct" id="s16dpct"><span data-count="70">0</span>%</div>
+                    <div class="s16dtx"><b>105</b> of 149 teachers seen in the June R3 round.</div>
+                    <div class="s16dwait"><i></i>44 still waiting, every one of them named on the board.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 04 . a highly detailed report: the governance report as the board renders it -->
+      <div class="s16dslot">
+        <i class="s16dgh" id="s16dg4"></i>
+        <div class="s16dcard" id="s16dc4">
+          <div class="s16dchead">
+            <span class="s16dcn">04</span>
+            <span class="s16dctx">
+              <span class="s16dct">A highly detailed report</span>
+              <span class="s16dcs">Every statement carrying its citations</span>
+            </span>
+          </div>
+          <div class="s16dmini">
+            <div class="s16dzoom">
+              <div class="s16dpage">
+                <div class="s16drepkick">Governance report &middot; In Depth</div>
+                <div class="s16drepbig">The June <em>R3</em> picture.</div>
+                <div class="s16drepmeta">Whole school &middot; R3 June 26 &middot; generated 2026-07-29</div>
+                <div class="s16drepscope">111 lessons &middot; 105 teachers &middot; average progress <b>Good</b> (3.2 of 6)</div>
+                <div class="s16drepsum">Questioning is used to check understanding rather than to move the lesson along.<span class="refmk">12</span></div>
+                <ul class="s16drepbl">
+                  <li>Modelling is explicit and the success criteria stay visible throughout.<span class="refmk">27</span></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+      <!-- ============ 9 . MOVEMENT BETWEEN ROUNDS ============ -->
+      <section class="scene top clip" id="sc09" data-start="168.51" data-duration="24.3" data-track-index="1">
         <div class="sbody">
           <div class="shead">
-            <div class="kick"><i class="stripe"></i> References &middot; every statement traceable</div>
-            <h2>Open the citation, <em>see the observations</em></h2>
+            <div class="kick"><i class="stripe"></i> Rounds compare &middot; February against June</div>
+            <h2>Every teacher, <em>from where they were</em></h2>
+            <div class="ill-tag" id="s9tag">Illustrative progression &middot; demonstration data</div>
+          </div>
+          <div class="s9grid">
+            <div class="panel" id="s9slopecard">
+              <div class="ey-bold" style="margin-bottom:8px">One line per teacher seen in both rounds</div>
+              <div class="slopewrap"><svg class="slope" id="s9slope" viewBox="0 0 760 392" preserveAspectRatio="xMidYMid meet"><line x1="162" y1="50" x2="598" y2="50" stroke="#0f5f30" stroke-width="1" opacity=".2"/><text class="slband" x="146" y="53.5" text-anchor="end">Outstanding</text><text class="slband" x="614" y="53.5" text-anchor="start">Outstanding</text><line x1="162" y1="110.4" x2="598" y2="110.4" stroke="#268a4c" stroke-width="1" opacity=".2"/><text class="slband" x="146" y="113.9" text-anchor="end">Very Good</text><text class="slband" x="614" y="113.9" text-anchor="start">Very Good</text><line x1="162" y1="170.8" x2="598" y2="170.8" stroke="#6f8f22" stroke-width="1" opacity=".2"/><text class="slband" x="146" y="174.3" text-anchor="end">Good</text><text class="slband" x="614" y="174.3" text-anchor="start">Good</text><line x1="162" y1="231.2" x2="598" y2="231.2" stroke="#b8760f" stroke-width="1" opacity=".2"/><text class="slband" x="146" y="234.7" text-anchor="end">Acceptable</text><text class="slband" x="614" y="234.7" text-anchor="start">Acceptable</text><line x1="162" y1="291.6" x2="598" y2="291.6" stroke="#d4663a" stroke-width="1" opacity=".2"/><text class="slband" x="146" y="295.1" text-anchor="end">Weak</text><text class="slband" x="614" y="295.1" text-anchor="start">Weak</text><line x1="162" y1="352" x2="598" y2="352" stroke="#c22f24" stroke-width="1" opacity=".2"/><text class="slband" x="146" y="355.5" text-anchor="end">Very Weak</text><text class="slband" x="614" y="355.5" text-anchor="start">Very Weak</text><text class="slaxis" x="162" y="26" text-anchor="middle" fill="var(--b)">February</text><text class="slaxis slaxis-y" x="598" y="26" text-anchor="middle">June</text><path class="sl-line" d="M 162 158.8 C 336.4 158.8, 423.59999999999997 219.2, 598 219.2" stroke="var(--r6)"/><path class="sl-line" d="M 162 105.9 C 336.4 105.9, 423.59999999999997 227.2, 598 227.2" stroke="var(--r6)"/><path class="sl-line" d="M 162 114.9 C 336.4 114.9, 423.59999999999997 101.4, 598 101.4" stroke="var(--ink-faint)"/><path class="sl-line" d="M 162 166.8 C 336.4 166.8, 423.59999999999997 161.8, 598 161.8" stroke="var(--ink-faint)"/><path class="sl-line" d="M 162 219.2 C 336.4 219.2, 423.59999999999997 235.2, 598 235.2" stroke="var(--ink-faint)"/><path class="sl-line" d="M 162 227.2 C 336.4 227.2, 423.59999999999997 243.2, 598 243.2" stroke="var(--ink-faint)"/><path class="sl-line" d="M 162 50.0 C 336.4 50.0, 423.59999999999997 45.5, 598 45.5" stroke="var(--ink-faint)"/><path class="sl-line" d="M 162 235.2 C 336.4 235.2, 423.59999999999997 110.4, 598 110.4" stroke="var(--g)"/><path class="sl-line" d="M 162 243.2 C 336.4 243.2, 423.59999999999997 170.8, 598 170.8" stroke="var(--g)"/><path class="sl-line" d="M 162 174.8 C 336.4 174.8, 423.59999999999997 54.5, 598 54.5" stroke="var(--g)"/><path class="sl-line" d="M 162 291.6 C 336.4 291.6, 423.59999999999997 179.8, 598 179.8" stroke="var(--g)"/><path class="sl-line" d="M 162 182.8 C 336.4 182.8, 423.59999999999997 119.4, 598 119.4" stroke="var(--g)"/><circle class="sl-end" cx="162" cy="158.8" r="3" fill="#6f8f22"/><circle class="sl-end" cx="598" cy="219.2" r="3" fill="#b8760f"/><circle class="sl-end" cx="162" cy="105.9" r="3" fill="#268a4c"/><circle class="sl-end" cx="598" cy="227.2" r="3" fill="#b8760f"/><circle class="sl-end" cx="162" cy="114.9" r="3" fill="#268a4c"/><circle class="sl-end" cx="598" cy="101.4" r="3" fill="#268a4c"/><circle class="sl-end" cx="162" cy="166.8" r="3" fill="#6f8f22"/><circle class="sl-end" cx="598" cy="161.8" r="3" fill="#6f8f22"/><circle class="sl-end" cx="162" cy="219.2" r="3" fill="#b8760f"/><circle class="sl-end" cx="598" cy="235.2" r="3" fill="#b8760f"/><circle class="sl-end" cx="162" cy="227.2" r="3" fill="#b8760f"/><circle class="sl-end" cx="598" cy="243.2" r="3" fill="#b8760f"/><circle class="sl-end" cx="162" cy="50.0" r="3" fill="#0f5f30"/><circle class="sl-end" cx="598" cy="45.5" r="3" fill="#0f5f30"/><circle class="sl-end" cx="162" cy="235.2" r="3" fill="#b8760f"/><circle class="sl-end" cx="598" cy="110.4" r="3" fill="#268a4c"/><circle class="sl-end" cx="162" cy="243.2" r="3" fill="#b8760f"/><circle class="sl-end" cx="598" cy="170.8" r="3" fill="#6f8f22"/><circle class="sl-end" cx="162" cy="174.8" r="3" fill="#6f8f22"/><circle class="sl-end" cx="598" cy="54.5" r="3" fill="#0f5f30"/><circle class="sl-end" cx="162" cy="291.6" r="3" fill="#d4663a"/><circle class="sl-end" cx="598" cy="179.8" r="3" fill="#6f8f22"/><circle class="sl-end" cx="162" cy="182.8" r="3" fill="#6f8f22"/><circle class="sl-end" cx="598" cy="119.4" r="3" fill="#268a4c"/></svg></div>
+            </div>
+            <div class="panel" id="s9mxcard">
+              <div class="ey-bold" style="margin-bottom:8px">Transition matrix &middot; February band to June band</div>
+              <div class="mmxwrap"><div class="mmx" id="s9mx"><div class="mh mcorner">Feb &#8595; / Jun &#8594;</div><div class="mh"><span class="msw" style="background:#0f5f30"></span>Outstanding</div><div class="mh"><span class="msw" style="background:#268a4c"></span>Very Good</div><div class="mh"><span class="msw" style="background:#6f8f22"></span>Good</div><div class="mh"><span class="msw" style="background:#b8760f"></span>Acceptable</div><div class="mh"><span class="msw" style="background:#d4663a"></span>Weak</div><div class="mh"><span class="msw" style="background:#c22f24"></span>Very Weak</div><div class="mh mcorner">Total</div><div class="mh"><span class="msw" style="background:#0f5f30"></span>Outstanding</div><div class="mc diag" style="background:color-mix(in srgb,var(--ink-mid) 16%,transparent)">4</div><div class="mc" style="background:color-mix(in srgb,var(--r6) 20%,transparent)">2</div><div class="mc" style="background:color-mix(in srgb,var(--r6) 16%,transparent)">1</div><div class="mc" style="background:transparent"></div><div class="mc" style="background:transparent"></div><div class="mc" style="background:transparent"></div><div class="mc mtot">7</div><div class="mh"><span class="msw" style="background:#268a4c"></span>Very Good</div><div class="mc" style="background:color-mix(in srgb,var(--g) 31%,transparent)">5</div><div class="mc diag" style="background:color-mix(in srgb,var(--ink-mid) 28%,transparent)">9</div><div class="mc" style="background:color-mix(in srgb,var(--r6) 20%,transparent)">2</div><div class="mc" style="background:color-mix(in srgb,var(--r6) 16%,transparent)">1</div><div class="mc" style="background:transparent"></div><div class="mc" style="background:transparent"></div><div class="mc mtot">17</div><div class="mh"><span class="msw" style="background:#6f8f22"></span>Good</div><div class="mc" style="background:color-mix(in srgb,var(--g) 24%,transparent)">3</div><div class="mc" style="background:color-mix(in srgb,var(--g) 43%,transparent)">8</div><div class="mc diag" style="background:color-mix(in srgb,var(--ink-mid) 33%,transparent)">11</div><div class="mc" style="background:color-mix(in srgb,var(--r6) 24%,transparent)">3</div><div class="mc" style="background:transparent"></div><div class="mc" style="background:transparent"></div><div class="mc mtot">25</div><div class="mh"><span class="msw" style="background:#b8760f"></span>Acceptable</div><div class="mc" style="background:color-mix(in srgb,var(--g) 20%,transparent)">2</div><div class="mc" style="background:color-mix(in srgb,var(--g) 35%,transparent)">6</div><div class="mc" style="background:color-mix(in srgb,var(--g) 39%,transparent)">7</div><div class="mc diag" style="background:color-mix(in srgb,var(--ink-mid) 37%,transparent)">13</div><div class="mc" style="background:color-mix(in srgb,var(--r6) 20%,transparent)">2</div><div class="mc" style="background:transparent"></div><div class="mc mtot">30</div><div class="mh"><span class="msw" style="background:#d4663a"></span>Weak</div><div class="mc" style="background:transparent"></div><div class="mc" style="background:transparent"></div><div class="mc" style="background:color-mix(in srgb,var(--g) 20%,transparent)">2</div><div class="mc" style="background:color-mix(in srgb,var(--g) 16%,transparent)">1</div><div class="mc diag" style="background:color-mix(in srgb,var(--ink-mid) 14%,transparent)">3</div><div class="mc" style="background:transparent"></div><div class="mc mtot">6</div><div class="mh"><span class="msw" style="background:#c22f24"></span>Very Weak</div><div class="mc" style="background:transparent"></div><div class="mc" style="background:transparent"></div><div class="mc" style="background:transparent"></div><div class="mc" style="background:transparent"></div><div class="mc" style="background:transparent"></div><div class="mc diag" style="background:color-mix(in srgb,var(--ink-mid) 10%,transparent)">1</div><div class="mc mtot">1</div><div class="mh mcorner">Total</div><div class="mc mtot">14</div><div class="mc mtot">25</div><div class="mc mtot">23</div><div class="mc mtot">18</div><div class="mc mtot">5</div><div class="mc mtot">1</div><div class="mc mtot">86</div></div></div>
+            </div>
+          </div>
+          <div class="s9qs" id="s9qs">
+            <span class="pill-note">Is teaching getting better?</span>
+            <span class="pill-note">If not, why?</span>
+            <span class="pill-note">And how can we improve?</span>
+          </div>
+          <div class="s9foot">
+            <div class="s9chips" id="s9chips">
+              <span class="mchip up">Improved <b>34</b></span>
+              <span class="mchip flat">Held <b>41</b></span>
+              <span class="mchip dn">Declined <b>11</b></span>
+              <span class="subtle">86 teachers seen in both rounds</span>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- ============ 8 . REFERENCES BEHIND EVERY STATEMENT ============ -->
+      <section class="scene top clip" id="sc08" data-start="192.81" data-duration="35.25" data-track-index="1">
+        <div class="sbody">
+          <div class="shead">
+            <div class="kick"><i class="stripe"></i> Citations and references &middot; every statement traceable</div>
+            <h2>Open the citations, <em>see the observations</em></h2>
           </div>
           <div style="display:block">
             <div style="padding-right:500px">
@@ -756,6 +1108,11 @@
                 <div class="swhead" style="color:var(--g)"><i class="swdot" style="background:var(--g)"></i><b>What is working</b></div>
                 <div class="swev">Evidence base &middot; R3 June 26 &middot; 111 lessons <span class="ill-tag">Illustrative statement and sources</span></div>
                 <div class="swsum">Questioning that checks for understanding is the strongest consistent strength.<span class="refmk" id="s8mk">12<i class="taprip"></i></span></div>
+                <!-- the marker is a COUNT, not an index: the narration says so, so the
+                     panel says so too. A label, not a figure: the only number on the
+                     panel is the marker the board itself renders, and the panel already
+                     carries its illustrative tag. -->
+                <div class="s8cnt" id="s8cnt">The number is a citation count: how many lesson observations cite this statement.</div>
                 <div class="blist">
                   <div class="brow"><span class="bm"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="var(--g)" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>The follow up question, not the first question, is what moves the group<span class="refmk">13</span></span></div>
                   <div class="brow"><span class="bm"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="var(--g)" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Checks reach beyond the students who volunteer<span class="refmk">14</span></span></div>
@@ -778,12 +1135,19 @@
                 </div>
                 <div class="subtle">and more behind every statement on the board</div>
               </div>
-              <div class="pill-note" id="s8note">Nothing on this dashboard is an opinion without evidence</div>
+              <!-- closing beat: "presented to your regulatory body at the click of a
+                   button". The button is the product's own report export control,
+                   markup and chrome lifted from #s13export (.repexport in
+                   s13_report), with the press overlay recipe from #s5press. -->
+              <div class="s8ship">
+                <div class="pill-note" id="s8note">Nothing on this dashboard is an opinion without evidence</div>
+                <button class="s8export" id="s8export" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M4.5 6.5L8 10l3.5-3.5M3 13h10" /></svg>Make Google Doc<i class="s8press" id="s8press"></i></button>
+              </div>
             </div>
             <div class="refpanel" id="s8panel" style="height:666px;border-radius:18px 0 0 18px" data-layout-allow-overflow>
               <div class="refhd">
                 <div>
-                  <div class="rk">Insights &middot; source</div>
+                  <div class="rk">Insights &middot; citations</div>
                   <div class="rt">Questioning that checks for understanding</div>
                 </div>
                 <div class="refx">&times;</div>
@@ -808,41 +1172,73 @@
           </div>
         </div>
       </section>
-      <!-- ============ 9 . MOVEMENT BETWEEN ROUNDS ============ -->
-      <section class="scene top clip" id="sc09" data-start="170.48" data-duration="22.65" data-track-index="1">
+      <!-- ============ 13 . REPORTS AND REGENERATION ============ -->
+      <section class="scene top clip" id="sc13" data-start="228.06" data-duration="21.89" data-track-index="1">
         <div class="sbody">
-          <div class="shead">
-            <div class="kick"><i class="stripe"></i> Rounds compare &middot; February against June</div>
-            <h2>Every teacher, <em>from where they were</em></h2>
-            <div class="ill-tag" id="s9tag">Illustrative movement &middot; demonstration data</div>
+          <div class="shead" id="s13head">
+            <div class="kick"><i class="stripe"></i> For the leadership table</div>
+            <h2>One round, <em>one document</em></h2>
           </div>
-          <div class="s9grid">
-            <div class="panel" id="s9slopecard">
-              <div class="ey-bold" style="margin-bottom:8px">One line per teacher seen in both rounds</div>
-              <div class="slopewrap"><svg class="slope" id="s9slope" viewBox="0 0 760 392" preserveAspectRatio="xMidYMid meet"><line x1="162" y1="50" x2="598" y2="50" stroke="#0f5f30" stroke-width="1" opacity=".2"/><text class="slband" x="146" y="53.5" text-anchor="end">Outstanding</text><text class="slband" x="614" y="53.5" text-anchor="start">Outstanding</text><line x1="162" y1="110.4" x2="598" y2="110.4" stroke="#268a4c" stroke-width="1" opacity=".2"/><text class="slband" x="146" y="113.9" text-anchor="end">Very Good</text><text class="slband" x="614" y="113.9" text-anchor="start">Very Good</text><line x1="162" y1="170.8" x2="598" y2="170.8" stroke="#6f8f22" stroke-width="1" opacity=".2"/><text class="slband" x="146" y="174.3" text-anchor="end">Good</text><text class="slband" x="614" y="174.3" text-anchor="start">Good</text><line x1="162" y1="231.2" x2="598" y2="231.2" stroke="#b8760f" stroke-width="1" opacity=".2"/><text class="slband" x="146" y="234.7" text-anchor="end">Acceptable</text><text class="slband" x="614" y="234.7" text-anchor="start">Acceptable</text><line x1="162" y1="291.6" x2="598" y2="291.6" stroke="#d4663a" stroke-width="1" opacity=".2"/><text class="slband" x="146" y="295.1" text-anchor="end">Weak</text><text class="slband" x="614" y="295.1" text-anchor="start">Weak</text><line x1="162" y1="352" x2="598" y2="352" stroke="#c22f24" stroke-width="1" opacity=".2"/><text class="slband" x="146" y="355.5" text-anchor="end">Very Weak</text><text class="slband" x="614" y="355.5" text-anchor="start">Very Weak</text><text class="slaxis" x="162" y="26" text-anchor="middle" fill="var(--b)">February</text><text class="slaxis" x="598" y="26" text-anchor="middle" fill="var(--y)">June</text><path class="sl-line" d="M 162 158.8 C 336.4 158.8, 423.59999999999997 219.2, 598 219.2" stroke="var(--r6)"/><path class="sl-line" d="M 162 105.9 C 336.4 105.9, 423.59999999999997 227.2, 598 227.2" stroke="var(--r6)"/><path class="sl-line" d="M 162 114.9 C 336.4 114.9, 423.59999999999997 101.4, 598 101.4" stroke="var(--ink-faint)"/><path class="sl-line" d="M 162 166.8 C 336.4 166.8, 423.59999999999997 161.8, 598 161.8" stroke="var(--ink-faint)"/><path class="sl-line" d="M 162 219.2 C 336.4 219.2, 423.59999999999997 235.2, 598 235.2" stroke="var(--ink-faint)"/><path class="sl-line" d="M 162 227.2 C 336.4 227.2, 423.59999999999997 243.2, 598 243.2" stroke="var(--ink-faint)"/><path class="sl-line" d="M 162 50.0 C 336.4 50.0, 423.59999999999997 45.5, 598 45.5" stroke="var(--ink-faint)"/><path class="sl-line" d="M 162 235.2 C 336.4 235.2, 423.59999999999997 110.4, 598 110.4" stroke="var(--g)"/><path class="sl-line" d="M 162 243.2 C 336.4 243.2, 423.59999999999997 170.8, 598 170.8" stroke="var(--g)"/><path class="sl-line" d="M 162 174.8 C 336.4 174.8, 423.59999999999997 54.5, 598 54.5" stroke="var(--g)"/><path class="sl-line" d="M 162 291.6 C 336.4 291.6, 423.59999999999997 179.8, 598 179.8" stroke="var(--g)"/><path class="sl-line" d="M 162 182.8 C 336.4 182.8, 423.59999999999997 119.4, 598 119.4" stroke="var(--g)"/><circle class="sl-end" cx="162" cy="158.8" r="3" fill="#6f8f22"/><circle class="sl-end" cx="598" cy="219.2" r="3" fill="#b8760f"/><circle class="sl-end" cx="162" cy="105.9" r="3" fill="#268a4c"/><circle class="sl-end" cx="598" cy="227.2" r="3" fill="#b8760f"/><circle class="sl-end" cx="162" cy="114.9" r="3" fill="#268a4c"/><circle class="sl-end" cx="598" cy="101.4" r="3" fill="#268a4c"/><circle class="sl-end" cx="162" cy="166.8" r="3" fill="#6f8f22"/><circle class="sl-end" cx="598" cy="161.8" r="3" fill="#6f8f22"/><circle class="sl-end" cx="162" cy="219.2" r="3" fill="#b8760f"/><circle class="sl-end" cx="598" cy="235.2" r="3" fill="#b8760f"/><circle class="sl-end" cx="162" cy="227.2" r="3" fill="#b8760f"/><circle class="sl-end" cx="598" cy="243.2" r="3" fill="#b8760f"/><circle class="sl-end" cx="162" cy="50.0" r="3" fill="#0f5f30"/><circle class="sl-end" cx="598" cy="45.5" r="3" fill="#0f5f30"/><circle class="sl-end" cx="162" cy="235.2" r="3" fill="#b8760f"/><circle class="sl-end" cx="598" cy="110.4" r="3" fill="#268a4c"/><circle class="sl-end" cx="162" cy="243.2" r="3" fill="#b8760f"/><circle class="sl-end" cx="598" cy="170.8" r="3" fill="#6f8f22"/><circle class="sl-end" cx="162" cy="174.8" r="3" fill="#6f8f22"/><circle class="sl-end" cx="598" cy="54.5" r="3" fill="#0f5f30"/><circle class="sl-end" cx="162" cy="291.6" r="3" fill="#d4663a"/><circle class="sl-end" cx="598" cy="179.8" r="3" fill="#6f8f22"/><circle class="sl-end" cx="162" cy="182.8" r="3" fill="#6f8f22"/><circle class="sl-end" cx="598" cy="119.4" r="3" fill="#268a4c"/></svg></div>
+
+          <div class="s13row">
+
+            <!-- the governance report, as the board renders it -->
+            <div class="s13page" id="s13page">
+              <div class="rep-top" id="s13top">
+                <div class="rep-th">
+                  <div class="rep-kick">Governance report &middot; Simple</div>
+                  <h2 class="big">The June <em>R3</em> picture.</h2>
+                  <div class="rep-meta">Whole school &middot; R3 June 26 &middot; generated 2026-07-29</div>
+                </div>
+                <button class="repexport" id="s13export" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M4.5 6.5L8 10l3.5-3.5M3 13h10" /></svg>Make Google Doc</button>
+              </div>
+              <div class="rtabset" id="s13tabs">
+                <span class="rtab on" id="s13tabA">Simple</span>
+                <span class="rtab" id="s13tabB">In Depth</span>
+              </div>
+              <div class="rep-scope-all" id="s13scope">111 lessons &middot; 105 teachers &middot; average progress <b>Good</b> (3.2 of 6)</div>
+              <div class="rep-method" id="s13method"><b>How these are counted.</b> Average progress is the best rating recorded for each teacher, then averaged across teachers. Each numbered marker opens the supporting evidence; identifying teacher details are withheld.</div>
+              <section class="rep-sec" id="s13sec">
+                <h3 class="rep-h">Secondary</h3>
+                <div class="rep-grp">
+                  <p class="rep-sum">Questioning is used to check understanding rather than to move the lesson along.<span class="refmk">12</span></p>
+                  <ul class="rep-bl" id="s13bl">
+                    <li>Modelling is explicit and the success criteria stay visible throughout.<span class="refmk">27</span></li>
+                    <li>Where progress stalls, the pace moves on before every group has answered.<span class="refmk">41</span></li>
+                  </ul>
+                </div>
+              </section>
             </div>
-            <div class="panel" id="s9mxcard">
-              <div class="ey-bold" style="margin-bottom:8px">Transition matrix &middot; February band to June band</div>
-              <div class="mmxwrap"><div class="mmx" id="s9mx"><div class="mh mcorner">Feb &#8595; / Jun &#8594;</div><div class="mh"><span class="msw" style="background:#0f5f30"></span>Outstanding</div><div class="mh"><span class="msw" style="background:#268a4c"></span>Very Good</div><div class="mh"><span class="msw" style="background:#6f8f22"></span>Good</div><div class="mh"><span class="msw" style="background:#b8760f"></span>Acceptable</div><div class="mh"><span class="msw" style="background:#d4663a"></span>Weak</div><div class="mh"><span class="msw" style="background:#c22f24"></span>Very Weak</div><div class="mh mcorner">Total</div><div class="mh"><span class="msw" style="background:#0f5f30"></span>Outstanding</div><div class="mc diag" style="background:color-mix(in srgb,var(--ink-mid) 16%,transparent)">4</div><div class="mc" style="background:color-mix(in srgb,var(--r6) 20%,transparent)">2</div><div class="mc" style="background:color-mix(in srgb,var(--r6) 16%,transparent)">1</div><div class="mc" style="background:transparent"></div><div class="mc" style="background:transparent"></div><div class="mc" style="background:transparent"></div><div class="mc mtot">7</div><div class="mh"><span class="msw" style="background:#268a4c"></span>Very Good</div><div class="mc" style="background:color-mix(in srgb,var(--g) 31%,transparent)">5</div><div class="mc diag" style="background:color-mix(in srgb,var(--ink-mid) 28%,transparent)">9</div><div class="mc" style="background:color-mix(in srgb,var(--r6) 20%,transparent)">2</div><div class="mc" style="background:color-mix(in srgb,var(--r6) 16%,transparent)">1</div><div class="mc" style="background:transparent"></div><div class="mc" style="background:transparent"></div><div class="mc mtot">17</div><div class="mh"><span class="msw" style="background:#6f8f22"></span>Good</div><div class="mc" style="background:color-mix(in srgb,var(--g) 24%,transparent)">3</div><div class="mc" style="background:color-mix(in srgb,var(--g) 43%,transparent)">8</div><div class="mc diag" style="background:color-mix(in srgb,var(--ink-mid) 33%,transparent)">11</div><div class="mc" style="background:color-mix(in srgb,var(--r6) 24%,transparent)">3</div><div class="mc" style="background:transparent"></div><div class="mc" style="background:transparent"></div><div class="mc mtot">25</div><div class="mh"><span class="msw" style="background:#b8760f"></span>Acceptable</div><div class="mc" style="background:color-mix(in srgb,var(--g) 20%,transparent)">2</div><div class="mc" style="background:color-mix(in srgb,var(--g) 35%,transparent)">6</div><div class="mc" style="background:color-mix(in srgb,var(--g) 39%,transparent)">7</div><div class="mc diag" style="background:color-mix(in srgb,var(--ink-mid) 37%,transparent)">13</div><div class="mc" style="background:color-mix(in srgb,var(--r6) 20%,transparent)">2</div><div class="mc" style="background:transparent"></div><div class="mc mtot">30</div><div class="mh"><span class="msw" style="background:#d4663a"></span>Weak</div><div class="mc" style="background:transparent"></div><div class="mc" style="background:transparent"></div><div class="mc" style="background:color-mix(in srgb,var(--g) 20%,transparent)">2</div><div class="mc" style="background:color-mix(in srgb,var(--g) 16%,transparent)">1</div><div class="mc diag" style="background:color-mix(in srgb,var(--ink-mid) 14%,transparent)">3</div><div class="mc" style="background:transparent"></div><div class="mc mtot">6</div><div class="mh"><span class="msw" style="background:#c22f24"></span>Very Weak</div><div class="mc" style="background:transparent"></div><div class="mc" style="background:transparent"></div><div class="mc" style="background:transparent"></div><div class="mc" style="background:transparent"></div><div class="mc" style="background:transparent"></div><div class="mc diag" style="background:color-mix(in srgb,var(--ink-mid) 10%,transparent)">1</div><div class="mc mtot">1</div><div class="mh mcorner">Total</div><div class="mc mtot">14</div><div class="mc mtot">25</div><div class="mc mtot">23</div><div class="mc mtot">18</div><div class="mc mtot">5</div><div class="mc mtot">1</div><div class="mc mtot">86</div></div></div>
+
+            <!-- the Google Doc the export builds -->
+            <div class="s13doc" id="s13doc">
+              <div class="s13dk" id="s13d1">Whole school</div>
+              <div class="s13dt" id="s13d2">R3 June 26<br /><em>Governance Report</em></div>
+              <div class="s13drule" id="s13d3"></div>
+              <div class="s13ds" id="s13d4">References attached &middot; teachers anonymised by construction</div>
+              <div class="s13df" id="s13d5">Google Doc &middot; generated 29 July 2026</div>
+              <!-- the sheen sweeps in from off-card and rests off-card (xPercent
+                   -140/140 in the cues file); #s13doc clips it with overflow:hidden,
+                   so it is never visible outside the card, only in transit across it. -->
+              <div class="s13sheen" id="s13sheen" data-layout-allow-overflow></div>
             </div>
+
           </div>
-          <div class="s9qs" id="s9qs">
-            <span class="pill-note">Is teaching getting better?</span>
-            <span class="pill-note">If not, why?</span>
-            <span class="pill-note">And how can we improve?</span>
-          </div>
-          <div class="s9foot">
-            <div class="s9chips" id="s9chips">
-              <span class="mchip up">Improved <b>34</b></span>
-              <span class="mchip flat">Held <b>41</b></span>
-              <span class="mchip dn">Declined <b>11</b></span>
-              <span class="subtle">86 teachers seen in both rounds</span>
+
+          <!-- round regeneration: one button rewrites the analysis for a new round -->
+          <div class="panel s13regen" id="s13regen">
+            <div class="s13regrow">
+              <span class="s13reglab">Regenerating round narrative</span>
+              <span class="s13regsub">Snapshot, report references, recommendations and every coaching note</span>
+              <span class="s13chk" id="s13chk">Checked &middot; Head of Teaching and Learning</span>
             </div>
+            <div class="regbar"><i id="s13bar"></i></div>
           </div>
+
         </div>
       </section>
       <!-- ============ 10 . COVERAGE ============ -->
-      <section class="scene clip" id="sc10" data-start="193.13" data-duration="15.38" data-track-index="1">
+      <section class="scene clip" id="sc10" data-start="249.95" data-duration="15.15" data-track-index="1">
         <div class="sbody">
           <div class="shead">
             <div class="kick"><i class="stripe"></i> Coverage &middot; R3 June 26</div>
@@ -881,14 +1277,77 @@
           <div class="pill-note" id="s10note">No one is invisible for a term</div>
         </div>
       </section>
+      <!-- ============ T3 . STEP THREE (the spine hands over to Coaching Plan) ======
+     Same spine, same node x as the cover. Hero is the right node, so it flies
+     left to the centre (x -355) as the map recedes. -->
+<section class="scene navy clip jscene tstep" id="sct3" data-start="265.1" data-duration="2.43" data-track-index="1">
+  <div class="stars" id="t3stars" data-stars-seed data-layout-allow-overflow></div>
+
+  <div class="jstage" id="t3stage">
+    <div class="jroute" id="t3map">
+      <div class="jglow"></div>
+
+      <svg class="jsvg" viewBox="0 0 1920 1080" width="1920" height="1080" fill="none">
+        <line class="jtrack" x1="250" y1="640" x2="1670" y2="640" />
+        <path class="jspine" d="M250 640 H1670" />
+        <circle class="jcap" cx="250" cy="640" r="8" />
+        <circle class="jcap" cx="1670" cy="640" r="8" />
+      </svg>
+
+      <div class="jnode" style="left:605px">
+        <div class="jring">
+          <i class="jpulse"></i>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1.8 12S5.6 5.6 12 5.6 22.2 12 22.2 12 18.4 18.4 12 18.4 1.8 12 1.8 12Z" />
+            <circle cx="12" cy="12" r="3.1" />
+          </svg>
+        </div>
+        <div class="jlab">Observe</div>
+      </div>
+
+      <div class="jnode" style="left:960px">
+        <div class="jring">
+          <i class="jpulse"></i>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7.6 4.2h8.2a2 2 0 0 1 2 2v10.4" />
+            <rect x="3.4" y="7.4" width="12.4" height="12.4" rx="2" />
+            <path d="M6.4 11.4h6.4M6.4 14.2h6.4M6.4 17h4" />
+          </svg>
+        </div>
+        <div class="jlab">Evidence</div>
+      </div>
+    </div>
+
+    <!-- the hero: node 3, same markup, same coordinate, own layer -->
+    <div class="jroute theroute">
+      <div class="jnode thero" id="t3hero" style="left:1315px">
+        <div class="jring">
+          <i class="jpulse"></i>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 18.4 8.6 12.8l3.6 3.6L20.4 8.6" />
+            <path d="M15.4 8.6h5v5" />
+            <path d="M3 21.4h18" />
+          </svg>
+        </div>
+        <div class="jlab">Coaching Plan</div>
+      </div>
+    </div>
+
+    <div class="tchiprow" id="t3chip"><span class="tchip"><i></i>Step 3</span></div>
+  </div>
+</section>
+      <!-- ---- act 3 . the coaching plan ---- -->
       <!-- ============ 11 . THE TEACHER VIEW ============ -->
-      <section class="scene top clip" id="sc11" data-start="208.51" data-duration="27.06" data-track-index="1">
+      <section class="scene top clip" id="sc11" data-start="267.53" data-duration="30.32" data-track-index="1">
         <div class="sbody">
 
           <div class="s11top" id="s11top">
             <div class="kick"><i class="stripe"></i> Observations &middot; teacher drill-down</div>
             <div class="thead">
-              <span class="tavatar" id="s11av"><img src="assets/faces/face-01.jpg" alt="" /></span>
+              <!-- the img is oversized (width:200%, left:-50%) to cover the circular
+                   frame regardless of its native aspect ratio; .tavatar clips it with
+                   overflow:hidden, so the photo never actually shows outside the circle. -->
+              <span class="tavatar" id="s11av" data-layout-allow-overflow><img src="assets/faces/face-01.jpg" alt="" /></span>
               <span class="who">
                 <h2>Eleanor Whitfield</h2>
                 <div class="meta">3 observations &nbsp;&middot;&nbsp; English &nbsp;&middot;&nbsp; Secondary &nbsp;&middot;&nbsp; June 2 &nbsp;&middot;&nbsp; February 1</div>
@@ -997,7 +1456,7 @@
                   </div>
                 </div>
               </div>
-              <p class="ns-sum" id="s11sum">Drafted from her own lessons, then checked word for word against the source.</p>
+              <p class="ns-sum" id="s11sum">Drafted from her own lessons, then checked word for word against the observed lesson.</p>
               <div class="fc" id="s11fc" style="--cc:var(--b)">
                 <div class="fc-l">
                   <span class="ns-chip">Questioning</span>
@@ -1015,7 +1474,7 @@
         </div>
       </section>
       <!-- ============ 12 . THE TEACHER PORTAL ============ -->
-      <section class="scene clip" id="sc12" data-start="235.57" data-duration="20.64" data-track-index="1">
+      <section class="scene clip" id="sc12" data-start="297.85" data-duration="19.49" data-track-index="1">
         <div class="sbody">
           <div class="s12stage">
 
@@ -1077,154 +1536,83 @@
           </div>
         </div>
       </section>
-      <!-- ============ 13 . REPORTS AND REGENERATION ============ -->
-      <section class="scene top clip" id="sc13" data-start="256.21" data-duration="21.65" data-track-index="1">
-        <div class="sbody">
-          <div class="shead" id="s13head">
-            <div class="kick"><i class="stripe"></i> For the leadership table</div>
-            <h2>One round, <em>one document</em></h2>
-          </div>
 
-          <div class="s13row">
+      <!-- ============ 15 . CLOSE (the loop; a fragment like every other scene) ============ -->
+      <!-- ============ 15 . CLOSE (the loop) ============
+     The cover's spine returns, whole and symmetric (same .jscene classes,
+     same line, same node x 605 / 960 / 1315), and this time a return path
+     closes it: an arc below the line from the Coaching Plan node back to the
+     Observe node. The arc is drawn once, on "the journey starts again".
 
-            <!-- the governance report, as the board renders it -->
-            <div class="s13page" id="s13page">
-              <div class="rep-top" id="s13top">
-                <div class="rep-th">
-                  <div class="rep-kick">Governance report &middot; Simple</div>
-                  <h2 class="big">The June <em>R3</em> picture.</h2>
-                  <div class="rep-meta">Whole school &middot; R3 June 26 &middot; generated 2026-07-29</div>
-                </div>
-                <button class="repexport" id="s13export" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M4.5 6.5L8 10l3.5-3.5M3 13h10" /></svg>Make Google Doc</button>
-              </div>
-              <div class="rtabset" id="s13tabs">
-                <span class="rtab on" id="s13tabA">Simple</span>
-                <span class="rtab" id="s13tabB">In Depth</span>
-              </div>
-              <div class="rep-scope-all" id="s13scope">111 lessons &middot; 105 teachers &middot; average progress <b>Good</b> (3.2 of 6)</div>
-              <div class="rep-method" id="s13method"><b>How these are counted.</b> Average progress is the best rating recorded for each teacher, then averaged across teachers. Each numbered marker opens the supporting evidence; identifying teacher details are withheld.</div>
-              <section class="rep-sec" id="s13sec">
-                <h3 class="rep-h">Secondary</h3>
-                <div class="rep-grp">
-                  <p class="rep-sum">Questioning is used to check understanding rather than to move the lesson along.<span class="refmk">12</span></p>
-                  <ul class="rep-bl" id="s13bl">
-                    <li>Modelling is explicit and the success criteria stay visible throughout.<span class="refmk">27</span></li>
-                    <li>Where progress stalls, the pace moves on before every group has answered.<span class="refmk">41</span></li>
-                  </ul>
-                </div>
-              </section>
-            </div>
+     Loop geometry, symmetric about x 960 like everything else in the system:
+       it leaves the Coaching Plan ring at (1369.5, 659.8), 20 degrees below
+       the line, runs out past that node's label, drops at x 1676 (under the
+       line's own end cap), crosses back at y 940 (175px below the labels),
+       rises at x 244 (under the left cap) and arrives at the Observe ring at
+       (550.5, 659.8) pointing at its centre. Path length 2318, so
+       .jloop carries stroke-dasharray 2320. -->
+<section class="scene navy clip jscene" id="sc15" data-start="317.34" data-duration="14.91" data-track-index="1">
+  <div class="stars" id="s15stars" data-stars-seed data-layout-allow-overflow></div>
 
-            <!-- the Google Doc the export builds -->
-            <div class="s13doc" id="s13doc">
-              <div class="s13dk" id="s13d1">Whole school</div>
-              <div class="s13dt" id="s13d2">R3 June 26<br /><em>Governance Report</em></div>
-              <div class="s13drule" id="s13d3"></div>
-              <div class="s13ds" id="s13d4">References attached &middot; teachers anonymised by construction</div>
-              <div class="s13df" id="s13d5">Google Doc &middot; generated 29 July 2026</div>
-              <div class="s13sheen" id="s13sheen"></div>
-            </div>
+  <div class="jstage">
+    <div class="jroute" id="s15route">
+      <div class="jglow"></div>
 
-          </div>
+      <svg class="jsvg" viewBox="0 0 1920 1080" width="1920" height="1080" fill="none">
+        <line class="jtrack" x1="250" y1="640" x2="1670" y2="640" />
+        <path class="jspine" id="s15spine" d="M250 640 H1670" />
+        <path class="jloop" id="s15loop" d="M1369.5 659.8 C1425.5 679.8 1460 700 1520 700 C1626 700 1676 756 1676 830 C1676 902 1610 940 1490 940 L430 940 C310 940 244 902 244 830 C244 756 294 700 400 700 C460 700 494.5 679.8 550.5 659.8" />
+        <g class="jloopend" id="s15arrow" transform="translate(550.5 659.8) rotate(-20)">
+          <path d="M0 0 L-20 -7.6 L-20 7.6 Z" />
+        </g>
+        <circle class="jcap" cx="250" cy="640" r="8" />
+        <circle class="jcap" cx="1670" cy="640" r="8" />
+      </svg>
 
-          <!-- round regeneration: one button rewrites the analysis for a new round -->
-          <div class="panel s13regen" id="s13regen">
-            <div class="s13regrow">
-              <span class="s13reglab">Regenerating round narrative</span>
-              <span class="s13regsub">Snapshot, report references, recommendations and every coaching note</span>
-              <span class="s13chk" id="s13chk">Checked &middot; Head of Teaching and Learning</span>
-            </div>
-            <div class="regbar"><i id="s13bar"></i></div>
-          </div>
+      <div class="jtrav" id="s15trav"></div>
 
+      <div class="jnode" id="s15n1" style="left:605px">
+        <div class="jring">
+          <i class="jpulse"></i>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1.8 12S5.6 5.6 12 5.6 22.2 12 22.2 12 18.4 18.4 12 18.4 1.8 12 1.8 12Z" />
+            <circle cx="12" cy="12" r="3.1" />
+          </svg>
         </div>
-      </section>
-      <!-- ============ 14 . TRUST ============ -->
-<section class="scene top clip" id="sc14" data-start="277.86" data-duration="24.5" data-track-index="1">
-  <div class="sbody">
-    <div class="shead">
-      <div class="kick"><i class="stripe"></i> Trust</div>
-      <h2>Three locks, and <em>nothing to maintain</em></h2>
-    </div>
-
-    <div class="s14row">
-      <div class="panel s14card" id="s14c1">
-        <span class="s14n">01</span>
-        <span class="s14lock">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <path class="s14shk" d="M7.6 10.4V7.6a4.4 4.4 0 0 1 8.8 0v2.8" />
-            <rect x="4.4" y="10.4" width="15.2" height="10.2" rx="2.6" />
-            <circle cx="12" cy="14.9" r="1.45" />
-            <path d="M12 16.35v1.9" />
-          </svg>
-        </span>
-        <div class="s14t">A password for the school</div>
-        <div class="s14s">One password opens the round. Every page checks it before it renders a single figure.</div>
-        <div class="s14m">Gate on every page</div>
+        <div class="jlab">Observe</div>
       </div>
 
-      <div class="panel s14card" id="s14c2">
-        <span class="s14n">02</span>
-        <span class="s14lock">
+      <div class="jnode" id="s15n2" style="left:960px">
+        <div class="jring">
+          <i class="jpulse"></i>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <path class="s14shk" d="M7.6 10.4V7.6a4.4 4.4 0 0 1 8.8 0v2.8" />
-            <rect x="4.4" y="10.4" width="15.2" height="10.2" rx="2.6" />
-            <path d="M9.4 15.4l1.9 1.9 3.4-3.7" />
+            <path d="M7.6 4.2h8.2a2 2 0 0 1 2 2v10.4" />
+            <rect x="3.4" y="7.4" width="12.4" height="12.4" rx="2" />
+            <path d="M6.4 11.4h6.4M6.4 14.2h6.4M6.4 17h4" />
           </svg>
-        </span>
-        <div class="s14t">A second, for administrators</div>
-        <div class="s14s">Verified on the server, never held in the page. It opens the admin tools and nothing else.</div>
-        <div class="s14m">Server verified</div>
-      </div>
-
-      <div class="panel s14card" id="s14c3">
-        <span class="s14n">03</span>
-        <span class="s14lock">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-            <path class="s14shk" d="M7.6 10.4V7.6a4.4 4.4 0 0 1 8.8 0v2.8" />
-            <rect x="4.4" y="10.4" width="15.2" height="10.2" rx="2.6" />
-            <circle cx="12" cy="14.6" r="1.5" />
-            <path d="M12 16.1v2.2M12.9 17.5h-1.8" />
-          </svg>
-        </span>
-        <div class="s14t">A key for every record</div>
-        <div class="s14s">Each record carries its own 32 character token, 128 bits of entropy. A link opens that record and no other.</div>
-        <div class="s14m">128 bit token</div>
-      </div>
-    </div>
-
-    <div class="panel s14strip" id="s14strip">
-      <div class="s14left">
-        <div class="ey">Runs on</div>
-        <div class="s14chips">
-          <span>Google Workspace</span>
-          <span>Supabase</span>
-          <span>Static hosting</span>
         </div>
+        <div class="jlab">Evidence</div>
       </div>
-      <div class="s14right">
-        <div class="s14line" id="s14line">No servers to maintain. No per seat licences.</div>
-        <div class="s14sub" id="s14sub">The data stays in accounts the school controls.</div>
+
+      <div class="jnode" id="s15n3" style="left:1315px">
+        <div class="jring">
+          <i class="jpulse"></i>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 18.4 8.6 12.8l3.6 3.6L20.4 8.6" />
+            <path d="M15.4 8.6h5v5" />
+            <path d="M3 21.4h18" />
+          </svg>
+        </div>
+        <div class="jlab">Coaching Plan</div>
       </div>
     </div>
+
+    <div class="jclose" id="s15bns"><span class="w w1">Better</span> <span class="w w2"><em>never</em></span> <span class="w w3">stops.</span></div>
   </div>
 </section>
 
-      <!-- ============ 15 . CLOSE ============ -->
-      <section class="scene clip" id="sc15" data-start="302.36" data-duration="12.94" data-track-index="1">
-        <div class="sbody">
-          <div class="beat-h" id="s15h" style="max-width:24ch;font-size:56px">A lesson observed. Evidence kept.<br /><em>A plan in the teacher's hand.</em></div>
-          <div class="flowstrip three" id="s15flow" style="margin-top:48px">
-            <div class="fstep"><div class="ft">One system</div><div class="fs">Form, pipeline, dashboard</div></div>
-            <div class="fstep"><div class="ft">Built inside a school</div><div class="fs">Running live, in real classrooms</div></div>
-            <div class="fstep new"><span class="ftag">Ready</span><div class="ft">Ready to travel</div><div class="fs">Same rails for any school</div></div>
-          </div>
-          <div class="beat-h" id="s15bns" style="margin-top:54px;font-size:64px">Better <em>never</em> stops.</div>
-        </div>
-      </section>
-
       <!-- ============ 16 . END CARD (silent, back to the cover) ============ -->
-      <section class="scene navy clip" id="sc16" data-start="315.3" data-duration="8" data-track-index="1">
+      <section class="scene navy clip" id="sc16" data-start="332.25" data-duration="8" data-track-index="1">
         <div class="sbody" style="justify-content:center">
           <div class="stars" id="endStars" data-layout-allow-overflow></div>
           <div style="position:relative;z-index:2">
@@ -1247,11 +1635,15 @@
         }
         document.getElementById('coverStars').innerHTML = html;
         document.getElementById('endStars').innerHTML = html;
+        /* every other navy spine scene (t1/t2/t3, s15) opts in with
+           data-stars-seed and gets the SAME field, so the cuts between them
+           never reshuffle the sky. */
+        document.querySelectorAll('.stars[data-stars-seed]').forEach(function (el) { el.innerHTML = html; });
       })();
 
       /* Cue times are derived from the narration track, injected at build time,
          so re-cutting a line moves the animation with it. */
-      var NARR = {"s01_cover":{"start":2.5,"dur":17.528},"s02_form":{"start":22.028,"dur":21.771},"s03_scale":{"start":44.249,"dur":20.719},"s04_pad":{"start":65.418,"dur":20.908},"s05_lock":{"start":86.776,"dur":6.543},"s06_pipeline":{"start":93.768,"dur":22.147},"s07_story":{"start":118.916,"dur":29.083},"s08_evidence":{"start":148.449,"dur":22.132},"s09_movement":{"start":171.03,"dur":22.201},"s10_coverage":{"start":193.682,"dur":12.878},"s11_teacher":{"start":209.059,"dur":26.612},"s12_portal":{"start":236.121,"dur":20.189},"s13_report":{"start":256.76,"dur":21.203},"s14_trust":{"start":278.413,"dur":22},"s15_close":{"start":302.913,"dur":9.191},"s16_end":{"start":315.3,"dur":8}};
+      var NARR = {"s01_cover":{"start":2.5,"dur":15.988},"t1_step1":{"start":20.488,"dur":3.533},"s02_form":{"start":24.471,"dur":20.804},"s03_scale":{"start":45.725,"dur":21.468},"s04_pad":{"start":67.643,"dur":23.29},"s05_lock":{"start":91.384,"dur":5.984},"s06_pipeline":{"start":97.817,"dur":25.034},"t2_step2":{"start":125.851,"dur":3.461},"s07_story":{"start":129.762,"dur":27.671},"s16_dataset":{"start":157.883,"dur":10.728},"s09_movement":{"start":169.061,"dur":23.845},"s08_evidence":{"start":193.356,"dur":34.801},"s13_report":{"start":228.607,"dur":21.447},"s10_coverage":{"start":250.504,"dur":12.644},"t3_step3":{"start":265.648,"dur":1.981},"s11_teacher":{"start":268.08,"dur":29.874},"s12_portal":{"start":298.404,"dur":19.034},"s15_close":{"start":317.888,"dur":11.161},"s16_end":{"start":332.25,"dur":8}};
       function at(id, off) { return NARR[id].start + (off || 0); }
       // proportional cue: frac of the scene's narration length, so a shorter
       // line compresses its choreography instead of losing the tail of it
@@ -1279,26 +1671,28 @@
         });
       }
 
-      /* 1 . the journey spine (intro A, bound to the v2.3 narration)
+      /* 1 . the journey spine (cover, bound to the APPROVED v2.4 narration)
    "Every school should observe lessons. Very few can show what happens next.
     This is the Observation System: one route from lesson observation, to
     collected evidence, to a coaching plan for every teacher, covering every
-    step of the learning journey. Here is the whole journey."   (44 words)
+    step of the learning journey."                              (39 words)
 
-   Cue times are word share through that text (words before the phrase / 44),
+   v2.4 changes: the sentence "Here is the whole journey" is GONE, so the
+   zoom-out beat and the #jtext line that carried it are cut. The scene now
+   ends on the three lit nodes and the bed of light under them, which is the
+   exact frame t1 opens on.
+
+   Cue times are word share through that text (words before the phrase / 39),
    per knowledge/motion-rules.md section 2:
-     0.273  "This is the Observation System"    the name lands
-     0.415  "one route from"                    the spine starts drawing
-     0.455  "lesson observation"                node 1 lights
-     0.523  "collected evidence"                node 2
-     0.614  "a coaching plan"                   node 3
-     0.727  "covering every step"               the route settles back
-     0.886  "Here is the whole journey"         the line is settled BY here
-   The title beat stays absolute (entrance window, first 1.5s).
+     0.3077  "This is the Observation System"   the name lands    (12/39)
+     0.4359  "one route from"                   the spine draws   (17/39)
+     0.5128  "lesson observation"               node 1 lights     (20/39)
+     0.5897  "collected evidence"               node 2            (23/39)
+     0.6667  "a coaching plan"                  node 3            (26/39)
+     0.8205  "covering every step"              the route settles (32/39)
 
    Freeze-safe: every entrance is .from(), so the authored DOM (route drawn,
-   all three nodes lit, title and closing line readable, pulses spent) IS the
-   final frame, and the scene ends on it. */
+   all three nodes lit, title readable, pulses spent) IS the final frame. */
 
 /* the whole route parallax bed: slow, linear, no Math.random anywhere (the
    star field is the seeded LCG string shared with the end card) */
@@ -1312,27 +1706,28 @@ tl.from('#jtitle', { opacity: 0, y: 26, duration: 1.1, ease: 'power3.out' }, at(
    No ring on the cover. Resting text-shadow is the CSS one, restored by the
    second tween, so a freeze anywhere reads as the authored title. */
 tl.fromTo('#jtitle em', { textShadow: '0 0 38px rgba(240,176,42,0.40)' },
-    { textShadow: '0 0 64px rgba(240,176,42,0.85)', duration: 0.5, ease: 'power2.out', immediateRender: false }, atf('s01_cover', 0.273))
-  .to('#jtitle em', { textShadow: '0 0 38px rgba(240,176,42,0.40)', duration: 0.8, ease: 'power2.inOut' }, atf('s01_cover', 0.273) + 0.5);
+    { textShadow: '0 0 64px rgba(240,176,42,0.85)', duration: 0.5, ease: 'power2.out', immediateRender: false }, atf('s01_cover', 0.3077))
+  .to('#jtitle em', { textShadow: '0 0 38px rgba(240,176,42,0.40)', duration: 0.8, ease: 'power2.inOut' }, atf('s01_cover', 0.3077) + 0.5);
 
 /* the faint track appears just before the route is spoken */
-tl.from('#sc01 .jtrack', { opacity: 0, duration: 0.8, ease: 'power2.out' }, atf('s01_cover', 0.341));
+tl.from('#sc01 .jtrack', { opacity: 0, duration: 0.8, ease: 'power2.out' }, atf('s01_cover', 0.397));
 
 /* 3 . the spine draws itself, left to right, at constant speed, so "the line
        reaches a node" and "the node lights" are the same instant BY
-       CONSTRUCTION: node x in the section is 250 + f * 1420, so f fixes when
-       each node is reached. The window is solved from node 1 ("lesson
-       observation", 0.455) and node 3 ("a coaching plan", 0.614); node 2 is
-       then reached at 0.534 against a spoken 0.523, about a fifth of a second
-       and still inside the phrase "collected evidence" (0.523 to 0.568).
+       CONSTRUCTION: node x is 250 + f * 1420, so f fixes when each node is
+       reached. Under the geometry law (nodes at 25 / 50 / 75 %) the window
+       solved from node 1 ("lesson observation", 0.5128) and node 3 ("a
+       coaching plan", 0.6667) starts at 0.4359, which is exactly "one route
+       from", and node 2 is reached at 0.5897, which is exactly "collected
+       evidence". Three phrases, three nodes, no fudge factor left.
        dasharray 1420 = the line's own length. This is the FIRST tween on
        strokeDashoffset, so it keeps GSAP's default immediateRender:true and
        the line is undrawn from frame 0. With immediateRender:false the CSS
        resting value (dashoffset 0) leaks through and the whole route sits
        finished, then snaps blank and redraws. Verified on the render. */
-var S1_DRAW0 = atf('s01_cover', 0.4153);                 // "one route from"
-var S1_DRAWD = atf('s01_cover', 0.6339) - S1_DRAW0;      // ends on "coaching plan"
-var S1_NODEF = [0.1817, 0.5451, 0.9092];                 // (508 | 1024 | 1541 - 250) / 1420
+var S1_DRAW0 = atf('s01_cover', 0.4359);                 // "one route from"
+var S1_DRAWD = atf('s01_cover', 0.7436) - S1_DRAW0;      // ends past "coaching plan"
+var S1_NODEF = [0.25, 0.50, 0.75];                       // the geometry law itself
 
 tl.from('#jcapA', { opacity: 0, scale: 0.4, duration: 0.5, ease: 'back.out(2)' }, S1_DRAW0 - 0.25)
   .fromTo('#jspine', { strokeDashoffset: 1420 },
@@ -1354,43 +1749,98 @@ tl.fromTo('#jtrav', { opacity: 0 }, { opacity: 1, duration: 0.35, ease: 'power2.
     .from(n + ' .jlab', { opacity: 0, y: 12, duration: 0.65, ease: 'power2.out' }, t + 0.22);
 });
 
-/* 5 . "covering every step of the learning journey": the whole route eases
-       down to its resting size and the bed of light comes up under it, so the
-       full picture is settled before the closing phrase. The line then rises
-       a beat AHEAD of "Here is the whole journey" (0.886) and is settled on
-       it, the v2.0 rule for a closing phrase. Nothing enters after it. */
-tl.from('#jroute', { scale: 1.135, y: 18, duration: 2.8, ease: 'power2.inOut' }, atf('s01_cover', 0.727))
-  .from('#jspine', { stroke: 'rgba(240,176,42,0.5)', duration: 2.2, ease: 'power2.out' }, atf('s01_cover', 0.727))
-  .from('#jglow', { opacity: 0, scale: 0.86, duration: 2.0, ease: 'power2.out' }, atf('s01_cover', 0.75))
-  .from('#jtext', { opacity: 0, y: 20, duration: 1.0, ease: 'power3.out' }, atf('s01_cover', 0.83));
+/* 5 . "covering every step of the learning journey": the route settles into
+       its finished state, the spine comes up to full gold and the bed of
+       light rises under the whole line. NO zoom out: the v2.3 pull-back
+       belonged to "Here is the whole journey", which v2.4 cut, and t1 opens
+       on this exact frame, so the spine must not move. */
+tl.from('#jspine', { stroke: 'rgba(240,176,42,0.5)', duration: 2.2, ease: 'power2.out' }, atf('s01_cover', 0.8205))
+  .from('#jglow', { opacity: 0, scale: 0.86, duration: 2.0, ease: 'power2.out' }, atf('s01_cover', 0.8205));
+      /* T1 . step one transition
+   "Step one. The teachers are observed by their coach."          (9 words)
+     0.0000  "Step one."                    the chip lands        (0/9)
+     0.2222  "The teachers are observed"    node 1 detaches       (2/9)
+
+   THE PATTERN (t1 / t2 / t3 are the same machine, only the hero changes):
+     the map (#tXmap) opens at the cover's exact transform, identity, then
+     recedes: scale .78 and y +260 about its own 50% 56% origin, which parks
+     the whole spine as a dim strip at y 847 .. 990, clear of the big label
+     (bottom 744) and clear of the chip (bottom 286).
+     the hero (#tXhero) sits in its own layer at its spine x, so it flies with
+     x = 960 - node x  ->  t1 +355 | t2 0 | t3 -355,  y = 470 - 640 = -170,
+     scale 2.2 about the ring centre (transform-origin 50% 58px), landing the
+     icon at (960, 470) with its label under it at 655 .. 744.
+     Both are fromTo with immediateRender:false, so the CSS resting state (the
+     cover's geometry) is what shows before the beat, and GSAP holds the end
+     state for the rest of the scene. Deterministic under seek in both
+     directions: nothing else touches these transforms.
+     The flight and the arrival ring are budgeted from the time this take
+     actually leaves between the detach and the end of the line, never from an
+     inherited constant, so a short read (t3 is five words) still lands the
+     node AND spends its ring before the cut. Motion rules want fixed
+     durations; the cap is the fixed one, the budget only ever shortens it.
+
+   t1 takes a hard match cut from the cover: same spine, same pixels, so there
+   is NO entrance fade here on purpose. t2 and t3 cut in from a light
+   dashboard scene and do fade their stage in. */
+
+var T1_GO = atf('t1_step1', 0.2222);                          // "The teachers are observed"
+var T1_TAIL = at('t1_step1', NARR.t1_step1.dur - 0.2);        // last frame still on this scene
+var T1_D = Math.min(1.35, Math.max(0.6, (T1_TAIL - T1_GO) * 0.62));        // flight
+var T1_P = Math.min(0.9, Math.max(0.35, T1_TAIL - T1_GO - T1_D));         // arrival ring
+
+tl.to('#t1stars', { y: -14, duration: NARR.t1_step1.dur + 2, ease: 'none' }, at('t1_step1', -0.55));
+
+/* the chip, on "Step one" */
+tl.from('#t1chip', { opacity: 0, y: -14, duration: 0.6, ease: 'power2.out' }, atf('t1_step1', 0.0));
+
+/* the detach, the flight, the growth */
+tl.fromTo('#t1hero', { x: 0, y: 0, scale: 1 },
+    { x: 355, y: -170, scale: 2.2, duration: T1_D, ease: 'power3.inOut', immediateRender: false }, T1_GO)
+  .fromTo('#t1map', { y: 0, scale: 1, opacity: 1 },
+    { y: 260, scale: 0.78, opacity: 0.26, duration: T1_D + 0.15, ease: 'power2.inOut', immediateRender: false }, T1_GO);
+
+/* one ring on the way off the line, one on arrival. Both spend to opacity 0,
+   which is the CSS resting state of .jpulse, so a freeze is never mid ring. */
+tl.fromTo('#t1hero .jpulse', { scale: 0.66, opacity: 0.85 },
+    { scale: 1.25, opacity: 0, duration: Math.min(0.7, T1_D * 0.55), ease: 'power2.out', immediateRender: false }, T1_GO)
+  .fromTo('#t1hero .jpulse', { scale: 0.72, opacity: 0.7 },
+    { scale: 1.4, opacity: 0, duration: T1_P, ease: 'power2.out', immediateRender: false }, T1_GO + T1_D - 0.1);
       /* 2 . the form
-   "It starts in the classroom, on an iPad. The observer opens one form.
-    Teacher, subject, class and timing come from live dropdowns ... Class
-    composition is a few taps. The whole context of the lesson, captured in
-    under a minute."  (21.2s, 60 words) */
+   v2.4 line (58 words), every fraction recomputed from THIS text:
+   "While the coaches are observing a lesson, they fill in the relevant
+    observation form: subject, class and teacher, with live dropdowns fed by the
+    school's own staff directory, so nothing is typed from memory and no list is
+    ever out of date. Class composition is a few taps. The whole context of the
+    lesson, captured throughout the observation."
+   Word share: 0.121 "they fill in the relevant observation form" .
+   0.310 "with live dropdowns" . 0.397 "the school's own staff directory" .
+   0.500 "so nothing is typed from memory" . 0.724 "Class composition is a few
+   taps" . 0.931 "captured throughout the observation". */
 tl.from('#s2dev', { opacity: 0, y: 26, scale: 0.985, duration: 0.9, ease: 'power3.out' }, at('s02_form', -0.35))
   .from('#s2head', { opacity: 0, y: 12, duration: 0.7, ease: 'power2.out' }, at('s02_form', 0.35))
-  /* "the observer opens one form": the context grid fills cell by cell */
-  .from('#s2grid .info-cell', { opacity: 0, y: 14, duration: 0.5, stagger: 0.06, ease: 'power2.out' }, atf('s02_form', 0.10));
+  /* "they fill in the relevant observation form": the context grid fills cell by cell */
+  .from('#s2grid .info-cell', { opacity: 0, y: 14, duration: 0.5, stagger: 0.06, ease: 'power2.out' }, atf('s02_form', 0.121));
 
-/* "come from live dropdowns, fed by the school's own staff directory" */
+/* "with live dropdowns fed by the school's own staff directory" */
 tl.fromTo('#s2drop', { opacity: 0, scaleY: 0.82, y: -8 },
-    { opacity: 1, scaleY: 1, y: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, atf('s02_form', 0.30))
-  .from('#s2drop .option', { opacity: 0, x: -12, duration: 0.3, stagger: 0.07, ease: 'power2.out' }, atf('s02_form', 0.32))
+    { opacity: 1, scaleY: 1, y: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, atf('s02_form', 0.310))
+  .from('#s2drop .option', { opacity: 0, x: -12, duration: 0.3, stagger: 0.07, ease: 'power2.out' }, atf('s02_form', 0.328))
   /* the name lands on the row: the product's green .selected state */
-  .from('#s2sel', { backgroundColor: 'rgba(46,161,90,0)', color: '#143642', duration: 0.45, ease: 'power2.out' }, atf('s02_form', 0.45))
-  .to('#s2drop', { opacity: 0, scaleY: 0.9, duration: 0.28, ease: 'power2.in' }, atf('s02_form', 0.53))
-  .fromTo('#s2ph', { opacity: 1 }, { opacity: 0, duration: 0.22 }, atf('s02_form', 0.545))
-  .from('#s2tname', { opacity: 0, y: 8, duration: 0.4, ease: 'power2.out' }, atf('s02_form', 0.56));
+  .from('#s2sel', { backgroundColor: 'rgba(46,161,90,0)', color: '#143642', duration: 0.45, ease: 'power2.out' }, atf('s02_form', 0.397))
+  .to('#s2drop', { opacity: 0, scaleY: 0.9, duration: 0.28, ease: 'power2.in' }, atf('s02_form', 0.466))
+  .fromTo('#s2ph', { opacity: 1 }, { opacity: 0, duration: 0.22 }, atf('s02_form', 0.483))
+  /* "so nothing is typed from memory": the picked name resting in the row */
+  .from('#s2tname', { opacity: 0, y: 8, duration: 0.4, ease: 'power2.out' }, atf('s02_form', 0.500));
 
 /* "Class composition is a few taps": four pill groups fill green */
 tl.from('#sc02 .pill.is-selected', {
     backgroundColor: 'rgba(46,161,90,0)', color: '#6b7e85', borderColor: 'rgba(20,54,66,0.14)',
     scale: 0.86, duration: 0.42, stagger: 0.16, ease: 'back.out(2)'
-  }, atf('s02_form', 0.70))
-  .from('#s2ill', { opacity: 0, duration: 0.6 }, atf('s02_form', 0.84))
-  /* "captured in under a minute" */
-  .from('#s2note', { opacity: 0, x: -14, duration: 0.7, ease: 'power2.out' }, atf('s02_form', 0.88));
+  }, atf('s02_form', 0.724))
+  .from('#s2ill', { opacity: 0, duration: 0.6 }, atf('s02_form', 0.810))
+  /* "captured throughout the observation": the closing phrase of the line */
+  .from('#s2note', { opacity: 0, x: -14, duration: 0.7, ease: 'power2.out' }, atf('s02_form', 0.931));
       /* 3 . the Regulatory Body's scale
    "Each observation uses the Regulatory Body's own six point scale, from Very
     Weak to Outstanding, with the same proportion bands its inspectors already
@@ -1420,23 +1870,30 @@ tl.from('#s3tap', {
 
 tl.from('#s3ill', { opacity: 0, duration: 0.6 }, atf('s03_scale', 0.80));
       /* 4 . the Evidence Pad
-   "Coaching notes can be handwritten. The form has an Evidence Pad, designed
-    for Apple Pencil. The observer types, or writes with the Pencil, and keeps
-    photos of the board or the pupils' work alongside. The system reads the
-    handwriting and turns it into text. Everything is saved automatically
-    throughout the observation, so nothing is ever lost mid lesson." (58 words)
-   Cue times are word share through that text (motion rules 2). */
+   v2.4 line (65 words), every fraction recomputed from THIS text:
+   "The coach fills in the form by typing their notes, or by writing them with
+    the Apple Pencil on the built in Evidence Pad. The Evidence Pad also lets
+    the coach take or attach photos of anything noteworthy in the lesson. The
+    system transcribes the handwriting and turns it into text. Everything is
+    saved automatically throughout the observation, so nothing is ever lost mid
+    lesson."
+   The v2.4 line names TYPING FIRST and the Pencil second (v2.3 was the other way
+   round), so the typed line now wipes on before the ink draws.
+   Word share: 0.062 "the form" . 0.108 "typing their notes" . 0.185 "writing
+   them with the Apple Pencil" . 0.477 "take or attach photos" . 0.631 "The
+   system transcribes the handwriting" . 0.723 "turns it into text" . 0.815
+   "Everything is saved automatically". */
 tl.from('#s4dev', { opacity: 0, y: 26, scale: 0.985, duration: 0.9, ease: 'power3.out' }, at('s04_pad', -0.35))
   .from('#s4top .pad-title, #s4top .pad-btn', { opacity: 0, y: -8, duration: 0.5, stagger: 0.08, ease: 'power2.out' }, at('s04_pad', 0.3))
-  .from('#s4tools > *', { opacity: 0, y: 8, duration: 0.45, stagger: 0.05, ease: 'power2.out' }, atf('s04_pad', 0.14))
-  .from('#s4ill', { opacity: 0, duration: 0.6 }, atf('s04_pad', 0.20));
+  .from('#s4tools > *', { opacity: 0, y: 8, duration: 0.45, stagger: 0.05, ease: 'power2.out' }, atf('s04_pad', 0.062))
+  .from('#s4ill', { opacity: 0, duration: 0.6 }, atf('s04_pad', 0.246));
 
-/* "The observer types": the typed line wipes in left to right, same grammar as
+/* "by typing their notes": the typed line wipes in left to right, same grammar as
    the ink. It is nested in #s4typed, so it can reveal long before the
    transcription block enters without a second box owning the top band. */
-tl.from('#s4type', { clipPath: 'inset(0% 100% 0% 0%)', duration: 0.6, ease: 'none' }, atf('s04_pad', 0.259));
+tl.from('#s4type', { clipPath: 'inset(0% 100% 0% 0%)', duration: 0.6, ease: 'none' }, atf('s04_pad', 0.108));
 
-/* "or writes with the Pencil": the ink draws itself, line by line.
+/* "or by writing them with the Apple Pencil": the ink draws itself, line by line.
    Resting state is the finished page, so the tween ends on the full rect. */
 document.querySelectorAll('#s4ink .hwrect').forEach(function (r, i) {
   // handwriting-font lines reveal left to right as if written; resting state is
@@ -1446,37 +1903,38 @@ document.querySelectorAll('#s4ink .hwrect').forEach(function (r, i) {
   // the stroke ink behaved in v2.0/v2.1. immediateRender:false made each line
   // sit fully written, vanish at its beat, then rewrite (caught in render QA).
   tl.fromTo(r, { attr: { width: 0 } },
-    { attr: { width: 1456 }, duration: 1.15, ease: 'none' }, atf('s04_pad', 0.310) + i * 0.45);
+    { attr: { width: 1456 }, duration: 1.15, ease: 'none' }, atf('s04_pad', 0.185) + i * 0.45);
 });
 
-/* "and keeps photos of the board or the pupils' work alongside" */
-tl.from('#s4photo', { opacity: 0, y: -52, rotate: -11, duration: 0.75, ease: 'back.out(1.3)' }, atf('s04_pad', 0.414))
-  .fromTo('#s4hl', { scaleX: 0 }, { scaleX: 1, duration: 0.45, ease: 'power2.out' }, atf('s04_pad', 0.44))
-  /* "The system reads the handwriting and turns it into text" */
-  .fromTo('#s4ink', { opacity: 1 }, { opacity: 0.12, duration: 0.8, ease: 'power2.inOut' }, atf('s04_pad', 0.586))
-  .from('#s4typed .section-title, #s4typed .long-text', { opacity: 0, y: 18, duration: 0.75, stagger: 0.06, ease: 'power2.out' }, atf('s04_pad', 0.586))
-  .from('#s4toast', { opacity: 0, y: 16, duration: 0.5, ease: 'power2.out' }, atf('s04_pad', 0.66))
+/* "take or attach photos of anything noteworthy in the lesson" */
+tl.from('#s4photo', { opacity: 0, y: -52, rotate: -11, duration: 0.75, ease: 'back.out(1.3)' }, atf('s04_pad', 0.477))
+  .fromTo('#s4hl', { scaleX: 0 }, { scaleX: 1, duration: 0.45, ease: 'power2.out' }, atf('s04_pad', 0.508))
+  /* "The system transcribes the handwriting and turns it into text" */
+  .fromTo('#s4ink', { opacity: 1 }, { opacity: 0.12, duration: 0.8, ease: 'power2.inOut' }, atf('s04_pad', 0.631))
+  .from('#s4typed .section-title, #s4typed .long-text', { opacity: 0, y: 18, duration: 0.75, stagger: 0.06, ease: 'power2.out' }, atf('s04_pad', 0.631))
+  .from('#s4toast', { opacity: 0, y: 16, duration: 0.5, ease: 'power2.out' }, atf('s04_pad', 0.723))
   /* the honesty label for the transcription beat: AI reads it, judgements stay human */
-  .from('#s4cap', { opacity: 0, duration: 0.6 }, atf('s04_pad', 0.70))
+  .from('#s4cap', { opacity: 0, duration: 0.6 }, atf('s04_pad', 0.769))
   /* "Everything is saved automatically throughout the observation": it is
      already the green success colour, so opacity plus x is enough, no ring */
-  .from('#s4save', { opacity: 0, x: -12, duration: 0.6, ease: 'power2.out' }, atf('s04_pad', 0.759));
-      /* 5 . save and lock
-   "When it is done, each observation gets its own ID, freezes, and everything
-    is saved, ready for review."   (18 words)
+  .from('#s4save', { opacity: 0, x: -12, duration: 0.6, ease: 'power2.out' }, atf('s04_pad', 0.815));
+      /* 5 . saved
+   v2.4 line (17 words): "When it is done, each observation gets its own ID.
+   Everything is saved, and ready for review."
 
-   The line ENDS locked, so the arc is now filled draft -> tap -> locked, and
-   it STOPS there: no reset sweep, no ghost chips, no side note (all three were
-   unspoken beats of the old 48 word line). The locked card is the resting
-   state (see the CSS header), so the mid scene states are the DRAFT ones and
-   the lock beats run into the authored values with .from().
-   Word share: 0.222 "each observation gets its own ID" . 0.500 "ID" .
-   0.556 "freezes" . 0.833 "ready for review". The tap stays absolute, inside
-   the first 1.5s, per motion rules 2. */
+   The word "freezes" is GONE from the v2.4 line, so the snap that used to run on
+   it now runs on "gets its own ID" (Igor's v2.4 wording: the record gets an
+   identity, and that is what makes it un-editable). The card's locked state is
+   still the resting state (see the CSS header), so the mid scene states are the
+   DRAFT ones and the lock beats run into the authored values with .from().
+   Word share, recomputed on the 17 word line: 0.235 "each observation" .
+   0.353 "gets its own ID" (the snap) . 0.529 the word "ID." itself .
+   0.824 "ready for review". The tap stays absolute, inside the first 1.5s,
+   per motion rules 2. */
 tl.from('#sc05 .shead', { opacity: 0, y: 16, duration: 0.7 }, at('s05_lock', -0.45))
   .from('#s5paper', { opacity: 0, y: 22, duration: 0.85, ease: 'power2.out' }, at('s05_lock', -0.25))
   /* the draft is already filled when the observer reaches for the button: the
-     values come up to FULL, then settle back to the locked 0.7 on "freezes".
+     values come up to FULL, then settle back to the locked 0.7 on the snap.
      First tween on these targets, so default immediateRender stamps the blank
      draft at frame 0 and they fill in on the entrance. */
   .fromTo('#sc05 .s5v', { opacity: 0 },
@@ -1505,32 +1963,35 @@ tl.fromTo('#s5press', { opacity: 0 },
   .fromTo('#s5ripple', { scale: 0, opacity: 0.62 },
     { scale: 17, opacity: 0, duration: 0.72, ease: 'power2.out', immediateRender: false }, at('s05_lock', 0.63));
 
-/* "each observation gets its own ID": the banner drops in, its meta line
-   slides, and the ID itself takes a colour lift and releases. Cheap emphasis
-   on purpose: the scene is about 7s, and a 2.0s gold ring would own a third
-   of it. */
-tl.from('#s5banner', { opacity: 0, y: -10, duration: 0.55, ease: 'power3.out' }, atf('s05_lock', 0.222))
-  .from('#s5bmeta', { opacity: 0, x: -10, duration: 0.5, ease: 'power2.out' }, atf('s05_lock', 0.26))
+/* "each observation": the banner drops in and its meta line slides. The Record
+   ID inside it then takes a colour lift on the word "ID." itself and releases.
+   Cheap emphasis on purpose: the scene is about 6s, and a 2.0s gold ring would
+   own a third of it. */
+tl.from('#s5banner', { opacity: 0, y: -10, duration: 0.55, ease: 'power3.out' }, atf('s05_lock', 0.235))
+  .from('#s5bmeta', { opacity: 0, x: -10, duration: 0.5, ease: 'power2.out' }, atf('s05_lock', 0.294))
   /* literals are --paper-mid and --rate-success-deep: the lift releases back to
      the AA value the token now carries (#5f6e77), not the pre-pass #6b7e85, or
      the meta line would settle one notch lighter than the rest of the card */
   .fromTo('#s5bmeta', { color: '#5f6e77' },
-    { color: '#0f5f30', duration: 0.35, ease: 'power2.out', immediateRender: false }, atf('s05_lock', 0.47))
-  .to('#s5bmeta', { color: '#5f6e77', duration: 0.55, ease: 'power2.inOut' }, atf('s05_lock', 0.47) + 0.35);
+    { color: '#0f5f30', duration: 0.35, ease: 'power2.out', immediateRender: false }, atf('s05_lock', 0.529))
+  .to('#s5bmeta', { color: '#5f6e77', duration: 0.55, ease: 'power2.inOut' }, atf('s05_lock', 0.529) + 0.35);
 
-/* "freezes": the whole lock lands as one snap, everything inside half a second.
-   Cells and grid take the locked tint, the values settle to the product's
-   locked 0.7, the card takes its green edge and the action bar swaps. Each of
-   these ENDS on the resting value, so a freeze after the beat is the authored
-   card and a freeze before it is a legitimate draft. */
-var S5_LOCK = atf('s05_lock', 0.556);
+/* "gets its own ID": the whole lock lands as one snap, everything inside half a
+   second (this is the beat the v2.3 line called "freezes"). Cells and grid take
+   the locked tint, the values settle to the product's locked 0.7, the card takes
+   its green edge and the action bar swaps. Each of these ENDS on the resting
+   value, so a freeze after the beat is the authored card and a freeze before it
+   is a legitimate draft. */
+var S5_LOCK = atf('s05_lock', 0.353);
 tl.fromTo('#sc05 .s5cell', { backgroundColor: '#ffffff' },
     { backgroundColor: '#f9fafa', duration: 0.5, ease: 'power1.out' }, S5_LOCK)
   .fromTo('#s5grid', { backgroundColor: 'rgba(20,54,66,0.025)' },
     { backgroundColor: 'rgba(20,54,66,0.075)', duration: 0.5, ease: 'power1.out' }, S5_LOCK)
   /* second tween on the values, so immediateRender:false or GSAP stamps
      opacity 1 at frame 0 and the draft never reads as blank */
-  .fromTo('#sc05 .s5v, #sc05 .s5sel', { opacity: 1 },
+  /* .s5sel excluded: its locked dim lives in the chip's rgba(.88) background now,
+     element opacity on white text broke AA (3.1:1) at the tint beat */
+  .fromTo('#sc05 .s5v', { opacity: 1 },
     { opacity: 0.7, duration: 0.5, ease: 'power1.out', immediateRender: false }, S5_LOCK)
   .from('#s5edge', { opacity: 0, duration: 0.5, ease: 'power2.out' }, S5_LOCK)
   .fromTo('#s5draft', { opacity: 1 },
@@ -1539,47 +2000,94 @@ tl.fromTo('#sc05 .s5cell', { backgroundColor: '#ffffff' },
 
 /* "ready for review": the new entry lands in the morning's list and the card
    holds. This is the last beat and the resting state of the scene. */
-tl.from('#s5chip3', { opacity: 0, y: -14, scale: 0.94, duration: 0.6, ease: 'back.out(1.6)' }, atf('s05_lock', 0.833));
+tl.from('#s5chip3', { opacity: 0, y: -14, scale: 0.94, duration: 0.6, ease: 'back.out(1.6)' }, atf('s05_lock', 0.824));
       /* 6 . one tap, filed four ways
    "four ways at once" fans all four connectors and lands the four empty card
    slots together; each destination then fills on the words that name it.
-   Fractions are word share through the v2.3 line (62 words). */
+   Fractions recomputed on the v2.4 line (72 words): 0.111 "The observation lands
+   in a spreadsheet" . 0.194 "It mirrors into a live database" . 0.389 "an email
+   is sent" . 0.444 "to the observer" . 0.667 "Even the form's Evidence Pad
+   handwriting" . 0.875 "so everything can be fully reviewed if ever needed".
+   The opening sentence is unchanged, so the fan stays absolute at 1.15s. */
 tl.from('#sc06 .shead', { opacity: 0, y: 16, duration: 0.7 }, at('s06_pipeline', -0.45))
   .from('#s6node', { opacity: 0, scale: 0.94, duration: 0.8, ease: 'power2.out' }, at('s06_pipeline', -0.15))
-  /* "four ways at once" = words 5-8 of 62, i.e. 1.15s in: absolute, per the entrance rule */
+  /* "four ways at once" = words 5-8 of 72, i.e. ~1.15s in: absolute, per the entrance rule */
   .from('#sc06 .s6card', { opacity: 0, scaleY: 0.7, duration: 0.55, stagger: 0.09, ease: 'power2.out' }, at('s06_pipeline', 1.15));
 
-/* the fan itself: line-draw, one connector per destination */
+/* the fan itself: line-draw, one connector per destination.
+   DEFAULT immediateRender (true) on purpose: it stamps the undrawn from-state at
+   frame 0, so the connectors are BLANK for the 1.3s before the fan and draw on
+   the beat. With immediateRender:false the CSS resting value (dashoffset 0) won
+   until the beat, so all four connectors sat fully drawn from the scene's first
+   frame, blanked at 1.15s and redrew: measured in Chrome at t=at(1.15)-0.2
+   (dasharray 460, offset 0px). Same trap the s04 ink comment records. */
 document.querySelectorAll('#sc06 .s6p').forEach(function (p, i) {
   tl.fromTo(p, { strokeDashoffset: 460 },
-    { strokeDashoffset: 0, duration: 0.62, ease: 'power2.inOut', immediateRender: false },
+    { strokeDashoffset: 0, duration: 0.62, ease: 'power2.inOut' },
     at('s06_pipeline', 1.15) + i * 0.09);
 });
 
 /* each card fills on the words that name it */
-tl.from('#s6in1', { opacity: 0, x: 18, duration: 0.6, ease: 'power2.out' }, atf('s06_pipeline', 0.129))      // "The observation lands in a spreadsheet"
-  .from('#s6in1 .s6ic', { scale: 0.6, duration: 0.5, ease: 'back.out(2)' }, atf('s06_pipeline', 0.139))
-  .from('#s6in2', { opacity: 0, x: 18, duration: 0.6, ease: 'power2.out' }, atf('s06_pipeline', 0.226))      // "It mirrors into a live database"
-  .from('#s6in2 .s6ic', { scale: 0.6, duration: 0.5, ease: 'back.out(2)' }, atf('s06_pipeline', 0.236))
-  .from('#s6in3', { opacity: 0, x: 18, duration: 0.6, ease: 'power2.out' }, atf('s06_pipeline', 0.387))      // "A branded backup email"
-  .from('#s6in3 .s6ic', { scale: 0.6, duration: 0.5, ease: 'back.out(2)' }, atf('s06_pipeline', 0.397))
-  .from('#s6in4', { opacity: 0, x: 18, duration: 0.6, ease: 'power2.out' }, atf('s06_pipeline', 0.726))      // "And the handwriting itself"
-  .from('#s6in4 .s6ic', { scale: 0.6, duration: 0.5, ease: 'back.out(2)' }, atf('s06_pipeline', 0.736));
+tl.from('#s6in1', { opacity: 0, x: 18, duration: 0.6, ease: 'power2.out' }, atf('s06_pipeline', 0.111))      // "The observation lands in a spreadsheet"
+  .from('#s6in1 .s6ic', { scale: 0.6, duration: 0.5, ease: 'back.out(2)' }, atf('s06_pipeline', 0.121))
+  .from('#s6in2', { opacity: 0, x: 18, duration: 0.6, ease: 'power2.out' }, atf('s06_pipeline', 0.194))      // "It mirrors into a live database"
+  .from('#s6in2 .s6ic', { scale: 0.6, duration: 0.5, ease: 'back.out(2)' }, atf('s06_pipeline', 0.204))
+  .from('#s6in3', { opacity: 0, x: 18, duration: 0.6, ease: 'power2.out' }, atf('s06_pipeline', 0.389))      // "an email is sent"
+  .from('#s6in3 .s6ic', { scale: 0.6, duration: 0.5, ease: 'back.out(2)' }, atf('s06_pipeline', 0.399))
+  .from('#s6in4', { opacity: 0, x: 18, duration: 0.6, ease: 'power2.out' }, atf('s06_pipeline', 0.667))      // "Even the form's Evidence Pad handwriting"
+  .from('#s6in4 .s6ic', { scale: 0.6, duration: 0.5, ease: 'back.out(2)' }, atf('s06_pipeline', 0.677));
 
-/* "goes to the observer": the fact that changed in v2.3 gets the emphasis, and a
+/* "to the observer": the fact Igor keeps in the line gets the emphasis, and a
    chip pulse is enough here . four staggered cards already point, so no gold ring.
    yoyo returns the chip to its resting scale and the dot to its resting glow, so a
    freeze on either side of the beat reads the same. Literal rgba is --g (#3CBB6C)
    at the alphas the .s6dot rule carries. */
 tl.fromTo('#s6tag3', { scale: 1 },
-    { scale: 1.06, duration: 0.25, ease: 'power2.out', yoyo: true, repeat: 1, immediateRender: false }, atf('s06_pipeline', 0.452))
+    { scale: 1.06, duration: 0.25, ease: 'power2.out', yoyo: true, repeat: 1, immediateRender: false }, atf('s06_pipeline', 0.444))
   .fromTo('#s6tag3 .s6dot', { boxShadow: '0 0 0 3px rgba(60,187,108,.18)' },
-    { boxShadow: '0 0 0 7px rgba(60,187,108,.34)', duration: 0.25, ease: 'power2.out', yoyo: true, repeat: 1, immediateRender: false }, atf('s06_pipeline', 0.452));
+    { boxShadow: '0 0 0 7px rgba(60,187,108,.34)', duration: 0.25, ease: 'power2.out', yoyo: true, repeat: 1, immediateRender: false }, atf('s06_pipeline', 0.444));
 
-/* "so it can be reviewed if ever needed" */
-tl.from('#s6note', { opacity: 0, y: 10, duration: 0.7, ease: 'power2.out' }, atf('s06_pipeline', 0.871));
+/* "so everything can be fully reviewed if ever needed" */
+tl.from('#s6note', { opacity: 0, y: 10, duration: 0.7, ease: 'power2.out' }, atf('s06_pipeline', 0.875));
+      /* T2 . step two transition (the pattern is documented in t1_step1.cues.js)
+   "Step two. Retrieving and viewing the collected evidence."     (8 words)
+     0.0000  "Step two."                the chip lands            (0/8)
+     0.2500  "Retrieving and viewing"   node 2 detaches           (2/8)
+
+   Hero is the middle node, so the flight is a pure grow: x stays 0, y -170,
+   scale 2.2. This scene cuts in from a light dashboard scene, so the stage
+   fades in (t1 does not: it match cuts from the cover). */
+
+var T2_GO = atf('t2_step2', 0.25);                             // "Retrieving and viewing"
+var T2_TAIL = at('t2_step2', NARR.t2_step2.dur - 0.2);         // last frame still on this scene
+var T2_D = Math.min(1.35, Math.max(0.6, (T2_TAIL - T2_GO) * 0.62));        // flight
+var T2_P = Math.min(0.9, Math.max(0.35, T2_TAIL - T2_GO - T2_D));         // arrival ring
+
+tl.from('#sct2 .jstage, #t2stars', { opacity: 0, duration: 0.5, ease: 'power1.out' }, at('t2_step2', -0.55));
+tl.to('#t2stars', { y: -14, duration: NARR.t2_step2.dur + 2, ease: 'none' }, at('t2_step2', -0.55));
+
+/* the chip, on "Step two" */
+tl.from('#t2chip', { opacity: 0, y: -14, duration: 0.6, ease: 'power2.out' }, atf('t2_step2', 0.0));
+
+/* the detach, the flight, the growth */
+tl.fromTo('#t2hero', { x: 0, y: 0, scale: 1 },
+    { x: 0, y: -170, scale: 2.2, duration: T2_D, ease: 'power3.inOut', immediateRender: false }, T2_GO)
+  .fromTo('#t2map', { y: 0, scale: 1, opacity: 1 },
+    { y: 260, scale: 0.78, opacity: 0.26, duration: T2_D + 0.15, ease: 'power2.inOut', immediateRender: false }, T2_GO);
+
+/* one ring off the line, one on arrival; both spend to the CSS resting 0 */
+tl.fromTo('#t2hero .jpulse', { scale: 0.66, opacity: 0.85 },
+    { scale: 1.25, opacity: 0, duration: Math.min(0.7, T2_D * 0.55), ease: 'power2.out', immediateRender: false }, T2_GO)
+  .fromTo('#t2hero .jpulse', { scale: 0.72, opacity: 0.7 },
+    { scale: 1.4, opacity: 0, duration: T2_P, ease: 'power2.out', immediateRender: false }, T2_GO + T2_D - 0.1);
       /* 7 . the dashboard story . gate wipe, the Snapshot Story board, then present mode.
-   Fractions are word share through the v2.3 line (82 words).
+   Fractions recomputed on the v2.4 line (78 words): 0.115 "which is password
+   protected" . 0.154 "Here is an observation round" (the press) . 0.167 the gate
+   lifts . 0.295 "The story plays itself" . 0.346 "a hundred and eleven lessons" .
+   0.551 "Where judgements sit on the six point scale" . 0.654 "What is working" .
+   0.692 "Where to focus next" . 0.756 "one tap presents" . 0.833 "in full screen".
+   The v2.4 open is SHORTER than v2.3's ("For example: first, we open ... which is
+   password protected"), so the whole gate act now finishes ~1.8s earlier.
    The gate is held by a fromTo(immediateRender:false) and taken out by a to(), so
    its resting state stays "gone"; the present frame rests VISIBLE, because it is
    the scene's final state, and the finished board rests underneath it. */
@@ -1595,47 +2103,47 @@ document.querySelectorAll('#s7pres [data-mirror]').forEach(function (slot) {
 
 tl.fromTo('#s7gate', { opacity: 1 },
     { opacity: 1, ease: 'none', immediateRender: false,
-      duration: atf('s07_story', 0.220) - at('s07_story', -0.55) }, at('s07_story', -0.55))
+      duration: atf('s07_story', 0.167) - at('s07_story', -0.55) }, at('s07_story', -0.55))
   .from('#s7gcard', { opacity: 0, y: 22, duration: 0.85, ease: 'power2.out' }, at('s07_story', -0.3))
   .from('#s7gdots i', { opacity: 0, scale: 0.3, duration: 0.26, ease: 'back.out(2.2)', stagger: 0.085 }, at('s07_story', 1.15))
-  /* "safety as a priority": the gate's own Confidential kicker lifts to gold and
-     back (yoyo, so it rests at the gate's authored red). Literal hexes are the
+  /* "which is password protected": the gate's own Confidential kicker lifts to gold
+     and back (yoyo, so it rests at the gate's authored red). Literal hexes are the
      gate's own palette, #EF343A and #FFBA14, verbatim from s07_story.css. */
   .fromTo('#sc07 .s7gkick', { color: '#EF343A' },
-    { color: '#FFBA14', duration: 0.5, ease: 'power2.inOut', yoyo: true, repeat: 1, immediateRender: false }, atf('s07_story', 0.171))
-  /* "As an example": the button takes the press, then the gate lifts off the board */
-  .fromTo('#s7gbtn', { scale: 1 }, { scale: 0.955, duration: 0.13, ease: 'power2.in', immediateRender: false }, atf('s07_story', 0.206))
-  .to('#s7gbtn', { scale: 1, duration: 0.3, ease: 'back.out(2)' }, atf('s07_story', 0.206) + 0.13)
-  .to('#s7gate', { yPercent: -100, opacity: 0, duration: 0.85, ease: 'power3.inOut' }, atf('s07_story', 0.220));
+    { color: '#FFBA14', duration: 0.5, ease: 'power2.inOut', yoyo: true, repeat: 1, immediateRender: false }, atf('s07_story', 0.115))
+  /* "Here is an observation round": the button takes the press, then the gate lifts */
+  .fromTo('#s7gbtn', { scale: 1 }, { scale: 0.955, duration: 0.13, ease: 'power2.in', immediateRender: false }, atf('s07_story', 0.154))
+  .to('#s7gbtn', { scale: 1, duration: 0.3, ease: 'back.out(2)' }, atf('s07_story', 0.154) + 0.13)
+  .to('#s7gate', { yPercent: -100, opacity: 0, duration: 0.85, ease: 'power3.inOut' }, atf('s07_story', 0.167));
 
 /* the board lands BEHIND the gate, a beat before the wipe starts, so the lifting
    gate uncovers a finished board instead of an empty frame. The tiles land WITH
    the board (product behaviour: the tile renders, then the number counts), so the
-   left column is never a hole; the sync map's 0.329 "the story plays itself" beat
-   would leave it one for ~3s, and the count-up below carries that phrase instead. */
-tl.from('#sc07 .s7top', { opacity: 0, y: 18, duration: 0.75, ease: 'power2.out' }, atf('s07_story', 0.198))
-  .from('#s7board', { opacity: 0, y: 26, duration: 0.9, ease: 'power3.out' }, atf('s07_story', 0.208))
-  .from('#s7stats .stat', { opacity: 0, y: 20, duration: 0.6, stagger: 0.14 }, atf('s07_story', 0.222))
+   left column is never a hole; the 0.295 "The story plays itself" beat would leave
+   it one for ~3s, and the count-up below carries that phrase instead. */
+tl.from('#sc07 .s7top', { opacity: 0, y: 18, duration: 0.75, ease: 'power2.out' }, atf('s07_story', 0.145))
+  .from('#s7board', { opacity: 0, y: 26, duration: 0.9, ease: 'power3.out' }, atf('s07_story', 0.155))
+  .from('#s7stats .stat', { opacity: 0, y: 20, duration: 0.6, stagger: 0.14 }, atf('s07_story', 0.169))
   /* the dot chart arrives labelled and empty with the board: a chart waiting to
      fill reads as intentional, a missing panel reads as broken */
-  .from('#sc07 .s7dcard', { opacity: 0, x: 26, duration: 0.75, ease: 'power2.out' }, atf('s07_story', 0.235));
+  .from('#sc07 .s7dcard', { opacity: 0, x: 26, duration: 0.75, ease: 'power2.out' }, atf('s07_story', 0.182));
 /* "a hundred and eleven lessons", the second tile still counting on "a hundred and
-   five teachers", both settled by "counted up live from the data" (0.500) */
-countUp('#s7stats .stat .v[data-count]', atf('s07_story', 0.378), 1.5);
+   five teachers", both settled by "counted up live from the data" (0.474) */
+countUp('#s7stats .stat .v[data-count]', atf('s07_story', 0.346), 1.5);
 
 /* "Where judgements sit on the six point scale": the value arc fills segment by
    segment, red end toward the average, and the dot sort flies in beside it */
-tl.from('#s7gauge .arcfill', { opacity: 0, duration: 0.3, stagger: 0.022, ease: 'none' }, atf('s07_story', 0.573))
-  .from('#s7gauge .arcw', { opacity: 0, scale: 0.8, transformOrigin: '50% 50%', duration: 0.5, ease: 'back.out(1.8)' }, atf('s07_story', 0.596))
-  .from('#sc07 .s7gaugecard .gauge-cap', { opacity: 0, y: 10, duration: 0.5 }, atf('s07_story', 0.603))
+tl.from('#s7gauge .arcfill', { opacity: 0, duration: 0.3, stagger: 0.022, ease: 'none' }, atf('s07_story', 0.551))
+  .from('#s7gauge .arcw', { opacity: 0, scale: 0.8, transformOrigin: '50% 50%', duration: 0.5, ease: 'back.out(1.8)' }, atf('s07_story', 0.574))
+  .from('#sc07 .s7gaugecard .gauge-cap', { opacity: 0, y: 10, duration: 0.5 }, atf('s07_story', 0.581))
   /* the lessons fly in, one dot each (offsets are seeded, never Math.random) */
   .from('#s7dots .dsdot', { opacity: 0, scale: 0.35, duration: 0.55, ease: 'back.out(1.35)',
     x: function (i, el) { return +el.dataset.fx; }, y: function (i, el) { return +el.dataset.fy; },
-    stagger: { each: 0.009 } }, atf('s07_story', 0.585))
+    stagger: { each: 0.009 } }, atf('s07_story', 0.563))
   /* "What is working." / "Where to focus next." */
-  .from('#s7rail .s7beat:nth-child(1)', { opacity: 0, x: -14, duration: 0.5 }, atf('s07_story', 0.671))
-  .from('#s7rail .s7beat:nth-child(2)', { opacity: 0, x: -14, duration: 0.5 }, atf('s07_story', 0.707))
-  .from('#s7rail .subtle', { opacity: 0, duration: 0.6 }, atf('s07_story', 0.735));
+  .from('#s7rail .s7beat:nth-child(1)', { opacity: 0, x: -14, duration: 0.5 }, atf('s07_story', 0.654))
+  .from('#s7rail .s7beat:nth-child(2)', { opacity: 0, x: -14, duration: 0.5 }, atf('s07_story', 0.692))
+  .from('#s7rail .subtle', { opacity: 0, duration: 0.6 }, atf('s07_story', 0.718));
 
 /* "And one tap presents": the Present pill is named, the tabs beside it dim so the
    eye has somewhere to go (dense card rule), then the ring releases. */
@@ -1643,83 +2151,281 @@ spotlight('#s7present', atf('s07_story', 0.756), 2.0);
 tl.to('#s7tabs .s7tab', { opacity: 0.55, duration: 0.45 }, atf('s07_story', 0.756))
   .to('#s7tabs .s7tab', { opacity: 1, duration: 0.6 }, atf('s07_story', 0.756) + 2.0)
   /* "in full screen", holding through "showcase the round by itself in any
-     meeting" (0.878) to the cut. This is the scene's resting state. */
-  .from('#s7pres', { opacity: 0, scale: 1.06, duration: 0.8, ease: 'power3.out' }, atf('s07_story', 0.841));
-      /* 8 . references behind every statement. Fractions are word share through the
-   v2.3 line (60 words). The counter is gone; the citation strip replaces it. */
+     meeting" (0.897) to the cut. This is the scene's resting state. */
+  .from('#s7pres', { opacity: 0, scale: 1.06, duration: 0.8, ease: 'power3.out' }, atf('s07_story', 0.833));
+      /* 16 . the data set  (30 words)
+   "Once an observation round is completed, the relevant school stakeholders
+    receive a whole set of data. Individual lesson observations. A snapshot of
+    the round. Coverage. And a highly detailed report."
+
+   Word share, recomputed from THIS text (words spoken before the phrase / 30):
+     0.100  "completed"                     -> the illustrative tag
+     0.333  "receive"                       -> the h2's own em lands
+     0.367  "a whole set of data"           -> four ruled slots, the set arriving
+     0.533  "Individual lesson observations"-> sheet 01, the locked record
+     0.633  "A snapshot of the round"       -> sheet 02, the Story board
+     0.800  "Coverage"                      -> sheet 03, the coverage ring
+     0.833  "And a highly detailed report"  -> sheet 04, the governance report
+   The last two beats are 0.033 apart because the narration says them that way
+   ("Coverage. And a highly detailed report."); the sheets land as a one two.
+   Every sheet lands with .from(), so the resting frame is the finished 2x2. */
+
+/* Deterministic star field for this navy stage. It lives in the fragment rather
+   than in the skeleton's cover/end-card script so the scene stays self
+   contained; seeded LCG, never Math.random, so every render paints it the same. */
+(function () {
+  var el = document.getElementById('s16dstars');
+  if (!el) return;
+  var seed = 20260805, n = 120, h = '';
+  function rnd() { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296; }
+  for (var i = 0; i < n; i++) {
+    var s = 1 + rnd() * 2.1, x = rnd() * 100, y = rnd() * 100, o = 0.16 + rnd() * 0.6;
+    h += '<i style="left:' + x.toFixed(2) + '%;top:' + y.toFixed(2) + '%;width:' + s.toFixed(2) +
+      'px;height:' + s.toFixed(2) + 'px;opacity:' + o.toFixed(2) + '"></i>';
+  }
+  el.innerHTML = h;
+})();
+
+tl.from('#s16dhead .kick', { opacity: 0, y: 14, duration: 0.65, ease: 'power2.out' }, at('s16_dataset', -0.45))
+  .from('#s16dh', { opacity: 0, y: 18, duration: 0.8, ease: 'power3.out' }, at('s16_dataset', -0.15))
+  /* "completed" */
+  .from('#s16dill', { opacity: 0, duration: 0.5 }, atf('s16_dataset', 0.100))
+  /* "receive": the sentence completes itself on the word */
+  .from('#s16dhem', { opacity: 0, y: 12, duration: 0.6, ease: 'power3.out' }, atf('s16_dataset', 0.333))
+  /* "a whole set of data": four ruled slots, so the set is visibly a set before
+     any of it is named. immediateRender:false, or the fan in would stamp its
+     from state over the resting 0 at frame 0. */
+  .fromTo('#sc16d .s16dgh', { opacity: 0 },
+    { opacity: 1, duration: 0.5, stagger: 0.07, ease: 'power2.out', immediateRender: false }, atf('s16_dataset', 0.367));
+
+/* 01 . "Individual lesson observations" */
+tl.from('#s16dc1', { opacity: 0, y: 26, duration: 0.75, ease: 'power3.out' }, atf('s16_dataset', 0.533))
+  .to('#s16dg1', { opacity: 0, duration: 0.45, ease: 'power1.out' }, atf('s16_dataset', 0.533));
+
+/* 02 . "A snapshot of the round": the board's own tiles count up as it lands */
+tl.from('#s16dc2', { opacity: 0, y: 26, duration: 0.75, ease: 'power3.out' }, atf('s16_dataset', 0.633))
+  .to('#s16dg2', { opacity: 0, duration: 0.45, ease: 'power1.out' }, atf('s16_dataset', 0.633))
+  .from('#s16dc2 .osramp .rc', { opacity: 0, duration: 0.4, stagger: 0.05 }, atf('s16_dataset', 0.633) + 0.35);
+countUp('#s16dc2 .stat .v[data-count]', atf('s16_dataset', 0.633) + 0.2, 0.9);
+
+/* 03 . "Coverage": the ring draws to the round's own 70 percent (105 of 149).
+   The arc rests DRAWN (dashoffset 85.35 in the markup, the same value #sc10
+   ships), so a freeze either side of the beat reads finished. */
+tl.from('#s16dc3', { opacity: 0, y: 26, duration: 0.75, ease: 'power3.out' }, atf('s16_dataset', 0.800))
+  .to('#s16dg3', { opacity: 0, duration: 0.45, ease: 'power1.out' }, atf('s16_dataset', 0.800))
+  .fromTo('#s16darc', { attr: { 'stroke-dashoffset': 289.03 } },
+    { attr: { 'stroke-dashoffset': 85.35 }, duration: 1.1, ease: 'power2.out', immediateRender: false },
+    atf('s16_dataset', 0.800) + 0.15);
+countUp('#s16dpct span[data-count]', atf('s16_dataset', 0.800) + 0.15, 1.0);
+
+/* 04 . "And a highly detailed report", with its citation markers last */
+tl.from('#s16dc4', { opacity: 0, y: 26, duration: 0.75, ease: 'power3.out' }, atf('s16_dataset', 0.833))
+  .to('#s16dg4', { opacity: 0, duration: 0.45, ease: 'power1.out' }, atf('s16_dataset', 0.833))
+  .from('#s16dc4 .refmk', { opacity: 0, scale: 0.4, duration: 0.45, stagger: 0.12, ease: 'back.out(2)' },
+    atf('s16_dataset', 0.833) + 0.5);
+      /* 9 . teacher progression between rounds
+   Fractions recomputed on the v2.4 line (67 words): 0.119 "Every teacher seen in
+   both rounds" . 0.239 "from one judgement point to the next" . 0.463 "green when
+   they moved toward Outstanding" . 0.552 "A transition matrix" . 0.627 "the
+   improvements, the holds and the declines" . 0.821 / 0.881 / 0.925 the three
+   governor questions. */
+tl.from('#sc09 .shead', { opacity: 0, y: 16, duration: 0.7 }, at('s09_movement', -0.4))
+  .from('#s9tag', { opacity: 0, duration: 0.6 }, at('s09_movement', 0.3))
+  .from('#s9slopecard', { opacity: 0, y: 20, duration: 0.8, ease: 'power2.out' }, at('s09_movement', 0.1));
+/* each teacher's line draws left to right, exactly as renderSlope does it.
+   "Every teacher seen in both rounds": 12 lines at 0.075 + a 0.85s draw = ~1.75s.
+   DEFAULT immediateRender (true) on purpose: it stamps the undrawn from-state at
+   frame 0, so the chart arrives EMPTY with its bands and axis labels and the lines
+   draw on the words. With immediateRender:false the CSS resting value (dashoffset
+   0) won until the beat, so all 12 lines sat fully drawn for the ~1.95s after the
+   card faded in, then blanked one by one and redrew: measured in Chrome at
+   at(0.1)+0.8 (card opacity 1, first line offset 0px). Same trap the s04 ink
+   comment records. */
+document.querySelectorAll('#s9slope .sl-line').forEach(function (p, i) {
+  var L = p.getTotalLength();
+  p.style.strokeDasharray = L;
+  tl.fromTo(p, { strokeDashoffset: L }, { strokeDashoffset: 0, duration: 0.85, ease: 'power2.out' },
+    atf('s09_movement', 0.119) + i * 0.075);
+});
+/* "from one judgement point to the next": the two endpoints of every line */
+tl.from('#s9slope .sl-end', { opacity: 0, scale: 0.3, transformOrigin: '50% 50%', duration: 0.4, stagger: 0.028, ease: 'back.out(2)' }, atf('s09_movement', 0.239))
+  /* "green when they moved toward Outstanding": only the green lines lift, then
+     release back to the resting .52 the CSS carries, so a freeze reads normal */
+  .to('#s9slope .sl-line[stroke="var(--g)"]', { opacity: 0.85, duration: 0.45, ease: 'power2.out' }, atf('s09_movement', 0.463))
+  .to('#s9slope .sl-line[stroke="var(--g)"]', { opacity: 0.52, duration: 0.6, ease: 'power2.inOut' }, atf('s09_movement', 0.463) + 1.6)
+  .from('#s9mxcard', { opacity: 0, y: 20, duration: 0.7, ease: 'power2.out' }, atf('s09_movement', 0.552))
+  .from('#s9mx .mc', { scale: 0.9, opacity: 0, duration: 0.45, ease: 'back.out(1.5)', stagger: 0.006 }, atf('s09_movement', 0.582))
+  /* "the improvements, the holds and the declines" */
+  .from('#s9chips .mchip', { opacity: 0, y: 14, duration: 0.5, stagger: 0.2 }, atf('s09_movement', 0.627))
+  .from('#s9chips .subtle', { opacity: 0, duration: 0.5 }, atf('s09_movement', 0.690))
+  /* the three questions governors actually ask, one chip per question */
+  .from('#s9qs .pill-note:nth-child(1)', { opacity: 0, y: 10, duration: 0.5 }, atf('s09_movement', 0.821))
+  .from('#s9qs .pill-note:nth-child(2)', { opacity: 0, y: 10, duration: 0.5 }, atf('s09_movement', 0.881))
+  .from('#s9qs .pill-note:nth-child(3)', { opacity: 0, y: 10, duration: 0.5 }, atf('s09_movement', 0.925));
+spotlight('#s9mxcard', atf('s09_movement', 0.567), 2.2);                   // "transition matrix"
+      /* 8 . citations and references behind every statement.
+   RETIMED for the v2.4 line (96 words, scenes.json s08_evidence). Every fraction
+   below is (words spoken before the phrase) / 96, recomputed from the NEW text:
+     0.000  "The report is generated using citations and references"
+     0.156  "carries a small number"
+     0.208  "a citation count, showing how many times that statement is cited"
+     0.354  "Click or tap the number"
+     0.417  "to open the citations"
+     0.458  "and see the actual observations behind each statement"
+     0.531  "subject, date, judgement"
+     0.573  "and the inspector's words, verbatim"
+     0.615  "AI cites the hundreds of references"
+     0.740  "Nothing on this dashboard is an opinion without evidence"
+     0.885  "presented to your regulatory body"
+     0.958  "at the click of a button"
+   The line now OPENS on the report being generated from citations, so the claim
+   panel is the first thing on screen, and it CLOSES on the export control, which
+   is the last beat of the scene and rests visible. */
 tl.from('#sc08 .shead', { opacity: 0, y: 16, duration: 0.7 }, at('s08_evidence', -0.4))
   .from('#s8claim', { opacity: 0, y: 20, duration: 0.8, ease: 'power2.out' }, at('s08_evidence', 0.0))
-  /* "a citation, a reference stemming from an actual observation" */
-  .from('#s8claim .refmk', { opacity: 0, scale: 0.4, duration: 0.5, stagger: 0.13, ease: 'back.out(2)' }, atf('s08_evidence', 0.117))
+  /* "carries a small number" */
+  .from('#s8claim .refmk', { opacity: 0, scale: 0.4, duration: 0.5, stagger: 0.13, ease: 'back.out(2)' }, atf('s08_evidence', 0.156))
+  /* "a citation count, showing how many times that statement is cited" */
+  .from('#s8cnt', { opacity: 0, y: 8, duration: 0.55, ease: 'power2.out' }, atf('s08_evidence', 0.208))
   /* "Click or tap": the ripple fires 0.15s ahead of the ring, so the drawer is
      visibly opened by something. Same recipe as #s5ripple, rests invisible. */
   .fromTo('#s8mk .taprip', { scale: 0, opacity: 0.6 },
-    { scale: 14, opacity: 0, duration: 0.6, ease: 'power2.out', immediateRender: false }, atf('s08_evidence', 0.267) - 0.15)
-  /* the sources drawer pushes in from the right */
-  .fromTo('#s8panel', { xPercent: 104 }, { xPercent: 0, duration: 0.95, ease: 'power3.out' }, atf('s08_evidence', 0.30))
-  .from('#s8panel .refmethod', { opacity: 0, duration: 0.5 }, atf('s08_evidence', 0.34))
+    { scale: 14, opacity: 0, duration: 0.6, ease: 'power2.out', immediateRender: false }, atf('s08_evidence', 0.354) - 0.15)
+  /* "to open the citations": the sources drawer pushes in from the right */
+  .fromTo('#s8panel', { xPercent: 104 }, { xPercent: 0, duration: 0.95, ease: 'power3.out' }, atf('s08_evidence', 0.417))
+  .from('#s8panel .refmethod', { opacity: 0, duration: 0.5 }, atf('s08_evidence', 0.438))
   /* "see the actual observations behind each statement" */
-  .from('#s8panel .refcard', { opacity: 0, y: 18, duration: 0.7, stagger: 0.34 }, atf('s08_evidence', 0.400));
-spotlight('#s8mk', atf('s08_evidence', 0.267), 2.0);                      // "Click or tap to open the references"
+  .from('#s8panel .refcard', { opacity: 0, y: 18, duration: 0.7, stagger: 0.34 }, atf('s08_evidence', 0.458));
+spotlight('#s8mk', atf('s08_evidence', 0.354), 2.0);                      // "Click or tap the number"
 
 /* "subject, date, judgement" then "the inspector's words, verbatim": cheap colour
    lifts, no second ring in a scene that already owns one. Literal hexes are this
    scene's own light theme tokens: --ink-mid #586479 and --ink-faint's sibling
    --ink-dim #3a4a66, lifting to --ink #14233f, then released to rest. */
 tl.fromTo('#s8panel .refmeta', { color: '#586479' },
-    { color: '#14233f', duration: 0.4, ease: 'power2.out', immediateRender: false }, atf('s08_evidence', 0.517))
-  .to('#s8panel .refmeta', { color: '#586479', duration: 0.6, ease: 'power2.inOut' }, atf('s08_evidence', 0.517) + 0.9)
+    { color: '#14233f', duration: 0.4, ease: 'power2.out', immediateRender: false }, atf('s08_evidence', 0.531))
+  .to('#s8panel .refmeta', { color: '#586479', duration: 0.6, ease: 'power2.inOut' }, atf('s08_evidence', 0.531) + 0.9)
   .fromTo('#s8panel .refq', { color: '#3a4a66' },
-    { color: '#14233f', duration: 0.4, ease: 'power2.out', immediateRender: false }, atf('s08_evidence', 0.583))
-  .to('#s8panel .refq', { color: '#3a4a66', duration: 0.6, ease: 'power2.inOut' }, atf('s08_evidence', 0.583) + 0.9);
+    { color: '#14233f', duration: 0.4, ease: 'power2.out', immediateRender: false }, atf('s08_evidence', 0.573))
+  .to('#s8panel .refq', { color: '#3a4a66', duration: 0.6, ease: 'power2.inOut' }, atf('s08_evidence', 0.573) + 0.9);
 
 /* "AI cites the hundreds of references": the strip fans in chip by chip, the two
    ruled ghosts last (26 items at 0.035 = 0.91s of stagger, inside the line) */
-tl.from('#s8cites .s8citecap', { opacity: 0, y: 10, duration: 0.5 }, atf('s08_evidence', 0.650))
+tl.from('#s8cites .s8citecap', { opacity: 0, y: 10, duration: 0.5 }, atf('s08_evidence', 0.615))
   .from('#s8cites .s8citegrid > *', { opacity: 0, scale: 0.4, duration: 0.45, ease: 'back.out(1.6)',
-    stagger: { each: 0.035, from: 'start' } }, atf('s08_evidence', 0.660))
-  .from('#s8cites .subtle', { opacity: 0, duration: 0.5 }, atf('s08_evidence', 0.760))
+    stagger: { each: 0.035, from: 'start' } }, atf('s08_evidence', 0.625))
+  .from('#s8cites .subtle', { opacity: 0, duration: 0.5 }, atf('s08_evidence', 0.700))
   /* "Nothing on this dashboard is an opinion without evidence" */
-  .from('#s8note', { opacity: 0, duration: 0.7 }, atf('s08_evidence', 0.850));
-      /* 9 . movement between rounds */
-tl.from('#sc09 .shead', { opacity: 0, y: 16, duration: 0.7 }, at('s09_movement', -0.4))
-  .from('#s9tag', { opacity: 0, duration: 0.6 }, at('s09_movement', 0.3))
-  .from('#s9slopecard', { opacity: 0, y: 20, duration: 0.8, ease: 'power2.out' }, at('s09_movement', 0.1));
-/* each teacher's line draws left to right, exactly as renderSlope does it.
-   "Every teacher seen in both rounds": 12 lines at 0.075 + a 0.85s draw = ~1.75s */
-document.querySelectorAll('#s9slope .sl-line').forEach(function (p, i) {
-  var L = p.getTotalLength();
-  p.style.strokeDasharray = L;
-  tl.fromTo(p, { strokeDashoffset: L }, { strokeDashoffset: 0, duration: 0.85, ease: 'power2.out', immediateRender: false },
-    atf('s09_movement', 0.113) + i * 0.075);
-});
-tl.from('#s9slope .sl-end', { opacity: 0, scale: 0.3, transformOrigin: '50% 50%', duration: 0.4, stagger: 0.028, ease: 'back.out(2)' }, atf('s09_movement', 0.20))
-  /* "green when they moved toward Outstanding": only the green lines lift, then
-     release back to the resting .52 the CSS carries, so a freeze reads normal */
-  .to('#s9slope .sl-line[stroke="var(--g)"]', { opacity: 0.85, duration: 0.45, ease: 'power2.out' }, atf('s09_movement', 0.419))
-  .to('#s9slope .sl-line[stroke="var(--g)"]', { opacity: 0.52, duration: 0.6, ease: 'power2.inOut' }, atf('s09_movement', 0.419) + 1.6)
-  .from('#s9mxcard', { opacity: 0, y: 20, duration: 0.7, ease: 'power2.out' }, atf('s09_movement', 0.485))
-  .from('#s9mx .mc', { scale: 0.9, opacity: 0, duration: 0.45, ease: 'back.out(1.5)', stagger: 0.006 }, atf('s09_movement', 0.52))
-  /* "the improvements, the holds and the declines" */
-  .from('#s9chips .mchip', { opacity: 0, y: 14, duration: 0.5, stagger: 0.2 }, atf('s09_movement', 0.597))
-  .from('#s9chips .subtle', { opacity: 0, duration: 0.5 }, atf('s09_movement', 0.66))
-  /* the three questions governors actually ask, one chip per question */
-  .from('#s9qs .pill-note:nth-child(1)', { opacity: 0, y: 10, duration: 0.5 }, atf('s09_movement', 0.806))
-  .from('#s9qs .pill-note:nth-child(2)', { opacity: 0, y: 10, duration: 0.5 }, atf('s09_movement', 0.871))
-  .from('#s9qs .pill-note:nth-child(3)', { opacity: 0, y: 10, duration: 0.5 }, atf('s09_movement', 0.919));
-spotlight('#s9mxcard', atf('s09_movement', 0.516), 2.2);                   // "A transition matrix"
-      /* 10 . coverage (short scene, 9.7s: four tiles and the ring, nothing else) */
+  .from('#s8note', { opacity: 0, duration: 0.7 }, atf('s08_evidence', 0.740));
+
+/* "and it can all be presented to your regulatory body at the click of a button":
+   the report export control lands on "presented", then takes one press on the
+   final words. The press overlay and the pulse both END on the resting state
+   (opacity 0, scale 1), so the last frame of the scene is the button at rest. */
+tl.from('#s8export', { opacity: 0, y: 12, duration: 0.6, ease: 'power3.out' }, atf('s08_evidence', 0.885))
+  .fromTo('#s8press', { opacity: 0 },
+    { opacity: 1, duration: 0.09, ease: 'none', immediateRender: false }, atf('s08_evidence', 0.958))
+  .fromTo('#s8press', { opacity: 1 },
+    { opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, atf('s08_evidence', 0.958) + 0.14)
+  .fromTo('#s8export', { scale: 1 },
+    { scale: 1.05, duration: 0.18, yoyo: true, repeat: 1, ease: 'power2.out', immediateRender: false }, atf('s08_evidence', 0.958));
+      /* 13 . reports and regeneration
+   RETIMED for the v2.4 line (64 words, scenes.json s13_report). Fractions are
+   (words spoken before the phrase) / 64, recomputed from the NEW text:
+     0.000  "For the leadership table,"
+     0.063  "one button turns the round into a governance report"
+     0.203  "simple or in depth."
+     0.266  "One tap or click,"
+     0.375  "and you have a PDF or a Google Doc"
+     0.469  "all references attached"
+     0.516  "teachers anonymised by construction"
+     0.578  "When a new round lands"
+     0.656  "one more button rewrites the analysis for it"
+     0.875  "the Head of Teaching and Learning"
+   The page's own chrome still assembles on absolute offsets (0.1 to 1.3s): that
+   ladder sits inside the first clause either way, and it is the page drawing
+   itself, not a beat. Visuals are unchanged from v2.3. */
+      tl.from('#s13head', { opacity: 0, y: 16, duration: 0.7 }, at('s13_report', -0.4))
+        .from('#s13page', { opacity: 0, y: 20, duration: 0.8, ease: 'power2.out' }, at('s13_report', 0.1))
+        .from('#s13top', { opacity: 0, y: 12, duration: 0.6 }, at('s13_report', 0.5))
+        .from('#s13tabs', { opacity: 0, y: 10, duration: 0.5 }, at('s13_report', 0.7))
+        .from('#s13scope', { opacity: 0, y: 10, duration: 0.55 }, at('s13_report', 0.9))
+        .from('#s13method', { opacity: 0, duration: 0.55 }, at('s13_report', 1.1))
+        /* "one button turns the round into a governance report" (word share 0.063) */
+        .from('#s13sec', { opacity: 0, y: 12, duration: 0.6 }, at('s13_report', 1.3))
+        .from('#s13bl li', { opacity: 0, x: -10, duration: 0.45, stagger: 0.14 }, atf('s13_report', 0.125))
+        .from('#sc13 .refmk', { opacity: 0, scale: 0.4, duration: 0.45, stagger: 0.1, ease: 'back.out(2)' }, atf('s13_report', 0.156))
+        /* "simple or in depth": the second tab taps itself */
+        .fromTo('#s13tabB', { scale: 1 }, { scale: 1.07, duration: 0.18, yoyo: true, repeat: 1, ease: 'power2.out', immediateRender: false }, atf('s13_report', 0.203))
+        /* "and you have a PDF or a Google Doc": the document the export builds */
+        .from('#s13doc', { opacity: 0, scale: 0.94, y: 16, duration: 0.8, ease: 'power3.out' }, atf('s13_report', 0.375))
+        .from('#s13d1, #s13d2, #s13d3, #s13d4, #s13d5', { opacity: 0, y: 10, duration: 0.5, stagger: 0.09 }, atf('s13_report', 0.410))
+        /* "all references attached" */
+        .fromTo('#s13sheen', { xPercent: -140 }, { xPercent: 140, duration: 1.1, ease: 'power1.inOut', immediateRender: false }, atf('s13_report', 0.469))
+        /* "When a new round lands, one more button rewrites the analysis for it" */
+        .from('#s13regen', { opacity: 0, y: 14, duration: 0.6 }, atf('s13_report', 0.578))
+        .fromTo('#s13bar', { width: '0%' }, { width: '100%', duration: 2.0, ease: 'power1.inOut' }, atf('s13_report', 0.656))
+        /* land the chip on the person, not on the bar finishing */
+        .from('#s13chk', { opacity: 0, scale: 0.9, duration: 0.45, ease: 'back.out(1.7)' }, atf('s13_report', 0.875));
+      spotlight('#s13export', atf('s13_report', 0.266), 2.0);                   // "One tap or click"
+      /* 10 . coverage (short scene: four tiles and the ring, nothing else)
+   Fractions recomputed on the v2.4 line (36 words): 0.278 "who has been seen?"
+   (the tiles land on the question, then count through the list that answers it) .
+   0.389 "Teachers on the register" . 0.528 "teachers observed" . 0.583 "lessons
+   per teacher" (the ring) . 0.639 "and who is still waiting" . 0.806 "no one is
+   invisible for a term". */
 tl.from('#sc10 .shead', { opacity: 0, y: 16, duration: 0.7 }, at('s10_coverage', -0.4))
-  .from('#s10stats .stat', { opacity: 0, y: 22, duration: 0.65, stagger: 0.15, ease: 'power2.out' }, atf('s10_coverage', 0.28));
-countUp('#s10stats .stat .v[data-count]', atf('s10_coverage', 0.30), 1.2);
-tl.from('#s10row .panel', { opacity: 0, y: 18, duration: 0.7, stagger: 0.14, ease: 'power2.out' }, atf('s10_coverage', 0.52))
+  .from('#s10stats .stat', { opacity: 0, y: 22, duration: 0.65, stagger: 0.15, ease: 'power2.out' }, atf('s10_coverage', 0.278));
+countUp('#s10stats .stat .v[data-count]', atf('s10_coverage', 0.306), 1.2);
+/* the ring: DEFAULT immediateRender (true) on purpose, so the empty ring (offset
+   289.03) is stamped at frame 0 and the arc draws on the beat. With
+   immediateRender:false the markup's resting 85.35 won until the beat, so the ring
+   was visibly already at 70% through the panel's fade-in, then snapped empty and
+   redrew (measured in Chrome: arcOffset 85.35 with the panel at opacity 1, 0.03s
+   before the draw). The 70% resting value stays the tween's END state. */
+tl.from('#s10row .panel', { opacity: 0, y: 18, duration: 0.7, stagger: 0.14, ease: 'power2.out' }, atf('s10_coverage', 0.528))
   .fromTo('#s10arc', { attr: { 'stroke-dashoffset': 289.03 } },
-    { attr: { 'stroke-dashoffset': 85.35 }, duration: 1.3, ease: 'power2.out', immediateRender: false }, atf('s10_coverage', 0.58));
-countUp('#s10ring .pct span[data-count]', atf('s10_coverage', 0.58), 1.3);
+    { attr: { 'stroke-dashoffset': 85.35 }, duration: 1.3, ease: 'power2.out' }, atf('s10_coverage', 0.583));
+countUp('#s10ring .pct span[data-count]', atf('s10_coverage', 0.583), 1.3);
 /* "and who is still waiting" */
-tl.from('#s10names span', { opacity: 0, x: -12, duration: 0.4, stagger: 0.055 }, atf('s10_coverage', 0.66))
-  .from('#s10more', { opacity: 0, duration: 0.5 }, atf('s10_coverage', 0.76))
-  .from('#s10note', { opacity: 0, duration: 0.6 }, atf('s10_coverage', 0.84));
+tl.from('#s10names span', { opacity: 0, x: -12, duration: 0.4, stagger: 0.055 }, atf('s10_coverage', 0.639))
+  .from('#s10more', { opacity: 0, duration: 0.5 }, atf('s10_coverage', 0.750))
+  /* "so no one is invisible for a term": the note IS that phrase */
+  .from('#s10note', { opacity: 0, duration: 0.6 }, atf('s10_coverage', 0.806));
+      /* T3 . step three transition (the pattern is documented in t1_step1.cues.js)
+   "Step three. The coaching plan."                               (5 words)
+     0.0000  "Step three."          the chip lands                (0/5)
+     0.4000  "The coaching plan."   node 3 detaches               (2/5)
+
+   The shortest line in the take, which is exactly why the flight and the
+   arrival ring are budgeted from what this line actually leaves after the
+   detach instead of from a constant: at five words the 1.35s flight t1 and t2
+   get would still be moving when the scene cuts, and the ring would freeze
+   half spent (caught on the render, not on paper).
+   Hero is the right node, so it flies left to the centre (x -355). */
+
+var T3_GO = atf('t3_step3', 0.40);                             // "The coaching plan"
+var T3_TAIL = at('t3_step3', NARR.t3_step3.dur - 0.2);         // last frame still on this scene
+var T3_D = Math.min(1.35, Math.max(0.6, (T3_TAIL - T3_GO) * 0.62));        // flight
+var T3_P = Math.min(0.9, Math.max(0.35, T3_TAIL - T3_GO - T3_D));         // arrival ring
+
+tl.from('#sct3 .jstage, #t3stars', { opacity: 0, duration: 0.5, ease: 'power1.out' }, at('t3_step3', -0.55));
+tl.to('#t3stars', { y: -14, duration: NARR.t3_step3.dur + 2, ease: 'none' }, at('t3_step3', -0.55));
+
+/* the chip, on "Step three" */
+tl.from('#t3chip', { opacity: 0, y: -14, duration: 0.6, ease: 'power2.out' }, atf('t3_step3', 0.0));
+
+/* the detach, the flight, the growth */
+tl.fromTo('#t3hero', { x: 0, y: 0, scale: 1 },
+    { x: -355, y: -170, scale: 2.2, duration: T3_D, ease: 'power3.inOut', immediateRender: false }, T3_GO)
+  .fromTo('#t3map', { y: 0, scale: 1, opacity: 1 },
+    { y: 260, scale: 0.78, opacity: 0.26, duration: T3_D + 0.15, ease: 'power2.inOut', immediateRender: false }, T3_GO);
+
+/* one ring off the line, one on arrival; both spend to the CSS resting 0 */
+tl.fromTo('#t3hero .jpulse', { scale: 0.66, opacity: 0.85 },
+    { scale: 1.25, opacity: 0, duration: Math.min(0.7, T3_D * 0.55), ease: 'power2.out', immediateRender: false }, T3_GO)
+  .fromTo('#t3hero .jpulse', { scale: 0.72, opacity: 0.7 },
+    { scale: 1.4, opacity: 0, duration: T3_P, ease: 'power2.out', immediateRender: false }, T3_GO + T3_D - 0.1);
       /* 11 . teacher view
    The two SEAS gauges are drawn by the dashboard's own buildArc(): same cx/cy/r/
    stroke width, same 48 segments, same mirrored Teaching arc, same rim dots and
@@ -1765,51 +2471,58 @@ tl.from('#s10names span', { opacity: 0, x: -12, duration: 0.4, stagger: 0.055 },
         buildArc('s11arcT', [3, 3, 2], 2.667, true);
       })();
 
+      /* Fractions recomputed on the v2.4 line (85 words): 0.094 "Two gauges" .
+         0.165 "averaged across every observation" . 0.212 "Each session" . 0.329
+         "And below them, a coaching plan" . 0.400 "drafted by AI from that
+         teacher's own lessons" . 0.494 "checked word for word against the observed
+         lesson itself" . 0.600 "grounded in the school's own rubric" . 0.824
+         "edits and amends it if needed" . 0.882 "then approves the plan". */
       tl.from('#s11top', { opacity: 0, y: 16, duration: 0.7 }, at('s11_teacher', -0.4))
         .from('#s11all', { opacity: 0, y: 18, duration: 0.8, ease: 'power2.out' }, at('s11_teacher', 0.1))
         /* "Two gauges, student progress and teaching" */
-        .from('#s11arcP .arcfill', { opacity: 0, duration: 0.45, stagger: 0.018, ease: 'none' }, atf('s11_teacher', 0.113))
-        .from('#s11arcT .arcfill', { opacity: 0, duration: 0.45, stagger: 0.018, ease: 'none' }, atf('s11_teacher', 0.113))
-        .from('#s11all .osramp', { scaleX: 0, transformOrigin: 'left center', duration: 0.6, ease: 'power2.out' }, atf('s11_teacher', 0.161))
+        .from('#s11arcP .arcfill', { opacity: 0, duration: 0.45, stagger: 0.018, ease: 'none' }, atf('s11_teacher', 0.094))
+        .from('#s11arcT .arcfill', { opacity: 0, duration: 0.45, stagger: 0.018, ease: 'none' }, atf('s11_teacher', 0.094))
+        .from('#s11all .osramp', { scaleX: 0, transformOrigin: 'left center', duration: 0.6, ease: 'power2.out' }, atf('s11_teacher', 0.129))
         /* "averaged across every observation" */
-        .from('#sc11 .arcword', { opacity: 0, duration: 0.6 }, atf('s11_teacher', 0.197))
-        .from('#sc11 .arcdot', { opacity: 0, scale: 0.4, duration: 0.4, stagger: 0.09, ease: 'back.out(2)' }, atf('s11_teacher', 0.207))
-        .from('#s11all .osd', { opacity: 0, y: -8, scale: 0.4, duration: 0.4, stagger: 0.1, ease: 'back.out(2)' }, atf('s11_teacher', 0.217))
-        .from('#s11flag', { opacity: 0, y: -6, duration: 0.5 }, atf('s11_teacher', 0.247))
+        .from('#sc11 .arcword', { opacity: 0, duration: 0.6 }, atf('s11_teacher', 0.165))
+        .from('#sc11 .arcdot', { opacity: 0, scale: 0.4, duration: 0.4, stagger: 0.09, ease: 'back.out(2)' }, atf('s11_teacher', 0.176))
+        .from('#s11all .osd', { opacity: 0, y: -8, scale: 0.4, duration: 0.4, stagger: 0.1, ease: 'back.out(2)' }, atf('s11_teacher', 0.188))
+        .from('#s11flag', { opacity: 0, y: -6, duration: 0.5 }, atf('s11_teacher', 0.200))
         /* "Each session, its skills and its notes, one card each" */
-        .from('#s11sess', { opacity: 0, x: -18, duration: 0.7, ease: 'power2.out' }, atf('s11_teacher', 0.254))
-        .from('#s11sess .odrow', { opacity: 0, x: -10, duration: 0.45, stagger: 0.07 }, atf('s11_teacher', 0.28))
+        .from('#s11sess', { opacity: 0, x: -18, duration: 0.7, ease: 'power2.out' }, atf('s11_teacher', 0.212))
+        .from('#s11sess .odrow', { opacity: 0, x: -10, duration: 0.45, stagger: 0.07 }, atf('s11_teacher', 0.235))
         /* "And below them, a coaching plan" */
-        .from('#s11coach', { opacity: 0, y: 18, duration: 0.8, ease: 'power2.out' }, atf('s11_teacher', 0.394))
-        .from('#s11lad .ns-cell', { opacity: 0, scaleX: 0.3, duration: 0.4, stagger: 0.04, ease: 'power2.out' }, atf('s11_teacher', 0.42))
-        .from('#s11lad .ns-lad-mv', { opacity: 0, x: 10, duration: 0.5, stagger: 0.18 }, atf('s11_teacher', 0.43))
-        .from('#s11sum', { opacity: 0, duration: 0.6 }, atf('s11_teacher', 0.44))
+        .from('#s11coach', { opacity: 0, y: 18, duration: 0.8, ease: 'power2.out' }, atf('s11_teacher', 0.329))
+        .from('#s11lad .ns-cell', { opacity: 0, scaleX: 0.3, duration: 0.4, stagger: 0.04, ease: 'power2.out' }, atf('s11_teacher', 0.355))
+        .from('#s11lad .ns-lad-mv', { opacity: 0, x: 10, duration: 0.5, stagger: 0.18 }, atf('s11_teacher', 0.365))
+        .from('#s11sum', { opacity: 0, duration: 0.6 }, atf('s11_teacher', 0.375))
         /* the focus card lands as ONE unit: a half-populated card reads as broken */
-        .from('#s11fc', { opacity: 0, y: 16, duration: 0.7, ease: 'power2.out' }, atf('s11_teacher', 0.45))
-        /* "checked word for word against the source": the summary line lifts to
-           full ink and releases back to its resting --ink-dim */
-        .to('#s11sum', { color: '#14233f', duration: 0.45, ease: 'power2.out' }, atf('s11_teacher', 0.592))
-        .to('#s11sum', { color: '#3a4a66', duration: 0.6, ease: 'power2.inOut' }, atf('s11_teacher', 0.592) + 1.2)
+        .from('#s11fc', { opacity: 0, y: 16, duration: 0.7, ease: 'power2.out' }, atf('s11_teacher', 0.385))
+        /* "checked word for word against the observed lesson itself": the summary
+           line lifts to full ink and releases back to its resting --ink-dim */
+        .to('#s11sum', { color: '#14233f', duration: 0.45, ease: 'power2.out' }, atf('s11_teacher', 0.494))
+        .to('#s11sum', { color: '#3a4a66', duration: 0.6, ease: 'power2.inOut' }, atf('s11_teacher', 0.494) + 1.2)
         /* "grounded in the school's own rubric": the Grounded in column's rail
            lifts to --y. Inset shadow, so the resting frame carries no rail. */
         .fromTo('#s11fc .fc-r', { boxShadow: 'inset 3px 0 0 0 rgba(201,137,12,0)' },
-          { boxShadow: 'inset 3px 0 0 0 rgba(201,137,12,.9)', duration: 0.5, ease: 'power2.out', immediateRender: false }, atf('s11_teacher', 0.690))
-        .to('#s11fc .fc-r', { boxShadow: 'inset 3px 0 0 0 rgba(201,137,12,0)', duration: 0.6, ease: 'power2.inOut' }, atf('s11_teacher', 0.690) + 1.4)
-        /* "then amended if needed" */
-        .from('#s11amd', { opacity: 0, scale: 0.86, duration: 0.5, ease: 'back.out(1.7)' }, atf('s11_teacher', 0.775))
+          { boxShadow: 'inset 3px 0 0 0 rgba(201,137,12,.9)', duration: 0.5, ease: 'power2.out', immediateRender: false }, atf('s11_teacher', 0.600))
+        .to('#s11fc .fc-r', { boxShadow: 'inset 3px 0 0 0 rgba(201,137,12,0)', duration: 0.6, ease: 'power2.inOut' }, atf('s11_teacher', 0.600) + 1.4)
+        /* "edits and amends it if needed" */
+        .from('#s11amd', { opacity: 0, scale: 0.86, duration: 0.5, ease: 'back.out(1.7)' }, atf('s11_teacher', 0.824))
         /* the badge box holds ONE state at a time: each earlier word is off before
            the next one starts, so no two words ever paint in the same box. The
            hand-offs are fromTo(immediateRender:false), so the resting state is the
            final one: Draft and Amended at 0, Approved alone and visible. */
         .fromTo('#s11draft', { opacity: 1 },
-          { opacity: 0, duration: 0.28, ease: 'power2.in', immediateRender: false }, atf('s11_teacher', 0.775) - 0.28)
+          { opacity: 0, duration: 0.28, ease: 'power2.in', immediateRender: false }, atf('s11_teacher', 0.824) - 0.28)
         .fromTo('#s11amd', { opacity: 1 },
-          { opacity: 0, duration: 0.28, ease: 'power2.in', immediateRender: false }, atf('s11_teacher', 0.845) - 0.28)
-        /* "and approved by the teacher coach before the teacher ever sees it" */
-        .from('#s11appr', { opacity: 0, scale: 0.86, duration: 0.5, ease: 'back.out(1.7)' }, atf('s11_teacher', 0.845));
-      spotlight('#s11coach', atf('s11_teacher', 0.479), 2.4);                   // "drafted by AI from that teacher's own lessons"
-      tl.to('#s11all, #s11sess', { opacity: 0.5, duration: 0.45 }, atf('s11_teacher', 0.479))
-        .to('#s11all, #s11sess', { opacity: 1, duration: 0.6 }, atf('s11_teacher', 0.479) + 2.4);
+          { opacity: 0, duration: 0.28, ease: 'power2.in', immediateRender: false }, atf('s11_teacher', 0.882) - 0.28)
+        /* "then approves the plan", and it rests approved through "Once approved,
+           the teacher can review it" */
+        .from('#s11appr', { opacity: 0, scale: 0.86, duration: 0.5, ease: 'back.out(1.7)' }, atf('s11_teacher', 0.882));
+      spotlight('#s11coach', atf('s11_teacher', 0.400), 2.4);                   // "drafted by AI from that teacher's own lessons"
+      tl.to('#s11all, #s11sess', { opacity: 0.5, duration: 0.45 }, atf('s11_teacher', 0.400))
+        .to('#s11all, #s11sess', { opacity: 1, duration: 0.6 }, atf('s11_teacher', 0.400) + 2.4);
       /* 12 . teacher portal
    Beat 1 the wall, beat 2 the portal page. The page is a full-frame layer over
    the wall and enters with .from(), so the scene's resting state is the finished
@@ -1840,51 +2553,86 @@ tl.from('#s10names span', { opacity: 0, x: -12, duration: 0.4, stagger: 0.055 },
         /* "no observer's rough notes, no edits" */
         .from('#s12cap', { opacity: 0, y: 10, duration: 0.6 }, atf('s12_portal', 0.714));
       spotlight('#s12badge', atf('s12_portal', 0.286), 2.0);                    // "a notification when a new coaching plan is approved"
-      /* 13 . reports and regeneration */
-      tl.from('#s13head', { opacity: 0, y: 16, duration: 0.7 }, at('s13_report', -0.4))
-        .from('#s13page', { opacity: 0, y: 20, duration: 0.8, ease: 'power2.out' }, at('s13_report', 0.1))
-        .from('#s13top', { opacity: 0, y: 12, duration: 0.6 }, at('s13_report', 0.5))
-        .from('#s13tabs', { opacity: 0, y: 10, duration: 0.5 }, at('s13_report', 0.7))
-        .from('#s13scope', { opacity: 0, y: 10, duration: 0.55 }, at('s13_report', 0.9))
-        .from('#s13method', { opacity: 0, duration: 0.55 }, at('s13_report', 1.1))
-        /* "one button turns the round into a governance report" (word share 0.066) */
-        .from('#s13sec', { opacity: 0, y: 12, duration: 0.6 }, at('s13_report', 1.3))
-        .from('#s13bl li', { opacity: 0, x: -10, duration: 0.45, stagger: 0.14 }, atf('s13_report', 0.140))
-        .from('#sc13 .refmk', { opacity: 0, scale: 0.4, duration: 0.45, stagger: 0.1, ease: 'back.out(2)' }, atf('s13_report', 0.170))
-        /* "simple or in depth": the second tab taps itself */
-        .fromTo('#s13tabB', { scale: 1 }, { scale: 1.07, duration: 0.18, yoyo: true, repeat: 1, ease: 'power2.out', immediateRender: false }, atf('s13_report', 0.213))
-        /* "and a second builds it as a branded Google Doc" */
-        .from('#s13doc', { opacity: 0, scale: 0.94, y: 16, duration: 0.8, ease: 'power3.out' }, atf('s13_report', 0.330))
-        .from('#s13d1, #s13d2, #s13d3, #s13d4, #s13d5', { opacity: 0, y: 10, duration: 0.5, stagger: 0.09 }, atf('s13_report', 0.37))
-        /* "all references attached" */
-        .fromTo('#s13sheen', { xPercent: -140 }, { xPercent: 140, duration: 1.1, ease: 'power1.inOut', immediateRender: false }, atf('s13_report', 0.443))
-        /* "When a new round lands, one more button rewrites the analysis for it" */
-        .from('#s13regen', { opacity: 0, y: 14, duration: 0.6 }, atf('s13_report', 0.557))
-        .fromTo('#s13bar', { width: '0%' }, { width: '100%', duration: 2.0, ease: 'power1.inOut' }, atf('s13_report', 0.60))
-        /* land the chip on the person, not on the bar finishing */
-        .from('#s13chk', { opacity: 0, scale: 0.9, duration: 0.45, ease: 'back.out(1.7)' }, atf('s13_report', 0.852));
-      spotlight('#s13export', atf('s13_report', 0.279), 2.0);                   // "and a second builds it as a branded Google Doc"
-      /* 14 . trust
-   One card per lock as the narrator names it, each with its shackle dropping
-   shut; then the platform strip on "the tools a school already pays for". */
-tl.from('#sc14 .shead', { opacity: 0, y: 16, duration: 0.7 }, at('s14_trust', -0.45))
-  .from('#s14c1', { opacity: 0, y: 22, duration: 0.75, ease: 'power2.out' }, at('s14_trust', 0.85))
-  .from('#s14c1 .s14shk', { y: -3.4, opacity: 0.3, duration: 0.45, ease: 'back.out(2.2)' }, at('s14_trust', 1.15))
-  .from('#s14c2', { opacity: 0, y: 22, duration: 0.75, ease: 'power2.out' }, atf('s14_trust', 0.135))
-  .from('#s14c2 .s14shk', { y: -3.4, opacity: 0.3, duration: 0.45, ease: 'back.out(2.2)' }, atf('s14_trust', 0.158))
-  .from('#s14c3', { opacity: 0, y: 22, duration: 0.75, ease: 'power2.out' }, atf('s14_trust', 0.27))
-  .from('#s14c3 .s14shk', { y: -3.4, opacity: 0.3, duration: 0.45, ease: 'back.out(2.2)' }, atf('s14_trust', 0.293));
 
-/* "runs on the tools a school already pays for" */
-tl.from('#s14strip', { opacity: 0, y: 16, duration: 0.75, ease: 'power2.out' }, atf('s14_trust', 0.50))
-  .from('#sc14 .s14chips span', { opacity: 0, y: 12, duration: 0.55, stagger: 0.22, ease: 'power2.out' }, atf('s14_trust', 0.595))
-  .from('#s14line', { opacity: 0, y: 12, duration: 0.7, ease: 'power2.out' }, atf('s14_trust', 0.715))
-  .from('#s14sub', { opacity: 0, duration: 0.7 }, atf('s14_trust', 0.85));
+      /* 15 . close, as the LOOP (APPROVED v2.4 narration)
+   "From a lesson observed, to evidence, to a coaching plan in the teacher's
+    hand. And when the next round begins, the journey starts again: observe,
+    evidence, coach. Better never stops."                       (30 words)
 
-      /* 15 . close */
-      tl.from('#s15h', { opacity: 0, y: 20, duration: 0.9, ease: 'power3.out' }, at('s15_close', -0.3))
-        .from('#s15flow .fstep', { opacity: 0, y: 18, duration: 0.7, stagger: 0.22 }, at('s15_close', 0.9))
-        .from('#s15bns', { opacity: 0, y: 24, duration: 0.9, ease: 'power3.out' }, atf('s15_close', 0.86));   // "Better never stops" = words 23-25 of 25; visual lands ON the phrase, end card echoes it
+   Word share through that text (words before the phrase / 30):
+     0.0667  "lesson observed"          node 1 relights            (2/30)
+     0.1667  "evidence"                 node 2                     (5/30)
+     0.2667  "coaching plan"            node 3                     (8/30)
+     0.4667  "And when the next round begins"  light runs the line (14/30)
+     0.6667  "the journey starts again"  the return path draws     (20/30)
+     0.8000  "observe,"                 node 1 pulses             (24/30)
+     0.8333  "evidence,"                node 2 pulses             (25/30)
+     0.8667  "coach."                   node 3 pulses             (26/30)
+     0.9000  "Better"                   word 1 materialises       (27/30)
+     0.9333  "never"                    word 2                    (28/30)
+     0.9667  "stops."                   word 3                    (29/30)
+
+   The end card that follows is silent and unchanged: it echoes the same three
+   words, so the payoff has to be settled INSIDE this scene, on the phrase.
+
+   Freeze-safe: the resting DOM is the closed loop with all three nodes lit and
+   the payoff readable, and every beat here is a .from() or a fromTo() that
+   keeps immediateRender true, so nothing leaks a finished state early. */
+
+tl.to('#s15stars', { y: -20, duration: NARR.s15_close.dur + 2, ease: 'none' }, at('s15_close', -0.55));
+
+/* 1 . the pull back: the whole map comes back into view, symmetric and whole */
+tl.from('#s15route', { opacity: 0, scale: 1.12, y: 24, duration: 1.6, ease: 'power2.out' }, at('s15_close', -0.55));
+
+/* 2 . "From a lesson observed, to evidence, to a coaching plan": the three
+       stations relight in the order the sentence names them. */
+[['#s15n1', 0.0667], ['#s15n2', 0.1667], ['#s15n3', 0.2667]].forEach(function (p) {
+  var t = atf('s15_close', p[1]);
+  tl.from(p[0] + ' .jring', { opacity: 0, scale: 0.46, duration: 0.66, ease: 'back.out(1.7)' }, t - 0.1)
+    .fromTo(p[0] + ' .jpulse', { scale: 0.66, opacity: 0.8 },
+      { scale: 2.1, opacity: 0, duration: 1.1, ease: 'power2.out', immediateRender: false }, t)
+    .from(p[0] + ' .jlab', { opacity: 0, y: 10, duration: 0.6, ease: 'power2.out' }, t + 0.18);
+});
+
+/* 3 . "And when the next round begins": light runs the line once, forward,
+       the same travelling dot the cover drew with, then hands over. */
+var S15_RUN = atf('s15_close', 0.4667);
+tl.fromTo('#s15trav', { opacity: 0 }, { opacity: 1, duration: 0.3, ease: 'power2.out', immediateRender: false }, S15_RUN)
+  .fromTo('#s15trav', { x: 0 }, { x: 1420, duration: 1.5, ease: 'power1.inOut', immediateRender: false }, S15_RUN)
+  .fromTo('#s15trav', { opacity: 1 }, { opacity: 0, duration: 0.5, ease: 'power2.in', immediateRender: false }, S15_RUN + 1.0);
+
+/* 4 . "the journey starts again": the return path draws itself from the
+       Coaching Plan node back to the Observe node and the loop is closed.
+       dasharray 2320 is the path's measured length (2318, rounded up). This is
+       the ONLY tween on this dashoffset, so it keeps GSAP's default
+       immediateRender:true: the path is undrawn from frame 0 and the CSS
+       resting value (0, closed) never leaks in before the beat. */
+var S15_LOOP = atf('s15_close', 0.6667);
+tl.fromTo('#s15loop', { strokeDashoffset: 2320 },
+    { strokeDashoffset: 0, duration: 1.6, ease: 'power1.inOut' }, S15_LOOP)
+  .from('#s15arrow', { opacity: 0, duration: 0.45, ease: 'power2.out' }, S15_LOOP + 1.45);
+
+/* 5 . "observe, evidence, coach": the three stations answer in order. Second
+       use of each .jpulse, which is fine: both tweens end on opacity 0, the
+       element's own CSS resting state. */
+[['#s15n1', 0.80], ['#s15n2', 0.8333], ['#s15n3', 0.8667]].forEach(function (p) {
+  tl.fromTo(p[0] + ' .jpulse', { scale: 0.7, opacity: 0.85 },
+      { scale: 2.0, opacity: 0, duration: 0.95, ease: 'power2.out', immediateRender: false }, atf('s15_close', p[1]))
+    .fromTo(p[0] + ' .jring', { boxShadow: '0 0 38px rgba(240,176,42,.28), inset 0 0 24px rgba(240,176,42,.10)' },
+      { boxShadow: '0 0 60px rgba(240,176,42,.55), inset 0 0 30px rgba(240,176,42,.20)',
+        duration: 0.32, ease: 'power2.out', immediateRender: false }, atf('s15_close', p[1]))
+    .to(p[0] + ' .jring', { boxShadow: '0 0 38px rgba(240,176,42,.28), inset 0 0 24px rgba(240,176,42,.10)',
+      duration: 0.6, ease: 'power2.inOut' }, atf('s15_close', p[1]) + 0.32);
+});
+
+/* 6 . "Better never stops.": one word per word, each materialising out of a
+       soft blur as it is spoken. The end value of the filter is the CSS
+       blur(0px) declared in s15_close.css, so there is no "none" to
+       interpolate towards. */
+[0.90, 0.9333, 0.9667].forEach(function (f, i) {
+  tl.from('#s15bns .w' + (i + 1), { opacity: 0, y: 18, scale: 0.96, filter: 'blur(9px)',
+    duration: 0.8, ease: 'power3.out' }, atf('s15_close', f));
+});
 
       /* 16 . end card (silent, held after the narration) */
       tl.from('#sc16 .coverk', { opacity: 0, y: 12, duration: 0.8 }, at('s16_end', 0.6))

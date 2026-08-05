@@ -1,245 +1,269 @@
 WEBVTT
 
 1
-00:00:02.500 --> 00:00:04.492
+00:00:02.500 --> 00:00:04.550
 Every school should observe lessons.
 
 2
-00:00:04.492 --> 00:00:07.280
+00:00:04.550 --> 00:00:07.419
 Very few can show what happens next.
 
 3
-00:00:07.280 --> 00:00:18.036
+00:00:07.419 --> 00:00:18.488
 This is the Observation System: one route from lesson observation, to collected evidence, to a coaching plan for every teacher, covering every step of the learning journey.
 
 4
-00:00:18.036 --> 00:00:20.028
-Here is the whole journey.
+00:00:20.488 --> 00:00:21.273
+Step one.
 
 5
-00:00:22.028 --> 00:00:23.813
-It starts in the classroom.
+00:00:21.273 --> 00:00:24.021
+The teachers are observed by their coach.
 
 6
-00:00:23.813 --> 00:00:38.089
-The teacher coach opens one form and fills in the observation details: subject, class and teacher, with live dropdowns fed by the school's own staff directory, so nothing is typed from memory and no list is ever out of date.
+00:00:24.471 --> 00:00:39.536
+While the coaches are observing a lesson, they fill in the relevant observation form: subject, class and teacher, with live dropdowns fed by the school's own staff directory, so nothing is typed from memory and no list is ever out of date.
 
 7
-00:00:38.089 --> 00:00:40.230
+00:00:39.536 --> 00:00:41.688
 Class composition is a few taps.
 
 8
-00:00:40.230 --> 00:00:43.799
+00:00:41.688 --> 00:00:45.275
 The whole context of the lesson, captured throughout the observation.
 
 9
-00:00:44.249 --> 00:00:52.822
+00:00:45.725 --> 00:00:54.608
 Each observation uses the Regulatory Body's own six point scale, from Very Weak to Outstanding, with the same proportion bands its inspectors already use.
 
 10
-00:00:52.822 --> 00:00:58.538
+00:00:54.608 --> 00:01:00.531
 Ten criteria, from attainment and progress to teaching and leadership, each with room for a comment.
 
 11
-00:00:58.538 --> 00:01:04.968
+00:01:00.531 --> 00:01:07.193
 The form speaks the language of inspection, because it was built to coach teachers using the same criteria.
 
 12
-00:01:05.418 --> 00:01:07.220
-Coaching notes can be handwritten.
+00:01:07.643 --> 00:01:16.242
+The coach fills in the form by typing their notes, or by writing them with the Apple Pencil on the built in Evidence Pad.
 
 13
-00:01:07.220 --> 00:01:10.825
-The form has an Evidence Pad, designed for Apple Pencil.
+00:01:16.242 --> 00:01:22.334
+The Evidence Pad also lets the coach take or attach photos of anything noteworthy in the lesson.
 
 14
-00:01:10.825 --> 00:01:17.674
-The observer types, or writes with the Pencil, and keeps photos of the board or the pupils' work alongside.
+00:01:22.334 --> 00:01:25.917
+The system transcribes the handwriting and turns it into text.
 
 15
-00:01:17.674 --> 00:01:21.279
-The system reads the handwriting and turns it into text.
-
-16
-00:01:21.279 --> 00:01:26.326
+00:01:25.917 --> 00:01:30.933
 Everything is saved automatically throughout the observation, so nothing is ever lost mid lesson.
 
+16
+00:01:31.384 --> 00:01:34.904
+When it is done, each observation gets its own ID.
+
 17
-00:01:26.776 --> 00:01:33.319
-When it is done, each observation gets its own ID, freezes, and everything is saved, ready for review.
+00:01:34.904 --> 00:01:37.368
+Everything is saved, and ready for review.
 
 18
-00:01:33.768 --> 00:01:36.626
+00:01:37.817 --> 00:01:40.599
 One tap files everything, four ways at once.
 
 19
-00:01:36.626 --> 00:01:38.769
+00:01:40.599 --> 00:01:42.685
 The observation lands in a spreadsheet.
 
 20
-00:01:38.769 --> 00:01:42.341
+00:01:42.685 --> 00:01:46.162
 It mirrors into a live database, duplicate proof by design.
 
 21
-00:01:42.341 --> 00:01:49.842
-A branded backup email goes to the observer, for safe keeping and easy access, with a link to the locked observation.
+00:01:46.162 --> 00:01:54.506
+After each coaching observation, an email is sent to the observer, for safe keeping and immediate easy access, with a link to the observation.
 
 22
-00:01:49.842 --> 00:01:55.915
-And the handwriting itself is archived in private storage, so it can be reviewed if ever needed.
+00:01:54.506 --> 00:02:02.851
+Even the form's Evidence Pad handwriting, and any attached pictures, are archived in secured storage, so everything can be fully reviewed if ever needed.
 
 23
-00:01:58.916 --> 00:02:01.399
-Now the other end of the pipeline.
+00:02:05.851 --> 00:02:06.716
+Step two.
 
 24
-00:02:01.399 --> 00:02:05.300
-The Observation Dashboard opens with a password, safety as a priority.
+00:02:06.716 --> 00:02:09.312
+Retrieving and viewing the collected evidence.
 
 25
-00:02:05.300 --> 00:02:08.492
-As an example, here is one school's June round.
+00:02:09.762 --> 00:02:14.019
+For example: first, we open the Observation Dashboard, which is password protected.
 
 26
-00:02:08.492 --> 00:02:15.586
-The story plays itself: a hundred and eleven lessons, a hundred and five teachers, counted up live from the data.
+00:02:14.019 --> 00:02:17.921
+Here is an observation round from one of the associated schools.
 
 27
-00:02:15.586 --> 00:02:18.423
-Where judgements sit on the six point scale.
+00:02:17.921 --> 00:02:25.017
+The story plays itself: a hundred and eleven lessons, a hundred and five teachers, counted up live from the data.
 
 28
-00:02:18.423 --> 00:02:19.487
-What is working.
+00:02:25.017 --> 00:02:27.855
+Where judgements sit on the six point scale.
 
 29
-00:02:19.487 --> 00:02:20.906
-Where to focus next.
+00:02:27.855 --> 00:02:28.919
+What is working.
 
 30
-00:02:20.906 --> 00:02:27.999
-And one tap presents that round's findings in full screen, built to showcase the round by itself in any meeting.
+00:02:28.919 --> 00:02:30.338
+Where to focus next.
 
 31
-00:02:28.449 --> 00:02:34.351
-Every written statement carries a small number: a citation, a reference stemming from an actual observation.
+00:02:30.338 --> 00:02:37.433
+And one tap presents that round's findings in full screen, built to showcase the round by itself in any meeting.
 
 32
-00:02:34.351 --> 00:02:42.835
-Click or tap to open the references and see the actual observations behind each statement: subject, date, judgement, and the inspector's words, verbatim.
+00:02:37.883 --> 00:02:43.605
+Once an observation round is completed, the relevant school stakeholders receive a whole set of data.
 
 33
-00:02:42.835 --> 00:02:47.261
-AI cites the hundreds of references that sit behind every claimed statement.
+00:02:43.605 --> 00:02:44.677
+Individual lesson observations.
 
 34
-00:02:47.261 --> 00:02:50.581
-Nothing on this dashboard is an opinion without evidence.
+00:02:44.677 --> 00:02:46.465
+A snapshot of the round.
 
 35
-00:02:51.030 --> 00:02:53.537
-Rounds can be compared to show movement.
+00:02:46.465 --> 00:02:46.823
+Coverage.
 
 36
-00:02:53.537 --> 00:03:02.489
-Every teacher seen in both rounds is displayed as a line, from where they were to where they are, green when they moved toward Outstanding.
+00:02:46.823 --> 00:02:48.611
+And a highly detailed report.
 
 37
-00:03:02.489 --> 00:03:06.427
-A transition matrix counts the improvements, the holds and the declines.
+00:02:49.061 --> 00:02:51.908
+Rounds can be compared to show teacher progression.
 
 38
-00:03:06.427 --> 00:03:10.366
-This is the question governors actually ask: is teaching getting better?
+00:02:51.908 --> 00:03:02.229
+Every teacher seen in both rounds is displayed from one judgement point to the next, from where they were to where they are, green when they moved toward Outstanding.
 
 39
-00:03:10.366 --> 00:03:11.441
-If not, why?
+00:03:02.229 --> 00:03:06.144
+A transition matrix counts the improvements, the holds and the declines.
 
 40
-00:03:11.441 --> 00:03:13.231
-And how can we improve?
+00:03:06.144 --> 00:03:10.059
+This is the question governors actually ask: is teaching getting better?
 
 41
-00:03:13.682 --> 00:03:18.465
-The Dashboard shows Coverage, which answers the other question: who has been seen?
+00:03:10.059 --> 00:03:11.127
+If not, why?
 
 42
-00:03:18.465 --> 00:03:26.560
-Teachers on the register, teachers observed, lessons per teacher, and who is still waiting, so no one is invisible for a term.
+00:03:11.127 --> 00:03:12.906
+And how can we improve?
 
 43
-00:03:29.059 --> 00:03:32.058
-Drill into any teacher and their history follows.
+00:03:13.356 --> 00:03:17.706
+The report is generated using citations and references from the actual observations.
 
 44
-00:03:32.058 --> 00:03:35.806
-Two gauges, student progress and teaching, averaged across every observation.
+00:03:17.706 --> 00:03:25.681
+Every written statement carries a small number: a citation count, showing how many times that statement is cited across the lesson observations.
 
 45
-00:03:35.806 --> 00:03:39.554
-Each session, its skills and its notes, one card each.
+00:03:25.681 --> 00:03:34.744
+Click or tap the number to open the citations and see the actual observations behind each statement: subject, date, judgement, and the inspector's words, verbatim.
 
 46
-00:03:39.554 --> 00:03:55.671
-And below them, a coaching plan: drafted by AI from that teacher's own lessons, checked word for word against the source, grounded in the school's own rubric, then amended if needed and approved by the teacher coach before the teacher ever sees it.
+00:03:34.744 --> 00:03:39.094
+AI cites the hundreds of references that sit behind every claimed statement.
 
 47
-00:03:56.121 --> 00:03:57.924
-Teachers have their own door.
+00:03:39.094 --> 00:03:48.157
+Nothing on this dashboard is an opinion without evidence, and it can all be presented to your regulatory body at the click of a button.
 
 48
-00:03:57.924 --> 00:04:05.494
-A portal for every member of staff: their photograph, their history, and a notification when a new coaching plan is approved.
+00:03:48.607 --> 00:03:54.304
+For the leadership table, one button turns the round into a governance report, simple or in depth.
 
 49
-00:04:05.494 --> 00:04:09.100
-What they see is deliberately thinner than what leadership sees.
+00:03:54.304 --> 00:04:01.006
+One tap or click, and you have a PDF or a Google Doc, all references attached, teachers anonymised by construction.
 
 50
-00:04:09.100 --> 00:04:16.310
-No observer's rough notes, no edits, no other teachers, only their own approved coaching plan and their own next steps.
-
-51
-00:04:16.760 --> 00:04:28.578
-For the leadership table, one button turns the round into a governance report, simple or in depth, and a second builds it as a branded Google Doc, all references attached, teachers anonymised by construction.
-
-52
-00:04:28.578 --> 00:04:37.963
+00:04:01.006 --> 00:04:10.054
 When a new round lands, one more button rewrites the analysis for it, the AI's work double checked by the Head of Teaching and Learning before publishing.
 
+51
+00:04:10.504 --> 00:04:15.421
+The Dashboard also shows Coverage, which answers the other question: who has been seen?
+
+52
+00:04:15.421 --> 00:04:23.148
+Teachers on the register, teachers observed, lessons per teacher, and who is still waiting, so no one is invisible for a term.
+
 53
-00:04:38.413 --> 00:04:39.532
-Underneath, three locks.
+00:04:25.648 --> 00:04:26.440
+Step three.
 
 54
-00:04:39.532 --> 00:04:41.396
-A password for the school.
+00:04:26.440 --> 00:04:27.629
+The coaching plan.
 
 55
-00:04:41.396 --> 00:04:44.006
-A second, server verified password for administrators.
+00:04:28.080 --> 00:04:30.892
+Drill into any teacher and their history follows.
 
 56
-00:04:44.006 --> 00:04:46.989
-And a unique key for every single entry.
+00:04:30.892 --> 00:04:34.406
+Two gauges, student progress and teaching, averaged across every observation.
 
 57
-00:04:46.989 --> 00:04:54.074
-The whole system runs on the tools a school already pays for: Google Workspace, a database, and static hosting.
+00:04:34.406 --> 00:04:37.921
+Each session, its skills and its notes, one card each.
 
 58
-00:04:54.074 --> 00:05:00.413
-No servers to maintain, no per seat licences, and the data stays in accounts the school controls.
+00:04:37.921 --> 00:04:50.573
+And below them, a coaching plan: drafted by AI from that teacher's own lessons, checked word for word against the observed lesson itself, grounded in the school's own rubric and its strategic plan, aiming for excellence.
 
 59
-00:05:02.913 --> 00:05:07.692
-From a lesson observed, to evidence, to a plan in the teacher's hand.
+00:04:50.573 --> 00:04:55.494
+The coach reads it, edits and amends it if needed, then approves the plan.
 
 60
-00:05:07.692 --> 00:05:11.001
-One system, built inside a school, ready to travel.
+00:04:55.494 --> 00:04:57.954
+Once approved, the teacher can review it.
 
 61
-00:05:11.001 --> 00:05:12.104
+00:04:58.404 --> 00:05:00.103
+Teachers have their own door.
+
+62
+00:05:00.103 --> 00:05:07.241
+A portal for every member of staff: their photograph, their history, and a notification when a new coaching plan is approved.
+
+63
+00:05:07.241 --> 00:05:10.640
+What they see is deliberately thinner than what leadership sees.
+
+64
+00:05:10.640 --> 00:05:17.438
+No observer's rough notes, no edits, no other teachers, only their own approved coaching plan and their own next steps.
+
+65
+00:05:17.888 --> 00:05:23.096
+From a lesson observed, to evidence, to a coaching plan in the teacher's hand.
+
+66
+00:05:23.096 --> 00:05:27.933
+And when the next round begins, the journey starts again: observe, evidence, coach.
+
+67
+00:05:27.933 --> 00:05:29.049
 Better never stops.

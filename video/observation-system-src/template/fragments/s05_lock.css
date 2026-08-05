@@ -111,9 +111,11 @@
    that covers it (see s05_lock.cues.js). Purely a handle: no type of its own. */
 #sc05 .s5num{display:inline-flex;align-items:center;justify-content:center;font:inherit;line-height:1}
 /* white text again, so the same deep green as .s5chk (was 3.3:1 on --rate-success) */
-#sc05 .s5sel{position:absolute;inset:-1px;border-radius:6px;background:var(--rate-success-deep);
-  border:1px solid var(--rate-success-deep);color:#fff;font-weight:600;font-size:9.5px;
-  font-style:normal;display:flex;align-items:center;justify-content:center;opacity:.7}
+/* locked-state dim carried by the BACKGROUND alpha, text stays full-opacity white:
+   element opacity .7 dropped the composite to 3.78:1 (AA needs 4.5) at the tint beat */
+#sc05 .s5sel{position:absolute;inset:-1px;border-radius:6px;background:rgba(15,95,48,.88);
+  border:1px solid rgba(15,95,48,.88);color:#fff;font-weight:600;font-size:9.5px;
+  font-style:normal;display:flex;align-items:center;justify-content:center}
 
 /* ---- illustrative tag ---- */
 #sc05 .ill-tag{position:absolute;left:24px;bottom:20px;font-family:var(--form-body);

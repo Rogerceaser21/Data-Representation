@@ -1,0 +1,32 @@
+/* ============ 15 . CLOSE (the loop) =========================================
+   Everything structural comes from the SPINE SYSTEM block in s01_cover.css
+   (class="jscene" on the section). This file adds only what the close needs:
+   the return path, its arrowhead, and the payoff line.
+
+   Resting state is the CLOSED loop: the return path is fully drawn
+   (dashoffset 0), the arrowhead is on, all three nodes are lit, the payoff
+   line reads. The draw is a fromTo that KEEPS immediateRender true, so the
+   path is undrawn from frame 0 of the composition and only draws on its beat.
+   =========================================================================== */
+
+#sc15 .jloop {
+  stroke: var(--gold); stroke-width: 3; stroke-linecap: round;
+  stroke-dasharray: 2320; stroke-dashoffset: 0;      /* resting = closed */
+  opacity: .88;
+  filter: drop-shadow(0 0 12px rgba(240, 176, 42, .30));
+}
+#sc15 .jloopend { fill: var(--gold); filter: drop-shadow(0 0 10px rgba(240, 176, 42, .45)) }
+
+/* the return path passes behind the labels near the two rings it joins; the
+   navy halo keeps that reading as "behind" instead of "through". Paint only,
+   so the geometry stays identical to the cover. */
+#sc15 .jlab { text-shadow: 0 0 12px #0a1430, 0 0 26px rgba(7, 13, 34, .95) }
+
+/* ---- the payoff, in the cover title's own seat ---- */
+#sc15 .jclose {
+  position: absolute; left: 0; right: 0; top: 186px; text-align: center;
+  font-family: var(--display); font-weight: 600; font-size: 78px; line-height: 1.05;
+  letter-spacing: -.026em; color: #fff;
+}
+#sc15 .jclose .w { display: inline-block; filter: blur(0px) }   /* end value must be parseable */
+#sc15 .jclose em { font-style: italic; color: var(--gold); text-shadow: 0 0 34px rgba(240, 176, 42, .42) }

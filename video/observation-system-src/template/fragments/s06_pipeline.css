@@ -36,8 +36,10 @@
   font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--g);
   border:1px solid color-mix(in srgb,var(--g) 42%,transparent);
   background:color-mix(in srgb,var(--g) 12%,transparent);border-radius:20px;padding:5px 12px}
+/* --ink-faint measures 3.46:1 on this navy panel, under AA. Same blue-grey one
+   notch lighter (--ink-mid), the same swap every other scene in this deck makes. */
 #sc06 .ill-tag{position:absolute;top:16px;right:18px;font-size:9px;font-weight:700;
-  letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);
+  letter-spacing:.14em;text-transform:uppercase;color:var(--ink-mid);
   border:1px dashed var(--edge);border-radius:20px;padding:3px 9px}
 
 /* ---- the fan. Dasharray is larger than any of the four path lengths, so

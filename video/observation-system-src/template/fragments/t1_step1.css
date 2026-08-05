@@ -1,0 +1,7 @@
+/* T1 . step one transition.
+   The whole look (spine geometry, node rings, chip) is the SPINE SYSTEM block
+   in s01_cover.css, shared by s01 / t1 / t2 / t3 / s15 so the four spine
+   scenes match pixel for pixel. Per scene there is one thing only: the chip's
+   accent dot, taken from the cover's own house stripe gradient
+   (#F0B02A -> #3CBB6C -> #3f7bff), so step 1 wears the first stop. */
+#sct1 { --tstep-accent: #F0B02A }

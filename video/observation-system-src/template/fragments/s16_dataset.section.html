@@ -1,0 +1,177 @@
+<!-- ============ 16 . THE DATA SET (what the school receives) ==================
+     Four deliverables, each one a REAL product surface miniaturised, never a mock:
+       01  the locked observation record   <- #sc05 .s5paper (form.css .form-container)
+       02  the Snapshot story board       <- #sc07 .s7tabs + .panel.stat + .gauge-cap + .osseg
+       03  the Coverage ring              <- #sc10 .ringwrap (renderRing geometry, verbatim)
+       04  the governance report          <- #sc13 .s13page (renderSimpleReport chrome)
+     Each surface is drawn at its own designed pixel size and the whole block is
+     zoomed down (.s16dzoom), the same trick .sbody plays with zoom:1.62, so every
+     internal proportion stays the product's instead of being restyled smaller.
+     Numbers are the computed ones in assets/data/video-data.json: lessons 111,
+     teachers 105, avgBest 3.22 -> "3.2 of 6", coverage reg 149 / observed 105 /
+     not_observed 44 -> 70%. Nothing here is retyped.
+     ========================================================================== -->
+<section class="scene navy clip" id="sc16d" data-start="{{START:s16_dataset}}" data-duration="{{DUR:s16_dataset}}" data-track-index="1">
+  <div class="sbody">
+    <div class="stars" id="s16dstars" data-layout-allow-overflow></div>
+
+    <div class="shead" id="s16dhead">
+      <div class="s16dkrow">
+        <div class="kick"><i class="stripe"></i> Round complete &middot; R3 June 26</div>
+        <span class="ill-tag" id="s16dill">Illustrative records and statements</span>
+      </div>
+      <h2 id="s16dh">Everything the school <em id="s16dhem">receives</em></h2>
+    </div>
+
+    <div class="s16dgrid">
+
+      <!-- 01 . individual lesson observations: the locked record itself -->
+      <div class="s16dslot">
+        <i class="s16dgh" id="s16dg1"></i>
+        <div class="s16dcard" id="s16dc1">
+          <div class="s16dchead">
+            <span class="s16dcn">01</span>
+            <span class="s16dctx">
+              <span class="s16dct">Individual lesson observations</span>
+              <span class="s16dcs">One locked record per lesson, its own ID</span>
+            </span>
+          </div>
+          <div class="s16dmini">
+            <div class="s16dzoom">
+              <div class="s16dpaper">
+                <i class="s16drail"></i>
+                <div class="s16dbanner">
+                  <span class="s16dchk">&#10003;</span>
+                  <span class="s16dbstack">
+                    <span class="s16dbtitle">Submitted &middot; Cannot be edited</span>
+                    <span class="s16dbmeta">Record ID R3-20260610-091412 &middot; Submitted 10 Jun 2026, 09:14</span>
+                  </span>
+                </div>
+                <div class="s16dfgrid">
+                  <div class="s16dfcell"><label>Teacher</label><span class="s16dfv">Eleanor Whitfield</span></div>
+                  <div class="s16dfcell"><label>Subject</label><span class="s16dfv">English</span></div>
+                  <div class="s16dfcell"><label>Date</label><span class="s16dfv">10 June 2026</span></div>
+                </div>
+                <div class="s16dcrit">
+                  <div class="s16dcrow s16dchead2"><span>Criterion</span><span>Rating 1 to 6</span></div>
+                  <div class="s16dcrow">
+                    <span class="s16dcn2"><i>02</i> Students make progress</span>
+                    <span class="s16drr">
+                      <span class="s16drate">1</span><span class="s16drate">2</span>
+                      <span class="s16drate sel"><i class="s16dsel">3</i></span>
+                      <span class="s16drate">4</span><span class="s16drate">5</span><span class="s16drate">6</span>
+                    </span>
+                  </div>
+                  <div class="s16dcrow alt">
+                    <span class="s16dcn2"><i>05</i> Teaching</span>
+                    <span class="s16drr">
+                      <span class="s16drate">1</span><span class="s16drate">2</span>
+                      <span class="s16drate sel"><i class="s16dsel">3</i></span>
+                      <span class="s16drate">4</span><span class="s16drate">5</span><span class="s16drate">6</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 02 . a snapshot of the round: the Story board's own numbers -->
+      <div class="s16dslot">
+        <i class="s16dgh" id="s16dg2"></i>
+        <div class="s16dcard" id="s16dc2">
+          <div class="s16dchead">
+            <span class="s16dcn">02</span>
+            <span class="s16dctx">
+              <span class="s16dct">A snapshot of the round</span>
+              <span class="s16dcs">The round's own numbers, counted from the records</span>
+            </span>
+          </div>
+          <div class="s16dmini">
+            <div class="s16dzoom">
+              <div class="s16dsnap">
+                <div class="s16dtabs">
+                  <span class="s16dtab on">Story</span><span class="s16dtab">Detail</span>
+                  <span class="s16dpresent">Present</span>
+                </div>
+                <div class="s16dtiles">
+                  <div class="panel stat"><div class="v" data-count="111">0</div><div class="l">Lessons observed</div></div>
+                  <div class="panel stat"><div class="v" data-count="105">0</div><div class="l">Teachers seen</div></div>
+                  <div class="panel s16dgauge"><div class="gauge-cap"><div class="gv">3.2 of 6</div><div class="gl">average progress</div></div></div>
+                </div>
+                <div class="osseg">
+                  <div class="osramp">
+                    <div class="rc"><div class="sw" style="background:var(--r1)"></div><div class="lb">Outstanding</div></div>
+                    <div class="rc"><div class="sw" style="background:var(--r2)"></div><div class="lb">Very Good</div></div>
+                    <div class="rc"><div class="sw" style="background:var(--r3)"></div><div class="lb">Good</div></div>
+                    <div class="rc"><div class="sw" style="background:var(--r4)"></div><div class="lb">Acceptable</div></div>
+                    <div class="rc"><div class="sw" style="background:var(--r5)"></div><div class="lb">Weak</div></div>
+                    <div class="rc"><div class="sw" style="background:var(--r6)"></div><div class="lb">Very Weak</div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 03 . coverage: the board's coverage ring, geometry verbatim from #sc10 -->
+      <div class="s16dslot">
+        <i class="s16dgh" id="s16dg3"></i>
+        <div class="s16dcard" id="s16dc3">
+          <div class="s16dchead">
+            <span class="s16dcn">03</span>
+            <span class="s16dctx">
+              <span class="s16dct">Coverage</span>
+              <span class="s16dcs">Who has been seen, and who is still waiting</span>
+            </span>
+          </div>
+          <div class="s16dmini">
+            <div class="s16dzoom">
+              <div class="s16dcov">
+                <div class="s16dringwrap">
+                  <svg width="152" height="152" viewBox="0 0 120 120"><circle cx="60" cy="60" r="46" fill="none" stroke="var(--edge)" stroke-width="13"/><circle id="s16darc" cx="60" cy="60" r="46" fill="none" stroke="var(--g)" stroke-width="13" stroke-linecap="round" transform="rotate(-90 60 60)" stroke-dasharray="289.03" stroke-dashoffset="85.35"/></svg>
+                  <div class="s16drl">
+                    <div class="s16dpct" id="s16dpct"><span data-count="70">0</span>%</div>
+                    <div class="s16dtx"><b>105</b> of 149 teachers seen in the June R3 round.</div>
+                    <div class="s16dwait"><i></i>44 still waiting, every one of them named on the board.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 04 . a highly detailed report: the governance report as the board renders it -->
+      <div class="s16dslot">
+        <i class="s16dgh" id="s16dg4"></i>
+        <div class="s16dcard" id="s16dc4">
+          <div class="s16dchead">
+            <span class="s16dcn">04</span>
+            <span class="s16dctx">
+              <span class="s16dct">A highly detailed report</span>
+              <span class="s16dcs">Every statement carrying its citations</span>
+            </span>
+          </div>
+          <div class="s16dmini">
+            <div class="s16dzoom">
+              <div class="s16dpage">
+                <div class="s16drepkick">Governance report &middot; In Depth</div>
+                <div class="s16drepbig">The June <em>R3</em> picture.</div>
+                <div class="s16drepmeta">Whole school &middot; R3 June 26 &middot; generated 2026-07-29</div>
+                <div class="s16drepscope">111 lessons &middot; 105 teachers &middot; average progress <b>Good</b> (3.2 of 6)</div>
+                <div class="s16drepsum">Questioning is used to check understanding rather than to move the lesson along.<span class="refmk">12</span></div>
+                <ul class="s16drepbl">
+                  <li>Modelling is explicit and the success criteria stay visible throughout.<span class="refmk">27</span></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

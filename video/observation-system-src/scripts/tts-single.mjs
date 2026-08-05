@@ -108,7 +108,11 @@ for (let i = 0; i < MAX_TRIES; i++) {
   const miss = Math.abs(wpm - TARGET);
   console.log(`  take ${i + 1}: ${t.dur.toFixed(1)}s total, ${speech.toFixed(1)}s speech, ${wpm.toFixed(0)} wpm, finish=${t.finish}` +
     (truncated ? '  REJECTED (truncated)' : ''));
-  if (truncated) { fs.copyFileSync(tmp, path.join(AUDIO, `reject-${i + 1}.wav`)); await new Promise(r => setTimeout(r, 3000)); continue; }
+  // PRESERVE every generated take (paid output is Igor's property, 2026-08-03 lesson):
+  // RUN_TAG namespaces the runs so a second invocation cannot overwrite the first.
+  const tag = process.env.RUN_TAG || 'run';
+  fs.copyFileSync(tmp, path.join(AUDIO, `${tag}-take${i + 1}-${Math.round(wpm)}wpm${truncated ? '-REJECT' : ''}.wav`));
+  if (truncated) { await new Promise(r => setTimeout(r, 3000)); continue; }
   if (!best || miss < best.miss) best = { ...t, wpm, speech, miss };
   if (wpm >= BAND[0] && wpm <= BAND[1]) break;
   await new Promise(r => setTimeout(r, 2000));

@@ -1,0 +1,156 @@
+/* ============ 16 . THE DATA SET =============================================
+   The hand over beat: a navy stage (star field, the cover's idiom) with four of
+   the product's OWN surfaces laid on it as paper sheets. Every rule below is a
+   copy of the rule that draws that surface in its own scene, VALUES VERBATIM,
+   renamed under this section because the originals are id scoped:
+
+     .s16dpaper .s16drail .s16dbanner .s16dfgrid .s16dcrit  <- #sc05 .s5* (form.css)
+     .s16dtabs .s16dtab .s16dpresent .s16dgauge             <- #sc07 .s7tab* / .s7gaugecard
+     .s16dringwrap .s16dpct .s16dtx                         <- #sc10 .ringwrap / .rl
+     .s16dpage .s16drep*                                    <- #sc13 .s13page / .rep-*
+
+   .panel, .stat, .gauge-cap, .osseg .osramp and .refmk are the dashboard's own
+   shared classes and are used unchanged from styles/dashboard.css.
+
+   Freeze law: the scene ENDS with all four sheets landed, so the resting CSS
+   state is the finished 2x2. Only the slot ghosts rest hidden (opacity 0): they
+   are the transient that says "a whole set is coming" before each sheet lands.
+   ========================================================================== */
+
+/* the navy shell is sized for the cover beat; this scene is a normal stack */
+#sc16d .sbody{height:auto;justify-content:flex-start;padding-top:8px;position:relative}
+
+/* ---- the head sits ON the navy, so it takes the board's own DARK ink tokens,
+        the same recipe #sc06 uses. Scoped to .shead ONLY: the four sheets below
+        are the product's LIGHT surfaces and keep the light tokens from :root. -- */
+#sc16d .shead{
+  --ink:#eef1fb; --ink-dim:#b3bad6; --ink-mid:#878fb4; --ink-faint:#5f6790;
+  --y:#FFBA14; --b:#3f7bff; --g:#3CBB6C;
+  color:var(--ink);margin-bottom:18px;position:relative;z-index:2
+}
+#sc16d .shead h2{font-size:44px;margin-top:10px}
+/* the em is animated (it lands on the word "receive"), so it needs a box */
+#sc16d #s16dhem{display:inline-block}
+#sc16d .s16dkrow{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+/* one illustrative tag for the whole scene: the record, the names and the
+   statements on the four sheets are illustrative, the counts are not */
+#sc16d .ill-tag{display:inline-flex;align-items:center;font-size:11px;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;color:#a7b0d0;
+  border:1px dashed rgba(255,255,255,.22);border-radius:20px;padding:3px 10px}
+
+/* ---- the 2x2 of deliverables ---- */
+#sc16d .s16dgrid{display:grid;grid-template-columns:1fr 1fr;gap:18px;position:relative;z-index:2}
+#sc16d .s16dslot{position:relative;min-height:262px}
+/* the slot ghost: "a whole set of data" arrives as four ruled slots, each one
+   spent as its sheet lands. Rests invisible, which IS its final state. */
+#sc16d .s16dgh{position:absolute;inset:0;border:1px dashed rgba(255,255,255,.22);
+  border-radius:18px;opacity:0;pointer-events:none}
+#sc16d .s16dcard{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;gap:12px;
+  background:var(--bg-2);border:1px solid var(--edge);border-radius:18px;padding:14px 16px;
+  box-shadow:0 40px 90px -30px rgba(6,8,22,.55)}
+#sc16d .s16dchead{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:start}
+#sc16d .s16dcn{font-family:var(--display);font-style:italic;font-weight:600;font-size:26px;
+  line-height:1;color:var(--ink-mid)}
+#sc16d .s16dctx{display:flex;flex-direction:column;gap:3px;min-width:0}
+#sc16d .s16dct{font-family:var(--display);font-weight:600;font-size:21px;line-height:1.14;
+  letter-spacing:-.01em;color:var(--ink)}
+#sc16d .s16dcs{font-size:14px;line-height:1.35;color:var(--ink-mid)}
+/* the window onto the surface. The surface itself is drawn at the size the
+   product draws it and the whole block is zoomed, never restyled smaller. */
+#sc16d .s16dmini{flex:1;min-height:176px;overflow:hidden}
+#sc16d .s16dzoom{zoom:0.72}
+
+/* ================= 01 . the locked observation record =====================
+   #sc05 .s5paper and its parts, values verbatim (form.css light theme resolved
+   at its clamp maxima). This sheet shows the LOCKED state only, so the values
+   and the rating chips sit at the product's locked 0.7 with no draft cluster.
+   The banner meta is lifted from 10px to 11.5px: the readability pass
+   dashboard.css runs on the board's own small classes, same reason. */
+#sc16d .s16dpaper{
+  --paper:#143642; --paper-mid:#5f6e77;
+  --ais-red:#EF343A; --ais-yellow:#FFBA14; --ais-blue:#1257FF;
+  --rate-success-deep:#0f5f30;
+  --rule:rgba(20,54,66,0.14); --rule-soft:rgba(20,54,66,0.07);
+  --card-bg:#ffffff; --row-tint:rgba(20,54,66,0.025); --section-tint:rgba(20,54,66,0.055);
+  --form-display:'Lora',Georgia,'Times New Roman',serif;
+  --form-body:'Inter',system-ui,-apple-system,sans-serif;
+  position:relative;background:var(--card-bg);border:1px solid var(--rule);border-radius:9px;
+  padding:14px 16px;overflow:hidden;
+  box-shadow:0 14px 36px -18px rgba(20,54,66,0.22),0 2px 6px -3px rgba(20,54,66,0.08)
+}
+#sc16d .s16drail{position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--ais-red),var(--ais-yellow),var(--ais-blue))}
+#sc16d .s16dbanner{display:flex;align-items:center;gap:11px;height:46px;margin-bottom:12px;
+  background:linear-gradient(135deg,rgba(46,161,90,0.12),rgba(46,161,90,0.04));
+  border:1px solid rgba(46,161,90,0.32);border-left:4px solid #2ea15a;border-radius:7px;padding:0 13px}
+#sc16d .s16dchk{width:21px;height:21px;border-radius:50%;background:var(--rate-success-deep);color:#fff;
+  display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex:none;line-height:1}
+#sc16d .s16dbstack{display:flex;flex-direction:column;gap:2px;min-width:0}
+#sc16d .s16dbtitle{font-family:var(--form-display);font-weight:600;font-size:13.5px;line-height:1.2;
+  color:var(--rate-success-deep);letter-spacing:-.005em}
+#sc16d .s16dbmeta{font-family:var(--form-body);font-size:11.5px;color:var(--paper-mid);
+  font-variant-numeric:tabular-nums;line-height:1.3}
+#sc16d .s16dfgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;border:1px solid var(--rule);
+  border-radius:7px;overflow:hidden;background:rgba(20,54,66,0.075)}
+#sc16d .s16dfcell{padding:8px 11px;background:#f9fafa;display:flex;flex-direction:column;gap:3px;min-height:46px}
+#sc16d .s16dfcell label{font-family:var(--form-body);font-size:9.5px;font-weight:700;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--paper-mid);line-height:1.2}
+#sc16d .s16dfv{font-family:var(--form-display);font-size:13.5px;line-height:1.4;color:var(--paper);opacity:.7}
+#sc16d .s16dcrit{margin-top:12px;border:1px solid var(--rule);border-radius:7px;overflow:hidden;background:var(--card-bg)}
+#sc16d .s16dcrow{display:grid;grid-template-columns:1fr 176px;align-items:center;gap:14px;padding:7px 13px;
+  border-bottom:1px solid var(--rule-soft)}
+#sc16d .s16dcrow:last-child{border-bottom:0}
+#sc16d .s16dcrow.alt{background:var(--row-tint)}
+#sc16d .s16dchead2{background:var(--section-tint);font-family:var(--form-body);font-size:9.5px;font-weight:700;
+  letter-spacing:.22em;text-transform:uppercase;color:var(--paper-mid);border-bottom:1px solid var(--rule)}
+#sc16d .s16dcn2{font-family:var(--form-body);font-size:12px;line-height:1.4;color:var(--paper)}
+#sc16d .s16dcn2 i{font-family:var(--form-display);font-style:italic;font-weight:600;color:var(--paper-mid);margin-right:.3em}
+#sc16d .s16drr{display:flex;gap:5px}
+#sc16d .s16drate{position:relative;flex:1;min-width:21px;height:21px;border-radius:5px;border:1px dashed var(--rule);
+  background:transparent;color:var(--paper-mid);font-family:var(--form-body);font-weight:600;font-size:9.5px;
+  display:inline-flex;align-items:center;justify-content:center}
+#sc16d .s16dsel{position:absolute;inset:-1px;border-radius:6px;background:var(--rate-success-deep);
+  border:1px solid var(--rate-success-deep);color:#fff;font-weight:600;font-size:9.5px;font-style:normal;
+  display:flex;align-items:center;justify-content:center;opacity:.7}
+
+/* ================= 02 . the Snapshot story board ========================== */
+#sc16d .s16dtabs{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+#sc16d .s16dtab{height:38px;border-radius:22px;font-size:14px;font-weight:600;padding:0 18px;display:inline-flex;
+  align-items:center;background:var(--panel-2);border:1px solid var(--edge-soft);
+  box-shadow:0 2px 12px -5px var(--shadow);color:var(--ink-mid)}
+#sc16d .s16dtab.on{color:var(--ink);border-color:var(--edge);font-weight:700}
+#sc16d .s16dpresent{height:38px;border-radius:22px;font-size:14px;font-weight:700;padding:0 20px;display:inline-flex;
+  align-items:center;background:var(--y);border:1px solid var(--y);color:#3a2801;box-shadow:0 10px 26px -14px var(--shadow)}
+#sc16d .s16dtiles{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;align-items:stretch}
+#sc16d .s16dtiles .panel{padding:14px 16px}
+#sc16d .s16dtiles .stat .v{font-size:46px}
+#sc16d .s16dgauge{display:flex;flex-direction:column;justify-content:center}
+#sc16d .s16dgauge .gauge-cap{margin-top:0;text-align:left}
+#sc16d .s16dgauge .gauge-cap .gv{font-size:30px;line-height:1.05}
+#sc16d .osseg{margin-top:12px}
+
+/* ================= 03 . the coverage ring =================================
+   the ring block is shorter than the other three surfaces, so this one sheet
+   fills its window and centres inside it instead of hanging from the top */
+#sc16d #s16dc3 .s16dzoom{height:100%}
+#sc16d .s16dcov{display:flex;align-items:center;height:100%}
+#sc16d .s16dringwrap{display:flex;align-items:center;gap:22px}
+#sc16d .s16dringwrap svg{flex:none}
+#sc16d .s16dpct{font-family:var(--display);font-weight:600;font-size:38px;line-height:1;font-variant-numeric:tabular-nums;color:var(--ink)}
+#sc16d .s16dtx{font-size:15px;color:var(--ink-dim);margin-top:6px;line-height:1.45}
+#sc16d .s16dtx b{color:var(--ink);font-weight:700}
+#sc16d .s16dwait{display:flex;align-items:center;gap:8px;margin-top:9px;font-size:14px;font-weight:600;color:var(--ink-dim)}
+#sc16d .s16dwait i{width:7px;height:7px;border-radius:50%;background:var(--r5);flex:none}
+
+/* ================= 04 . the governance report ============================= */
+#sc16d .s16dpage{background:#fff;border:1px solid var(--edge);border-radius:16px;padding:16px 20px;
+  box-shadow:0 24px 60px -42px var(--shadow);color:var(--ink)}
+#sc16d .s16drepkick{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-mid);margin-bottom:2px}
+#sc16d .s16drepbig{font-family:var(--display);font-weight:600;font-size:30px;line-height:1.02;letter-spacing:-.02em;margin-top:4px}
+#sc16d .s16drepbig em{font-style:italic;color:var(--ink)}
+#sc16d .s16drepmeta{font-size:13px;color:var(--ink-mid);margin-top:8px}
+#sc16d .s16drepscope{margin:10px 0;font-size:15px;color:var(--ink);padding:11px 15px;background:var(--panel);
+  border:1px solid var(--edge-soft);border-radius:14px}
+#sc16d .s16drepsum{font-size:16px;line-height:1.5;color:var(--ink);margin:0 0 10px;font-weight:600}
+#sc16d .s16drepbl{margin:0;padding-left:20px}
+#sc16d .s16drepbl li{font-size:14px;line-height:1.55;color:var(--ink);margin-bottom:5px}

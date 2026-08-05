@@ -62,8 +62,11 @@
 #sc13 .s13regrow{display:flex;align-items:center;gap:14px}
 #sc13 .s13reglab{font-size:14px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:var(--ink)}
 #sc13 .s13regsub{font-size:13px;color:var(--ink-mid)}
+/* --g measures 2.58:1 on this pale green tint, well under AA. --r1 is the same
+   green family at the dashboard's own darkest SEAS value (0f5f30, "Outstanding"),
+   which clears 4.5:1; the tint background stays on --g so the pill keeps its hue. */
 #sc13 .s13chk{margin-left:auto;font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
-  color:var(--g);background:color-mix(in srgb,var(--g) 13%,transparent);border:1px solid color-mix(in srgb,var(--g) 30%,transparent);
+  color:var(--r1);background:color-mix(in srgb,var(--g) 13%,transparent);border:1px solid color-mix(in srgb,var(--g) 30%,transparent);
   border-radius:999px;padding:4px 11px;white-space:nowrap}
 #sc13 .regbar{height:7px;border-radius:99px;background:var(--edge-soft);overflow:hidden;margin:11px 0 0}
 #sc13 .regbar > i{display:block;height:100%;width:100%;background:var(--g);border-radius:99px}

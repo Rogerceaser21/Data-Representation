@@ -1,0 +1,62 @@
+<!-- ============ T1 . STEP ONE (the spine hands over to Observe) ============
+     Opens on the cover's own spine, pixel for pixel: same .jscene classes,
+     same line, same node x (605 / 960 / 1315). The hero node sits in its own
+     .theroute layer at its spine coordinate, so it can leave the map without
+     inheriting the map's recede. -->
+<section class="scene navy clip jscene tstep" id="sct1" data-start="{{START:t1_step1}}" data-duration="{{DUR:t1_step1}}" data-track-index="1">
+  <div class="stars" id="t1stars" data-stars-seed data-layout-allow-overflow></div>
+
+  <div class="jstage" id="t1stage">
+    <!-- the map: line, bed of light, end caps, and the two nodes that stay -->
+    <div class="jroute" id="t1map">
+      <div class="jglow"></div>
+
+      <svg class="jsvg" viewBox="0 0 1920 1080" width="1920" height="1080" fill="none">
+        <line class="jtrack" x1="250" y1="640" x2="1670" y2="640" />
+        <path class="jspine" d="M250 640 H1670" />
+        <circle class="jcap" cx="250" cy="640" r="8" />
+        <circle class="jcap" cx="1670" cy="640" r="8" />
+      </svg>
+
+      <div class="jnode" style="left:960px">
+        <div class="jring">
+          <i class="jpulse"></i>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7.6 4.2h8.2a2 2 0 0 1 2 2v10.4" />
+            <rect x="3.4" y="7.4" width="12.4" height="12.4" rx="2" />
+            <path d="M6.4 11.4h6.4M6.4 14.2h6.4M6.4 17h4" />
+          </svg>
+        </div>
+        <div class="jlab">Evidence</div>
+      </div>
+
+      <div class="jnode" style="left:1315px">
+        <div class="jring">
+          <i class="jpulse"></i>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 18.4 8.6 12.8l3.6 3.6L20.4 8.6" />
+            <path d="M15.4 8.6h5v5" />
+            <path d="M3 21.4h18" />
+          </svg>
+        </div>
+        <div class="jlab">Coaching Plan</div>
+      </div>
+    </div>
+
+    <!-- the hero: node 1, same markup, same coordinate, own layer -->
+    <div class="jroute theroute">
+      <div class="jnode thero" id="t1hero" style="left:605px">
+        <div class="jring">
+          <i class="jpulse"></i>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1.8 12S5.6 5.6 12 5.6 22.2 12 22.2 12 18.4 18.4 12 18.4 1.8 12 1.8 12Z" />
+            <circle cx="12" cy="12" r="3.1" />
+          </svg>
+        </div>
+        <div class="jlab">Observe</div>
+      </div>
+    </div>
+
+    <div class="tchiprow" id="t1chip"><span class="tchip"><i></i>Step 1</span></div>
+  </div>
+</section>

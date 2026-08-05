@@ -1,0 +1,4 @@
+/* T3 . step three transition. Look and geometry: the SPINE SYSTEM block in
+   s01_cover.css. Per scene: the chip's accent dot, third stop of the cover's
+   house stripe gradient, lifted for legibility on the navy stage. */
+#sct3 { --tstep-accent: #6E9BFF }

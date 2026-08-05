@@ -8,8 +8,14 @@
    --------------------------------------------------------------------------- */
 #sc09 .shead{margin-bottom:20px}
 #sc09 .shead h2{font-size:46px}
+/* --ink-faint measures 3.91:1 here, under AA even after the projector-legibility
+   darkening pass; --ink-mid (same blue-grey, one notch deeper) clears 4.5:1. */
 #sc09 .ill-tag{display:inline-flex;align-items:center;margin-top:12px;font-size:12px;font-weight:700;letter-spacing:.1em;
-  text-transform:uppercase;color:var(--ink-faint);border:1px dashed var(--edge);border-radius:20px;padding:5px 13px}
+  text-transform:uppercase;color:var(--ink-mid);border:1px dashed var(--edge);border-radius:20px;padding:5px 13px}
+/* the "June" axis label carries the accent amber (--y); on this light panel that
+   reads 2.78:1. Same hue, darkened to the value dashboard.css already uses for
+   amber accents on light scenes (.refmk/.reflink), clears 4.5:1. */
+#sc09 .slaxis.slaxis-y{fill:#8d6207}
 #sc09 .s9grid{display:grid;grid-template-columns:1.02fr 1fr;gap:18px;align-items:stretch}
 #sc09 #s9slopecard{display:flex;flex-direction:column}
 /* the slope card is stretched to the matrix's height, so the graph centres in it

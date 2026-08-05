@@ -5,7 +5,7 @@
    --------------------------------------------------------------------------- */
 #sc08 .shead{padding-right:470px}
 #sc08 .shead h2{max-width:20ch}
-#sc08 #s8claim .swsum{margin-bottom:0;padding-bottom:14px}
+#sc08 #s8claim .swsum{margin-bottom:0;padding-bottom:10px}
 
 /* the tap that opens the drawer: the #s5ripple recipe at marker scale. Resting
    state is invisible, which IS the ripple's final state. */
@@ -17,7 +17,7 @@
    marker at chip size, wrapped, ending in two blank ruled ghost chips so the list
    visibly runs past the frame. transform:none because GSAP owns the transform on
    these chips (the base rule nudges them up 1px for inline text). */
-#sc08 .s8cites{margin-top:26px}
+#sc08 .s8cites{margin-top:18px}
 #sc08 .s8citecap{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-mid)}
 #sc08 .s8citegrid{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 #sc08 .s8citegrid .refmk{margin-left:0;transform:none}
@@ -27,7 +27,19 @@
 #sc08 .s8citegrid .cghost.cghost2{opacity:.24}
 #sc08 .s8cites .subtle{margin-top:10px}
 
-#sc08 #s8note{margin-top:26px}
+/* the count label under the claim: a label, not a figure (see the section HTML) */
+#sc08 .s8cnt{margin-top:10px;margin-bottom:12px;font-size:13.5px;line-height:1.5;color:var(--ink-mid)}
+
+/* the closing beat's row: the note and the product's own report export control.
+   .s8export is #sc13 .repexport, values verbatim, renamed because that rule is
+   id scoped to the report scene. position/overflow carry the press overlay, the
+   same way #sc05 .s5submit carries #s5press. */
+#sc08 .s8ship{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-top:18px}
+#sc08 .s8export{position:relative;overflow:hidden;font-size:13px;font-weight:700;color:var(--bg);
+  background:var(--ink);border:0;border-radius:24px;padding:9px 17px;display:inline-flex;
+  align-items:center;gap:7px;white-space:nowrap;font-family:var(--body)}
+#sc08 .s8export svg{width:15px;height:15px}
+#sc08 .s8press{position:absolute;inset:0;border-radius:24px;background:rgba(255,255,255,.26);opacity:0}
 #sc08 .ill-tag{display:inline-flex;align-items:center;margin-left:8px;font-size:11px;font-weight:700;letter-spacing:.1em;
   text-transform:uppercase;color:var(--ink-mid);border:1px dashed var(--edge);border-radius:20px;padding:2px 9px;vertical-align:middle}
 

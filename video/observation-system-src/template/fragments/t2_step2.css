@@ -1,0 +1,4 @@
+/* T2 . step two transition. Look and geometry: the SPINE SYSTEM block in
+   s01_cover.css. Per scene: the chip's accent dot, second stop of the cover's
+   house stripe gradient. */
+#sct2 { --tstep-accent: #3CBB6C }

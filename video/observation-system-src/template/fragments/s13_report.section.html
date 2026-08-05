@@ -43,7 +43,10 @@
               <div class="s13drule" id="s13d3"></div>
               <div class="s13ds" id="s13d4">References attached &middot; teachers anonymised by construction</div>
               <div class="s13df" id="s13d5">Google Doc &middot; generated 29 July 2026</div>
-              <div class="s13sheen" id="s13sheen"></div>
+              <!-- the sheen sweeps in from off-card and rests off-card (xPercent
+                   -140/140 in the cues file); #s13doc clips it with overflow:hidden,
+                   so it is never visible outside the card, only in transit across it. -->
+              <div class="s13sheen" id="s13sheen" data-layout-allow-overflow></div>
             </div>
 
           </div>

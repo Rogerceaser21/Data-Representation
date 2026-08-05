@@ -2,8 +2,8 @@
       <section class="scene top clip" id="sc08" data-start="{{START:s08_evidence}}" data-duration="{{DUR:s08_evidence}}" data-track-index="1">
         <div class="sbody">
           <div class="shead">
-            <div class="kick"><i class="stripe"></i> References &middot; every statement traceable</div>
-            <h2>Open the citation, <em>see the observations</em></h2>
+            <div class="kick"><i class="stripe"></i> Citations and references &middot; every statement traceable</div>
+            <h2>Open the citations, <em>see the observations</em></h2>
           </div>
           <div style="display:block">
             <div style="padding-right:500px">
@@ -11,6 +11,11 @@
                 <div class="swhead" style="color:var(--g)"><i class="swdot" style="background:var(--g)"></i><b>What is working</b></div>
                 <div class="swev">Evidence base &middot; R3 June 26 &middot; 111 lessons <span class="ill-tag">Illustrative statement and sources</span></div>
                 <div class="swsum">Questioning that checks for understanding is the strongest consistent strength.<span class="refmk" id="s8mk">12<i class="taprip"></i></span></div>
+                <!-- the marker is a COUNT, not an index: the narration says so, so the
+                     panel says so too. A label, not a figure: the only number on the
+                     panel is the marker the board itself renders, and the panel already
+                     carries its illustrative tag. -->
+                <div class="s8cnt" id="s8cnt">The number is a citation count: how many lesson observations cite this statement.</div>
                 <div class="blist">
                   <div class="brow"><span class="bm"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="var(--g)" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>The follow up question, not the first question, is what moves the group<span class="refmk">13</span></span></div>
                   <div class="brow"><span class="bm"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="var(--g)" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Checks reach beyond the students who volunteer<span class="refmk">14</span></span></div>
@@ -33,12 +38,19 @@
                 </div>
                 <div class="subtle">and more behind every statement on the board</div>
               </div>
-              <div class="pill-note" id="s8note">Nothing on this dashboard is an opinion without evidence</div>
+              <!-- closing beat: "presented to your regulatory body at the click of a
+                   button". The button is the product's own report export control,
+                   markup and chrome lifted from #s13export (.repexport in
+                   s13_report), with the press overlay recipe from #s5press. -->
+              <div class="s8ship">
+                <div class="pill-note" id="s8note">Nothing on this dashboard is an opinion without evidence</div>
+                <button class="s8export" id="s8export" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M4.5 6.5L8 10l3.5-3.5M3 13h10" /></svg>Make Google Doc<i class="s8press" id="s8press"></i></button>
+              </div>
             </div>
             <div class="refpanel" id="s8panel" style="height:666px;border-radius:18px 0 0 18px" data-layout-allow-overflow>
               <div class="refhd">
                 <div>
-                  <div class="rk">Insights &middot; source</div>
+                  <div class="rk">Insights &middot; citations</div>
                   <div class="rt">Questioning that checks for understanding</div>
                 </div>
                 <div class="refx">&times;</div>
