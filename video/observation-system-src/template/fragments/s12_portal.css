@@ -73,3 +73,93 @@
 #sc12 .hnew i{width:7px;height:7px;border-radius:50%;background:#fff;display:block}
 
 #sc12 .s12cap{margin-top:22px}
+
+/* ============================================================================
+   head beat . the real iPad app open + the portal sign in
+   (shared component, template/fragments/_ipad_shared.css)
+     --tpx/--tpy   where the REAL tap lands in ipad-open-portal.mp4, measured on
+                   the "Teacher Portal" icon: 34.2% x / 23.7% y of the video
+                   frame. The screen box is the same 3:4 as the footage, so a
+                   percentage of the frame is the same percentage of this box.
+     poster        frame 0 of that same mp4, so the screen already shows the
+                   springboard for the 0.40s of scene that precedes the clip.
+   The sign in card is SYNTHETIC by construction (invented name, dots for a
+   password) and is styled from the portal's own dark band palette, so the open
+   lands in the same world the scene ends in. It is the ONE surface in this head
+   beat that is still drawn, so it keeps the authored fingertip; the icon tap is
+   the footage's own.
+   Both head-beat layers are HOISTED to composition root (a <video> with
+   data-start may not sit inside a timed element), so they are scoped by their
+   own id, not by #sc12. Layer order in the root stacking context: sign in 52
+   over tablet 50 over every scene, so the sign in crossfades up OVER the
+   footage's dark tail and covers the last sliver of wallpaper outright.
+   ========================================================================== */
+#s12ipd { --tpx: 34.2%; --tpy: 23.7%; }
+/* the poster still (frame 0 of the mp4) is set INLINE on .ipdscreen in the
+   section markup, not here: this fragment is concatenated into
+   styles/scenes.css, so a url() here would resolve against styles/ and a
+   "../" escape is rejected by check (invalid_parent_traversal_in_asset_path). */
+
+#s12login {
+  position: absolute; inset: 0; z-index: 52;
+  opacity: 0;                                  /* resting state: gone */
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Inter', system-ui, sans-serif; color: #eef1fb;
+  background:
+    radial-gradient(1400px 900px at 18% -12%, #16224a, transparent 62%),
+    radial-gradient(1150px 820px at 96% 110%, #101a3c, transparent 58%),
+    #070a1c;
+}
+#s12login .s12lcard {
+  position: relative; z-index: 2; width: 720px; padding: 54px 56px 48px;
+  border-radius: 28px;
+  background: radial-gradient(760px 380px at 16% -20%, #16224a, transparent),
+              radial-gradient(620px 380px at 110% 120%, #101a3c, transparent), #0a0e22;
+  border: 1px solid rgba(255,255,255,.11);
+  box-shadow: 0 50px 110px -34px rgba(6,8,22,.8);
+}
+/* the card must NOT clip: the fingertip flies in from outside it. So the kicker
+   stripe gets its own rounded clip layer instead of overflow:hidden on the card. */
+#s12login .s12lclip { position: absolute; inset: 0; border-radius: 28px; overflow: hidden; z-index: 0 }
+#s12login .s12lbar {
+  position: absolute; top: 0; left: 0; right: 0; height: 5px; display: block;
+  background: linear-gradient(90deg, #EF343A, #FFBA14, #1257FF);
+}
+#s12login .s12lkick {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 13px; font-weight: 800; letter-spacing: .26em; text-transform: uppercase;
+  color: #8fa2d8;
+}
+#s12login .s12lstripe { width: 34px; height: 4px; border-radius: 2px; flex: none;
+  background: linear-gradient(90deg, #FFBA14, #2ea15a, #1257FF); }
+#s12login .s12lill {
+  margin-left: auto; font-size: 11px; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: #7d88ae;
+  border: 1px dashed rgba(255,255,255,.2); border-radius: 20px; padding: 5px 11px;
+}
+#s12login .s12ltitle {
+  font-family: 'Lora', Georgia, serif; font-weight: 600; font-size: 52px;
+  line-height: 1; letter-spacing: -.02em; color: #fff; margin: 14px 0 30px;
+}
+#s12login .s12ltitle em { font-style: italic; color: #FFBA14 }
+#s12login .s12lrow { margin-bottom: 20px }
+#s12login .s12llab {
+  display: block; font-size: 12.5px; font-weight: 700; letter-spacing: .18em;
+  text-transform: uppercase; color: #7d88ae; margin-bottom: 9px;
+}
+#s12login .s12lfield {
+  display: flex; align-items: center; height: 62px; padding: 0 22px;
+  background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.13);
+  border-radius: 14px;
+}
+#s12login .s12lval { font-size: 21px; color: #eef1fb; letter-spacing: .01em }
+#s12login .s12ldots { display: flex; align-items: center; gap: 12px; height: 22px }
+#s12login .s12ldots i { width: 12px; height: 12px; border-radius: 50%; background: #eef1fb; display: block }
+#s12login .s12lbtn {
+  display: block; width: 100%; border: 0; border-radius: 999px;
+  background: #FFBA14; color: #0a0d1f;
+  font-family: 'Inter', system-ui, sans-serif; font-size: 21px; font-weight: 800;
+  letter-spacing: .12em; text-transform: uppercase; padding: 24px 40px;
+  box-shadow: 0 22px 50px -22px rgba(255,186,20,.8);
+}
+#s12login .ipdbtnwrap { --ipx: 50%; --ipy: 50%; margin-top: 12px }

@@ -91,3 +91,23 @@
 #sc07 .s7presbeats{display:flex;gap:20px;margin-top:34px}
 #sc07 .s7presbeats .s7beat{font-size:22px;gap:12px;padding:12px 24px}
 #sc07 .s7presbeats .s7bd{width:14px;height:14px}
+
+/* ============================================================================
+   head beat . the real iPad app open (shared component, _ipad_shared.css)
+   Two per-scene values only:
+     --tpx/--tpy   where the REAL tap lands in ipad-open-dash.mp4, measured on
+                   the "Obs Dashboard" icon: 18.4% x / 23.7% y of the video
+                   frame. The screen box is the same 3:4 as the footage, so a
+                   percentage of the frame is the same percentage of this box.
+     poster        frame 0 of that same mp4, so the screen already shows the
+                   springboard for the 1.00s of scene that precedes the clip.
+   The tablet layer sits at z-index 50, ABOVE the password gate (z-index 40), so
+   the gate is already standing behind it and the dissolve off the footage's dark
+   peak uncovers it. That is the match cut: nothing about the gate's own
+   choreography changes except when its card arrives.
+   ========================================================================== */
+#s7ipd { --tpx: 18.4%; --tpy: 23.7%; }
+/* the poster still (frame 0 of the mp4) is set INLINE on .ipdscreen in the
+   section markup, not here: this fragment is concatenated into
+   styles/scenes.css, so a url() here would resolve against styles/ and a
+   "../" escape is rejected by check (invalid_parent_traversal_in_asset_path). */

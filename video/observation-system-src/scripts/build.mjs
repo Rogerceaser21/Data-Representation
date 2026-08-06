@@ -8,6 +8,15 @@
 //
 // Template contract:
 //   {{START:id}} {{DUR:id}}   scene window, seconds
+//   {{ATF:id:frac[:off]}}     one absolute second on the narration timeline:
+//                             NARR[id].start + frac * NARR[id].dur + off, clamped
+//                             so it can never fall before the scene's own window.
+//                             This is the markup-side twin of atf(id, frac) in the
+//                             timeline, and it exists because a MEDIA clip's
+//                             data-start is an attribute, not a cue: the real iPad
+//                             footage carries its tap 0.80s into the file, so the
+//                             clip starts at {{ATF:s02_form:0.060:-0.80}} and the
+//                             footage's own tap lands exactly on the tap word-share.
 //   {{TOTAL}}                 composition duration
 //   {{TIMINGS}}               the timings object, for at(id, offset) in the timeline
 // Ids come from timings.json, plus the synthetic silent end card "s16_end".
@@ -45,7 +54,17 @@ html = html.replace(/\{\{(START|DUR):([a-z0-9_]+)\}\}/g, (m, kind, id) => {
   if (!win[id]) { missing.push(id); return m; }
   return kind === 'START' ? win[id].start : win[id].dur;
 });
+// {{ATF:id:frac[:off]}} -> one absolute second, for a media clip's data-start.
+const clamps = [];
+html = html.replace(/\{\{ATF:([a-z0-9_]+):(-?[0-9.]+)(?::(-?[0-9.]+))?\}\}/g, (m, id, frac, off) => {
+  if (!win[id]) { missing.push(id); return m; }
+  const raw = win[id].narr + parseFloat(frac) * win[id].narrDur + (off === undefined ? 0 : parseFloat(off));
+  const t = Math.max(raw, win[id].start);
+  if (t - raw > 1e-9) clamps.push(`${id} frac=${frac} off=${off} -> ${raw.toFixed(4)} CLAMPED to scene start ${t}`);
+  return String(+t.toFixed(4));
+});
 if (missing.length) { console.error('unknown scene id in template:', [...new Set(missing)].join(', ')); process.exit(1); }
+for (const c of clamps) console.log('ATF clamp:', c);
 
 // {start, dur} per scene so cues can be absolute (at) or proportional (atf)
 const cues = Object.fromEntries(Object.entries(win).map(([k, v]) => [k, { start: v.narr, dur: v.narrDur }]));

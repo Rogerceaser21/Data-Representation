@@ -1,72 +1,185 @@
 /* ============================================================================
-   13 . REPORTS AND REGENERATION  (#sc13)
-   Left: the governance report as the board renders it (renderSimpleReport:
-   .rep-top / .rep-kick / h2.big / .rep-meta / .rep-scope-all / .rep-method /
-   .rep-h / .rep-sum / .rep-bl with numbered .refmk markers), monochrome navy on
-   white. Right: the branded Google Doc the export builds. Below: the v0.61 round
-   regeneration strip (.regbar). Rule values are the product's own, scoped here
-   because styles/dashboard.css does not carry the report component sheet.
+   13 . REPORTS AND REGENERATION  (#sc13)   v2.5 rebuild
+
+   One product window on the star stage. The masthead is the frame; inside it
+   the live Snapshot page is replaced, on a click, by the In Depth report page,
+   which then auto scrolls inside a masked viewport.
+
+   Rule values are the product's own (dashboard/src/index.html): .mast / .rail /
+   .pill, .tabsrow / .ptab / .vtab, .repbtn / .rcaret / .repmenu / .repmi /
+   .repmi .sub, #reportTabs / .repback / .rtabset / .rtab, and the report sheet
+   .rep-top / .rep-kick / .rep-meta / .rep-scope-all / .rep-method / .rep-h /
+   .exec-lead / .exec-pts / .repexport / .rep-foot. They are scoped here because
+   styles/dashboard.css carries the board components but not these two sheets.
+
+   RESTING STATES (the scene must render correctly at ANY seek position):
+     .s13snapv  rests VISIBLE  -> fromTo(1 -> 0) retires it on the second click
+     .s13menu   rests HIDDEN   -> fromTo owns both its open and its close
+     .s13repv   rests VISIBLE  -> a .from() entrance holds it hidden until then
+     .s13scroll rests AT TOP   -> fromTo owns the one scroll tween
+     .s13cur    rests HIDDEN   -> it leaves with the menu
    ========================================================================== */
 
-#sc13 .shead{margin-bottom:16px}
-#sc13 .shead h2{font-size:40px}
-#sc13 .s13row{display:grid;grid-template-columns:1fr 300px;gap:34px;align-items:start;margin-bottom:12px}
+/* the cursor is absolute in .sbody coordinates, so .sbody has to be the
+   containing block here (it is static everywhere else, and .scene would
+   otherwise capture the cursor at the wrong scale) */
+#sc13 .sbody { position: relative }
 
-/* ---- the report page (paper) ---- */
-#sc13 .s13page{background:#fff;border:1px solid var(--edge);border-radius:16px;padding:16px 22px;
-  box-shadow:0 24px 60px -42px var(--shadow);color:var(--ink)}
-#sc13 .rep-top{display:flex;justify-content:space-between;align-items:flex-start;gap:18px}
-#sc13 .rep-th{flex:1;min-width:0}
-#sc13 .rep-kick{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-mid);margin-bottom:2px}
-#sc13 .s13page .big{font-size:30px;margin-top:4px}
-#sc13 .s13page .big em{color:var(--ink);text-shadow:none;font-style:italic}
-#sc13 .rep-meta{font-size:13px;color:var(--ink-mid);margin-top:8px}
-#sc13 .rep-scope-all{margin:10px 0;font-size:15px;color:var(--ink);padding:13px 17px;background:var(--panel);
-  border:1px solid var(--edge-soft);border-radius:14px}
-#sc13 .rep-method{font-size:13px;line-height:1.6;color:var(--ink-mid);background:var(--panel);border:1px solid var(--edge-soft);
-  border-left:3px solid var(--edge);border-radius:10px;padding:11px 15px;margin-bottom:12px}
-#sc13 .rep-sec{margin-bottom:0}
-#sc13 .rep-h{font-family:var(--display);font-weight:600;font-size:26px;color:var(--ink);margin:0 0 4px;padding-bottom:9px;
-  border-bottom:2px solid var(--edge-soft);letter-spacing:-.01em}
-#sc13 .rep-grp{margin-top:14px}
-#sc13 .rep-sum{font-size:16px;line-height:1.5;color:var(--ink);margin:0 0 12px;font-weight:600}
-#sc13 .rep-bl{margin:0;padding-left:20px}
-#sc13 .rep-bl li{font-size:14px;line-height:1.55;color:var(--ink);margin-bottom:5px}
-#sc13 .repexport{font-size:13px;font-weight:700;color:var(--bg);background:var(--ink);border:0;border-radius:24px;
-  padding:9px 17px;display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
-#sc13 .repexport svg{width:15px;height:15px}
-#sc13 .rtabset{display:inline-flex;gap:4px;background:var(--panel);border:1px solid var(--edge-soft);border-radius:22px;padding:4px;margin-top:12px}
-#sc13 .rtab{font-size:13px;font-weight:600;height:30px;padding:0 16px;display:inline-flex;align-items:center;
-  border:1px solid transparent;border-radius:18px;background:transparent;color:var(--ink-mid)}
-#sc13 .rtab.on{background:var(--panel-2);color:var(--ink);border-color:var(--edge-soft);box-shadow:0 2px 12px -5px var(--shadow)}
+#sc13 .shead { margin-bottom: 14px }
+#sc13 .shead h2 { font-size: 38px }
 
-/* ---- the Google Doc cover (the navy the export ships) ---- */
-#sc13 .s13doc{position:relative;overflow:hidden;width:300px;aspect-ratio:1/1.414;border-radius:16px;padding:30px 28px;
-  background:radial-gradient(900px 420px at 18% -18%,#16224a,transparent),radial-gradient(700px 420px at 108% 118%,#101a3c,transparent),#0a0e22;
-  border:1px solid rgba(255,255,255,.1);box-shadow:0 40px 90px -30px rgba(6,8,22,.65);color:#eef1fb;
-  display:flex;flex-direction:column}
-/* the cover's title block used to start 72px down (a 46px mark + its 26px margin).
-   The mark is gone; the same 72px is kept as head air so the cover reads as a
-   deliberate cover page and the block below it holds its original rhythm. */
-#sc13 .s13dk{font-size:11px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:#8fa2d8;margin-top:72px}
-#sc13 .s13dt{font-family:var(--display);font-weight:600;font-size:30px;line-height:1.12;letter-spacing:-.02em;color:#fff;margin-top:12px}
-#sc13 .s13dt em{font-style:italic}
-#sc13 .s13drule{width:56px;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--y),var(--g),var(--b));margin:18px 0}
-#sc13 .s13ds{font-size:14px;line-height:1.5;color:#aab7e2}
-#sc13 .s13df{margin-top:auto;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8fa2d8}
-#sc13 .s13sheen{position:absolute;top:-20%;bottom:-20%;left:-40%;right:-40%;pointer-events:none;
-  background:linear-gradient(100deg,transparent 42%,rgba(255,255,255,.18) 50%,transparent 58%);transform:translateX(140%)}
+/* ---- the product window ---- */
+#sc13 .s13win {
+  position: relative; width: 1150px; height: 520px; border-radius: 18px; overflow: hidden;
+  background: var(--bg-2); border: 1px solid var(--edge);
+  box-shadow: 0 30px 70px -40px var(--shadow); color: var(--ink);
+}
 
-/* ---- round regeneration strip (v0.61) ---- */
-#sc13 .s13regen{padding:12px 18px}
-#sc13 .s13regrow{display:flex;align-items:center;gap:14px}
-#sc13 .s13reglab{font-size:14px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:var(--ink)}
-#sc13 .s13regsub{font-size:13px;color:var(--ink-mid)}
-/* --g measures 2.58:1 on this pale green tint, well under AA. --r1 is the same
-   green family at the dashboard's own darkest SEAS value (0f5f30, "Outstanding"),
-   which clears 4.5:1; the tint background stays on --g so the pill keeps its hue. */
-#sc13 .s13chk{margin-left:auto;font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
-  color:var(--r1);background:color-mix(in srgb,var(--g) 13%,transparent);border:1px solid color-mix(in srgb,var(--g) 30%,transparent);
-  border-radius:999px;padding:4px 11px;white-space:nowrap}
-#sc13 .regbar{height:7px;border-radius:99px;background:var(--edge-soft);overflow:hidden;margin:11px 0 0}
-#sc13 .regbar > i{display:block;height:100%;width:100%;background:var(--g);border-radius:99px}
+/* ---- masthead (product header.mast + nav.rail) ---- */
+#sc13 .s13mast {
+  display: flex; align-items: center; justify-content: space-between; gap: 20px;
+  height: 50px; padding: 0 20px; border-bottom: 1px solid var(--edge-soft); background: var(--panel-2);
+}
+#sc13 .s13brand { font-family: var(--display); font-weight: 600; font-size: 18px; letter-spacing: -.01em; color: var(--ink) }
+#sc13 .s13rail { display: inline-flex; align-items: center; gap: 6px }
+#sc13 .s13pill {
+  font-size: 12px; font-weight: 600; color: var(--ink-mid); height: 28px; padding: 0 13px;
+  display: inline-flex; align-items: center; border: 1px solid transparent; border-radius: 18px;
+}
+#sc13 .s13pill.on { background: var(--panel-2); color: var(--ink); border-color: var(--edge-soft); box-shadow: 0 2px 12px -5px var(--shadow) }
+
+/* ---- the page area: the two views live stacked here ---- */
+#sc13 .s13page { position: relative; height: 469px; overflow: hidden }
+
+/* ---- beat A . the live Snapshot ---- */
+#sc13 .s13snapv { position: absolute; inset: 0; padding: 16px 22px }
+#sc13 .s13sh { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px }
+#sc13 .s13shl { display: flex; flex-direction: column; gap: 7px; padding-bottom: 3px }
+#sc13 .s13sh .big { font-size: 30px; margin-top: 0 }
+#sc13 .s13sh .subtle { font-size: 12.5px }
+
+#sc13 .s13ctl { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin: 16px 0 0 }
+#sc13 .s13tabgrp { display: inline-flex; align-items: center; gap: 6px; height: 34px }
+#sc13 .s13tab {
+  font-size: 12.5px; font-weight: 600; height: 34px; padding: 0 16px; white-space: nowrap;
+  display: inline-flex; align-items: center; border: 1px solid transparent; border-radius: 20px;
+  background: transparent; color: var(--ink-mid);
+}
+#sc13 .s13tab.on { background: var(--panel-2); color: var(--ink); border-color: var(--edge-soft); box-shadow: 0 2px 12px -5px var(--shadow) }
+
+/* .panel carries backdrop-filter:blur(6px). Inside this window the surface
+   behind a panel is a flat page colour, so the blur buys nothing, and it costs:
+   a backdrop root makes the dropdown that opens OVER a stat card render as a
+   blurred ghost (caught on a render, not on paper). Dropped inside the window
+   only; the board's own panels elsewhere keep it. */
+#sc13 .s13win .panel { backdrop-filter: none }
+
+#sc13 .s13repwrap { position: relative; display: inline-block; z-index: 40 }
+#sc13 .s13repbtn {
+  position: relative; overflow: hidden; font-size: 12.5px; font-weight: 600; height: 34px; padding: 0 16px;
+  display: inline-flex; align-items: center; gap: 7px; border-radius: 20px;
+  background: var(--panel-2); border: 1px solid var(--edge-soft); color: var(--ink);
+  box-shadow: 0 2px 12px -5px var(--shadow);
+}
+#sc13 .s13caret { font-size: 9px; font-style: normal; opacity: .8 }
+/* the press overlay, the #s8press recipe: rests invisible, which is its own
+   final state, so a freeze between the two clicks shows a clean control */
+#sc13 .s13press { position: absolute; inset: 0; background: rgba(20, 35, 63, .16); opacity: 0; pointer-events: none }
+
+#sc13 .s13menu {
+  position: absolute; right: 0; top: calc(100% + 7px); z-index: 30; min-width: 214px;
+  display: flex; flex-direction: column; gap: 2px; padding: 6px;
+  /* solid, not the product's translucent --panel-2: this menu opens OVER a
+     stat card, and a translucent menu reads as a ghost on a render */
+  background: #fff; border: 1px solid var(--edge); border-radius: 14px;
+  /* the card it opens over is itself near white, so the menu needs a real
+     shadow to read as a layer above it, not a lighter patch of the same paper */
+  box-shadow: 0 22px 46px -14px rgba(20, 35, 63, .34), 0 2px 6px rgba(20, 35, 63, .10);
+  transform-origin: 88% 0;
+  opacity: 0;                                        /* resting = closed */
+}
+#sc13 .s13mi {
+  position: relative; overflow: hidden; display: block; font-size: 13px; font-weight: 600; color: var(--ink);
+  border-radius: 10px; padding: 9px 12px; text-align: left;
+}
+#sc13 .s13mi .sub { display: block; font-size: 11px; font-style: normal; font-weight: 500; color: var(--ink-mid); margin-top: 2px }
+#sc13 .s13mi .s13press { border-radius: 10px }
+
+#sc13 .s13stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 18px }
+#sc13 .s13stats .stat { padding: 15px 18px }
+#sc13 .s13stats .stat .v { font-size: 38px }
+#sc13 .s13stats .stat .l { font-size: 12.5px; margin-top: 6px }
+#sc13 .s13stats .stat .s { font-size: 11.5px }
+
+#sc13 .s13dist { margin-top: 14px; padding: 14px 18px 10px }
+#sc13 .s13dist .ey-bold { margin-bottom: 10px }
+#sc13 .s13dist .histo { height: 132px; gap: 14px }
+#sc13 .s13dist .hbar .hc { font-size: 15px; margin-bottom: 5px }
+#sc13 .s13dist .hbar .hw { font-size: 10.5px; margin-top: 7px }
+
+/* ---- beat C + D . the In Depth report page ---- */
+#sc13 .s13repv { position: absolute; inset: 0 }
+#sc13 .s13vp { position: absolute; inset: 0; overflow: hidden }
+#sc13 .s13scroll { position: absolute; left: 0; right: 0; top: 0; padding: 0 22px 26px }
+
+#sc13 .s13rtabs { display: flex; align-items: center; justify-content: space-between; gap: 14px; height: 34px; margin: 14px 0 12px }
+#sc13 .s13repback {
+  font-size: 12.5px; font-weight: 600; height: 34px; padding: 0 16px; display: inline-flex; align-items: center;
+  border-radius: 20px; background: var(--panel); border: 1px solid var(--edge-soft); color: var(--ink-mid);
+}
+
+/* the report paper */
+#sc13 .s13doc {
+  background: #fff; border: 1px solid var(--edge); border-radius: 16px; padding: 18px 24px 20px;
+  box-shadow: 0 24px 60px -42px var(--shadow); color: var(--ink);
+}
+#sc13 .rep-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 18px }
+#sc13 .rep-th { flex: 1; min-width: 0 }
+#sc13 .rep-kick { font-size: 11.5px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-mid); margin-bottom: 2px }
+#sc13 .s13doc .big { font-size: 28px; margin-top: 4px }
+/* product v0.47: the report body is a clean monochrome governance document */
+#sc13 .s13doc .big em { color: var(--ink); text-shadow: none; font-style: italic }
+#sc13 .rep-meta { font-size: 12.5px; color: var(--ink-mid); margin-top: 7px }
+#sc13 .repexport {
+  font-size: 12.5px; font-weight: 700; color: var(--bg); background: var(--ink); border-radius: 24px;
+  padding: 9px 16px; display: inline-flex; align-items: center; gap: 7px; white-space: nowrap;
+}
+#sc13 .repexport svg { width: 14px; height: 14px }
+#sc13 .rep-scope-all {
+  margin: 14px 0; font-size: 14.5px; color: var(--ink); padding: 12px 16px;
+  background: var(--panel); border: 1px solid var(--edge-soft); border-radius: 14px;
+}
+#sc13 .rep-method {
+  font-size: 12.5px; line-height: 1.62; color: var(--ink-mid); background: var(--panel);
+  border: 1px solid var(--edge-soft); border-left: 3px solid var(--edge); border-radius: 10px;
+  padding: 11px 15px; margin-bottom: 20px;
+}
+#sc13 .rep-h {
+  font-family: var(--display); font-weight: 600; font-size: 24px; color: var(--ink); margin: 0 0 4px;
+  padding-bottom: 9px; border-bottom: 2px solid var(--edge-soft); letter-spacing: -.01em;
+}
+#sc13 .rep-exec { margin-bottom: 18px }
+#sc13 .exec-lead {
+  font-size: 15px; line-height: 1.62; color: var(--ink); margin: 16px 0 14px; padding: 13px 17px;
+  background: var(--panel); border: 1px solid var(--edge-soft); border-radius: 12px;
+}
+#sc13 .exec-pts { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 11px }
+#sc13 .exec-pts li { font-size: 14px; line-height: 1.6; color: var(--ink) }
+#sc13 .exec-pts li b { font-weight: 700 }
+#sc13 .rep-foot { font-size: 11.5px; color: var(--ink-mid); border-top: 1px solid var(--edge-soft); padding-top: 13px; margin-top: 6px }
+
+/* ---- the cursor ----
+   left / top are the Report button's centre in .sbody coordinates, corrected
+   for the arrow's hot point (the tip sits at 6.9 / 2.8 inside the 30px box).
+   Every later position is a delta in the cues file, never a second literal. */
+#sc13 .s13cur {
+  position: absolute; z-index: 60; width: 30px; height: 30px; pointer-events: none;
+  left: 1078px; top: 231px;
+  opacity: 0;                                        /* resting = gone */
+  filter: drop-shadow(0 3px 5px rgba(20, 35, 63, .38));
+}
+#sc13 .s13cur svg { width: 30px; height: 30px; fill: #fff; stroke: #14233f; stroke-width: 1.15; stroke-linejoin: round }
+#sc13 .s13click {
+  position: absolute; left: 7px; top: 3px; width: 14px; height: 14px; margin: -7px 0 0 -7px;
+  border-radius: 50%; background: rgba(201, 137, 12, .55); opacity: 0; pointer-events: none;
+}

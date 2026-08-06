@@ -109,9 +109,15 @@
 #sc16d .s16drate{position:relative;flex:1;min-width:21px;height:21px;border-radius:5px;border:1px dashed var(--rule);
   background:transparent;color:var(--paper-mid);font-family:var(--form-body);font-weight:600;font-size:9.5px;
   display:inline-flex;align-items:center;justify-content:center}
-#sc16d .s16dsel{position:absolute;inset:-1px;border-radius:6px;background:var(--rate-success-deep);
-  border:1px solid var(--rate-success-deep);color:#fff;font-weight:600;font-size:9.5px;font-style:normal;
-  display:flex;align-items:center;justify-content:center;opacity:.7}
+/* the selected rating pill. The translucency lives in the FILL, never in the
+   element's own opacity: element opacity fades the white numeral with the green
+   behind it and drops the pair to 3.78:1. Same fix the s05_lock pill already
+   carries (.s5sel uses rgba(15,95,48,.88)), so the two scenes now agree. */
+#sc16d .s16dsel{position:absolute;inset:-1px;border-radius:6px;
+  background:color-mix(in srgb,var(--rate-success-deep) 88%,transparent);
+  border:1px solid color-mix(in srgb,var(--rate-success-deep) 88%,transparent);
+  color:#fff;font-weight:600;font-size:9.5px;font-style:normal;
+  display:flex;align-items:center;justify-content:center}
 
 /* ================= 02 . the Snapshot story board ========================== */
 #sc16d .s16dtabs{display:flex;align-items:center;gap:10px;margin-bottom:12px}

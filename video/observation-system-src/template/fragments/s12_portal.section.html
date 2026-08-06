@@ -1,4 +1,64 @@
 <!-- ============ 12 . THE TEACHER PORTAL ============ -->
+<!-- HEAD-BEAT LAYERS . hoisted OUT of the <section>.
+     Why: HyperFrames owns media playback, and a <video> carrying data-start
+     inside an element that also carries data-start is rejected (check rule
+     video_nested_in_timed_element: nested media is FROZEN in renders). So the
+     layer is a NON-timed wrapper at composition root, the <video> inside it is
+     the only timed thing, and the layer's visibility is pure GSAP opacity, which
+     rests at 0 in css. Root-level z-index puts it over every scene; nothing else
+     about the beat changes. -->
+      <!-- HEAD BEAT . the real iPad app open. REAL iOS Simulator footage of a real
+           springboard where a real tap opens "Teacher Portal"; the genuine iOS
+           app-open zoom is the transition. Bezel geometry and the resting-state
+           law live in template/fragments/_ipad_shared.css; the touch-indicator
+           coordinate and the poster still live in this scene's css.
+           The clip's data-start is (tap word-share 0.036 minus 0.80s), because
+           the footage carries its own tap 0.80s into the file, so the real tap
+           fires exactly on the cue. Window 1.90s: cut before the file's tail,
+           where the opened app paints its own light-gray ground. -->
+      <div class="ipdlayer" id="s12ipd" data-layout-allow-overlap data-layout-allow-overflow>
+        <div class="stars ipdsky" data-stars-seed></div>
+        <div class="ipdev">
+          <span class="ipdcam"></span>
+          <div class="ipdscreen" style="background-image:url('assets/ipad/home-portal.jpg')">
+            <video class="clip ipdvid" id="s12vid" src="assets/ipad/ipad-open-portal.mp4"
+                   data-start="{{ATF:s12_portal:0.036:-0.80}}" data-duration="1.90"
+                   data-track-index="2" muted playsinline></video>
+            <span class="ipdtouch" id="s12touch"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- HEAD BEAT part 2 . the portal sign in, opened by the tap above.
+           SYNTHETIC by construction: the name is invented ("A. Teacher"),
+           the dots are dots, nothing on this card is a real credential or a
+           real record. It rests at opacity 0 like the tablet layer, so a
+           frame with no timeline shows the portal itself. -->
+      <div class="s12login" id="s12login" data-layout-allow-overlap data-layout-allow-overflow>
+        <div class="stars ipdsky" data-stars-seed></div>
+        <div class="s12lcard" id="s12lcard">
+          <!-- the kicker stripe is clipped by its OWN rounded layer, not by
+               overflow:hidden on the card, so the fingertip below can fly in
+               from outside the card without being cut in half -->
+          <span class="s12lclip"><i class="s12lbar"></i></span>
+          <div class="s12lkick"><span class="s12lstripe"></span>Teacher portal<span class="s12lill">Illustrative</span></div>
+          <h2 class="s12ltitle">Sign <em>in</em></h2>
+          <div class="s12lrow">
+            <span class="s12llab">Name</span>
+            <div class="s12lfield"><span class="s12lval" id="s12lname">A. Teacher</span></div>
+          </div>
+          <div class="s12lrow">
+            <span class="s12llab">Password</span>
+            <div class="s12lfield"><span class="s12ldots" id="s12ldots"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
+          </div>
+          <div class="ipdbtnwrap">
+            <button class="s12lbtn" id="s12lbtn" type="button">Sign in</button>
+            <span class="ipdtip" id="s12ltip"></span>
+            <span class="ipdrip" id="s12lrip"><i></i><i></i></span>
+          </div>
+        </div>
+      </div>
+
       <section class="scene clip" id="sc12" data-start="{{START:s12_portal}}" data-duration="{{DUR:s12_portal}}" data-track-index="1">
         <div class="sbody">
           <div class="s12stage">

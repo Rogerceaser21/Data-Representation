@@ -1,4 +1,25 @@
-<!-- ============ 13 . REPORTS AND REGENERATION ============ -->
+<!-- ============ 13 . REPORTS AND REGENERATION ============
+     v2.5 rebuild: the report is no longer a still mock, it is CLICKED OPEN.
+     Beat A  the live Snapshot page (masthead, nav rail, Snapshot head, control row)
+     Beat B  the cursor clicks Report and the Simple / In Depth menu opens
+     Beat C  the cursor clicks In Depth and the report page takes the window
+     Beat D  the report page auto scrolls, calmly, to its last bullets
+
+     Markup and class grammar are the product's own (dashboard/src/index.html:
+     header.mast / nav.rail / .tabsrow / .repbtn / .repmenu / .repmi / #reportTabs
+     with .repback + .rtabset, and renderSimpleReport's .rep-top / .rep-kick /
+     h2.big / .rep-meta / .rep-scope-all / .rep-method / .rep-h / .exec-lead /
+     .exec-pts / .repexport / .rep-foot). Scoped in s13_report.css because
+     styles/dashboard.css does not carry the report or masthead component sheets.
+
+     NOT the product's: the logo mark and the school name are removed from the
+     masthead brand and from .rep-meta (the live board carries them). Product
+     chrome stays. Every figure on this page comes from assets/data/video-data.json:
+     111 lessons, 105 teachers, avgBest 3.2222 -> "Good (3.2 of 6)", and the
+     distribution behind the summary lead (Good or better 55 of 102, Acceptable
+     36 of 102, below that 11 of 102). Every report sentence and every citation
+     count is a statement already on screen in the shipped v2.4 build
+     (s08_evidence, s13_report), so nothing here is a new claim or a new figure. -->
       <section class="scene top clip" id="sc13" data-start="{{START:s13_report}}" data-duration="{{DUR:s13_report}}" data-track-index="1">
         <div class="sbody">
           <div class="shead" id="s13head">
@@ -6,59 +27,146 @@
             <h2>One round, <em>one document</em></h2>
           </div>
 
-          <div class="s13row">
+          <!-- the product window. A light surface on the star stage, the same
+               way s07 stages the board: the paper is the product, the frame ours. -->
+          <div class="s13win" id="s13win">
 
-            <!-- the governance report, as the board renders it -->
+            <!-- masthead. Product markup minus the logo mark and the school name. -->
+            <div class="s13mast" id="s13mast">
+              <div class="s13brand">Observation Dashboard</div>
+              <div class="s13rail">
+                <span class="s13pill on">Snapshot</span>
+                <span class="s13pill">Coverage</span>
+                <span class="s13pill">Observations</span>
+                <span class="s13pill">Teacher portal</span>
+                <span class="s13pill">Settings</span>
+              </div>
+            </div>
+
             <div class="s13page" id="s13page">
-              <div class="rep-top" id="s13top">
-                <div class="rep-th">
-                  <div class="rep-kick">Governance report &middot; Simple</div>
+
+              <!-- ---- beat A + B . the live Snapshot ---- -->
+              <div class="s13snapv" id="s13snapv">
+                <div class="s13sh" id="s13sh">
+                  <div class="s13shl">
+                    <span class="kick"><i class="stripe"></i> Snapshot</span>
+                    <span class="subtle">as of 29 July 2026</span>
+                  </div>
                   <h2 class="big">The June <em>R3</em> picture.</h2>
-                  <div class="rep-meta">Whole school &middot; R3 June 26 &middot; generated 2026-07-29</div>
                 </div>
-                <button class="repexport" id="s13export" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M4.5 6.5L8 10l3.5-3.5M3 13h10" /></svg>Make Google Doc</button>
-              </div>
-              <div class="rtabset" id="s13tabs">
-                <span class="rtab on" id="s13tabA">Simple</span>
-                <span class="rtab" id="s13tabB">In Depth</span>
-              </div>
-              <div class="rep-scope-all" id="s13scope">111 lessons &middot; 105 teachers &middot; average progress <b>Good</b> (3.2 of 6)</div>
-              <div class="rep-method" id="s13method"><b>How these are counted.</b> Average progress is the best rating recorded for each teacher, then averaged across teachers. Each numbered marker opens the supporting evidence; identifying teacher details are withheld.</div>
-              <section class="rep-sec" id="s13sec">
-                <h3 class="rep-h">Secondary</h3>
-                <div class="rep-grp">
-                  <p class="rep-sum">Questioning is used to check understanding rather than to move the lesson along.<span class="refmk">12</span></p>
-                  <ul class="rep-bl" id="s13bl">
-                    <li>Modelling is explicit and the success criteria stay visible throughout.<span class="refmk">27</span></li>
-                    <li>Where progress stalls, the pace moves on before every group has answered.<span class="refmk">41</span></li>
-                  </ul>
+
+                <div class="s13ctl" id="s13ctl">
+                  <div class="s13tabgrp">
+                    <span class="s13tab on">Primary &amp; Kindy</span>
+                    <span class="s13tab">Secondary</span>
+                  </div>
+                  <div class="s13tabgrp">
+                    <span class="s13tab on">Story</span>
+                    <span class="s13tab">Detail</span>
+                  </div>
+                  <div class="s13repwrap">
+                    <span class="s13repbtn" id="s13repbtn">Report <i class="s13caret">&#9662;</i><i class="s13press" id="s13press1"></i></span>
+                    <!-- the dropdown: exactly the product's two items, two lines each -->
+                    <div class="s13menu" id="s13menu" data-layout-allow-overlap>
+                      <span class="s13mi" id="s13miA">Simple<i class="sub">Concise governance summary</i></span>
+                      <span class="s13mi" id="s13miB">In Depth<i class="sub">Full evidence report</i><i class="s13press" id="s13press2"></i></span>
+                    </div>
+                  </div>
                 </div>
-              </section>
-            </div>
 
-            <!-- the Google Doc the export builds -->
-            <div class="s13doc" id="s13doc">
-              <div class="s13dk" id="s13d1">Whole school</div>
-              <div class="s13dt" id="s13d2">R3 June 26<br /><em>Governance Report</em></div>
-              <div class="s13drule" id="s13d3"></div>
-              <div class="s13ds" id="s13d4">References attached &middot; teachers anonymised by construction</div>
-              <div class="s13df" id="s13d5">Google Doc &middot; generated 29 July 2026</div>
-              <!-- the sheen sweeps in from off-card and rests off-card (xPercent
-                   -140/140 in the cues file); #s13doc clips it with overflow:hidden,
-                   so it is never visible outside the card, only in transit across it. -->
-              <div class="s13sheen" id="s13sheen" data-layout-allow-overflow></div>
-            </div>
+                <div class="s13stats" id="s13stats">
+                  <div class="panel stat"><div class="v">111</div><div class="l">Lessons observed</div><div class="s">June R3 &middot; co-observations merged</div></div>
+                  <div class="panel stat"><div class="v">105</div><div class="l">Teachers seen</div><div class="s">at least once in June</div></div>
+                  <div class="panel stat"><div class="v">3.2</div><div class="l">Average progress &middot; of 6</div><div class="s">best evidence per teacher</div></div>
+                </div>
 
+                <!-- the board's own six point distribution, so the live page is
+                     the live page and not an empty frame. Counts and bar heights
+                     are video-data.json snap_all.dist (8 / 21 / 26 / 36 / 7 / 4,
+                     scaled against the 36 of the tallest band), the same figures
+                     s07 renders as the dot sort. -->
+                <div class="panel s13dist" id="s13dist">
+                  <div class="ey-bold">Where the judgements sit &middot; the six point scale</div>
+                  <div class="histo">
+                    <div class="hbar"><div class="hc">8</div><div class="hb" style="height:24px;background:var(--r1)"></div><div class="hw">Outstanding</div></div>
+                    <div class="hbar"><div class="hc">21</div><div class="hb" style="height:64px;background:var(--r2)"></div><div class="hw">Very Good</div></div>
+                    <div class="hbar"><div class="hc">26</div><div class="hb" style="height:79px;background:var(--r3)"></div><div class="hw">Good</div></div>
+                    <div class="hbar"><div class="hc">36</div><div class="hb" style="height:110px;background:var(--r4)"></div><div class="hw">Acceptable</div></div>
+                    <div class="hbar"><div class="hc">7</div><div class="hb" style="height:21px;background:var(--r5)"></div><div class="hw">Weak</div></div>
+                    <div class="hbar"><div class="hc">4</div><div class="hb" style="height:12px;background:var(--r6)"></div><div class="hw">Very Weak</div></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ---- beat C + D . the In Depth report page ---- -->
+              <div class="s13repv" id="s13repv" data-layout-allow-overlap>
+                <div class="s13vp" id="s13vp">
+                  <!-- allow-overflow: the report page is deliberately TALLER than
+                       #s13vp (664 vs 469 local px). #s13vp has overflow:hidden and
+                       does the clipping; the one translateY tween scrolls the
+                       surplus into frame. The linter measures unclipped rects, so
+                       the page foot reads as off canvas while it is masked.
+                       allow-occlusion is the same story at the other end: the
+                       report's own control row (.s13rtabs) scrolls up PAST the top
+                       of #s13vp and is clipped there, but its unclipped rect lands
+                       behind the fixed #s13mast bar and reads as buried text.
+                       Verified by render at the scrolled position: nothing of that
+                       row is painted over the masthead. -->
+                  <div class="s13scroll" id="s13scroll" data-layout-allow-overflow data-layout-allow-occlusion>
+
+                    <!-- the report page control row (product v0.47: opening a
+                         report replaces the dropdown with Back + Simple / In Depth).
+                         It sits INSIDE the scroller, the way it does on the board;
+                         only the masthead is held fixed, as the window frame. -->
+                    <div class="s13rtabs">
+                      <span class="s13repback">&#8592; Back</span>
+                      <div class="s13tabgrp">
+                        <span class="s13tab">Simple</span>
+                        <span class="s13tab on">In Depth</span>
+                      </div>
+                    </div>
+
+                    <div class="s13doc" id="s13doc">
+                      <div class="rep-top">
+                        <div class="rep-th">
+                          <div class="rep-kick">Governance report &middot; In Depth</div>
+                          <h2 class="big">The June <em>R3</em> picture.</h2>
+                          <div class="rep-meta">R3 June 26 &middot; generated 29 July 2026</div>
+                        </div>
+                        <span class="repexport" id="s13export"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M4.5 6.5L8 10l3.5-3.5M3 13h10" /></svg>Make Google Doc</span>
+                      </div>
+
+                      <div class="rep-scope-all" id="s13scope">111 lessons &middot; 105 teachers &middot; average progress <b>Good</b> (3.2 of 6)</div>
+
+                      <div class="rep-method" id="s13method"><b>How these are counted.</b> Average progress is the best rating recorded for each teacher, then averaged across teachers. <span id="s13mref">Each numbered marker opens the supporting evidence;</span> <span id="s13mano">identifying teacher details are withheld.</span></div>
+
+                      <section class="rep-sec rep-exec" id="s13exec">
+                        <h3 class="rep-h">In summary</h3>
+                        <p class="exec-lead" id="s13lead">Average progress across the round is Good. About half of the lessons observed are Good or better, about a third are Acceptable, and about one in ten sit below that.</p>
+                        <ul class="exec-pts" id="s13pts">
+                          <li><b>Most consistent strength.</b> Questioning is used to check understanding rather than to move the lesson along.<span class="refmk">12</span></li>
+                          <li><b>What that looks like.</b> The follow up question, not the first question, is what moves the group.<span class="refmk">13</span></li>
+                          <li><b>Where it holds.</b> Modelling is explicit and the success criteria stay visible throughout.<span class="refmk">27</span></li>
+                          <li><b>Main focus.</b> Where progress stalls, the pace moves on before every group has answered.<span class="refmk">41</span></li>
+                        </ul>
+                      </section>
+
+                      <div class="rep-foot">References cite the locked R3 record for each lesson. Identifying teacher details are withheld.</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
           </div>
 
-          <!-- round regeneration: one button rewrites the analysis for a new round -->
-          <div class="panel s13regen" id="s13regen">
-            <div class="s13regrow">
-              <span class="s13reglab">Regenerating round narrative</span>
-              <span class="s13regsub">Snapshot, report references, recommendations and every coaching note</span>
-              <span class="s13chk" id="s13chk">Checked &middot; Head of Teaching and Learning</span>
-            </div>
-            <div class="regbar"><i id="s13bar"></i></div>
+          <!-- the cursor. Absolute inside .sbody, resting invisible (it leaves
+               with the menu), so a freeze before its entrance is clean. left /
+               top below are the Report button's centre, measured off the built
+               page; the cues move it in x / y deltas from there. -->
+          <div class="s13cur" id="s13cur" data-layout-allow-overlap>
+            <svg viewBox="0 0 24 24"><path d="M5.5 2.2 5.5 19.4 9.9 15.4 12.6 21.3 15.3 20.1 12.7 14.4 18.3 14.2 Z" /></svg>
+            <i class="s13click" id="s13click"></i>
           </div>
 
         </div>

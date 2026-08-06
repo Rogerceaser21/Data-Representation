@@ -1,0 +1,82 @@
+/* ===========================================================================
+   T4 . THE MAGIC TRANSITION (#sct4)
+
+   A NON spine scene. It borrows the navy stage and the seeded star field and
+   nothing else, so it never depends on the SPINE SYSTEM geometry in
+   s01_cover.css. Coordinates below are frame coordinates (1920 x 1080), the
+   same absolute space the spine scenes use, because the stage sits directly on
+   the section and not inside .sbody (no zoom to reason about).
+
+   Gold is the navy stage's own #F0B02A: the light theme --y (#C9890C) goes
+   muddy on #0a1430, which is why .jscene declares the same override.
+
+   RESTING STATES, one rule each (the scene must render correctly at ANY seek):
+     .mwell   rests OPEN      -> a .from() entrance owns it
+     .mcore   rests FED       -> a .from() growth owns it, the burst overrides
+     .mchip   rests ABSORBED  -> opacity 0 on the core, fromTo owns the flight
+     .mring   rests SPENT     -> opacity 0, fromTo owns each ring
+     .mwash   rests DARK      -> opacity 0, the burst drives it to full and holds
+   Nothing here rests mid animation, and nothing reads a clock.
+   =========================================================================== */
+
+#sct4 { --gold: #F0B02A; --gold-soft: rgba(240, 176, 42, .55) }
+
+#sct4 .mstage { position: absolute; inset: 0; z-index: 2 }
+
+/* ---- the well: the field the citations fall into ---- */
+#sct4 .mwell {
+  position: absolute; left: 960px; top: 540px; width: 1560px; height: 1560px;
+  margin: -780px 0 0 -780px; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(closest-side,
+    rgba(240, 176, 42, .20), rgba(240, 176, 42, .085) 40%, rgba(240, 176, 42, .02) 62%, transparent 76%);
+}
+
+/* ---- the citations, at .refmk grammar in the navy stage's dark tokens ----
+   Fixed box (74 x 34, centred on the core by margin) so GSAP owns x / y / scale
+   outright and no translate(-50%) has to be reconciled with the transform. */
+#sct4 .mchips { position: absolute; inset: 0 }
+#sct4 .mchip {
+  position: absolute; left: 960px; top: 540px; width: 74px; height: 34px; margin: -17px 0 0 -37px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--body); font-style: normal; font-size: 17px; font-weight: 700; line-height: 1;
+  color: var(--gold); background: rgba(18, 23, 48, .82);
+  border: 1px solid rgba(255, 255, 255, .14); border-radius: 10px;
+  box-shadow: 0 0 24px -8px rgba(240, 176, 42, .45);
+  opacity: 0;                                       /* resting = absorbed */
+  pointer-events: none;
+}
+
+/* ---- the core ----
+   The falloff is ALL in the gradient and there is no box-shadow: a shadow is
+   painted outside the border box, so a shadow brighter than the gradient's own
+   edge draws a dark ring at the box boundary (caught on a render, not on paper). */
+#sct4 .mcore {
+  position: absolute; left: 960px; top: 540px; width: 420px; height: 420px; margin: -210px 0 0 -210px;
+  border-radius: 50%; pointer-events: none;
+  background: radial-gradient(closest-side,
+    #FFF9EC 0%, #FFE9B4 15%, #F7C851 29%, rgba(240, 176, 42, .48) 45%,
+    rgba(240, 176, 42, .18) 63%, rgba(240, 176, 42, .05) 80%, rgba(240, 176, 42, 0) 100%);
+}
+#sct4 .mcorein {
+  position: absolute; inset: 41%; border-radius: 50%;
+  background: radial-gradient(closest-side, #fff, rgba(255, 255, 255, .6) 42%, rgba(255, 255, 255, 0) 80%);
+}
+
+/* ---- the two rings: pulse on "magic", burst on "AI." ---- */
+#sct4 .mring {
+  position: absolute; left: 960px; top: 540px; width: 300px; height: 300px; margin: -150px 0 0 -150px;
+  border-radius: 50%; border: 2px solid var(--gold-soft);
+  opacity: 0;                                       /* resting = spent */
+  pointer-events: none;
+}
+#sct4 .mburst {
+  border-width: 3px; border-color: rgba(255, 240, 205, .92);
+  box-shadow: 0 0 46px 8px rgba(240, 176, 42, .38), inset 0 0 30px 4px rgba(240, 176, 42, .22);
+}
+
+/* ---- the wash the next scene cuts from ---- */
+#sct4 .mwash {
+  position: absolute; inset: 0; z-index: 6; pointer-events: none;
+  opacity: 0;                                       /* resting = dark */
+  background: radial-gradient(1250px 950px at 50% 50%, #FFFBF2, #FFEDC6 38%, #F7CC69 74%, #EFB63A 100%);
+}

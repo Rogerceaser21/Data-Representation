@@ -2,7 +2,7 @@
   "voice": "Charon",
   "model": "gemini-2.5-flash-preview-tts",
   "note": "Speak in a warm, confident British accent at a natural pace, about 160 words per minute. A school leader showing their system to a visiting delegation; proud but factual, never salesy, no upward lilt at the end of sentences. Hold exactly the same unhurried pace from the first sentence to the very last; never speed up as the script goes on. Say only the text after the colon:\n\n",
-  "approved": "G1 approved by Igor 2026-08-05 (chat: 'go'). Scene order and text are final for the v2.4 build.",
+  "approved": "v2.5 G1 approved by Igor 2026-08-06 in chat: v2.4 script byte-identical + new t4_magic line (variant B). No other wording changes.",
   "scenes": [
     {
       "id": "s01_cover",
@@ -58,6 +58,11 @@
       "id": "s09_movement",
       "title": "Teacher progression",
       "text": "Rounds can be compared to show teacher progression. Every teacher seen in both rounds is displayed from one judgement point to the next, from where they were to where they are, green when they moved toward Outstanding. A transition matrix counts the improvements, the holds and the declines. This is the question governors actually ask: is teaching getting better? If not, why? And how can we improve?"
+    },
+    {
+      "id": "t4_magic",
+      "title": "Magic transition",
+      "text": "This is where the real magic happens. With the help of AI."
     },
     {
       "id": "s08_evidence",

@@ -31,7 +31,7 @@ const KEEP_GAP = 0.45;    // breath left between scenes (0.62 through v1.2)
 // v2.2 music-only holds: at act turns the gap widens so the bed can lift (every
 // measured reference film breathes 2-5s at section turns; ours never did, which
 // is half of why two bed rounds read as inaudible). Keys = scene the hold FOLLOWS.
-const HOLDS = { s01_cover: 2.0, s06_pipeline: 3.0, s10_coverage: 2.5 };
+const HOLDS = { s01_cover: 2.0, s06_pipeline: 3.0, s10_coverage: 2.5, s14_trust: 2.5 };
 const LEAD = 2.5;         // cold open: music owns the head (2026-07-30, measured pro practice 1.2-3.0s)
 const TAIL = 1.6;
 
@@ -128,11 +128,6 @@ const openingSegs = (segs.filter(s => s.text.split(/\s+/).length >= 20).slice(0,
 const openingWpm = openingSegs.map(s => s.text.split(/\s+/).length / (s.dur / 60));
 const PACE_CAP = Math.min(195, Math.max(150, Math.round(Math.max(...openingWpm))));
 console.log(`pace-cap derived from opening scenes: ${PACE_CAP} gross wpm (${openingSegs.map((s, i) => `${s.id} ${openingWpm[i].toFixed(0)}`).join(', ')})`);
-// RAMP LAW (2026-08-04): print the whole curve, every scene, before any correction.
-// An average hides the ramp; only the curve shows it.
-const preCurve = segs.map(s => ({ id: s.id, w: s.text.split(/\s+/).length, wpm: s.text.split(/\s+/).length / (s.dur / 60) }));
-console.log('\nPRE-BRAKE gross wpm curve:');
-preCurve.forEach(c => console.log(`  ${c.id.padEnd(16)} ${c.wpm.toFixed(0).padStart(4)} wpm  (${c.w} words)`));
 segs.forEach((s) => {
   const w = s.text.split(/\s+/).length;
   const sceneWpm = w / (s.dur / 60);
@@ -144,12 +139,6 @@ segs.forEach((s) => {
     s.file = out; s.dur = dur(out);
     console.log(`  pace-cap ${s.id}: ${sceneWpm.toFixed(0)} wpm -> atempo ${f.toFixed(3)}`);
   }
-});
-
-console.log('\nPOST-BRAKE gross wpm curve (cap ' + PACE_CAP + ', band ' + PACE_CAP + '-' + Math.round(PACE_CAP * 1.12) + '):');
-segs.forEach(s => {
-  const w = s.text.split(/\s+/).length, v = w / (s.dur / 60);
-  console.log(`  ${s.id.padEnd(16)} ${v.toFixed(0).padStart(4)} wpm${v > PACE_CAP * 1.12 ? '  OVER BAND' : ''}`);
 });
 
 const gapFiles = {};

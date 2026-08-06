@@ -1,6 +1,35 @@
 <!-- ============ 7 . THE DASHBOARD STORY ============ -->
-      <section class="scene top clip" id="sc07" data-start="{{START:s07_story}}" data-duration="{{DUR:s07_story}}" data-track-index="1">
+<!-- HEAD-BEAT LAYERS . hoisted OUT of the <section>.
+     Why: HyperFrames owns media playback, and a <video> carrying data-start
+     inside an element that also carries data-start is rejected (check rule
+     video_nested_in_timed_element: nested media is FROZEN in renders). So the
+     layer is a NON-timed wrapper at composition root, the <video> inside it is
+     the only timed thing, and the layer's visibility is pure GSAP opacity, which
+     rests at 0 in css. Root-level z-index puts it over every scene; nothing else
+     about the beat changes. -->
+      <!-- HEAD BEAT . the real iPad app open. REAL iOS Simulator footage of a real
+           springboard where a real tap opens "Obs Dashboard"; the genuine iOS
+           app-open zoom is the transition. Bezel geometry and the resting-state
+           law live in template/fragments/_ipad_shared.css; the touch-indicator
+           coordinate and the poster still live in this scene's css.
+           The clip's data-start is (tap word-share 0.064 minus 0.80s), because
+           the footage carries its own tap 0.80s into the file, so the real tap
+           fires exactly on the cue. Window 1.95s: cut before the file's tail,
+           where the opened app paints its own light-gray ground. -->
+      <div class="ipdlayer" id="s7ipd" data-layout-allow-overlap data-layout-allow-overflow>
+        <div class="stars ipdsky" data-stars-seed></div>
+        <div class="ipdev">
+          <span class="ipdcam"></span>
+          <div class="ipdscreen" style="background-image:url('assets/ipad/home-dash.jpg')">
+            <video class="clip ipdvid" id="s7vid" src="assets/ipad/ipad-open-dash.mp4"
+                   data-start="{{ATF:s07_story:0.064:-0.80}}" data-duration="1.95"
+                   data-track-index="2" muted playsinline></video>
+            <span class="ipdtouch" id="s7touch"></span>
+          </div>
+        </div>
+      </div>
 
+      <section class="scene top clip" id="sc07" data-start="{{START:s07_story}}" data-duration="{{DUR:s07_story}}" data-track-index="1">
         <!-- beat 1 . the gate, rebuilt from dashboard/password-template.html.
              The gate is an opaque full-frame layer (inset:0 over a solid #0a0d1f)
              and the board is deliberately rendered BEHIND it, so the lifting gate

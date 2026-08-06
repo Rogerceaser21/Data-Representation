@@ -282,3 +282,21 @@
   color: var(--paper-mid);
 }
 #sc02 .fnote .fdot { width: 9px; height: 9px; border-radius: 50%; background: var(--rate-success); flex: none; }
+
+/* ============================================================================
+   head beat . the real iPad app open (shared component, _ipad_shared.css)
+   Two per-scene values only:
+     --tpx/--tpy   where the REAL tap lands in ipad-open-form.mp4, measured on
+                   the "Observation Form" icon: 81.6% x / 10.1% y of the video
+                   frame. The screen box is the same 3:4 as the footage, so a
+                   percentage of the frame is the same percentage of this box.
+     poster        frame 0 of that same mp4, so the screen already shows the
+                   springboard for the 1.00s of scene that precedes the clip.
+   The layer is a direct child of <section>, OUTSIDE .sbody, so it never inherits
+   the form act's zoom:1.03 / width:1516px column.
+   ========================================================================== */
+#s2ipd { --tpx: 81.6%; --tpy: 10.1%; }
+/* the poster still (frame 0 of the mp4) is set INLINE on .ipdscreen in the
+   section markup, not here: this fragment is concatenated into
+   styles/scenes.css, so a url() here would resolve against styles/ and a
+   "../" escape is rejected by check (invalid_parent_traversal_in_asset_path). */

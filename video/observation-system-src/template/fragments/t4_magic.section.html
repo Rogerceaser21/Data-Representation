@@ -1,0 +1,65 @@
+<!-- ============ T4 . THE MAGIC TRANSITION (non spine) ========================
+     "This is where the real magic happens. With the help of AI."
+
+     The citations the previous scene just fanned out fall back inward from
+     beyond every edge of the frame, stream into one gold core, and are absorbed
+     by it. The core pulses on "magic" and bursts open on "AI." into the bright
+     wash the next scene cuts from. Evidence collapsing into intelligence.
+
+     This is NOT a spine scene: it owns its own geometry and never reads or
+     touches the SPINE SYSTEM block in s01_cover.css. It borrows only the navy
+     stage and the seeded star field, so the cut in and out matches the other
+     navy scenes.
+
+     DETERMINISM: every chip's start offset is precomputed below (data-mx /
+     data-my, one fixed ring of 14 positions on a rectangle just INSIDE the
+     1920x1080 frame, so every chip is on screen from its first frame and the
+     drift is watched, not inferred). Nothing here reads a clock or a random
+     source, so any seek position renders the same well. -->
+<section class="scene navy clip" id="sct4" data-start="{{START:t4_magic}}" data-duration="{{DUR:t4_magic}}" data-track-index="1">
+  <div class="stars" id="t4stars" data-stars-seed data-layout-allow-overflow></div>
+
+  <div class="mstage" id="t4stage">
+
+    <!-- the gravity well: the field the citations fall into -->
+    <div class="mwell" id="t4well"></div>
+
+    <!-- the citations. Chip numbers are the citation COUNTS already on screen in
+         s08_evidence's references strip, not new figures. Resting state is
+         ABSORBED (opacity 0, sitting on the core), which is where the scene
+         leaves them; the cues fly them in from the offsets below.
+         DOM ORDER is the stagger order, and it walks the ring in steps of 5
+         (14 and 5 are coprime, so it visits every position exactly once). A
+         plain clockwise order made the stream eat one side of the frame first,
+         which reads as a wipe rather than as a collapse. -->
+    <!-- allow-overlap: convergence IS the scene. Every chip flies to the same
+         point (0,0) and is absorbed there, so chips necessarily stack on the
+         core while they fade out. They are a stream, not text to be read
+         individually, so the layering is authored, not a legibility fault. -->
+    <div class="mchips" id="t4chips" data-layout-allow-overlap>
+      <i class="mchip" data-mx="-120" data-my="-482">12</i>
+      <i class="mchip" data-mx="774" data-my="354">58</i>
+      <i class="mchip" data-mx="-845" data-my="428">96</i>
+      <i class="mchip" data-mx="92" data-my="-443">27</i>
+      <i class="mchip" data-mx="409" data-my="492">14</i>
+      <i class="mchip" data-mx="-880" data-my="18">108</i>
+      <i class="mchip" data-mx="377" data-my="-492">41</i>
+      <i class="mchip" data-mx="115" data-my="462">63</i>
+      <i class="mchip" data-mx="-810" data-my="-370">115</i>
+      <i class="mchip" data-mx="818" data-my="-414">13</i>
+      <i class="mchip" data-mx="-101" data-my="487">77</i>
+      <i class="mchip" data-mx="-396" data-my="-477">129</i>
+      <i class="mchip" data-mx="854" data-my="-17">46</i>
+      <i class="mchip" data-mx="-343" data-my="448">84</i>
+    </div>
+
+    <!-- the core, the ring it pulses on "magic", the ring it bursts on "AI." -->
+    <div class="mcore" id="t4core"><i class="mcorein"></i></div>
+    <div class="mring" id="t4pulse"></div>
+    <div class="mring mburst" id="t4burst"></div>
+  </div>
+
+  <!-- the wash the next scene cuts from. Rests at opacity 0 and is driven to
+       full by the burst, so a freeze before the burst never shows a white frame. -->
+  <div class="mwash" id="t4wash"></div>
+</section>

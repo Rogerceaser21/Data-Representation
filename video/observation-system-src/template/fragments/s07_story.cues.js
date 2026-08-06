@@ -1,5 +1,24 @@
-/* 7 . the dashboard story . gate wipe, the Snapshot Story board, then present mode.
-   Fractions recomputed on the v2.4 line (78 words): 0.115 "which is password
+/* 7 . the dashboard story . real iPad app open, gate wipe, the Snapshot Story
+   board, then present mode.
+   v2.5 refit: the line starts "For example: first, we open the Observation
+   Dashboard", so the scene now literally opens it, on REAL iOS Simulator
+   footage. The drawn home screen, drawn fingertip, gold ripple and authored
+   app-open zoom are GONE; the footage's own zoom IS the transition. The tablet
+   layer (z-index 50) still stands OVER the password gate (z-index 40), so the
+   dissolve off the footage's dark peak uncovers the gate that was already
+   standing there.
+
+   THE CLIP MAP (the one law of this beat)
+     clip data-start = S7_TAP - 0.80   (the footage carries its tap 0.80s in),
+     so the real tap fires exactly ON the 0.064 word-share ("open"). The zoom
+     fills the screen with black by ~1.55s of file time; the file's TAIL (past
+     ~2.03s) is the opened app painting its own light-gray ground, so the clip
+     window is 1.95s and the beat cuts before it.
+
+   Fractions recomputed on the v2.4 line (78 words): 0.064 the real tap ("open") .
+   0.091 the footage is fully dark and the app takes the frame . 0.110 the black
+   has faded off the gate . 0.107 the password
+   dots . 0.115 "which is password
    protected" . 0.154 "Here is an observation round" (the press) . 0.167 the gate
    lifts . 0.295 "The story plays itself" . 0.346 "a hundred and eleven lessons" .
    0.551 "Where judgements sit on the six point scale" . 0.654 "What is working" .
@@ -19,11 +38,42 @@ document.querySelectorAll('#s7pres [data-mirror]').forEach(function (slot) {
   slot.textContent = src.dataset.count !== undefined ? src.dataset.count : src.textContent;
 });
 
+/* HEAD BEAT . the real iPad app open (shared component, see _ipad_shared.css).
+   Same hold-then-remove idiom as the gate below: the layer rests at opacity 0,
+   is held visible for the head window, and the dissolve off the dark peak takes
+   it out. The screen carries the footage's frame 0 as a poster still, so the
+   1.00s between the layer appearing and the clip window opening is the same
+   springboard, not a black rectangle. */
+var S7_TAP = atf('s07_story', 0.064);                          // the REAL tap, on "open"
+var S7_CLIP = Math.max(S7_TAP - 0.80, at('s07_story', -0.55)); // = the video's data-start
+var S7_DARK = S7_CLIP + 1.55;                                  // footage is full-frame black
+
+tl.fromTo('#s7ipd', { opacity: 1 },
+    { opacity: 1, ease: 'none', immediateRender: false,
+      duration: (S7_DARK + 0.26) - at('s07_story', -0.55) }, at('s07_story', -0.55))
+  /* the iOS touch indicator, at full opacity ON the tap frame (see s02_form for
+     why the fade-in runs BEFORE the tap and not after it) */
+  .fromTo('#s7touch', { opacity: 0, scale: 0.92 },
+    { opacity: 1, scale: 1, duration: 0.12, ease: 'power2.out', immediateRender: false }, S7_TAP - 0.12)
+  .to('#s7touch', { opacity: 0, duration: 0.25, ease: 'power2.in' }, S7_TAP + 0.18)
+  /* the app takes the frame: the black screen is pushed out past the frame edge,
+     then the layer fades, so the gate is uncovered by one clean fade from black
+     and never by two pictures crossfading (same move in all three head beats) */
+  .fromTo('#s7ipd .ipdev', { scale: 1 },
+    { scale: 2.8, duration: 0.26, ease: 'power2.in', immediateRender: false }, S7_DARK)
+  /* the fade waits for the fill to LAND, or the navy field shows as two
+     stripes down the sides of it (see s02_form) */
+  .to('#s7ipd', { opacity: 0, duration: 0.28, ease: 'power2.out' }, S7_DARK + 0.26);
+
 tl.fromTo('#s7gate', { opacity: 1 },
     { opacity: 1, ease: 'none', immediateRender: false,
       duration: atf('s07_story', 0.167) - at('s07_story', -0.55) }, at('s07_story', -0.55))
-  .from('#s7gcard', { opacity: 0, y: 22, duration: 0.85, ease: 'power2.out' }, at('s07_story', -0.3))
-  .from('#s7gdots i', { opacity: 0, scale: 0.3, duration: 0.26, ease: 'back.out(2.2)', stagger: 0.085 }, at('s07_story', 1.15))
+  /* the gate card lands BEHIND the black, so the fade uncovers a card that has
+     already arrived: the app "opens into" it */
+  .from('#s7gcard', { opacity: 0, y: 22, scale: 1.06, duration: 0.50, ease: 'power3.out' }, S7_DARK - 0.05)
+  /* the password types itself once the card has landed (was at +1.15s absolute,
+     which now sits behind the tablet) */
+  .from('#s7gdots i', { opacity: 0, scale: 0.3, duration: 0.26, ease: 'back.out(2.2)', stagger: 0.075 }, atf('s07_story', 0.107))
   /* "which is password protected": the gate's own Confidential kicker lifts to gold
      and back (yoyo, so it rests at the gate's authored red). Literal hexes are the
      gate's own palette, #EF343A and #FFBA14, verbatim from s07_story.css. */

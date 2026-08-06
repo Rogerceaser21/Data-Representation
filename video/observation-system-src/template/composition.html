@@ -150,6 +150,36 @@
 </section>
       <!-- ---- act 1 . the observation itself ---- -->
       <!-- ============ 2 . THE FORM (R3 Evidence Form, header + 18 cell context grid) ============ -->
+<!-- HEAD-BEAT LAYERS . hoisted OUT of the <section>.
+     Why: HyperFrames owns media playback, and a <video> carrying data-start
+     inside an element that also carries data-start is rejected (check rule
+     video_nested_in_timed_element: nested media is FROZEN in renders). So the
+     layer is a NON-timed wrapper at composition root, the <video> inside it is
+     the only timed thing, and the layer's visibility is pure GSAP opacity, which
+     rests at 0 in css. Root-level z-index puts it over every scene; nothing else
+     about the beat changes. -->
+      <!-- HEAD BEAT . the real iPad app open. REAL iOS Simulator footage of a real
+           springboard where a real tap opens "Observation Form"; the genuine iOS
+           app-open zoom is the transition. Bezel geometry and the resting-state
+           law live in template/fragments/_ipad_shared.css; the touch-indicator
+           coordinate and the poster still live in this scene's css.
+           The clip's data-start is (tap word-share 0.060 minus 0.80s), because
+           the footage carries its own tap 0.80s into the file, so the real tap
+           fires exactly on the cue. Window 2.05s: cut before the file's tail,
+           where the opened app paints its own light-gray ground. -->
+      <div class="ipdlayer" id="s2ipd" data-layout-allow-overlap data-layout-allow-overflow>
+        <div class="stars ipdsky" data-stars-seed></div>
+        <div class="ipdev">
+          <span class="ipdcam"></span>
+          <div class="ipdscreen" style="background-image:url('assets/ipad/home-form.jpg')">
+            <video class="clip ipdvid" id="s2vid" src="assets/ipad/ipad-open-form.mp4"
+                   data-start="{{ATF:s02_form:0.060:-0.80}}" data-duration="2.05"
+                   data-track-index="2" muted playsinline></video>
+            <span class="ipdtouch" id="s2touch"></span>
+          </div>
+        </div>
+      </div>
+
 <section class="scene clip" id="sc02" data-start="{{START:s02_form}}" data-duration="{{DUR:s02_form}}" data-track-index="1">
   <div class="sbody">
     <div class="dev" id="s2dev">
@@ -801,8 +831,37 @@
       <!-- ---- act 2 . the collected evidence: story, the data set, progression,
                   the references under it, the report, coverage ---- -->
       <!-- ============ 7 . THE DASHBOARD STORY ============ -->
-      <section class="scene top clip" id="sc07" data-start="{{START:s07_story}}" data-duration="{{DUR:s07_story}}" data-track-index="1">
+<!-- HEAD-BEAT LAYERS . hoisted OUT of the <section>.
+     Why: HyperFrames owns media playback, and a <video> carrying data-start
+     inside an element that also carries data-start is rejected (check rule
+     video_nested_in_timed_element: nested media is FROZEN in renders). So the
+     layer is a NON-timed wrapper at composition root, the <video> inside it is
+     the only timed thing, and the layer's visibility is pure GSAP opacity, which
+     rests at 0 in css. Root-level z-index puts it over every scene; nothing else
+     about the beat changes. -->
+      <!-- HEAD BEAT . the real iPad app open. REAL iOS Simulator footage of a real
+           springboard where a real tap opens "Obs Dashboard"; the genuine iOS
+           app-open zoom is the transition. Bezel geometry and the resting-state
+           law live in template/fragments/_ipad_shared.css; the touch-indicator
+           coordinate and the poster still live in this scene's css.
+           The clip's data-start is (tap word-share 0.064 minus 0.80s), because
+           the footage carries its own tap 0.80s into the file, so the real tap
+           fires exactly on the cue. Window 1.95s: cut before the file's tail,
+           where the opened app paints its own light-gray ground. -->
+      <div class="ipdlayer" id="s7ipd" data-layout-allow-overlap data-layout-allow-overflow>
+        <div class="stars ipdsky" data-stars-seed></div>
+        <div class="ipdev">
+          <span class="ipdcam"></span>
+          <div class="ipdscreen" style="background-image:url('assets/ipad/home-dash.jpg')">
+            <video class="clip ipdvid" id="s7vid" src="assets/ipad/ipad-open-dash.mp4"
+                   data-start="{{ATF:s07_story:0.064:-0.80}}" data-duration="1.95"
+                   data-track-index="2" muted playsinline></video>
+            <span class="ipdtouch" id="s7touch"></span>
+          </div>
+        </div>
+      </div>
 
+      <section class="scene top clip" id="sc07" data-start="{{START:s07_story}}" data-duration="{{DUR:s07_story}}" data-track-index="1">
         <!-- beat 1 . the gate, rebuilt from dashboard/password-template.html.
              The gate is an opaque full-frame layer (inset:0 over a solid #0a0d1f)
              and the board is deliberately rendered BEHIND it, so the lifting gate
@@ -1095,6 +1154,74 @@
           </div>
         </div>
       </section>
+      <!-- ============ T4 . THE MAGIC TRANSITION (non spine) ========================
+     "This is where the real magic happens. With the help of AI."
+
+     The citations the previous scene just fanned out fall back inward from
+     beyond every edge of the frame, stream into one gold core, and are absorbed
+     by it. The core pulses on "magic" and bursts open on "AI." into the bright
+     wash the next scene cuts from. Evidence collapsing into intelligence.
+
+     This is NOT a spine scene: it owns its own geometry and never reads or
+     touches the SPINE SYSTEM block in s01_cover.css. It borrows only the navy
+     stage and the seeded star field, so the cut in and out matches the other
+     navy scenes.
+
+     DETERMINISM: every chip's start offset is precomputed below (data-mx /
+     data-my, one fixed ring of 14 positions on a rectangle just INSIDE the
+     1920x1080 frame, so every chip is on screen from its first frame and the
+     drift is watched, not inferred). Nothing here reads a clock or a random
+     source, so any seek position renders the same well. -->
+<section class="scene navy clip" id="sct4" data-start="{{START:t4_magic}}" data-duration="{{DUR:t4_magic}}" data-track-index="1">
+  <div class="stars" id="t4stars" data-stars-seed data-layout-allow-overflow></div>
+
+  <div class="mstage" id="t4stage">
+
+    <!-- the gravity well: the field the citations fall into -->
+    <div class="mwell" id="t4well"></div>
+
+    <!-- the citations. Chip numbers are the citation COUNTS already on screen in
+         s08_evidence's references strip, not new figures. Resting state is
+         ABSORBED (opacity 0, sitting on the core), which is where the scene
+         leaves them; the cues fly them in from the offsets below.
+         DOM ORDER is the stagger order, and it walks the ring in steps of 5
+         (14 and 5 are coprime, so it visits every position exactly once). A
+         plain clockwise order made the stream eat one side of the frame first,
+         which reads as a wipe rather than as a collapse. -->
+    <!-- allow-overlap: convergence IS the scene. Every chip flies to the same
+         point (0,0) and is absorbed there, so chips necessarily stack on the
+         core while they fade out. They are a stream, not text to be read
+         individually, so the layering is authored, not a legibility fault. -->
+    <div class="mchips" id="t4chips" data-layout-allow-overlap>
+      <i class="mchip" data-mx="-120" data-my="-482">12</i>
+      <i class="mchip" data-mx="774" data-my="354">58</i>
+      <i class="mchip" data-mx="-845" data-my="428">96</i>
+      <i class="mchip" data-mx="92" data-my="-443">27</i>
+      <i class="mchip" data-mx="409" data-my="492">14</i>
+      <i class="mchip" data-mx="-880" data-my="18">108</i>
+      <i class="mchip" data-mx="377" data-my="-492">41</i>
+      <i class="mchip" data-mx="115" data-my="462">63</i>
+      <i class="mchip" data-mx="-810" data-my="-370">115</i>
+      <i class="mchip" data-mx="818" data-my="-414">13</i>
+      <i class="mchip" data-mx="-101" data-my="487">77</i>
+      <i class="mchip" data-mx="-396" data-my="-477">129</i>
+      <i class="mchip" data-mx="854" data-my="-17">46</i>
+      <i class="mchip" data-mx="-343" data-my="448">84</i>
+    </div>
+
+    <!-- the core, the ring it pulses on "magic", the ring it bursts on "AI." -->
+    <div class="mcore" id="t4core"><i class="mcorein"></i></div>
+    <div class="mring" id="t4pulse"></div>
+    <div class="mring mburst" id="t4burst"></div>
+  </div>
+
+  <!-- the wash the next scene cuts from. Rests at opacity 0 and is driven to
+       full by the burst, so a freeze before the burst never shows a white frame. -->
+  <div class="mwash" id="t4wash"></div>
+</section>
+      <!-- the magic transition: NOT a spine scene. Own geometry (citations
+           collapsing into one gold core), navy stage + seeded sky only, so the
+           cut in from s08 and out into s13 matches the other navy scenes. -->
       <!-- ============ 8 . REFERENCES BEHIND EVERY STATEMENT ============ -->
       <section class="scene top clip" id="sc08" data-start="{{START:s08_evidence}}" data-duration="{{DUR:s08_evidence}}" data-track-index="1">
         <div class="sbody">
@@ -1172,7 +1299,28 @@
           </div>
         </div>
       </section>
-      <!-- ============ 13 . REPORTS AND REGENERATION ============ -->
+      <!-- ============ 13 . REPORTS AND REGENERATION ============
+     v2.5 rebuild: the report is no longer a still mock, it is CLICKED OPEN.
+     Beat A  the live Snapshot page (masthead, nav rail, Snapshot head, control row)
+     Beat B  the cursor clicks Report and the Simple / In Depth menu opens
+     Beat C  the cursor clicks In Depth and the report page takes the window
+     Beat D  the report page auto scrolls, calmly, to its last bullets
+
+     Markup and class grammar are the product's own (dashboard/src/index.html:
+     header.mast / nav.rail / .tabsrow / .repbtn / .repmenu / .repmi / #reportTabs
+     with .repback + .rtabset, and renderSimpleReport's .rep-top / .rep-kick /
+     h2.big / .rep-meta / .rep-scope-all / .rep-method / .rep-h / .exec-lead /
+     .exec-pts / .repexport / .rep-foot). Scoped in s13_report.css because
+     styles/dashboard.css does not carry the report or masthead component sheets.
+
+     NOT the product's: the logo mark and the school name are removed from the
+     masthead brand and from .rep-meta (the live board carries them). Product
+     chrome stays. Every figure on this page comes from assets/data/video-data.json:
+     111 lessons, 105 teachers, avgBest 3.2222 -> "Good (3.2 of 6)", and the
+     distribution behind the summary lead (Good or better 55 of 102, Acceptable
+     36 of 102, below that 11 of 102). Every report sentence and every citation
+     count is a statement already on screen in the shipped v2.4 build
+     (s08_evidence, s13_report), so nothing here is a new claim or a new figure. -->
       <section class="scene top clip" id="sc13" data-start="{{START:s13_report}}" data-duration="{{DUR:s13_report}}" data-track-index="1">
         <div class="sbody">
           <div class="shead" id="s13head">
@@ -1180,59 +1328,146 @@
             <h2>One round, <em>one document</em></h2>
           </div>
 
-          <div class="s13row">
+          <!-- the product window. A light surface on the star stage, the same
+               way s07 stages the board: the paper is the product, the frame ours. -->
+          <div class="s13win" id="s13win">
 
-            <!-- the governance report, as the board renders it -->
+            <!-- masthead. Product markup minus the logo mark and the school name. -->
+            <div class="s13mast" id="s13mast">
+              <div class="s13brand">Observation Dashboard</div>
+              <div class="s13rail">
+                <span class="s13pill on">Snapshot</span>
+                <span class="s13pill">Coverage</span>
+                <span class="s13pill">Observations</span>
+                <span class="s13pill">Teacher portal</span>
+                <span class="s13pill">Settings</span>
+              </div>
+            </div>
+
             <div class="s13page" id="s13page">
-              <div class="rep-top" id="s13top">
-                <div class="rep-th">
-                  <div class="rep-kick">Governance report &middot; Simple</div>
+
+              <!-- ---- beat A + B . the live Snapshot ---- -->
+              <div class="s13snapv" id="s13snapv">
+                <div class="s13sh" id="s13sh">
+                  <div class="s13shl">
+                    <span class="kick"><i class="stripe"></i> Snapshot</span>
+                    <span class="subtle">as of 29 July 2026</span>
+                  </div>
                   <h2 class="big">The June <em>R3</em> picture.</h2>
-                  <div class="rep-meta">Whole school &middot; R3 June 26 &middot; generated 2026-07-29</div>
                 </div>
-                <button class="repexport" id="s13export" type="button"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M4.5 6.5L8 10l3.5-3.5M3 13h10" /></svg>Make Google Doc</button>
-              </div>
-              <div class="rtabset" id="s13tabs">
-                <span class="rtab on" id="s13tabA">Simple</span>
-                <span class="rtab" id="s13tabB">In Depth</span>
-              </div>
-              <div class="rep-scope-all" id="s13scope">111 lessons &middot; 105 teachers &middot; average progress <b>Good</b> (3.2 of 6)</div>
-              <div class="rep-method" id="s13method"><b>How these are counted.</b> Average progress is the best rating recorded for each teacher, then averaged across teachers. Each numbered marker opens the supporting evidence; identifying teacher details are withheld.</div>
-              <section class="rep-sec" id="s13sec">
-                <h3 class="rep-h">Secondary</h3>
-                <div class="rep-grp">
-                  <p class="rep-sum">Questioning is used to check understanding rather than to move the lesson along.<span class="refmk">12</span></p>
-                  <ul class="rep-bl" id="s13bl">
-                    <li>Modelling is explicit and the success criteria stay visible throughout.<span class="refmk">27</span></li>
-                    <li>Where progress stalls, the pace moves on before every group has answered.<span class="refmk">41</span></li>
-                  </ul>
+
+                <div class="s13ctl" id="s13ctl">
+                  <div class="s13tabgrp">
+                    <span class="s13tab on">Primary &amp; Kindy</span>
+                    <span class="s13tab">Secondary</span>
+                  </div>
+                  <div class="s13tabgrp">
+                    <span class="s13tab on">Story</span>
+                    <span class="s13tab">Detail</span>
+                  </div>
+                  <div class="s13repwrap">
+                    <span class="s13repbtn" id="s13repbtn">Report <i class="s13caret">&#9662;</i><i class="s13press" id="s13press1"></i></span>
+                    <!-- the dropdown: exactly the product's two items, two lines each -->
+                    <div class="s13menu" id="s13menu" data-layout-allow-overlap>
+                      <span class="s13mi" id="s13miA">Simple<i class="sub">Concise governance summary</i></span>
+                      <span class="s13mi" id="s13miB">In Depth<i class="sub">Full evidence report</i><i class="s13press" id="s13press2"></i></span>
+                    </div>
+                  </div>
                 </div>
-              </section>
-            </div>
 
-            <!-- the Google Doc the export builds -->
-            <div class="s13doc" id="s13doc">
-              <div class="s13dk" id="s13d1">Whole school</div>
-              <div class="s13dt" id="s13d2">R3 June 26<br /><em>Governance Report</em></div>
-              <div class="s13drule" id="s13d3"></div>
-              <div class="s13ds" id="s13d4">References attached &middot; teachers anonymised by construction</div>
-              <div class="s13df" id="s13d5">Google Doc &middot; generated 29 July 2026</div>
-              <!-- the sheen sweeps in from off-card and rests off-card (xPercent
-                   -140/140 in the cues file); #s13doc clips it with overflow:hidden,
-                   so it is never visible outside the card, only in transit across it. -->
-              <div class="s13sheen" id="s13sheen" data-layout-allow-overflow></div>
-            </div>
+                <div class="s13stats" id="s13stats">
+                  <div class="panel stat"><div class="v">111</div><div class="l">Lessons observed</div><div class="s">June R3 &middot; co-observations merged</div></div>
+                  <div class="panel stat"><div class="v">105</div><div class="l">Teachers seen</div><div class="s">at least once in June</div></div>
+                  <div class="panel stat"><div class="v">3.2</div><div class="l">Average progress &middot; of 6</div><div class="s">best evidence per teacher</div></div>
+                </div>
 
+                <!-- the board's own six point distribution, so the live page is
+                     the live page and not an empty frame. Counts and bar heights
+                     are video-data.json snap_all.dist (8 / 21 / 26 / 36 / 7 / 4,
+                     scaled against the 36 of the tallest band), the same figures
+                     s07 renders as the dot sort. -->
+                <div class="panel s13dist" id="s13dist">
+                  <div class="ey-bold">Where the judgements sit &middot; the six point scale</div>
+                  <div class="histo">
+                    <div class="hbar"><div class="hc">8</div><div class="hb" style="height:24px;background:var(--r1)"></div><div class="hw">Outstanding</div></div>
+                    <div class="hbar"><div class="hc">21</div><div class="hb" style="height:64px;background:var(--r2)"></div><div class="hw">Very Good</div></div>
+                    <div class="hbar"><div class="hc">26</div><div class="hb" style="height:79px;background:var(--r3)"></div><div class="hw">Good</div></div>
+                    <div class="hbar"><div class="hc">36</div><div class="hb" style="height:110px;background:var(--r4)"></div><div class="hw">Acceptable</div></div>
+                    <div class="hbar"><div class="hc">7</div><div class="hb" style="height:21px;background:var(--r5)"></div><div class="hw">Weak</div></div>
+                    <div class="hbar"><div class="hc">4</div><div class="hb" style="height:12px;background:var(--r6)"></div><div class="hw">Very Weak</div></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ---- beat C + D . the In Depth report page ---- -->
+              <div class="s13repv" id="s13repv" data-layout-allow-overlap>
+                <div class="s13vp" id="s13vp">
+                  <!-- allow-overflow: the report page is deliberately TALLER than
+                       #s13vp (664 vs 469 local px). #s13vp has overflow:hidden and
+                       does the clipping; the one translateY tween scrolls the
+                       surplus into frame. The linter measures unclipped rects, so
+                       the page foot reads as off canvas while it is masked.
+                       allow-occlusion is the same story at the other end: the
+                       report's own control row (.s13rtabs) scrolls up PAST the top
+                       of #s13vp and is clipped there, but its unclipped rect lands
+                       behind the fixed #s13mast bar and reads as buried text.
+                       Verified by render at the scrolled position: nothing of that
+                       row is painted over the masthead. -->
+                  <div class="s13scroll" id="s13scroll" data-layout-allow-overflow data-layout-allow-occlusion>
+
+                    <!-- the report page control row (product v0.47: opening a
+                         report replaces the dropdown with Back + Simple / In Depth).
+                         It sits INSIDE the scroller, the way it does on the board;
+                         only the masthead is held fixed, as the window frame. -->
+                    <div class="s13rtabs">
+                      <span class="s13repback">&#8592; Back</span>
+                      <div class="s13tabgrp">
+                        <span class="s13tab">Simple</span>
+                        <span class="s13tab on">In Depth</span>
+                      </div>
+                    </div>
+
+                    <div class="s13doc" id="s13doc">
+                      <div class="rep-top">
+                        <div class="rep-th">
+                          <div class="rep-kick">Governance report &middot; In Depth</div>
+                          <h2 class="big">The June <em>R3</em> picture.</h2>
+                          <div class="rep-meta">R3 June 26 &middot; generated 29 July 2026</div>
+                        </div>
+                        <span class="repexport" id="s13export"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8M4.5 6.5L8 10l3.5-3.5M3 13h10" /></svg>Make Google Doc</span>
+                      </div>
+
+                      <div class="rep-scope-all" id="s13scope">111 lessons &middot; 105 teachers &middot; average progress <b>Good</b> (3.2 of 6)</div>
+
+                      <div class="rep-method" id="s13method"><b>How these are counted.</b> Average progress is the best rating recorded for each teacher, then averaged across teachers. <span id="s13mref">Each numbered marker opens the supporting evidence;</span> <span id="s13mano">identifying teacher details are withheld.</span></div>
+
+                      <section class="rep-sec rep-exec" id="s13exec">
+                        <h3 class="rep-h">In summary</h3>
+                        <p class="exec-lead" id="s13lead">Average progress across the round is Good. About half of the lessons observed are Good or better, about a third are Acceptable, and about one in ten sit below that.</p>
+                        <ul class="exec-pts" id="s13pts">
+                          <li><b>Most consistent strength.</b> Questioning is used to check understanding rather than to move the lesson along.<span class="refmk">12</span></li>
+                          <li><b>What that looks like.</b> The follow up question, not the first question, is what moves the group.<span class="refmk">13</span></li>
+                          <li><b>Where it holds.</b> Modelling is explicit and the success criteria stay visible throughout.<span class="refmk">27</span></li>
+                          <li><b>Main focus.</b> Where progress stalls, the pace moves on before every group has answered.<span class="refmk">41</span></li>
+                        </ul>
+                      </section>
+
+                      <div class="rep-foot">References cite the locked R3 record for each lesson. Identifying teacher details are withheld.</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
           </div>
 
-          <!-- round regeneration: one button rewrites the analysis for a new round -->
-          <div class="panel s13regen" id="s13regen">
-            <div class="s13regrow">
-              <span class="s13reglab">Regenerating round narrative</span>
-              <span class="s13regsub">Snapshot, report references, recommendations and every coaching note</span>
-              <span class="s13chk" id="s13chk">Checked &middot; Head of Teaching and Learning</span>
-            </div>
-            <div class="regbar"><i id="s13bar"></i></div>
+          <!-- the cursor. Absolute inside .sbody, resting invisible (it leaves
+               with the menu), so a freeze before its entrance is clean. left /
+               top below are the Report button's centre, measured off the built
+               page; the cues move it in x / y deltas from there. -->
+          <div class="s13cur" id="s13cur" data-layout-allow-overlap>
+            <svg viewBox="0 0 24 24"><path d="M5.5 2.2 5.5 19.4 9.9 15.4 12.6 21.3 15.3 20.1 12.7 14.4 18.3 14.2 Z" /></svg>
+            <i class="s13click" id="s13click"></i>
           </div>
 
         </div>
@@ -1474,6 +1709,66 @@
         </div>
       </section>
       <!-- ============ 12 . THE TEACHER PORTAL ============ -->
+<!-- HEAD-BEAT LAYERS . hoisted OUT of the <section>.
+     Why: HyperFrames owns media playback, and a <video> carrying data-start
+     inside an element that also carries data-start is rejected (check rule
+     video_nested_in_timed_element: nested media is FROZEN in renders). So the
+     layer is a NON-timed wrapper at composition root, the <video> inside it is
+     the only timed thing, and the layer's visibility is pure GSAP opacity, which
+     rests at 0 in css. Root-level z-index puts it over every scene; nothing else
+     about the beat changes. -->
+      <!-- HEAD BEAT . the real iPad app open. REAL iOS Simulator footage of a real
+           springboard where a real tap opens "Teacher Portal"; the genuine iOS
+           app-open zoom is the transition. Bezel geometry and the resting-state
+           law live in template/fragments/_ipad_shared.css; the touch-indicator
+           coordinate and the poster still live in this scene's css.
+           The clip's data-start is (tap word-share 0.036 minus 0.80s), because
+           the footage carries its own tap 0.80s into the file, so the real tap
+           fires exactly on the cue. Window 1.90s: cut before the file's tail,
+           where the opened app paints its own light-gray ground. -->
+      <div class="ipdlayer" id="s12ipd" data-layout-allow-overlap data-layout-allow-overflow>
+        <div class="stars ipdsky" data-stars-seed></div>
+        <div class="ipdev">
+          <span class="ipdcam"></span>
+          <div class="ipdscreen" style="background-image:url('assets/ipad/home-portal.jpg')">
+            <video class="clip ipdvid" id="s12vid" src="assets/ipad/ipad-open-portal.mp4"
+                   data-start="{{ATF:s12_portal:0.036:-0.80}}" data-duration="1.90"
+                   data-track-index="2" muted playsinline></video>
+            <span class="ipdtouch" id="s12touch"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- HEAD BEAT part 2 . the portal sign in, opened by the tap above.
+           SYNTHETIC by construction: the name is invented ("A. Teacher"),
+           the dots are dots, nothing on this card is a real credential or a
+           real record. It rests at opacity 0 like the tablet layer, so a
+           frame with no timeline shows the portal itself. -->
+      <div class="s12login" id="s12login" data-layout-allow-overlap data-layout-allow-overflow>
+        <div class="stars ipdsky" data-stars-seed></div>
+        <div class="s12lcard" id="s12lcard">
+          <!-- the kicker stripe is clipped by its OWN rounded layer, not by
+               overflow:hidden on the card, so the fingertip below can fly in
+               from outside the card without being cut in half -->
+          <span class="s12lclip"><i class="s12lbar"></i></span>
+          <div class="s12lkick"><span class="s12lstripe"></span>Teacher portal<span class="s12lill">Illustrative</span></div>
+          <h2 class="s12ltitle">Sign <em>in</em></h2>
+          <div class="s12lrow">
+            <span class="s12llab">Name</span>
+            <div class="s12lfield"><span class="s12lval" id="s12lname">A. Teacher</span></div>
+          </div>
+          <div class="s12lrow">
+            <span class="s12llab">Password</span>
+            <div class="s12lfield"><span class="s12ldots" id="s12ldots"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
+          </div>
+          <div class="ipdbtnwrap">
+            <button class="s12lbtn" id="s12lbtn" type="button">Sign in</button>
+            <span class="ipdtip" id="s12ltip"></span>
+            <span class="ipdrip" id="s12lrip"><i></i><i></i></span>
+          </div>
+        </div>
+      </div>
+
       <section class="scene clip" id="sc12" data-start="{{START:s12_portal}}" data-duration="{{DUR:s12_portal}}" data-track-index="1">
         <div class="sbody">
           <div class="s12stage">
@@ -1807,18 +2102,74 @@ tl.fromTo('#t1hero .jpulse', { scale: 0.66, opacity: 0.85 },
   .fromTo('#t1hero .jpulse', { scale: 0.72, opacity: 0.7 },
     { scale: 1.4, opacity: 0, duration: T1_P, ease: 'power2.out', immediateRender: false }, T1_GO + T1_D - 0.1);
       /* 2 . the form
+   v2.5 refit: the scene OPENS on REAL iOS Simulator footage of a real iPadOS
+   springboard, and a real tap really opens the Observation Form app. The
+   CSS-drawn home screen, the drawn fingertip, the gold ripple and the authored
+   app-open zoom are all GONE; the footage's own zoom IS the transition. What is
+   still authored here is exactly three things: WHEN the clip starts, the iOS
+   touch indicator over the tapped icon, and the dissolve off the footage's dark
+   peak into the form.
+
+   THE CLIP MAP (the one law of this beat)
+     the footage carries its tap 0.80s into the file, so
+       clip data-start = S2_TAP - 0.80          (stamped by {{ATF:...:-0.80}})
+       the real tap therefore fires exactly ON the 0.060 word-share
+     the app-open zoom fills the screen with black by ~1.55s of file time; the
+     file's TAIL (past ~2.16s) is the opened app painting its own light-gray
+     ground, so the clip window is 2.05s and the beat cuts before it.
+
    v2.4 line (58 words), every fraction recomputed from THIS text:
    "While the coaches are observing a lesson, they fill in the relevant
     observation form: subject, class and teacher, with live dropdowns fed by the
     school's own staff directory, so nothing is typed from memory and no list is
     ever out of date. Class composition is a few taps. The whole context of the
     lesson, captured throughout the observation."
-   Word share: 0.121 "they fill in the relevant observation form" .
-   0.310 "with live dropdowns" . 0.397 "the school's own staff directory" .
-   0.500 "so nothing is typed from memory" . 0.724 "Class composition is a few
-   taps" . 0.931 "captured throughout the observation". */
-tl.from('#s2dev', { opacity: 0, y: 26, scale: 0.985, duration: 0.9, ease: 'power3.out' }, at('s02_form', -0.35))
-  .from('#s2head', { opacity: 0, y: 12, duration: 0.7, ease: 'power2.out' }, at('s02_form', 0.35))
+   Word share: 0.060 the real tap (mid "coaches") . 0.096 the footage is fully
+   dark and the app takes the frame . 0.117 the black has faded off the form .
+   0.121 "they fill in the relevant observation
+   form" . 0.310 "with live dropdowns" . 0.397 "the school's own staff
+   directory" . 0.500 "so nothing is typed from memory" . 0.724 "Class
+   composition is a few taps" . 0.931 "captured throughout the observation". */
+
+var S2_TAP = atf('s02_form', 0.060);                          // the REAL tap in the footage
+var S2_CLIP = Math.max(S2_TAP - 0.80, at('s02_form', -0.55)); // = the video's data-start
+var S2_DARK = S2_CLIP + 1.55;                                 // footage is full-frame black
+
+/* the tablet layer is HELD visible across the head beat by a fromTo, then taken
+   out by a to(), so its resting state stays "gone" and a frame rendered without
+   the timeline shows the form (the #s7gate idiom). The screen carries the
+   footage's frame 0 as a poster still, so the 1.00s between the layer appearing
+   and the clip window opening is the same springboard, not a black rectangle. */
+tl.fromTo('#s2ipd', { opacity: 1 },
+    { opacity: 1, ease: 'none', immediateRender: false,
+      duration: (S2_DARK + 0.26) - at('s02_form', -0.55) }, at('s02_form', -0.55))
+  /* the iOS touch indicator. It reaches full opacity ON the tap frame, so the
+     fade-in runs over the last 0.12s of the still springboard and the disc is
+     visibly sitting on the icon at the instant the real app-open begins: the
+     footage's zoom starts on the SAME frame as the tap, so a disc that only
+     started fading in at the tap would never once be seen on an icon.
+     0.12 in / 0.18 hold / 0.25 out, explicit times off the scene timeline. */
+  .fromTo('#s2touch', { opacity: 0, scale: 0.92 },
+    { opacity: 1, scale: 1, duration: 0.12, ease: 'power2.out', immediateRender: false }, S2_TAP - 0.12)
+  .to('#s2touch', { opacity: 0, duration: 0.25, ease: 'power2.in' }, S2_TAP + 0.18)
+  /* THE APP TAKES THE FRAME. The footage's own zoom has already filled the
+     tablet's SCREEN with black; this pushes that black screen out to fill the
+     1920x1080 frame (720 * 2.8 = 2016 wide, so the bezel leaves the frame), and
+     only then does the layer fade. Without it the fade is a dark tablet
+     dissolving over a LIT cream form and the frame passes through a muddy gray
+     double-image (proved on a frame at the 50% point). Fading from a full-frame
+     black instead is one clean move and never shows two pictures at once. */
+  .fromTo('#s2ipd .ipdev', { scale: 1 },
+    { scale: 2.8, duration: 0.26, ease: 'power2.in', immediateRender: false }, S2_DARK)
+  /* the fade starts only once the fill has LANDED: at +0.22 the screen is still
+     1649px of a 1920px frame and the navy field shows as two stripes down the
+     sides of the fade (proved on a frame). +0.26 is the first instant the black
+     covers. */
+  .to('#s2ipd', { opacity: 0, duration: 0.28, ease: 'power2.out' }, S2_DARK + 0.26);
+
+/* the form rides out of the black, then plays exactly as it did in v2.4 */
+tl.from('#s2dev', { opacity: 0, y: 14, scale: 1.05, duration: 0.72, ease: 'power3.out' }, S2_DARK + 0.24)
+  .from('#s2head', { opacity: 0, y: 12, duration: 0.7, ease: 'power2.out' }, S2_DARK + 0.42)
   /* "they fill in the relevant observation form": the context grid fills cell by cell */
   .from('#s2grid .info-cell', { opacity: 0, y: 14, duration: 0.5, stagger: 0.06, ease: 'power2.out' }, atf('s02_form', 0.121));
 
@@ -2080,8 +2431,27 @@ tl.fromTo('#t2hero .jpulse', { scale: 0.66, opacity: 0.85 },
     { scale: 1.25, opacity: 0, duration: Math.min(0.7, T2_D * 0.55), ease: 'power2.out', immediateRender: false }, T2_GO)
   .fromTo('#t2hero .jpulse', { scale: 0.72, opacity: 0.7 },
     { scale: 1.4, opacity: 0, duration: T2_P, ease: 'power2.out', immediateRender: false }, T2_GO + T2_D - 0.1);
-      /* 7 . the dashboard story . gate wipe, the Snapshot Story board, then present mode.
-   Fractions recomputed on the v2.4 line (78 words): 0.115 "which is password
+      /* 7 . the dashboard story . real iPad app open, gate wipe, the Snapshot Story
+   board, then present mode.
+   v2.5 refit: the line starts "For example: first, we open the Observation
+   Dashboard", so the scene now literally opens it, on REAL iOS Simulator
+   footage. The drawn home screen, drawn fingertip, gold ripple and authored
+   app-open zoom are GONE; the footage's own zoom IS the transition. The tablet
+   layer (z-index 50) still stands OVER the password gate (z-index 40), so the
+   dissolve off the footage's dark peak uncovers the gate that was already
+   standing there.
+
+   THE CLIP MAP (the one law of this beat)
+     clip data-start = S7_TAP - 0.80   (the footage carries its tap 0.80s in),
+     so the real tap fires exactly ON the 0.064 word-share ("open"). The zoom
+     fills the screen with black by ~1.55s of file time; the file's TAIL (past
+     ~2.03s) is the opened app painting its own light-gray ground, so the clip
+     window is 1.95s and the beat cuts before it.
+
+   Fractions recomputed on the v2.4 line (78 words): 0.064 the real tap ("open") .
+   0.091 the footage is fully dark and the app takes the frame . 0.110 the black
+   has faded off the gate . 0.107 the password
+   dots . 0.115 "which is password
    protected" . 0.154 "Here is an observation round" (the press) . 0.167 the gate
    lifts . 0.295 "The story plays itself" . 0.346 "a hundred and eleven lessons" .
    0.551 "Where judgements sit on the six point scale" . 0.654 "What is working" .
@@ -2101,11 +2471,42 @@ document.querySelectorAll('#s7pres [data-mirror]').forEach(function (slot) {
   slot.textContent = src.dataset.count !== undefined ? src.dataset.count : src.textContent;
 });
 
+/* HEAD BEAT . the real iPad app open (shared component, see _ipad_shared.css).
+   Same hold-then-remove idiom as the gate below: the layer rests at opacity 0,
+   is held visible for the head window, and the dissolve off the dark peak takes
+   it out. The screen carries the footage's frame 0 as a poster still, so the
+   1.00s between the layer appearing and the clip window opening is the same
+   springboard, not a black rectangle. */
+var S7_TAP = atf('s07_story', 0.064);                          // the REAL tap, on "open"
+var S7_CLIP = Math.max(S7_TAP - 0.80, at('s07_story', -0.55)); // = the video's data-start
+var S7_DARK = S7_CLIP + 1.55;                                  // footage is full-frame black
+
+tl.fromTo('#s7ipd', { opacity: 1 },
+    { opacity: 1, ease: 'none', immediateRender: false,
+      duration: (S7_DARK + 0.26) - at('s07_story', -0.55) }, at('s07_story', -0.55))
+  /* the iOS touch indicator, at full opacity ON the tap frame (see s02_form for
+     why the fade-in runs BEFORE the tap and not after it) */
+  .fromTo('#s7touch', { opacity: 0, scale: 0.92 },
+    { opacity: 1, scale: 1, duration: 0.12, ease: 'power2.out', immediateRender: false }, S7_TAP - 0.12)
+  .to('#s7touch', { opacity: 0, duration: 0.25, ease: 'power2.in' }, S7_TAP + 0.18)
+  /* the app takes the frame: the black screen is pushed out past the frame edge,
+     then the layer fades, so the gate is uncovered by one clean fade from black
+     and never by two pictures crossfading (same move in all three head beats) */
+  .fromTo('#s7ipd .ipdev', { scale: 1 },
+    { scale: 2.8, duration: 0.26, ease: 'power2.in', immediateRender: false }, S7_DARK)
+  /* the fade waits for the fill to LAND, or the navy field shows as two
+     stripes down the sides of it (see s02_form) */
+  .to('#s7ipd', { opacity: 0, duration: 0.28, ease: 'power2.out' }, S7_DARK + 0.26);
+
 tl.fromTo('#s7gate', { opacity: 1 },
     { opacity: 1, ease: 'none', immediateRender: false,
       duration: atf('s07_story', 0.167) - at('s07_story', -0.55) }, at('s07_story', -0.55))
-  .from('#s7gcard', { opacity: 0, y: 22, duration: 0.85, ease: 'power2.out' }, at('s07_story', -0.3))
-  .from('#s7gdots i', { opacity: 0, scale: 0.3, duration: 0.26, ease: 'back.out(2.2)', stagger: 0.085 }, at('s07_story', 1.15))
+  /* the gate card lands BEHIND the black, so the fade uncovers a card that has
+     already arrived: the app "opens into" it */
+  .from('#s7gcard', { opacity: 0, y: 22, scale: 1.06, duration: 0.50, ease: 'power3.out' }, S7_DARK - 0.05)
+  /* the password types itself once the card has landed (was at +1.15s absolute,
+     which now sits behind the tablet) */
+  .from('#s7gdots i', { opacity: 0, scale: 0.3, duration: 0.26, ease: 'back.out(2.2)', stagger: 0.075 }, atf('s07_story', 0.107))
   /* "which is password protected": the gate's own Confidential kicker lifts to gold
      and back (yoyo, so it rests at the gate's authored red). Literal hexes are the
      gate's own palette, #EF343A and #FFBA14, verbatim from s07_story.css. */
@@ -2263,6 +2664,98 @@ tl.from('#s9slope .sl-end', { opacity: 0, scale: 0.3, transformOrigin: '50% 50%'
   .from('#s9qs .pill-note:nth-child(2)', { opacity: 0, y: 10, duration: 0.5 }, atf('s09_movement', 0.881))
   .from('#s9qs .pill-note:nth-child(3)', { opacity: 0, y: 10, duration: 0.5 }, atf('s09_movement', 0.925));
 spotlight('#s9mxcard', atf('s09_movement', 0.567), 2.2);                   // "transition matrix"
+      /* T4 . the magic transition (non spine; geometry lives in t4_magic.css)
+   "This is where the real magic happens. With the help of AI."        (12 words)
+
+   WORD SHARE, computed not eyeballed. This is a TWO sentence line, so the full
+   stop after "happens" gets its own slice of the span (T4_MAGIC_GAP) before the
+   second sentence starts. Without that slice every word after the break lands
+   early, and the two beats that matter here are both in the second sentence.
+   With the gap budgeted at 7.5% of the line, one word is 0.0771 of it:
+
+     w1   "This"        0.000    the well opens, the citations start falling
+     w6   "magic"       0.385    the core takes the pulse
+     w7   "happens"     0.463
+     w8   "With"        0.615    the core inhales
+     w12  "AI."         0.923    the core bursts into the wash
+
+   The burst is BUDGETED from what the line actually leaves after that last word
+   (the t3_step3 idiom), never from a constant, so a shorter real take cannot
+   leave the flare frozen half spent on the cut. */
+
+var T4_MAGIC_GAP = 0.075;                                     /* the full stop, as a share of the line */
+var T4_MAGIC_WS = (1 - T4_MAGIC_GAP) / 12;                    /* one word's share */
+function t4word(n) { return atf('t4_magic', (n - 1) * T4_MAGIC_WS + (n > 7 ? T4_MAGIC_GAP : 0)); }
+
+var T4_IN = t4word(1);                                        /* "This" */
+var T4_HIT = t4word(6);                                       /* "magic" */
+var T4_DRAW = t4word(8);                                      /* "With the help of" */
+/* the flare has to PEAK on the word, not start on it (the s08 ripple fires
+   ahead of the drawer for the same reason), so the burst opens a beat early. */
+var T4_LEAD = 0.14;
+var T4_GO = t4word(12) - T4_LEAD;                             /* "AI." */
+var T4_STEP = 0.045;                                          /* per chip stagger, 14 chips = 0.59s of stream */
+var T4_FLY = Math.max(0.85, T4_HIT - T4_IN - 0.15);           /* flight, so the last chip lands before the pulse spends */
+var T4_HOLD = Math.max(0.35, T4_GO - T4_DRAW - 0.06);         /* the inhale, from what the second sentence gives */
+var T4_TAIL = at('t4_magic', NARR.t4_magic.dur - 0.15);       /* last frame still credibly on this scene */
+var T4_BURST = Math.min(0.62, Math.max(0.30, (T4_TAIL - T4_GO) * 0.98));
+var T4_WASH = Math.min(0.32, Math.max(0.16, T4_BURST * 0.62));  /* the wash beats the ring to full and HOLDS */
+
+/* the stage arrives before the first word, the way t1 / t2 / t3 do */
+tl.from('#sct4 .mstage, #t4stars', { opacity: 0, duration: 0.5, ease: 'power1.out' }, at('t4_magic', -0.45));
+tl.to('#t4stars', { y: -12, duration: NARR.t4_magic.dur + 1.4, ease: 'none' }, at('t4_magic', -0.45));
+
+/* "This is where": the well opens */
+tl.from('#t4well', { opacity: 0, scale: 1.28, duration: 0.85, ease: 'power2.out' }, T4_IN - 0.2);
+
+/* the citations fall in. THREE tweens, one job each, staggered identically, so
+   no two of them ever write the same property on the same chip at the same
+   time: (1) fade up out at the edge, (2) fall to the core, (3) be absorbed.
+   Start offsets are read from the precomputed data-mx / data-my attributes. */
+tl.fromTo('#t4chips .mchip', { opacity: 0, scale: 0.72 },
+    { opacity: 1, scale: 1, duration: 0.42, ease: 'power2.out', immediateRender: false,
+      stagger: { each: T4_STEP, from: 'start' } }, T4_IN)
+  .fromTo('#t4chips .mchip',
+    { x: function (i, el) { return +el.dataset.mx; }, y: function (i, el) { return +el.dataset.my; } },
+    { x: 0, y: 0, duration: T4_FLY, ease: 'power2.in', immediateRender: false,
+      stagger: { each: T4_STEP, from: 'start' } }, T4_IN)
+  .fromTo('#t4chips .mchip', { opacity: 1, scale: 1 },
+    { opacity: 0, scale: 0.26, duration: 0.34, ease: 'power2.in', immediateRender: false,
+      stagger: { each: T4_STEP, from: 'start' } }, T4_IN + T4_FLY - 0.22);
+
+/* the core is fed by the stream for exactly as long as chips are arriving.
+   .from(), so the CSS rests on the FED core and the growth is the entrance. */
+tl.from('#t4core', { scale: 0.34, opacity: 0.45, duration: T4_HIT - T4_IN, ease: 'power2.inOut' }, T4_IN);
+
+/* "magic": the core pulses. The yoyo returns to scale 1, which IS the end of
+   the growth above, so the two tweens hand over cleanly and neither overlaps. */
+tl.fromTo('#t4core', { scale: 1 },
+    { scale: 1.17, duration: 0.20, yoyo: true, repeat: 1, ease: 'power2.out', immediateRender: false }, T4_HIT)
+  .fromTo('#t4pulse', { scale: 0.5, opacity: 0.92 },
+    { scale: 1.55, opacity: 0, duration: 0.8, ease: 'power2.out', immediateRender: false }, T4_HIT)
+  .fromTo('#t4well', { scale: 1 },
+    { scale: 1.07, duration: 0.42, yoyo: true, repeat: 1, ease: 'power2.inOut', immediateRender: false }, T4_HIT);
+
+/* "With the help of": the well contracts and the core draws in on itself, so the
+   burst has something to burst OUT of. Ends where the burst begins (scale .76). */
+tl.fromTo('#t4core', { scale: 1 },
+    { scale: 0.76, duration: T4_HOLD, ease: 'power2.in', immediateRender: false }, T4_DRAW)
+  .fromTo('#t4well', { scale: 1 },
+    { scale: 0.88, duration: T4_HOLD, ease: 'power2.in', immediateRender: false }, T4_DRAW);
+
+/* "AI.": the core flares open and the wash takes the frame. The wash ends at
+   full and HOLDS there, so the last frame of the scene is the wash the next
+   scene cuts from; the clip window is what removes it, not a tween. */
+tl.fromTo('#t4core', { scale: 0.76, opacity: 1 },
+    { scale: 6.4, opacity: 0, duration: T4_BURST, ease: 'power3.out', immediateRender: false }, T4_GO)
+  .fromTo('#t4burst', { scale: 0.3, opacity: 1 },
+    { scale: 3.8, opacity: 0, duration: T4_BURST, ease: 'power3.out', immediateRender: false }, T4_GO)
+  .fromTo('#t4well', { scale: 0.88, opacity: 1 },
+    { scale: 2.2, opacity: 0, duration: T4_BURST, ease: 'power3.out', immediateRender: false }, T4_GO)
+  /* the wash goes bright FAST and then rests bright: a warm wash held at half
+     opacity over the navy is a muddy grey, so it must not linger there. */
+  .fromTo('#t4wash', { opacity: 0 },
+    { opacity: 0.97, duration: T4_WASH, ease: 'power2.out', immediateRender: false }, T4_GO + 0.04);
       /* 8 . citations and references behind every statement.
    RETIMED for the v2.4 line (96 words, scenes.json s08_evidence). Every fraction
    below is (words spoken before the phrase) / 96, recomputed from the NEW text:
@@ -2329,9 +2822,12 @@ tl.from('#s8export', { opacity: 0, y: 12, duration: 0.6, ease: 'power3.out' }, a
     { opacity: 0, duration: 0.36, ease: 'power2.out', immediateRender: false }, atf('s08_evidence', 0.958) + 0.14)
   .fromTo('#s8export', { scale: 1 },
     { scale: 1.05, duration: 0.18, yoyo: true, repeat: 1, ease: 'power2.out', immediateRender: false }, atf('s08_evidence', 0.958));
-      /* 13 . reports and regeneration
-   RETIMED for the v2.4 line (64 words, scenes.json s13_report). Fractions are
-   (words spoken before the phrase) / 64, recomputed from the NEW text:
+      /* 13 . reports: the report is CLICKED OPEN, then it scrolls.
+
+   WORD SHARE for the v2.5 line (64 words, scenes.json s13_report, byte
+   identical to v2.4). Fractions are (words spoken before the phrase) / 64 and
+   are carried over verbatim from the v2.4 cues file, which derived them from
+   this exact text:
      0.000  "For the leadership table,"
      0.063  "one button turns the round into a governance report"
      0.203  "simple or in depth."
@@ -2342,32 +2838,126 @@ tl.from('#s8export', { opacity: 0, y: 12, duration: 0.6, ease: 'power3.out' }, a
      0.578  "When a new round lands"
      0.656  "one more button rewrites the analysis for it"
      0.875  "the Head of Teaching and Learning"
-   The page's own chrome still assembles on absolute offsets (0.1 to 1.3s): that
-   ladder sits inside the first clause either way, and it is the page drawing
-   itself, not a beat. Visuals are unchanged from v2.3. */
-      tl.from('#s13head', { opacity: 0, y: 16, duration: 0.7 }, at('s13_report', -0.4))
-        .from('#s13page', { opacity: 0, y: 20, duration: 0.8, ease: 'power2.out' }, at('s13_report', 0.1))
-        .from('#s13top', { opacity: 0, y: 12, duration: 0.6 }, at('s13_report', 0.5))
-        .from('#s13tabs', { opacity: 0, y: 10, duration: 0.5 }, at('s13_report', 0.7))
-        .from('#s13scope', { opacity: 0, y: 10, duration: 0.55 }, at('s13_report', 0.9))
-        .from('#s13method', { opacity: 0, duration: 0.55 }, at('s13_report', 1.1))
-        /* "one button turns the round into a governance report" (word share 0.063) */
-        .from('#s13sec', { opacity: 0, y: 12, duration: 0.6 }, at('s13_report', 1.3))
-        .from('#s13bl li', { opacity: 0, x: -10, duration: 0.45, stagger: 0.14 }, atf('s13_report', 0.125))
-        .from('#sc13 .refmk', { opacity: 0, scale: 0.4, duration: 0.45, stagger: 0.1, ease: 'back.out(2)' }, atf('s13_report', 0.156))
-        /* "simple or in depth": the second tab taps itself */
-        .fromTo('#s13tabB', { scale: 1 }, { scale: 1.07, duration: 0.18, yoyo: true, repeat: 1, ease: 'power2.out', immediateRender: false }, atf('s13_report', 0.203))
-        /* "and you have a PDF or a Google Doc": the document the export builds */
-        .from('#s13doc', { opacity: 0, scale: 0.94, y: 16, duration: 0.8, ease: 'power3.out' }, atf('s13_report', 0.375))
-        .from('#s13d1, #s13d2, #s13d3, #s13d4, #s13d5', { opacity: 0, y: 10, duration: 0.5, stagger: 0.09 }, atf('s13_report', 0.410))
-        /* "all references attached" */
-        .fromTo('#s13sheen', { xPercent: -140 }, { xPercent: 140, duration: 1.1, ease: 'power1.inOut', immediateRender: false }, atf('s13_report', 0.469))
-        /* "When a new round lands, one more button rewrites the analysis for it" */
-        .from('#s13regen', { opacity: 0, y: 14, duration: 0.6 }, atf('s13_report', 0.578))
-        .fromTo('#s13bar', { width: '0%' }, { width: '100%', duration: 2.0, ease: 'power1.inOut' }, atf('s13_report', 0.656))
-        /* land the chip on the person, not on the bar finishing */
-        .from('#s13chk', { opacity: 0, scale: 0.9, duration: 0.45, ease: 'back.out(1.7)' }, atf('s13_report', 0.875));
-      spotlight('#s13export', atf('s13_report', 0.266), 2.0);                   // "One tap or click"
+
+   The two clicks are anchored to the PHRASES the build brief names ("one
+   button" and "One tap or click"), not to the percentages it quotes alongside
+   them: those percentages were computed against a shorter draft of this line,
+   and the phrase is what the viewer hears. The scroll's 0.55 start is the one
+   number that lands the same either way.
+
+   The window's own chrome still assembles on a short absolute ladder (0.1 to
+   1.1s): that ladder sits inside the first clause either way, and it is the
+   window drawing itself, not a beat.
+
+   The scroll is ONE tween, budgeted from what the line leaves after it, so it
+   always settles instead of being cut mid travel. */
+
+var S13_TRAVEL = 195;          /* px of report page travel: 664 page - 469 viewport, measured off the built page */
+var S13_CUR_INX = 88;          /* cursor entrance, x offset from the Report button */
+var S13_CUR_INY = 168;         /* cursor entrance, y offset from the Report button */
+var S13_CUR_MIX = -119;        /* the In Depth menu item, x offset from the Report button */
+var S13_CUR_MIY = 105;         /* the In Depth menu item, y offset from the Report button */
+
+var S13_CLICK1 = atf('s13_report', 0.063);                    /* "one button turns the round into a governance report" */
+var S13_CLICK2 = atf('s13_report', 0.266);                    /* "One tap or click" */
+var S13_SCROLL = atf('s13_report', 0.55);
+var S13_TAIL = at('s13_report', NARR.s13_report.dur - 0.25);  /* last frame still credibly on this scene */
+var S13_SCDUR = Math.max(2.4, S13_TAIL - S13_SCROLL);
+
+/* ---- beat A . the window draws itself, "For the leadership table," ----
+   The ladder is BUDGETED, not a constant: its last rung has to have finished
+   before the cursor presses the Report button, or the histogram grows after the
+   menu is already open. Six rungs, sized from the distance to that first click,
+   with the last one landing exactly on it. */
+var S13_RUNG = Math.max(0.09, (S13_CLICK1 - at('s13_report', 0.02) - 0.60) / 5);
+function s13rung(n) { return at('s13_report', 0.02) + n * S13_RUNG; }
+
+tl.from('#s13head', { opacity: 0, y: 16, duration: 0.7 }, at('s13_report', -0.4))
+  .from('#s13win', { opacity: 0, y: 20, duration: 0.7, ease: 'power2.out' }, s13rung(0))
+  .from('#s13mast', { opacity: 0, y: -10, duration: 0.45 }, s13rung(1))
+  .from('#s13sh', { opacity: 0, y: 10, duration: 0.45 }, s13rung(2))
+  .from('#s13ctl', { opacity: 0, y: 10, duration: 0.45 }, s13rung(3))
+  .from('#s13stats .stat', { opacity: 0, y: 12, duration: 0.45, stagger: 0.08 }, s13rung(4))
+  .from('#s13dist', { opacity: 0, y: 12, duration: 0.45 }, s13rung(5))
+  .from('#s13dist .hb', { scaleY: 0, transformOrigin: '50% 100%', duration: 0.4, stagger: 0.035, ease: 'power2.out' }, s13rung(5));
+
+/* ---- beat B . the cursor arrives and clicks Report ----
+   The glide LANDS on the click, and the menu opens 0.1s behind the ring, so the
+   menu is visibly opened by something (the #s8mk taprip idiom). */
+tl.fromTo('#s13cur', { x: S13_CUR_INX, y: S13_CUR_INY, opacity: 0 },
+    { x: 0, y: 0, opacity: 1, duration: 0.95, ease: 'power2.inOut', immediateRender: false }, S13_CLICK1 - 0.9)
+  .fromTo('#s13click', { scale: 0, opacity: 0.65 },
+    { scale: 3.6, opacity: 0, duration: 0.5, ease: 'power2.out', immediateRender: false }, S13_CLICK1)
+  .fromTo('#s13press1', { opacity: 0 },
+    { opacity: 1, duration: 0.08, ease: 'none', immediateRender: false }, S13_CLICK1)
+  .fromTo('#s13press1', { opacity: 1 },
+    { opacity: 0, duration: 0.34, ease: 'power2.out', immediateRender: false }, S13_CLICK1 + 0.12)
+  .fromTo('#s13repbtn', { scale: 1 },
+    { scale: 0.965, duration: 0.1, yoyo: true, repeat: 1, ease: 'power2.out', immediateRender: false }, S13_CLICK1)
+  /* the menu drops open from its own top right corner */
+  .fromTo('#s13menu', { opacity: 0, y: -8, scaleY: 0.86 },
+    { opacity: 1, y: 0, scaleY: 1, duration: 0.32, ease: 'power3.out', immediateRender: false }, S13_CLICK1 + 0.1);
+
+/* "simple or in depth.": the two items light in the order the narrator says them.
+   Literal rgba is the light theme hover tint the product uses on .repmi. */
+tl.fromTo('#s13miA', { backgroundColor: 'rgba(20,35,63,0)' },
+    { backgroundColor: 'rgba(20,35,63,.07)', duration: 0.22, ease: 'power2.out', immediateRender: false }, atf('s13_report', 0.203))
+  .to('#s13miA', { backgroundColor: 'rgba(20,35,63,0)', duration: 0.4, ease: 'power2.inOut' }, atf('s13_report', 0.203) + 0.5)
+  .fromTo('#s13miB', { backgroundColor: 'rgba(20,35,63,0)' },
+    { backgroundColor: 'rgba(20,35,63,.07)', duration: 0.22, ease: 'power2.out', immediateRender: false }, atf('s13_report', 0.234));
+
+/* ---- beat C . "One tap or click": the cursor takes In Depth ---- */
+tl.fromTo('#s13cur', { x: 0, y: 0 },
+    { x: S13_CUR_MIX, y: S13_CUR_MIY, duration: 0.55, ease: 'power2.inOut', immediateRender: false }, S13_CLICK2 - 0.5)
+  .fromTo('#s13click', { scale: 0, opacity: 0.65 },
+    { scale: 3.6, opacity: 0, duration: 0.5, ease: 'power2.out', immediateRender: false }, S13_CLICK2)
+  .fromTo('#s13press2', { opacity: 0 },
+    { opacity: 1, duration: 0.08, ease: 'none', immediateRender: false }, S13_CLICK2)
+  .fromTo('#s13press2', { opacity: 1 },
+    { opacity: 0, duration: 0.34, ease: 'power2.out', immediateRender: false }, S13_CLICK2 + 0.12)
+  /* the menu closes, the cursor leaves with it, the live page retires */
+  .fromTo('#s13menu', { opacity: 1, y: 0 },
+    { opacity: 0, y: -6, duration: 0.24, ease: 'power2.in', immediateRender: false }, S13_CLICK2 + 0.2)
+  .fromTo('#s13cur', { opacity: 1 },
+    { opacity: 0, duration: 0.3, ease: 'power2.in', immediateRender: false }, S13_CLICK2 + 0.24)
+  .fromTo('#s13snapv', { opacity: 1, y: 0 },
+    { opacity: 0, y: -16, duration: 0.42, ease: 'power2.in', immediateRender: false }, S13_CLICK2 + 0.2);
+
+/* the report page takes the window. .from(), so the CSS rests on the report,
+   which IS the scene's last frame, and the seek before the click holds it out. */
+tl.from('#s13repv', { opacity: 0, y: 20, duration: 0.55, ease: 'power3.out' }, S13_CLICK2 + 0.3);
+
+/* "and you have a PDF or a Google Doc": the export control the board renders */
+spotlight('#s13export', atf('s13_report', 0.375), 1.7);
+
+/* "all references attached" then "teachers anonymised by construction": the
+   method card already says both, in the product's own words, so the beat is a
+   colour lift on its two clauses, not a second ring in a scene that owns one.
+   Literal hexes are this scene's light theme tokens, the projector pass values
+   dashboard.css runs on the board's inks: --ink-mid #586479 lifting to --ink
+   #14233f, then released back to rest. */
+tl.fromTo('#s13mref', { color: '#586479' },
+    { color: '#14233f', duration: 0.4, ease: 'power2.out', immediateRender: false }, atf('s13_report', 0.469))
+  .to('#s13mref', { color: '#586479', duration: 0.6, ease: 'power2.inOut' }, atf('s13_report', 0.469) + 1.0)
+  .fromTo('#s13mano', { color: '#586479' },
+    { color: '#14233f', duration: 0.4, ease: 'power2.out', immediateRender: false }, atf('s13_report', 0.516))
+  .to('#s13mano', { color: '#586479', duration: 0.6, ease: 'power2.inOut' }, atf('s13_report', 0.516) + 1.0);
+
+/* ---- beat D . the slow read ----
+   ONE tween on the page inside the masked viewport: linear enough to read as a
+   reader scrolling, eased at both ends so it neither snaps on nor stops dead.
+   It rests at the bottom of its travel, settled on the last bullets. */
+tl.fromTo('#s13scroll', { y: 0 },
+  { y: -S13_TRAVEL, duration: S13_SCDUR, ease: 'power1.inOut', immediateRender: false }, S13_SCROLL);
+
+/* the citation markers attach as their bullet ARRIVES, not on one stagger: the
+   first one lands on the words "all references attached", where it is the only
+   bullet above the fold; the other three attach as the scroll lifts them into
+   the frame, which the travel puts at roughly 0.75 / 0.84 / 0.93 of the line. */
+tl.from('#s13pts li:nth-child(1) .refmk', { opacity: 0, scale: 0.4, duration: 0.45, ease: 'back.out(2)' },
+    atf('s13_report', 0.469) + 0.2)
+  .from('#s13pts li:nth-child(n+2) .refmk', { opacity: 0, scale: 0.4, duration: 0.45, ease: 'back.out(2)',
+    stagger: (atf('s13_report', 0.93) - atf('s13_report', 0.75)) / 2 }, atf('s13_report', 0.75));
       /* 10 . coverage (short scene: four tiles and the ring, nothing else)
    Fractions recomputed on the v2.4 line (36 words): 0.278 "who has been seen?"
    (the tiles land on the question, then count through the list that answers it) .
@@ -2524,13 +3114,100 @@ tl.fromTo('#t3hero .jpulse', { scale: 0.66, opacity: 0.85 },
       tl.to('#s11all, #s11sess', { opacity: 0.5, duration: 0.45 }, atf('s11_teacher', 0.400))
         .to('#s11all, #s11sess', { opacity: 1, duration: 0.6 }, atf('s11_teacher', 0.400) + 2.4);
       /* 12 . teacher portal
-   Beat 1 the wall, beat 2 the portal page. The page is a full-frame layer over
-   the wall and enters with .from(), so the scene's resting state is the finished
-   portal page; the wall is only ever visible while that entrance has not run. */
-      tl.from('#s12kick', { opacity: 0, y: 14, duration: 0.6 }, at('s12_portal', -0.4))
-        .from('#sc12 .psecthead', { opacity: 0, y: 12, duration: 0.6 }, at('s12_portal', -0.2))
-        /* "A portal for every member of staff" */
-        .from('#s12tiles .pface', { opacity: 0, y: 22, scale: 0.96, duration: 0.6, stagger: 0.12, ease: 'power2.out' }, atf('s12_portal', 0.089))
+   v2.5 refit: three beats. Beat 0 the REAL iPad app open plus a synthetic portal
+   sign in, beat 1 the wall, beat 2 the portal page. "Teachers have their own
+   door" is now literally a real door being opened: REAL iOS Simulator footage
+   where a real tap on "Teacher Portal" really opens the app, the footage's own
+   dark zoom crossfades into a sign in card (invented name, dots for a password,
+   nothing real), and a second tap on Sign in opens the wall. The drawn home
+   screen, drawn icon fingertip, gold ripple and authored app-open zoom are GONE.
+   The sign in card's own fingertip STAYS: that card is drawn, not footage.
+   The page is a full-frame layer over the wall and enters with .from(), so the
+   scene's resting state is the finished portal page; the wall is only ever
+   visible while that entrance has not run. Both head-beat layers rest at
+   opacity 0 and are held visible by fromTo(immediateRender:false), the #s7gate
+   idiom, so a frame rendered without the timeline shows the portal page.
+
+   THE CLIP MAP (the one law of this beat)
+     clip data-start = S12_TAP - 0.80, so the real tap fires exactly ON the 0.036
+     word-share ("their"). This scene is the TIGHT one: the tap cue sits only
+     0.65s into the line, and the sign in card, its password and its own tap all
+     have to happen before 0.098. So the handover is taken at 1.30s of file time
+     rather than the 1.55s used in sc02/sc07: the opened app is already ~96% of
+     the frame there, the fill pushes the remaining hairline of wallpaper off the
+     frame edge, and the sign in layer is OPAQUE and crossfades up over the rest.
+     Clip window 1.90s, cut well before the file's light-gray tail.
+
+   Word share on the v2.4 line (56 words):
+     0.036  "their"                the REAL icon tap in the footage
+     0.064  the app takes the frame; the sign in card crossfades up out of it
+     0.098  the Sign in tap        (inside "A portal for every member of staff")
+     0.112  the sign in dissolves                         UNCHANGED
+     0.116  the wall kicker                               UNCHANGED
+     0.122  the wall head                                 UNCHANGED
+     0.128  the staff tiles                               UNCHANGED
+     0.194  "staff:"               the zoom push          UNCHANGED
+     0.214  "their photograph"     the portal page lands  UNCHANGED
+     0.250  "their history"                               UNCHANGED */
+
+var S12_TAP = atf('s12_portal', 0.036);                          // the REAL tap, on "their"
+var S12_CLIP = Math.max(S12_TAP - 0.80, at('s12_portal', -0.55)); // = the video's data-start
+var S12_DARK = S12_CLIP + 1.30;                                  // the opened app owns the frame
+var S12_SIGN = atf('s12_portal', 0.098);      // the fingertip presses Sign in
+var S12_OUT = atf('s12_portal', 0.112);       // the sign in dissolves into the wall
+
+/* beat 0a . the tablet. Held from the scene start (poster still under the clip
+   window), the touch indicator on the real tap frame, then handed to the sign in
+   card, which is opaque and covers it before this fade even finishes. */
+tl.fromTo('#s12ipd', { opacity: 1 },
+    { opacity: 1, ease: 'none', immediateRender: false,
+      duration: (S12_DARK + 0.26) - at('s12_portal', -0.55) }, at('s12_portal', -0.55))
+  /* the iOS touch indicator, at full opacity ON the tap frame (see s02_form for
+     why the fade-in runs BEFORE the tap and not after it) */
+  .fromTo('#s12touch', { opacity: 0, scale: 0.92 },
+    { opacity: 1, scale: 1, duration: 0.12, ease: 'power2.out', immediateRender: false }, S12_TAP - 0.12)
+  .to('#s12touch', { opacity: 0, duration: 0.25, ease: 'power2.in' }, S12_TAP + 0.18)
+  /* the app takes the frame, same move as the other two head beats. Here it does
+     a second job: the dissolve is taken at 1.30s of file time rather than 1.60s,
+     where a hairline of wallpaper still rings the opened app, and pushing the
+     screen past the frame edge crops that ring off outright. */
+  .fromTo('#s12ipd .ipdev', { scale: 1 },
+    { scale: 2.8, duration: 0.26, ease: 'power2.in', immediateRender: false }, S12_DARK)
+  /* the fade waits for the fill to LAND (see s02_form); by then the sign in
+     layer above is already opaque, so this is only housekeeping */
+  .to('#s12ipd', { opacity: 0, duration: 0.28, ease: 'power2.out' }, S12_DARK + 0.26);
+
+/* beat 0b . the synthetic sign in, crossfading up OUT of the footage's dark so
+   the app open reads as one continuous move. */
+tl.fromTo('#s12login', { opacity: 0 },
+    { opacity: 1, duration: 0.34, ease: 'power2.out', immediateRender: false }, S12_DARK)
+  .fromTo('#s12lcard', { opacity: 0, scale: 1.06 },
+    { opacity: 1, scale: 1, duration: 0.34, ease: 'power3.out', immediateRender: false }, S12_DARK + 0.02)
+  /* the invented name, then the password filling itself, finishing on the press */
+  .fromTo('#s12lname', { opacity: 0, x: -10 },
+    { opacity: 1, x: 0, duration: 0.20, ease: 'power2.out', immediateRender: false }, S12_DARK + 0.24)
+  .fromTo('#s12ldots i', { opacity: 0, scale: 0.3 },
+    { opacity: 1, scale: 1, duration: 0.16, ease: 'back.out(2.2)', stagger: 0.020, immediateRender: false }, S12_DARK + 0.32)
+  /* the fingertip, anchored to the button itself (.ipdbtnwrap), landing on the cue */
+  .fromTo('#s12ltip', { opacity: 0, x: 90, y: 110, scale: 1.25 },
+    { opacity: 1, x: 0, y: 0, scale: 1, duration: 0.34, ease: 'power3.out', immediateRender: false }, S12_DARK + 0.26)
+  .fromTo('#s12lbtn', { scale: 1 }, { scale: 0.955, duration: 0.12, ease: 'power2.in', immediateRender: false }, S12_SIGN)
+  .to('#s12lbtn', { scale: 1, duration: 0.3, ease: 'back.out(2)' }, S12_SIGN + 0.12)
+  .fromTo('#s12ltip', { scale: 1 }, { scale: 0.88, duration: 0.12, ease: 'power2.in', immediateRender: false }, S12_SIGN)
+  .to('#s12ltip', { scale: 1, duration: 0.3, ease: 'back.out(2)' }, S12_SIGN + 0.12)
+  .fromTo('#s12lrip i', { scale: 0.42, opacity: 0.9 },
+    { scale: 2.2, opacity: 0, duration: 0.62, ease: 'power2.out', stagger: 0.1, immediateRender: false }, S12_SIGN + 0.08)
+  .to('#s12ltip', { opacity: 0, y: -14, duration: 0.26, ease: 'power2.in' }, S12_SIGN + 0.2)
+  /* the door opens: the card pushes forward and dissolves onto the wall */
+  .to('#s12lcard', { scale: 1.06, duration: 0.55, ease: 'power2.in' }, S12_OUT)
+  .to('#s12login', { opacity: 0, duration: 0.55, ease: 'power2.in' }, S12_OUT);
+
+/* beat 1 . the wall, compressed to sit behind the sign in dissolve */
+      tl.from('#s12kick', { opacity: 0, y: 14, duration: 0.6 }, atf('s12_portal', 0.116))
+        .from('#sc12 .psecthead', { opacity: 0, y: 12, duration: 0.6 }, atf('s12_portal', 0.122))
+        /* "A portal for every member of staff" (the phrase runs 0.089 to 0.196,
+           so the tiles still land inside it, just later in it) */
+        .from('#s12tiles .pface', { opacity: 0, y: 22, scale: 0.96, duration: 0.55, stagger: 0.06, ease: 'power2.out' }, atf('s12_portal', 0.128))
         /* the zoom push: the wall eases forward, Eleanor's page lands over it */
         .fromTo('#s12wall', { scale: 1 }, { scale: 1.06, duration: 0.9, ease: 'power2.in', immediateRender: false }, atf('s12_portal', 0.194))
         /* "their photograph" */

@@ -1,145 +1,148 @@
 {
-  "total": 330.648,
+  "total": 338.999,
   "gap": 0.45,
-  "lead": 2.5,
-  "source": "single take",
-  "tempo": 1,
   "holds": {
     "s01_cover": 2,
     "s06_pipeline": 3,
-    "s10_coverage": 2.5
+    "s10_coverage": 2.5,
+    "s14_trust": 2.5
   },
-  "tightened": {
-    "long_to": 0.45,
-    "short_to": 0.22,
-    "thresh": 0.55
-  },
+  "lead": 2.5,
+  "source": "single take",
+  "tempo": 1,
   "scenes": [
     {
       "id": "s01_cover",
       "title": "Cover",
       "text": "Every school should observe lessons. Very few can show what happens next. This is the Observation System: one route from lesson observation, to collected evidence, to a coaching plan for every teacher, covering every step of the learning journey.",
       "start": 2.5,
-      "dur": 15.988
+      "dur": 16.981
     },
     {
       "id": "t1_step1",
       "title": "Step 1 transition",
       "text": "Step one. The teachers are observed by their coach.",
-      "start": 20.488,
-      "dur": 3.533
+      "start": 21.481,
+      "dur": 3.669
     },
     {
       "id": "s02_form",
       "title": "The form",
       "text": "While the coaches are observing a lesson, they fill in the relevant observation form: subject, class and teacher, with live dropdowns fed by the school's own staff directory, so nothing is typed from memory and no list is ever out of date. Class composition is a few taps. The whole context of the lesson, captured throughout the observation.",
-      "start": 24.471,
-      "dur": 20.804
+      "start": 25.601,
+      "dur": 20.907
     },
     {
       "id": "s03_scale",
       "title": "The regulator's scale",
       "text": "Each observation uses the Regulatory Body's own six point scale, from Very Weak to Outstanding, with the same proportion bands its inspectors already use. Ten criteria, from attainment and progress to teaching and leadership, each with room for a comment. The form speaks the language of inspection, because it was built to coach teachers using the same criteria.",
-      "start": 45.725,
-      "dur": 21.468
+      "start": 46.957,
+      "dur": 21.419
     },
     {
       "id": "s04_pad",
       "title": "Evidence Pad",
       "text": "The coach fills in the form by typing their notes, or by writing them with the Apple Pencil on the built in Evidence Pad. The Evidence Pad also lets the coach take or attach photos of anything noteworthy in the lesson. The system transcribes the handwriting and turns it into text. Everything is saved automatically throughout the observation, so nothing is ever lost mid lesson.",
-      "start": 67.643,
-      "dur": 23.29
+      "start": 68.826,
+      "dur": 23.472
     },
     {
       "id": "s05_lock",
       "title": "Saved",
       "text": "When it is done, each observation gets its own ID. Everything is saved, and ready for review.",
-      "start": 91.384,
-      "dur": 5.984
+      "start": 92.748,
+      "dur": 6.133
     },
     {
       "id": "s06_pipeline",
       "title": "One tap, filed four ways",
       "text": "One tap files everything, four ways at once. The observation lands in a spreadsheet. It mirrors into a live database, duplicate proof by design. After each coaching observation, an email is sent to the observer, for safe keeping and immediate easy access, with a link to the observation. Even the form's Evidence Pad handwriting, and any attached pictures, are archived in secured storage, so everything can be fully reviewed if ever needed.",
-      "start": 97.817,
-      "dur": 25.034
+      "start": 99.331,
+      "dur": 25.259
     },
     {
       "id": "t2_step2",
       "title": "Step 2 transition",
       "text": "Step two. Retrieving and viewing the collected evidence.",
-      "start": 125.851,
-      "dur": 3.461
+      "start": 127.589,
+      "dur": 3.755
     },
     {
       "id": "s07_story",
       "title": "The dashboard story",
       "text": "For example: first, we open the Observation Dashboard, which is password protected. Here is an observation round from one of the associated schools. The story plays itself: a hundred and eleven lessons, a hundred and five teachers, counted up live from the data. Where judgements sit on the six point scale. What is working. Where to focus next. And one tap presents that round's findings in full screen, built to showcase the round by itself in any meeting.",
-      "start": 129.762,
-      "dur": 27.671
+      "start": 131.794,
+      "dur": 28.179
     },
     {
       "id": "s16_dataset",
       "title": "The data set",
       "text": "Once an observation round is completed, the relevant school stakeholders receive a whole set of data. Individual lesson observations. A snapshot of the round. Coverage. And a highly detailed report.",
-      "start": 157.883,
-      "dur": 10.728
+      "start": 160.424,
+      "dur": 11.179
     },
     {
       "id": "s09_movement",
       "title": "Teacher progression",
       "text": "Rounds can be compared to show teacher progression. Every teacher seen in both rounds is displayed from one judgement point to the next, from where they were to where they are, green when they moved toward Outstanding. A transition matrix counts the improvements, the holds and the declines. This is the question governors actually ask: is teaching getting better? If not, why? And how can we improve?",
-      "start": 169.061,
-      "dur": 23.845
+      "start": 172.052,
+      "dur": 24.191
+    },
+    {
+      "id": "t4_magic",
+      "title": "Magic transition",
+      "text": "This is where the real magic happens. With the help of AI.",
+      "start": 196.693,
+      "dur": 3.637
     },
     {
       "id": "s08_evidence",
       "title": "References",
       "text": "The report is generated using citations and references from the actual observations. Every written statement carries a small number: a citation count, showing how many times that statement is cited across the lesson observations. Click or tap the number to open the citations and see the actual observations behind each statement: subject, date, judgement, and the inspector's words, verbatim. AI cites the hundreds of references that sit behind every claimed statement. Nothing on this dashboard is an opinion without evidence, and it can all be presented to your regulatory body at the click of a button.",
-      "start": 193.356,
-      "dur": 34.801
+      "start": 200.78,
+      "dur": 34.684
     },
     {
       "id": "s13_report",
       "title": "Reports and regeneration",
       "text": "For the leadership table, one button turns the round into a governance report, simple or in depth. One tap or click, and you have a PDF or a Google Doc, all references attached, teachers anonymised by construction. When a new round lands, one more button rewrites the analysis for it, the AI's work double checked by the Head of Teaching and Learning before publishing.",
-      "start": 228.607,
-      "dur": 21.447
+      "start": 235.914,
+      "dur": 22.452
     },
     {
       "id": "s10_coverage",
       "title": "Coverage",
       "text": "The Dashboard also shows Coverage, which answers the other question: who has been seen? Teachers on the register, teachers observed, lessons per teacher, and who is still waiting, so no one is invisible for a term.",
-      "start": 250.504,
-      "dur": 12.644
+      "start": 258.816,
+      "dur": 12.886
     },
     {
       "id": "t3_step3",
       "title": "Step 3 transition",
       "text": "Step three. The coaching plan.",
-      "start": 265.648,
-      "dur": 1.981
+      "start": 274.202,
+      "dur": 2.219
     },
     {
       "id": "s11_teacher",
       "title": "The teacher view",
       "text": "Drill into any teacher and their history follows. Two gauges, student progress and teaching, averaged across every observation. Each session, its skills and its notes, one card each. And below them, a coaching plan: drafted by AI from that teacher's own lessons, checked word for word against the observed lesson itself, grounded in the school's own rubric and its strategic plan, aiming for excellence. The coach reads it, edits and amends it if needed, then approves the plan. Once approved, the teacher can review it.",
-      "start": 268.08,
-      "dur": 29.874
+      "start": 276.871,
+      "dur": 30.718
     },
     {
       "id": "s12_portal",
       "title": "The teacher portal",
       "text": "Teachers have their own door. A portal for every member of staff: their photograph, their history, and a notification when a new coaching plan is approved. What they see is deliberately thinner than what leadership sees. No observer's rough notes, no edits, no other teachers, only their own approved coaching plan and their own next steps.",
-      "start": 298.404,
-      "dur": 19.034
+      "start": 308.039,
+      "dur": 18.076
     },
     {
       "id": "s15_close",
       "title": "Close (loop)",
       "text": "From a lesson observed, to evidence, to a coaching plan in the teacher's hand. And when the next round begins, the journey starts again: observe, evidence, coach. Better never stops.",
-      "start": 317.888,
-      "dur": 11.161
+      "start": 326.565,
+      "dur": 10.834
     }
   ]
 }

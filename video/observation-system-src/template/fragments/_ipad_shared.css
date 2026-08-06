@@ -1,0 +1,157 @@
+/* ============================================================================
+   SHARED . THE iPAD APP OPEN (REAL iOS SIMULATOR FOOTAGE)
+   One neutral tablet bezel with REAL iPadOS springboard footage inside it, used
+   as a head beat by three scenes: sc02 opens "Observation Form", sc07 opens
+   "Obs Dashboard", sc12 opens "Teacher Portal".
+
+   v2.5 refit: the CSS-drawn home screen (wallpaper, app grid, dock, fingertip,
+   gold ripple, app-open zoom tween) is GONE. Igor rejected the drawn version.
+   The screen content is now a HyperFrames-owned <video> clip of a real device
+   where a real tap really opens the app, and the genuine iOS app-open zoom IS
+   the transition. Nothing here draws a home screen any more.
+
+   Why this file is named with a leading underscore: scripts/assemble.mjs
+   concatenates EVERY *.css in template/fragments/ in sorted order, and "_"
+   sorts before every letter, so this block lands first and any scene sheet can
+   still override it. The section/cues loops are driven by the @@ markers in
+   skeleton.html, so a css-only fragment with no <id> is simply never looked up
+   there.
+
+   WHERE THE PIECES LIVE
+     markup      each scene's own <id>.section.html (identical block, only the
+                 ids and the mp4/jpg source change)
+     geometry    this file, in fixed px
+     per scene   <id>.css carries only the touch-indicator coordinate
+                   #<p>ipd { --tpx / --tpy }   the tapped icon, as a % of the
+                                               VIDEO box (= the screen box)
+                 plus the poster still for that scene's screen
+
+   THE GEOMETRY (do not drift from it)
+     The footage is 2048 x 2732, i.e. exactly 3:4 portrait. The screen box is
+     therefore also exactly 3:4 (720 x 960), so `object-fit: cover` crops
+     nothing and a percentage of the video frame is the SAME percentage of the
+     screen box. That identity is what makes the touch circle land on the icon:
+     break the 3:4 and every --tpx/--tpy in the scene sheets is wrong.
+       screen  720 x 960        device 764 x 1004 (22px bezel all round)
+       device height 1004 in a 1080 frame = 38px of air top and bottom
+
+   RESTING STATE LAW (motion-rules): .ipdlayer rests at opacity 0, so a frame
+   rendered with no timeline shows the scene's real content and never the head
+   beat. The layer is HELD visible for the head window by a
+   fromTo(immediateRender:false) and taken out by a to(), the same idiom the
+   #s7gate password layer already uses. The touch circle rests at opacity 0 too,
+   so a seek before its tween shows an untouched springboard rather than a
+   circle parked on an icon.
+
+   THE POSTER STILL. The video clip cannot start at the scene start: its own tap
+   frame is fixed 0.80s into the file and that tap has to land on the scene's own
+   tap word-share, so the clip starts LATER than the layer appears (1.00s later
+   in sc02 and sc07, 0.40s in sc12). For that lead the screen shows a still of
+   the footage's own frame 0 as a background-image, pixel-identical to the first
+   video frame, so the video taking over is seamless. It also means a frame
+   pulled with no media runtime shows the springboard, not a black rectangle.
+
+   No school branding: the segment used is springboard + dark app-open zoom
+   only. The clip windows are cut BEFORE each file's tail, where the opened app
+   paints its own light-gray ground, so nothing past the dark peak is ever on
+   screen. Never extend a clip window past the numbers in the cue files.
+   ========================================================================== */
+
+.ipdlayer {
+  position: absolute; inset: 0; z-index: 50;
+  opacity: 0;                                   /* resting state: gone */
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: #eef1fb;
+  background:
+    radial-gradient(1400px 900px at 18% -12%, #16224a, transparent 62%),
+    radial-gradient(1150px 820px at 96% 110%, #101a3c, transparent 58%),
+    #070a1c;
+}
+/* the seeded star field the navy scenes use, dimmed: same sky, so the cut into
+   and out of the tablet stays inside the brand */
+.ipdlayer .ipdsky { opacity: .4 }
+
+/* ---- the device ---- */
+.ipdev {
+  position: relative; z-index: 2;
+  width: 764px; height: 1004px; padding: 22px;
+  border-radius: 46px;
+  background: linear-gradient(158deg, #2c323b, #14181e);
+  box-shadow: 0 60px 120px -50px rgba(0,0,0,.85),
+              inset 0 0 0 1px rgba(255,255,255,.10),
+              0 0 0 1px rgba(0,0,0,.5);
+}
+.ipdcam {
+  position: absolute; top: 7px; left: 50%; margin-left: -4px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #0b0d12;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.16), 0 0 6px rgba(120,160,255,.25);
+}
+/* The screen is BLACK, not navy: the footage ends on a full-frame black app
+   window, so a black ground means the moment the clip window closes (or a frame
+   is pulled without the media runtime) there is no step in luminance and never
+   a white flash. The poster still is set per scene in <id>.css. */
+.ipdscreen {
+  position: relative; width: 100%; height: 100%;
+  border-radius: 24px; overflow: hidden;
+  background: #000 center / cover no-repeat;
+}
+
+/* ---- the footage ----
+   HyperFrames owns playback: data-start / data-duration on the element, muted,
+   playsinline, never a play()/seek() call from composition code. The element is
+   sized to the screen box (3:4, same as the source), so `cover` crops nothing. */
+.ipdvid {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; display: block;
+}
+
+/* ---- the iOS touch indicator ----
+   The gray translucent disc a screen recording draws under the finger. It is
+   placed by --tpx/--tpy, percentages of the VIDEO frame (identical to
+   percentages of this box, see the geometry note above), and centred with
+   negative MARGINS, never a translate, so GSAP owns the transform channel
+   outright. It rests invisible and is driven by an explicit fromTo off the
+   scene timeline: no wall clock, no CSS animation. */
+.ipdtouch {
+  position: absolute; left: var(--tpx); top: var(--tpy);
+  width: 64px; height: 64px; margin: -32px 0 0 -32px;
+  border-radius: 50%; z-index: 9; pointer-events: none;
+  opacity: 0;                                   /* resting state: gone */
+  background: radial-gradient(circle at 50% 50%,
+              rgba(255,255,255,.38), rgba(255,255,255,.34) 58%, rgba(255,255,255,.20) 100%);
+  border: 1px solid rgba(0,0,0,.12);
+  filter: blur(.5px);
+}
+
+/* ---- the fingertip and its tap ripple ----
+   These survive the refit because sc12's SYNTHETIC portal sign-in card still
+   takes a drawn tap on its Sign in button. That card is not footage, it is the
+   video's own illustrative surface, so it keeps the authored fingertip.
+   Nothing else uses these any more.
+   Positioned by --ipx/--ipy on the nearest positioned ancestor (a .ipdbtnwrap
+   around the button). Centred with negative MARGINS, never a translate. */
+.ipdtip {
+  position: absolute; left: var(--ipx); top: var(--ipy);
+  width: 104px; height: 104px; margin: -52px 0 0 -52px;
+  border-radius: 50%; z-index: 9;
+  opacity: 0;                                   /* resting state: gone */
+  background: radial-gradient(circle at 38% 32%, rgba(255,255,255,.62), rgba(255,255,255,.20) 58%, rgba(255,255,255,.07) 100%);
+  border: 1px solid rgba(255,255,255,.46);
+  box-shadow: 0 20px 38px -14px rgba(0,0,0,.72), inset 0 -8px 18px -10px rgba(0,0,0,.45);
+}
+.ipdrip {
+  position: absolute; left: var(--ipx); top: var(--ipy);
+  width: 0; height: 0; z-index: 8; display: block;
+}
+.ipdrip i {
+  position: absolute; left: -58px; top: -58px; width: 116px; height: 116px;
+  border-radius: 50%; border: 3px solid rgba(255,186,20,.85);
+  display: block;
+  opacity: 0;                                   /* resting state: gone */
+}
+
+/* a button that takes a tap: wraps the button so the fingertip can sit at
+   50%/50% of the BUTTON instead of a guessed percentage of the card */
+.ipdbtnwrap { position: relative; display: block }
