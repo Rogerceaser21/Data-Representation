@@ -600,7 +600,7 @@ footer .ramp{margin-bottom:18px}
     <li><a href="#music">My music</a></li>
     <li><a href="#whatif">What if</a></li>
     <li><a href="#stages">11 steps</a></li>
-    <li><a href="#replay">17 misses</a></li>
+    <li><a href="#replay">22 misses</a></li>
     <li><a href="#steer">Cheat sheet</a></li>
     <li><a href="#rules">Rules</a></li>
     <li><a href="#glossary">Glossary</a></li>
@@ -620,7 +620,7 @@ footer .ramp{margin-bottom:18px}
         <div><b>4</b><span>Gates</span></div>
         <div><b>11</b><span>Automatic steps</span></div>
         <div><b>3</b><span>Approved tracks</span></div>
-        <div><b>17</b><span>Recorded misses</span></div>
+        <div><b>22</b><span>Recorded misses</span></div>
       </div>
     </div>
   </div>
@@ -967,7 +967,7 @@ footer .ramp{margin-bottom:18px}
       <li>You approved cine1, drive3 and tech3 on 2026-08-03, for any future video.</li>
       <li>A fresh batch of nine new tracks costs about 72 cents and 15 minutes.</li>
       <li>The raw track is mixed under the voice automatically at build time. It dips while the narrator speaks and rises in the gaps.</li>
-      <li>The v2.2 video used a different drive1 take. That one is kept with the v2.2 video files.</li>
+      <li>The shipped videos use their own drive1 take, kept with the video files and re-mixed to each new length. Since v2.5 the tap and click sounds are baked into the same file, with a clean copy kept beside it.</li>
     </ul>
 
     <div class="sayline"><b>Say "use cine1" at Gate 3.</b> It costs nothing and skips the whole music round.</div>
@@ -1001,7 +1001,7 @@ footer .ramp{margin-bottom:18px}
         <span class="wstate no">Not built yet</span>
         <h3>Stock video footage in the scenes</h3>
         <p>Where it would slot: step 5, Compose.</p>
-        <p>Scenes can already play video files, so the hard part is done.</p>
+        <p>Scenes can already play video files, and since v2.5 the factory films the real product on a simulated iPad: real taps, real app openings, real sounds. What does not exist yet is third-party stock clips.</p>
         <p>It needs one build session: a licence-safe source, plus a pattern for where footage sits.</p>
         <div class="sayline"><b>"Add stock footage, here is an example clip."</b></div>
         <p style="margin-top:10px">That becomes a task.</p>
@@ -1029,11 +1029,12 @@ footer .ramp{margin-bottom:18px}
     </div>
 
     <div class="stagelist">
+<!-- STAGES:START generated from .claude/skills/new-video/SKILL.md; edit the skill, then run sync-page.mjs -->
 
       <details class="stage" id="stage-0">
         <summary>
           <span class="snum">0</span>
-          <span class="stitle"><b>Setup</b><span>copy a video that already works</span></span>
+          <span class="stitle"><b>Setup</b><span>clone the shipped video</span></span>
           <span class="autoflag">No gate</span>
           <span class="plus" aria-hidden="true"></span>
         </summary>
@@ -1041,24 +1042,26 @@ footer .ramp{margin-bottom:18px}
           <div class="block">
             <h4>What happens</h4>
             <ul>
-              <li>Claude asks the brief once: topic, audience, what it shows, where it ships, page or no page.</li>
-              <li>It copies the last known good video into a temporary folder and deletes the old voice track.</li>
-              <li>The look comes from the brand file. The visuals are built from the real product's own styling.</li>
+              <li>Claude asks the brief once: topic, audience, what it shows, where it ships, page or no page, how many chapters.</li>
+              <li>It clones the latest shipped video into a temporary folder, overlays the factory's newest tools, and deletes the old voice and footage.</li>
+              <li>The project is renamed on day one. One shipped video went out carrying the previous video's name because this step was skipped.</li>
+              <li>Three small settings are re-pointed at the new video's scenes so the audio tools aim at the right places.</li>
             </ul>
           </div>
           <div class="block">
             <h4>Tools that run</h4>
             <ul class="tools">
-              <li><code>cp -R sample-staff-voice/staff-voice-src</code> <span class="tnote">copies the known good video</span></li>
-              <li><code>cp template/scripts/score_take.py scripts/</code> <span class="tnote">adds the voice scorer</span></li>
-              <li><code>rm -f assets/narration.*</code> <span class="tnote">deletes the old voice files</span></li>
+              <li><code>git show origin/main:video/...</code> <span class="tnote">pulls the shipped video as the clone base</span></li>
+              <li><code>cp template/scripts/*</code> <span class="tnote">overlays the factory's newest tools</span></li>
+              <li><code>package.json, meta.json, README</code> <span class="tnote">the day-one rename</span></li>
             </ul>
           </div>
           <div class="block">
             <h4>What can go wrong</h4>
             <ul>
               <li>Building inside Google Drive. Drive undoes edits, so work happens in a temporary folder.</li>
-              <li>Forgetting the scorer. Then step 4 has nothing to run.</li>
+              <li>Skipping the rename or the three re-pointed settings. Both misfire silently later.</li>
+              <li>Cloning the old sample. The modern machinery lives in the shipped video.</li>
             </ul>
           </div>
           <div class="autobox">
@@ -1121,20 +1124,21 @@ footer .ramp{margin-bottom:18px}
               <li>The whole approved script goes to the voice engine in one single request.</li>
               <li>One complete recording of the whole script is called a take. It is accepted or binned as a whole.</li>
               <li>Sending it whole is what keeps the voice sounding like one person.</li>
+              <li>Expect a lottery: nine to sixteen takes for one keeper. Rejects are cheap and binned whole.</li>
               <li>The script measures the speaking speed and asks again if it is off, up to five attempts.</li>
-              <li>About a minute and a few cents.</li>
             </ul>
           </div>
           <div class="block">
             <h4>Tools that run</h4>
             <ul class="tools">
               <li><code>node scripts/tts-single.mjs</code> <span class="tnote">records the whole script in one pass</span></li>
+              <li><code>node scripts/prep-take.mjs</code> <span class="tnote">trims dead tails and fuses breath-split pauses</span></li>
             </ul>
           </div>
           <div class="block">
             <h4>What can go wrong</h4>
             <ul>
-              <li>The engine cuts off mid-script or races. The script spots both and rejects the take.</li>
+              <li>The engine cuts off mid-script, races, or leaves a minutes-long silent tail. The scripts spot all three.</li>
               <li>Recording line by line, or stretching single lines. Both are banned. That is the two-narrators bug.</li>
               <li>Reopening the voice engine question. A local engine was tried on 2026-08-03 and lost.</li>
             </ul>
@@ -1160,8 +1164,7 @@ footer .ramp{margin-bottom:18px}
               <li>The one long recording is cut into scenes at its longest silences.</li>
               <li>The pace check reads the speed of EVERY scene, not the average. The average hides the AI voice's habit of starting calm and racing toward the end.</li>
               <li>A safety brake slows any scene that reads faster than the video's own opening scenes. The brake calibrates itself to each new recording. It can never speed a scene up.</li>
-              <li>A second pass trims dead air inside scenes. That takes about 28 seconds off four minutes.</li>
-              <li>A third pass evens out slow tone drift. It runs exactly once.</li>
+              <li>A second pass trims dead air inside scenes. A third pass evens out slow tone drift. It runs exactly once.</li>
             </ul>
           </div>
           <div class="block">
@@ -1170,6 +1173,7 @@ footer .ramp{margin-bottom:18px}
               <li><code>node scripts/split.mjs</code> <span class="tnote">cuts scenes and applies the speed cap</span></li>
               <li><code>python3 scripts/tighten.py</code> <span class="tnote">shortens the pauses</span></li>
               <li><code>python3 scripts/deflutter.py</code> <span class="tnote">evens out tone</span></li>
+              <li><code>node scripts/pacecurve.mjs</code> <span class="tnote">prints the per-scene speed curve</span></li>
             </ul>
           </div>
           <div class="block">
@@ -1177,7 +1181,7 @@ footer .ramp{margin-bottom:18px}
             <ul>
               <li>Hand-editing the timing files. The scripts regenerate them, so the edits vanish or break sync.</li>
               <li>Running the tone pass twice, which applies the correction twice.</li>
-              <li>Removing the per-scene speed cap. That brings back the narrator who speeds up and falls off.</li>
+              <li>Trusting the average speed. Only the scene-by-scene curve tells the truth.</li>
             </ul>
           </div>
           <div class="gatebox">
@@ -1237,15 +1241,17 @@ footer .ramp{margin-bottom:18px}
           <div class="block">
             <h4>What happens</h4>
             <ul>
-              <li>The visuals are written into a template, then generated into the finished file.</li>
+              <li>The visuals are written into per-scene fragments, stitched together, then generated into the finished file.</li>
               <li>Every animation is pinned to the voice timings, so pictures land on the words.</li>
               <li>Late animations are pinned to a share of the line, so a shorter line squeezes instead of losing its end.</li>
+              <li>Ready-made patterns slot in: the chapter spine, real iPad tap footage, the animated cursor, the act-turn burst, miniature product surfaces.</li>
               <li>Highlights are rationed to five per three-minute video. The video ends on a silent eight-second card.</li>
             </ul>
           </div>
           <div class="block">
             <h4>Tools that run</h4>
             <ul class="tools">
+              <li><code>node scripts/assemble.mjs</code> <span class="tnote">stitches the scene fragments together</span></li>
               <li><code>node scripts/build.mjs</code> <span class="tnote">generates the finished file</span></li>
               <li><code>npm run check</code> <span class="tnote">automatic pre-render inspection</span></li>
             </ul>
@@ -1253,7 +1259,7 @@ footer .ramp{margin-bottom:18px}
           <div class="block">
             <h4>What can go wrong</h4>
             <ul>
-              <li>Editing the generated file instead of the template. The next build overwrites it.</li>
+              <li>Editing the generated file instead of the fragments. The next build overwrites it.</li>
               <li>Adding the end card without re-baking the audio to the new length, so the card plays silent.</li>
               <li>Motion that leaves things hidden. The resting picture has to be the finished picture.</li>
             </ul>
@@ -1318,17 +1324,19 @@ footer .ramp{margin-bottom:18px}
             <h4>What happens</h4>
             <ul>
               <li>Your music library is checked first. cine1, drive3 and tech3 are paid for and approved, so they skip straight to the mix.</li>
-              <li>New tracks are only made for a mood the library does not cover, at about eight cents a track.</li>
-              <li>Every candidate must have real movement, a steady body, no sung words, and be longer than the video.</li>
+              <li>New tracks are only made for a mood the library does not cover, at about eight cents a track, and every paid track is saved to the library the moment it is made.</li>
+              <li>Every candidate must have real movement, a steady body, no sung words, and be longer than the video or it gets looped seamlessly.</li>
               <li>Survivors are mixed under the same 30 seconds of real narration, so you compare like with like.</li>
+              <li>If the video shows taps or clicks, matching sounds are made and baked into the same music file, with a clean copy kept beside it.</li>
             </ul>
           </div>
           <div class="block">
             <h4>Tools that run</h4>
             <ul class="tools">
               <li><code>template/scripts/lyria-sweep.py</code> <span class="tnote">generates new tracks to brief</span></li>
-              <li><code>knowledge/music-register-briefs.json</code> <span class="tnote">the three written mood briefs</span></li>
-              <li><code>ffmpeg loudnorm</code> and <code>amix</code> <span class="tnote">mixes music under real narration</span></li>
+              <li><code>node scripts/finish-audio.mjs</code> <span class="tnote">levels, ducks and fades the bed to the exact video length</span></li>
+              <li><code>node scripts/sfx-overlay.mjs</code> <span class="tnote">bakes tap and click sounds at the exact footage times</span></li>
+              <li><code>node scripts/measure-mix.mjs</code> <span class="tnote">proves the mix with measurements</span></li>
             </ul>
           </div>
           <div class="block">
@@ -1399,8 +1407,8 @@ footer .ramp{margin-bottom:18px}
             <ul>
               <li>Every file is fingerprinted on both sides before it is committed, so nothing Drive altered slips through.</li>
               <li>The video and the page go out as one commit with a version tag.</li>
-              <li>After publishing, the live video is downloaded back and fingerprinted against the local copy.</li>
-              <li>The live page is checked for a marker unique to this release.</li>
+              <li>After publishing, every published file is downloaded back and fingerprinted against the local copy.</li>
+              <li>If GitHub itself is down, the ship waits on a watcher and is reported as pending, never as done.</li>
             </ul>
           </div>
           <div class="block">
@@ -1408,7 +1416,7 @@ footer .ramp{margin-bottom:18px}
             <ul class="tools">
               <li><code>md5</code> <span class="tnote">fingerprints each file on both sides</span></li>
               <li><code>git push origin HEAD:main --tags</code> <span class="tnote">publishes video and page together</span></li>
-              <li><code>curl</code> plus <code>md5</code> <span class="tnote">proves the live copy matches</span></li>
+              <li><code>curl</code> plus `md5` <span class="tnote">proves every live file matches</span></li>
             </ul>
           </div>
           <div class="block">
@@ -1439,6 +1447,7 @@ footer .ramp{margin-bottom:18px}
               <li>The task list is brought up to date. Only provably finished work gets closed.</li>
               <li>Project notes, the readme, the memory file and a handoff for the next session are refreshed.</li>
               <li>Anything learned the hard way is written into the factory files, so the next video starts ahead.</li>
+              <li>If the skill file changed, this page is regenerated from it, re-checked, and shipped to the same address.</li>
             </ul>
           </div>
           <div class="block">
@@ -1446,7 +1455,7 @@ footer .ramp{margin-bottom:18px}
             <ul class="tools">
               <li>Focus OS task update <span class="tnote">closes finished tasks</span></li>
               <li><code>graphify update .</code> <span class="tnote">rebuilds the project map</span></li>
-              <li><code>knowledge/gotchas.md</code> <span class="tnote">where new traps get recorded</span></li>
+              <li><code>node docs/pipeline-page/sync-page.mjs</code> <span class="tnote">re-renders this page from the skill</span></li>
             </ul>
           </div>
           <div class="block">
@@ -1463,6 +1472,7 @@ footer .ramp{margin-bottom:18px}
         </div>
       </details>
 
+    <!-- STAGES:END -->
     </div>
   </div>
 </section>
@@ -1471,8 +1481,8 @@ footer .ramp{margin-bottom:18px}
   <div class="wrap">
     <div class="sechead">
       <p class="kicker">The record</p>
-      <h2>17 times it went wrong (and what now stops it)</h2>
-      <p class="deck">Every one is real, from three shipped versions and one trial. None are hypothetical.</p>
+      <h2>22 times it went wrong (and what now stops it)</h2>
+      <p class="deck">Every one is real, from five shipped versions and one trial. None are hypothetical.</p>
     </div>
 
     <div class="grouphead">
@@ -1591,6 +1601,39 @@ footer .ramp{margin-bottom:18px}
         <span class="fix"><span class="fixlab">Now</span>The pace check reads every scene, not the average, and the brake calibrates itself to each recording's own opening. A leftover setting from an older video can no longer weaken it.</span>
       </li>
     </ul>
+
+    <div class="grouphead">
+      <h3>v2.5 real footage</h3>
+      <span>five misses</span>
+    </div>
+
+    <ul class="misslist" style="counter-reset:m 17">
+      <li>
+        <span class="what">A drawn iPad stood in for the real thing, and you rejected it hard.</span>
+        <span class="chips"><span class="chip stage">Step 5 Compose</span><span class="chip nogate">No gate</span></span>
+        <span class="fix"><span class="fixlab">Now</span>Real footage from a real simulated iPad: real home screen, real tap, real app opening.</span>
+      </li>
+      <li>
+        <span class="what">The browser leaked a branded page into one recording take.</span>
+        <span class="chips"><span class="chip stage">Step 5 Compose</span><span class="chip nogate">No gate</span></span>
+        <span class="fix"><span class="fixlab">Now</span>The browser is force-closed before every single take, so nothing old can bleed in.</span>
+      </li>
+      <li>
+        <span class="what">The tap circle never showed up in the recording.</span>
+        <span class="chips"><span class="chip stage">Step 5 Compose</span><span class="chip nogate">No gate</span></span>
+        <span class="fix"><span class="fixlab">Now</span>The recorder only captures the screen itself, so the gray touch circle is added in the edit.</span>
+      </li>
+      <li>
+        <span class="what">The home screen rearranged itself and a recorded tap missed its icon.</span>
+        <span class="chips"><span class="chip stage">Step 5 Compose</span><span class="chip nogate">No gate</span></span>
+        <span class="fix"><span class="fixlab">Now</span>A fresh screenshot is checked immediately before every recorded tap. Stale ones are never trusted.</span>
+      </li>
+      <li>
+        <span class="what">A failed audio step slipped through a chained command and fed garbage to the checks.</span>
+        <span class="chips"><span class="chip stage">Step 3 Cut and pace</span><span class="chip nogate">No gate</span></span>
+        <span class="fix"><span class="fixlab">Now</span>Every chained audio command is set to stop loudly at the first failure.</span>
+      </li>
+    </ul>
   </div>
 </section>
 
@@ -1670,7 +1713,7 @@ footer .ramp{margin-bottom:18px}
     <div class="sechead">
       <p class="kicker">The words used here</p>
       <h2>Glossary</h2>
-      <p class="deck">Ten terms, one line each.</p>
+      <p class="deck">Eleven terms, one line each.</p>
     </div>
     <div class="gloss">
       <p class="gterm"><b>take</b> = one complete recording of the whole script, made in one request.</p>
@@ -1683,6 +1726,7 @@ footer .ramp{margin-bottom:18px}
       <p class="gterm"><b>end card</b> = the silent card held after the last spoken word.</p>
       <p class="gterm"><b>companion page</b> = the web page that carries the video plus the same argument in writing.</p>
       <p class="gterm"><b>sweep</b> = one round of generating nine new music tracks to brief, about 72 cents.</p>
+      <p class="gterm"><b>skill</b> = the saved instruction file Claude follows to run this whole pipeline. The 11 step cards on this page are generated straight from it, so what you read here is what runs.</p>
     </div>
   </div>
 </section>
@@ -1690,7 +1734,7 @@ footer .ramp{margin-bottom:18px}
 <footer id="colophon">
   <div class="wrap">
     <div class="ramp" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
-    <p>Built 2026-08-04 from PLAYBOOK.md, no external assets.</p>
+    <p>Built 2026-08-04. Step cards regenerated from the /new-video skill file, 2026-08-06. No external assets.</p>
   </div>
 </footer>
 
