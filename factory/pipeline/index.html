@@ -1084,6 +1084,8 @@ footer .ramp{margin-bottom:18px}
             <ul>
               <li>Claude writes the narration, one block per scene, with a note on how to read it.</li>
               <li>Roughly 550 words is three minutes.</li>
+              <li>The reading note is picked first, and there are two of them: the calm explaining voice for explainers, and the excited launch voice for short promos. They are not swapped around.</li>
+              <li>Questions get a written instruction to leave a beat afterwards, and any opening line made of several short sentences is split into separate scenes so the pauses are guaranteed rather than hoped for.</li>
               <li>Every number on screen is calculated by the product's own code. Anything else is labelled proposed on screen.</li>
               <li>Teacher names are always invented.</li>
             </ul>
@@ -1100,6 +1102,8 @@ footer .ramp{margin-bottom:18px}
             <ul>
               <li>Reading the product code from an old copy. The everyday copy is months out of date.</li>
               <li>Words that flip meaning with stress (present, live, read, record, project). A wrong reading costs the whole recording.</li>
+              <li>Using the calm explaining note on a punchy promo script. It comes out flat, which is the robot voice complaint.</li>
+              <li>Trusting the voice to pause after a question. It runs straight on, and that run-on is the clearest sign of a machine reading.</li>
               <li>Long dashes in on-screen text. House style forbids them. Ordinary hyphens are fine.</li>
             </ul>
           </div>
@@ -1121,17 +1125,20 @@ footer .ramp{margin-bottom:18px}
           <div class="block">
             <h4>What happens</h4>
             <ul>
+              <li>Whenever the voice or the reading style changes, you get an eighteen second sample to listen to before anything is built. Whether it sounds excited or flat is your ear's call, and no measurement replaces it.</li>
               <li>The whole approved script goes to the voice engine in one single request.</li>
               <li>One complete recording of the whole script is called a take. It is accepted or binned as a whole.</li>
               <li>Sending it whole is what keeps the voice sounding like one person.</li>
               <li>Expect a lottery: nine to sixteen takes for one keeper. Rejects are cheap and binned whole.</li>
-              <li>The script measures the speaking speed and asks again if it is off, up to five attempts.</li>
+              <li>A tune meter measures how much the pitch actually moves, because a recording can be perfectly consistent and still sound like a robot.</li>
+              <li>The silence after every question is measured. Anything under a third of a second and the take is binned.</li>
             </ul>
           </div>
           <div class="block">
             <h4>Tools that run</h4>
             <ul class="tools">
               <li><code>node scripts/tts-single.mjs</code> <span class="tnote">records the whole script in one pass</span></li>
+              <li><code>python3 scripts/measure-melody.py</code> <span class="tnote">measures how much the voice actually moves</span></li>
               <li><code>node scripts/prep-take.mjs</code> <span class="tnote">trims dead tails and fuses breath-split pauses</span></li>
             </ul>
           </div>
@@ -1139,13 +1146,15 @@ footer .ramp{margin-bottom:18px}
             <h4>What can go wrong</h4>
             <ul>
               <li>The engine cuts off mid-script, races, or leaves a minutes-long silent tail. The scripts spot all three.</li>
+              <li>Building a whole video on a voice nobody listened to first. That happened once and cost a full day.</li>
+              <li>Believing the consistency numbers cover everything. They only prove it is one person, not that the person sounds alive.</li>
               <li>Recording line by line, or stretching single lines. Both are banned. That is the two-narrators bug.</li>
               <li>Reopening the voice engine question. A local engine was tried on 2026-08-03 and lost.</li>
             </ul>
           </div>
           <div class="autobox">
             <h4>Gate</h4>
-            <p>None. Runs on its own.</p>
+            <p>Not one of the four gates, but one quick listen. <strong>If the voice or the reading style changed, you get an eighteen second sample before the build starts, and one word from you decides.</strong> Nothing else here needs you.</p>
           </div>
         </div>
       </details>
@@ -1163,7 +1172,9 @@ footer .ramp{margin-bottom:18px}
             <ul>
               <li>The one long recording is cut into scenes at its longest silences.</li>
               <li>The pace check reads the speed of EVERY scene, not the average. The average hides the AI voice's habit of starting calm and racing toward the end.</li>
-              <li>A safety brake slows any scene that reads faster than the video's own opening scenes. The brake calibrates itself to each new recording. It can never speed a scene up.</li>
+              <li>Every scene is compared against the FIRST proper scene of this recording and must stay within fifteen percent of it. Only the first one counts, because a second reference scene can already be racing and then it sets the bar too high.</li>
+              <li>That comparison decides whether the recording is kept. It is not a report printed after the fact.</li>
+              <li>A safety brake slows any scene that reads faster than the reference. The brake calibrates itself to each new recording. It can never speed a scene up.</li>
               <li>A second pass trims dead air inside scenes. A third pass evens out slow tone drift. It runs exactly once.</li>
             </ul>
           </div>
@@ -1182,6 +1193,7 @@ footer .ramp{margin-bottom:18px}
               <li>Hand-editing the timing files. The scripts regenerate them, so the edits vanish or break sync.</li>
               <li>Running the tone pass twice, which applies the correction twice.</li>
               <li>Trusting the average speed. Only the scene-by-scene curve tells the truth.</li>
+              <li>Measuring against a scene that is already racing. Then the check passes and the video still speeds up, which is exactly what Igor's ear caught.</li>
             </ul>
           </div>
           <div class="gatebox">
@@ -1204,8 +1216,9 @@ footer .ramp{margin-bottom:18px}
             <ul>
               <li>Two scripts measure how different each scene sounds from the one next to it.</li>
               <li>That gets compared against the natural wobble inside a single scene.</li>
-              <li>Smaller than the wobble means the take is one person, so it is kept.</li>
+              <li>Smaller than the wobble means the take is one person, so it passes this check.</li>
               <li>Bigger means the whole take is binned and remade from step 2. One minute, one call.</li>
+              <li>Passing here only proves it is one person. Whether that person sounds alive is checked back in step 2, by meter and by your ear.</li>
             </ul>
           </div>
           <div class="block">
@@ -1244,6 +1257,9 @@ footer .ramp{margin-bottom:18px}
               <li>The visuals are written into per-scene fragments, stitched together, then generated into the finished file.</li>
               <li>Every animation is pinned to the voice timings, so pictures land on the words.</li>
               <li>Late animations are pinned to a share of the line, so a shorter line squeezes instead of losing its end.</li>
+              <li>When the video shows the product on a device, the device holds still and fills as much of the frame as it can, with its edge always visible. Nothing zooms in or drifts.</li>
+              <li>Whatever the voice names gets highlighted, one after another, in the order it is spoken.</li>
+              <li>Every tap you hear about shows a bright circle spreading from the finger and comes with a tap sound.</li>
               <li>Ready-made patterns slot in: the chapter spine, real iPad tap footage, the animated cursor, the act-turn burst, miniature product surfaces.</li>
               <li>Highlights are rationed to five per three-minute video. The video ends on a silent eight-second card.</li>
             </ul>
@@ -1261,6 +1277,9 @@ footer .ramp{margin-bottom:18px}
             <ul>
               <li>Editing the generated file instead of the fragments. The next build overwrites it.</li>
               <li>Adding the end card without re-baking the audio to the new length, so the card plays silent.</li>
+              <li>Zooming or sliding the device while the app is being shown. It reads as jumping and pulls the eye off the product.</li>
+              <li>Showing the app as a floating panel with the device edge cropped away.</li>
+              <li>Fading one block of text into another in the same spot. The first has to clear out before the second arrives.</li>
               <li>Motion that leaves things hidden. The resting picture has to be the finished picture.</li>
             </ul>
           </div>
@@ -1283,6 +1302,7 @@ footer .ramp{margin-bottom:18px}
             <h4>What happens</h4>
             <ul>
               <li>The video renders to a finished file. That takes about as long as the video runs.</li>
+              <li>If the video is going out in two shapes, only the wide one is made for you to watch. The tall one is made after you approve the wide one, so a change never costs two renders.</li>
               <li>Still frames are pulled at the cover, at each highlight and at the end card, and looked at.</li>
               <li>Frames are also pulled from the middle of animations, because a picture can look right at rest and blink in the middle.</li>
               <li>Loudness is measured, not assumed.</li>
@@ -1302,6 +1322,7 @@ footer .ramp{margin-bottom:18px}
             <ul>
               <li>Waiting for a completion message that never prints. The new file appearing is the real signal.</li>
               <li>Claiming it is correct without pulling a frame. A green build is not proof.</li>
+              <li>Rendering both shapes before you have seen either. Every change then costs twice.</li>
               <li>Checking only the settled moments.</li>
             </ul>
           </div>
