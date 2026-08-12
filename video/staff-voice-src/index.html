@@ -11,17 +11,17 @@
   </head>
   <body>
     <!-- GENERATED FILE. Edit template/composition.html and run: node scripts/build.mjs -->
-    <div id="root" data-composition-id="main" data-start="0" data-duration="259" data-width="1920" data-height="1080">
+    <div id="root" data-composition-id="main" data-start="0" data-duration="235" data-width="1920" data-height="1080">
 
-      <audio id="narration" class="clip" data-start="0" data-duration="259" data-volume="1" src="assets/narration.mp3"></audio>
+      <audio id="narration" class="clip" data-start="0" data-duration="235" data-volume="1" src="assets/narration.mp3"></audio>
       <!-- bgm ships PRE-BAKED and duck-mixed at ~-19 LUFS, sidechained to the narration,
            with its fades already in the file, so what previews is what renders -->
-      <audio id="bgm" class="clip" data-start="0" data-duration="259" data-volume="1" src="assets/music.mp3"></audio>
+      <audio id="bgm" class="clip" data-start="0" data-duration="235" data-volume="1" src="assets/music.mp3"></audio>
 
       <div class="bgwash" style="z-index:0"></div>
 
       <!-- ============ 1 . COVER ============ -->
-      <section class="scene navy clip" id="sc01" data-start="1.95" data-duration="10.16" data-track-index="1">
+      <section class="scene navy clip" id="sc01" data-start="1.95" data-duration="10.93" data-track-index="1">
         <div class="sbody">
           <div class="stars" id="coverStars" data-layout-allow-overflow></div>
           <div style="position:relative;z-index:2">
@@ -34,95 +34,27 @@
         </div>
       </section>
 
-      <!-- ============ 2 . ONE INTAKE ============ -->
-      <section class="scene top clip" id="sc02" data-start="12.11" data-duration="18.52" data-track-index="1">
-        <div class="sbody">
-          <div class="shead">
-            <div class="kick"><i class="stripe"></i> One intake</div>
-            <h2>Every observation, <em>one form</em></h2>
-          </div>
-          <div style="display:grid;grid-template-columns:470px 1fr;gap:52px;align-items:center">
-            <div class="formcard" id="s2form">
-              <div class="fcttl">R3 Evidence Form</div>
-              <div class="fcsub">AIS Sharjah &middot; inspection round June 2026</div>
-              <div class="ffield"><label>Teacher observed</label><div class="fin">Sarah Whitfield</div></div>
-              <div class="ffield"><label>Subject / date</label><div class="fin">Mathematics &nbsp;&middot;&nbsp; 17 June 2026</div></div>
-              <div class="ffield" style="margin-bottom:8px"><label>Students make progress</label>
-                <div class="scalerow"><b>1</b><b>2</b><b class="on" style="background:var(--r3)">3</b><b>4</b><b>5</b><b>6</b></div>
-              </div>
-              <div class="subtle" style="margin-top:14px">10 judgements &middot; evidence &middot; strengths &middot; areas to develop</div>
-            </div>
-            <div>
-              <div class="numgrid" id="s2nums">
-                <div class="numtile"><div class="big-n" data-count="168">0</div><div class="ml">Submissions</div></div>
-                <div class="numtile"><div class="big-n" data-count="110" style="color:var(--y)">0</div><div class="ml">Distinct lessons</div></div>
-                <div class="numtile"><div class="big-n" data-count="104">0</div><div class="ml">Teachers</div></div>
-              </div>
-              <div class="pill-note" id="s2note" style="margin-top:40px">Co-observed lessons merged &middot; best evidence wins</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ============ 3 . THE BOARD ============ -->
-      <section class="scene top clip" id="sc03" data-start="30.63" data-duration="12.86" data-track-index="1">
-        <div class="sbody">
-          <div class="shead">
-            <div class="kick"><i class="stripe"></i> Snapshot &middot; R3 June 26</div>
-            <h2>The round <em>at a glance</em></h2>
-          </div>
-          <div style="display:grid;grid-template-columns:350px 1fr;gap:20px;align-items:stretch">
-            <div style="display:flex;flex-direction:column;gap:12px">
-              <div class="panel stat s3card"><div class="v" data-count="110">0</div><div class="l">Lessons observed</div><div class="s">June 2026 sweep</div></div>
-              <div class="panel stat s3card"><div class="v" data-count="104">0</div><div class="l">Teachers seen</div><div class="s">across both phases</div></div>
-              <div class="panel stat accent s3card"><div class="v">3.22</div><div class="l">Average progress</div><div class="s">best rating per teacher, then averaged</div></div>
-            </div>
-            <div class="panel s3card">
-              <div class="ey-bold" style="margin-bottom:16px">Where the judgements sit</div>
-              <div class="histo" id="s3histo" style="height:170px">
-                <div class="hbar"><div class="hc">8</div><div class="hb" data-h="22" style="background:var(--r1)"></div><div class="hw">Outstanding</div></div>
-                <div class="hbar"><div class="hc">21</div><div class="hb" data-h="58" style="background:var(--r2)"></div><div class="hw">Very Good</div></div>
-                <div class="hbar"><div class="hc">25</div><div class="hb" data-h="69" style="background:var(--r3)"></div><div class="hw">Good</div></div>
-                <div class="hbar"><div class="hc">36</div><div class="hb" data-h="100" style="background:var(--r4)"></div><div class="hw">Acceptable</div></div>
-                <div class="hbar"><div class="hc">7</div><div class="hb" data-h="19" style="background:var(--r5)"></div><div class="hw">Weak</div></div>
-                <div class="hbar"><div class="hc">4</div><div class="hb" data-h="11" style="background:var(--r6)"></div><div class="hw">Very Weak</div></div>
-              </div>
-              <div class="osseg" style="margin-top:20px">
-                <div class="osramp">
-                  <div class="rc"><div class="sw" style="background:var(--r1)"></div><div class="lb">Outstanding</div></div>
-                  <div class="rc"><div class="sw" style="background:var(--r2)"></div><div class="lb">Very Good</div></div>
-                  <div class="rc"><div class="sw" style="background:var(--r3)"></div><div class="lb">Good</div></div>
-                  <div class="rc"><div class="sw" style="background:var(--r4)"></div><div class="lb">Acceptable</div></div>
-                  <div class="rc"><div class="sw" style="background:var(--r5)"></div><div class="lb">Weak</div></div>
-                  <div class="rc"><div class="sw" style="background:var(--r6)"></div><div class="lb">Very Weak</div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <!-- ============ 5 . THE LOOP TODAY ============ -->
-      <section class="scene clip" id="sc05" data-start="43.49" data-duration="17.9" data-track-index="1">
+      <section class="scene clip" id="sc05" data-start="12.88" data-duration="18.7" data-track-index="1">
         <div class="sbody">
           <div class="shead">
             <div class="kick"><i class="stripe"></i> The loop today</div>
             <h2>Current <em>Coaching Plan</em></h2>
           </div>
           <div class="flowstrip" id="s5flow">
-            <div class="fstep"><div class="fn">01</div><div class="ft">Observation filed</div><div class="fs">R3 form, on the inspector's iPad, in the lesson.</div></div>
+            <div class="fstep"><div class="fn">01</div><div class="ft">Observation filed</div><div class="fs">R3 form, on the Teacher Coach's iPad, in the lesson.</div></div>
             <div class="fstep"><div class="fn">02</div><div class="ft">Teacher given feedback</div><div class="fs">The conversation that follows the lesson.</div></div>
-            <div class="fstep"><div class="fn">03</div><div class="ft">Observer approves the plan</div><div class="fs">An analysis and a suggested coaching plan, which they approve, edit or rewrite.</div></div>
+            <div class="fstep"><div class="fn">03</div><div class="ft">Teacher Coach approves the plan</div><div class="fs">An analysis and a suggested coaching plan, which they approve, edit or rewrite.</div></div>
             <div class="fstep"><div class="fn">04</div><div class="ft">Teacher receives it</div><div class="fs">Every suggestion referenced back to our Student Progress Rubric.</div></div>
           </div>
         </div>
       </section>
 
       <!-- ============ 6 . THE COACHING PLAN (the real Next Steps card) ============ -->
-      <section class="scene top clip" id="sc06" data-start="61.39" data-duration="17.83" data-track-index="1">
+      <section class="scene top clip" id="sc06" data-start="31.58" data-duration="20.47" data-track-index="1">
         <div class="sbody">
           <div class="shead">
-            <div class="kick"><i class="stripe"></i> What the observer receives</div>
+            <div class="kick"><i class="stripe"></i> What the Teacher Coach receives</div>
             <h2>Teacher <em>Progression</em></h2>
           </div>
           <div class="panel" id="s6card">
@@ -177,12 +109,12 @@
       </section>
 
       <!-- ============ 7 . THE GAP ============ -->
-      <section class="scene clip" id="sc07" data-start="79.22" data-duration="15.62" data-track-index="1">
+      <section class="scene clip" id="sc07" data-start="52.05" data-duration="15.39" data-track-index="1">
         <div class="sbody">
           <div class="flowstrip" id="s6flow" style="margin-bottom:48px">
             <div class="fstep dim"><div class="fn">01</div><div class="ft">Observation filed</div></div>
             <div class="fstep dim"><div class="fn">02</div><div class="ft">Teacher given feedback</div></div>
-            <div class="fstep dim"><div class="fn">03</div><div class="ft">Observer approves the plan</div></div>
+            <div class="fstep dim"><div class="fn">03</div><div class="ft">Teacher Coach approves the plan</div></div>
             <div class="fstep dim"><div class="fn">04</div><div class="ft">Teacher receives it</div></div>
           </div>
           <div class="beat-h" id="s6h" style="max-width:30ch;font-size:52px">We capture how a session was rated.<br /><em>We do not capture the teacher.</em></div>
@@ -195,7 +127,7 @@
       </section>
 
       <!-- ============ 8 . KPI 1 ============ -->
-      <section class="scene top clip" id="sc08" data-start="94.84" data-duration="13.84" data-track-index="1">
+      <section class="scene top clip" id="sc08" data-start="67.44" data-duration="14.51" data-track-index="1">
         <div class="sbody">
           <div class="shead">
             <div class="kick"><i class="stripe"></i> Addition one</div>
@@ -205,7 +137,7 @@
             <div class="fstep dim"><div class="fn">01</div><div class="ft">Observation filed</div></div>
             <div class="fstep new" id="s7new"><span class="ftag">New</span><div class="fn">02</div><div class="ft">Session evaluation</div><div class="fs">Completed by the teacher.</div></div>
             <div class="fstep dim"><div class="fn">03</div><div class="ft">Feedback</div></div>
-            <div class="fstep dim"><div class="fn">04</div><div class="ft">Observer approves the plan</div></div>
+            <div class="fstep dim"><div class="fn">04</div><div class="ft">Teacher Coach approves the plan</div></div>
             <div class="fstep dim"><div class="fn">05</div><div class="ft">Teacher receives it</div></div>
           </div>
           <div style="display:grid;grid-template-columns:500px 1fr;gap:44px;align-items:start">
@@ -217,7 +149,7 @@
               <div class="ffield" style="margin-bottom:0"><label>Anything the session did not cover</label><div class="fin ph">Free text</div></div>
             </div>
             <div>
-              <div class="bi" id="s7bi"><span class="bn">&rarr;</span><p>It sits <b>before</b> the coaching plan is drafted, so that the observer, and the analysis, both see it first.</p></div>
+              <div class="bi" id="s7bi"><span class="bn">&rarr;</span><p>It sits <b>before</b> the coaching plan is drafted, so that the Teacher Coach, and the analysis, both see it first.</p></div>
               <div class="pill-note" style="margin-top:22px">Proposed &middot; not yet live</div>
             </div>
           </div>
@@ -225,7 +157,7 @@
       </section>
 
       <!-- ============ 9 . KPI 2 ============ -->
-      <section class="scene top clip" id="sc09" data-start="108.68" data-duration="21.39" data-track-index="1">
+      <section class="scene top clip" id="sc09" data-start="81.95" data-duration="20.97" data-track-index="1">
         <div class="sbody">
           <div class="shead">
             <div class="kick"><i class="stripe"></i> Addition two</div>
@@ -236,52 +168,91 @@
             <div class="sixcard"><span class="sn">2</span><p>The challenges they expect when they apply it</p></div>
             <div class="sixcard"><span class="sn">3</span><p>Their own ideas for getting past those challenges</p></div>
             <div class="sixcard"><span class="sn">4</span><p>How they will use it in their classroom</p></div>
-            <div class="sixcard"><span class="sn">5</span><p>What they need from their middle leader</p></div>
+            <div class="sixcard"><span class="sn">5</span><p>What they need from their line manager</p></div>
             <div class="sixcard"><span class="sn">6</span><p>What they expect to change in student learning, and over what timeframe</p></div>
           </div>
           <div class="pill-note" id="s8note" style="margin-top:30px">Proposed &middot; placement in the flow is yours to set</div>
         </div>
       </section>
 
-      <!-- ============ 10 . FIVE STRATEGIES ============ -->
-      <section class="scene top clip" id="sc10" data-start="130.07" data-duration="19.69" data-track-index="1">
+            <!-- ============ 10 . THE STRATEGY SHELF (today, and what is in build) ============ -->
+      <section class="scene top clip" id="sc09v2" data-start="102.92" data-duration="24.26" data-track-index="1">
         <div class="sbody">
           <div class="shead">
-            <div class="kick"><i class="stripe"></i> Ready made, not improvised</div>
-            <h2>Five strategies, mapped to <em>the rubric</em></h2>
+            <div class="kick"><i class="stripe"></i> What makes it usable</div>
+            <h2>Today, <em>and the shelf we are building</em></h2>
           </div>
-          <div class="maprow">
-            <div class="panel" id="s9left">
-              <div class="ey-bold" style="margin-bottom:14px">AIS Student Progress Rubric</div>
-              <div class="blist">
-                <div class="brow"><span class="bm"><svg viewBox="0 0 24 24"><path d="M4 12h16" stroke="var(--b)" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg></span><span>Students know what success looks like before they begin</span></div>
-                <div class="brow"><span class="bm"><svg viewBox="0 0 24 24"><path d="M4 12h16" stroke="var(--b)" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg></span><span>Questioning checks understanding rather than moves the lesson on</span></div>
-                <div class="brow"><span class="bm"><svg viewBox="0 0 24 24"><path d="M4 12h16" stroke="var(--b)" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg></span><span>Work is adapted so every group is stretched</span></div>
-                <div class="brow"><span class="bm"><svg viewBox="0 0 24 24"><path d="M4 12h16" stroke="var(--b)" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg></span><span>Students talk to each other about the learning</span></div>
+          <div class="s9v2-cols">
+
+            <!-- LEFT . the engine as it runs today: real product behaviour only -->
+            <div class="panel s9v2-panel" id="s9v2left" style="--cc:var(--b)">
+              <div class="s9v2-labrow">
+                <div class="ey-bold">How a recommendation is made</div>
+                <span class="pill-note s9v2-livetag"><i class="s9v2-dot"></i>Today &middot; live</span>
+              </div>
+              <div class="s9v2-chain">
+                <div class="s9v2-row"><span class="s9v2-rn">1</span><p>The Teacher Coach's own notes</p></div>
+                <div class="s9v2-step" id="s9v2s2">
+                  <i class="s9v2-arrow">&darr;</i>
+                  <div class="s9v2-row"><span class="s9v2-rn">2</span><p>Where the teacher sits on the rubric</p></div>
+                </div>
+                <div class="s9v2-step" id="s9v2s3">
+                  <i class="s9v2-arrow">&darr;</i>
+                  <div class="s9v2-row"><span class="s9v2-rn">3</span><p>A recommendation grounded in a published source</p></div>
+                </div>
+              </div>
+              <div class="fc-rlab s9v2-themelab" id="s9v2themelab">Six themes &middot; one trusted source pinned to each</div>
+              <div class="s9v2-themes" id="s9v2themes">
+                <span class="ns-chip">Differentiation</span>
+                <span class="ns-chip">Stretch &amp; challenge</span>
+                <span class="ns-chip">Student dialogue</span>
+                <span class="ns-chip">Questioning</span>
+                <span class="ns-chip">Checking understanding</span>
+                <span class="ns-chip">Pace &amp; intervention</span>
               </div>
             </div>
-            <div style="display:flex;flex-direction:column;gap:22px;align-items:center;padding:0 4px">
-              <div class="mapline" style="width:46px" id="s9l1"></div>
-              <div class="mapline" style="width:46px" id="s9l2"></div>
-              <div class="mapline" style="width:46px" id="s9l3"></div>
-              <div class="mapline" style="width:46px" id="s9l4"></div>
-            </div>
-            <div class="panel" id="s9right">
-              <div class="ey-bold" style="margin-bottom:14px">Coaching strategies &middot; worked examples</div>
-              <div class="blist">
-                <div class="brow"><span class="bm"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="var(--y)" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Success criteria written with the class, kept visible</span></div>
-                <div class="brow"><span class="bm"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="var(--y)" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Cold call plus a follow-up "how do you know?"</span></div>
-                <div class="brow"><span class="bm"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="var(--y)" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>One task, three entry points</span></div>
-                <div class="brow"><span class="bm"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="var(--y)" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Structured talk: pair, compare, then report</span></div>
-                <div class="brow"><span class="bm"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" stroke="var(--y)" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span>Exit ticket that names the next lesson's starting point</span></div>
+
+            <!-- RIGHT . the shelf in build. The Proposed tag is load bearing: this
+                 half of the scene is not live yet and has to say so on screen. -->
+            <div class="panel s9v2-panel s9v2-future" id="s9v2right" style="--cc:var(--y)">
+              <div class="s9v2-labrow">
+                <div class="ey-bold">Our own shelf</div>
+                <span class="pill-note s9v2-proposed">Proposed &middot; in build with line managers and HODs</span>
+              </div>
+              <p class="s9v2-big">Five coachable Teaching Strategies, for <em>every point of the rubric</em></p>
+              <p class="s9v2-by">Written by line managers and heads of department, so departments align on the next step.</p>
+              <div class="s9v2-shelf">
+                <div class="fc-rlab">Five written for this rubric point</div>
+                <div class="s9v2-slots">
+                  <i class="s9v2-slot">1</i>
+                  <i class="s9v2-slot">2</i>
+                  <i class="s9v2-slot pick" id="s9v2pick">3</i>
+                  <i class="s9v2-slot">4</i>
+                  <i class="s9v2-slot">5</i>
+                </div>
+              </div>
+              <div class="ns-lad s9v2-lad">
+                <div class="ns-lad-top">
+                  <span class="ns-lad-name">Progress in Lessons</span>
+                  <span class="ns-lad-mv">Acceptable<span class="s9v2-up" id="s9v2up"><span class="a">&rarr;</span>Good</span></span>
+                </div>
+                <div class="ns-track">
+                  <div class="ns-cell" style="--c:var(--r6)"></div>
+                  <div class="ns-cell" style="--c:var(--r5)"></div>
+                  <div class="ns-cell cur" style="--c:var(--r4)"></div>
+                  <div class="ns-cell tgt" id="s9v2tgt" style="--c:var(--r3)"></div>
+                  <div class="ns-cell" style="--c:var(--r2)"></div>
+                  <div class="ns-cell" style="--c:var(--r1)"></div>
+                </div>
+                <div class="s9v2-note" id="s9v2note">Recommended from the level above, straight from the teacher's own evidence</div>
               </div>
             </div>
+
           </div>
-          <div class="pill-note" id="s9note" style="margin-top:26px">Built on the AIS Teaching and Learning Agenda &middot; the observer edits, the teacher receives</div>
         </div>
       </section>
 
-      <section class="scene top clip" id="scg1" data-start="149.76" data-duration="23.86" data-track-index="1">
+      <section class="scene top clip" id="scg1" data-start="127.18" data-duration="26.04" data-track-index="1">
         <div class="sbody">
           <div class="shead">
             <div class="kick"><i class="stripe"></i> A Claire Gadsby Teacher Strategy</div>
@@ -322,7 +293,7 @@
         </div>
       </section>
             <!-- ============ 16 . PUPIL OWNED CORNER (Teacher Strategy 2) ============ -->
-      <section class="scene top clip" id="scg2" data-start="173.62" data-duration="23.59" data-track-index="1">
+      <section class="scene top clip" id="scg2" data-start="153.22" data-duration="23.34" data-track-index="1">
         <div class="sbody">
           <div class="shead">
             <div class="kick"><i class="stripe"></i> A Claire Gadsby Teacher Strategy</div>
@@ -365,7 +336,7 @@
       </section>
 
       <!-- ============ 11 . WHAT LEADERSHIP SEES ============ -->
-      <section class="scene top clip" id="sc11" data-start="197.21" data-duration="15.01" data-track-index="1">
+      <section class="scene top clip" id="sc11" data-start="176.56" data-duration="15.48" data-track-index="1">
         <div class="sbody">
           <div class="shead">
             <div class="kick"><i class="stripe"></i> What leadership sees</div>
@@ -391,11 +362,11 @@
         </div>
       </section>
 
-      <!-- ============ 12 . MIDDLE LEADERS ============ -->
-      <section class="scene top clip" id="sc12" data-start="212.22" data-duration="11.33" data-track-index="1">
+      <!-- ============ 12 . LINE MANAGERS ============ -->
+      <section class="scene top clip" id="sc12" data-start="192.04" data-duration="10.3" data-track-index="1">
         <div class="sbody">
           <div class="shead">
-            <div class="kick"><i class="stripe"></i> Middle leaders</div>
+            <div class="kick"><i class="stripe"></i> Line managers</div>
             <h2>Their team, <em>and nobody else's</em></h2>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start">
@@ -421,7 +392,7 @@
       </section>
 
       <!-- ============ 13 . THE PAYOFF ============ -->
-      <section class="scene top clip" id="sc13" data-start="223.55" data-duration="10.69" data-track-index="1">
+      <section class="scene top clip" id="sc13" data-start="202.34" data-duration="8.56" data-track-index="1">
         <div class="sbody">
           <div class="shead">
             <div class="kick"><i class="stripe"></i> For the teacher</div>
@@ -446,7 +417,7 @@
       </section>
 
       <!-- ============ 14 . CLOSE ============ -->
-      <section class="scene clip" id="sc14" data-start="234.24" data-duration="15.8" data-track-index="1">
+      <section class="scene clip" id="sc14" data-start="210.9" data-duration="15.64" data-track-index="1">
         <div class="sbody">
           <div class="beat-h" id="s13h" style="max-width:26ch;font-size:56px">The two forms are new.<br /><em>The architecture is not.</em></div>
           <div class="flowstrip five" id="s13flow" style="margin-top:48px">
@@ -461,7 +432,7 @@
       </section>
 
       <!-- ============ 15 . END CARD (silent, back to the cover) ============ -->
-      <section class="scene navy clip" id="sc15" data-start="250.04" data-duration="8" data-track-index="1">
+      <section class="scene navy clip" id="sc15" data-start="226.54" data-duration="8" data-track-index="1">
         <div class="sbody" style="justify-content:center">
           <div class="stars" id="endStars" data-layout-allow-overflow></div>
           <div style="position:relative;z-index:2">
@@ -490,7 +461,7 @@
 
       /* Cue times are derived from the narration track, injected at build time,
          so re-cutting a line moves the animation with it. */
-      var NARR = {"s01_cover":{"start":2.5,"dur":8.162},"s02_intake":{"start":12.662,"dur":18.066},"s03_board":{"start":31.178,"dur":12.414},"s05_loop":{"start":44.042,"dur":17.45},"s06_coach":{"start":61.942,"dur":17.381},"s06_gap":{"start":79.773,"dur":13.118},"s07_kpi1":{"start":95.391,"dur":13.384},"s08_kpi2":{"start":109.226,"dur":20.946},"s09_strategies":{"start":130.622,"dur":19.237},"s14_gadsby":{"start":150.309,"dur":23.407},"s15_corner":{"start":174.167,"dur":21.09},"s10_leadership":{"start":197.757,"dur":14.564},"s11_middle":{"start":212.772,"dur":10.874},"s12_plp":{"start":224.096,"dur":10.246},"s13_close":{"start":234.792,"dur":12.053},"s16_end":{"start":250.04,"dur":8}};
+      var NARR = {"s01_cover":{"start":2.5,"dur":8.927},"s05_loop":{"start":13.427,"dur":18.255},"s06_coach":{"start":32.133,"dur":20.021},"s06_gap":{"start":52.603,"dur":12.889},"s07_kpi1":{"start":67.992,"dur":14.054},"s08_kpi2":{"start":82.496,"dur":20.521},"s09_strategies":{"start":103.467,"dur":23.813},"s14_gadsby":{"start":127.729,"dur":25.59},"s15_corner":{"start":153.769,"dur":20.845},"s10_leadership":{"start":177.113,"dur":15.025},"s11_middle":{"start":192.588,"dur":9.849},"s12_plp":{"start":202.887,"dur":8.115},"s13_close":{"start":211.452,"dur":11.89},"s16_end":{"start":226.54,"dur":8}};
       function at(id, off) { return NARR[id].start + (off || 0); }
       // proportional cue: frac of the scene's narration length, so a shorter
       // line compresses its choreography instead of losing the tail of it
@@ -527,23 +498,6 @@
         .from('#sc01 .covsub', { opacity: 0, y: 12, duration: 0.9 }, at('s01_cover', 1.0))
         .to('#coverStars', { y: -26, duration: 9.3, ease: 'none' }, 0);
 
-      /* 2 . intake */
-      tl.from('#sc02 .shead', { opacity: 0, y: 16, duration: 0.7 }, at('s02_intake', -0.4))
-        .from('#s2form', { opacity: 0, x: -28, duration: 0.9, ease: 'power2.out' }, at('s02_intake', 0.1))
-        .from('#s2nums .numtile', { opacity: 0, y: 22, duration: 0.7, stagger: 0.5 }, atf('s02_intake', 0.177));
-      countUp('#s2nums .big-n', atf('s02_intake', 0.187), 1.5);
-      tl.from('#s2note', { opacity: 0, duration: 0.7 }, atf('s02_intake', 0.368));
-      spotlight('#s2nums .numtile:nth-child(2)', atf('s02_intake', 0.53));   // "a hundred and ten distinct lessons"
-
-      /* 3 . board */
-      tl.from('#sc03 .shead', { opacity: 0, y: 16, duration: 0.7 }, at('s03_board', -0.4))
-        .from('#sc03 .s3card', { opacity: 0, y: 20, duration: 0.7, stagger: 0.16 }, at('s03_board', 0.0));
-      countUp('#sc03 .stat .v[data-count]', at('s03_board', 0.4), 1.3);
-      document.querySelectorAll('#s3histo .hb').forEach(function (b, i) {
-        tl.fromTo(b, { height: '0%' }, { height: b.dataset.h + '%', duration: 0.9, ease: 'power2.out' }, at('s03_board', 1.2) + i * 0.13);
-      });
-      tl.from('#sc03 .osseg', { opacity: 0, y: 12, duration: 0.7 }, atf('s03_board', 0.227));
-
       /* 5 . loop */
       tl.from('#sc05 .shead', { opacity: 0, y: 16, duration: 0.7 }, at('s05_loop', -0.4))
         .from('#s5flow .fstep', { opacity: 0, y: 26, duration: 0.75, stagger: 1.5, ease: 'power2.out' }, at('s05_loop', 0.4));
@@ -578,16 +532,40 @@
       tl.from('#sc09 .shead', { opacity: 0, y: 16, duration: 0.7 }, at('s08_kpi2', -0.4))
         .from('#s8grid .sixcard', { opacity: 0, y: 24, duration: 0.7, stagger: 2.1, ease: 'power2.out' }, at('s08_kpi2', 1.5))
         .from('#s8note', { opacity: 0, duration: 0.7 }, atf('s08_kpi2', 0.892));
-      spotlight('#s8grid .sixcard:nth-child(5)', atf('s08_kpi2', 0.68), 2.2); // "what they need from their middle leader"
+      spotlight('#s8grid .sixcard:nth-child(5)', atf('s08_kpi2', 0.68), 2.2); // "what they need from their line manager"
 
-      /* 10 . strategies */
-      tl.from('#sc10 .shead', { opacity: 0, y: 16, duration: 0.7 }, at('s09_strategies', -0.4))
-        .from('#s9left', { opacity: 0, x: -26, duration: 0.85 }, at('s09_strategies', 0.2))
-        .from('#s9right', { opacity: 0, x: 26, duration: 0.85 }, at('s09_strategies', 1.5))
-        .fromTo('#sc10 .mapline', { scaleX: 0 }, { scaleX: 1, duration: 0.55, stagger: 0.3 }, atf('s09_strategies', 0.146))
-        .from('#s9note', { opacity: 0, duration: 0.7 }, atf('s09_strategies', 0.799));
+            /* 10 . today, and the shelf we are building
+         64 narration words in this scene; every frac below is
+         words-spoken-before-the-phrase / 64, phrase kept in the comment.
+         Only .from() is used, so every tween is the first on its property,
+         immediateRender stays true and the resting DOM is the finished state. */
+      tl.from('#sc09v2 .shead', { opacity: 0, y: 16, duration: 0.7 }, at('s09_strategies', -0.4))
+        /* the live engine lands as one unit, label and first row together:
+           a labelled empty panel reads as loading, not as a first step */
+        .from('#s9v2left', { opacity: 0, x: -26, duration: 0.85, ease: 'power2.out' }, at('s09_strategies', 0.2))
+        /* "finds where the teacher sits on the rubric" -> "rubric" is word 17, 16 before */
+        .from('#s9v2s2', { opacity: 0, y: 14, duration: 0.6, ease: 'power2.out' }, atf('s09_strategies', 0.250))
+        /* "in trusted published sources" -> "trusted" is word 23, 22 before */
+        .from('#s9v2s3', { opacity: 0, y: 14, duration: 0.6, ease: 'power2.out' }, atf('s09_strategies', 0.344))
+        .from('#s9v2themelab', { opacity: 0, duration: 0.5 }, atf('s09_strategies', 0.344))
+        /* the six themes ripple through "published sources" -> word 24, 23 before.
+           Fixed stagger: scaled by scene length it would read as a speed change.
+           Last chip starts 0.45s in and settles 0.90s in, well inside the line. */
+        .from('#s9v2themes .ns-chip', { opacity: 0, y: 10, duration: 0.45, stagger: 0.09, ease: 'power2.out' }, atf('s09_strategies', 0.359))
+        /* "Next, our own shelf" -> "Next" is word 26, 25 before. The whole future
+           panel lands together, ladder included, so no column is half populated. */
+        .from('#s9v2right', { opacity: 0, x: 26, duration: 0.85, ease: 'power2.out' }, atf('s09_strategies', 0.391))
+        /* "the one that fits the level above" -> "the" is word 55, 54 before.
+           Only the chosen strategy and the target band light up here. Before it
+           the shelf already reads as five written strategies and the ladder as
+           "this is where the teacher sits": a finished thought, not a hole. */
+        .from('#s9v2tgt', { opacity: 0.16, scale: 0.82, duration: 0.5, ease: 'back.out(1.7)' }, atf('s09_strategies', 0.844))
+        .from('#s9v2pick', { opacity: 0.45, scale: 0.88, duration: 0.5, ease: 'back.out(1.7)' }, atf('s09_strategies', 0.844))
+        .from('#s9v2up', { opacity: 0, x: -10, duration: 0.5, ease: 'power2.out' }, atf('s09_strategies', 0.844))
+        /* "level above" -> word 56, 55 before. Last cue, inside the 0.90 ceiling. */
+        .from('#s9v2note', { opacity: 0, y: 8, duration: 0.55, ease: 'power2.out' }, atf('s09_strategies', 0.859));
 
-            /* 15 . Claire Gadsby Teacher Strategy
+      /* 15 . Claire Gadsby Teacher Strategy
          64 narration words in this scene; every frac below is
          words-spoken-before-the-phrase / 64, phrase kept in the comment. */
       tl.from('#scg1 .shead', { opacity: 0, y: 16, duration: 0.7 }, at('s14_gadsby', -0.4))
@@ -633,7 +611,7 @@
       });
       tl.from('#s10right .icard', { opacity: 0, x: 22, duration: 0.7, stagger: 1.5 }, atf('s10_leadership', 0.297));
 
-      /* 12 . middle leaders */
+      /* 12 . line managers */
       tl.from('#sc12 .shead', { opacity: 0, y: 16, duration: 0.7 }, at('s11_middle', -0.4))
         .from('#s11left .trow', { opacity: 0, x: -16, duration: 0.5, stagger: 0.14 }, at('s11_middle', 0.1))
         .from('#s11right', { opacity: 0, x: 22, duration: 0.8 }, atf('s11_middle', 0.248));

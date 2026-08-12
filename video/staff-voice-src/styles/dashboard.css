@@ -359,3 +359,78 @@ body{font-family:var(--body);color:var(--ink);-webkit-font-smoothing:antialiased
    just under 4.5:1 on these panel backdrops, so the cards scope one step darker */
 .scg1-fc .fc-rlab,.scg2-card .fc-rlab,#scg1card .subtle,#scg2card .subtle,.scg2-cap{color:var(--ink-dim)}
 #scg1card .ns-chip,#scg2card .ns-chip{color:var(--ink-dim)}
+
+
+/* ===== s09_strategies (v2) . "Today, and the shelf we are building" =========
+   Two side by side panels built on the dashboard's own grammar: .panel,
+   .ey-bold, .pill-note (the house honesty tag), .ns-chip (the coaching note's
+   theme chip), .fc-rlab, and the whole current -> target ladder from the
+   coaching note (.ns-lad-top / .ns-lad-name / .ns-lad-mv / .ns-track /
+   .ns-cell.cur / .ns-cell.tgt). New rules are only the two column shell, the
+   three step chain with its arrows, the theme chip row, the shelf headline and
+   the two panel tags. Every new selector is prefixed .s9v2-.
+   Sized for the projected 1150px column the way the readability pass in
+   dashboard.css sizes the rest of the video. */
+
+.s9v2-cols{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:stretch}
+.s9v2-panel{display:flex;flex-direction:column;padding:20px 22px}
+/* the future half declares itself before anyone reads the tag */
+.s9v2-future{border-style:dashed;border-color:color-mix(in srgb,var(--y) 40%,var(--edge))}
+
+/* panel label row: title on the left, the live / proposed tag on the right */
+.s9v2-labrow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:15px}
+.s9v2-labrow .ey-bold{line-height:1.2}
+/* the honesty tag is long by design; it gets its own line rather than being
+   squeezed, so it is the widest thing in the panel head and cannot be missed */
+.s9v2-future .s9v2-labrow{flex-direction:column;align-items:flex-start;gap:10px}
+.scene .s9v2-livetag,.scene .s9v2-proposed{font-size:12px;padding:6px 13px}
+.s9v2-livetag{border-style:solid;border-color:color-mix(in srgb,var(--g) 45%,transparent);background:color-mix(in srgb,var(--g) 10%,transparent);color:var(--ink-dim)}
+.s9v2-dot{display:block;width:9px;height:9px;border-radius:50%;flex:none;background:var(--g);box-shadow:0 0 0 4px color-mix(in srgb,var(--g) 18%,transparent)}
+/* honesty tag. Gold at #8d6207 rather than raw --y: the house yellow lands at
+   2.4:1 on these panels, this hue clears 4.5:1 and matches the video pass. */
+.s9v2-proposed{border-color:color-mix(in srgb,var(--y) 62%,var(--edge));background:color-mix(in srgb,var(--y) 12%,transparent);color:#8d6207;letter-spacing:.07em}
+
+/* LEFT . the three step chain. Each step after the first carries its own arrow
+   so one cue moves the arrow and the row together. */
+.s9v2-chain{display:flex;flex-direction:column}
+.s9v2-row{display:grid;grid-template-columns:24px 1fr;gap:12px;align-items:center;
+  border:1px solid var(--edge-soft);border-radius:12px;background:var(--panel-2);padding:12px 15px}
+.s9v2-rn{font-family:var(--display);font-style:italic;font-weight:600;font-size:21px;line-height:1.1;color:var(--ink-mid);text-align:center}
+.s9v2-row p{font-size:16px;line-height:1.4;color:var(--ink)}
+.s9v2-arrow{display:block;width:24px;text-align:center;font-style:normal;font-size:17px;line-height:1;color:var(--ink-faint);margin:6px 0}
+.s9v2-themelab{margin-top:auto;padding-top:16px}
+.s9v2-themes{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
+.scene #s9v2themes .ns-chip{font-size:11.5px;padding:4px 11px}
+
+/* RIGHT . the shelf */
+.s9v2-big{font-family:var(--display);font-weight:600;font-size:25px;line-height:1.28;letter-spacing:-.01em;color:var(--ink);margin:0}
+.s9v2-big em{font-style:italic;color:#9c6a08}
+.s9v2-by{font-size:15px;line-height:1.55;color:var(--ink-dim);margin:13px 0 0}
+/* the shelf itself: five slots for one rubric point, the recommended one
+   accented. Numbered rather than blank, so it reads as five written strategies
+   and not as content that failed to load. */
+.s9v2-shelf{margin-top:auto;padding-top:16px}
+.s9v2-slots{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:8px}
+.s9v2-slot{display:flex;align-items:center;justify-content:center;height:30px;border-radius:9px;
+  border:1px solid var(--edge-soft);background:color-mix(in srgb,var(--ink) 5%,transparent);
+  font-family:var(--display);font-style:italic;font-weight:600;font-size:16px;color:var(--ink-mid)}
+.s9v2-slot.pick{border-color:color-mix(in srgb,var(--y) 70%,transparent);background:color-mix(in srgb,var(--y) 16%,transparent);color:#8d6207}
+/* two auto margins, so the free space in this panel splits evenly instead of
+   pooling into one hole above the ladder */
+.s9v2-lad{margin-top:auto;padding-top:15px;border-top:1px dashed var(--edge-soft)}
+.s9v2-lad .ns-lad-top{margin-bottom:8px}
+/* inline-block or the entrance transform on the target band is a no-op */
+.s9v2-up{display:inline-block}
+.s9v2-note{font-size:14px;line-height:1.45;color:var(--ink-dim);margin-top:10px}
+
+/* contrast pass, same reason as the two Teacher Strategy cards in dashboard.css:
+   the house faint ink and the raw chip colours sit under 4.5:1 on these panels */
+#s9v2left .fc-rlab{color:var(--ink-dim)}
+#s9v2left .ns-chip{color:var(--ink-dim)}
+#s9v2right .fc-rlab{color:var(--ink-dim)}
+#s9v2right .ns-lad-name{color:var(--ink-dim)}
+
+
+/* contrast nudge, s09v2: row arrows and the proposed tag sat 0.02-0.06 under 4.5 */
+#sc09v2 .s9v2-row i,#sc09v2 .s9v2-arrow{color:var(--ink-dim)}
+#sc09v2 .s9v2-tag,#sc09v2 .pill-note{color:var(--ink-dim)}

@@ -9,24 +9,14 @@
       "text": "From lesson observation to a plan for every teacher. Here is what the system does today, and where staff voice fits into it."
     },
     {
-      "id": "s02_intake",
-      "title": "One intake",
-      "text": "One form for every R3 lesson observation. June brought a hundred and sixty eight submissions, because inspectors observed in pairs; the system resolves those into a hundred and ten distinct lessons across a hundred and four teachers. Nothing typed twice, nothing counted twice."
-    },
-    {
-      "id": "s03_board",
-      "title": "One board",
-      "text": "Those lessons land on one board: the round at a glance. How many lessons. How many teachers. Where judgements sit on the six point scale. What is working, and where to focus next."
-    },
-    {
       "id": "s05_loop",
       "title": "Current Coaching Plan",
-      "text": "From there, four steps. The observation is filed. The teacher gets feedback. The observer receives an analysis and a suggested coaching plan to approve, edit, or rewrite. And the teacher receives that plan, every suggestion referenced back to our own Student Progress Rubric."
+      "text": "From there, four steps. The observation is filed. The teacher gets feedback. The Teacher Coach receives an analysis and a suggested coaching plan to approve, edit, or rewrite. And the teacher receives that plan, every suggestion referenced back to our own Student Progress Rubric."
     },
     {
       "id": "s06_coach",
       "title": "Teacher Progression",
-      "text": "This is what the observer receives. This teacher is Acceptable on progress in lessons; the plan targets Good. The rubric line for that level, one concrete move, what to look for next lesson, and where the technique comes from. The observer approves, edits, or writes their own."
+      "text": "This is what the Teacher Coach receives. This teacher is Acceptable on progress in lessons; the plan targets Good. The rubric line for that level, one concrete move, what to look for next lesson, and where the technique comes from. The Teacher Coach approves, edits, swaps the strategy, or writes their own."
     },
     {
       "id": "s06_gap",
@@ -36,22 +26,22 @@
     {
       "id": "s07_kpi1",
       "title": "KPI 1",
-      "text": "So, the first addition. An evaluation of the professional learning session itself. Short, completed by the teacher, in place before the coaching plan is drafted, so the observer and the analysis both see it first."
+      "text": "So, the first addition. An evaluation of the professional learning session itself. Short, completed by the teacher, in place before the coaching plan is drafted, so the Teacher Coach and the analysis both see it first."
     },
     {
       "id": "s08_kpi2",
       "title": "KPI 2",
-      "text": "The second addition. A reflection and an action plan, six things. What the teacher took from the session. The challenges they expect in applying it. Their own ideas for getting past those. How they will use it in their classroom. What they need from their middle leader. And what they expect to change in student learning, over what timeframe."
+      "text": "The second addition. A reflection and an action plan, six things. What the teacher took from the session. The challenges they expect in applying it. Their own ideas for getting past those. How they will use it in their classroom. What they need from their line manager. And what they expect to change in student learning, over what timeframe."
     },
     {
       "id": "s09_strategies",
-      "title": "Five strategies",
-      "text": "Each answer meets something ready made: five coaching strategies with worked examples, mapped point by point onto the Student Progress Rubric, built on our own Teaching and Learning Agenda. Observer and analysis draw from the same shelf. The teacher gets something recognisably ours, and the observer spends minutes rather than an evening."
+      "title": "The strategy shelf",
+      "text": "Today, the analysis reads the Teacher Coach's own notes, finds where the teacher sits on the rubric, and grounds every recommendation in trusted published sources. Next, our own shelf: line managers and heads of department write five coachable Teaching Strategies for every point of the rubric, and the system recommends the one that fits the level above, straight from the teacher's own evidence."
     },
     {
       "id": "s14_gadsby",
       "title": "Class Response Boards",
-      "text": "Part of the coaching strategies will include Claire Gadsby's Teacher Strategies. For example: where questioning reaches only student volunteers within a lesson, the plan automatically recommends a Teacher Strategy focused on Class Response Boards. One on every desk. The teacher asks, answers up on one, two, three. Every pupil's answer visible in eight seconds, allowing a concept reteach on the spot, not next week."
+      "text": "On top of that shelf, Claire Gadsby's Teacher Strategies, one for every point of the rubric. For example: where questioning reaches only student volunteers within a lesson, the plan automatically recommends a Teacher Strategy focused on Class Response Boards. One on every desk. The teacher asks, answers up on one, two, three. Every pupil's answer visible in eight seconds, allowing a concept reteach on the spot, not next week."
     },
     {
       "id": "s15_corner",
@@ -65,13 +55,13 @@
     },
     {
       "id": "s11_middle",
-      "title": "Middle leaders",
-      "text": "Middle leaders see their own team, and nobody else's. Not a report to read through. A starting point for a coaching conversation, with the teacher's own words already in front of them."
+      "title": "Line managers",
+      "text": "Line managers see their own team, and nobody else's. Not a report to read through. A starting point for a coaching conversation, with the teacher's own words already in front of them."
     },
     {
       "id": "s12_plp",
       "title": "The payoff",
-      "text": "Which gives every teacher what the observation already gives them: a plan of their own, built from their own lesson and their own words, in language the school already uses."
+      "text": "Which gives every teacher a plan of their own: built from their lesson, their words, and their answers to both forms, waiting on their own Teacher Portal."
     },
     {
       "id": "s13_close",
