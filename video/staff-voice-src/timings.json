@@ -1,6 +1,6 @@
 {
-  "total": 224.942,
-  "gap": 0.45,
+  "total": 211.431,
+  "gap": 0.35,
   "lead": 2.5,
   "source": "single take",
   "tempo": 1,
@@ -10,7 +10,7 @@
     "s15_corner": 2.5
   },
   "tightened": {
-    "long_to": 0.45,
+    "long_to": 0.35,
     "short_to": 0.22,
     "thresh": 0.55
   },
@@ -20,91 +20,91 @@
       "title": "Cover",
       "text": "From lesson observation to a plan for every teacher. Here is what the system does today, and where staff voice fits into it.",
       "start": 2.5,
-      "dur": 8.927
+      "dur": 8.192
     },
     {
       "id": "s05_loop",
       "title": "Current Coaching Plan",
       "text": "From there, four steps. The observation is filed. The teacher gets feedback. The Teacher Coach receives an analysis and a suggested coaching plan to approve, edit, or rewrite. And the teacher receives that plan, every suggestion referenced back to our own Student Progress Rubric.",
-      "start": 13.427,
-      "dur": 18.255
+      "start": 12.692,
+      "dur": 17.849
     },
     {
       "id": "s06_coach",
       "title": "Teacher Progression",
       "text": "This is what the Teacher Coach receives. This teacher is Acceptable on progress in lessons; the plan targets Good. The rubric line for that level, one concrete move, what to look for next lesson, and where the technique comes from. The Teacher Coach approves, edits, swaps the strategy, or writes their own.",
-      "start": 32.133,
-      "dur": 20.021
+      "start": 30.891,
+      "dur": 18.46
     },
     {
       "id": "s06_gap",
       "title": "The gap",
-      "text": "What the loop does not hear yet is the teacher. We capture how a session was rated, not what the teacher made of it, what they expect to struggle with, or what they will do differently on Monday morning.",
-      "start": 52.603,
-      "dur": 12.889
+      "text": "What the loop does not hear yet is the teacher. We capture how a session was rated. We do not capture what the teacher made of it, what they expect to struggle with when they apply it, or what they will actually do differently on Monday morning.",
+      "start": 49.701,
+      "dur": 14.291
     },
     {
       "id": "s07_kpi1",
       "title": "KPI 1",
       "text": "So, the first addition. An evaluation of the professional learning session itself. Short, completed by the teacher, in place before the coaching plan is drafted, so the Teacher Coach and the analysis both see it first.",
-      "start": 67.992,
-      "dur": 14.054
+      "start": 66.492,
+      "dur": 12.85
     },
     {
       "id": "s08_kpi2",
       "title": "KPI 2",
       "text": "The second addition. A reflection and an action plan, six things. What the teacher took from the session. The challenges they expect in applying it. Their own ideas for getting past those. How they will use it in their classroom. What they need from their line manager. And what they expect to change in student learning, over what timeframe.",
-      "start": 82.496,
-      "dur": 20.521
+      "start": 79.692,
+      "dur": 18.211
     },
     {
       "id": "s09_strategies",
       "title": "The strategy shelf",
       "text": "Today, the analysis reads the Teacher Coach's own notes, finds where the teacher sits on the rubric, and grounds every recommendation in trusted published sources. Next, our own shelf: line managers and heads of department write five coachable Teaching Strategies for every point of the rubric, and the system recommends the one that fits the level above, straight from the teacher's own evidence.",
-      "start": 103.467,
-      "dur": 23.813
+      "start": 98.253,
+      "dur": 21.096
     },
     {
       "id": "s14_gadsby",
       "title": "Class Response Boards",
       "text": "On top of that shelf, Claire Gadsby's Teacher Strategies, one for every point of the rubric. For example: where questioning reaches only student volunteers within a lesson, the plan automatically recommends a Teacher Strategy focused on Class Response Boards. One on every desk. The teacher asks, answers up on one, two, three. Every pupil's answer visible in eight seconds, allowing a concept reteach on the spot, not next week.",
-      "start": 127.729,
-      "dur": 25.59
+      "start": 119.699,
+      "dur": 22.972
     },
     {
       "id": "s15_corner",
       "title": "Pupil Owned Corner",
       "text": "A second Teacher Strategy centres on student engagement: pupils take ownership of the unit. The Pupil Owned Corner. One marked square metre, curated by a rotating pair for a fortnight: an artefact, a clipping, a question they cannot answer yet. Sixty seconds at the start of one lesson, and the next five minutes of teaching build on what they said.",
-      "start": 153.769,
-      "dur": 20.845
+      "start": 143.021,
+      "dur": 18.407
     },
     {
       "id": "s10_leadership",
       "title": "What leadership sees",
       "text": "Staff responses then get the same treatment as the observation data. Themes across the school, not a folder of replies. Where support is asked for. Which challenges repeat, and where. All of it carrying references, exactly as the observation claims do.",
-      "start": 177.113,
-      "dur": 15.025
+      "start": 163.928,
+      "dur": 13.098
     },
     {
       "id": "s11_middle",
       "title": "Line managers",
-      "text": "Line managers see their own team, and nobody else's. Not a report to read through. A starting point for a coaching conversation, with the teacher's own words already in front of them.",
-      "start": 192.588,
-      "dur": 9.849
+      "text": "Line managers see their own team, and nobody else's. This is not another report to read through. It is a starting point for a real coaching conversation, with the teacher's own words already sitting in front of them.",
+      "start": 177.376,
+      "dur": 11.515
     },
     {
       "id": "s12_plp",
       "title": "The payoff",
-      "text": "Which gives every teacher a plan of their own: built from their lesson, their words, and their answers to both forms, waiting on their own Teacher Portal.",
-      "start": 202.887,
-      "dur": 8.115
+      "text": "Which gives every teacher a plan of their own. Built from their lesson, from their own words, and from their answers to both forms. Ready and waiting on their own Teacher Portal.",
+      "start": 189.241,
+      "dur": 9.693
     },
     {
       "id": "s13_close",
       "title": "Close",
       "text": "The two forms are new; the architecture is not. Same intake, same evidence rules, same dashboard, same privacy layer, the data staying in our own database. Student surveys run on the same rails next.",
-      "start": 211.452,
-      "dur": 11.89
+      "start": 199.284,
+      "dur": 10.547
     }
   ]
 }

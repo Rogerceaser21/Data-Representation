@@ -27,7 +27,7 @@ const cfg = JSON.parse(fs.readFileSync(path.join(ROOT, 'scenes.json'), 'utf8'));
 // 1.0. Score voice consistency per take before accepting one (the v1.3 first
 // take measured adj_max 3.6 dB post-EQ and was discarded).
 const TARGET_WPM = null;  // null = natural pace (G2 standing call): the global factor snaps to 1.0 for THIS take, whatever it measures. NEVER hard-code a previous take's number here: v2.3 inherited v2.2's 196 and the script tried to SPEED UP a slower take (2026-08-04).
-const KEEP_GAP = 0.45;    // breath left between scenes (0.62 through v1.2)
+const KEEP_GAP = 0.35;    // breath left between scenes (0.62 through v1.2, 0.45 through v1.7)
 // v2.2 music-only holds: at act turns the gap widens so the bed can lift (every
 // measured reference film breathes 2-5s at section turns; ours never did, which
 // is half of why two bed rounds read as inaudible). Keys = scene the hold FOLLOWS.
@@ -115,7 +115,9 @@ cfg.scenes.forEach((s, i) => {
 // guarded against per-line stretch smear on SEPARATELY GENERATED lines; this is one
 // performance, corrected DOWNWARD only, so speaker identity cannot drift. Scenes faster
 // than PACE_CAP slow back to it; nothing is ever sped up; corrections under 3% snap to
-// none; floor 0.84 keeps the worst correction gentle. Re-scored after (score_take.py).
+// none; floor 0.95 keeps every correction below audibility (0.84 through v1.7 was
+// heard as a computerized tone on floored scenes - Igor, 2026-08-12). Deeper-braking
+// takes get BINNED, not smeared. Re-scored after (score_take.py).
 // SELF-CALIBRATING (v2.3 law, 2026-08-04): the cap derives from THIS take's own opening
 // pace, because the listener calibrates to the first scenes and hears everything faster
 // as rushing. A constant inherited from a previous take let a 159->210 wpm ramp ship to
@@ -131,7 +133,7 @@ console.log(`pace-cap derived from opening scenes: ${PACE_CAP} gross wpm (${open
 segs.forEach((s) => {
   const w = s.text.split(/\s+/).length;
   const sceneWpm = w / (s.dur / 60);
-  let f = Math.max(0.84, Math.min(1, PACE_CAP / sceneWpm));
+  let f = Math.max(0.95, Math.min(1, PACE_CAP / sceneWpm));
   if (f > 0.97) f = 1;
   if (f < 1) {
     const out = s.file.replace('.wav', 'n.wav');

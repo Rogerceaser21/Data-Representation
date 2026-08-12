@@ -20,7 +20,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MASTER = f"{ROOT}/assets/narration.wav"
 WORK = f"{ROOT}/audio/.tighten"
 
-LONG_TO = 0.45    # a pause over THRESH becomes this
+LONG_TO = 0.35    # a pause over THRESH becomes this (0.45 through v1.7)
 SHORT_TO = 0.22   # a pause between DETECT and THRESH becomes this
 THRESH = 0.55
 DETECT = 0.30     # silencedetect floor
