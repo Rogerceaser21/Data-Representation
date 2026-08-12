@@ -1,7 +1,7 @@
 {
   "voice": "Charon",
   "model": "gemini-2.5-flash-preview-tts",
-  "note": "Speak in a measured British accent at a natural briefing pace, about 160 words per minute. Warm, factual, a school leader briefing colleagues. Not an advertisement, no upward lilt at the end of sentences. Say only the text after the colon:\n\n",
+  "note": "Speak in a measured British accent at a natural briefing pace, about 170 words per minute. Warm, factual, a school leader briefing colleagues. Not an advertisement, no upward lilt at the end of sentences. Say only the text after the colon:\n\n",
   "scenes": [
     {
       "id": "s01_cover",
@@ -19,18 +19,13 @@
       "text": "Those lessons land on one board: the round at a glance. How many lessons. How many teachers. Where judgements sit on the six point scale. What is working, and where to focus next."
     },
     {
-      "id": "s04_evidence",
-      "title": "Evidence discipline",
-      "text": "Every claim on that board carries a number. Open it for the lessons behind the claim, the inspector's own words, and a link to the locked record. Over six hundred references sit behind June alone. No statement stands on its own."
-    },
-    {
       "id": "s05_loop",
-      "title": "The loop today",
+      "title": "Current Coaching Plan",
       "text": "From there, four steps. The observation is filed. The teacher gets feedback. The observer receives an analysis and a suggested coaching plan to approve, edit, or rewrite. And the teacher receives that plan, every suggestion referenced back to our own Student Progress Rubric."
     },
     {
       "id": "s06_coach",
-      "title": "The coaching plan",
+      "title": "Teacher Progression",
       "text": "This is what the observer receives. This teacher is Acceptable on progress in lessons; the plan targets Good. The rubric line for that level, one concrete move, what to look for next lesson, and where the technique comes from. The observer approves, edits, or writes their own."
     },
     {
@@ -52,6 +47,16 @@
       "id": "s09_strategies",
       "title": "Five strategies",
       "text": "Each answer meets something ready made: five coaching strategies with worked examples, mapped point by point onto the Student Progress Rubric, built on our own Teaching and Learning Agenda. Observer and analysis draw from the same shelf. The teacher gets something recognisably ours, and the observer spends minutes rather than an evening."
+    },
+    {
+      "id": "s14_gadsby",
+      "title": "Class Response Boards",
+      "text": "Part of the coaching strategies will include Claire Gadsby's Teacher Strategies. For example: where questioning reaches only student volunteers within a lesson, the plan automatically recommends a Teacher Strategy focused on Class Response Boards. One on every desk. The teacher asks, answers up on one, two, three. Every pupil's answer visible in eight seconds, allowing a concept reteach on the spot, not next week."
+    },
+    {
+      "id": "s15_corner",
+      "title": "Pupil Owned Corner",
+      "text": "A second Teacher Strategy centres on student engagement: pupils take ownership of the unit. The Pupil Owned Corner. One marked square metre, curated by a rotating pair for a fortnight: an artefact, a clipping, a question they cannot answer yet. Sixty seconds at the start of one lesson, and the next five minutes of teaching build on what they said."
     },
     {
       "id": "s10_leadership",

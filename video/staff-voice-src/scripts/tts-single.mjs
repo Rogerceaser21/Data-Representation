@@ -108,7 +108,7 @@ for (let i = 0; i < MAX_TRIES; i++) {
   const miss = Math.abs(wpm - TARGET);
   console.log(`  take ${i + 1}: ${t.dur.toFixed(1)}s total, ${speech.toFixed(1)}s speech, ${wpm.toFixed(0)} wpm, finish=${t.finish}` +
     (truncated ? '  REJECTED (truncated)' : ''));
-  if (truncated) { await new Promise(r => setTimeout(r, 3000)); continue; }
+  if (truncated) { fs.copyFileSync(tmp, path.join(AUDIO, `reject-${i + 1}.wav`)); await new Promise(r => setTimeout(r, 3000)); continue; }
   if (!best || miss < best.miss) best = { ...t, wpm, speech, miss };
   if (wpm >= BAND[0] && wpm <= BAND[1]) break;
   await new Promise(r => setTimeout(r, 2000));

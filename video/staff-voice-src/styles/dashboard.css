@@ -307,3 +307,55 @@ body{font-family:var(--body);color:var(--ink);-webkit-font-smoothing:antialiased
 #sc08 .formcard{padding:20px 22px}
 #sc08 .ffield{margin-bottom:11px}
 .scene .fstep .ftag{color:#3a2801}
+
+
+/* ===== s14_gadsby: the Claire Gadsby Teacher Strategy card (VIDEO) =========
+   Built on the dashboard's coaching-note grammar (.panel, .ns-head, .fc,
+   .ns-chip, .fc-rlab). Only the numbered-step list, the spoken line, the
+   schematic frame and the payoff strip are new, and they are sized for the
+   projected 1150px column the way the readability pass above sizes the rest. */
+.scg1-fc{margin-top:14px}
+.scg1-steps{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-direction:column;gap:11px}
+.scg1-step{display:grid;grid-template-columns:24px 1fr;gap:10px;align-items:start;font-size:15.5px;line-height:1.5;color:var(--ink-dim)}
+.scg1-n{font-family:var(--display);font-style:italic;font-weight:600;font-size:19px;line-height:1.22;color:var(--cc,var(--b));text-align:center}
+.scg1-saylab{margin-top:16px}
+.scg1-say{margin:5px 0 0;padding:2px 0 2px 12px;border-left:2px solid var(--cc,var(--b));font-family:var(--display);font-style:italic;font-weight:600;font-size:17px;line-height:1.5;color:var(--ink)}
+/* the schematic keeps its own proportions inside a fixed box, so a slow or
+   missing asset cannot reflow the card; resting clip is the full picture. */
+.scg1-fig{margin:6px 0 0;padding:10px 12px;border:1px solid var(--edge-soft);border-radius:12px;background:var(--panel-2);clip-path:inset(0% 0% 0% 0%)}
+.scg1-fig img{display:block;width:100%;height:220px;object-fit:contain}
+.scg1-attr{margin:10px 0 0;font-size:12.5px;line-height:1.45;color:var(--ink-faint)}
+.scg1-payoff{display:grid;grid-template-columns:22px 1fr;gap:12px;align-items:start;margin-top:14px;padding:14px 18px;border:1px solid var(--edge);border-radius:14px;background:var(--panel-2)}
+.scg1-parrow{font-family:var(--display);font-style:italic;font-weight:600;font-size:22px;line-height:1.25;color:var(--y)}
+.scg1-payoff p{font-size:17px;line-height:1.55;color:var(--ink-dim)}
+
+
+/* ===== s15_corner . Pupil Owned Corner, the Teacher Strategy card =====
+   Reuses the coaching-card grammar (.panel, .ns-head, .ey, .oround, .fc,
+   .fc-l/.fc-r, .fc-rlab, .ns-chip, .ns-q, .ns-src). New rules cover only the
+   numbered steps, the name plate, the schematic and the spoken-line band.
+   --cc is set once on .scg2-card and inherits into .fc and .ns-chip. */
+.scg2-card{padding:22px 26px}
+.scg2-name{display:flex;align-items:center;gap:14px;margin:13px 0 15px}
+.scg2-namebar{display:block;width:64px;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--y),var(--g),var(--b));transform-origin:left}
+.scg2-steps{list-style:none;padding:0;margin:1px 0 0;display:flex;flex-direction:column;gap:11px}
+.scg2-step{display:grid;grid-template-columns:24px 1fr;gap:12px;align-items:start}
+.scg2-step .scg2-sn{font-family:var(--display);font-style:italic;font-weight:600;font-size:24px;line-height:1.15;color:var(--ink-mid);text-align:center}
+.scg2-step p{font-size:15.5px;line-height:1.55;color:var(--ink-dim)}
+.scg2-pay .scg2-sn{color:var(--y)}
+.scg2-pay p{color:var(--ink);font-weight:800}
+.scg2-fig{margin:7px 0 0}
+/* width driven, height capped, contain: proportions hold whether the svg carries
+   width/height attributes or only a viewBox (both cases measured) */
+.scg2-svg{display:block;width:100%;height:auto;max-height:196px;object-fit:contain;padding:9px;border:1px solid var(--edge-soft);border-radius:12px;background:var(--panel-2)}
+.scg2-cap{font-size:12px;line-height:1.4;color:var(--ink-faint);margin-top:7px}
+.scg2-say{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:16px;margin-top:15px;padding:12px 16px;border:1px solid var(--edge-soft);border-left:3px solid var(--y);border-radius:12px;background:var(--panel-2)}
+.scg2-say .fc-rlab{margin:0;white-space:nowrap}
+.scg2-say .ns-q{margin:0;padding:0;border-left:0;font-size:17px;line-height:1.5;color:var(--ink)}
+.scg2-attrib{margin-top:13px}
+
+
+/* contrast pass on the two Teacher Strategy cards: the house faint/mid inks sit
+   just under 4.5:1 on these panel backdrops, so the cards scope one step darker */
+.scg1-fc .fc-rlab,.scg2-card .fc-rlab,#scg1card .subtle,#scg2card .subtle,.scg2-cap{color:var(--ink-dim)}
+#scg1card .ns-chip,#scg2card .ns-chip{color:var(--ink-dim)}

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 280" width="420" height="280" role="img" aria-label="Pupil owned corner"><title>Pupil owned corner</title><desc>1 metre square · prep 10 min · 60 seconds</desc><style>
+  :root{--ink:#1f2430;--muted:#8b93a3;--line:#c9cedb;--wash:#f2f3f8;--paper:#fff;--accent:#6d4df6;--accent-wash:#ece7ff}
+  @media (prefers-color-scheme: dark){
+    :root{--ink:#e8eaf2;--muted:#8d95a8;--line:#3a4157;--wash:#1b2030;--paper:#111521;--accent:#9b86ff;--accent-wash:#241f3d}
+  }
+  .t{font:600 13px/1.2 ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;fill:var(--ink)}
+  .s{font:500 10px/1.2 ui-sans-serif,system-ui,sans-serif;fill:var(--muted);letter-spacing:.02em}
+  .l{font:500 9.5px/1.2 ui-sans-serif,system-ui,sans-serif;fill:var(--ink)}
+  .lm{font:500 9px/1.2 ui-sans-serif,system-ui,sans-serif;fill:var(--muted)}
+  .la{font:600 9.5px/1.2 ui-sans-serif,system-ui,sans-serif;fill:var(--accent)}
+  .halo{paint-order:stroke;stroke:var(--paper);stroke-width:3.5px;stroke-linejoin:round}
+  .stroke{fill:none;stroke:var(--line);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+  .acc{fill:none;stroke:var(--accent);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .fillw{fill:var(--wash)}
+  .filla{fill:var(--accent-wash)}
+  .fillp{fill:var(--paper)}
+  .dash{stroke-dasharray:4 3}
+</style><rect x="0" y="0" width="420" height="280" fill="none"/><text x="20" y="26" class="t" text-anchor="start">Pupil owned corner</text><text x="20" y="42" class="s" text-anchor="start">1 metre square · prep 10 min · 60 seconds</text><g><path d="M28 200 L28 76 L152 76" class="stroke"/><rect x="36" y="84" width="108" height="108" rx="4" class="filla"/><rect x="36" y="84" width="108" height="108" rx="4" class="acc"/><text x="90.0" y="204" class="la" text-anchor="middle">curated by a rotating pair</text><rect x="52" y="100" width="22" height="22" rx="2" class="filla"/><rect x="52" y="100" width="22" height="22" rx="2" class="acc"/><rect x="84" y="100" width="48" height="22" rx="2" class="fillp"/><rect x="84" y="100" width="48" height="22" rx="2" class="stroke"/><text x="108.0" y="114.4" class="l" text-anchor="middle">clipping</text><rect x="52" y="136" width="80" height="22" rx="2" class="fillp"/><rect x="52" y="136" width="80" height="22" rx="2" class="stroke"/><text x="92.0" y="150.4" class="l" text-anchor="middle">artefact</text><rect x="52" y="166" width="80" height="18" rx="2" class="fillp"/><rect x="52" y="166" width="80" height="18" rx="2" class="stroke"/><text x="92.0" y="178.4" class="l" text-anchor="middle">open question</text><circle cx="176" cy="120" r="8" class="stroke"/><circle cx="176" cy="148" r="8" class="stroke"/><text x="212" y="108" class="la" text-anchor="middle">60 second</text><text x="212" y="120" class="la" text-anchor="middle">present</text><line x1="192" y1="134" x2="239.4" y2="134.0" class="acc"/><path d="M244 134 L235.4 136.2 M244 134 L235.4 131.8" class="acc"/><rect x="252" y="114" width="140" height="44" rx="2" class="filla"/><rect x="252" y="114" width="140" height="44" rx="2" class="acc"/><text x="322" y="132" class="la" text-anchor="middle">you build the next 5 min on it</text><text x="210" y="236" class="lm" text-anchor="middle">fortnightly rotation</text></g></svg>

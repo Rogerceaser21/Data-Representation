@@ -97,8 +97,12 @@ for i, s in enumerate(tim["scenes"]):
                        "start": round(t, 3), "dur": round(new_dur, 3)})
     t += new_dur
     if i < len(tim["scenes"]) - 1:
-        parts.append(np.zeros(gap_n, dtype=np.int16))
-        t += gap_n / sr
+        # v2.2: act-turn holds from split.mjs must survive tightening (they are the
+        # music-only moments, not model hesitation); per-boundary gap, default KEEP_GAP
+        g = tim.get("holds", {}).get(s["id"], tim["gap"])
+        g_n = int(round(g * sr))
+        parts.append(np.zeros(g_n, dtype=np.int16))
+        t += g_n / sr
 
 tail = max(0.1, tim["total"] - (tim["scenes"][-1]["start"] + tim["scenes"][-1]["dur"]))
 parts.append(np.zeros(int(round(tail * sr)), dtype=np.int16))
@@ -110,6 +114,7 @@ sh(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-i", MASTER,
 
 tim_out = {"total": round(t, 3), "gap": tim["gap"], "lead": tim["lead"],
            "source": tim["source"], "tempo": tim["tempo"],
+           "holds": tim.get("holds", {}),
            "tightened": {"long_to": LONG_TO, "short_to": SHORT_TO, "thresh": THRESH},
            "scenes": new_scenes}
 json.dump(tim_out, open(f"{ROOT}/timings.json", "w"), indent=2)

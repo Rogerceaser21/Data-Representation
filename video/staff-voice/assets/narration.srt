@@ -1,203 +1,223 @@
 1
-00:00:00,900 --> 00:00:04,297
+00:00:02,500 --> 00:00:05,694
 From lesson observation to a plan for every teacher.
 
 2
-00:00:04,297 --> 00:00:09,581
+00:00:05,694 --> 00:00:10,662
 Here is what the system does today, and where staff voice fits into it.
 
 3
-00:00:10,031 --> 00:00:12,979
+00:00:12,662 --> 00:00:15,603
 One form for every R3 lesson observation.
 
 4
-00:00:12,979 --> 00:00:25,616
+00:00:15,603 --> 00:00:28,207
 June brought a hundred and sixty eight submissions, because inspectors observed in pairs; the system resolves those into a hundred and ten distinct lessons across a hundred and four teachers.
 
 5
-00:00:25,616 --> 00:00:28,143
+00:00:28,207 --> 00:00:30,728
 Nothing typed twice, nothing counted twice.
 
 6
-00:00:28,593 --> 00:00:32,635
+00:00:31,178 --> 00:00:35,316
 Those lessons land on one board: the round at a glance.
 
 7
-00:00:32,635 --> 00:00:33,737
+00:00:35,316 --> 00:00:36,445
 How many lessons.
 
 8
-00:00:33,737 --> 00:00:34,840
+00:00:36,445 --> 00:00:37,573
 How many teachers.
 
 9
-00:00:34,840 --> 00:00:37,779
+00:00:37,573 --> 00:00:40,583
 Where judgements sit on the six point scale.
 
 10
-00:00:37,779 --> 00:00:40,719
+00:00:40,583 --> 00:00:43,592
 What is working, and where to focus next.
 
 11
-00:00:41,169 --> 00:00:43,938
-Every claim on that board carries a number.
-
-12
-00:00:43,938 --> 00:00:50,516
-Open it for the lessons behind the claim, the inspector's own words, and a link to the locked record.
-
-13
-00:00:50,516 --> 00:00:53,285
-Over six hundred references sit behind June alone.
-
-14
-00:00:53,285 --> 00:00:55,362
-No statement stands on its own.
-
-15
-00:00:55,812 --> 00:00:57,360
+00:00:44,042 --> 00:00:45,665
 From there, four steps.
 
-16
-00:00:57,360 --> 00:00:58,908
+12
+00:00:45,665 --> 00:00:47,289
 The observation is filed.
 
-17
-00:00:58,908 --> 00:01:00,456
+13
+00:00:47,289 --> 00:00:48,912
 The teacher gets feedback.
 
-18
-00:01:00,456 --> 00:01:06,262
+14
+00:00:48,912 --> 00:00:54,999
 The observer receives an analysis and a suggested coaching plan to approve, edit, or rewrite.
 
-19
-00:01:06,262 --> 00:01:12,454
+15
+00:00:54,999 --> 00:01:01,492
 And the teacher receives that plan, every suggestion referenced back to our own Student Progress Rubric.
 
-20
-00:01:12,904 --> 00:01:15,032
+16
+00:01:01,942 --> 00:01:04,161
 This is what the observer receives.
 
-21
-00:01:15,032 --> 00:01:19,287
+17
+00:01:04,161 --> 00:01:08,599
 This teacher is Acceptable on progress in lessons; the plan targets Good.
 
-22
-00:01:19,287 --> 00:01:26,735
+18
+00:01:08,599 --> 00:01:16,365
 The rubric line for that level, one concrete move, what to look for next lesson, and where the technique comes from.
 
-23
-00:01:26,735 --> 00:01:29,572
+19
+00:01:16,365 --> 00:01:19,323
 The observer approves, edits, or writes their own.
 
-24
-00:01:30,022 --> 00:01:32,643
+20
+00:01:19,773 --> 00:01:23,137
 What the loop does not hear yet is the teacher.
 
-25
-00:01:32,643 --> 00:01:40,242
+21
+00:01:23,137 --> 00:01:32,891
 We capture how a session was rated, not what the teacher made of it, what they expect to struggle with, or what they will do differently on Monday morning.
 
-26
-00:01:40,692 --> 00:01:42,065
+22
+00:01:35,391 --> 00:01:36,921
 So, the first addition.
 
-27
-00:01:42,065 --> 00:01:44,812
+23
+00:01:36,921 --> 00:01:39,980
 An evaluation of the professional learning session itself.
 
-28
-00:01:44,812 --> 00:01:52,710
+24
+00:01:39,980 --> 00:01:48,775
 Short, completed by the teacher, in place before the coaching plan is drafted, so the observer and the analysis both see it first.
 
-29
-00:01:53,160 --> 00:01:54,020
+25
+00:01:49,226 --> 00:01:50,291
 The second addition.
 
-30
-00:01:54,020 --> 00:01:56,314
+26
+00:01:50,291 --> 00:01:53,131
 A reflection and an action plan, six things.
 
-31
-00:01:56,314 --> 00:01:58,321
+27
+00:01:53,131 --> 00:01:55,616
 What the teacher took from the session.
 
-32
-00:01:58,321 --> 00:02:00,329
+28
+00:01:55,616 --> 00:01:58,101
 The challenges they expect in applying it.
 
-33
-00:02:00,329 --> 00:02:02,336
+29
+00:01:58,101 --> 00:02:00,587
 Their own ideas for getting past those.
 
-34
-00:02:02,336 --> 00:02:04,630
+30
+00:02:00,587 --> 00:02:03,427
 How they will use it in their classroom.
 
-35
-00:02:04,630 --> 00:02:06,637
+31
+00:02:03,427 --> 00:02:05,912
 What they need from their middle leader.
 
-36
-00:02:06,637 --> 00:02:10,078
+32
+00:02:05,912 --> 00:02:10,172
 And what they expect to change in student learning, over what timeframe.
 
-37
-00:02:10,528 --> 00:02:20,053
+33
+00:02:10,622 --> 00:02:21,350
 Each answer meets something ready made: five coaching strategies with worked examples, mapped point by point onto the Student Progress Rubric, built on our own Teaching and Learning Agenda.
 
-38
-00:02:20,053 --> 00:02:22,680
+34
+00:02:21,350 --> 00:02:24,310
 Observer and analysis draw from the same shelf.
 
-39
-00:02:22,680 --> 00:02:27,607
+35
+00:02:24,310 --> 00:02:29,859
 The teacher gets something recognisably ours, and the observer spends minutes rather than an evening.
 
+36
+00:02:30,309 --> 00:02:34,332
+Part of the coaching strategies will include Claire Gadsby's Teacher Strategies.
+
+37
+00:02:34,332 --> 00:02:42,744
+For example: where questioning reaches only student volunteers within a lesson, the plan automatically recommends a Teacher Strategy focused on Class Response Boards.
+
+38
+00:02:42,744 --> 00:02:44,207
+One on every desk.
+
+39
+00:02:44,207 --> 00:02:47,499
+The teacher asks, answers up on one, two, three.
+
 40
-00:02:28,057 --> 00:02:31,661
-Staff responses then get the same treatment as the observation data.
+00:02:47,499 --> 00:02:53,716
+Every pupil's answer visible in eight seconds, allowing a concept reteach on the spot, not next week.
 
 41
-00:02:31,661 --> 00:02:34,610
-Themes across the school, not a folder of replies.
+00:02:54,167 --> 00:02:59,088
+A second Teacher Strategy centres on student engagement: pupils take ownership of the unit.
 
 42
-00:02:34,610 --> 00:02:36,248
-Where support is asked for.
+00:02:59,088 --> 00:03:00,494
+The Pupil Owned Corner.
 
 43
-00:02:36,248 --> 00:02:37,887
-Which challenges repeat, and where.
+00:03:00,494 --> 00:03:08,227
+One marked square metre, curated by a rotating pair for a fortnight: an artefact, a clipping, a question they cannot answer yet.
 
 44
-00:02:37,887 --> 00:02:41,491
-All of it carrying references, exactly as the observation claims do.
+00:03:08,227 --> 00:03:15,257
+Sixty seconds at the start of one lesson, and the next five minutes of teaching build on what they said.
 
 45
-00:02:41,941 --> 00:02:44,421
-Middle leaders see their own team, and nobody else's.
+00:03:17,757 --> 00:03:21,664
+Staff responses then get the same treatment as the observation data.
 
 46
-00:02:44,421 --> 00:02:46,075
-Not a report to read through.
+00:03:21,664 --> 00:03:24,861
+Themes across the school, not a folder of replies.
 
 47
-00:02:46,075 --> 00:02:50,760
-A starting point for a coaching conversation, with the teacher's own words already in front of them.
+00:03:24,861 --> 00:03:26,637
+Where support is asked for.
 
 48
-00:02:51,209 --> 00:02:59,316
-Which gives every teacher what the observation already gives them: a plan of their own, built from their own lesson and their own words, in language the school already uses.
+00:03:26,637 --> 00:03:28,414
+Which challenges repeat, and where.
 
 49
-00:02:59,766 --> 00:03:02,897
-The two forms are new; the architecture is not.
+00:03:28,414 --> 00:03:32,321
+All of it carrying references, exactly as the observation claims do.
 
 50
-00:03:02,897 --> 00:03:08,811
-Same intake, same evidence rules, same dashboard, same privacy layer, the data staying in our own database.
+00:03:32,772 --> 00:03:35,830
+Middle leaders see their own team, and nobody else's.
 
 51
-00:03:08,811 --> 00:03:11,594
+00:03:35,830 --> 00:03:37,869
+Not a report to read through.
+
+52
+00:03:37,869 --> 00:03:43,646
+A starting point for a coaching conversation, with the teacher's own words already in front of them.
+
+53
+00:03:44,096 --> 00:03:54,342
+Which gives every teacher what the observation already gives them: a plan of their own, built from their own lesson and their own words, in language the school already uses.
+
+54
+00:03:54,792 --> 00:03:57,983
+The two forms are new; the architecture is not.
+
+55
+00:03:57,983 --> 00:04:04,009
+Same intake, same evidence rules, same dashboard, same privacy layer, the data staying in our own database.
+
+56
+00:04:04,009 --> 00:04:06,845
 Student surveys run on the same rails next.
