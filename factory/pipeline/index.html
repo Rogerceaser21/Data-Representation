@@ -1174,16 +1174,18 @@ footer .ramp{margin-bottom:18px}
               <li>The pace check reads the speed of EVERY scene, not the average. The average hides the AI voice's habit of starting calm and racing toward the end.</li>
               <li>Every scene is compared against the FIRST proper scene of this recording and must stay within fifteen percent of it. Only the first one counts, because a second reference scene can already be racing and then it sets the bar too high.</li>
               <li>That comparison decides whether the recording is kept. It is not a report printed after the fact.</li>
-              <li>A safety brake slows any scene that reads faster than the reference. The brake calibrates itself to each new recording. It can never speed a scene up.</li>
+              <li>A safety brake slows any scene that reads faster than the reference, but only ever by five percent. Slowing audio further makes the voice sound computerized, which is exactly what your ear caught on one shipped version. A recording that needs more slowing gets thrown away instead.</li>
+              <li>A scene that still races gets real breathing room instead: short silences widened at its own full stops, so the voice itself is never touched.</li>
               <li>A second pass trims dead air inside scenes. A third pass evens out slow tone drift. It runs exactly once.</li>
             </ul>
           </div>
           <div class="block">
             <h4>Tools that run</h4>
             <ul class="tools">
-              <li><code>node scripts/split.mjs</code> <span class="tnote">cuts scenes and applies the speed cap</span></li>
+              <li><code>node scripts/split.mjs</code> <span class="tnote">cuts scenes and applies the gentle speed cap</span></li>
               <li><code>python3 scripts/tighten.py</code> <span class="tnote">shortens the pauses</span></li>
               <li><code>python3 scripts/deflutter.py</code> <span class="tnote">evens out tone</span></li>
+              <li><code>python3 scripts/breathe.py</code> <span class="tnote">slows a racing scene with real breath at its own full stops</span></li>
               <li><code>node scripts/pacecurve.mjs</code> <span class="tnote">prints the per-scene speed curve</span></li>
             </ul>
           </div>
@@ -1194,6 +1196,7 @@ footer .ramp{margin-bottom:18px}
               <li>Running the tone pass twice, which applies the correction twice.</li>
               <li>Trusting the average speed. Only the scene-by-scene curve tells the truth.</li>
               <li>Measuring against a scene that is already racing. Then the check passes and the video still speeds up, which is exactly what Igor's ear caught.</li>
+              <li>Slowing a scene more than five percent. That is how a natural voice starts sounding like a machine.</li>
             </ul>
           </div>
           <div class="gatebox">
