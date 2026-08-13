@@ -50,7 +50,7 @@ row('tail (after last word)', MUSIC, lastEnd + 0.15, Math.max(0.5, t.total - las
 row('end card (silent picture)', MUSIC, TOTAL - ENDCARD + 0.2, ENDCARD - 1.2);
 
 console.log('\nUNDER SPEECH (bed should DUCK here):');
-for (const id of ['s05_loop', 's08_kpi2', 's14_gadsby', 's12_plp']) {
+for (const id of ['s05_loop', 's09_strategies', 's15_corner', 's11_middle']) {
   const s = byId[id];
   if (s) row(`under ${id}`, MUSIC, s.start + 1.0, Math.min(10, s.dur - 2));
 }

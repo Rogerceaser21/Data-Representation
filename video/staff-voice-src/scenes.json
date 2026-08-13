@@ -11,7 +11,7 @@
     {
       "id": "s05_loop",
       "title": "Current Coaching Plan",
-      "text": "From there, four steps. The observation is filed. The teacher gets feedback. The Teacher Coach receives an analysis and a suggested coaching plan to approve, edit, or rewrite. And the teacher receives that plan, every suggestion referenced back to our own Student Progress Rubric."
+      "text": "We start with observing the lesson first. Then, four steps. The observation is filed. The teacher gets feedback. The Teacher Coach receives an analysis and a suggested coaching plan to approve, edit, or rewrite. And the teacher receives that plan, every suggestion referenced back to our own Student Progress Rubric."
     },
     {
       "id": "s06_coach",
@@ -45,8 +45,18 @@
     },
     {
       "id": "s15_corner",
-      "title": "Pupil Owned Corner",
-      "text": "A second Teacher Strategy centres on student engagement: pupils take ownership of the unit. The Pupil Owned Corner. One marked square metre, curated by a rotating pair for a fortnight: an artefact, a clipping, a question they cannot answer yet. Sixty seconds at the start of one lesson, and the next five minutes of teaching build on what they said."
+      "title": "The Pupil Corner",
+      "text": "A second example of a Teacher Strategy, this one built on students taking ownership of the unit. Claire calls it The Pupil Corner. A carefully curated space of the students' own, where they add something related to the unit once a week: an artefact, a clipping, a question they cannot answer yet. The teacher reviews it with the students at the start of a lesson, then builds on the current student need. Easy!"
+    },
+    {
+      "id": "s17_plan",
+      "title": "A concrete plan",
+      "text": "All of it is designed for one thing: giving every teacher a concrete plan of action. Drawing on any of the Coaching Strategies and their worked examples, the plan targets the band above, so teachers keep moving up the judgement scale, becoming better teachers, and students make better progress in every lesson."
+    },
+    {
+      "id": "s12_plp",
+      "title": "The payoff",
+      "text": "Which gives every teacher a plan of their own. Built from their lesson, from their own words, and from their answers to both forms. Ready and waiting on their own Teacher Portal."
     },
     {
       "id": "s10_leadership",
@@ -57,11 +67,6 @@
       "id": "s11_middle",
       "title": "Line managers",
       "text": "Line managers see their own team, and nobody else's. This is not another report to read through. It is a starting point for a real coaching conversation, with the teacher's own words already sitting in front of them."
-    },
-    {
-      "id": "s12_plp",
-      "title": "The payoff",
-      "text": "Which gives every teacher a plan of their own. Built from their lesson, from their own words, and from their answers to both forms. Ready and waiting on their own Teacher Portal."
     },
     {
       "id": "s13_close",

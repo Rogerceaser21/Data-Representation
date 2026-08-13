@@ -1,199 +1,215 @@
 1
-00:00:02,500 --> 00:00:05,706
+00:00:02,500 --> 00:00:05,656
 From lesson observation to a plan for every teacher.
 
 2
-00:00:05,706 --> 00:00:10,692
+00:00:05,656 --> 00:00:10,565
 Here is what the system does today, and where staff voice fits into it.
 
 3
-00:00:12,692 --> 00:00:14,315
-From there, four steps.
+00:00:12,565 --> 00:00:15,178
+We start with observing the lesson first.
 
 4
-00:00:14,315 --> 00:00:15,937
-The observation is filed.
+00:00:15,178 --> 00:00:16,298
+Then, four steps.
 
 5
-00:00:15,937 --> 00:00:17,560
-The teacher gets feedback.
+00:00:16,298 --> 00:00:17,792
+The observation is filed.
 
 6
-00:00:17,560 --> 00:00:24,050
-The Teacher Coach receives an analysis and a suggested coaching plan to approve, edit, or rewrite.
+00:00:17,792 --> 00:00:19,285
+The teacher gets feedback.
 
 7
-00:00:24,050 --> 00:00:30,541
-And the teacher receives that plan, every suggestion referenced back to our own Student Progress Rubric.
+00:00:19,285 --> 00:00:25,259
+The Teacher Coach receives an analysis and a suggested coaching plan to approve, edit, or rewrite.
 
 8
-00:00:30,891 --> 00:00:33,376
-This is what the Teacher Coach receives.
+00:00:25,259 --> 00:00:31,232
+And the teacher receives that plan, every suggestion referenced back to our own Student Progress Rubric.
 
 9
-00:00:33,376 --> 00:00:37,636
-This teacher is Acceptable on progress in lessons; the plan targets Good.
+00:00:31,582 --> 00:00:34,055
+This is what the Teacher Coach receives.
 
 10
-00:00:37,636 --> 00:00:45,091
-The rubric line for that level, one concrete move, what to look for next lesson, and where the technique comes from.
+00:00:34,055 --> 00:00:38,293
+This teacher is Acceptable on progress in lessons; the plan targets Good.
 
 11
-00:00:45,091 --> 00:00:49,351
-The Teacher Coach approves, edits, swaps the strategy, or writes their own.
+00:00:38,293 --> 00:00:45,711
+The rubric line for that level, one concrete move, what to look for next lesson, and where the technique comes from.
 
 12
-00:00:49,701 --> 00:00:52,486
-What the loop does not hear yet is the teacher.
+00:00:45,711 --> 00:00:49,950
+The Teacher Coach approves, edits, swaps the strategy, or writes their own.
 
 13
-00:00:52,486 --> 00:00:54,836
-We capture how a session was rated.
+00:00:50,300 --> 00:00:53,228
+What the loop does not hear yet is the teacher.
 
 14
-00:00:54,836 --> 00:01:03,992
-We do not capture what the teacher made of it, what they expect to struggle with when they apply it, or what they will actually do differently on Monday morning.
+00:00:53,228 --> 00:00:55,278
+We capture how a session was rated.
 
 15
-00:01:06,492 --> 00:01:07,920
-So, the first addition.
+00:00:55,278 --> 00:01:04,063
+We do not capture what the teacher made of it, what they expect to struggle with when they apply it, or what they will actually do differently on Monday morning.
 
 16
-00:01:07,920 --> 00:01:10,775
-An evaluation of the professional learning session itself.
+00:01:06,563 --> 00:01:07,978
+So, the first addition.
 
 17
-00:01:10,775 --> 00:01:19,342
-Short, completed by the teacher, in place before the coaching plan is drafted, so the Teacher Coach and the analysis both see it first.
+00:01:07,978 --> 00:01:10,808
+An evaluation of the professional learning session itself.
 
 18
-00:01:19,692 --> 00:01:20,618
-The second addition.
+00:01:10,808 --> 00:01:19,298
+Short, completed by the teacher, in place before the coaching plan is drafted, so the Teacher Coach and the analysis both see it first.
 
 19
-00:01:20,618 --> 00:01:23,087
-A reflection and an action plan, six things.
+00:01:19,648 --> 00:01:20,605
+The second addition.
 
 20
-00:01:23,087 --> 00:01:25,248
-What the teacher took from the session.
+00:01:20,605 --> 00:01:23,159
+A reflection and an action plan, six things.
 
 21
-00:01:25,248 --> 00:01:27,409
-The challenges they expect in applying it.
+00:01:23,159 --> 00:01:25,393
+What the teacher took from the session.
 
 22
-00:01:27,409 --> 00:01:29,569
-Their own ideas for getting past those.
+00:01:25,393 --> 00:01:27,627
+The challenges they expect in applying it.
 
 23
-00:01:29,569 --> 00:01:32,038
-How they will use it in their classroom.
+00:01:27,627 --> 00:01:29,861
+Their own ideas for getting past those.
 
 24
-00:01:32,038 --> 00:01:34,199
-What they need from their line manager.
+00:01:29,861 --> 00:01:32,414
+How they will use it in their classroom.
 
 25
-00:01:34,199 --> 00:01:37,903
-And what they expect to change in student learning, over what timeframe.
+00:01:32,414 --> 00:01:34,648
+What they need from their line manager.
 
 26
-00:01:38,253 --> 00:01:46,624
-Today, the analysis reads the Teacher Coach's own notes, finds where the teacher sits on the rubric, and grounds every recommendation in trusted published sources.
+00:01:34,648 --> 00:01:38,478
+And what they expect to change in student learning, over what timeframe.
 
 27
-00:01:46,624 --> 00:01:59,349
-Next, our own shelf: line managers and heads of department write five coachable Teaching Strategies for every point of the rubric, and the system recommends the one that fits the level above, straight from the teacher's own evidence.
+00:01:38,828 --> 00:01:47,109
+Today, the analysis reads the Teacher Coach's own notes, finds where the teacher sits on the rubric, and grounds every recommendation in trusted published sources.
 
 28
-00:01:59,699 --> 00:02:05,026
-On top of that shelf, Claire Gadsby's Teacher Strategies, one for every point of the rubric.
+00:01:47,109 --> 00:01:59,697
+Next, our own shelf: line managers and heads of department write five coachable Teaching Strategies for every point of the rubric, and the system recommends the one that fits the level above, straight from the teacher's own evidence.
 
 29
-00:02:05,026 --> 00:02:12,683
-For example: where questioning reaches only student volunteers within a lesson, the plan automatically recommends a Teacher Strategy focused on Class Response Boards.
+00:02:00,047 --> 00:02:05,400
+On top of that shelf, Claire Gadsby's Teacher Strategies, one for every point of the rubric.
 
 30
-00:02:12,683 --> 00:02:14,015
-One on every desk.
+00:02:05,400 --> 00:02:13,095
+For example: where questioning reaches only student volunteers within a lesson, the plan automatically recommends a Teacher Strategy focused on Class Response Boards.
 
 31
-00:02:14,015 --> 00:02:17,011
-The teacher asks, answers up on one, two, three.
+00:02:13,095 --> 00:02:14,433
+One on every desk.
 
 32
-00:02:17,011 --> 00:02:22,671
-Every pupil's answer visible in eight seconds, allowing a concept reteach on the spot, not next week.
+00:02:14,433 --> 00:02:17,444
+The teacher asks, answers up on one, two, three.
 
 33
-00:02:23,021 --> 00:02:27,316
-A second Teacher Strategy centres on student engagement: pupils take ownership of the unit.
+00:02:17,444 --> 00:02:23,132
+Every pupil's answer visible in eight seconds, allowing a concept reteach on the spot, not next week.
 
 34
-00:02:27,316 --> 00:02:28,543
-The Pupil Owned Corner.
+00:02:23,481 --> 00:02:28,279
+A second example of a Teacher Strategy, this one built on students taking ownership of the unit.
 
 35
-00:02:28,543 --> 00:02:35,292
-One marked square metre, curated by a rotating pair for a fortnight: an artefact, a clipping, a question they cannot answer yet.
+00:02:28,279 --> 00:02:29,972
+Claire calls it The Pupil Corner.
 
 36
-00:02:35,292 --> 00:02:41,428
-Sixty seconds at the start of one lesson, and the next five minutes of teaching build on what they said.
+00:02:29,972 --> 00:02:40,557
+A carefully curated space of the students' own, where they add something related to the unit once a week: an artefact, a clipping, a question they cannot answer yet.
 
 37
-00:02:43,928 --> 00:02:47,442
-Staff responses then get the same treatment as the observation data.
+00:02:40,557 --> 00:02:47,402
+The teacher reviews it with the students at the start of a lesson, then builds on the current student need.
 
 38
-00:02:47,442 --> 00:02:50,317
-Themes across the school, not a folder of replies.
+00:02:47,402 --> 00:02:47,684
+Easy!
 
 39
-00:02:50,317 --> 00:02:51,915
-Where support is asked for.
+00:02:50,184 --> 00:02:55,018
+All of it is designed for one thing: giving every teacher a concrete plan of action.
 
 40
-00:02:51,915 --> 00:02:53,512
-Which challenges repeat, and where.
+00:02:55,018 --> 00:03:05,893
+Drawing on any of the Coaching Strategies and their worked examples, the plan targets the band above, so teachers keep moving up the judgement scale, becoming better teachers, and students make better progress in every lesson.
 
 41
-00:02:53,512 --> 00:02:57,026
-All of it carrying references, exactly as the observation claims do.
-
-42
-00:02:57,376 --> 00:02:59,819
-Line managers see their own team, and nobody else's.
-
-43
-00:02:59,819 --> 00:03:02,391
-This is not another report to read through.
-
-44
-00:03:02,391 --> 00:03:08,891
-It is a starting point for a real coaching conversation, with the teacher's own words already sitting in front of them.
-
-45
-00:03:09,241 --> 00:03:11,587
+00:03:06,243 --> 00:03:08,764
 Which gives every teacher a plan of their own.
 
-46
-00:03:11,587 --> 00:03:16,398
+42
+00:03:08,764 --> 00:03:13,767
 Built from their lesson, from their own words, and from their answers to both forms.
 
-47
-00:03:16,398 --> 00:03:18,934
+43
+00:03:13,767 --> 00:03:16,408
 Ready and waiting on their own Teacher Portal.
 
+44
+00:03:16,759 --> 00:03:20,299
+Staff responses then get the same treatment as the observation data.
+
+45
+00:03:20,299 --> 00:03:23,195
+Themes across the school, not a folder of replies.
+
+46
+00:03:23,195 --> 00:03:24,804
+Where support is asked for.
+
+47
+00:03:24,804 --> 00:03:26,412
+Which challenges repeat, and where.
+
 48
-00:03:19,284 --> 00:03:22,076
-The two forms are new; the architecture is not.
+00:03:26,412 --> 00:03:29,952
+All of it carrying references, exactly as the observation claims do.
 
 49
-00:03:22,076 --> 00:03:27,349
-Same intake, same evidence rules, same dashboard, same privacy layer, the data staying in our own database.
+00:03:30,302 --> 00:03:32,724
+Line managers see their own team, and nobody else's.
 
 50
-00:03:27,349 --> 00:03:29,831
+00:03:32,724 --> 00:03:35,777
+This is not another report to read through.
+
+51
+00:03:35,777 --> 00:03:42,328
+It is a starting point for a real coaching conversation, with the teacher's own words already sitting in front of them.
+
+52
+00:03:42,678 --> 00:03:45,389
+The two forms are new; the architecture is not.
+
+53
+00:03:45,389 --> 00:03:50,509
+Same intake, same evidence rules, same dashboard, same privacy layer, the data staying in our own database.
+
+54
+00:03:50,509 --> 00:03:52,918
 Student surveys run on the same rails next.
