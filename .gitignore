@@ -15,3 +15,8 @@ node_modules/
 dashboard/data.js
 dashboard/.build/
 dashboard/.staticrypt-out/
+
+# Playwright (test harness only; the site itself is static HTML)
+test-results/
+playwright-report/
+Assets/OTP/.staticrypt-out/

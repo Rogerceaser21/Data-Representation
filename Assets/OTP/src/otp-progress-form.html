@@ -1,0 +1,4613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Form: Progress in Lessons OTP · AIS Sharjah</title>
+<script>
+  (function() {
+    try {
+      var stored = localStorage.getItem('ais-form-theme');
+      var theme = stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      if (theme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+    } catch (e) {}
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,500&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700&family=Lora:ital,wght@0,400;0,500;0,600;0,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Tom Select 2.6.1 · shared with the R3 form (../R3/lib/), not duplicated. -->
+<link href="../R3/lib/tom-select.css" rel="stylesheet">
+<script src="../R3/lib/tom-select.complete.min.js"></script>
+<!-- Evidence Pad canvas stack: Konva 9.3.22 + perfect-freehand 1.2.3, same shared lib/ -->
+<script src="../R3/lib/konva.min.js"></script>
+<script src="../R3/lib/perfect-freehand.js"></script>
+<style>
+/* ===========================================
+   THEME TOKENS · LIGHT default (form-context)
+   =========================================== */
+:root {
+  --display-font: 'Lora', Georgia, 'Times New Roman', serif;
+  --body-font: 'Inter', system-ui, -apple-system, sans-serif;
+
+  --navy: #143642;
+  --navy-elev: #ffffff;
+  --navy-card: #f4f3ee;
+  --navy-edge: #e3e2dc;
+  --paper: #143642;
+  --paper-dim: #3a4f59;
+  --paper-mid: #6b7e85;
+  --paper-faint: #9aa6ac;
+
+  --ais-red: #EF343A;
+  --ais-blue: #1257FF;
+  --ais-yellow: #FFBA14;
+  --rate-success: #2ea15a;
+  --rate-success-deep: #0f5f30;
+  --rate-unsuccess: #d68a1a;
+  --rate-unsuccess-deep: #b06d10;
+
+  --rule: rgba(20, 54, 66, 0.14);
+  --rule-soft: rgba(20, 54, 66, 0.07);
+  --page-bg: #efece2;
+  --card-bg: #ffffff;
+  --row-tint: rgba(20, 54, 66, 0.025);
+  --section-tint: rgba(20, 54, 66, 0.055);
+  --surface-soft: rgba(20, 54, 66, 0.025);
+  --surface-mid: rgba(20, 54, 66, 0.045);
+  --surface-strong: rgba(20, 54, 66, 0.08);
+  --shadow-card: 0 14px 36px -18px rgba(20, 54, 66, 0.22), 0 2px 6px -3px rgba(20, 54, 66, 0.08);
+
+  --title: clamp(1.85rem, 3.4vw, 2.6rem);
+  --section: clamp(1.15rem, 1.8vw, 1.4rem);
+  --label: clamp(0.7rem, 0.95vw, 0.8rem);
+  --body: clamp(0.95rem, 1.25vw, 1.05rem);
+  --small: clamp(0.78rem, 1.05vw, 0.88rem);
+  --tiny: clamp(0.72rem, 0.95vw, 0.8rem);
+}
+
+/* Dark theme — same vibe as the deck */
+:root[data-theme="dark"] {
+  --display-font: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --body-font: 'Source Sans 3', system-ui, -apple-system, sans-serif;
+  --navy: #0a0d1f;
+  --navy-elev: #11162e;
+  --navy-card: #131938;
+  --navy-edge: #1c244d;
+  --paper: #f2efe6;
+  --paper-dim: #cdd0e0;
+  --paper-mid: #9ea3bf;
+  --paper-faint: #6c7290;
+  --rule: rgba(255, 255, 255, 0.10);
+  --rule-soft: rgba(255, 255, 255, 0.06);
+  --page-bg: #04061a;
+  --card-bg: #11162e;
+  --row-tint: rgba(255, 255, 255, 0.025);
+  --section-tint: rgba(255, 255, 255, 0.05);
+  --surface-soft: rgba(255, 255, 255, 0.03);
+  --surface-mid: rgba(255, 255, 255, 0.05);
+  --surface-strong: rgba(255, 255, 255, 0.08);
+  --rate-success: #3CBB6C;
+  --rate-success-deep: #1e7a3f;
+  --rate-unsuccess: #ff9a4d;
+  --rate-unsuccess-deep: #c46810;
+  --shadow-card: 0 18px 48px -20px rgba(0, 0, 0, 0.55), 0 3px 8px -3px rgba(0, 0, 0, 0.4);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--body-font);
+  background: var(--page-bg);
+  color: var(--paper);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  min-height: 100vh;
+  min-height: 100svh;  /* v0.57: vh = LARGEST viewport on iPad Chrome, which
+                          guarantees scrollable overflow while the toolbar is
+                          expanded; svh sizes to the always-visible minimum.
+                          Older WebKit ignores this line and keeps 100vh. */
+  padding: clamp(1rem, 2.5vw, 2rem) clamp(0.6rem, 2vw, 1.5rem);
+  padding-bottom: clamp(5rem, 8vw, 7rem);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* ===========================================
+   FORM CONTAINER (paper-like card)
+   =========================================== */
+.form-container {
+  max-width: 980px;
+  margin: 0 auto;
+  background: var(--card-bg);
+  border: 1px solid var(--rule);
+  border-radius: clamp(0.5rem, 0.9vw, 0.8rem);
+  box-shadow: var(--shadow-card);
+  padding: clamp(1.4rem, 3vw, 2.6rem);
+  position: relative;
+  overflow: hidden;
+}
+.form-container::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, var(--ais-red), var(--ais-yellow), var(--ais-blue));
+}
+
+/* ===========================================
+   HEADER
+   =========================================== */
+.form-header {
+  display: flex; flex-direction: column;
+  gap: clamp(0.7rem, 1.3vw, 1.1rem);
+  padding-bottom: clamp(1rem, 2vw, 1.6rem);
+  margin-bottom: clamp(1.2rem, 2.4vw, 2rem);
+  border-bottom: 1px solid var(--rule);
+}
+.brand-row {
+  display: flex; align-items: center;
+  gap: clamp(0.6rem, 1.2vw, 1rem);
+}
+.brand-row img {
+  height: clamp(48px, 7vw, 72px);
+  width: auto;
+  display: block;
+}
+.form-title-block { display: flex; flex-direction: column; gap: 0.25rem; }
+.form-eyebrow {
+  font-family: var(--body-font);
+  font-size: var(--label);
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--ais-red);
+  display: inline-flex; align-items: center; gap: 0.7em;
+}
+.form-eyebrow .stripe {
+  width: clamp(1.8rem, 2.6vw, 2.4rem);
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--ais-red), var(--ais-yellow), var(--rate-success));
+}
+.form-title {
+  font-family: var(--display-font);
+  font-weight: 700;
+  font-size: var(--title);
+  line-height: 1.05;
+  letter-spacing: -0.012em;
+  color: var(--paper);
+  margin: 0;
+}
+.form-title em {
+  font-style: italic; font-weight: 400; color: var(--rate-success-deep);
+}
+:root[data-theme="dark"] .form-title em { color: var(--rate-success); }
+.src-path {
+  font-family: var(--body-font);
+  font-style: italic;
+  font-size: var(--small);
+  color: var(--paper-mid);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* ===========================================
+   SECTIONS
+   =========================================== */
+.form-section { margin-bottom: clamp(1.2rem, 2vw, 1.8rem); }
+.section-title {
+  font-family: var(--display-font);
+  font-weight: 600;
+  font-size: var(--section);
+  color: var(--paper);
+  margin: 0 0 clamp(0.5rem, 0.95vw, 0.8rem) 0;
+  letter-spacing: -0.005em;
+}
+.section-title em { font-style: italic; font-weight: 400; color: var(--ais-red); }
+
+/* ===========================================
+   TOP INFO GRID
+   =========================================== */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(0.5rem, 1vw, 0.85rem);
+  border: 1px solid var(--rule);
+  border-radius: clamp(0.4rem, 0.7vw, 0.6rem);
+  overflow: hidden;
+  background: var(--row-tint);
+}
+.info-cell {
+  padding: clamp(0.55rem, 1.1vw, 0.9rem) clamp(0.7rem, 1.3vw, 1.05rem);
+  border-right: 1px solid var(--rule-soft);
+  border-bottom: 1px solid var(--rule-soft);
+  display: flex; flex-direction: column; gap: 0.3rem;
+  background: var(--card-bg);
+}
+.info-cell:nth-child(3n) { border-right: none; }
+.info-cell:nth-last-child(-n+3) { border-bottom: none; }
+.info-cell label {
+  font-family: var(--body-font);
+  font-size: var(--label);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--paper-mid);
+}
+.info-cell input {
+  font-family: var(--display-font);
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  color: var(--paper);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid transparent;
+  padding: 0.15rem 0;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+.info-cell input::placeholder { color: var(--paper-faint); font-style: italic; }
+.info-cell input:focus { border-bottom-color: var(--rate-success); }
+
+/* iPad / iOS Safari renders <input type="date|time"> with no chrome when empty.
+   Force a visible dashed underline so they read as tappable (v0.32). */
+.info-cell input[type="date"],
+.info-cell input[type="time"] {
+  border-bottom: 1px dashed var(--rule);
+  min-height: 1.8rem;
+  padding: 0.3em 0;
+}
+.info-cell input[type="date"]:focus,
+.info-cell input[type="time"]:focus {
+  border-bottom-style: solid;
+  border-bottom-color: var(--rate-success);
+}
+
+/* ===========================================
+   CRITERIA TABLE
+   =========================================== */
+.criteria-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--rule);
+  border-radius: clamp(0.4rem, 0.7vw, 0.6rem);
+  overflow: hidden;
+  background: var(--card-bg);
+  table-layout: fixed;
+}
+.criteria-table thead th {
+  font-family: var(--body-font);
+  font-size: var(--label);
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--paper-mid);
+  background: var(--section-tint);
+  padding: clamp(0.55rem, 1.1vw, 0.9rem) clamp(0.6rem, 1.1vw, 0.95rem);
+  text-align: left;
+  border-bottom: 1px solid var(--rule);
+}
+.criteria-table thead th.center { text-align: center; }
+.criteria-table tbody tr.section-head td {
+  font-family: var(--display-font);
+  font-weight: 600;
+  font-size: clamp(1rem, 1.4vw, 1.18rem);
+  color: var(--paper);
+  background: var(--section-tint);
+  padding: clamp(0.55rem, 1.1vw, 0.85rem) clamp(0.7rem, 1.3vw, 1.05rem);
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  letter-spacing: -0.005em;
+}
+.criteria-table tbody tr.section-head:first-child td { border-top: none; }
+.criteria-table tbody td {
+  padding: clamp(0.5rem, 0.95vw, 0.75rem) clamp(0.6rem, 1.1vw, 0.95rem);
+  vertical-align: top;
+  border-bottom: 1px solid var(--rule-soft);
+}
+.criteria-table tbody tr:last-child td { border-bottom: none; }
+.criteria-table tbody tr.crit:nth-of-type(odd) td { background: var(--row-tint); }
+.criteria-table tbody tr.crit:hover td { background: var(--surface-soft); }
+.criteria-table .col-crit {
+  font-family: var(--body-font);
+  font-size: var(--body);
+  color: var(--paper);
+  line-height: 1.4;
+  padding-right: 0.5rem;
+}
+.criteria-table .col-crit .num {
+  font-family: var(--display-font);
+  font-style: italic;
+  font-weight: 600;
+  color: var(--paper-mid);
+  margin-right: 0.25em;
+}
+.criteria-table .col-su { width: clamp(3.2rem, 5.5vw, 4.4rem); text-align: center; }
+.criteria-table .col-comments { width: 45%; }
+.criteria-table .col-comments textarea {
+  width: 100%;
+  min-height: 2.6rem;
+  font-family: var(--body-font);
+  font-size: var(--small);
+  color: var(--paper);
+  background: transparent;
+  border: 1px solid var(--rule-soft);
+  border-radius: clamp(0.3rem, 0.5vw, 0.45rem);
+  padding: 0.4rem 0.55rem;
+  line-height: 1.4;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.criteria-table .col-comments textarea::placeholder { color: var(--paper-faint); font-style: italic; }
+.criteria-table .col-comments textarea:focus {
+  border-color: var(--rate-success);
+  background: var(--card-bg);
+}
+
+/* col widths */
+.criteria-table colgroup .c-crit { width: 38%; }
+.criteria-table colgroup .c-s,
+.criteria-table colgroup .c-u { width: 8%; }
+.criteria-table colgroup .c-comments { width: 46%; }
+
+/* ===========================================
+   S / U TOGGLE  (radio styled as pill buttons)
+   =========================================== */
+.su-toggle {
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.su-toggle input { position: absolute; opacity: 0; pointer-events: none; }
+.su-toggle label {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: clamp(2rem, 3.2vw, 2.5rem);
+  height: clamp(2rem, 3.2vw, 2.5rem);
+  border-radius: 50%;
+  background: var(--surface-soft);
+  border: 1.5px solid var(--rule);
+  font-family: var(--display-font);
+  font-weight: 700;
+  font-style: italic;
+  font-size: clamp(0.95rem, 1.3vw, 1.1rem);
+  color: var(--paper-mid);
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.12s ease;
+}
+.su-toggle label:hover {
+  border-color: var(--paper-dim);
+  color: var(--paper);
+  transform: scale(1.04);
+}
+.su-toggle input[value="S"]:checked + label {
+  background: var(--rate-success);
+  border-color: var(--rate-success-deep);
+  color: white;
+  box-shadow: 0 4px 12px -4px rgba(46, 161, 90, 0.5);
+}
+.su-toggle input[value="U"]:checked + label {
+  background: var(--rate-unsuccess);
+  border-color: var(--rate-unsuccess-deep);
+  color: white;
+  box-shadow: 0 4px 12px -4px rgba(214, 138, 26, 0.5);
+}
+.su-toggle input:focus-visible + label {
+  outline: 2px solid var(--rate-success);
+  outline-offset: 2px;
+}
+
+/* ===========================================
+   OVERALL IMPRESSIONS
+   =========================================== */
+.overall-block {
+  background: var(--row-tint);
+  border: 1px solid var(--rule);
+  border-radius: clamp(0.4rem, 0.7vw, 0.6rem);
+  padding: clamp(0.8rem, 1.5vw, 1.2rem);
+}
+.overall-block textarea {
+  width: 100%;
+  min-height: 7rem;
+  font-family: var(--body-font);
+  font-size: var(--body);
+  color: var(--paper);
+  background: var(--card-bg);
+  border: 1px solid var(--rule);
+  border-radius: clamp(0.3rem, 0.5vw, 0.45rem);
+  padding: clamp(0.6rem, 1vw, 0.85rem);
+  line-height: 1.5;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+.overall-block textarea:focus { border-color: var(--rate-success); }
+.overall-block textarea::placeholder { color: var(--paper-faint); font-style: italic; }
+
+/* ===========================================
+   FEEDBACK GIVEN + SIGNATURES
+   =========================================== */
+.feedback-line {
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: 0.4rem 0.8rem;
+  font-family: var(--body-font);
+  font-size: var(--body);
+  color: var(--paper);
+  padding: clamp(0.7rem, 1.3vw, 1rem);
+  background: var(--row-tint);
+  border: 1px solid var(--rule);
+  border-radius: clamp(0.4rem, 0.7vw, 0.6rem);
+  margin-bottom: clamp(0.8rem, 1.4vw, 1.2rem);
+}
+.feedback-line input[type="date"] {
+  font-family: var(--body-font);
+  font-size: var(--body);
+  color: var(--paper);
+  background: var(--card-bg);
+  border: 1px solid var(--rule);
+  border-radius: clamp(0.3rem, 0.5vw, 0.4rem);
+  padding: 0.3rem 0.55rem;
+  outline: none;
+}
+.signature-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr clamp(7rem, 14vw, 10rem);
+  gap: clamp(0.5rem, 1vw, 0.85rem);
+  border: 1px solid var(--rule);
+  border-radius: clamp(0.4rem, 0.7vw, 0.6rem);
+  overflow: hidden;
+  background: var(--row-tint);
+}
+.signature-cell {
+  padding: clamp(0.7rem, 1.3vw, 1rem) clamp(0.8rem, 1.4vw, 1.1rem);
+  background: var(--card-bg);
+  border-right: 1px solid var(--rule-soft);
+  display: flex; flex-direction: column; gap: 0.3rem;
+}
+.signature-cell:last-child { border-right: none; }
+.signature-cell label {
+  font-family: var(--body-font);
+  font-size: var(--label);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--paper-mid);
+}
+.signature-cell input {
+  font-family: var(--display-font);
+  font-style: italic;
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  color: var(--paper);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--rule);
+  padding: 0.4rem 0 0.15rem 0;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+.signature-cell input:focus { border-bottom-color: var(--rate-success); }
+.signature-cell .hint {
+  font-family: var(--body-font);
+  font-style: italic;
+  font-size: var(--tiny);
+  color: var(--paper-faint);
+}
+
+/* ===========================================
+   ACTION BAR (floating bottom-right pill cluster)
+   =========================================== */
+.action-bar {
+  position: fixed;
+  bottom: clamp(0.7rem, 1.4vw, 1.2rem);
+  right: clamp(0.7rem, 1.4vw, 1.2rem);
+  z-index: 90;
+  display: flex;
+  gap: clamp(0.4rem, 0.7vw, 0.55rem);
+  /* v0.56: --vv-shift pins the bar to the VISIBLE bottom while iPad Chrome's
+     collapsing toolbar moves the layout-viewport bottom mid-scroll. */
+  transform: translateY(var(--vv-shift, 0px));
+}
+.action-btn {
+  cursor: pointer;
+  display: inline-flex; align-items: center; gap: 0.55em;
+  font-family: var(--body-font);
+  font-size: clamp(0.7rem, 0.92vw, 0.82rem);
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding: 0.5em 1.1em;
+  border-radius: 999px;
+  border: 1px solid var(--rule);
+  color: var(--paper-dim);
+  background: var(--card-bg);
+  box-shadow: 0 8px 20px -10px rgba(20, 54, 66, 0.25);
+  transition: opacity 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  -webkit-backdrop-filter: blur(6px);
+          backdrop-filter: blur(6px);
+}
+.action-btn:hover {
+  color: var(--rate-success);
+  border-color: var(--rate-success);
+  transform: translateY(-1px);
+}
+.action-btn.primary {
+  background: var(--rate-success);
+  border-color: var(--rate-success-deep);
+  color: white;
+  box-shadow: 0 10px 24px -8px rgba(46, 161, 90, 0.45);
+}
+.action-btn.primary:hover {
+  background: var(--rate-success-deep);
+  border-color: var(--rate-success-deep);
+  color: white;
+}
+.action-btn::before {
+  content: ""; width: 0.85em; height: 0.85em;
+  background: currentColor;
+  flex-shrink: 0;
+}
+.action-btn.primary::before {
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.action-btn.secondary::before {
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* Submit (Save & Lock) button — deeper green, primary action when in draft */
+.action-btn.submit {
+  background: var(--rate-success-deep);
+  border-color: var(--rate-success-deep);
+  color: white;
+  box-shadow: 0 10px 24px -8px rgba(15, 95, 48, 0.45);
+}
+.action-btn.submit:hover {
+  background: var(--rate-success);
+  border-color: var(--rate-success);
+  color: white;
+}
+.action-btn.submit:disabled,
+.action-btn.submit.disabled {
+  background: var(--surface-mid);
+  border-color: var(--rule);
+  color: var(--paper-faint);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+.action-btn.submit::before {
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.action-btn.new::before {
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* ===========================================
+   SUBMITTED BANNER + LOCK STATE
+   =========================================== */
+.submitted-banner {
+  display: none;
+  background: linear-gradient(135deg, rgba(46,161,90,0.12), rgba(46,161,90,0.04));
+  border: 1px solid rgba(46,161,90,0.32);
+  border-left: 4px solid var(--rate-success);
+  border-radius: clamp(0.4rem, 0.7vw, 0.6rem);
+  padding: clamp(0.75rem, 1.4vw, 1.1rem) clamp(0.9rem, 1.6vw, 1.3rem);
+  margin-bottom: clamp(1rem, 1.8vw, 1.5rem);
+  align-items: center;
+  gap: clamp(0.65rem, 1.2vw, 1rem);
+  flex-wrap: wrap;
+}
+.submitted-banner.is-active { display: flex; }
+.submitted-banner .check {
+  width: 1.7em; height: 1.7em;
+  border-radius: 50%;
+  background: var(--rate-success);
+  color: white;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-weight: 700;
+  font-size: 1em;
+  flex-shrink: 0;
+}
+.submitted-banner .stack {
+  display: flex; flex-direction: column; gap: 0.1em;
+  min-width: 0;
+}
+.submitted-banner .title {
+  font-family: var(--display-font);
+  font-weight: 600;
+  font-size: clamp(1rem, 1.4vw, 1.2rem);
+  color: var(--rate-success-deep);
+  letter-spacing: -0.005em;
+}
+:root[data-theme="dark"] .submitted-banner .title { color: var(--rate-success); }
+.submitted-banner .meta {
+  font-family: var(--body-font);
+  font-size: var(--small);
+  color: var(--paper-mid);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Locked-form visual treatment */
+.form-container.is-locked .info-cell input,
+.form-container.is-locked .criteria-table textarea,
+.form-container.is-locked .overall-block textarea,
+.form-container.is-locked .feedback-line input,
+.form-container.is-locked .signature-cell input {
+  cursor: not-allowed;
+  background: var(--row-tint);
+  color: var(--paper);
+  opacity: 1;
+}
+.form-container.is-locked .info-cell input:focus,
+.form-container.is-locked .signature-cell input:focus,
+.form-container.is-locked .criteria-table textarea:focus,
+.form-container.is-locked .overall-block textarea:focus {
+  border-bottom-color: var(--rule);
+  border-color: var(--rule);
+}
+.form-container.is-locked .su-toggle label { cursor: not-allowed; }
+.form-container.is-locked .su-toggle input:not(:checked) + label {
+  opacity: 0.3;
+  pointer-events: none;
+}
+.form-container.is-locked .form-footer .save-status { display: none; }
+
+/* Action-bar swaps when form is locked */
+body.is-locked .action-btn.submit,
+body.is-locked .action-btn.secondary { display: none; }
+.action-btn.new { display: none; }
+body.is-locked .action-btn.new { display: inline-flex; }
+
+/* Toast — error / success feedback */
+.toast {
+  position: fixed;
+  bottom: clamp(4rem, 8vw, 6rem);
+  right: clamp(0.7rem, 1.4vw, 1.2rem);
+  z-index: 110;
+  padding: 0.7em 1.05em;
+  border-radius: 8px;
+  background: var(--card-bg);
+  border: 1px solid var(--rule);
+  box-shadow: 0 12px 32px -12px rgba(20,54,66,0.32);
+  font-family: var(--body-font);
+  font-size: var(--small);
+  color: var(--paper);
+  max-width: 360px;
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.toast.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.toast.error { border-color: rgba(214,138,26,0.5); color: var(--rate-unsuccess-deep); }
+.toast.success { border-color: rgba(46,161,90,0.5); color: var(--rate-success-deep); }
+
+/* ===========================================
+   THEME TOGGLE  (mirrors deck style)
+   =========================================== */
+.theme-toggle {
+  position: fixed;
+  bottom: clamp(0.7rem, 1.4vw, 1.2rem);
+  /* v0.48: shifted right of the admin cog (which now holds the corner) */
+  left: calc(clamp(0.7rem, 1.4vw, 1.2rem) + clamp(2rem, 2.4vw, 2.4rem) + 0.5rem);
+  z-index: 100;
+  width: clamp(2rem, 2.4vw, 2.4rem);
+  height: clamp(2rem, 2.4vw, 2.4rem);
+  border-radius: 50%;
+  border: 1px solid var(--rule);
+  background: var(--surface-mid);
+  color: var(--paper-dim);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; padding: 0;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  -webkit-backdrop-filter: blur(6px);
+          backdrop-filter: blur(6px);
+  transform: translateY(var(--vv-shift, 0px));   /* v0.56: visible-bottom pin */
+}
+.theme-toggle:hover {
+  background: var(--surface-strong);
+  color: var(--paper);
+  border-color: var(--rate-success);
+  transform: translateY(var(--vv-shift, 0px)) scale(1.06);
+}
+.theme-toggle .icon { width: 1.05em; height: 1.05em; display: block; }
+.theme-toggle .icon-sun { display: block; }
+.theme-toggle .icon-moon { display: none; }
+:root[data-theme="dark"] .theme-toggle .icon-sun { display: none; }
+:root[data-theme="dark"] .theme-toggle .icon-moon { display: block; }
+
+/* ===========================================
+   VERSION + STATUS
+   =========================================== */
+.form-footer {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: clamp(1.2rem, 2.2vw, 1.8rem);
+  padding-top: clamp(0.8rem, 1.4vw, 1.2rem);
+  border-top: 1px solid var(--rule);
+  font-family: var(--body-font);
+  font-size: var(--tiny);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--paper-faint);
+  font-weight: 600;
+}
+.form-footer .save-status {
+  display: inline-flex; align-items: center; gap: 0.5em;
+  color: var(--paper-mid);
+}
+.form-footer .save-status .pulse {
+  width: 0.5em; height: 0.5em; border-radius: 50%;
+  background: var(--rate-success);
+  box-shadow: 0 0 6px var(--rate-success);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.form-footer .save-status.is-active .pulse { opacity: 1; }
+.form-footer a {
+  color: var(--paper-faint);
+  text-decoration: none;
+  border-bottom: 1px dotted var(--rule);
+}
+.form-footer a:hover { color: var(--rate-success); border-bottom-color: var(--rate-success); }
+
+/* ===========================================
+   RESPONSIVE
+   =========================================== */
+@media (max-width: 760px) {
+  .info-grid { grid-template-columns: 1fr 1fr; }
+  .info-cell:nth-child(3n) { border-right: 1px solid var(--rule-soft); }
+  .info-cell:nth-child(2n) { border-right: none; }
+  .info-cell:nth-last-child(-n+3) { border-bottom: 1px solid var(--rule-soft); }
+  .info-cell:nth-last-child(-n+2) { border-bottom: none; }
+
+  .criteria-table colgroup .c-crit { width: auto; }
+  .criteria-table colgroup .c-s,
+  .criteria-table colgroup .c-u { width: auto; }
+  .criteria-table colgroup .c-comments { width: auto; }
+  .criteria-table { table-layout: auto; }
+  .criteria-table thead { display: none; }
+  .criteria-table tbody tr.crit {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    grid-template-areas: "crit s u" "comments comments comments";
+    gap: 0.5rem;
+    padding: 0.7rem 0.55rem;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .criteria-table tbody tr.crit td { border: none; padding: 0; }
+  .criteria-table tbody tr.crit td.col-crit { grid-area: crit; }
+  .criteria-table tbody tr.crit td:nth-child(2) { grid-area: s; }
+  .criteria-table tbody tr.crit td:nth-child(3) { grid-area: u; }
+  .criteria-table tbody tr.crit td.col-comments { grid-area: comments; }
+  .criteria-table tbody tr.crit:nth-of-type(odd) td { background: transparent; }
+  .criteria-table tbody tr.crit:nth-of-type(odd) { background: var(--row-tint); }
+
+  .signature-grid { grid-template-columns: 1fr; }
+  .signature-cell { border-right: none; border-bottom: 1px solid var(--rule-soft); }
+  .signature-cell:last-child { border-bottom: none; }
+}
+
+/* ===========================================
+   PRINT  (clean PDF output)
+   =========================================== */
+@media print {
+  @page { size: A4; margin: 1.4cm 1.4cm; }
+  :root { color-scheme: light; }
+  html, body {
+    background: white !important;
+    color: #143642 !important;
+    padding: 0 !important;
+  }
+  .theme-toggle, .action-bar, .form-footer .save-status, .form-footer a, .float-link { display: none !important; }
+  .form-container {
+    max-width: 100%;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    border-radius: 0;
+    background: white;
+  }
+  .form-container::before { display: none; }
+  .form-section { break-inside: avoid; page-break-inside: avoid; }
+  .criteria-table tbody tr.section-head { break-after: avoid; page-break-after: avoid; }
+  .criteria-table tbody tr.crit { break-inside: avoid; page-break-inside: avoid; }
+  /* Render form values cleanly: no input borders, no resize handles, no calendar icons. */
+  input, textarea {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    resize: none !important;
+    color: #143642 !important;
+    -webkit-appearance: none;
+       -moz-appearance: none;
+            appearance: none;
+  }
+  input[type="date"]::-webkit-calendar-picker-indicator,
+  input[type="date"]::-webkit-inner-spin-button { display: none; }
+  textarea { overflow: visible !important; min-height: auto !important; }
+  .info-cell input,
+  .signature-cell input { border-bottom: 1px solid #143642 !important; }
+  .su-toggle input[value="S"]:checked + label {
+    background: white !important;
+    color: #0f5f30 !important;
+    border: 2px solid #0f5f30 !important;
+    box-shadow: none !important;
+  }
+  .su-toggle input[value="U"]:checked + label {
+    background: white !important;
+    color: #b06d10 !important;
+    border: 2px solid #b06d10 !important;
+    box-shadow: none !important;
+  }
+  .su-toggle input:not(:checked) + label {
+    background: transparent !important;
+    color: #6b7e85 !important;
+    border: 1px dashed #cccccc !important;
+  }
+  .form-footer {
+    color: #6b7e85 !important;
+    border-top: 1px solid #cccccc !important;
+  }
+}
+
+/* ===========================================
+   R3 EVIDENCE FORM · additions
+   =========================================== */
+
+/* Wider info-grid for R3 (some cells span 2 or 3 columns) */
+.info-grid-r3 .info-cell-full { grid-column: span 3; }
+.info-grid-r3 .info-cell-span-2 { grid-column: span 2; }
+
+/* Summary of Weakness + Time Out side-by-side at the bottom (v0.32).
+   Time Out keeps the same visual width as a normal info-cell (1/3 of the
+   info-grid). Collapses to stacked on narrow viewports. */
+.summary-with-timeout {
+  display: grid;
+  grid-template-columns: 5fr 1fr;
+  gap: clamp(0.8rem, 1.6vw, 1.4rem);
+  align-items: start;
+}
+.summary-with-timeout .timeout-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding-top: calc(var(--section-title-height, 2.4rem));
+}
+.summary-with-timeout .timeout-block label {
+  font-family: var(--body-font);
+  font-size: clamp(0.7rem, 0.95vw, 0.85rem);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--paper-mid);
+}
+.summary-with-timeout .timeout-block input {
+  font-family: var(--display-font);
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  color: var(--paper);
+  background: transparent;
+  border: none;
+  border-bottom: 1px dashed var(--rule);
+  min-height: 1.8rem;
+  padding: 0.3em 0;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+.summary-with-timeout .timeout-block input:focus {
+  border-bottom-style: solid;
+  border-bottom-color: var(--rate-success);
+}
+@media (max-width: 720px) {
+  .summary-with-timeout { grid-template-columns: 1fr; }
+  .summary-with-timeout .timeout-block { padding-top: 0; }
+}
+.info-grid-r3 .info-cell-spacer {
+  background: transparent;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+}
+
+/* Inline pill-group fits inside a single .info-cell (Curriculum, v0.16) */
+.pill-group-inline {
+  padding-top: 0.1rem;
+  padding-bottom: 0.1rem;
+}
+.pill-group-inline .pill {
+  padding: 0.4rem 0.85rem;
+  font-size: var(--small);
+}
+
+/* Red asterisk on required-field labels and section titles (v0.17, generalised v0.25) */
+.required-field::after {
+  content: ' *';
+  color: var(--ais-red);
+  font-weight: 700;
+}
+
+/* ===========================================
+   Tom Select theme overrides · v0.19
+   Tom Select (vendored locally in lib/) handles the searchable dropdowns
+   for Teacher, Inspector, Subject. The library brings its own .ts-*
+   classes; these overrides re-skin them to match the form's aesthetic
+   (display font, transparent backgrounds, green focus underline, card
+   styling on the dropdown).
+   =========================================== */
+.ts-wrapper { width: 100%; }
+.ts-wrapper .ts-control {
+  font-family: var(--display-font);
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  color: var(--paper);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--rule);
+  border-radius: 0;
+  padding: 0.4rem 0;
+  min-height: 2.4rem;
+  box-shadow: none;
+  cursor: pointer;
+}
+.ts-wrapper.focus .ts-control,
+.ts-wrapper.dropdown-active .ts-control {
+  border-bottom-color: var(--rate-success);
+  box-shadow: none;
+}
+.ts-wrapper .ts-control > input {
+  font-family: var(--display-font);
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  color: var(--paper);
+  background: transparent;
+  /* v0.20: keep the search input on the same row as the selected .item so
+     .ts-control doesn't grow vertically with a wrapped-around 7rem-wide input. */
+  min-width: 0 !important;
+  flex: 1 1 0;
+}
+.ts-wrapper .ts-control > input::placeholder {
+  color: var(--paper-faint);
+  font-style: italic;
+}
+
+/* v0.20: clear_button plugin × button styled to match the form */
+.ts-wrapper .clear-button {
+  color: var(--paper-mid);
+  opacity: 0.55;
+  transition: opacity 0.15s ease, color 0.15s ease;
+  cursor: pointer;
+  right: 0.25rem;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+.ts-wrapper:hover .clear-button,
+.ts-wrapper .clear-button:hover {
+  opacity: 1;
+  color: var(--paper);
+}
+.ts-wrapper.disabled .clear-button { display: none; }
+.ts-wrapper .ts-control .item {
+  font-family: var(--display-font);
+  font-weight: 600;
+  color: var(--paper);
+  background: transparent;
+  padding: 0;
+  border: none;
+}
+.ts-wrapper.single .ts-control:not(.rtl)::after {
+  /* Tom Select's default caret arrow. Subtle, matching paper-mid tint. */
+  border-top-color: var(--paper-mid);
+}
+.ts-wrapper.disabled .ts-control,
+.ts-wrapper.disabled .ts-control > input,
+.ts-wrapper.disabled .ts-control .item {
+  background: var(--row-tint);
+  color: var(--paper);
+  opacity: 1;
+  cursor: not-allowed;
+}
+.ts-wrapper.disabled .ts-control { border-bottom-color: var(--rule); }
+
+.ts-dropdown {
+  font-family: var(--body-font);
+  font-size: var(--small);
+  background: var(--card-bg);
+  color: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 0 0 0.4rem 0.4rem;
+  box-shadow: 0 12px 28px -12px rgba(20, 54, 66, 0.22);
+  margin-top: 0.1rem;
+  z-index: 40;
+}
+.ts-dropdown .ts-dropdown-content { max-height: 280px; }
+.ts-dropdown .option {
+  padding: 0.6rem 0.8rem;
+  color: var(--paper);
+  border-bottom: 1px solid var(--rule-soft);
+  font-weight: 500;
+}
+.ts-dropdown .option:last-child { border-bottom: none; }
+.ts-dropdown .active {
+  background: var(--surface-mid);
+  color: var(--paper);
+}
+.ts-dropdown .selected {
+  background: var(--rate-success);
+  color: white;
+  font-weight: 600;
+}
+.ts-dropdown .selected.active {
+  background: var(--rate-success-deep);
+  color: white;
+}
+.ts-dropdown .no-results,
+.ts-dropdown .create {
+  padding: 0.6rem 0.8rem;
+  color: var(--paper-mid);
+  font-style: italic;
+}
+.ts-dropdown .optgroup-header {
+  padding: 0.4rem 0.8rem;
+  color: var(--paper-mid);
+  font-size: var(--tiny);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  background: var(--surface-soft);
+}
+/* iPad zoom-prevention: bump font to 16px on coarse pointers (only the
+   <input> needs this; options don't trigger zoom because they're not text
+   inputs). v0.27: number-picker option text relaxes to 14px so word labels
+   like "Kindy" and "Prep" fit inside the compact pill cells. */
+@media (pointer: coarse) {
+  .ts-control,
+  .ts-control > input,
+  .ts-control .item {
+    font-size: 16px !important;
+  }
+  .ts-dropdown .option {
+    font-size: 15px !important;
+  }
+  .ts-dropdown.number-picker .option {
+    font-size: 14px !important;
+  }
+}
+
+/* Single-select pill group (Evidence Type) */
+.pill-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.4rem 0;
+}
+.pill {
+  font-family: var(--body-font);
+  font-size: var(--small);
+  font-weight: 500;
+  padding: 0.5rem 0.95rem;
+  border-radius: 999px;
+  border: 1px dashed var(--rule);
+  background: transparent;
+  color: var(--paper-mid);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.pill:hover { background: var(--surface-mid); color: var(--paper); }
+.pill.is-selected {
+  background: var(--rate-success);
+  color: white;
+  border: 1px solid var(--rate-success-deep);
+  font-weight: 600;
+}
+.pill:disabled { cursor: default; opacity: 0.6; }
+form.is-locked .pill { pointer-events: none; opacity: 0.7; }
+
+/* Number pickers: compact Tom Select button per cell, dropdown is a 5-col
+   grid of numbered cells. Trigger control stays the same size; popover
+   overlays the form (renders attached to body) when tapped. v0.23. */
+.ts-dropdown.number-picker .ts-dropdown-content {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.35rem;
+  padding: 0.5rem;
+  max-height: 320px;
+}
+.ts-dropdown.number-picker .option {
+  padding: 0.55rem 0.15rem;
+  text-align: center;
+  font-weight: 600;
+  font-size: var(--small);
+  font-variant-numeric: tabular-nums;
+  border-radius: 6px;
+  border: 1px dashed var(--rule);
+  background: transparent;
+  color: var(--paper);
+  /* v0.27: ensure word-length labels (Kindy, Prep) fit without overflow */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ts-dropdown.number-picker .option.active {
+  background: var(--surface-mid);
+  border-color: var(--paper-dim);
+}
+.ts-dropdown.number-picker .option.selected {
+  background: var(--rate-success);
+  color: white;
+  border: 1px solid var(--rate-success-deep);
+}
+.ts-dropdown.number-picker .option.selected.active {
+  background: var(--rate-success-deep);
+}
+
+/* Judgement legend */
+.judgement-legend {
+  font-size: var(--small);
+  color: var(--paper-mid);
+  margin: 0 0 0.7rem 0;
+}
+.judgement-legend strong {
+  color: var(--paper);
+  font-weight: 700;
+  margin-right: 0.15em;
+}
+
+/* Judgement key (v0.36): 6-column scale reference under the Judgements
+   heading. Each cell ties a number to its quality label, proportion band
+   and percentage range. Uses the form's existing tokens; reflows on narrow
+   viewports so each number stays paired with its band. */
+.judgement-key {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.5rem;
+  margin: 0 0 1rem 0;
+}
+.jk-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  text-align: center;
+  padding: 0.6rem 0.4rem;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--row-tint);
+}
+.jk-num {
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 6px;
+  background: var(--ais-yellow);
+  color: #143642;
+  font-weight: 800;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.jk-quality { font-weight: 700; color: var(--paper); font-size: var(--small); line-height: 1.2; }
+.jk-term { color: var(--paper-mid); font-size: var(--small); line-height: 1.2; }
+.jk-range { color: var(--paper-mid); font-size: var(--small); line-height: 1.2; white-space: nowrap; }
+
+@media (max-width: 680px) {
+  .judgement-key { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 380px) {
+  .judgement-key { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Judgement table column widths */
+.judgement-table col.c-crit { width: 32%; }
+.judgement-table col.c-judge { width: 30%; }
+.judgement-table col.c-comments { width: 38%; }
+.judgement-table tbody td { vertical-align: middle; }
+.judgement-table .col-judge { padding: 0.3rem 0.5rem; }
+
+/* Rate row (1-6 single-select buttons) */
+.rate-row {
+  display: flex;
+  gap: 0.3rem;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+}
+.rate {
+  min-width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 6px;
+  border: 1px dashed var(--rule);
+  background: transparent;
+  color: var(--paper-mid);
+  font-family: var(--body-font);
+  font-weight: 600;
+  font-size: var(--small);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.rate:hover { background: var(--surface-mid); color: var(--paper); }
+.rate.is-selected {
+  background: var(--rate-success);
+  color: white;
+  border: 1px solid var(--rate-success-deep);
+}
+form.is-locked .rate { pointer-events: none; opacity: 0.7; }
+
+/* Long-text textarea (focus/context + summaries) */
+textarea.long-text {
+  width: 100%;
+  font-family: var(--body-font);
+  font-size: var(--body);
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--rule);
+  border-radius: 0.4rem;
+  background: var(--card-bg);
+  color: var(--paper);
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s ease;
+  line-height: 1.5;
+}
+textarea.long-text::placeholder { color: var(--paper-faint); font-style: italic; }
+textarea.long-text:focus { border-color: var(--rate-success); }
+
+/* Print overrides for R3 components */
+@media print {
+  .pill.is-selected,
+  .rate.is-selected {
+    background: white !important;
+    color: #0f5f30 !important;
+    border: 2px solid #0f5f30 !important;
+  }
+  .pill:not(.is-selected),
+  .rate:not(.is-selected) {
+    background: transparent !important;
+    color: #6b7e85 !important;
+    border: 1px dashed #cccccc !important;
+  }
+  /* Print Tom Select as plain text */
+  .ts-wrapper .ts-control {
+    border-bottom: 1px solid #143642 !important;
+    background: transparent !important;
+  }
+  .ts-dropdown { display: none !important; }
+  .ts-wrapper.single .ts-control:not(.rtl)::after { display: none !important; }
+  textarea.long-text { background: white !important; border-color: #cccccc !important; }
+}
+
+/* ===========================================
+   iPad / Safari touch hardening (v0.19)
+   Applied to every interactive control. Tom Select handles its own touch
+   behaviour internally so we don't need to harden .ts-* classes here.
+   =========================================== */
+.pill,
+.rate,
+.action-btn,
+.theme-toggle,
+.su-toggle label {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(20, 54, 66, 0.06);
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+@media (pointer: coarse) {
+  input, textarea {
+    font-size: 16px !important;
+  }
+}
+@media (hover: none) {
+  .pill:hover, .rate:hover {
+    background: transparent;
+    color: var(--paper-mid);
+  }
+  .action-btn:hover {
+    color: var(--paper-dim);
+    border-color: var(--rule);
+    transform: none;
+  }
+  .theme-toggle:hover {
+    background: var(--surface-mid);
+    color: var(--paper-dim);
+    border-color: var(--rule);
+    transform: translateY(var(--vv-shift, 0px));   /* v0.56: keep the pin on touch */
+  }
+  .su-toggle label:hover {
+    border-color: var(--rule);
+    color: var(--paper-mid);
+    transform: none;
+  }
+}
+
+/* Floating link buttons (v0.38): Agenda (left) + Check Teacher (right).
+   Fixed so they float independently of the form; open in a new tab so an
+   inspector mid-form never loses entries. Only on the form, never on the
+   StatiCrypt gate (separate file). */
+.float-link {
+  position: fixed;
+  top: clamp(0.7rem, 1.4vw, 1.2rem);
+  z-index: 100;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  padding: 0.5rem 0.95rem;
+  border-radius: 999px;
+  border: 1px solid var(--rule);
+  background: var(--surface-mid);
+  color: var(--paper-dim);
+  font-family: var(--body-font);
+  font-size: clamp(0.72rem, 1.4vw, 0.85rem);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-backdrop-filter: blur(6px);
+          backdrop-filter: blur(6px);
+  box-shadow: 0 4px 14px -6px rgba(20, 54, 66, 0.25);
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+.float-link:hover {
+  border-color: var(--ais-yellow);
+  color: var(--paper);
+  transform: translateY(-1px);
+}
+.float-link .fl-icon { width: 1.05em; height: 1.05em; display: block; flex-shrink: 0; }
+.float-link.agenda { left: clamp(0.7rem, 1.4vw, 1.2rem); }
+.float-link.check  { right: clamp(0.7rem, 1.4vw, 1.2rem); }   /* mirrors Agenda's inset */
+@media (max-width: 560px) {
+  .float-link { font-size: 0.68rem; padding: 0.38rem 0.66rem; gap: 0.35em; }
+}
+@media (hover: none) {
+  .float-link:hover { border-color: var(--rule); color: var(--paper-dim); transform: none; }
+}
+/* ===========================================================
+   EVIDENCE PAD (v0.50) · full-screen scribble pad
+   Photos from camera/library + Apple Pencil ink (Konva +
+   perfect-freehand, vendored in lib/). Pencil-first: Scribble
+   stays live in the form's text fields; on the pad canvas raw
+   ink wins (touch-action none + touchmove preventDefault).
+   =========================================================== */
+.float-link.pad {
+  right: clamp(0.7rem, 1.4vw, 1.2rem);
+  top: calc(clamp(0.7rem, 1.4vw, 1.2rem) + 2.7rem);
+  border-color: var(--ais-yellow);
+}
+.float-link.pad:hover { border-color: var(--ais-yellow); }
+
+.pad-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 980;
+  display: none;
+  flex-direction: column;
+  background: var(--page-bg);
+  overscroll-behavior: none;             /* v0.53: never chain scroll to the form */
+}
+.pad-modal.open { display: flex; }
+
+/* v0.57: in-document swap — while the pad (or the pad-view lightbox) is open,
+   the form leaves the layout and the body collapses to the viewport, so the
+   document has NO scrollable extent: nothing can scroll behind the pad, no
+   scroll indicator on the pad edge, and iPad Chrome's toolbar gets no scroll
+   deltas to react to. Display-only: the body is never repositioned (v0.54 ban
+   respected). closePad restores display first, then the exact scroll spot. */
+body.pad-open { min-height: 0; padding: 0; }
+
+/* v0.58 experiment (?d=scrollhair): keep a hairline of scrollable extent while
+   the pad is open, so a small scroll can still collapse Chrome's toolbar off
+   the pad's top edge (A/B vs the zero-extent default, which freezes it). */
+body.scrollhair.pad-open { min-height: calc(100vh + 2px); min-height: calc(100svh + 2px); }
+body.pad-open .form-container,
+body.pad-open .action-bar,
+body.pad-open .theme-toggle,
+body.pad-open .cog-btn { display: none; }
+
+/* v0.57/v0.58: while the keyboard owns the screen there is no correct pin
+   for fixed bottom controls (iOS pans them like static content mid-typing),
+   so they hide entirely and return once the keyboard settles. v0.58:
+   body.kb-open is driven by the visualViewport height DELTA (keyboard
+   really on screen), not focus events; Scribble and hardware keyboards
+   never trigger it. ?d=nokb disables the hiding. */
+body.kb-open .action-bar,
+body.kb-open .theme-toggle,
+body.kb-open .cog-btn { opacity: 0; pointer-events: none; }
+
+.pad-top {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.9rem;
+  border-bottom: 1px solid var(--rule);
+  background: var(--card-bg);
+}
+.pad-title {
+  font-family: var(--display-font);
+  font-weight: 600;
+  color: var(--paper);
+  font-size: 1.02rem;
+  margin-right: auto;
+  white-space: nowrap;
+}
+.pad-title em { font-style: italic; color: var(--ais-blue); }
+
+.pad-btn {
+  appearance: none;
+  border: 1px solid var(--rule);
+  background: var(--surface-mid);
+  color: var(--paper-dim);
+  border-radius: 999px;
+  font-family: var(--body-font);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 0.42rem 0.85rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.pad-btn:hover { border-color: var(--ais-yellow); color: var(--paper); }
+.pad-btn:disabled { opacity: 0.45; cursor: default; }
+.pad-btn .icon { width: 1.05em; height: 1.05em; display: block; }
+.pad-btn.primary {
+  background: var(--paper);
+  border-color: var(--paper);
+  color: var(--card-bg);
+}
+.pad-btn.primary:hover { background: var(--paper-dim); }
+
+.pad-tools {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+  padding: 0.5rem 0.9rem;
+  border-bottom: 1px solid var(--rule);
+  background: var(--card-bg);
+}
+.pad-tools .sep { width: 1px; height: 1.6rem; background: var(--rule); margin: 0 0.15rem; }
+.pad-tool {
+  appearance: none;
+  border: 1px solid var(--rule);
+  background: transparent;
+  color: var(--paper-dim);
+  border-radius: 10px;
+  width: 2.35rem;
+  height: 2.35rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.pad-tool .icon { width: 1.15rem; height: 1.15rem; display: block; }
+.pad-tool[hidden] { display: none; }
+.pad-tool.is-active {
+  background: var(--paper);
+  border-color: var(--paper);
+  color: var(--card-bg);
+}
+.pad-swatch {
+  appearance: none;
+  border: 2px solid var(--rule);
+  border-radius: 50%;
+  width: 1.55rem;
+  height: 1.55rem;
+  cursor: pointer;
+  padding: 0;
+}
+.pad-swatch.is-active { border-color: var(--ais-yellow); transform: scale(1.12); }
+.pad-pageind {
+  font-family: var(--body-font);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--paper-mid);
+  min-width: 3.2em;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.pad-stage-wrap {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;                       /* keep in sync with PAD_GUTTER in the JS */
+  overflow: hidden;
+}
+.pad-stage {
+  background: #ffffff;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  overflow: hidden;                    /* clips the canvas to the rounded corners */
+  box-shadow: 0 6px 22px -10px rgba(20, 54, 66, 0.35);
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+
+/* v0.51: per-field pad launchers — a small pen pill beside each extractable
+   section title (Focus/Context, Observer Notes, both Summaries). Opens the
+   Evidence Pad on that field's named page. */
+.pad-field-btn {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  margin-left: 0.55em;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--ais-yellow);
+  background: var(--surface-mid);
+  color: var(--paper-dim);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+.pad-field-btn:hover { color: var(--paper); transform: translateY(-1px); }
+.pad-field-btn .icon { width: 1.05rem; height: 1.05rem; display: block; }
+body.is-viewer .pad-field-btn { display: none !important; }
+@media print { .pad-field-btn { display: none !important; } }
+@media (hover: none) {
+  .pad-field-btn:hover { color: var(--paper-dim); transform: none; }
+}
+
+/* v0.53: "you have evidence here" state — green when the field's textarea has
+   text OR its pad page has ink/photos. Same treatment on the floating launcher. */
+.pad-field-btn.has-evi,
+.float-link.pad.has-evi { border-color: var(--rate-success); color: var(--rate-success); }
+.pad-field-btn.has-evi:hover { color: var(--rate-success-deep); }
+
+/* v0.53: record-view attachment pill — shown ONLY when a locked record carries
+   pad pages for that section (stays visible in the teacher viewer, unlike the
+   editing-only .pad-field-btn). */
+.pad-attach {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  margin-left: 0.55em;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--rule);
+  background: var(--surface-mid);
+  color: var(--paper-dim);
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.pad-attach:hover { border-color: var(--ais-yellow); color: var(--paper); }
+.pad-attach .icon { width: 1rem; height: 1rem; display: block; }
+@media print { .pad-attach { display: none !important; } }
+
+/* v0.53: pad-pages lightbox (record views) */
+.pad-view {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+  flex-direction: column;
+  background: var(--page-bg);
+  overscroll-behavior: none;
+}
+.pad-view.open { display: flex; }
+.pad-view-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  padding: 1rem clamp(0.8rem, 4vw, 2.4rem) calc(1.4rem + env(safe-area-inset-bottom, 0px));
+}
+.pad-view-scroll img {
+  display: block;
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto 1rem;
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  box-shadow: 0 6px 22px -10px rgba(20, 54, 66, 0.35);
+  background: #fff;
+}
+.pad-view-loading {
+  font-family: var(--body-font);
+  font-size: 0.88rem;
+  color: var(--paper-mid);
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.pad-foot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.9rem calc(0.55rem + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--rule);
+  background: var(--card-bg);
+}
+
+
+/* The pad never appears in the teacher viewer or in print (covered by the
+   existing body.is-viewer .float-link and @media print .float-link rules);
+   belt-and-braces for the modal itself: */
+body.is-viewer .pad-modal { display: none !important; }
+@media print { .pad-modal { display: none !important; } }
+
+/* v0.43: the teacher-viewer build (window.R3_VIEWER → body.is-viewer) hides
+   all inspector tools: quick-links, New observation, and Reset (which would
+   wipe the loaded record off the screen). Scoped to the viewer so inspectors
+   keep their post-submit New observation button on the gated form. */
+body.is-viewer .float-link,
+body.is-viewer #btn-new,
+body.is-viewer #btn-reset { display: none; }
+
+/* === Admin settings (v0.47): discreet cog + password-gated panel ==== */
+/* v0.48: cog moved to the bottom-LEFT corner, matched to the theme toggle (which
+   shifts right to sit beside it) so the two circular controls read as a pair. */
+.cog-btn {
+  position: fixed;
+  bottom: clamp(0.7rem, 1.4vw, 1.2rem);
+  left: clamp(0.7rem, 1.4vw, 1.2rem);
+  z-index: 100;
+  width: clamp(2rem, 2.4vw, 2.4rem);
+  height: clamp(2rem, 2.4vw, 2.4rem);
+  border-radius: 50%;
+  border: 1px solid var(--rule);
+  background: var(--surface-mid);
+  color: var(--paper-dim);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; padding: 0;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  -webkit-backdrop-filter: blur(6px);
+          backdrop-filter: blur(6px);
+  transform: translateY(var(--vv-shift, 0px));   /* v0.56: visible-bottom pin */
+}
+.cog-btn:hover {
+  background: var(--surface-strong);
+  color: var(--paper);
+  border-color: var(--rate-success);
+  transform: translateY(var(--vv-shift, 0px)) scale(1.06);
+}
+.cog-btn .icon { width: 1.05em; height: 1.05em; display: block; }
+body.is-viewer .cog-btn { display: none; }
+
+/* v0.49: restyled to the form's own design tokens (card-bg / paper ink / AIS
+   accents / serif display font), mirroring the eyebrow, labels, inputs and
+   action buttons used everywhere else. The earlier build used non-existent vars
+   (--ink, --paper-2) and painted the card with --paper (the navy INK colour),
+   so it rendered as illegible navy-on-navy. */
+.admin-modal {
+  position: fixed; inset: 0; z-index: 10000;
+  display: none; align-items: center; justify-content: center;
+  background: rgba(10, 13, 31, 0.5);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+          backdrop-filter: blur(10px) saturate(140%);
+  padding: 1.2rem;
+}
+.admin-modal.open { display: flex; }
+.admin-card {
+  position: relative;
+  overflow: hidden;
+  width: min(430px, 100%);
+  background: var(--card-bg);
+  border: 1px solid var(--navy-edge);
+  border-radius: clamp(0.8rem, 1.4vw, 1.1rem);
+  box-shadow: var(--shadow-card);
+  padding: clamp(1.5rem, 2.4vw, 1.9rem);
+  color: var(--paper);
+}
+/* signature AIS gradient top-bar, same as the form masthead */
+.admin-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--ais-red), var(--ais-yellow), var(--rate-success));
+}
+.admin-card .admin-eyebrow {
+  font-family: var(--body-font);
+  font-size: var(--label);
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--ais-red);
+  display: inline-flex; align-items: center; gap: 0.7em;
+  margin-bottom: 0.85rem;
+}
+.admin-card .admin-eyebrow::before {
+  content: '';
+  width: clamp(1.6rem, 2.4vw, 2.1rem); height: 3px; border-radius: 2px;
+  background: linear-gradient(90deg, var(--ais-red), var(--ais-yellow), var(--rate-success));
+}
+.admin-card h2 {
+  font-family: var(--display-font);
+  font-weight: 700;
+  font-size: clamp(1.3rem, 2.1vw, 1.6rem);
+  line-height: 1.08;
+  letter-spacing: -0.012em;
+  color: var(--paper);
+  margin: 0 0 0.2rem;
+}
+.admin-card label {
+  display: block;
+  font-family: var(--body-font);
+  font-size: var(--label);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--paper-mid);
+  margin: 1.1rem 0 0.4rem;
+}
+.admin-card input {
+  width: 100%; box-sizing: border-box;
+  font-family: var(--display-font);
+  font-size: clamp(1rem, 1.4vw, 1.15rem);
+  color: var(--paper);
+  background: var(--row-tint);
+  border: 1px solid var(--rule);
+  border-radius: clamp(0.45rem, 0.8vw, 0.6rem);
+  padding: 0.6rem 0.8rem;
+  outline: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.admin-card input::placeholder { color: var(--paper-faint); font-style: italic; }
+.admin-card input:focus { border-color: var(--rate-success); background: var(--card-bg); }
+.admin-row { display: flex; gap: 0.6rem; margin-top: 1.3rem; }
+/* base = primary (green) action; .ghost = secondary outline. Mirrors .action-btn. */
+.admin-btn {
+  flex: 1;
+  cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--body-font);
+  font-size: clamp(0.7rem, 0.92vw, 0.82rem);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 0.65em 1.1em;
+  border-radius: 999px;
+  border: 1px solid var(--rate-success-deep);
+  background: var(--rate-success);
+  color: #fff;
+  box-shadow: 0 10px 24px -10px rgba(46, 161, 90, 0.45);
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+.admin-btn:hover { background: var(--rate-success-deep); transform: translateY(-1px); }
+.admin-btn.ghost {
+  background: var(--card-bg);
+  border-color: var(--rule);
+  color: var(--paper-dim);
+  box-shadow: none;
+}
+.admin-btn.ghost:hover { color: var(--paper); border-color: var(--paper-mid); background: var(--surface-mid); }
+.admin-btn:disabled { opacity: 0.45; cursor: default; transform: none; }
+.admin-status {
+  min-height: 1.1rem; margin-top: 0.9rem;
+  font-family: var(--body-font);
+  font-size: var(--small);
+  color: var(--paper-mid);
+}
+.admin-status.ok { color: var(--rate-success); font-weight: 600; }
+.admin-status.bad { color: var(--ais-red); font-weight: 600; }
+.admin-step[hidden] { display: none; }
+/* v0.57: admin-only viewport diagnostics */
+.admin-diag { margin-top: 1.1rem; border-top: 1px solid var(--rule); padding-top: 0.8rem; }
+.admin-diag-title {
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--paper-mid);
+}
+.admin-diag pre {
+  margin: 0.4rem 0 0; font-family: var(--body-font);
+  font-size: 0.78rem; line-height: 1.55; color: var(--paper-dim); white-space: pre-wrap;
+}
+
+/* === Loading overlay (v0.31) ====================================== */
+.form-loading {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(239, 236, 226, 0.55);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+          backdrop-filter: blur(14px) saturate(140%);
+  transition: opacity 320ms ease, visibility 320ms ease;
+  opacity: 1;
+  visibility: visible;
+}
+:root[data-theme="dark"] .form-loading {
+  background: rgba(10, 13, 31, 0.55);
+}
+.form-loading.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.form-loading-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  padding: 32px 44px;
+  background: rgba(255, 255, 255, 0.42);
+  border: 1px solid var(--rule);
+  border-radius: 18px;
+  box-shadow: 0 24px 48px -20px rgba(20, 54, 66, 0.22);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+          backdrop-filter: blur(22px) saturate(160%);
+  position: relative;
+  overflow: hidden;
+}
+:root[data-theme="dark"] .form-loading-card {
+  background: rgba(17, 22, 46, 0.5);
+  box-shadow: 0 24px 48px -20px rgba(0, 0, 0, 0.55);
+}
+.form-loading-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--ais-red, #EF343A), var(--ais-yellow), #1257FF);
+  opacity: 0.85;
+}
+.form-loading-spinner {
+  color: var(--ais-yellow);
+  display: block;
+  filter: drop-shadow(0 4px 10px rgba(255, 186, 20, 0.35));
+}
+.form-loading-spinner .ring-spin {
+  transform-origin: 32px 32px;
+  animation: form-loading-spin 1.05s linear infinite;
+}
+@keyframes form-loading-spin {
+  to { transform: rotate(360deg); }
+}
+.form-loading-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+}
+.form-loading-label .dot {
+  width: 0.4em;
+  height: 0.4em;
+  border-radius: 50%;
+  background: var(--ais-yellow);
+  box-shadow: 0 0 8px var(--ais-yellow);
+  animation: form-loading-pulse 1.4s ease-in-out infinite;
+}
+@keyframes form-loading-pulse {
+  0%, 100% { opacity: 0.35; transform: scale(0.85); }
+  50%      { opacity: 1;    transform: scale(1.1); }
+}
+
+
+/* ===========================================
+   OTP · additions (Who / What / Why strip + SP1 rubric)
+   =========================================== */
+
+/* Who / What / Why: the doc's navy header cells with the body text below. */
+.www-strip {
+  display: grid;
+  grid-template-columns: 1fr 2fr 2fr;
+  border: 1px solid var(--rule);
+  border-radius: clamp(0.4rem, 0.7vw, 0.6rem);
+  overflow: hidden;
+  background: var(--card-bg);
+}
+.www-col { display: flex; flex-direction: column; border-right: 1px solid var(--rule-soft); }
+.www-col:last-child { border-right: none; }
+.www-head {
+  font-family: var(--body-font);
+  font-size: var(--label);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #ffffff;
+  background: var(--navy);
+  padding: clamp(0.4rem, 0.8vw, 0.6rem) clamp(0.7rem, 1.3vw, 1.05rem);
+  text-align: center;
+}
+:root[data-theme="dark"] .www-head { background: var(--navy-edge); color: var(--paper); }
+.www-body {
+  margin: 0;
+  padding: clamp(0.55rem, 1.1vw, 0.9rem) clamp(0.7rem, 1.3vw, 1.05rem);
+  font-size: var(--body);
+  line-height: 1.45;
+  color: var(--paper);
+}
+@media (max-width: 720px) {
+  .www-strip { grid-template-columns: 1fr; }
+  .www-col { border-right: none; border-bottom: 1px solid var(--rule-soft); }
+  .www-col:last-child { border-bottom: none; }
+}
+
+/* SP1 rubric. Equal column widths; the table scrolls inside its own wrapper on
+   narrow screens so the page body never scrolls horizontally. */
+.rub-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid var(--rule);
+  border-radius: clamp(0.4rem, 0.7vw, 0.6rem);
+  background: var(--card-bg);
+}
+.rub-table {
+  width: 100%;
+  min-width: 900px;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.rub-table th {
+  width: 16.6667%;
+  background: var(--navy);
+  color: #ffffff;
+  font-family: var(--body-font);
+  font-size: var(--tiny);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: clamp(0.4rem, 0.8vw, 0.6rem) clamp(0.35rem, 0.7vw, 0.55rem);
+  text-align: center;
+  border-right: 1px solid rgba(255, 255, 255, 0.14);
+}
+:root[data-theme="dark"] .rub-table th { background: var(--navy-edge); color: var(--paper); }
+.rub-table th:last-child { border-right: none; }
+.rub-table td {
+  vertical-align: top;
+  padding: clamp(0.35rem, 0.7vw, 0.55rem);
+  border-right: 1px solid var(--rule-soft);
+  border-top: 1px solid var(--rule-soft);
+}
+.rub-table td:last-child { border-right: none; }
+.rub-aspect {
+  font-family: var(--display-font);
+  font-size: var(--body);
+  line-height: 1.35;
+  color: var(--paper);
+  background: var(--surface-soft);
+}
+.rub-cell { display: flex; flex-direction: column; gap: 0.35rem; }
+.rub-chip {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font-family: var(--body-font);
+  font-size: var(--tiny);
+  line-height: 1.35;
+  color: var(--paper);
+  background: var(--surface-soft);
+  border: 1px solid var(--rule);
+  border-radius: 0.4rem;
+  padding: 0.45rem 0.55rem;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.16s ease, color 0.16s ease, border-color 0.16s ease;
+}
+.rub-chip:hover { background: var(--surface-mid); }
+.rub-chip[aria-pressed="true"] {
+  background: var(--ais-blue);
+  border-color: var(--ais-blue);
+  color: #ffffff;
+}
+.form-container.is-locked .rub-chip { cursor: default; }
+@media print {
+  .rub-wrap { overflow: visible; }
+  .rub-table { min-width: 0; }
+  .rub-chip[aria-pressed="true"] { background: #1257FF !important; color: #ffffff !important; }
+}
+
+</style>
+</head>
+<body>
+
+<div class="form-loading" id="form-loading" role="status" aria-live="polite" aria-label="Loading form">
+  <div class="form-loading-card">
+    <svg class="form-loading-spinner" viewBox="0 0 64 64" width="56" height="56" aria-hidden="true">
+      <circle cx="32" cy="32" r="26" fill="none" stroke="currentColor" stroke-opacity="0.18" stroke-width="5"/>
+      <circle class="ring-spin" cx="32" cy="32" r="26" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-dasharray="50 200"/>
+    </svg>
+    <div class="form-loading-label"><span class="dot"></span>Preparing form</div>
+  </div>
+</div>
+
+<button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle light or dark theme" title="Toggle light / dark theme">
+  <svg class="icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+  </svg>
+  <svg class="icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="4"/>
+    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+  </svg>
+</button>
+
+<!-- Floating quick-links (v0.38). Open in a new tab so form entries are kept. -->
+<a class="float-link agenda" href="https://docs.google.com/document/d/1CeO6AHhRx7_JhyskIw7m-i-gwpSMzaQMkO0Q-gddTag/edit?tab=t.0" target="_blank" rel="noopener" title="Open the inspection agenda">
+  <svg class="fl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M9 2h6a2 2 0 0 1 2 2v0H7v0a2 2 0 0 1 2-2z"/>
+    <path d="M7 4H6a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1"/>
+    <path d="M9 11h6M9 15h4"/>
+  </svg>
+  <span>Agenda</span>
+</a>
+<a class="float-link check" href="https://docs.google.com/spreadsheets/d/1V1Nb8hTWN-FpDps2Q_-F0TBWBFnPHVBW_sicWk8XVKo/edit?gid=1743616402#gid=1743616402" target="_blank" rel="noopener" title="See which teachers have been observed">
+  <svg class="fl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M3.5 7l2 2 3-3"/>
+    <path d="M3.5 17l2 2 3-3"/>
+    <path d="M13 7h8M13 17h8"/>
+  </svg>
+  <span>Check Teacher</span>
+</a>
+
+<!-- Admin settings (v0.47): discreet cog, password-gated. Sets the current
+     inspection Round (and future settings) directly in Supabase. Hidden in the
+     teacher-viewer build. -->
+<button class="cog-btn" id="admin-cog" type="button" aria-label="Admin settings" title="Admin settings">
+  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="3"/>
+    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+  </svg>
+</button>
+
+<div class="admin-modal" id="admin-modal" role="dialog" aria-modal="true" aria-label="Admin settings">
+  <div class="admin-card">
+    <span class="admin-eyebrow">AIS · Admin</span>
+
+    <div class="admin-step" id="admin-step-pw">
+      <h2>Settings</h2>
+      <label for="admin-pw">Administrator password</label>
+      <input type="password" id="admin-pw" autocomplete="off" spellcheck="false" placeholder="Enter password">
+      <div class="admin-row">
+        <button class="admin-btn ghost" type="button" id="admin-cancel">Close</button>
+        <button class="admin-btn" type="button" id="admin-unlock">Unlock</button>
+      </div>
+      <div class="admin-status" id="admin-status-pw"></div>
+    </div>
+
+    <div class="admin-step" id="admin-step-settings" hidden>
+      <h2>OTP round</h2>
+      <label for="admin-round">Current OTP round (stamped on every new submission)</label>
+      <input type="text" id="admin-round" autocomplete="off" spellcheck="false" placeholder="e.g. OTP Term 1 26">
+      <div class="admin-row">
+        <button class="admin-btn ghost" type="button" id="admin-done">Close</button>
+        <button class="admin-btn" type="button" id="admin-save">Save</button>
+      </div>
+      <div class="admin-status" id="admin-status-settings"></div>
+      <!-- v0.57: viewport diagnostics — admin-only readout of the numbers the
+           iPad fixes depend on; no published source measures the accessory-
+           strip state, so Igor reads them here on-device. -->
+      <div class="admin-diag">
+        <span class="admin-diag-title">Viewport diagnostics</span>
+        <pre id="admin-diag-out"></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Evidence Pad (v0.50): floating launcher (mirrors the quick-links; hidden in
+     the viewer build via body.is-viewer .float-link) + the full-screen pad. -->
+<button class="float-link pad" id="pad-open" type="button" title="Open the Evidence Pad: photos + Apple Pencil notes">
+  <svg class="fl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M12 19l7-7 3 3-7 7-3-3z"/>
+    <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
+    <path d="M2 2l7.586 7.586"/>
+    <circle cx="11" cy="11" r="2"/>
+  </svg>
+  <span>Evidence Pad</span>
+</button>
+
+<div class="pad-modal" id="pad-modal" role="dialog" aria-modal="true" aria-label="Evidence pad">
+  <div class="pad-top">
+    <span class="pad-title">Evidence <em>Pad</em></span>
+    <button class="pad-btn" type="button" id="pad-cam-btn">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+        <circle cx="12" cy="13" r="4"/>
+      </svg>
+      Take photo
+    </button>
+    <button class="pad-btn" type="button" id="pad-lib-btn">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+        <circle cx="8.5" cy="8.5" r="1.5"/>
+        <path d="M21 15l-5-5L5 21"/>
+      </svg>
+      Add photos
+    </button>
+    <button class="pad-btn primary" type="button" id="pad-done">Done</button>
+  </div>
+
+  <div class="pad-tools">
+    <button class="pad-tool" type="button" id="pad-tool-select" title="Move / resize photos" aria-label="Select tool">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/>
+      </svg>
+    </button>
+    <button class="pad-tool is-active" type="button" id="pad-tool-pen" title="Pen" aria-label="Pen tool">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+      </svg>
+    </button>
+    <button class="pad-tool" type="button" id="pad-tool-high" title="Highlighter" aria-label="Highlighter tool">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M9 11l-6 6v3h9l3-3"/>
+        <path d="M22 12l-4.6 4.6a2 2 0 0 1-2.8 0l-5.2-5.2a2 2 0 0 1 0-2.8L14 4"/>
+      </svg>
+    </button>
+    <button class="pad-tool" type="button" id="pad-tool-erase" title="Eraser (removes whole strokes)" aria-label="Eraser tool">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M20 20H7L3 16a1.5 1.5 0 0 1 0-2.1L13.9 3a1.5 1.5 0 0 1 2.1 0l5 5a1.5 1.5 0 0 1 0 2.1L13 18"/>
+        <path d="M6.5 10.5l7 7"/>
+      </svg>
+    </button>
+    <span class="sep"></span>
+    <button class="pad-swatch is-active" type="button" data-color="#143642" style="background:#143642" title="Navy pen" aria-label="Navy pen"></button>
+    <button class="pad-swatch" type="button" data-color="#1257FF" style="background:#1257FF" title="Blue pen" aria-label="Blue pen"></button>
+    <button class="pad-swatch" type="button" data-color="#EF343A" style="background:#EF343A" title="Red pen" aria-label="Red pen"></button>
+    <span class="sep"></span>
+    <button class="pad-tool" type="button" id="pad-undo" title="Undo last stroke" aria-label="Undo last stroke">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M9 14L4 9l5-5"/>
+        <path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>
+      </svg>
+    </button>
+    <button class="pad-tool" type="button" id="pad-del-photo" title="Remove selected photo" aria-label="Remove selected photo" hidden>
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
+      </svg>
+    </button>
+    <span class="sep"></span>
+    <button class="pad-tool" type="button" id="pad-page-prev" title="Previous page" aria-label="Previous page">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <span class="pad-pageind" id="pad-pageind">1 / 1</span>
+    <button class="pad-tool" type="button" id="pad-page-next" title="Next page" aria-label="Next page">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+    <button class="pad-tool" type="button" id="pad-page-add" title="Add a page" aria-label="Add a page">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+    </button>
+  </div>
+
+  <div class="pad-stage-wrap" id="pad-stage-wrap" style="position:relative;">
+    <div class="pad-stage" id="pad-stage"></div>
+  </div>
+
+  <div class="pad-foot">
+    <button class="pad-btn primary" type="button" id="pad-extract">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/>
+      </svg>
+      <span id="pad-extract-label">Extract to form</span>
+    </button>
+    <!-- v0.58: Done duplicated on the bottom edge — the top row can sit under
+         Chrome's toolbar in landscape; the bottom bar carries the working pin. -->
+    <button class="pad-btn primary" type="button" id="pad-done-bottom">Done</button>
+  </div>
+
+  <input type="file" id="pad-cam-input" accept="image/jpeg,image/png" capture="environment" hidden>
+  <input type="file" id="pad-lib-input" accept="image/jpeg,image/png" multiple hidden>
+</div>
+
+<!-- v0.53: pad-pages lightbox — record views only. Opened by the .pad-attach
+     pills; images are fetched token-gated from the backend (?action=pad_image). -->
+<div class="pad-view" id="pad-view" role="dialog" aria-modal="true" aria-label="Evidence pad pages">
+  <div class="pad-top">
+    <span class="pad-title" id="pad-view-title">Evidence <em>Pad</em></span>
+    <button class="pad-btn primary" type="button" id="pad-view-close">Close</button>
+  </div>
+  <div class="pad-view-scroll" id="pad-view-scroll"></div>
+  <!-- v0.58: Close duplicated on the bottom edge (same reason as the pad's). -->
+  <div class="pad-foot">
+    <button class="pad-btn primary" type="button" id="pad-view-close-bottom">Close</button>
+  </div>
+</div>
+
+<form class="form-container" id="otp-form" autocomplete="on" novalidate>
+  <!-- Submitted / closed-record banner (hidden until submit success or ?id=... fetched) -->
+  <div class="submitted-banner" id="submitted-banner" role="status">
+    <span class="check" aria-hidden="true">✓</span>
+    <div class="stack">
+      <span class="title">Submitted · Cannot be edited</span>
+      <span class="meta" id="submitted-meta"></span>
+    </div>
+  </div>
+
+  <header class="form-header">
+    <div class="brand-row">
+      <img src="../brand/AIS Logo/AIS Navy.png" data-light-src="../brand/AIS Logo/AIS Navy.png" data-dark-src="../brand/AIS Logo/AIS White.png" alt="Australian International School Sharjah">
+      <div class="form-title-block">
+        <span class="form-eyebrow"><span class="stripe"></span>AIS Sharjah · Human Resources</span>
+        <h1 class="form-title">Form: Progress in Lessons <em>OTP</em></h1>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================
+       TOP INFO · R3 header fields
+       ============================================ -->
+  <section class="form-section">
+    <div class="info-grid info-grid-r3">
+
+      <div class="info-cell">
+        <label for="teacher" class="required-field">Teacher</label>
+        <select id="teacher" name="teacher" placeholder="Tap to browse staff…" required></select>
+      </div>
+      <div class="info-cell">
+        <label for="support_teachers_cas">Support Teachers / CAs</label>
+        <input id="support_teachers_cas" name="support_teachers_cas" type="text" placeholder="Names…">
+      </div>
+      <div class="info-cell">
+        <label for="time_in" class="required-field">Time In</label>
+        <input id="time_in" name="time_in" type="time" required>
+      </div>
+
+      <div class="info-cell">
+        <label for="inspector" class="required-field">Observer</label>
+        <select id="inspector" name="inspector" placeholder="Tap to browse inspectors, or type to search…" required></select>
+      </div>
+      <div class="info-cell">
+        <label class="required-field">Curriculum</label>
+        <div class="pill-group pill-group-inline" data-name="curriculum" id="curriculum-pills"></div>
+        <input type="hidden" name="curriculum" id="curriculum" value="">
+      </div>
+      <div class="info-cell">
+        <label class="required-field">School</label>
+        <div class="pill-group pill-group-inline" data-name="school" id="school-pills"></div>
+        <input type="hidden" name="school" id="school" value="">
+      </div>
+
+      <div class="info-cell">
+        <label for="date" class="required-field">Date</label>
+        <input id="date" name="date" type="date">
+      </div>
+      <div class="info-cell">
+        <label for="room_number">Room Number</label>
+        <input id="room_number" name="room_number" type="text" placeholder="e.g. 12B">
+      </div>
+      <div class="info-cell">
+        <label for="subject" class="required-field">Subject</label>
+        <select id="subject" name="subject" placeholder="Select School first" required></select>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================
+       WHO / WHAT / WHY · static strip from the OTP template
+       ============================================ -->
+  <section class="form-section">
+    <div class="www-strip">
+      <div class="www-col">
+        <span class="www-head">Who</span>
+        <p class="www-body">DHoS, HoDs, Teacher Mentors, Coaches etc</p>
+      </div>
+      <div class="www-col">
+        <span class="www-head">What</span>
+        <p class="www-body">Focussed observation against one or more criteria of the OTP</p>
+      </div>
+      <div class="www-col">
+        <span class="www-head">Why</span>
+        <p class="www-body">Improvement of practice through observational support and coaching</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       OTP REFERENCE · SP1 rubric, tappable paragraph chips
+       ============================================ -->
+  <section class="form-section">
+    <h2 class="section-title">OTP Reference: SP1 <em>Student Progress</em></h2>
+    <div class="rub-wrap">
+      <table class="rub-table">
+        <thead><tr id="rubric-head"></tr></thead>
+        <tbody><tr id="rubric-row"></tr></tbody>
+      </table>
+    </div>
+    <input type="hidden" name="sp1_beginner" id="sp1_beginner" value="">
+    <input type="hidden" name="sp1_emerging" id="sp1_emerging" value="">
+    <input type="hidden" name="sp1_good" id="sp1_good" value="">
+    <input type="hidden" name="sp1_great" id="sp1_great" value="">
+    <input type="hidden" name="sp1_outstanding" id="sp1_outstanding" value="">
+    <input type="hidden" name="sp1_selected_text" id="sp1_selected_text" value="">
+  </section>
+
+  <!-- ============================================
+       OBSERVER COMMENTS
+       ============================================ -->
+  <section class="form-section">
+    <h2 class="section-title">Observer <em>Comments</em><button type="button" class="pad-field-btn" data-pad-target="observer_comments" title="Open the Evidence Pad on the Observer Comments page" aria-label="Open the Evidence Pad on the Observer Comments page"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></button><button type="button" class="pad-attach" data-pad-target="observer_comments" hidden title="View the handwritten pad pages for this section" aria-label="View the handwritten pad pages for this section"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button></h2>
+    <p class="src-path">Record evidence observed towards proficiency indicated in the above scale</p>
+    <textarea name="observer_comments" id="observer_comments" class="long-text" rows="4" placeholder="Notes…"></textarea>
+  </section>
+
+  <!-- ============================================
+       OTHER OBSERVATIONS
+       ============================================ -->
+  <section class="form-section">
+    <h2 class="section-title">Other <em>Observations</em><button type="button" class="pad-field-btn" data-pad-target="other_observations" title="Open the Evidence Pad on the Other Observations page" aria-label="Open the Evidence Pad on the Other Observations page"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></button><button type="button" class="pad-attach" data-pad-target="other_observations" hidden title="View the handwritten pad pages for this section" aria-label="View the handwritten pad pages for this section"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button></h2>
+    <textarea name="other_observations" id="other_observations" class="long-text" rows="4" placeholder="Notes…"></textarea>
+  </section>
+
+  <!-- ============================================
+       NEXT STEPS / SUPPORT 1
+       ============================================ -->
+  <section class="form-section">
+    <h2 class="section-title">Next Steps / <em>Support 1</em><button type="button" class="pad-field-btn" data-pad-target="next_step_1" title="Open the Evidence Pad on the Next Steps / Support 1 page" aria-label="Open the Evidence Pad on the Next Steps / Support 1 page"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></button><button type="button" class="pad-attach" data-pad-target="next_step_1" hidden title="View the handwritten pad pages for this section" aria-label="View the handwritten pad pages for this section"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button></h2>
+    <textarea name="next_step_1" id="next_step_1" class="long-text" rows="4" placeholder="Notes…"></textarea>
+  </section>
+
+  <!-- ============================================
+       NEXT STEPS / SUPPORT 2
+       ============================================ -->
+  <section class="form-section">
+    <h2 class="section-title">Next Steps / <em>Support 2</em><button type="button" class="pad-field-btn" data-pad-target="next_step_2" title="Open the Evidence Pad on the Next Steps / Support 2 page" aria-label="Open the Evidence Pad on the Next Steps / Support 2 page"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></button><button type="button" class="pad-attach" data-pad-target="next_step_2" hidden title="View the handwritten pad pages for this section" aria-label="View the handwritten pad pages for this section"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button></h2>
+    <textarea name="next_step_2" id="next_step_2" class="long-text" rows="4" placeholder="Notes…"></textarea>
+  </section>
+
+  <!-- ============================================
+       NEXT STEPS / SUPPORT 3
+       ============================================ -->
+  <section class="form-section">
+    <h2 class="section-title">Next Steps / <em>Support 3</em><button type="button" class="pad-field-btn" data-pad-target="next_step_3" title="Open the Evidence Pad on the Next Steps / Support 3 page" aria-label="Open the Evidence Pad on the Next Steps / Support 3 page"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></button><button type="button" class="pad-attach" data-pad-target="next_step_3" hidden title="View the handwritten pad pages for this section" aria-label="View the handwritten pad pages for this section"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button></h2>
+    <textarea name="next_step_3" id="next_step_3" class="long-text" rows="4" placeholder="Notes…"></textarea>
+  </section>
+
+    <!-- ============================================
+       FOOTER
+       ============================================ -->
+  <footer class="form-footer">
+    <span>Form · Progress in Lessons OTP · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">otp-v0.1</a></span>
+    <span class="save-status" id="save-status">
+      <span class="pulse"></span>
+      <span class="text">Auto-saved locally</span>
+    </span>
+  </footer>
+</form>
+
+<div class="action-bar">
+  <button type="button" class="action-btn secondary" id="btn-reset" title="Wipe all fields">Reset</button>
+  <button type="button" class="action-btn new" id="btn-new" title="Start a new Progress in Lessons OTP form">New observation</button>
+  <button type="button" class="action-btn submit disabled" id="btn-submit" title="Fill all required fields to enable saving" disabled>Save &amp; Lock</button>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+  /* === Theme toggle ============================================= */
+  (function initTheme() {
+    const root = document.documentElement;
+    const toggle = document.getElementById('theme-toggle');
+    const themedImages = Array.from(document.querySelectorAll('img[data-light-src][data-dark-src]'));
+
+    function syncImages(theme) {
+      themedImages.forEach(img => {
+        const next = theme === 'dark' ? img.dataset.darkSrc : img.dataset.lightSrc;
+        if (img.getAttribute('src') !== next) img.setAttribute('src', next);
+      });
+    }
+    function applyTheme(theme, persist) {
+      if (theme === 'dark') root.setAttribute('data-theme', 'dark');
+      else root.removeAttribute('data-theme');
+      syncImages(theme);
+      if (persist) {
+        try { localStorage.setItem('ais-form-theme', theme); } catch (e) {}
+      }
+    }
+    syncImages(root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light');
+    if (toggle) {
+      toggle.addEventListener('click', () => {
+        const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        applyTheme(next, true);
+      });
+    }
+  })();
+
+  /* === Diagnostic kill switches (v0.58) ============================
+     ?d=<comma-list> URL param, read ONCE at load, zero UI (rule 12).
+     Each v0.58 mechanism can be disabled one-suspect-off on the device:
+     nokb (no control hiding) · nonudge (no void cleanup) · nopin (no
+     bottom pin) · noswap (pad as plain overlay) · scrollhair (keep ~2px
+     scrollable extent while the pad is open). Unknown values ignored. */
+  const DIAG = (function () {
+    try {
+      const d = new URLSearchParams(window.location.search).get('d');
+      return new Set(d ? d.split(',').map(s => s.trim()).filter(Boolean) : []);
+    } catch (e) { return new Set(); }
+  })();
+  if (DIAG.has('scrollhair')) document.body.classList.add('scrollhair');
+
+  /* === Visible-bottom pin (v0.56, rebuilt v0.57) ===================
+     iPad Chrome's collapsing toolbar moves the layout-viewport bottom
+     mid-scroll, so the bottom-fixed controls (Reset / Save & Lock, cog,
+     theme) ride up the page. visualViewport reports the REAL visible box;
+     --vv-shift nudges the controls back onto it. v0.57: the reference is
+     documentElement.clientHeight (WKWebView reports stale/bogus innerHeight,
+     WebKit 170595); reads are deferred by a DOUBLE rAF (same-tick reads race
+     stale values, WebKit 237851); the gap is clamped to [0,120] instead of
+     the old >200px keyboard bail — keyboard states now hide the controls
+     entirely (body.kb-open below). Enhancement only: without visualViewport
+     the var stays 0px and everything behaves exactly as before. */
+  (function pinBottomControls() {
+    const vv = window.visualViewport;
+    if (!vv || DIAG.has('nopin')) return;    // ?d=nopin: plain fixed fallback, --vv-shift stays 0
+    let queued = false;
+    function apply() {
+      queued = false;
+      if (document.body.classList.contains('kb-open')) return;   // hidden anyway
+      let gap = document.documentElement.clientHeight - vv.height - vv.offsetTop;
+      if (!isFinite(gap)) gap = 0;
+      gap = Math.min(120, Math.max(0, gap));
+      document.documentElement.style.setProperty('--vv-shift', (-Math.round(gap)) + 'px');
+    }
+    function queue() {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(() => requestAnimationFrame(apply));
+    }
+    vv.addEventListener('resize', queue);
+    vv.addEventListener('scroll', queue);
+    window.addEventListener('scroll', queue, { passive: true });
+    window.__pinApply = queue;   // v0.58: keyboard engine re-drives the pin on kb-close
+    apply();
+  })();
+
+  /* === Keyboard states (v0.58) =====================================
+     While the keyboard owns the screen iOS pans position:fixed elements
+     like static content; there is NO correct pin, so the bottom controls
+     hide entirely (body.kb-open). v0.57 keyed this on focusin/focusout,
+     which fails on iPad three ways: Scribble and hardware keyboards focus
+     fields with NO on-screen keyboard (controls vanished during normal pen
+     use), and the keyboard-dismiss key hides the keyboard WITHOUT blurring
+     (controls never returned; the "tap the page to revive" bug). v0.58
+     keys the state on the visualViewport height DELTA instead: keyboard
+     counts as open only while vv.height sits more than KB_DELTA below the
+     session baseline (iPad keyboard ~264pt portrait / ~352pt landscape;
+     the accessory strip ~55px and Chrome's toolbar ~100px stay below).
+     Focus events remain as fast-path hint checks only; they never set
+     state themselves. Removal rides the vv-resize close signal + settle,
+     which fires regardless of blur; the void rescue (nudge + clamp) runs
+     there. Baseline tracks the largest vv.height seen and re-derives
+     after rotation. window.__kbEngine exposes state for the admin
+     diagnostics readout. ?d=nokb disables the hiding (state still
+     tracked). Enhancement only; rule 12 safe (no UI, no errors). */
+  function opensKeyboard(el) {
+    if (!el || !el.tagName) return false;
+    if (el.tagName === 'TEXTAREA' || el.isContentEditable) return true;
+    if (el.tagName !== 'INPUT') return false;
+    return ['text', 'search', 'email', 'tel', 'url', 'number', 'password', 'date', 'time'].includes(el.type);
+  }
+  (function keyboardEngine() {
+    const vv = window.visualViewport;
+    const state = {
+      baseline: vv ? vv.height : document.documentElement.clientHeight,
+      open: false,
+      disabled: DIAG.has('nokb')
+    };
+    window.__kbEngine = state;
+    if (!vv) return;
+    const KB_DELTA = 150;
+    let settleTimer = null;
+    function kbDown() { return state.baseline - vv.height > KB_DELTA; }
+    function sync() {
+      if (vv.height > state.baseline) state.baseline = vv.height;
+      if (kbDown()) {
+        if (settleTimer) { clearTimeout(settleTimer); settleTimer = null; }
+        state.open = true;
+        if (!state.disabled) document.body.classList.add('kb-open');
+      } else if (state.open && !settleTimer) {
+        settleTimer = setTimeout(() => {
+          settleTimer = null;
+          if (kbDown()) return;                                  // keyboard came back mid-settle
+          state.open = false;
+          state.closedAt = Date.now();                           // read by blurAndSettle (v0.58)
+          document.body.classList.remove('kb-open');
+          afterKeyboardClose();
+        }, 350);
+      }
+    }
+    function cleanupVoid() {
+      /* WKWebView strands stale scrollable extent on keyboard close (its
+         keyboard inset is added additively and cleaned up late; the
+         "scroll forever into the void" bug) and iOS 26 can leave a stuck
+         visualViewport offset: a micro-nudge makes the engine re-derive
+         its scroll bookkeeping and the clamp rescues a stranded position.
+         v0.58: boundary-safe nudge (a no-op scrollBy generates no scroll
+         event, which is exactly what the frozen state needs); clamp
+         against documentElement.clientHeight (innerHeight is the stale
+         value WKWebView lies about, WebKit 170595); ends by re-driving
+         the pin instead of waiting for accidental scroll events. */
+      if (document.body.classList.contains('pad-open')) return;  // pad owns the screen
+      if (state.open) return;                  // keyboard reopened before the +1s recheck
+      const y0 = window.scrollY;
+      window.scrollBy(0, -1);
+      if (window.scrollY === y0) {                               // top boundary: scrollBy was a no-op
+        window.scrollTo(0, y0 + 2); window.scrollTo(0, y0);
+      } else {
+        window.scrollBy(0, 1);
+      }
+      const max = Math.max(0, document.scrollingElement.scrollHeight - document.documentElement.clientHeight);
+      if (window.scrollY > max) window.scrollTo(0, max);
+      if (window.__pinApply) window.__pinApply();
+    }
+    function afterKeyboardClose() {
+      if (window.__pinApply) window.__pinApply();                // re-drive the pin on every kb-close
+      if (DIAG.has('nonudge')) return;                           // ?d=nonudge: no void cleanup
+      cleanupVoid();
+      setTimeout(cleanupVoid, 1000);                             // late inset cleanup re-check
+    }
+    vv.addEventListener('resize', sync);
+    window.addEventListener('orientationchange', () => {
+      setTimeout(() => { state.baseline = vv.height; sync(); }, 400);  // re-baseline after rotate
+    });
+    function hint() { setTimeout(sync, 100); setTimeout(sync, 400); }
+    document.addEventListener('focusin', (e) => { if (opensKeyboard(e.target)) hint(); });
+    document.addEventListener('focusout', (e) => { if (opensKeyboard(e.target)) hint(); });
+  })();
+
+  /* === S/U toggle: click selected radio again to clear ============= */
+  document.querySelectorAll('.su-toggle input[type="radio"]').forEach(radio => {
+    radio.addEventListener('mousedown', function() { this._wasChecked = this.checked; });
+    radio.addEventListener('keydown', function(e) {
+      if (e.key === ' ' || e.key === 'Enter') this._wasChecked = this.checked;
+    });
+    radio.addEventListener('click', function(e) {
+      if (this._wasChecked) {
+        this.checked = false;
+        this._wasChecked = false;
+        saveForm();
+        // Fire a change event so other listeners (incl. ours) react.
+        this.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    });
+  });
+
+  /* === Persistence (localStorage) ================================= */
+  const FORM = document.getElementById('otp-form');
+  // v0.44: key bumped from v1. loadClosedRecord fires change events while
+  // populating, and autosave used to capture them, silently overwriting the
+  // shared draft with whichever record was being VIEWED (viewer and gated
+  // form share this origin). The v1 drafts are therefore polluted on any
+  // machine that opened a record link; orphan them and never save while a
+  // record view is showing (see CLOSED_RECORD_VIEW guard in saveForm).
+  // otp-v0.1: the OTP form gets its OWN draft key. The R3 form is served from
+  // the same GitHub Pages origin, so a shared key would bleed one form's draft
+  // into the other. R3's own keys are never read or removed here.
+  const STORAGE_KEY = 'ais-otp-form-v1';
+  const CLOSED_RECORD_VIEW = !!window.R3_VIEWER ||
+    new URLSearchParams(window.location.search).has('id') ||
+    new URLSearchParams(window.location.search).has('token');
+  const statusEl = document.getElementById('save-status');
+  let saveTimer = null;
+
+  function showSaved() {
+    if (!statusEl) return;
+    statusEl.classList.add('is-active');
+    clearTimeout(showSaved._t);
+    showSaved._t = setTimeout(() => statusEl.classList.remove('is-active'), 900);
+  }
+
+  function saveForm() {
+    // v0.44: a record view (teacher viewer, or the gated form opened with
+    // ?id) must never persist what it displays as a draft.
+    if (CLOSED_RECORD_VIEW) return;
+    const data = {};
+    FORM.querySelectorAll('input[name], textarea[name], select[name]').forEach(el => {
+      if (el.type === 'radio') {
+        if (el.checked) data[el.name] = el.value;
+      } else {
+        const key = el.name || el.id;
+        if (key) data[key] = el.value;
+      }
+    });
+    // v0.34: teacher / inspector / subject Tom Selects store opaque indices
+    // (t0, i0, s0…) as values. Persist the display TEXT so a future load can
+    // restore by name even if option order has shifted.
+    translateOpaqueTomSelectsToText(data);
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      showSaved();
+    } catch (e) {}
+  }
+
+  /**
+   * For each opaque-keyed Tom Select (teacher / inspector / subject), replace
+   * the opaque value already captured in `data` with the option's display
+   * text. Used by saveForm() and submitForm() so localStorage and the Sheet
+   * both see the human-readable name, not "t0".
+   */
+  function translateOpaqueTomSelectsToText(data) {
+    ['teacher', 'inspector', 'subject'].forEach(name => {
+      const ts = tomSelects[name];
+      if (!ts) return;
+      const v = ts.getValue();
+      if (v && ts.options[v]) data[name] = ts.options[v].text;
+      else if (data[name] && ts.options[data[name]]) data[name] = ts.options[data[name]].text;
+      else data[name] = '';
+    });
+  }
+  function loadForm() {
+    let data;
+    try { data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
+    catch (e) { data = {}; }
+    Object.entries(data).forEach(([key, value]) => {
+      const radios = FORM.querySelectorAll(`input[type="radio"][name="${CSS.escape(key)}"]`);
+      if (radios.length) {
+        radios.forEach(r => { r.checked = (r.value === value); });
+        return;
+      }
+      const el = FORM.querySelector(`[name="${CSS.escape(key)}"]`) || document.getElementById(key);
+      if (el) {
+        el.value = value;
+        // Selects need a change event to refresh the button-trigger display (v0.15).
+        if (el.tagName === 'SELECT') el.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    });
+  }
+  // Debounced auto-save on input + change
+  function scheduleSave() {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(saveForm, 220);
+  }
+  FORM.addEventListener('input', scheduleSave);
+  FORM.addEventListener('change', scheduleSave);
+
+  // v0.42: the teacher-viewer build (otp-record.html) must never restore a
+  // local draft over the record it is about to show.
+  // v0.45: broaden the guard to ANY record view (CLOSED_RECORD_VIEW also covers
+  // the gated editable form opened with ?id), so a draft can never sit under a
+  // loaded record. Normal editable-form use (no ?id) still restores the draft.
+  if (!CLOSED_RECORD_VIEW) loadForm();
+
+  /* === Action buttons ============================================ */
+  document.getElementById('btn-reset').addEventListener('click', () => {
+    if (!confirm('Wipe all fields and clear the locally saved draft? This cannot be undone.')) return;
+    FORM.querySelectorAll('input, textarea, select').forEach(el => {
+      if (el.type === 'radio' || el.type === 'checkbox') el.checked = false;
+      else el.value = '';
+      if (el.tagName === 'SELECT') el.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+    // Clear pill / rate selected state and their hidden inputs.
+    document.querySelectorAll('.pill-group .pill.is-selected, .rate-row .rate.is-selected').forEach(b => b.classList.remove('is-selected'));
+    // Reset Tom Select instances so the visible chrome matches the cleared values (v0.19).
+    Object.values(tomSelects).forEach(ts => { ts.clear(true); });
+    try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    // v0.24: school just cleared; let Subject revert to disabled state.
+    if (typeof refreshSubjectOptions === 'function') refreshSubjectOptions();
+    if (typeof applyMandatoryDefaults === 'function') applyMandatoryDefaults();
+    if (typeof syncRubricChips === 'function') syncRubricChips();
+    EvidencePad.reset();   // v0.50: Reset wipes the Evidence Pad draft too
+    showSaved();
+    updateSubmitState();
+  });
+
+  document.getElementById('btn-new').addEventListener('click', () => {
+    if (!confirm('Start a new Progress in Lessons OTP form? The locked record stays in the Sheet.')) return;
+    window.location.href = window.location.pathname;
+  });
+
+  /* === Admin settings (v0.47): password-gated round editor ========== */
+  // Supabase config (publishable/anon key, client-safe; ships inside the
+  // StatiCrypt-encrypted page). Injected at build time, never committed cleartext.
+  const SB_URL = 'https://rfbetrcevtmisknndpgg.supabase.co';
+  const SB_KEY = 'sb_publishable_shin2gZ5-pARRc-cLDd5lQ_YAOacR72';
+
+  async function sbRpc(fn, body) {
+    const resp = await fetch(SB_URL + '/rest/v1/rpc/' + fn, {
+      method: 'POST',
+      headers: {
+        'apikey': SB_KEY,
+        'Authorization': 'Bearer ' + SB_KEY,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body || {})
+    });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    return resp.json();
+  }
+
+  (function setupAdmin() {
+    const cog      = document.getElementById('admin-cog');
+    const modal    = document.getElementById('admin-modal');
+    if (!cog || !modal) return;
+    const stepPw   = document.getElementById('admin-step-pw');
+    const stepSet  = document.getElementById('admin-step-settings');
+    const pwInput  = document.getElementById('admin-pw');
+    const roundIn  = document.getElementById('admin-round');
+    const statusPw = document.getElementById('admin-status-pw');
+    const statusSet= document.getElementById('admin-status-settings');
+    let adminPw = '';   // held only while the modal is unlocked
+
+    const setStatus = (el, msg, kind) => {
+      el.textContent = msg || '';
+      el.classList.remove('ok', 'bad');
+      if (kind) el.classList.add(kind);
+    };
+    const open = () => {
+      adminPw = '';
+      pwInput.value = ''; roundIn.value = '';
+      setStatus(statusPw, ''); setStatus(statusSet, '');
+      stepPw.hidden = false; stepSet.hidden = true;
+      modal.classList.add('open');
+      setTimeout(() => pwInput.focus(), 40);
+    };
+    const close = () => { adminPw = ''; pwInput.value = ''; modal.classList.remove('open'); diagStop(); };
+
+    // v0.57: viewport diagnostics — live numbers for the states no published
+    // source measures (hardware-keyboard accessory strip etc.). Runs ONLY
+    // while the unlocked settings step is visible; zero cost otherwise.
+    const diagOut = document.getElementById('admin-diag-out');
+    let diagTimer = 0;
+    function diagTick() {
+      if (!diagOut || stepSet.hidden || !modal.classList.contains('open')) return;
+      const vv = window.visualViewport;
+      diagOut.textContent =
+        'innerHeight   ' + window.innerHeight +
+        '\nclientHeight  ' + document.documentElement.clientHeight +
+        '\nvv.height     ' + (vv ? Math.round(vv.height * 10) / 10 : 'n/a') +
+        '\nvv.offsetTop  ' + (vv ? Math.round(vv.offsetTop * 10) / 10 : 'n/a') +
+        '\nscrollHeight  ' + document.scrollingElement.scrollHeight +
+        '\n--vv-shift    ' + (document.documentElement.style.getPropertyValue('--vv-shift') || '0px') +
+        '\nbody classes  ' + (document.body.className || '(none)') +
+        '\npad rect      ' + (function () {                       // v0.58: F1 one-bit test
+          const r = document.getElementById('pad-modal').getBoundingClientRect();
+          const last = window.__padRect;
+          return 'top ' + Math.round(r.top) + ' · h ' + Math.round(r.height) +
+                 (last ? ' | at open: top ' + last.top + ' · h ' + last.h + ' @ ' + last.at : '');
+        })() +
+        '\nkb engine     ' + (window.__kbEngine
+          ? (window.__kbEngine.open ? 'open' : 'closed') +
+            ' · baseline ' + Math.round(window.__kbEngine.baseline) +
+            (window.__kbEngine.disabled ? ' · nokb' : '')
+          : 'n/a') +
+        '\n?d switches   ' + (DIAG.size ? Array.from(DIAG).join(',') : '(none)');
+    }
+    function diagStart() {
+      diagStop();
+      diagTick();
+      diagTimer = setInterval(diagTick, 1000);
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', diagTick);
+        window.visualViewport.addEventListener('scroll', diagTick);
+      }
+    }
+    function diagStop() {
+      if (diagTimer) { clearInterval(diagTimer); diagTimer = 0; }
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', diagTick);
+        window.visualViewport.removeEventListener('scroll', diagTick);
+      }
+    }
+
+    cog.addEventListener('click', open);
+    document.getElementById('admin-cancel').addEventListener('click', close);
+    document.getElementById('admin-done').addEventListener('click', close);
+    modal.addEventListener('click', (e) => { if (e.target === modal) close(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('open')) close(); });
+
+    async function unlock() {
+      const pw = pwInput.value.trim();
+      if (!pw) { setStatus(statusPw, 'Enter the password.', 'bad'); return; }
+      setStatus(statusPw, 'Checking…');
+      try {
+        const ok = await sbRpc('verify_admin_password', { p_password: pw });
+        if (ok !== true) { setStatus(statusPw, 'Incorrect password.', 'bad'); return; }
+        adminPw = pw;
+        let round = '';
+        try { round = await sbRpc('get_current_round_otp'); } catch (e) {}
+        roundIn.value = round || '';
+        stepPw.hidden = true; stepSet.hidden = false;
+        setStatus(statusPw, '');
+        diagStart();                              // v0.57: live viewport readout
+        setTimeout(() => roundIn.focus(), 40);
+      } catch (e) {
+        setStatus(statusPw, 'Could not reach the server. Try again.', 'bad');
+      }
+    }
+    async function save() {
+      const val = roundIn.value.trim();
+      if (!val) { setStatus(statusSet, 'Enter a round label.', 'bad'); return; }
+      setStatus(statusSet, 'Saving…');
+      try {
+        const res = await sbRpc('admin_set_setting', { p_password: adminPw, p_key: 'current_round_otp', p_value: val });
+        if (res && res.success) setStatus(statusSet, 'Saved. New submissions now use “' + val + '”.', 'ok');
+        else setStatus(statusSet, (res && res.error) ? res.error : 'Could not save.', 'bad');
+      } catch (e) {
+        setStatus(statusSet, 'Could not reach the server. Try again.', 'bad');
+      }
+    }
+    document.getElementById('admin-unlock').addEventListener('click', unlock);
+    document.getElementById('admin-save').addEventListener('click', save);
+    pwInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); unlock(); } });
+    roundIn.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); save(); } });
+  })();
+
+  /* === Evidence Pad (v0.50) ========================================= */
+  // Full-screen scribble pad: photos from the iPad camera / library, Apple
+  // Pencil pressure ink (Konva + perfect-freehand, vendored in lib/), an
+  // IndexedDB draft that survives a tab death mid-lesson, upload of the
+  // flattened pages + ink vectors to the PRIVATE evidence-pads bucket at
+  // submit time, and an extract step (Claude vision via the same Apps
+  // Script endpoint, one page per parallel call) that transcribes the
+  // handwriting into the four free-text fields behind a review step.
+  //
+  // Coexistence with iPadOS Scribble (deliberate split): the form's text
+  // fields keep native Scribble handwriting-to-text; on the pad canvas the
+  // system Scribble recogniser would steal pen strokes, so the stage uses
+  // touch-action:none + a touchmove preventDefault (the known workaround;
+  // there is no official web opt-out). Ink accepts pen + mouse pointers
+  // only; fingers move photos in Select mode and never draw (palm safety).
+  /* v0.54: stop touch/wheel scrolling on a full-screen surface from chaining
+     through to the form behind it. Never repositions the body (v0.53's
+     position-fixed lock offset the whole pad on iPad Safari); it only swallows
+     scroll gestures that don't belong to one of the pad's own scroll areas. */
+  function containScroll(el) {
+    const handler = function (e) {
+      if (e.target && e.target.closest && e.target.closest('.pad-view-scroll')) return;
+      e.preventDefault();
+    };
+    el.addEventListener('touchmove', handler, { passive: false });
+    el.addEventListener('wheel', handler, { passive: false });
+  }
+
+  /* v0.57: park the keyboard before any pad open. WKWebView adds the keyboard
+     height to the scrollable extent (additively) and cleans it up late, so any
+     scroll save/jump made while that state is in flux reads corrupted values
+     (the "endless void" bug). Blurring also closes any open Tom Select
+     dropdown (its control input loses focus). No-op when nothing is focused. */
+  async function blurAndSettle() {
+    const ae = document.activeElement;
+    const isField = !!(ae && (ae.tagName === 'TEXTAREA' || ae.tagName === 'INPUT' ||
+               ae.tagName === 'SELECT' || ae.isContentEditable));
+    /* v0.58: the pen-pill launcher steals focus before this runs, so the
+       activeElement check alone missed a keyboard that is up or still
+       dismissing (padScrollY then reads mid-inset-flux values). Also settle
+       whenever the vv-delta engine says the keyboard is open or closed
+       within the last ~1.2s. */
+    const kb = window.__kbEngine;
+    const kbFlux = !!(kb && (kb.open || (kb.closedAt && Date.now() - kb.closedAt < 1200)));
+    if (isField) ae.blur();
+    if (isField || kbFlux) {
+      await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+      await new Promise(r => setTimeout(r, 120));
+    }
+  }
+
+  const EvidencePad = (function () {
+    const EXPORT_EDGE = 1280;                    // flatten: long edge ≈ 1280px
+    const PHOTO_MAX_EDGE = 1280;                 // capture downscale (photos are context, not the record)
+    const IDB_NAME = 'ais-otp-pad-v1', IDB_STORE = 'pads', IDB_KEY = 'draft';
+    const HIGH_COLOR = '#FFBA14';
+    const TARGETS = ['observer_comments', 'other_observations', 'next_step_1', 'next_step_2', 'next_step_3'];
+    const TARGET_LABELS = {
+      observer_comments:  'Observer Comments',
+      other_observations: 'Other Observations',
+      next_step_1:        'Next Steps / Support 1',
+      next_step_2:        'Next Steps / Support 2',
+      next_step_3:        'Next Steps / Support 3'
+    };
+    const TARGET_SLUGS = {
+      observer_comments:  'observer-comments',
+      other_observations: 'other-observations',
+      next_step_1:        'next-step-1',
+      next_step_2:        'next-step-2',
+      next_step_3:        'next-step-3'
+    };
+
+    const libsOk = !!(window.Konva && window.PerfectFreehand);
+
+    // ---------- state ----------
+    // v0.51: one named page per extractable form field ("+" adds overflow pages
+    // for the current field). Each page freezes its logical size (w/h) from the
+    // stage area the first time it is shown, so ink survives rotation via fit-scale.
+    const blankPage = (target) => ({ target: target, photos: [], strokes: [], w: 0, h: 0 });
+    const freshPages = () => TARGETS.map(blankPage);
+    let state = { id: '', cur: 0, pages: freshPages() };
+    let tool = 'pen';
+    let penColor = '#143642';
+    let stage = null, photoLayer = null, inkLayer = null, transformer = null;
+    let fit = 1;                                  // display scale (stage px per logical unit)
+    let live = null;                              // in-flight stroke {points, path, tool, color, pen}
+    let selectedPhoto = null;                     // Konva.Image currently selected
+    const urlCache = new Map();                   // photo id -> object URL
+    let saveTimer = null;
+    let opened = false;
+    let padScrollY = 0;                           // v0.56: form scroll spot to restore on close
+
+    function rid() {
+      const b = new Uint8Array(16);
+      crypto.getRandomValues(b);
+      return Array.from(b, x => x.toString(16).padStart(2, '0')).join('');
+    }
+
+    // ---------- IndexedDB draft (photos as ArrayBuffers; never Blobs — WebKit) ----------
+    function idb() {
+      return new Promise((res, rej) => {
+        const req = indexedDB.open(IDB_NAME, 1);
+        req.onupgradeneeded = () => req.result.createObjectStore(IDB_STORE);
+        req.onsuccess = () => res(req.result);
+        req.onerror = () => rej(req.error);
+      });
+    }
+    async function idbPut(val) {
+      try {
+        const db = await idb();
+        await new Promise((res, rej) => {
+          const tx = db.transaction(IDB_STORE, 'readwrite');
+          tx.objectStore(IDB_STORE).put(val, IDB_KEY);
+          tx.oncomplete = res; tx.onerror = () => rej(tx.error);
+        });
+        db.close();
+      } catch (e) {}
+    }
+    async function idbGet() {
+      try {
+        const db = await idb();
+        const val = await new Promise((res, rej) => {
+          const req = db.transaction(IDB_STORE, 'readonly').objectStore(IDB_STORE).get(IDB_KEY);
+          req.onsuccess = () => res(req.result); req.onerror = () => rej(req.error);
+        });
+        db.close();
+        return val || null;
+      } catch (e) { return null; }
+    }
+    async function idbDel() {
+      try {
+        const db = await idb();
+        await new Promise((res, rej) => {
+          const tx = db.transaction(IDB_STORE, 'readwrite');
+          tx.objectStore(IDB_STORE).delete(IDB_KEY);
+          tx.oncomplete = res; tx.onerror = () => rej(tx.error);
+        });
+        db.close();
+      } catch (e) {}
+    }
+    function scheduleDraftSave() {
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(() => { idbPut(state); }, 500);
+      refreshEviState();
+    }
+
+    function padHasContent() {
+      return state.pages.some(p => p.photos.length || p.strokes.length);
+    }
+
+    // v0.53: green "evidence here" state — a field's pen pill lights up when
+    // its textarea has text OR its pad pages carry ink/photos; the floating
+    // launcher lights up when the pad holds anything at all.
+    function refreshEviState() {
+      const openBtn = document.getElementById('pad-open');
+      if (openBtn) openBtn.classList.toggle('has-evi', padHasContent());
+      TARGETS.forEach(t => {
+        const btn = document.querySelector('.pad-field-btn[data-pad-target="' + t + '"]');
+        if (!btn) return;
+        const padHas = state.pages.some(p => p.target === t && (p.photos.length || p.strokes.length));
+        const field = FORM.querySelector('[name="' + t + '"]');
+        btn.classList.toggle('has-evi', padHas || !!(field && field.value.trim()));
+      });
+    }
+
+    // ---------- geometry / rendering ----------
+    function strokeOutline(s) {
+      const opts = s.tool === 'high'
+        ? { size: 26, thinning: 0, smoothing: 0.6, streamline: 0.5, simulatePressure: false }
+        : { size: 5.5, thinning: 0.55, smoothing: 0.5, streamline: 0.35, simulatePressure: !s.pen };
+      return window.PerfectFreehand.getStroke(s.points, opts);
+    }
+    // Canvas-native outline fill (Konva's SVG-path parser rejects the implicit
+    // repeated-Q form the perfect-freehand helper emits, so trace it directly).
+    function strokeNode(s) {
+      const outline = strokeOutline(s);
+      return new Konva.Shape({
+        id: s.id,
+        sceneFunc: function (ctx, shape) {
+          if (outline.length < 2) return;
+          ctx.beginPath();
+          ctx.moveTo(outline[0][0], outline[0][1]);
+          for (let i = 1; i < outline.length; i++) {
+            const p = outline[i], n = outline[(i + 1) % outline.length];
+            ctx.quadraticCurveTo(p[0], p[1], (p[0] + n[0]) / 2, (p[1] + n[1]) / 2);
+          }
+          ctx.closePath();
+          ctx.fillStrokeShape(shape);
+        },
+        fill: s.color,
+        opacity: s.tool === 'high' ? 0.38 : 1,
+        globalCompositeOperation: s.tool === 'high' ? 'multiply' : 'source-over',
+        listening: false,
+        perfectDrawEnabled: false
+      });
+    }
+    function photoURL(ph) {
+      if (!urlCache.has(ph.id)) {
+        urlCache.set(ph.id, URL.createObjectURL(new Blob([ph.buf], { type: 'image/jpeg' })));
+      }
+      return urlCache.get(ph.id);
+    }
+    function loadImg(src) {
+      return new Promise((res, rej) => {
+        const img = new Image();
+        img.onload = () => res(img);
+        img.onerror = rej;
+        img.src = src;
+      });
+    }
+
+    // Renders one logical page into a stage. Returns a promise that resolves
+    // once every photo bitmap has landed (needed before toDataURL).
+    async function renderPage(targetStage, page, opts) {
+      const interactive = !!(opts && opts.interactive);
+      targetStage.destroyChildren();
+      const pLayer = new Konva.Layer({ listening: interactive });
+      const iLayer = new Konva.Layer({ listening: false });
+      targetStage.add(pLayer, iLayer);
+
+      const jobs = page.photos.map(async ph => {
+        const img = await loadImg(photoURL(ph));
+        const node = new Konva.Image({
+          id: ph.id, image: img,
+          x: ph.x, y: ph.y, width: ph.w, height: ph.h,
+          scaleX: ph.scaleX || 1, scaleY: ph.scaleY || 1,
+          rotation: ph.rotation || 0,
+          draggable: interactive && tool === 'select',
+          shadowColor: 'rgba(20,54,66,0.35)', shadowBlur: 10, shadowOffsetY: 3
+        });
+        if (interactive) {
+          node.on('dragend transformend', () => {
+            ph.x = node.x(); ph.y = node.y();
+            ph.scaleX = node.scaleX(); ph.scaleY = node.scaleY();
+            ph.rotation = node.rotation();
+            scheduleDraftSave();
+          });
+        }
+        pLayer.add(node);
+      });
+      await Promise.all(jobs);
+
+      page.strokes.forEach(s => iLayer.add(strokeNode(s)));
+      if (interactive) {
+        photoLayer = pLayer; inkLayer = iLayer;
+        transformer = new Konva.Transformer({
+          rotateEnabled: true, flipEnabled: false,
+          enabledAnchors: ['top-left', 'top-right', 'bottom-left', 'bottom-right'],
+          anchorSize: 14, borderStroke: '#1257FF', anchorStroke: '#1257FF'
+        });
+        pLayer.add(transformer);
+        selectedPhoto = null;
+        syncDelBtn();
+      }
+      targetStage.batchDraw();
+    }
+
+    function curPage() { return state.pages[state.cur]; }
+
+    // "Observer Comments", or "Observer Comments 2" for overflow pages of a field
+    function pageLabel(page, idx) {
+      let n = 0, ord = 0;
+      state.pages.forEach((p, i) => { if (p.target === page.target) { n++; if (i <= idx) ord = n; } });
+      const base = TARGET_LABELS[page.target] || 'Page';
+      return n > 1 ? base + ' ' + ord : base;
+    }
+
+    function refreshPageIndicator() {
+      const el = document.getElementById('pad-pageind');
+      if (el) el.textContent = pageLabel(curPage(), state.cur) + ' · ' + (state.cur + 1) + '/' + state.pages.length;
+    }
+
+    async function showPage() {
+      refreshPageIndicator();
+      if (stage) { sizeStage(); await renderPage(stage, curPage(), { interactive: true }); }
+    }
+
+    // ---------- stage setup + input ----------
+    // A page's logical space is frozen the first time it is shown (= the full
+    // stage area on this device/orientation). After that the page fit-scales,
+    // so nothing is lost if the iPad rotates mid-lesson.
+    const PAD_GUTTER = 12;                       // breathing room around the white page (matches .pad-stage-wrap padding)
+    function stageAvail() {
+      const wrap = document.getElementById('pad-stage-wrap');
+      return [Math.max(280, wrap.clientWidth - 2 * PAD_GUTTER),
+              Math.max(280, wrap.clientHeight - 2 * PAD_GUTTER)];
+    }
+    function ensurePageDims(page) {
+      if (page.w && page.h) return;
+      const a = stageAvail();
+      page.w = a[0];
+      page.h = a[1];
+    }
+    function sizeStage() {
+      const page = curPage();
+      ensurePageDims(page);
+      const a = stageAvail();
+      fit = Math.max(0.2, Math.min(a[0] / page.w, a[1] / page.h));
+      stage.width(page.w * fit);
+      stage.height(page.h * fit);
+      stage.scale({ x: fit, y: fit });
+    }
+
+    function toLogical(evt) {
+      const r = stage.container().getBoundingClientRect();
+      return [
+        (evt.clientX - r.left) / fit,
+        (evt.clientY - r.top) / fit,
+        (evt.pointerType === 'pen' && evt.pressure) ? evt.pressure : 0.5
+      ];
+    }
+
+    function eraseAt(evt) {
+      const r = stage.container().getBoundingClientRect();
+      const x = (evt.clientX - r.left) / fit, y = (evt.clientY - r.top) / fit;
+      const page = curPage();
+      const R = 14; // logical hit radius
+      for (let i = page.strokes.length - 1; i >= 0; i--) {
+        const hit = page.strokes[i].points.some(p => {
+          const dx = p[0] - x, dy = p[1] - y;
+          return dx * dx + dy * dy < R * R;
+        });
+        if (hit) {
+          const dead = page.strokes.splice(i, 1)[0];
+          const node = inkLayer && inkLayer.findOne('#' + dead.id);
+          if (node) node.destroy();
+          if (inkLayer) inkLayer.batchDraw();
+          scheduleDraftSave();
+          return;
+        }
+      }
+    }
+
+    function wireStageInput() {
+      const el = stage.container();
+      // Scribble mitigation: without this, iPadOS steals pen strokes that look
+      // like handwriting (no official opt-out; touch-action alone is not enough).
+      el.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+
+      el.addEventListener('pointerdown', e => {
+        if (tool === 'erase') { e.preventDefault(); eraseAt(e); return; }
+        if (tool !== 'pen' && tool !== 'high') return;           // select: Konva handles it
+        if (e.pointerType === 'touch') return;                    // fingers never draw
+        e.preventDefault();
+        try { el.setPointerCapture(e.pointerId); } catch (err) {}
+        live = {
+          id: rid().slice(0, 12),
+          tool: tool,
+          color: tool === 'high' ? HIGH_COLOR : penColor,
+          pen: e.pointerType === 'pen',
+          points: [toLogical(e)],
+          node: null
+        };
+      });
+      el.addEventListener('pointermove', e => {
+        if (tool === 'erase' && (e.buttons & 1)) { eraseAt(e); return; }
+        if (!live) return;
+        e.preventDefault();
+        let events = [];
+        if (typeof e.getCoalescedEvents === 'function') { try { events = e.getCoalescedEvents(); } catch (err) {} }
+        if (!events.length) events = [e];
+        events.forEach(ev => live.points.push(toLogical(ev)));
+        if (live.node) live.node.destroy();
+        live.node = strokeNode(live);
+        inkLayer.add(live.node);
+        inkLayer.batchDraw();
+      });
+      const finish = e => {
+        if (!live) return;
+        if (live.points.length > 1) {
+          curPage().strokes.push({ id: live.id, tool: live.tool, color: live.color, pen: live.pen, points: live.points });
+          scheduleDraftSave();
+        } else if (live.node) {
+          live.node.destroy();
+          inkLayer.batchDraw();
+        }
+        live = null;
+      };
+      el.addEventListener('pointerup', finish);
+      el.addEventListener('pointercancel', finish);
+
+      // Photo selection (Select mode only)
+      stage.on('click tap', e => {
+        if (tool !== 'select' || !transformer) return;
+        if (e.target instanceof Konva.Image) {
+          selectedPhoto = e.target;
+          transformer.nodes([e.target]);
+        } else {
+          selectedPhoto = null;
+          transformer.nodes([]);
+        }
+        photoLayer.batchDraw();
+        syncDelBtn();
+      });
+    }
+
+    function syncDelBtn() {
+      const b = document.getElementById('pad-del-photo');
+      if (b) b.hidden = !(tool === 'select' && selectedPhoto);
+    }
+
+    function setTool(next) {
+      tool = next;
+      ['select', 'pen', 'high', 'erase'].forEach(t => {
+        const b = document.getElementById('pad-tool-' + t);
+        if (b) b.classList.toggle('is-active', t === tool);
+      });
+      if (photoLayer) {
+        photoLayer.listening(tool === 'select');
+        photoLayer.getChildren(n => n instanceof Konva.Image).forEach(n => n.draggable(tool === 'select'));
+        if (tool !== 'select' && transformer) { transformer.nodes([]); selectedPhoto = null; }
+        photoLayer.batchDraw();
+      }
+      syncDelBtn();
+    }
+
+    // ---------- photos in ----------
+    async function fileToPhoto(file, index) {
+      let bmp;
+      try {
+        bmp = await createImageBitmap(file, { imageOrientation: 'from-image' });
+      } catch (e) {
+        // very old WebKit or odd container: <img> decode fallback
+        bmp = await loadImg(URL.createObjectURL(file));
+      }
+      const scale = Math.min(1, PHOTO_MAX_EDGE / Math.max(bmp.width, bmp.height));
+      const w = Math.max(1, Math.round(bmp.width * scale));
+      const h = Math.max(1, Math.round(bmp.height * scale));
+      const c = document.createElement('canvas');
+      c.width = w; c.height = h;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#ffffff';                   // HEIC/PNG alpha → white
+      ctx.fillRect(0, 0, w, h);
+      ctx.drawImage(bmp, 0, 0, w, h);
+      if (bmp.close) bmp.close();
+      const blob = await new Promise(r => c.toBlob(r, 'image/jpeg', 0.72));
+      if (!blob) return null;
+      const buf = await blob.arrayBuffer();
+      // place at ~62% page width, cascading so stacked photos stay grabbable
+      const page = curPage();
+      ensurePageDims(page);
+      const dispW = page.w * 0.62;
+      const dispH = dispW * (h / w);
+      const n = page.photos.length + index;
+      return {
+        id: rid(), buf: buf, w: dispW, h: dispH,
+        x: page.w * 0.19 + (n % 4) * 26, y: page.h * 0.06 + (n % 4) * 30,
+        scaleX: 1, scaleY: 1, rotation: 0
+      };
+    }
+
+    async function addFiles(fileList) {
+      const files = Array.from(fileList || []).slice(0, 8);
+      let i = 0;
+      for (const f of files) {
+        try {
+          const ph = await fileToPhoto(f, i++);
+          if (ph) curPage().photos.push(ph);
+        } catch (e) {}
+      }
+      scheduleDraftSave();
+      await showPage();
+      setTool('select');
+    }
+
+    // ---------- flatten / upload / extract ----------
+    // Renders ONE non-empty page into a hidden stage; returns { target, b64 }
+    // or null for an empty page.
+    async function flattenPage(page) {
+      if (!page.photos.length && !page.strokes.length) return null;
+      const holder = document.createElement('div');
+      holder.style.cssText = 'position:fixed;left:-99999px;top:0;';
+      document.body.appendChild(holder);
+      try {
+        ensurePageDims(page);
+        const off = new Konva.Stage({ container: holder, width: page.w, height: page.h });
+        await renderPage(off, page, { interactive: false });
+        // white paper behind the ink (JPEG has no alpha)
+        const bg = new Konva.Layer({ listening: false });
+        bg.add(new Konva.Rect({ x: 0, y: 0, width: page.w, height: page.h, fill: '#ffffff' }));
+        off.add(bg);
+        bg.moveToBottom();
+        off.batchDraw();
+        const dataURL = off.toDataURL({ mimeType: 'image/jpeg', quality: 0.8, pixelRatio: EXPORT_EDGE / Math.max(page.w, page.h) });
+        off.destroy();
+        return { target: page.target, b64: dataURL.slice(dataURL.indexOf(',') + 1) };
+      } finally {
+        holder.remove();
+      }
+    }
+
+    async function flattenPages() {
+      const out = [];
+      for (const page of state.pages) {
+        const flat = await flattenPage(page);
+        if (flat) out.push(flat);
+      }
+      return out;
+    }
+
+    function b64ToBlob(b64, type) {
+      const bin = atob(b64);
+      const arr = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+      return new Blob([arr], { type: type });
+    }
+
+    async function uploadPad(padId, pages) {
+      const headers = { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY };
+      const counts = {};
+      const puts = pages.map(p => {
+        const n = counts[p.target] = (counts[p.target] || 0) + 1;
+        const name = (TARGET_SLUGS[p.target] || 'page') + (n > 1 ? '-' + n : '') + '.jpg';
+        return fetch(SB_URL + '/storage/v1/object/evidence-pads/' + padId + '/' + name, {
+          method: 'POST',
+          headers: Object.assign({ 'Content-Type': 'image/jpeg' }, headers),
+          body: b64ToBlob(p.b64, 'image/jpeg')
+        }).catch(() => null);
+      });
+      // ink vectors ride along for future re-editing (photo bytes live in the JPEGs)
+      const vectors = {
+        v: 2, pad: padId,
+        pages: state.pages.map(p => ({
+          target: p.target, w: p.w, h: p.h,
+          strokes: p.strokes,
+          photos: p.photos.map(ph => ({ id: ph.id, x: ph.x, y: ph.y, w: ph.w, h: ph.h, scaleX: ph.scaleX, scaleY: ph.scaleY, rotation: ph.rotation }))
+        }))
+      };
+      puts.push(fetch(SB_URL + '/storage/v1/object/evidence-pads/' + padId + '/ink.json', {
+        method: 'POST',
+        headers: Object.assign({ 'Content-Type': 'application/json' }, headers),
+        body: JSON.stringify(vectors)
+      }).catch(() => null));
+      await Promise.race([
+        Promise.allSettled(puts),
+        new Promise(r => setTimeout(r, 10000))     // never hold a submit hostage
+      ]);
+    }
+
+    // Called by submitForm: uploads the pad (if any, if possible) and returns
+    // the pad id to stamp on the record. Never throws; '' when there is no pad.
+    async function commitForSubmit() {
+      if (!libsOk || !padHasContent()) return '';
+      if (!state.id) state.id = rid();
+      try {
+        if (SB_URL && SB_KEY) {
+          const pages = await flattenPages();
+          if (pages.length) await uploadPad(state.id, pages);
+        }
+      } catch (e) {}
+      return state.id;
+    }
+
+    async function extractPage(page) {
+      const attempt = async () => {
+        const resp = await fetch(WEB_APP_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'extract_pad', image: page.b64, target: page.target }),
+          redirect: 'follow'
+        });
+        const out = await resp.json();
+        if (!out.success) throw new Error(out.error || 'extract failed');
+        return out.items || [];
+      };
+      try { return await attempt(); }
+      catch (e) { return await attempt(); }        // one silent retry per page
+    }
+
+    /* ---------- auto extract + apply (v0.55) ----------
+       The pad no longer waits for a button: whenever the observer leaves a
+       page (page switch, Done), any page whose content changed is transcribed
+       in the background and the text is written into that field's textarea as
+       soon as it arrives. Per page we remember:
+         xh/xt = content hash + text of the last EXTRACTION (the cache)
+         ah/at = content hash + text last APPLIED to the field
+       Re-extraction of an edited page REPLACES its previously inserted block
+       (if still present verbatim) instead of appending a duplicate. All of it
+       persists in the draft, so nothing re-runs after a reload. */
+    const inflight = new Map();                    // page → running job
+
+    function pageHash(p) {
+      // photo transforms are part of the hash (coarsely) — repositioning can
+      // reveal previously covered content, which must trigger a re-read
+      return p.strokes.map(s => s.id).join(',') + '|' + p.photos.map(ph =>
+        ph.id + ':' + Math.round(ph.x / 40) + ',' + Math.round(ph.y / 40) + ',' +
+        Math.round((ph.scaleX || 1) * 10) + ',' + Math.round((ph.rotation || 0) / 15)
+      ).join(',');
+    }
+
+    function applyTextToField(page, hash, text, quiet) {
+      const field = FORM.querySelector('[name="' + page.target + '"]');
+      if (!field) return;
+      if (text) {
+        const prev = String(page.at || '');
+        if (prev && field.value.indexOf(prev) > -1) {
+          field.value = field.value.replace(prev, text);   // update, don't duplicate
+        } else {
+          field.value = field.value.trim() ? field.value.trim() + '\n\n' + text : text;
+        }
+        field.dispatchEvent(new Event('input', { bubbles: true }));
+        if (!quiet) showToast('Pad notes added to ' + TARGET_LABELS[page.target] + '.', 'success');
+      }
+      page.ah = hash;                              // blank/unreadable pages count as done
+      page.at = text;
+      scheduleDraftSave();
+    }
+
+    // Extract one page (if its content changed) and put the text in its field.
+    // Silent on failure — the next trigger (or the submit backstop) retries.
+    function extractAndApply(page, quiet) {
+      if (!page.photos.length && !page.strokes.length) return Promise.resolve();
+      const h = pageHash(page);
+      if (page.ah === h) return Promise.resolve();           // already in the form
+      if (inflight.has(page)) return inflight.get(page);
+      const job = (async () => {
+        let text;
+        if (page.xh === h && typeof page.xt === 'string') {
+          text = page.xt;                                    // cached transcription
+        } else {
+          const flat = await flattenPage(page);
+          if (!flat) return;
+          const items = await extractPage(flat);
+          if (pageHash(page) !== h) return;                  // page changed mid-flight
+          text = items.map(it => String(it.text || '').trim()).filter(Boolean).join('\n');
+          page.xh = h;
+          page.xt = text;
+          scheduleDraftSave();
+        }
+        if (state.pages.indexOf(page) < 0) return;           // pad was reset mid-flight
+        applyTextToField(page, h, text, quiet);
+      })();
+      inflight.set(page, job.finally(() => inflight.delete(page)));
+      return inflight.get(page);
+    }
+
+    // Background trigger — never surfaces a failure.
+    function extractAndApplySilently(page) {
+      extractAndApply(page, false).catch(() => {});
+    }
+
+    // Submit backstop: everything still un-applied gets extracted + applied
+    // now, capped so a submission is never held hostage (the pad images upload
+    // regardless, so nothing is lost even on total failure).
+    async function applyPendingToForm(capMs) {
+      if (!libsOk || !padHasContent()) return;
+      try {
+        await Promise.race([
+          Promise.allSettled(state.pages.map(p => extractAndApply(p, true))),
+          new Promise(r => setTimeout(r, capMs || 20000))
+        ]);
+      } catch (e) {}
+    }
+
+    // Manual "do it now" button — same pipeline, with progress + a summary.
+    async function runExtract() {
+      const btn = document.getElementById('pad-extract');
+      const label = document.getElementById('pad-extract-label');
+      if (!padHasContent()) { showToast('The pad is empty — add a photo or some notes first.', ''); return; }
+      const pending = state.pages.filter(p => (p.photos.length || p.strokes.length) && p.ah !== pageHash(p));
+      if (!pending.length) { showToast('Pad notes are already in the form.', 'success'); return; }
+      btn.disabled = true;
+      label.textContent = 'Reading pad…';
+      try {
+        let done = 0;
+        const settle = await Promise.allSettled(pending.map(async page => {
+          await extractAndApply(page, true);
+          done++;
+          label.textContent = 'Reading pad… ' + done + ' / ' + pending.length;
+        }));
+        const failed = settle.filter(s => s.status === 'rejected').length;
+        if (failed) {
+          showToast('Could not read part of the pad — check the connection and try again.', 'error');
+        } else {
+          const added = pending.some(p => p.at);
+          showToast(added ? 'Pad notes added to the form.' : 'No handwriting found on the pad.', added ? 'success' : '');
+        }
+      } finally {
+        btn.disabled = false;
+        label.textContent = 'Extract to form';
+      }
+    }
+
+    // ---------- open / close / reset ----------
+    const SWAP = !DIAG.has('noswap');            // ?d=noswap: v0.56-style plain overlay (A/B)
+    let opening = false, openCancelled = false;  // v0.58: race guard for the settle window
+    /* v0.58: the cog panel is unreachable while the pad covers the screen, so
+       the F1 diagnostics sample the pad rect AT open (+ after settle/resize)
+       and park it on window.__padRect for the admin readout to show later. */
+    function samplePadRect() {
+      const r = document.getElementById('pad-modal').getBoundingClientRect();
+      window.__padRect = { top: Math.round(r.top), h: Math.round(r.height), at: new Date().toTimeString().slice(0, 8) };
+    }
+    async function openPad() {
+      if (!libsOk || opening) return;
+      // v0.57: park the keyboard first (WKWebView inset corruption, see helper),
+      // save the spot, then swap the form OUT of the layout (body.pad-open) so
+      // the document has no scrollable extent while the pad is up. closePad
+      // restores the form and the exact spot before the pad hides.
+      // v0.58: whole body in try/catch — an error after body.pad-open was set
+      // used to leave a blank stuck page (nothing removed the class). Any
+      // failure now restores the form silently (rule 12).
+      opening = true; openCancelled = false;
+      try {
+        await blurAndSettle();
+        if (openCancelled) return;               // Done landed during the settle window
+        padScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+        document.getElementById('pad-modal').classList.add('open');
+        if (SWAP) {
+          document.body.classList.add('pad-open');
+          window.scrollTo(0, 0);
+        }
+        opened = true;
+        if (!stage) {
+          stage = new Konva.Stage({ container: 'pad-stage', width: 100, height: 100 });
+          wireStageInput();
+          window.addEventListener('resize', () => { if (opened && stage) { sizeStage(); stage.batchDraw(); samplePadRect(); } });
+        }
+        await showPage();                        // sizes the stage to the current page
+        setTool(tool);
+        samplePadRect();
+        setTimeout(() => { if (opened) samplePadRect(); }, 600);
+      } catch (e) {
+        if (document.body.classList.contains('pad-open')) {
+          document.body.classList.remove('pad-open');
+          window.scrollTo(0, padScrollY);
+        }
+        document.getElementById('pad-modal').classList.remove('open');
+        opened = false;
+      } finally {
+        opening = false;
+      }
+    }
+    // Per-field launcher: jump to that field's first page, then open.
+    async function openPadAt(target) {
+      const idx = state.pages.findIndex(p => p.target === target);
+      if (idx > -1) state.cur = idx;
+      await openPad();
+    }
+    function closePad() {
+      if (opening) { openCancelled = true; return; }  // v0.58: cancel a pending open
+      if (SWAP) {
+        document.body.classList.remove('pad-open'); // v0.57: form back in layout FIRST
+        window.scrollTo(0, padScrollY);            // v0.56: restore BEFORE the pad hides (same paint)
+      }
+      document.getElementById('pad-modal').classList.remove('open');
+      opened = false;
+      // v0.55: transcribe anything new in the background; text lands in the
+      // fields as soon as it's ready (usually before the observer notices).
+      state.pages.forEach(extractAndApplySilently);
+      refreshEviState();                           // v0.53: reflect any new pad content
+      idbPut(state);                               // flush the draft on the way out
+    }
+
+    async function reset() {
+      urlCache.forEach(u => URL.revokeObjectURL(u));
+      urlCache.clear();
+      state = { id: '', cur: 0, pages: freshPages() };
+      await idbDel();
+      refreshEviState();
+      if (opened) await showPage(); else refreshPageIndicator();
+    }
+
+    // ---------- wiring ----------
+    function init() {
+      const openBtn = document.getElementById('pad-open');
+      if (!openBtn) return;
+      const fieldBtns = document.querySelectorAll('.pad-field-btn');
+      // Record views never get a pad; silent-hide too if a lib failed to load.
+      if (CLOSED_RECORD_VIEW || !libsOk) {
+        openBtn.hidden = true;
+        fieldBtns.forEach(b => { b.hidden = true; });
+        return;
+      }
+
+      openBtn.addEventListener('click', openPad);
+      fieldBtns.forEach(b => b.addEventListener('click', () => openPadAt(b.dataset.padTarget)));
+      document.getElementById('pad-done').addEventListener('click', closePad);
+      document.getElementById('pad-done-bottom').addEventListener('click', closePad);  // v0.58
+      containScroll(document.getElementById('pad-modal'));   // v0.54: no scroll-through
+
+      document.getElementById('pad-cam-btn').addEventListener('click', () => document.getElementById('pad-cam-input').click());
+      document.getElementById('pad-lib-btn').addEventListener('click', () => document.getElementById('pad-lib-input').click());
+      ['pad-cam-input', 'pad-lib-input'].forEach(id => {
+        const inp = document.getElementById(id);
+        inp.addEventListener('change', async () => {
+          await addFiles(inp.files);
+          inp.value = '';
+        });
+      });
+
+      ['select', 'pen', 'high', 'erase'].forEach(t => {
+        document.getElementById('pad-tool-' + t).addEventListener('click', () => setTool(t));
+      });
+      document.querySelectorAll('.pad-swatch').forEach(sw => {
+        sw.addEventListener('click', () => {
+          penColor = sw.dataset.color;
+          document.querySelectorAll('.pad-swatch').forEach(s => s.classList.toggle('is-active', s === sw));
+          if (tool !== 'pen') setTool('pen');
+        });
+      });
+
+      document.getElementById('pad-undo').addEventListener('click', () => {
+        const page = curPage();
+        if (!page.strokes.length) return;
+        const dead = page.strokes.pop();
+        const node = inkLayer && inkLayer.findOne('#' + dead.id);
+        if (node) { node.destroy(); inkLayer.batchDraw(); }
+        scheduleDraftSave();
+      });
+      document.getElementById('pad-del-photo').addEventListener('click', () => {
+        if (!selectedPhoto) return;
+        const page = curPage();
+        const idx = page.photos.findIndex(p => p.id === selectedPhoto.id());
+        if (idx > -1) {
+          const [dead] = page.photos.splice(idx, 1);
+          const u = urlCache.get(dead.id);
+          if (u) { URL.revokeObjectURL(u); urlCache.delete(dead.id); }
+        }
+        transformer.nodes([]);
+        selectedPhoto = null;
+        syncDelBtn();
+        scheduleDraftSave();
+        showPage();
+      });
+
+      document.getElementById('pad-page-prev').addEventListener('click', () => {
+        if (state.cur > 0) {
+          extractAndApplySilently(curPage());      // v0.55: transcribe the page being left
+          state.cur--; scheduleDraftSave(); showPage();
+        }
+      });
+      document.getElementById('pad-page-next').addEventListener('click', () => {
+        if (state.cur < state.pages.length - 1) {
+          extractAndApplySilently(curPage());
+          state.cur++; scheduleDraftSave(); showPage();
+        }
+      });
+      document.getElementById('pad-page-add').addEventListener('click', () => {
+        // overflow page for the CURRENT field, inserted after its last page
+        extractAndApplySilently(curPage());
+        const target = curPage().target;
+        let at = state.cur;
+        while (at + 1 < state.pages.length && state.pages[at + 1].target === target) at++;
+        state.pages.splice(at + 1, 0, blankPage(target));
+        state.cur = at + 1;
+        scheduleDraftSave();
+        showPage();
+      });
+
+      document.getElementById('pad-extract').addEventListener('click', runExtract);
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden' && padHasContent()) idbPut(state);
+      });
+
+      // Restore a mid-lesson draft (the bfcache handler reloads the page, so
+      // this load path is also the restore path). Only v2-shaped drafts count:
+      // every page must carry a known field target.
+      idbGet().then(saved => {
+        if (saved && saved.pages && saved.pages.length
+            && saved.pages.every(p => p && TARGET_LABELS[p.target])
+            && saved.pages.some(p => (p.photos && p.photos.length) || (p.strokes && p.strokes.length))) {
+          state = saved;
+          refreshPageIndicator();
+        }
+        refreshEviState();
+      });
+
+      // typing in one of the five textareas flips its pill green (and back)
+      FORM.addEventListener('input', e => {
+        if (e.target && TARGETS.indexOf(e.target.name) > -1) refreshEviState();
+      });
+      refreshEviState();
+    }
+
+    init();
+
+    return { commitForSubmit, applyPendingToForm, reset, hasContent: padHasContent };
+  })();
+
+  /* === Cloud submit + lock + closed-record viewer ================== */
+  const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbx3efKiQzs2MSwESEuNBCceXr5FqBCXuk1IgSzPFbOVgLSc3fvXy40e8V9lhw_KH0z2nQ/exec';
+  const REQUIRED_FIELDS = ['teacher', 'inspector', 'curriculum', 'school', 'subject', 'date', 'time_in'];
+
+  function updateSubmitState() {
+    const btn = document.getElementById('btn-submit');
+    if (!btn || btn.dataset.locked === '1') return;
+    const allFilled = REQUIRED_FIELDS.every(name => {
+      const el = FORM.querySelector('[name="' + name + '"]');
+      return el && el.value && el.value.trim();
+    });
+    btn.classList.toggle('disabled', !allFilled);
+    btn.disabled = !allFilled;
+    btn.title = allFilled ? 'Save and lock this OTP observation form' : 'Fill Teacher / Time In / Observer / Curriculum / School / Date / Subject to enable saving';
+  }
+  FORM.addEventListener('input', updateSubmitState);
+  FORM.addEventListener('change', updateSubmitState);
+  updateSubmitState();
+
+  function showToast(msg, kind) {
+    const toast = document.getElementById('toast');
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.classList.remove('error', 'success');
+    if (kind) toast.classList.add(kind);
+    toast.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => toast.classList.remove('show'), 4500);
+  }
+
+  function formatStamp(iso) {
+    if (!iso) return '';
+    try {
+      const d = new Date(iso);
+      if (isNaN(d)) return iso;
+      return d.toLocaleString('en-GB', { year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+    } catch (e) { return iso; }
+  }
+
+  function lockForm(recordId, submittedAt, mode) {
+    FORM.querySelectorAll('input, textarea, select').forEach(el => { el.disabled = true; });
+    // Tom Select instances need to be disabled via the library API so the
+    // chrome (control + dropdown) reflects the locked state (v0.19).
+    Object.values(tomSelects).forEach(ts => { ts.disable(); });
+    FORM.classList.add('is-locked');
+    document.body.classList.add('is-locked');
+
+    const banner = document.getElementById('submitted-banner');
+    const meta = document.getElementById('submitted-meta');
+    if (banner && meta) {
+      let bits = ['Record ID ' + recordId];
+      if (submittedAt) bits.push('Submitted ' + formatStamp(submittedAt));
+      if (mode === 'closed') bits.push('Read-only view');
+      meta.textContent = bits.join(' · ');
+      banner.classList.add('is-active');
+    }
+    const submitBtn = document.getElementById('btn-submit');
+    if (submitBtn) submitBtn.dataset.locked = '1';
+  }
+
+  // Clear all fields + unlock the form so the user can start the next
+  // observation immediately. Called automatically 3s after a successful
+  // submit (v0.17); no confirm dialog (unlike the manual Reset button).
+  function softResetForm() {
+    FORM.querySelectorAll('input, textarea, select').forEach(el => {
+      if (el.type === 'radio' || el.type === 'checkbox') el.checked = false;
+      else el.value = '';
+      el.disabled = false;
+    });
+    document.querySelectorAll('.pill-group .pill.is-selected, .rate-row .rate.is-selected').forEach(b => b.classList.remove('is-selected'));
+    // Re-enable + clear each Tom Select instance (v0.19).
+    Object.values(tomSelects).forEach(ts => {
+      ts.enable();
+      ts.clear(true);
+    });
+    const banner = document.getElementById('submitted-banner');
+    if (banner) banner.classList.remove('is-active');
+    FORM.classList.remove('is-locked');
+    document.body.classList.remove('is-locked');
+    const submitBtn = document.getElementById('btn-submit');
+    if (submitBtn) {
+      submitBtn.textContent = 'Save & Lock';
+      delete submitBtn.dataset.locked;
+    }
+    try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    EvidencePad.reset();   // v0.50: a finished observation clears its Evidence Pad too
+    // v0.24: school just got cleared by the reset loop above; let Subject
+    // reflect that (back to disabled "Select School first" state).
+    if (typeof refreshSubjectOptions === 'function') refreshSubjectOptions();
+    applyMandatoryDefaults();
+    if (typeof syncRubricChips === 'function') syncRubricChips();
+    updateSubmitState();
+  }
+
+  // v0.25: re-apply defaults for mandatory pill-groups after any reset.
+  // otp-v0.1: the OTP form has no defaulted group; the visual sync stays.
+  function applyMandatoryDefaults() {
+    if (typeof syncSingleSelectVisuals === 'function') syncSingleSelectVisuals();
+  }
+
+  async function submitForm() {
+    const btn = document.getElementById('btn-submit');
+    if (!btn || btn.disabled) return;
+
+    if (!confirm('Save and lock this Progress in Lessons OTP form? Cannot be edited after.')) return;
+
+    const prevText = btn.textContent;
+
+    // v0.55: BACKSTOP — any pad handwriting not yet in its text field is
+    // extracted and applied now, BEFORE the payload is built (downstream AI /
+    // reports read the fields; a locked form must never hold unextracted ink).
+    // Usually instant (background extraction pre-caches); capped at 20s and a
+    // total failure still submits — the pad images upload regardless.
+    if (EvidencePad.hasContent()) {
+      btn.disabled = true;
+      btn.textContent = 'Reading pad…';
+      await EvidencePad.applyPendingToForm(20000);
+    }
+
+    // Build payload — preserves every input value, including blank radios as "".
+    // otp-v0.1: only NAMED controls go in, so Tom Select's internal control
+    // inputs (which the library stamps an id on) can never leak into the
+    // contract payload.
+    const data = { form: 'otp' };
+    FORM.querySelectorAll('input[name], textarea[name], select[name]').forEach(el => {
+      if (el.type === 'radio') {
+        if (el.checked) data[el.name] = el.value;
+        else if (!(el.name in data)) data[el.name] = '';
+      } else {
+        const key = el.name || el.id;
+        if (key) data[key] = el.value;
+      }
+    });
+    // v0.34: teacher / inspector / subject Tom Selects have opaque indices as
+    // values. Translate back to display TEXT so the Sheet stores the actual
+    // teacher / inspector / subject name (and the email reads cleanly).
+    translateOpaqueTomSelectsToText(data);
+    data.otp_ref = 'SP1';
+    data.otp_aspect = 'Facilitating better than expected progress';
+
+    btn.disabled = true;
+    btn.textContent = 'Saving…';
+
+    // v0.50: Evidence Pad — flatten + upload the pad (if any) to the private
+    // bucket, then stamp its id on the record. Never throws, never blocks:
+    // a failed upload still submits, with the id marking that a pad existed.
+    data.evidence_pad_id = await EvidencePad.commitForSubmit();
+
+    try {
+      const resp = await fetch(WEB_APP_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(data),
+        redirect: 'follow'
+      });
+      const result = await resp.json();
+      if (!result.success) throw new Error(result.error || 'Submit failed');
+
+      try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+      lockForm(result.id, new Date().toISOString(), 'submit');
+      showToast('Submitted · Record ID ' + result.id + ' · resetting…', 'success');
+      // Auto-reset for back-to-back observations (v0.17).
+      setTimeout(softResetForm, 3000);
+    } catch (err) {
+      btn.disabled = false;
+      btn.textContent = prevText;
+      showToast('Submit failed: ' + (err.message || err), 'error');
+    }
+  }
+
+  document.getElementById('btn-submit').addEventListener('click', submitForm);
+
+  // === Closed-record viewer ============================================
+  // v0.45: resilient record fetch, mirroring loadDropdownOptions. The old single
+  // fetch (no timeout, no retry) surfaced "Could not load record" whenever a cold
+  // Apps Script runtime or a resumed-tab stall made the first request hang or
+  // hiccup. Now each attempt is capped at 9s via AbortController (NOT
+  // AbortSignal.timeout, iOS 16+ only) and transient failures retry silently
+  // behind the loading toast. A parsed JSON answer is definitive: success:false
+  // (genuine bad id/token) is shown once and not retried.
+  async function fetchRecordOnce(url) {
+    const controller = new AbortController();
+    const timer = setTimeout(function () { controller.abort(); }, 9000);
+    try {
+      const resp = await fetch(url, { redirect: 'follow', signal: controller.signal });
+      return await resp.json();
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  async function loadClosedRecord(id, token) {
+    showToast(id ? 'Loading record ' + id + '…' : 'Loading record…');
+    // otp-v0.1: the token is the lookup key (hard rule 10). The legacy
+    // ?id=&token= shape is still accepted and forwarded unchanged.
+    const url = WEB_APP_URL + '?' +
+                (id ? 'id=' + encodeURIComponent(id) + '&' : '') +
+                (token ? 'token=' + encodeURIComponent(token) + '&' : '') +
+                'form=otp';
+    let result = null;
+    for (var attempt = 1; attempt <= 6; attempt++) {
+      try { result = await fetchRecordOnce(url); break; }          // definitive JSON → stop
+      catch (e) {                                                   // stall/timeout/parse → retry quietly
+        if (attempt >= 6) break;
+        await new Promise(function (r) { setTimeout(r, 800); });
+      }
+    }
+    try {
+      if (!result) { showToast('Still loading record… please check your connection', 'error'); return; }
+      if (!result.success) throw new Error(result.error || 'Record not found');
+
+      const rec = result.data;
+      Object.entries(rec).forEach(([key, value]) => {
+        if (value === null || value === undefined || value === '') return;
+
+        // Apps Script sheets sometimes return dates as ISO strings — normalise for <input type=date>
+        const toDateInput = (v) => {
+          const d = new Date(v);
+          if (isNaN(d)) return String(v);
+          return d.toISOString().split('T')[0];
+        };
+
+        const radios = FORM.querySelectorAll('input[type="radio"][name="' + CSS.escape(key) + '"]');
+        if (radios.length) {
+          radios.forEach(r => { r.checked = (r.value === String(value)); });
+          return;
+        }
+
+        // Sheet stores `observation_date`, form field is named `date`.
+        const candidates = [key];
+        if (key === 'observation_date') candidates.push('date');
+
+        for (const cand of candidates) {
+          const el = FORM.querySelector('[name="' + CSS.escape(cand) + '"]') || document.getElementById(cand);
+          if (el) {
+            if (el.type === 'date') {
+              el.value = toDateInput(value);
+            } else if (el.tagName === 'SELECT' && ['teacher', 'inspector', 'subject'].includes(cand)) {
+              // v0.34: opaque-keyed Tom Selects. The Sheet stores the display
+              // text (e.g. "Alisja De Bruyn"); the option value is "t0".
+              // Stash text in dataset.pendingValue so populateTomSelect picks
+              // it up if options are still in flight, AND try a direct text →
+              // value lookup in case options have already landed.
+              el.dataset.pendingValue = String(value);
+              const ts = tomSelects[cand];
+              if (ts) {
+                const match = Object.values(ts.options).find(o => o.text === String(value));
+                if (match) ts.setValue(match.value, true);
+              }
+            } else {
+              el.value = value;
+            }
+            // Selects need a change event to refresh the button-trigger display (v0.15).
+            if (el.tagName === 'SELECT') el.dispatchEvent(new Event('change', { bubbles: true }));
+            break;
+          }
+        }
+      });
+
+      syncSingleSelectVisuals();
+      syncRubricChips();          // otp-v0.1: re-press the SP1 chips from sp1_*
+      // v0.24: Subject is school-filtered. Refresh its options based on the
+      // now-set school value BEFORE pushing other Tom Select values, so the
+      // saved Subject can be re-selected from the correct filtered list.
+      refreshSubjectOptions();
+      // Push restored values into every other Tom Select instance. Teacher /
+      // inspector / subject are opaque-keyed (v0.34) and were already restored
+      // by the text-match path above, so they're skipped here.
+      Object.entries(tomSelects).forEach(([name, ts]) => {
+        if (['teacher', 'inspector', 'subject'].includes(name)) return;
+        const sel = document.getElementById(name);
+        if (ts && sel && sel.value) ts.setValue(sel.value, true);
+      });
+      lockForm(rec.record_id, rec.submitted_at, 'closed');
+      initPadAttachments(result.pad_files, token);   // v0.53: pad pages, if any
+      showToast('Record loaded · ' + (rec.teacher || rec.record_id), 'success');
+    } catch (err) {
+      showToast('Could not load record: ' + (err.message || err), 'error');
+    }
+  }
+
+  /* v0.53: Evidence-Pad pages on a locked record.
+     The record fetch returns pad_files (the pad's JPEG names, listed server-side
+     with the service key). Each name is slug-prefixed with its form field
+     ("observer-comments-2.jpg" → observer_comments), so a paperclip pill appears next to
+     the matching section title; tapping it opens a lightbox whose images are
+     fetched one by one via ?action=pad_image — token-gated exactly like the
+     record text itself. Legacy v0.50 pads (page-NN.jpg, no field prefix) attach
+     to Observer Comments as the catch-all. */
+  const PAD_SLUG_TARGETS = {
+    'observer-comments':  'observer_comments',
+    'other-observations': 'other_observations',
+    'next-step-1':        'next_step_1',
+    'next-step-2':        'next_step_2',
+    'next-step-3':        'next_step_3'
+  };
+  const PAD_VIEW_LABELS = {
+    observer_comments:  'Observer Comments',
+    other_observations: 'Other Observations',
+    next_step_1:        'Next Steps / Support 1',
+    next_step_2:        'Next Steps / Support 2',
+    next_step_3:        'Next Steps / Support 3'
+  };
+  const padViewCache = new Map();          // file name → data URI
+  let padViewToken = '';
+  let padViewFiles = {};                   // target → [names]
+  let padViewSeq = 0;                      // invalidates stale async loads
+  let padViewScrollY = 0;                  // v0.56: page scroll spot to restore on close
+
+  function initPadAttachments(files, token) {
+    if (!files || !files.length || !token) return;
+    padViewToken = token;
+    padViewFiles = {};
+    files.forEach(function(n) {
+      const name = String(n || '');
+      if (!/^[a-z0-9-]+\.jpg$/.test(name)) return;
+      const base = name.replace(/\.jpg$/, '').replace(/-\d+$/, '');
+      const target = PAD_SLUG_TARGETS[base] || (base === 'page' ? 'observer_comments' : '');
+      if (!target) return;
+      (padViewFiles[target] = padViewFiles[target] || []).push(name);
+    });
+    Object.keys(padViewFiles).forEach(function(target) {
+      const btn = document.querySelector('.pad-attach[data-pad-target="' + target + '"]');
+      if (btn) btn.hidden = false;
+    });
+  }
+
+  async function openPadView(target) {
+    const files = padViewFiles[target] || [];
+    if (!files.length) return;
+    const seq = ++padViewSeq;
+    const scroll = document.getElementById('pad-view-scroll');
+    document.getElementById('pad-view-title').innerHTML =
+      'Evidence <em>Pad</em> · ' + (PAD_VIEW_LABELS[target] || 'Pages');
+    scroll.innerHTML = '<div class="pad-view-loading">Loading the pad pages…</div>';
+    // v0.56/v0.57: same swap as openPad — park the keyboard, save the spot,
+    // then take the page out of the layout so nothing can scroll behind.
+    await blurAndSettle();
+    padViewScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+    document.getElementById('pad-view').classList.add('open');
+    if (!DIAG.has('noswap')) {                         // v0.58 A/B, same as the pad
+      document.body.classList.add('pad-open');
+      window.scrollTo(0, 0);
+    }
+    try {
+      const uris = await Promise.all(files.map(fetchPadImage));
+      if (seq !== padViewSeq) return;                    // superseded / closed
+      scroll.innerHTML = '';
+      uris.forEach(function(uri) {
+        const img = document.createElement('img');
+        img.src = uri;
+        img.alt = 'Evidence pad page';
+        scroll.appendChild(img);
+      });
+    } catch (e) {
+      if (seq !== padViewSeq) return;
+      closePadView();
+      showToast('Could not load the pad pages — check the connection and try again.', 'error');
+    }
+  }
+
+  async function fetchPadImage(name) {
+    if (padViewCache.has(name)) return padViewCache.get(name);
+    const url = WEB_APP_URL + '?action=pad_image&token=' + encodeURIComponent(padViewToken) +
+                '&name=' + encodeURIComponent(name);
+    const attempt = async () => {
+      const ctrl = new AbortController();
+      const timer = setTimeout(function() { ctrl.abort(); }, 20000);
+      try {
+        const resp = await fetch(url, { redirect: 'follow', signal: ctrl.signal });
+        const out = await resp.json();
+        if (!out.success || !out.data) throw new Error(out.error || 'no image');
+        return 'data:' + (out.mime || 'image/jpeg') + ';base64,' + out.data;
+      } finally { clearTimeout(timer); }
+    };
+    let uri;
+    try { uri = await attempt(); }
+    catch (e) { uri = await attempt(); }               // one silent retry
+    padViewCache.set(name, uri);
+    return uri;
+  }
+
+  function closePadView() {
+    padViewSeq++;
+    if (!DIAG.has('noswap')) {
+      document.body.classList.remove('pad-open');  // v0.57: page back in layout FIRST
+      window.scrollTo(0, padViewScrollY);          // v0.56: restore BEFORE the lightbox hides
+    }
+    document.getElementById('pad-view').classList.remove('open');
+    document.getElementById('pad-view-scroll').innerHTML = '';
+  }
+
+  document.querySelectorAll('.pad-attach').forEach(function(b) {
+    b.addEventListener('click', function() { openPadView(b.dataset.padTarget); });
+  });
+  document.getElementById('pad-view-close').addEventListener('click', closePadView);
+  document.getElementById('pad-view-close-bottom').addEventListener('click', closePadView);  // v0.58
+  containScroll(document.getElementById('pad-view'));        // v0.54: no scroll-through
+
+  // On load: if URL has ?token=... (or the legacy ?id=...&token=...), fetch and
+  // render in read-only mode.
+  // Token is required by the backend for any record view (v0.29 secure-by-link).
+  // v0.42: encrypt.sh bakes window.R3_VIEWER=true into the ungated teacher
+  // viewer (otp-record.html). That build only ever shows a record link's locked
+  // view; with no token the frosted overlay stays up as a calm landing card and
+  // nothing loads (no blank form, no dropdown options, no error UI).
+  if (window.R3_VIEWER) document.body.classList.add('is-viewer');
+  const VIEWER_LANDING = !!window.R3_VIEWER &&
+    !new URLSearchParams(window.location.search).get('id') &&
+    !new URLSearchParams(window.location.search).get('token');
+  (function checkClosedRecord() {
+    if (VIEWER_LANDING) {
+      const card = document.querySelector('#form-loading .form-loading-card');
+      if (card) card.innerHTML = '<div class="form-loading-label">Please open your personal record link to view an observation record.</div>';
+      return;
+    }
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+    const token = params.get('token');
+    if (id || token) loadClosedRecord(id, token);
+  })();
+
+
+  /* === OTP form additions ========================================== */
+
+  /* === SP1 rubric chips (otp-v0.1) =================================
+     The rubric is INLINED verbatim from Assets/OTP/rubric-sp1.json — no
+     runtime fetch, so it renders behind the StatiCrypt gate and offline.
+     Every paragraph is a tappable chip: tap selects, tap again deselects,
+     any number of chips across any columns. Selection is mirrored into the
+     hidden sp1_<level> inputs (1-based paragraph numbers, comma separated)
+     plus a readable sp1_selected_text, and each write dispatches the same
+     bubbling change event the debounced autosave already listens for, so a
+     selection restores with the draft and from a loaded record. */
+  const SP1 = {
+    "reference": "SP1",
+    "reference_title": "Student Progress",
+    "aspect": "Facilitating better than expected progress",
+    "levels": [
+      {
+        "key": "beginner",
+        "label": "Beginner",
+        "paragraphs": [
+          "Challenge provided to students is appropriate (not excessively difficult or excessively easy) for students to successfully engage in new learning.",
+          "One or more groups of students are not differentiated for and therefore make no progress. The teacher is unresponsive to the needs of their students.",
+          "Student work observed does not provide evidence that is useful to determine progress over time."
+        ]
+      },
+      {
+        "key": "emerging",
+        "label": "Emerging",
+        "paragraphs": [
+          "Starting points may be established but response to these is variable with the data having no visible effect on the lesson structure, pace or progress.",
+          "One or more groups of students, (SEN, AMA etc), is ineffectively differentiated for and makes less progress than most students in the class.",
+          "A balance of pace is sought but doesn't effectively contribute to maintaining an effective pace of learning.",
+          "Collaboration and student student dialogue are a planned feature of the lesson but a lack of structure and/or poor timing reduces the effectiveness of the strategy.",
+          "Observations of student work do not provide enough evidence to confirm level of progress over time."
+        ]
+      },
+      {
+        "key": "good",
+        "label": "Good",
+        "paragraphs": [
+          "The teacher establishes clear starting points that lead to an explicit planned response.",
+          "Differentiated activities are provided to accommodate all groups of learners including any students with significant needs (SEN/AMA).",
+          "Lesson pace is well managed with planned strategies to support appropriate pace implemented.",
+          "Students are given structured opportunities to work together and do so with teacher guidance and support. Tasks provided allows some students to access better than expected progress, (closed ended, low challenge, low cognitive load etc).",
+          "The teacher engages deliberately with groups to provide intervention and acceleration where appropriate.",
+          "Observations of students' work shows progress in line with curriculum expectations."
+        ]
+      },
+      {
+        "key": "great",
+        "label": "Great",
+        "paragraphs": [
+          "The teacher establishes clear starting points for students and adapts to their immediate needs, (grouping, support etc).",
+          "They provide and maintain challenge and pace for most groups of students, to ensure progress is not limited by learning that is too easy or too hard, with varied success. In-lesson, unplanned interventions occur, and are mostly effective.",
+          "Students are provided with well structured opportunities to collaborate and engage in dialogue and these are mostly effective in terms of timing and/or implementation. This allows more students to access better than expected progress.",
+          "Students can show and/or discuss their attainment and effectively share their new learning.",
+          "The teacher engages deliberately with groups to provide intervention and acceleration where appropriate.",
+          "Observations of students' work demonstrates a history of BtE progress over time from their individual starting point."
+        ]
+      },
+      {
+        "key": "outstanding",
+        "label": "Outstanding",
+        "paragraphs": [
+          "The Teacher establishes clear starting points and responds to these to determine the best learning pathway for students, (more/less support, differentiated tasks, skipping unrequired learning etc).",
+          "They provide and maintain challenge for all groups of students to ensure progress is not limited by learning that is too easy or too hard. Lesson pace is effectively maintained to provide a sense of urgency and enthusiasm for new learning. The teacher is aware and responsive to the pace of learning for all groups of students.",
+          "The teacher engages deliberately with groups to provide highly effective intervention and acceleration where appropriate.",
+          "Most students participate successfully in tasks that promote effective collaboration and student student communication that provides them with opportunities to go beyond the limits of the activity and/or teacher expectations.",
+          "Students can accurately articulate and/or demonstrate the progress they have made in class in relation to their individual starting point for the lesson.",
+          "Observations of students' work supports a history of BtE progress over time and in lessons from their individual starting points."
+        ]
+      }
+    ]
+  };
+
+  function rubHidden(key) { return document.getElementById('sp1_' + key); }
+
+  function readRubSelection() {
+    const sel = {};
+    SP1.levels.forEach(l => {
+      const el = rubHidden(l.key);
+      const raw = el ? String(el.value || '') : '';
+      sel[l.key] = raw.split(',')
+        .map(n => parseInt(n, 10))
+        .filter(n => n >= 1 && n <= l.paragraphs.length);
+    });
+    return sel;
+  }
+
+  function writeRubSelection(sel) {
+    const parts = [];
+    SP1.levels.forEach(l => {
+      const nums = (sel[l.key] || []).slice().sort((a, b) => a - b);
+      const el = rubHidden(l.key);
+      if (el) el.value = nums.join(',');
+      nums.forEach(n => parts.push(l.label + ' ' + n + ': ' + l.paragraphs[n - 1]));
+    });
+    const txt = document.getElementById('sp1_selected_text');
+    if (txt) txt.value = parts.join(' | ');
+    SP1.levels.forEach(l => {
+      const el = rubHidden(l.key);
+      if (el) el.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+    if (txt) txt.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  function syncRubricChips() {
+    const sel = readRubSelection();
+    document.querySelectorAll('.rub-chip').forEach(chip => {
+      const on = (sel[chip.dataset.level] || []).indexOf(parseInt(chip.dataset.n, 10)) > -1;
+      chip.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+  }
+
+  function buildRubricTable() {
+    const head = document.getElementById('rubric-head');
+    const row = document.getElementById('rubric-row');
+    if (!head || !row) return;
+    const th0 = document.createElement('th');
+    th0.textContent = 'Aspect of Practice';
+    head.appendChild(th0);
+    const td0 = document.createElement('td');
+    td0.className = 'rub-aspect';
+    td0.textContent = SP1.aspect;
+    row.appendChild(td0);
+    SP1.levels.forEach(l => {
+      const th = document.createElement('th');
+      th.textContent = l.label;
+      head.appendChild(th);
+      const td = document.createElement('td');
+      const box = document.createElement('div');
+      box.className = 'rub-cell';
+      l.paragraphs.forEach((p, i) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'rub-chip';
+        b.dataset.level = l.key;
+        b.dataset.n = String(i + 1);
+        b.setAttribute('aria-pressed', 'false');
+        b.textContent = p;
+        box.appendChild(b);
+      });
+      td.appendChild(box);
+      row.appendChild(td);
+    });
+    row.addEventListener('click', e => {
+      const chip = e.target.closest('.rub-chip');
+      if (!chip || !row.contains(chip)) return;
+      if (FORM.classList.contains('is-locked')) return;
+      const sel = readRubSelection();
+      const key = chip.dataset.level;
+      const n = parseInt(chip.dataset.n, 10);
+      const arr = sel[key] || (sel[key] = []);
+      const at = arr.indexOf(n);
+      if (at > -1) arr.splice(at, 1); else arr.push(n);
+      writeRubSelection(sel);
+      syncRubricChips();
+    });
+  }
+
+  // Single-select toggle for pill groups (Curriculum, School).
+  // Click a button to select; click it again to deselect (unless data-mandatory="1"
+  // on the group, in which case the user can only switch between options and can't
+  // end up with nothing picked). Hidden input mirrors value.
+  function setupSingleSelectGroups() {
+    document.querySelectorAll('.pill-group, .rate-row').forEach(group => {
+      const name = group.dataset.name;
+      const mandatory = group.dataset.mandatory === '1';
+      const hidden = document.querySelector('input[type="hidden"][name="' + name + '"]');
+      group.addEventListener('click', e => {
+        const btn = e.target.closest('.pill, .rate');
+        if (!btn || !group.contains(btn)) return;
+        if (FORM.classList.contains('is-locked')) return;
+        const wasSelected = btn.classList.contains('is-selected');
+        // For mandatory groups, tapping the already-selected pill is a no-op.
+        if (wasSelected && mandatory) return;
+        group.querySelectorAll('.pill, .rate').forEach(b => b.classList.remove('is-selected'));
+        if (!wasSelected) {
+          btn.classList.add('is-selected');
+          if (hidden) hidden.value = btn.dataset.value;
+        } else if (hidden) {
+          hidden.value = '';
+        }
+        if (hidden) hidden.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+    });
+  }
+
+  // After a saved draft is restored or a closed record is loaded, the hidden
+  // inputs carry the chosen value but the visual buttons need to be re-highlighted.
+  function syncSingleSelectVisuals() {
+    document.querySelectorAll('.pill-group, .rate-row').forEach(group => {
+      const name = group.dataset.name;
+      const hidden = document.querySelector('input[type="hidden"][name="' + name + '"]');
+      if (!hidden) return;
+      const value = String(hidden.value || '');
+      group.querySelectorAll('.pill, .rate').forEach(b => {
+        b.classList.toggle('is-selected', value !== '' && b.dataset.value === value);
+      });
+    });
+  }
+
+  // ===========================================
+  // Searchable dropdowns via Tom Select · v0.19
+  // ===========================================
+  // Tom Select handles every iPad-Safari touch quirk we spent v0.14-v0.18
+  // fighting: tap-vs-scroll distinction, blur timing, picker open delay,
+  // free-text leaking into the Sheet, scroll discoverability. The library
+  // is vendored locally in lib/ so the form works on any network.
+  const HTML_ESCAPE = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const tomSelects = {};
+
+  function initTomSelects() {
+    if (typeof TomSelect !== 'function') {
+      showToast('Tom Select did not load · dropdowns will not work', 'error');
+      return;
+    }
+    const baseOpts = {
+      create: false,             // strict: only list values
+      maxItems: 1,
+      maxOptions: 1000,          // v0.20: render whole list (default 50 hid late-alphabet teachers)
+      allowEmptyOption: false,
+      hideSelected: false,
+      closeAfterSelect: true,
+      plugins: ['clear_button'], // v0.20: built-in × button to clear selection
+      sortField: { field: 'text', direction: 'asc' },
+      dropdownParent: 'body',    // v0.22: render dropdown attached to <body> so it can't be clipped by .info-grid { overflow: hidden }
+      // Tell Tom Select to dispatch native change events so updateSubmitState fires.
+      onChange: () => updateSubmitState(),
+    };
+    tomSelects.teacher = new TomSelect('#teacher', Object.assign({}, baseOpts, {
+      placeholder: LOADING_PLACEHOLDERS.teacher,  // shown until options load
+      searchField: ['text', 'value'], // search by name and email
+    }));
+    tomSelects.inspector = new TomSelect('#inspector', Object.assign({}, baseOpts, {
+      placeholder: LOADING_PLACEHOLDERS.inspector,
+    }));
+    tomSelects.subject = new TomSelect('#subject', Object.assign({}, baseOpts, {
+      placeholder: LOADING_PLACEHOLDERS.subject,
+    }));
+    // Disable until loadDropdownOptions finishes (greys out the controls).
+    setSearchableLoadingState(true);
+
+  }
+
+  function readRestoredFromLocalStorage(name) {
+    // loadForm runs before Tom Select inits; without matching options the
+    // underlying <select> drops the restored value. So we read it back from
+    // localStorage when populating options and re-apply via setValue().
+    // v0.45: in any record view (CLOSED_RECORD_VIEW) the localStorage draft must
+    // NEVER feed a Tom Select, or a stale draft (e.g. a half-filled form) bleeds
+    // its teacher/inspector over the record being viewed. The record's own value
+    // arrives via dataset.pendingValue instead (set by loadClosedRecord).
+    if (CLOSED_RECORD_VIEW) return '';
+    try {
+      const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      return data[name] || '';
+    } catch (e) { return ''; }
+  }
+
+  function populateTomSelect(name, items) {
+    const ts = tomSelects[name];
+    if (!ts) return;
+    // v0.34: opaque-keyed Tom Selects (teacher / inspector / subject) store
+    // an index like "t0" as the value, never user-data, to avoid iOS WebKit
+    // CSS-selector bugs in Tom Select internals. Pending state is therefore
+    // resolved by display TEXT (which the underlying Sheet and localStorage
+    // hold), not by raw value.
+    // v0.45: prefer dataset.pendingValue (the record's teacher/inspector text,
+    // set by loadClosedRecord) over the draft, mirroring refreshSubjectOptions.
+    // This is what makes Teacher/Inspector resolve when the staff options land
+    // AFTER the record fetch (the race that left them blank, or showed a draft).
+    const curVal = ts.getValue();
+    const curText = curVal && ts.options[curVal] ? ts.options[curVal].text : '';
+    const selEl = document.getElementById(name);
+    const recordPending = selEl ? (selEl.dataset.pendingValue || '') : '';
+    const pendingText = curText || recordPending || readRestoredFromLocalStorage(name);
+    ts.clearOptions();
+    ts.addOptions(items);
+    ts.refreshOptions(false);
+    if (pendingText) {
+      const match = Object.values(ts.options).find(o => o.text === pendingText);
+      if (match) ts.setValue(match.value, true);
+    }
+  }
+
+  // Helper to render a pill-group from a dynamic value list (Curriculum + School).
+  function renderPillGroup(elementId, values) {
+    const group = document.getElementById(elementId);
+    if (!group) return;
+    group.innerHTML = (values || []).map(v =>
+      '<button type="button" class="pill" data-value="' + HTML_ESCAPE(v) + '">' + HTML_ESCAPE(v) + '</button>'
+    ).join('');
+    syncSingleSelectVisuals();
+  }
+
+  // Placeholder text per searchable, used both at init and to restore after loading.
+  const PLACEHOLDERS = {
+    teacher: 'Tap to browse staff, or type to search…',
+    inspector: 'Tap to browse inspectors, or type to search…',
+    subject: 'Tap to browse subjects, or type to search…',
+  };
+  const LOADING_PLACEHOLDERS = {
+    teacher: 'Loading staff list…',
+    inspector: 'Loading inspectors…',
+    subject: 'Loading subjects…',
+  };
+
+  function setSearchableLoadingState(loading) {
+    ['teacher', 'inspector', 'subject'].forEach(name => {
+      const ts = tomSelects[name];
+      if (!ts) return;
+      const text = loading ? LOADING_PLACEHOLDERS[name] : PLACEHOLDERS[name];
+      if (loading) ts.disable(); else ts.enable();
+      ts.settings.placeholder = text;
+      // Tom Select keeps its placeholder on the internal <input>; refresh it
+      // directly so the text swap is visible right away.
+      if (ts.control_input) ts.control_input.setAttribute('placeholder', text);
+      if (typeof ts.inputState === 'function') ts.inputState();
+    });
+  }
+
+  // v0.24: school-aware Subject. SUBJECTS_RAW holds the full {name, active,
+  // kindy, primary, secondary} list from the Sheet. refreshSubjectOptions
+  // filters that list by the currently-selected School and feeds the result
+  // into the Subject Tom Select, preserving the prior pick if it still
+  // qualifies (auto-clears otherwise).
+  let SUBJECTS_RAW = [];
+
+  function refreshSubjectOptions() {
+    const ts = tomSelects.subject;
+    if (!ts) return;
+    const schoolInput = document.querySelector('input[name="school"]');
+    const school = schoolInput ? String(schoolInput.value || '').trim() : '';
+
+    // v0.34: subject is opaque-keyed too. Prior selection is tracked by TEXT
+    // so a school-switch reflows options without losing the user's pick.
+    const curVal = ts.getValue();
+    const curText = curVal && ts.options[curVal] ? ts.options[curVal].text : '';
+    const subjectSelect = document.getElementById('subject');
+    const priorText = curText
+      || (subjectSelect ? (subjectSelect.dataset.pendingValue || '') : '')
+      || readRestoredFromLocalStorage('subject');
+
+    if (!school) {
+      ts.clearOptions();
+      ts.refreshOptions(false);
+      ts.disable();
+      ts.settings.placeholder = 'Select School first';
+      if (ts.control_input) ts.control_input.setAttribute('placeholder', 'Select School first');
+      ts.clear(true);
+      if (typeof ts.inputState === 'function') ts.inputState();
+      return;
+    }
+
+    const key = school.toLowerCase();   // 'kindy' | 'primary' | 'secondary'
+    const filtered = SUBJECTS_RAW.filter(s => s.active && s[key]);
+
+    ts.clearOptions();
+    ts.addOptions(filtered.map((s, i) => ({ value: 's' + i, text: s.name })));
+    ts.refreshOptions(false);
+    ts.enable();
+    ts.settings.placeholder = PLACEHOLDERS.subject;
+    if (ts.control_input) ts.control_input.setAttribute('placeholder', PLACEHOLDERS.subject);
+
+    if (priorText) {
+      const match = Object.values(ts.options).find(o => o.text === priorText);
+      if (match) ts.setValue(match.value, true);
+      else ts.clear(true);
+    }
+    if (typeof ts.inputState === 'function') ts.inputState();
+  }
+
+  // Load Inspectors / Curriculum / Subjects / Schools / Teachers from the backend.
+  //
+  // v0.37: resilient against the "stale iPad tab woke from suspension and the
+  // fetch hangs forever" failure. Each attempt is capped at 7s via
+  // AbortSignal.timeout; if it stalls or errors we silently retry behind the
+  // existing loading overlay (no error UI ever shown to the user). Attempts
+  // keep going with a short backoff so a cold Apps Script runtime or a
+  // resumed-tab stall recovers on its own.
+  const OPTIONS_FETCH_TIMEOUT_MS = 7000;
+  const OPTIONS_RETRY_DELAY_MS = 600;
+
+  async function fetchOptionsOnce() {
+    // AbortController + setTimeout aborts the fetch if it stalls past the cap,
+    // turning a silent hang into a catchable rejection. Using AbortController
+    // (iOS 12.2+) rather than AbortSignal.timeout (iOS 16+ only) so older
+    // school iPads are covered too.
+    const controller = new AbortController();
+    const timer = setTimeout(function () { controller.abort(); }, OPTIONS_FETCH_TIMEOUT_MS);
+    try {
+      const resp = await fetch(WEB_APP_URL + '?action=options&form=otp', {
+        redirect: 'follow',
+        signal: controller.signal
+      });
+      const result = await resp.json();
+      if (!result.success) throw new Error(result.error || 'Could not load options');
+      return result.options || {};
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  function applyDropdownOptions(opts) {
+    // v0.34: opaque indices as Tom Select VALUE — never put user-data
+    // strings into option values, because Tom Select internally builds CSS
+    // selectors from them and iOS WebKit throws a SyntaxError on unescaped
+    // chars (NBSP, ZWSP, U+2028/9, control chars) that addSlashes misses.
+    populateTomSelect('teacher',   (opts.teachers   || []).map((t, i) => ({ value: 't' + i, text: t.name })));
+    populateTomSelect('inspector', (opts.inspectors || []).map((s, i) => ({ value: 'i' + i, text: s })));
+    renderPillGroup('curriculum-pills', opts.curricula || []);
+    renderPillGroup('school-pills', opts.schools || ['Kindy', 'Primary', 'Secondary']);
+
+    // Subject is school-filtered; store raw + run filter for currently-set school.
+    SUBJECTS_RAW = opts.subjects || [];
+    refreshSubjectOptions();
+  }
+
+  async function loadDropdownOptions() {
+    setSearchableLoadingState(true);
+    // Keep retrying behind the overlay. No visible error: the user only ever
+    // sees the loading state, then the populated form.
+    for (var attempt = 1; ; attempt++) {
+      try {
+        const opts = await fetchOptionsOnce();
+        applyDropdownOptions(opts);
+        setSearchableLoadingState(false);
+        hideLoadingOverlay();
+        return;
+      } catch (err) {
+        // Stall, timeout, or error: pause briefly, then try again. Cap the
+        // run at a sane number of attempts so we don't spin the CPU forever
+        // if the backend is genuinely down; the overlay stays up meanwhile.
+        if (attempt >= 8) {
+          // Last resort for a wedged/suspended tab: reload once to get a clean
+          // execution context. The ?_r guard stops an infinite reload loop.
+          if (location.search.indexOf('_r=') === -1) {
+            const sep = location.search ? '&' : '?';
+            location.replace(location.href + sep + '_r=1');
+          }
+          return;
+        }
+        await new Promise(r => setTimeout(r, OPTIONS_RETRY_DELAY_MS));
+      }
+    }
+  }
+
+  function hideLoadingOverlay() {
+    const el = document.getElementById('form-loading');
+    if (el) el.classList.add('is-hidden');
+  }
+
+  // v0.37: when iOS restores this tab from a long suspension (back/forward
+  // cache), the page's JS context can be stale and a fresh fetch may hang.
+  // event.persisted === true means we were restored from bfcache, so reload
+  // to a clean context before the user notices anything.
+  window.addEventListener('pageshow', function (event) {
+    if (event.persisted) location.reload();
+  });
+
+  // Init the OTP-specific UI after the rest of the form's setup has run.
+  setupSingleSelectGroups();
+  buildRubricTable();
+  initTomSelects();              // wraps Teacher / Inspector / Subject
+  syncSingleSelectVisuals();
+  syncRubricChips();             // otp-v0.1: restore chips from a saved draft
+  // School-aware Subject: refresh Subject options whenever School value changes.
+  (function wireSchoolToSubject() {
+    const schoolInput = document.querySelector('input[name="school"]');
+    if (schoolInput) schoolInput.addEventListener('change', refreshSubjectOptions);
+  })();
+  applyMandatoryDefaults();
+  if (!VIEWER_LANDING) loadDropdownOptions();
+
+  // Keyboard convenience: Cmd/Ctrl + P → uses print path (browser default already does this, no override needed)
+</script>
+
+</body>
+</html>

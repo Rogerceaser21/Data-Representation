@@ -1,0 +1,12 @@
+{
+  "name": "data-representation-tests",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Test harness only. The site itself is static HTML; nothing here ships to GitHub Pages.",
+  "scripts": {
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.62.1"
+  }
+}
