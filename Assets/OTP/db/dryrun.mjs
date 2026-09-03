@@ -232,6 +232,13 @@ try {
       `select public.admin_set_setting('AvasIgor','admin_password_hash','nope') as r`))[0].r,
     bad_password_rejected: (await q(
       `select public.admin_set_setting('wrong-password','current_round_otp','nope') as r`))[0].r,
+    // migrate_06 keys (dashboard Settings panel) must survive the whitelist rewrite
+    snap_autoplay_allowed: (await q(
+      `select public.admin_set_setting('AvasIgor','snap_autoplay','on') as r`))[0].r,
+    stars_allowed: (await q(
+      `select public.admin_set_setting('AvasIgor','stars','off') as r`))[0].r,
+    star_cfg_allowed: (await q(
+      `select public.admin_set_setting('AvasIgor','star_cfg','{"count":56,"size":1,"shine":0.75}') as r`))[0].r,
   };
   const p = out.admin_set_setting_probe;
   check('admin_set_setting accepts current_round_otp', p.otp_key_allowed.success === true,
@@ -241,6 +248,9 @@ try {
   check('admin_set_setting rejects admin_password_hash',
         p.junk_key_rejected.success === false && p.junk_key_rejected.error === 'key not allowed',
         JSON.stringify(p.junk_key_rejected));
+  for (const k of ['snap_autoplay', 'stars', 'star_cfg'])
+    check('admin_set_setting still accepts the migrate_06 dashboard key ' + k, p[k + '_allowed'].success === true,
+          JSON.stringify(p[k + '_allowed']));
   check('admin_set_setting rejects a bad password',
         p.bad_password_rejected.success === false && p.bad_password_rejected.error === 'bad password',
         JSON.stringify(p.bad_password_rejected));

@@ -4,7 +4,7 @@
 --   * criteria row otp_sp1        the single SP1 rubric aspect, 1-5 scale (registered now, scored later)
 --   * app_config current_round_otp   the OTP wave stamped onto every new OTP record
 --   * get_current_round_otp()     anon read of the OTP round (not secret) for the form Settings panel
---   * admin_set_setting           REPLACED: whitelist widened to current_round + current_round_otp
+--   * admin_set_setting           REPLACED: whitelist = migrate_06's four keys + current_round_otp
 --   * ingest_otp(jsonb)           SECURITY DEFINER, service_role only. Clone of ingest_r3:
 --                                 upserts one assessment (idempotent on record_token). NO scores in
 --                                 v0.1 (the rubric selections live in content as sp1_*).
@@ -50,7 +50,11 @@ revoke all on function public.get_current_round_otp() from public;
 grant execute on function public.get_current_round_otp() to anon, authenticated;
 
 -- ---------- admin_set_setting: same function, whitelist widened to the OTP round ----------
--- Byte-identical to migrate_04 except the p_key whitelist.
+-- Byte-identical to migrate_06 (the LAST live definition; migrate_06 added the dashboard
+-- keys snap_autoplay / stars / star_cfg on 2026-06-23) except the p_key whitelist, which
+-- keeps all four of those keys and adds current_round_otp. Dropping them broke the
+-- dashboard Settings panel in a rolled-back skeptic run on 2026-09-03; never rebase
+-- this function on migrate_04.
 create or replace function public.admin_set_setting(p_password text, p_key text, p_value text)
 returns jsonb
 language plpgsql
@@ -62,7 +66,7 @@ begin
     return jsonb_build_object('success', false, 'error', 'bad password');
   end if;
   -- whitelist: never let this path overwrite admin_password_hash
-  if p_key not in ('current_round', 'current_round_otp') then
+  if p_key not in ('current_round', 'snap_autoplay', 'stars', 'star_cfg', 'current_round_otp') then
     return jsonb_build_object('success', false, 'error', 'key not allowed');
   end if;
   insert into app_config (key, value, updated_at) values (p_key, p_value, now())
