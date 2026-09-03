@@ -129,12 +129,15 @@ function getPadImageForToken(token, name) {
 
   const ss = SpreadsheetApp.openById(getSheetId());
   const sheet = ss.getSheetByName(SHEET_NAME_SUBMISSIONS);
-  if (!sheet || sheet.getLastRow() < 2) return miss;
+  // otp-v0.1: an absent or empty R3 tab must still let an OTP token through
+  // to the OTP tab below (the OTP form reuses this same ?action=pad_image
+  // shape and sends no form parameter). Same generic miss on failure.
+  if (!sheet || sheet.getLastRow() < 2) return padImageFromOtpTab(ss, givenToken, wantName);
   const values = sheet.getDataRange().getValues();
   const headers = values[0];
   const tokenCol = headers.indexOf('record_token');
   const padCol = headers.indexOf('evidence_pad_id');
-  if (tokenCol < 0 || padCol < 0) return miss;
+  if (tokenCol < 0 || padCol < 0) return padImageFromOtpTab(ss, givenToken, wantName);
 
   for (var r = 1; r < values.length; r++) {
     if (String(values[r][tokenCol] || '').trim() !== givenToken) continue;
@@ -144,8 +147,7 @@ function getPadImageForToken(token, name) {
     if (!blob) return miss;
     return { success: true, mime: 'image/jpeg', data: Utilities.base64Encode(blob.getBytes()) };
   }
-  // otp-v0.1: no R3 row owns this token, so try the OTP tab (the OTP form
-  // reuses this same ?action=pad_image shape). Same generic miss on failure.
+  // otp-v0.1: no R3 row owns this token, so try the OTP tab.
   return padImageFromOtpTab(ss, givenToken, wantName);
 }
 

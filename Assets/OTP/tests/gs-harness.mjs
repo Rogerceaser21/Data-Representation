@@ -529,6 +529,25 @@ section('(d) token lookup · form=otp vs no form');
   const bare = JSON.parse(env.ctx.doGet({ parameter: { token: SHARED_TOKEN } }).getContent());
   ok(bare.data.teacher === 'Existing R3 Teacher', 'the same token with NO form parameter still resolves via the R3 tab', 'got: ' + bare.data.teacher);
   ok(!('form' in bare), 'a no-form response is unchanged (no added field), matching baseline byte for byte');
+
+  // Skeptic-found defect (2026-09-03): the pad-image lookup used to return a
+  // miss before reaching the OTP tab whenever the R3 Submissions tab was
+  // absent or header-only. The OTP form sends no form parameter on
+  // ?action=pad_image, so an OTP pad must resolve in both of those states.
+  const padIdx = EXPECTED_OTP_COLUMNS.indexOf('evidence_pad_id');
+  const otpPadRow = otpRow(SHARED_TOKEN); otpPadRow[padIdx] = 'a1b2c3d4e5f60718293a4b5c6d7e8f90';
+  for (const [label, seed] of [
+    ['R3 Submissions tab ABSENT', { ...ROSTER_R3, 'OTP Submissions': [EXPECTED_OTP_COLUMNS, otpPadRow] }],
+    ['R3 Submissions tab header-only', { ...ROSTER_R3, Submissions: [R3_COLUMNS], 'OTP Submissions': [EXPECTED_OTP_COLUMNS, otpPadRow] }]
+  ]) {
+    const padEnv = buildEnv(SRC_NEW, JSON.parse(JSON.stringify(seed)));
+    padEnv.ctx.listPadFiles = () => ['page-1.jpg'];
+    padEnv.ctx.fetchPadImageBytes = () => ({ getBytes: () => [1, 2, 3] });
+    const img = JSON.parse(padEnv.ctx.doGet({ parameter: { action: 'pad_image', token: SHARED_TOKEN, name: 'page-1.jpg' } }).getContent());
+    ok(img.success === true && img.mime === 'image/jpeg', 'pad_image resolves an OTP pad with the ' + label + ' (no form param)', JSON.stringify(img).slice(0, 120));
+    const wrong = JSON.parse(padEnv.ctx.doGet({ parameter: { action: 'pad_image', token: 'deadbeef' + '0'.repeat(24), name: 'page-1.jpg' } }).getContent());
+    eqJson(wrong, { success: false, error: 'Record not found' }, 'pad_image wrong token still a generic miss with the ' + label);
+  }
 }
 
 section('');
