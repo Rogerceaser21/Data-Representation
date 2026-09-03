@@ -191,12 +191,13 @@ test('renders all 26 SP1 rubric chips verbatim, in order', async ({ page }) => {
   await expect(chips).toHaveCount(26);
   expect(await chips.allTextContents()).toEqual(expected);
 
-  // header row + aspect cell mirror the source doc
-  expect(await page.locator('#rubric-head th').allTextContents()).toEqual([
-    'Aspect of Practice',
-    ...RUBRIC.levels.map((l) => l.label),
-  ]);
-  await expect(page.locator('.rub-aspect')).toHaveText(RUBRIC.aspect);
+  // layout v2 (approved mock 2026-09-03): the level header carries only the five
+  // levels; the aspect sits in a full-width caption row above it.
+  expect(await page.locator('#rubric-head th').allTextContents()).toEqual(
+    RUBRIC.levels.map((l) => l.label),
+  );
+  await expect(page.locator('tr.rub-caption .rub-cap-k')).toHaveText('Aspect of Practice');
+  await expect(page.locator('tr.rub-caption .rub-cap-v')).toHaveText(RUBRIC.aspect);
 
   expect(h.errors).toEqual([]);
 });
