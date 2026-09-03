@@ -50,3 +50,41 @@ function pushToSupabase(columns, data, recordId, recordToken, submittedAt) {
   }
   Logger.log('Supabase ingest_r3 ok for ' + recordId + ': ' + resp.getContentText());
 }
+
+/**
+ * otp-v0.1 · the same bridge for a Progress in Lessons OTP submission, into the
+ * ingest_otp RPC. Called by handleOtpPost AFTER the Sheet append, inside its own
+ * try/catch: the Sheet stays the source of truth, a failure is logged and
+ * swallowed, and the RPC is idempotent server-side on record_token so a retry
+ * can never duplicate (hard rule 14).
+ *
+ * The payload is built by buildOtpRecord, the SAME mapping that produced the
+ * Sheet row, so the mirror is a field-for-field copy.
+ */
+function pushOtpToSupabase(columns, data, recordId, recordToken, submittedAt) {
+  const secret = getSupabaseSecret();
+  if (!secret) {
+    Logger.log('Supabase OTP dual-write skipped: SUPABASE_SECRET_KEY not set in Script Properties');
+    return;
+  }
+
+  const record = buildOtpRecord(columns, data, recordId, recordToken, submittedAt);
+
+  const resp = UrlFetchApp.fetch(SUPABASE_URL + INGEST_RPC_PATH_OTP, {
+    method: 'post',
+    contentType: 'application/json',
+    headers: {
+      'apikey': secret,
+      'Authorization': 'Bearer ' + secret
+    },
+    payload: JSON.stringify({ payload: record }),
+    muteHttpExceptions: true
+  });
+
+  const code = resp.getResponseCode();
+  if (code < 200 || code >= 300) {
+    Logger.log('Supabase ingest_otp HTTP ' + code + ' for ' + recordId + ': ' + resp.getContentText());
+    return;
+  }
+  Logger.log('Supabase ingest_otp ok for ' + recordId + ': ' + resp.getContentText());
+}

@@ -106,6 +106,37 @@ After the first deploy with the `script.send_mail` scope, open the script in the
 | v0.48 | Admin Settings cog moved from bottom-right to the bottom-LEFT corner; the theme (sun/moon) toggle shifts right to sit beside it, so the two circular controls read as a matched pair. CSS-only (`.cog-btn` + `.theme-toggle` position); verified in a headless-Chrome screenshot. |
 | v0.47 | **Supabase dual-write + admin Settings cog.** Every submission now mirrors into the dashboard's Supabase (assessments + scores) as well as the Sheet. `01_doPost.gs` appends the Sheet row first, then `05_Supabase.gs pushToSupabase()` POSTs the full row to the `ingest_r3` RPC (idempotent on `record_token`; service_role key from Script Properties; failure logged + swallowed, never surfaced). A discreet gear (bottom-right, hidden in the viewer) opens a password-gated panel (password `AvasIgor`, bcrypt-hashed in Supabase `app_config`, checked by `verify_admin_password`) to set the current inspection Round, which `ingest_r3` stamps on new records. The form's publishable key ships inside the encrypted form; `encrypt.sh` blanks `SB_KEY`/`SB_URL` in the ungated `r3-record.html`. SQL: `~/AIS-Data-Dashboard/db/migrate_04_r3_ingest_and_config.sql`; drift tools `backfill_r3.mjs` + `verify_mirror.mjs`. Apps Script redeployed @13. **See hard rule 14 in `../../CLAUDE.md`.** |
 
+## OTP form (otp-v0.1)
+
+The **Progress in Lessons OTP form** (`../OTP/`) is a third form on this SAME Apps Script
+project, this SAME Sheet and this SAME `/exec` URL. It is dispatched purely by the
+`form` parameter: every OTP request carries `form: 'otp'` / `&form=otp`, and a request
+without it takes the R3 path unchanged.
+
+| Thing | Value |
+|---|---|
+| Sheet tab | `OTP Submissions` (26 columns, append-only, hard rule 1) |
+| Roster tabs | `Teachers 26-27` / `Inspectors 26-27`, silently falling back to `Teachers` / `Inspectors` until Igor creates them |
+| Options endpoint | `WEB_APP_URL + '?action=options&form=otp'` (cached under its own key `OTP_OPTIONS_v1`, 5-min TTL; `clearOptionsCache` clears both forms) |
+| Record endpoint | `WEB_APP_URL + '?token=<32-hex>&form=otp'` (legacy `?id=...&token=...&form=otp` also accepted); the response adds `form: 'otp' \| 'r3'` |
+| Pad image endpoint | `WEB_APP_URL + '?action=pad_image&token=...&name=...'` (unchanged shape; the scan falls through to the OTP tab) |
+| Backup email subject | `AIS OTP Progress · <teacher> · <date>`, linking `otp-record.html?token=...`, CCing the observer from the 26-27 Inspectors tab |
+| Supabase ingest RPC | `ingest_otp` (`/rest/v1/rpc/ingest_otp`), same service_role key, same Sheet-first / swallow-failures contract as `ingest_r3` (hard rule 14) |
+
+Columns, in order (`getOtpColumns()` in `apps-script/00_Config.gs`):
+
+```
+record_id, submitted_at, teacher, curriculum, observer, observation_date,
+room_number, time_in, subject, school, support_teachers_cas, otp_ref, otp_aspect,
+sp1_beginner, sp1_emerging, sp1_good, sp1_great, sp1_outstanding, sp1_selected_text,
+observer_comments, other_observations, next_step_1, next_step_2, next_step_3,
+record_token, evidence_pad_id
+```
+
+`observer` is the form's `inspector` field; there is no `time_out`, so no `duration`.
+Backend regression harness: `node Assets/OTP/tests/gs-harness.mjs` (proves the OTP path
+and that every R3 path is byte-identical to `origin/main`).
+
 ## Full project context
 
 See `../../CLAUDE.md` (project root) for:

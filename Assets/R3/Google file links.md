@@ -34,6 +34,37 @@ Quick-access links to every Google asset wired into the R3 form. All live under 
 2. Pick `clearOptionsCache` from the function dropdown next to **Run**.
 3. Click **Run**. Cache is wiped; the next form load reads fresh.
 
+## OTP form (otp-v0.1)
+
+The Progress in Lessons OTP form shares this Sheet, this Apps Script project and this
+`/exec` endpoint. It is selected by the `form=otp` parameter; without it every call
+behaves exactly as the R3 calls above.
+
+| Tab | Purpose |
+|---|---|
+| `OTP Submissions` | All OTP submissions (26 columns, append-only; `record_token` is 25th, `evidence_pad_id` 26th) |
+| `Teachers 26-27` | 26-27 staff roster for the OTP teacher dropdown. **Not created yet**; until it exists the form silently reads `Teachers`. |
+| `Inspectors 26-27` | 26-27 observer names + emails (A = name, B = email). **Not created yet**; until it exists the form silently reads `Inspectors`. |
+
+OTP columns, in order:
+
+```
+record_id, submitted_at, teacher, curriculum, observer, observation_date,
+room_number, time_in, subject, school, support_teachers_cas, otp_ref, otp_aspect,
+sp1_beginner, sp1_emerging, sp1_good, sp1_great, sp1_outstanding, sp1_selected_text,
+observer_comments, other_observations, next_step_1, next_step_2, next_step_3,
+record_token, evidence_pad_id
+```
+
+| Endpoint | Value |
+|---|---|
+| Dropdowns | `.../exec?action=options&form=otp` (own cache key, 5-min TTL) |
+| Locked record | `.../exec?token=<32-hex>&form=otp` |
+| Backup email subject | `AIS OTP Progress · <teacher> · <date>` (own Gmail filter: subject contains `AIS OTP Progress ·`) |
+| Supabase ingest RPC | `ingest_otp` |
+
+Running `clearOptionsCache` from the editor clears the R3 **and** the OTP options cache.
+
 ## Related
 
 - Form code + deploy workflow: [README.md](README.md)

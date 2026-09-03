@@ -24,13 +24,23 @@
 
 const PAD_EXTRACT_MODEL = 'claude-sonnet-5';
 
-const PAD_EXTRACT_TARGETS = ['focus_context', 'observer_notes', 'summary_strengths', 'summary_weakness'];
+// otp-v0.1: the last five are the Progress in Lessons OTP note fields. Every
+// pad page is field-scoped (the form always sends `target`), so R3 pages keep
+// resolving to R3 fields and OTP pages to OTP fields.
+const PAD_EXTRACT_TARGETS = ['focus_context', 'observer_notes', 'summary_strengths', 'summary_weakness',
+                             'observer_comments', 'other_observations',
+                             'next_step_1', 'next_step_2', 'next_step_3'];
 
 const PAD_EXTRACT_LABELS = {
   focus_context:     'Focus / Context (the main purpose of the inspection activity)',
   observer_notes:    'Observer Notes (running observations during the lesson)',
   summary_strengths: 'Summary of Strengths (things that went well, effective practice)',
-  summary_weakness:  'Summary of Weakness (areas to develop, problems, coaching suggestions)'
+  summary_weakness:  'Summary of Weakness (areas to develop, problems, coaching suggestions)',
+  observer_comments:  'Observer Comments',
+  other_observations: 'Other Observations',
+  next_step_1:        'Next Steps / Support 1',
+  next_step_2:        'Next Steps / Support 2',
+  next_step_3:        'Next Steps / Support 3'
 };
 
 const PAD_EXTRACT_SCHEMA = {
@@ -101,6 +111,9 @@ const PAD_EXTRACT_PROMPT = [
   '  * summary_weakness: areas to develop, problems, and coaching suggestions ("perhaps...", "try...", "next time...").',
   '  * focus_context: notes about the lesson\'s focus, topic, activity or context.',
   '  * observer_notes: everything else (running observations, questions, neutral descriptions).',
+  '  * observer_comments: OTP form only, the observer\'s running comments on the lesson.',
+  '  * other_observations: OTP form only, anything noted outside those comments.',
+  '  * next_step_1 / next_step_2 / next_step_3: OTP form only, the numbered next steps or support actions.',
   '- Keep each item one readable sentence or short line. When unsure of the target, use observer_notes.',
   '- If the page is blank or has no readable handwriting, return an empty items array. Never invent content.'
 ].join('\n');

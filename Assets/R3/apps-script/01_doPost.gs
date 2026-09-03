@@ -26,6 +26,11 @@ function doPost(e) {
     // CORS path as submits). One page image per call; never touches the Sheet.
     if (data && data.action === 'extract_pad') return handlePadExtract(data);
 
+    // otp-v0.1: the Progress in Lessons OTP form shares this endpoint. It is
+    // dispatched BEFORE any R3 logic and writes its own tab; the R3 path below
+    // is untouched (a request without form:'otp' behaves exactly as before).
+    if (data && data.form === 'otp') return handleOtpPost(data);
+
     const ss = SpreadsheetApp.openById(getSheetId());
     let sheet = ss.getSheetByName(SHEET_NAME_SUBMISSIONS);
     if (!sheet) sheet = ss.insertSheet(SHEET_NAME_SUBMISSIONS);
@@ -289,4 +294,203 @@ function formatStampSafe(iso) {
   } catch (e) {
     return String(iso);
   }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * otp-v0.1 · Progress in Lessons OTP submissions.
+ *
+ * Same shape as the R3 path above, on its own tab and its own 26-column schema:
+ *   Sheet row first (source of truth)  →  backup email (CC the observer)
+ *   →  Supabase mirror, each side effect inside its own try/catch so a failure
+ *   is logged and swallowed and the observer never sees an error (rules 12/14).
+ *
+ * Called from doPost when the payload carries form:'otp'. Throwing here is safe:
+ * doPost's own catch turns it into { success:false, error }, exactly like R3.
+ * ───────────────────────────────────────────────────────────────────────────── */
+function handleOtpPost(data) {
+  const ss = SpreadsheetApp.openById(getSheetId());
+  let sheet = ss.getSheetByName(SHEET_NAME_OTP_SUBMISSIONS);
+  if (!sheet) sheet = ss.insertSheet(SHEET_NAME_OTP_SUBMISSIONS);
+
+  const columns = getOtpColumns();
+
+  if (sheet.getLastRow() === 0) {
+    sheet.getRange(1, 1, 1, columns.length).setValues([columns]);
+    sheet.setFrozenRows(1);
+    sheet.getRange(1, 1, 1, columns.length)
+         .setFontWeight('bold')
+         .setBackground('#143642')
+         .setFontColor('#ffffff');
+    sheet.setColumnWidths(1, columns.length, 140);
+  } else if (sheet.getLastColumn() < columns.length) {
+    // Heal the header when columns are appended to getOtpColumns() later.
+    // Existing rows keep their positions; only the new trailing header cells
+    // are written (same rule as the R3 tab).
+    const from = sheet.getLastColumn();
+    sheet.getRange(1, from + 1, 1, columns.length - from)
+         .setValues([columns.slice(from)])
+         .setFontWeight('bold')
+         .setBackground('#143642')
+         .setFontColor('#ffffff');
+  }
+
+  const submittedAt = data.submitted_at || new Date().toISOString();
+  const recordId = data.record_id || generateOtpRecordId(submittedAt);
+  const recordToken = generateRecordToken();
+
+  data.record_token = recordToken;
+
+  // One mapping builds BOTH the Sheet row and the Supabase mirror, so the
+  // mirror is a field-for-field copy of the row (hard rule 14).
+  const record = buildOtpRecord(columns, data, recordId, recordToken, submittedAt);
+  sheet.appendRow(columns.map(function(col) { return record[col]; }));
+
+  try {
+    sendOtpSubmissionEmail(ss, recordId, recordToken, submittedAt, data);
+  } catch (mailErr) {
+    Logger.log('OTP email send failed for ' + recordId + ': ' + mailErr.message);
+  }
+
+  try {
+    pushOtpToSupabase(columns, data, recordId, recordToken, submittedAt);
+  } catch (sbErr) {
+    Logger.log('Supabase OTP dual-write failed for ' + recordId + ': ' + sbErr.message);
+  }
+
+  return jsonOut({ success: true, id: recordId });
+}
+
+/**
+ * Same generator as the R3 record id (second-resolution, so two submissions in
+ * the same minute never share a label), with the OTP prefix.
+ * Lookups still key on the unique record_token (hard rule 10).
+ */
+function generateOtpRecordId(iso) {
+  return generateR3RecordId(iso).replace('AIS-R3-', 'AIS-OTP-');
+}
+
+/**
+ * Resolves one OTP submission into an object keyed by Sheet column name.
+ * `observer` comes from the form's `inspector` field (the OTP form is a copy of
+ * the R3 master and still posts that key); `observation_date` from `date`.
+ */
+function buildOtpRecord(columns, data, recordId, recordToken, submittedAt) {
+  const record = {};
+  columns.forEach(function(col) {
+    if (col === 'record_id') record[col] = recordId;
+    else if (col === 'submitted_at') record[col] = submittedAt;
+    else if (col === 'observer') record[col] = data.inspector || data.observer || '';
+    else if (col === 'observation_date') record[col] = data.date || data.observation_date || '';
+    else if (col === 'record_token') record[col] = recordToken;
+    else record[col] = data[col] != null ? data[col] : '';
+  });
+  return record;
+}
+
+/**
+ * Backup copy of an OTP submission to BACKUP_EMAIL_TO, CCing the observer when
+ * their row on the (26-27) Inspectors tab carries an email. The link is the
+ * ungated OTP record viewer, keyed on the token alone (hard rule 10).
+ */
+function sendOtpSubmissionEmail(ss, recordId, recordToken, submittedAt, data) {
+  const lockedUrl = RECORD_VIEWER_URL_OTP + '?token=' + encodeURIComponent(recordToken);
+
+  const teacherName = String(data.teacher || '(no teacher)').trim();
+  const obsDate = String(data.date || data.observation_date || '').trim();
+  const subject = 'AIS OTP Progress · ' + teacherName + ' · ' + obsDate;
+
+  const htmlBody = buildOtpSubmissionHtml(recordId, lockedUrl, submittedAt, data);
+
+  const observerEmail = lookupOtpObserverEmail(ss, data.inspector || data.observer);
+  const opts = {
+    to: BACKUP_EMAIL_TO,
+    subject: subject,
+    htmlBody: htmlBody,
+    name: 'AIS OTP Progress'
+  };
+  if (observerEmail && observerEmail.indexOf('@') > -1) {
+    opts.cc = observerEmail;
+  }
+
+  // Evidence Pad pages, same private-bucket fetch as R3. Silent on failure;
+  // the email still goes out without attachments.
+  try {
+    const padBlobs = fetchPadImages(data.evidence_pad_id);
+    if (padBlobs.length) opts.attachments = padBlobs;
+  } catch (padErr) {
+    Logger.log('OTP pad attach failed: ' + padErr.message);
+  }
+
+  MailApp.sendEmail(opts);
+}
+
+function buildOtpSubmissionHtml(recordId, lockedUrl, submittedAt, data) {
+  const esc = function(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  };
+
+  const row = function(label, value) {
+    return '<tr>' +
+           '<td style="padding:6px 12px 6px 0;color:#6b7e85;font-size:13px;vertical-align:top;white-space:nowrap;">' + esc(label) + '</td>' +
+           '<td style="padding:6px 0;color:#143642;font-size:14px;vertical-align:top;">' + esc(value) + '</td>' +
+           '</tr>';
+  };
+
+  const sectionTitle = function(title) {
+    return '<tr><td colspan="2" style="padding:18px 0 6px;border-bottom:1px solid #e3e2dc;color:#143642;font-weight:600;font-size:12px;letter-spacing:0.16em;text-transform:uppercase;">' + esc(title) + '</td></tr>';
+  };
+
+  let html = '';
+  html += '<div style="font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;background:#efece2;padding:24px;color:#143642;">';
+  html += '  <div style="max-width:680px;margin:0 auto;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 8px 24px -8px rgba(20,54,66,0.18);">';
+  html += '    <div style="background:#143642;color:#f2efe6;padding:20px 28px;">';
+  html += '      <div style="font-size:12px;letter-spacing:0.32em;text-transform:uppercase;color:#FFBA14;font-weight:600;">AIS OTP Progress</div>';
+  html += '      <div style="font-size:22px;font-weight:600;margin-top:6px;">' + esc(recordId) + '</div>';
+  html += '      <div style="font-size:13px;color:#cdd0e0;margin-top:4px;">' + esc(formatStampSafe(submittedAt)) + '</div>';
+  html += '    </div>';
+  html += '    <div style="padding:24px 28px;">';
+  html += '      <div style="background:#fff8e1;border:1px solid #FFBA14;border-radius:8px;padding:16px;margin-bottom:20px;">';
+  html += '        <div style="font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:#8a6d00;font-weight:700;margin-bottom:6px;">Locked record</div>';
+  html += '        <div style="font-size:14px;color:#143642;">Open the locked record: <a href="' + esc(lockedUrl) + '" style="color:#143642;font-weight:700;text-decoration:underline;">Link</a></div>';
+  html += '      </div>';
+  html += '      <table style="width:100%;border-collapse:collapse;">';
+
+  html += sectionTitle('Lesson context');
+  html += row('Teacher',                data.teacher);
+  html += row('Observer',               data.inspector || data.observer);
+  html += row('Curriculum',             data.curriculum);
+  html += row('Date',                   data.date || data.observation_date);
+  html += row('Room number',            data.room_number);
+  html += row('Time in',                data.time_in);
+  html += row('Subject',                data.subject);
+  html += row('School',                 data.school);
+  html += row('Support teachers / CAs', data.support_teachers_cas);
+
+  html += sectionTitle('OTP reference');
+  html += row('Reference',              data.otp_ref);
+  html += row('Aspect',                 data.otp_aspect);
+  html += row('Beginner',               data.sp1_beginner);
+  html += row('Emerging',               data.sp1_emerging);
+  html += row('Good',                   data.sp1_good);
+  html += row('Great',                  data.sp1_great);
+  html += row('Outstanding',            data.sp1_outstanding);
+  html += row('Selected criteria',      data.sp1_selected_text);
+
+  html += sectionTitle('Observer notes');
+  html += row('Observer Comments',      data.observer_comments);
+  html += row('Other Observations',     data.other_observations);
+  html += row('Next Steps / Support 1', data.next_step_1);
+  html += row('Next Steps / Support 2', data.next_step_2);
+  html += row('Next Steps / Support 3', data.next_step_3);
+
+  html += '      </table>';
+  html += '    </div>';
+  html += '    <div style="background:#fafaf7;color:#6b7e85;padding:14px 28px;font-size:12px;text-align:center;letter-spacing:0.08em;">';
+  html += '      Submitted to <strong>AIS OTP Progress</strong> Google Sheet · token required to view locked record';
+  html += '    </div>';
+  html += '  </div>';
+  html += '</div>';
+
+  return html;
 }

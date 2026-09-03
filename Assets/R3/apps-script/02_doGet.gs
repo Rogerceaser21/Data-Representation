@@ -16,6 +16,11 @@ function doGet(e) {
   try {
     const params = (e && e.parameter) || {};
 
+    // otp-v0.1: the Progress in Lessons OTP form shares this endpoint and
+    // stamps every request with form=otp. Dispatched BEFORE any R3 branch; a
+    // request without that parameter behaves exactly as before.
+    if (params.form === 'otp') return doGetOtp(params);
+
     if (params.action === 'options') {
       return jsonOut({ success: true, options: getDropdownOptions() });
     }
@@ -139,7 +144,9 @@ function getPadImageForToken(token, name) {
     if (!blob) return miss;
     return { success: true, mime: 'image/jpeg', data: Utilities.base64Encode(blob.getBytes()) };
   }
-  return miss;
+  // otp-v0.1: no R3 row owns this token, so try the OTP tab (the OTP form
+  // reuses this same ?action=pad_image shape). Same generic miss on failure.
+  return padImageFromOtpTab(ss, givenToken, wantName);
 }
 
 /**
@@ -178,6 +185,7 @@ function getDropdownOptions() {
  *  if you can't wait 5 minutes for natural expiry. */
 function clearOptionsCache() {
   CacheService.getScriptCache().remove(OPTIONS_CACHE_KEY);
+  CacheService.getScriptCache().remove(OPTIONS_CACHE_KEY_OTP);
   return 'cleared';
 }
 
@@ -295,4 +303,198 @@ function readTeachersTab(ss) {
   return values
     .map(function(r) { return { name: safeForSelector(String(r[0]).trim()) }; })
     .filter(function(t) { return t.name.length > 0; });
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+ * otp-v0.1 · GET side of the Progress in Lessons OTP form.
+ *
+ *   ?action=options&form=otp   → dropdowns, rosters from the 26-27 tabs
+ *                                (falling back to the R3 tabs until they exist)
+ *   ?action=pad_image&form=otp → one Evidence Pad page, token-gated
+ *   ?token=...&form=otp        → one locked record (legacy ?id=&token= also ok)
+ *
+ * The R3 branches in doGet are untouched; this is reached only when the caller
+ * sends form=otp.
+ * ───────────────────────────────────────────────────────────────────────────── */
+function doGetOtp(params) {
+  if (params.action === 'options') {
+    return jsonOut({ success: true, options: getOtpDropdownOptions() });
+  }
+
+  if (params.action === 'pad_image') {
+    return jsonOut(getPadImageForToken(params.token, params.name));
+  }
+
+  if (params.token || params.id) {
+    return jsonOut(getOtpRecord(params.id, params.token));
+  }
+
+  return jsonOut({
+    success: true,
+    status: 'ok',
+    message: 'AIS OTP Progress API · pass ?token=...&form=otp for a record, or ?action=options&form=otp for dropdowns'
+  });
+}
+
+/**
+ * Separate cache key from the R3 options, so the two option sets can never
+ * collide in CacheService. Same 5-minute TTL; clearOptionsCache clears both.
+ */
+const OPTIONS_CACHE_KEY_OTP = 'OTP_OPTIONS_v1';
+
+function getOtpDropdownOptions() {
+  const cache = CacheService.getScriptCache();
+  const cached = cache.get(OPTIONS_CACHE_KEY_OTP);
+  if (cached) {
+    try { return JSON.parse(cached); } catch (e) { /* fall through, refresh */ }
+  }
+
+  const ss = SpreadsheetApp.openById(getSheetId());
+  const subjectsResult = readSubjectsTabRich(ss);
+
+  const fresh = {
+    teachers:   readTeachersFromSheet(getTabWithFallback(ss, SHEET_NAME_TEACHERS_2627, SHEET_NAME_TEACHERS)),
+    inspectors: readOtpInspectors(ss).map(function(i) { return i.name; }),
+    curricula:  readSingleColumnTab(ss, SHEET_NAME_CURRICULUM),
+    subjects:   subjectsResult.subjects,
+    schools:    subjectsResult.schools
+  };
+
+  try { cache.put(OPTIONS_CACHE_KEY_OTP, JSON.stringify(fresh), OPTIONS_CACHE_TTL); } catch (e) {}
+  return fresh;
+}
+
+/** Teachers tab reader, given the tab (26-27 or the R3 fallback). Column A =
+ *  name, exactly like readTeachersTab. */
+function readTeachersFromSheet(sheet) {
+  if (!sheet || sheet.getLastRow() < 2) return [];
+  const values = sheet.getRange(2, 1, sheet.getLastRow() - 1, 1).getValues();
+  return values
+    .map(function(r) { return { name: safeForSelector(String(r[0]).trim()) }; })
+    .filter(function(t) { return t.name.length > 0; });
+}
+
+/** Inspectors tab reader, given the tab. [name, email], exactly like
+ *  readInspectorsTab. */
+function readInspectorsFromSheet(sheet) {
+  if (!sheet || sheet.getLastRow() < 2) return [];
+  const values = sheet.getRange(2, 1, sheet.getLastRow() - 1, 2).getValues();
+  return values
+    .map(function(r) {
+      return {
+        name:  safeForSelector(String(r[0] || '').trim()),
+        email: String(r[1] || '').trim()
+      };
+    })
+    .filter(function(i) { return i.name.length > 0; });
+}
+
+function readOtpInspectors(ss) {
+  return readInspectorsFromSheet(getTabWithFallback(ss, SHEET_NAME_INSPECTORS_2627, SHEET_NAME_INSPECTORS));
+}
+
+/**
+ * Observer email for the submission CC, resolved over the 26-27 Inspectors tab
+ * (falling back to the R3 Inspectors tab). Same normalised match as
+ * lookupInspectorEmail, so a curly apostrophe still matches a straight one.
+ */
+function lookupOtpObserverEmail(ss, name) {
+  const want = safeForSelector(String(name || '').trim()).toLowerCase();
+  if (!want) return '';
+  const rows = readOtpInspectors(ss);
+  for (var i = 0; i < rows.length; i++) {
+    if (rows[i].name.toLowerCase() === want) return rows[i].email;
+  }
+  return '';
+}
+
+/**
+ * Locked OTP record. Keys on the UNIQUE record_token found by header NAME
+ * (hard rule 10), searching the OTP tab first and then the R3 Submissions tab,
+ * so an OTP viewer link still resolves an R3 record if one is ever shared.
+ * Any non-match returns the same generic "Record not found" as the R3 path.
+ * The response carries `form` ('otp' or 'r3') so the viewer knows what it got.
+ */
+function getOtpRecord(id, token) {
+  const givenToken = String(token || '').trim();
+  if (!givenToken) return { success: false, error: 'Record not found' };
+
+  const ss = SpreadsheetApp.openById(getSheetId());
+  const tabs = [
+    { name: SHEET_NAME_OTP_SUBMISSIONS, form: 'otp' },
+    { name: SHEET_NAME_SUBMISSIONS,     form: 'r3'  }
+  ];
+
+  for (var t = 0; t < tabs.length; t++) {
+    const hit = readRecordFromTab(ss, tabs[t].name, givenToken);
+    if (hit) {
+      hit.form = tabs[t].form;
+      return hit;
+    }
+  }
+  return { success: false, error: 'Record not found' };
+}
+
+/**
+ * Reads one row from a tab by record_token (header NAME lookup, so column
+ * position is irrelevant). Returns { success:true, data, pad_files? } or null
+ * when the tab has no such token. Date cells are formatted in the Sheet's
+ * timezone, same as getRecordById, so <input type=date|time> accept them.
+ */
+function readRecordFromTab(ss, tabName, givenToken) {
+  const sheet = ss.getSheetByName(tabName);
+  if (!sheet || sheet.getLastRow() < 2) return null;
+  const values = sheet.getDataRange().getValues();
+  const headers = values[0];
+  const tokenCol = headers.indexOf('record_token');
+  if (tokenCol < 0) return null;
+
+  for (var r = 1; r < values.length; r++) {
+    if (String(values[r][tokenCol] || '').trim() !== givenToken) continue;
+    const tz = ss.getSpreadsheetTimeZone();
+    const record = {};
+    headers.forEach(function(h, j) {
+      var v = values[r][j];
+      if (h === 'record_token') return;
+      if (v instanceof Date) {
+        v = v.getFullYear() < 1900
+          ? Utilities.formatDate(v, tz, 'HH:mm')
+          : Utilities.formatDate(v, tz, 'yyyy-MM-dd');
+      }
+      record[h] = v;
+    });
+    const out = { success: true, data: record };
+    const padCol = headers.indexOf('evidence_pad_id');
+    const padId = padCol > -1 ? String(values[r][padCol] || '').trim() : '';
+    if (padId) {
+      try { out.pad_files = listPadFiles(padId); } catch (e) { /* record still loads */ }
+    }
+    return out;
+  }
+  return null;
+}
+
+/**
+ * Pad-page fallback for getPadImageForToken: same token gate, same generic
+ * miss, over the OTP Submissions tab.
+ */
+function padImageFromOtpTab(ss, givenToken, wantName) {
+  const miss = { success: false, error: 'Record not found' };
+  const sheet = ss.getSheetByName(SHEET_NAME_OTP_SUBMISSIONS);
+  if (!sheet || sheet.getLastRow() < 2) return miss;
+  const values = sheet.getDataRange().getValues();
+  const headers = values[0];
+  const tokenCol = headers.indexOf('record_token');
+  const padCol = headers.indexOf('evidence_pad_id');
+  if (tokenCol < 0 || padCol < 0) return miss;
+
+  for (var r = 1; r < values.length; r++) {
+    if (String(values[r][tokenCol] || '').trim() !== givenToken) continue;
+    const padId = String(values[r][padCol] || '').trim();
+    if (!padId || listPadFiles(padId).indexOf(wantName) < 0) return miss;
+    const blob = fetchPadImageBytes(padId, wantName);
+    if (!blob) return miss;
+    return { success: true, mime: 'image/jpeg', data: Utilities.base64Encode(blob.getBytes()) };
+  }
+  return miss;
 }
