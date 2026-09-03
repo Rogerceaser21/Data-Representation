@@ -1,16 +1,16 @@
-# Graph Report - charming-shannon-fd4bad  (2026-06-26)
+# Graph Report - otp-build  (2026-09-03)
 
 ## Corpus Check
-- 39 files · ~529,475 words
+- 124 files · ~1,133,645 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 620 nodes · 881 edges · 46 communities (35 shown, 11 thin omitted)
-- Extraction: 94% EXTRACTED · 5% INFERRED · 1% AMBIGUOUS · INFERRED: 44 edges (avg confidence: 0.87)
+- 1969 nodes · 3289 edges · 177 communities (137 shown, 40 thin omitted)
+- Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 99 edges (avg confidence: 0.83)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `b9e49f68`
+- Built from commit: `4502586e`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -57,18 +57,119 @@
 - [[_COMMUNITY_Community 39|Community 39]]
 - [[_COMMUNITY_Community 40|Community 40]]
 - [[_COMMUNITY_Community 41|Community 41]]
+- [[_COMMUNITY_Community 42|Community 42]]
+- [[_COMMUNITY_Community 43|Community 43]]
+- [[_COMMUNITY_Community 44|Community 44]]
+- [[_COMMUNITY_Community 45|Community 45]]
+- [[_COMMUNITY_Community 46|Community 46]]
+- [[_COMMUNITY_Community 47|Community 47]]
+- [[_COMMUNITY_Community 48|Community 48]]
+- [[_COMMUNITY_Community 49|Community 49]]
+- [[_COMMUNITY_Community 50|Community 50]]
+- [[_COMMUNITY_Community 51|Community 51]]
+- [[_COMMUNITY_Community 52|Community 52]]
+- [[_COMMUNITY_Community 53|Community 53]]
+- [[_COMMUNITY_Community 54|Community 54]]
+- [[_COMMUNITY_Community 55|Community 55]]
+- [[_COMMUNITY_Community 56|Community 56]]
+- [[_COMMUNITY_Community 57|Community 57]]
+- [[_COMMUNITY_Community 58|Community 58]]
+- [[_COMMUNITY_Community 59|Community 59]]
+- [[_COMMUNITY_Community 60|Community 60]]
+- [[_COMMUNITY_Community 61|Community 61]]
+- [[_COMMUNITY_Community 62|Community 62]]
+- [[_COMMUNITY_Community 63|Community 63]]
+- [[_COMMUNITY_Community 64|Community 64]]
+- [[_COMMUNITY_Community 66|Community 66]]
+- [[_COMMUNITY_Community 68|Community 68]]
+- [[_COMMUNITY_Community 69|Community 69]]
+- [[_COMMUNITY_Community 70|Community 70]]
+- [[_COMMUNITY_Community 71|Community 71]]
+- [[_COMMUNITY_Community 72|Community 72]]
+- [[_COMMUNITY_Community 73|Community 73]]
+- [[_COMMUNITY_Community 74|Community 74]]
+- [[_COMMUNITY_Community 75|Community 75]]
+- [[_COMMUNITY_Community 76|Community 76]]
+- [[_COMMUNITY_Community 77|Community 77]]
+- [[_COMMUNITY_Community 78|Community 78]]
+- [[_COMMUNITY_Community 79|Community 79]]
+- [[_COMMUNITY_Community 80|Community 80]]
+- [[_COMMUNITY_Community 81|Community 81]]
+- [[_COMMUNITY_Community 82|Community 82]]
+- [[_COMMUNITY_Community 83|Community 83]]
+- [[_COMMUNITY_Community 84|Community 84]]
+- [[_COMMUNITY_Community 85|Community 85]]
+- [[_COMMUNITY_Community 86|Community 86]]
+- [[_COMMUNITY_Community 88|Community 88]]
+- [[_COMMUNITY_Community 89|Community 89]]
+- [[_COMMUNITY_Community 90|Community 90]]
+- [[_COMMUNITY_Community 91|Community 91]]
+- [[_COMMUNITY_Community 92|Community 92]]
+- [[_COMMUNITY_Community 93|Community 93]]
+- [[_COMMUNITY_Community 94|Community 94]]
+- [[_COMMUNITY_Community 95|Community 95]]
+- [[_COMMUNITY_Community 96|Community 96]]
+- [[_COMMUNITY_Community 97|Community 97]]
+- [[_COMMUNITY_Community 98|Community 98]]
+- [[_COMMUNITY_Community 99|Community 99]]
+- [[_COMMUNITY_Community 100|Community 100]]
+- [[_COMMUNITY_Community 101|Community 101]]
+- [[_COMMUNITY_Community 102|Community 102]]
+- [[_COMMUNITY_Community 103|Community 103]]
+- [[_COMMUNITY_Community 104|Community 104]]
+- [[_COMMUNITY_Community 105|Community 105]]
+- [[_COMMUNITY_Community 106|Community 106]]
+- [[_COMMUNITY_Community 107|Community 107]]
+- [[_COMMUNITY_Community 108|Community 108]]
+- [[_COMMUNITY_Community 109|Community 109]]
+- [[_COMMUNITY_Community 110|Community 110]]
+- [[_COMMUNITY_Community 111|Community 111]]
+- [[_COMMUNITY_Community 112|Community 112]]
+- [[_COMMUNITY_Community 113|Community 113]]
+- [[_COMMUNITY_Community 115|Community 115]]
+- [[_COMMUNITY_Community 116|Community 116]]
+- [[_COMMUNITY_Community 117|Community 117]]
+- [[_COMMUNITY_Community 118|Community 118]]
+- [[_COMMUNITY_Community 119|Community 119]]
+- [[_COMMUNITY_Community 120|Community 120]]
+- [[_COMMUNITY_Community 122|Community 122]]
+- [[_COMMUNITY_Community 123|Community 123]]
+- [[_COMMUNITY_Community 125|Community 125]]
+- [[_COMMUNITY_Community 126|Community 126]]
+- [[_COMMUNITY_Community 127|Community 127]]
+- [[_COMMUNITY_Community 128|Community 128]]
+- [[_COMMUNITY_Community 129|Community 129]]
+- [[_COMMUNITY_Community 130|Community 130]]
+- [[_COMMUNITY_Community 131|Community 131]]
+- [[_COMMUNITY_Community 132|Community 132]]
+- [[_COMMUNITY_Community 133|Community 133]]
+- [[_COMMUNITY_Community 134|Community 134]]
+- [[_COMMUNITY_Community 135|Community 135]]
+- [[_COMMUNITY_Community 136|Community 136]]
+- [[_COMMUNITY_Community 137|Community 137]]
+- [[_COMMUNITY_Community 138|Community 138]]
+- [[_COMMUNITY_Community 139|Community 139]]
+- [[_COMMUNITY_Community 140|Community 140]]
+- [[_COMMUNITY_Community 141|Community 141]]
+- [[_COMMUNITY_Community 146|Community 146]]
+- [[_COMMUNITY_Community 147|Community 147]]
+- [[_COMMUNITY_Community 148|Community 148]]
+- [[_COMMUNITY_Community 149|Community 149]]
+- [[_COMMUNITY_Community 150|Community 150]]
+- [[_COMMUNITY_Community 151|Community 151]]
+- [[_COMMUNITY_Community 153|Community 153]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `ce` - 97 edges
-2. `AIS Observation Dashboard . changelog` - 47 edges
-3. `R3 Evidence Form Master Source` - 22 edges
-4. `Teacher Observation Pitch Deck (index.html)` - 16 edges
-5. `R3 Evidence Form (Master Source)` - 16 edges
-6. `Year 6 Lesson Plan – Build Tetris with A.I.` - 15 edges
-7. `Locked decisions (the grill)` - 13 edges
-8. `v0.10 · R3 Evidence Form build + Lesson Observation reorg` - 13 edges
-9. `Lesson Observation Form (HTML)` - 13 edges
-10. `Primary School Outstanding Teacher Profile (OTP)` - 13 edges
+1. `$()` - 108 edges
+2. `q` - 101 edges
+3. `ce` - 97 edges
+4. `AIS Observation Dashboard . changelog` - 64 edges
+5. `f` - 54 edges
+6. `tt()` - 46 edges
+7. `ni` - 36 edges
+8. `Ht` - 35 edges
+9. `warn()` - 34 edges
+10. `_()` - 30 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `Curtis All Portrait` --conceptually_related_to--> `Teacher Observation Pitch Deck (index.html)`  [AMBIGUOUS]
@@ -85,31 +186,31 @@
 ## Import Cycles
 - None detected.
 
-## Communities (46 total, 11 thin omitted)
+## Communities (177 total, 40 thin omitted)
 
 ### Community 0 - "AIS Observation Forms & Scripts"
-Cohesion: 0.07
-Nodes (61): admin.user@ais.ae (Super Admin Identity), Lesson Obs Apps Script Config (00_Config.gs), Lesson Obs Apps Script doGet (02_doGet.gs), Lesson Obs Apps Script doPost (01_doPost.gs), R3 Apps Script Config (00_Config.gs), R3 Apps Script doGet (02_doGet.gs), R3 Apps Script doPost (01_doPost.gs), R3 Apps Script TeacherLoader (04_TeacherLoader.gs) (+53 more)
+Cohesion: 0.06
+Nodes (78): admin.user@ais.ae (Super Admin Identity), Lesson Obs Apps Script Config (00_Config.gs), Lesson Obs Apps Script doGet (02_doGet.gs), Lesson Obs Apps Script doPost (01_doPost.gs), R3 Apps Script Config (00_Config.gs), R3 Apps Script doGet (02_doGet.gs), R3 Apps Script doPost (01_doPost.gs), R3 Apps Script TeacherLoader (04_TeacherLoader.gs) (+70 more)
 
 ### Community 1 - "TomSelect Core API"
 Cohesion: 0.05
 Nodes (49): Lesson Observation - Igor 12/11, Classroom Management (Observation), Curriculum Development (Observation), DigiTech Subject, Interpersonal Relationships (Observation), Ben Hyde (Observer / DHOS), Mr Igor (Teacher), Teaching & Learning (Observation) (+41 more)
 
 ### Community 2 - "Pitch Deck Build & Bugs"
-Cohesion: 0.13
-Nodes (4): C, e(), le(), t
+Cohesion: 0.17
+Nodes (4): Z(), e(), le(), t
 
 ### Community 4 - "TomSelect Item Selection"
-Cohesion: 0.26
-Nodes (17): Deck Slides Overflow/Clipping Bug (v0.11-v0.12), Deck PDF Export (working reference), Handoff Brief Deck v0.12 Broken (2026-05-29), Screenshot: Slide 1 Cover v0.12 (title/masthead distortion), Screenshot: Slide 3 Teacher Dashboard Bottom v0.12 (all 8 categories), Screenshot: Slide 3 Teacher Dashboard Top v0.12 (donut + categories), Screenshot: Slide 4 Department Dashboard Bottom v0.12 (footer overlap bug), Screenshot: Slide 4 Department Dashboard Top v0.12 (3 teachers, overlap) (+9 more)
+Cohesion: 0.07
+Nodes (6): Ae, kt(), _prepareArrayForTween(), requestAnimFrame(), Vt, Xt
 
 ### Community 5 - "Lesson Obs Script Manifest"
 Cohesion: 0.12
 Nodes (16): Current state · v0.27 shipped, awaiting iPad verification, Deploy workflow reminder (for v0.28 + beyond), Form architecture as of v0.27, Gotchas to anticipate, Handoff · Data-Representation R3 Evidence Form, Important Igor preferences (still apply, do not repeat past mistakes), Open architecture question for v0.28, Read these first (+8 more)
 
 ### Community 6 - "TomSelect Active Item Navigation"
-Cohesion: 0.13
-Nodes (14): Apps Script changes (either `apps-script/*.gs` or `Assets/R3/apps-script/*.gs`), Cache invalidation (R3 only, since v0.33), CLAUDE.md · Data-Representation, Coding discipline (Karpathy guidelines), Dashboard build (Supabase) · active workstream, separate from the forms/deck, Deploy chain, File map, Hard rules · do not break (+6 more)
+Cohesion: 0.11
+Nodes (17): Apps Script changes (either `apps-script/*.gs` or `Assets/R3/apps-script/*.gs`), Cache invalidation (R3 only, since v0.33), CLAUDE.md · Data-Representation, Coding discipline (Karpathy guidelines), Dashboard build (Supabase) · active workstream, separate from the forms/deck, Deploy chain, File map, Hard rules · do not break (+9 more)
 
 ### Community 7 - "TomSelect Option Browsing"
 Cohesion: 0.14
@@ -143,6 +244,10 @@ Nodes (11): 1 · Inspector email backfill: CLOSED (morning), 2 · Job 0 SHIPPED:
 Cohesion: 0.18
 Nodes (10): Critical caveat · verification, Current git state (as of handoff), Handoff · Data-Representation deck (next session), Igor's communication preferences (read before responding to him), Open questions for Igor (ask before code changes), Read these in this order before doing anything, Sensitive data note, Suggested skills for next session (+2 more)
 
+### Community 15 - "TomSelect Option Registration"
+Cohesion: 0.07
+Nodes (5): addComponentsGetterSetter(), cloneObject(), isValidSelector(), _prepareToStringify(), q
+
 ### Community 21 - "Project README"
 Cohesion: 0.18
 Nodes (10): Current state · v0.40 deployed, Data corrections made this session (one-cell Sheet edits), Form quick-link buttons (v0.38-v0.40, SHIPPED LIVE), Handoff · Data-Representation R3 Evidence (live inspection week), Hard-won rules (do not violate), New Sheet tab: "Observed Term 3 - Week 12" (gid 1743616402), Open / not done, Read these first (in order) (+2 more)
@@ -160,20 +265,20 @@ Cohesion: 0.22
 Nodes (8): Decisions already made (Dave + Brooke), Job 0 · Teacher-form fixes (R3 form / the copy a teacher receives), Job 1 · Change the Observed sheet from AVERAGE to BEST (lowest), Job 2 · Parse and clean "this spreadsheet" into the admin/Steve dashboard feed, Job 3 · Build the teacher-facing dashboard ("teacher's face" dashboard), Next jobs · Moderation change + dashboards, Open questions to confirm with Igor before building, Related / in-flight
 
 ### Community 25 - "Community 25"
-Cohesion: 0.20
-Nodes (9): Apps Script + Sheet, Cache invalidation (v0.33), Changelog · v0.30-v0.44, Edit / deploy workflow, Folder layout (v0.37), Full project context, Gmail filter (one-time), Live URL + access password (+1 more)
+Cohesion: 0.18
+Nodes (10): Apps Script + Sheet, Cache invalidation (v0.33), Changelog · v0.30-v0.44, Edit / deploy workflow, Folder layout (v0.37), Full project context, Gmail filter (one-time), Live URL + access password (+2 more)
 
 ### Community 26 - "Community 26"
-Cohesion: 0.04
-Nodes (47): AIS Observation Dashboard . changelog, v0.10 . 2026-06-17, v0.11 . 2026-06-17, v0.12 . 2026-06-18, v0.13 . 2026-06-18, v0.14 . 2026-06-18, v0.15 . 2026-06-18, v0.16 . 2026-06-18 (+39 more)
+Cohesion: 0.03
+Nodes (64): AIS Observation Dashboard . changelog, v0.10 . 2026-06-17, v0.11 . 2026-06-17, v0.12 . 2026-06-18, v0.13 . 2026-06-18, v0.14 . 2026-06-18, v0.15 . 2026-06-18, v0.16 . 2026-06-18 (+56 more)
 
 ### Community 27 - "Community 27"
 Cohesion: 0.07
 Nodes (36): avgBest, dist, lessons, notesLessons, strengthsLessons, teachers, weaknessLessons, claims (+28 more)
 
 ### Community 28 - "Community 28"
-Cohesion: 0.33
-Nodes (5): Backup mail filter (one-time Gmail setup), Force-refresh the dropdowns after a Sheet edit, R3 Evidence · Google file links, Related, Sheet tabs (quick jump)
+Cohesion: 0.29
+Nodes (6): Backup mail filter (one-time Gmail setup), Force-refresh the dropdowns after a Sheet edit, OTP form (otp-v0.1), R3 Evidence · Google file links, Related, Sheet tabs (quick jump)
 
 ### Community 30 - "Community 30"
 Cohesion: 0.18
@@ -211,6 +316,290 @@ Nodes (6): How this connects to existing work, Implementation notes for whoever 
 Cohesion: 0.29
 Nodes (6): 2026-06-25 . v3 redesign (redeploy @8), Contract, Dashboard Google Doc export (Phase D), Deploy (one time), Deployed 2026-06-24 (admin.user@ais.ae, via clasp), Redeploy after editing Code.gs
 
+### Community 41 - "Community 41"
+Cohesion: 0.08
+Nodes (5): createCanvasElement(), Ft, m, Ot(), p
+
+### Community 42 - "Community 42"
+Cohesion: 0.05
+Nodes (39): (a) How Chrome iOS manages its toolbar, and what it does to the viewport, (a) In-document swap (form hidden while pad open), (a) iPad keyboard variants and the visual viewport, (a) Known WKWebView stale-extent bugs, (b)+(c) 100vh's role, (b) True separate page/URL, (b) What each measurement tracks during transitions (Chrome iPadOS vs Safari), (b) What happens during focus auto-scroll (+31 more)
+
+### Community 44 - "Community 44"
+Cohesion: 0.10
+Nodes (4): de, Me(), qe, we
+
+### Community 45 - "Community 45"
+Cohesion: 0.06
+Nodes (8): $(), backCompat(), each(), _getProjectionToLine(), _getProjectionToSegment(), getRGB(), _hexToRgb(), _urlToImage()
+
+### Community 47 - "Community 47"
+Cohesion: 0.07
+Nodes (24): BASE_DIR, buildEnv(), eqJson(), EXPECTED_OTP_COLUMNS, FIXED_MS, GS_DIR, GS_FILES, HERE (+16 more)
+
+### Community 48 - "Community 48"
+Cohesion: 0.06
+Nodes (28): bAll, bGaps, body, bodyDur, cfg, ff(), firstWord, gapFiles (+20 more)
+
+### Community 49 - "Community 49"
+Cohesion: 0.06
+Nodes (28): bAll, bGaps, body, bodyDur, cfg, ff(), firstWord, gapFiles (+20 more)
+
+### Community 52 - "Community 52"
+Cohesion: 0.20
+Nodes (25): _(), A(), c(), d(), ee(), f(), g(), h() (+17 more)
+
+### Community 55 - "Community 55"
+Cohesion: 0.17
+Nodes (3): error(), si, y
+
+### Community 56 - "Community 56"
+Cohesion: 0.13
+Nodes (5): A(), C(), k(), T(), warn()
+
+### Community 58 - "Community 58"
+Cohesion: 0.18
+Nodes (3): b(), m(), v()
+
+### Community 60 - "Community 60"
+Cohesion: 0.12
+Nodes (13): bedI, copies, LOOP, MUSIC, NMP3, NWAV, padded, pre (+5 more)
+
+### Community 61 - "Community 61"
+Cohesion: 0.12
+Nodes (13): bedI, copies, LOOP, MUSIC, NMP3, NWAV, padded, pre (+5 more)
+
+### Community 62 - "Community 62"
+Cohesion: 0.13
+Nodes (13): attempt(), AUDIO, BAND, cfg, envTxt, KEY, out, promptFor() (+5 more)
+
+### Community 63 - "Community 63"
+Cohesion: 0.13
+Nodes (13): attempt(), AUDIO, BAND, cfg, envTxt, KEY, out, promptFor() (+5 more)
+
+### Community 66 - "Community 66"
+Cohesion: 0.13
+Nodes (14): gap, holds, s01_cover, s06_gap, s15_corner, lead, scenes, source (+6 more)
+
+### Community 68 - "Community 68"
+Cohesion: 0.35
+Nodes (11): arcP(), buildArc(), frac(), gc(), h2r(), lerp(), pol(), RAMP() (+3 more)
+
+### Community 69 - "Community 69"
+Cohesion: 0.17
+Nodes (11): AGENT A · form act (reads styles/form.css + the form src excerpt file given in your prompt), AGENT B · lock, pipeline, trust, AGENT C · dashboard act 1 (reads styles/dashboard.css; dashboard src excerpts in your prompt), AGENT D · dashboard act 2 (faces + portal; dashboard src excerpts in your prompt), Cast (invented), Data (assets/data/video-data.json, computed live 2026-07-29), Deliverable contract (each agent), Laws (non-negotiable) (+3 more)
+
+### Community 70 - "Community 70"
+Cohesion: 0.17
+Nodes (11): gap, holds, s01_cover, s06_pipeline, s10_coverage, s14_trust, lead, scenes (+3 more)
+
+### Community 71 - "Community 71"
+Cohesion: 0.17
+Nodes (8): all, cut, GATE, IN, OUT, ROOT, stage1, total
+
+### Community 72 - "Community 72"
+Cohesion: 0.17
+Nodes (8): all, cut, GATE, IN, OUT, ROOT, stage1, total
+
+### Community 73 - "Community 73"
+Cohesion: 0.18
+Nodes (8): client, env, failures, FAKE, out, rawSql, sql, SQL_PATH
+
+### Community 76 - "Community 76"
+Cohesion: 0.18
+Nodes (9): openGross, openSpeech, over, ROOT, rows, sub, t, voiced (+1 more)
+
+### Community 77 - "Community 77"
+Cohesion: 0.20
+Nodes (9): byId, mean(), ml, MUSIC, NARR, nl, ROOT, row() (+1 more)
+
+### Community 78 - "Community 78"
+Cohesion: 0.20
+Nodes (9): byId, mean(), ml, MUSIC, NARR, nl, ROOT, row() (+1 more)
+
+### Community 80 - "Community 80"
+Cohesion: 0.20
+Nodes (9): Brand config · AIS Observation system, Card style, Colours, Fonts, Motion, Never, Scale, The SEAS six-point ramp (+1 more)
+
+### Community 81 - "Community 81"
+Cohesion: 0.20
+Nodes (9): Appended findings, Baseline facts about the current code, Cross-cutting observations, iPad Chrome symptom -> mechanism map · R3 form v0.56 · 2026-07-09, N1 · Handwritten note: "Chrome top menu opens up and covers the evidence pad buttons and elements", S1 · Infinite scroll past the form end (huge cream void), S2 · Bottom-fixed controls ride up mid-screen (v0.56 pin failed on Chrome), S3 · Evidence Pad: scroll indicator + form visible underneath (+1 more)
+
+### Community 82 - "Community 82"
+Cohesion: 0.20
+Nodes (9): Converged root sentence, F1 · Pad Done covered by Chrome's top bar (landscape), page stuck, rotation repairs, F2 · Save & Lock disappears; tapping the page brings it back, F3 · Void past the footer persists; bottom buttons vanish/return after taps, Locked-constraint cross-check, On-device test matrix (v0.58, Chrome + Safari, PORTRAIT AND LANDSCAPE each), Synthesis v2 · v0.57 on-device failures F1/F2/F3 · verdicts + v0.58 diagnostic-switch plan · 2026-07-10, v0.58 plan · corrections + ONE-SUSPECT-OFF diagnostic switches (bisect lesson, round three) (+1 more)
+
+### Community 83 - "Community 83"
+Cohesion: 0.20
+Nodes (9): Brand config · AIS Observation system, Card style, Colours, Fonts, Motion, Never, Scale, The SEAS six-point ramp (+1 more)
+
+### Community 84 - "Community 84"
+Cohesion: 0.22
+Nodes (7): CONTRACT_KEYS, fillRequired(), Harness, OPTIONS_PAYLOAD, pickTomSelect(), RECORD_PAYLOAD, RUBRIC
+
+### Community 85 - "Community 85"
+Cohesion: 0.50
+Nodes (9): 1, 2, 3, 4, 5, 6, dist, dist (+1 more)
+
+### Community 88 - "Community 88"
+Cohesion: 0.22
+Nodes (8): media, autoProxy, paths, assets, blocks, components, registry, $schema
+
+### Community 89 - "Community 89"
+Cohesion: 0.22
+Nodes (8): name, private, scripts, check, dev, publish, render, type
+
+### Community 90 - "Community 90"
+Cohesion: 0.22
+Nodes (8): description, devDependencies, @playwright/test, name, private, scripts, test, version
+
+### Community 91 - "Community 91"
+Cohesion: 0.22
+Nodes (8): 0. Certified regeneration recipe (verified 2026-07-06): read before running any pipeline  `(recipe)`, 1. Next-round rebuild runbook (run order + deploy)  `(runbook)`, 2. Snapshot Story + Detail + Simple-report narrative (summaries, bullets, Insights) + base references  `(narrative)`, 3. Comprehensive In-Depth references + "why this counts" notes  `(indepth_refs)`, 4. Acceptable->Good recommendations + the "In summary" executive summary  `(recommendations)`, 5. Per-teacher coaching note "Next Steps & Improvement" (v0.51 engine)  `(coaching)`, Global rules (apply to every pipeline), Next-round AI regeneration prompts
+
+### Community 92 - "Community 92"
+Cohesion: 0.22
+Nodes (8): iPad Chrome research synthesis · root causes + v0.57 fix plan · 2026-07-09, Locked-constraint cross-check, Per symptom, Proposed v0.57 exec breakdown (for the "R3 Apple Pencil Exec Plan" project), S1 · Infinite scroll into the void, S2 · Bottom controls mid-screen, S3 + N1 · Pad: scroll indicator, form underneath, toolbar covering pad buttons, The one-paragraph answer (why Chrome, not Safari)
+
+### Community 93 - "Community 93"
+Cohesion: 0.22
+Nodes (8): media, autoProxy, paths, assets, blocks, components, registry, $schema
+
+### Community 94 - "Community 94"
+Cohesion: 0.22
+Nodes (8): name, private, scripts, check, dev, publish, render, type
+
+### Community 95 - "Community 95"
+Cohesion: 0.22
+Nodes (8): clamps, cues, html, missing, ROOT, starts, t, win
+
+### Community 96 - "Community 96"
+Cohesion: 0.22
+Nodes (8): clamps, cues, html, missing, ROOT, starts, t, win
+
+### Community 97 - "Community 97"
+Cohesion: 0.22
+Nodes (7): over, ROOT, rows, sub, t, voiced, words
+
+### Community 98 - "Community 98"
+Cohesion: 0.25
+Nodes (7): filePushOrder, htmlExtensions, jsonExtensions, rootDir, scriptExtensions, scriptId, skipSubdirectories
+
+### Community 100 - "Community 100"
+Cohesion: 0.25
+Nodes (7): 0. Preconditions (read-only), 1. Google Sheet: roster tabs (gws as admin.user, super admin), 2. Apps Script (shared R3 project, URL stays stable), 3. Supabase migration, 4. Git: merge to main, tag, Pages, 5. CLAUDE.md doc-sync (pre-approved doc edit, apply after step 4), OTP v0.1 deploy runbook (drafted 2026-09-03, executes only on Igor's word)
+
+### Community 101 - "Community 101"
+Cohesion: 0.25
+Nodes (7): Certified recipe (the "winner" of the model/prompt tournament), Costs, Key findings, Method, Next steps (build phase, not verification), Regeneration Consistency Certificate · R3 June 26 benchmark, Results (June-vs-June, all runs gates-clean = zero fabrication shipped)
+
+### Community 102 - "Community 102"
+Cohesion: 0.25
+Nodes (5): chains, DEFAULT_GAIN, events, inputs, tags
+
+### Community 103 - "Community 103"
+Cohesion: 0.29
+Nodes (6): dependencies, enabledAdvancedServices, exceptionLogging, oauthScopes, runtimeVersion, timeZone
+
+### Community 104 - "Community 104"
+Cohesion: 0.29
+Nodes (6): computed_from, pct_good_plus_feb, pct_good_plus_june, prior_round, references_june, round
+
+### Community 105 - "Community 105"
+Cohesion: 0.29
+Nodes (7): hist, 0, 1, 2, 3, 4, 5
+
+### Community 106 - "Community 106"
+Cohesion: 0.29
+Nodes (7): spread, 1, 2, 3, 4, 5, 6
+
+### Community 107 - "Community 107"
+Cohesion: 0.29
+Nodes (7): movement, declined, held, improved, matrix, n, pairs_bands_only
+
+### Community 110 - "Community 110"
+Cohesion: 0.29
+Nodes (6): Files, Known deliberate choices, Numbers on screen, Regenerating, Staff Voice video · sfp-feedback, Why one request, and never one per scene
+
+### Community 111 - "Community 111"
+Cohesion: 0.40
+Nodes (6): addDeprecatedGetterSetter(), addGetter(), addGetterSetter(), addOverloadedGetterSetter(), addSetter(), overWriteSetter()
+
+### Community 117 - "Community 117"
+Cohesion: 0.33
+Nodes (5): approved, model, note, scenes, voice
+
+### Community 118 - "Community 118"
+Cohesion: 0.33
+Nodes (5): Backend contract, Build, Progress in Lessons OTP form · otp-v0.1, Tests, What is on the page
+
+### Community 119 - "Community 119"
+Cohesion: 0.33
+Nodes (5): aspect, levels, reference, reference_title, source
+
+### Community 120 - "Community 120"
+Cohesion: 0.40
+Nodes (4): band_levels(), gap_for(), Mean level in each analysis band, dB, voiced frames only, level-normalised., sh()
+
+### Community 122 - "Community 122"
+Cohesion: 0.47
+Nodes (5): analyse(), ltas(), Loudness-normalised long-term average spectrum, dB, voiced frames only., BETWEEN = scene i vs scene j (different words, and possibly a different take)., read_wav()
+
+### Community 123 - "Community 123"
+Cohesion: 0.40
+Nodes (4): band_levels(), gap_for(), Mean level in each analysis band, dB, voiced frames only, level-normalised., sh()
+
+### Community 125 - "Community 125"
+Cohesion: 0.47
+Nodes (5): analyse(), ltas(), Loudness-normalised long-term average spectrum, dB, voiced frames only., BETWEEN = scene i vs scene j (different words, and possibly a different take)., read_wav()
+
+### Community 126 - "Community 126"
+Cohesion: 0.40
+Nodes (5): coverage, lessons, not_observed, observed, reg
+
+### Community 127 - "Community 127"
+Cohesion: 0.40
+Nodes (5): snap_all, avgBest, lessons, phase, teachers
+
+### Community 128 - "Community 128"
+Cohesion: 0.40
+Nodes (5): snap_primary_kindy, avgBest, lessons, phase, teachers
+
+### Community 129 - "Community 129"
+Cohesion: 0.40
+Nodes (5): snap_secondary, avgBest, lessons, phase, teachers
+
+### Community 134 - "Community 134"
+Cohesion: 0.40
+Nodes (4): Decisions, Facts inventory (recon 2026-07-02), Standing constraints picked up in this session, Teacher portal · grill record (LOCKED 2026-07-02)
+
+### Community 135 - "Community 135"
+Cohesion: 0.40
+Nodes (4): certificate, generated, prompts, round_example
+
+### Community 136 - "Community 136"
+Cohesion: 0.40
+Nodes (4): model, note, scenes, voice
+
+### Community 137 - "Community 137"
+Cohesion: 0.40
+Nodes (4): FRAG, html, missing, ROOT
+
+### Community 138 - "Community 138"
+Cohesion: 0.40
+Nodes (4): FRAG, html, missing, ROOT
+
+### Community 139 - "Community 139"
+Cohesion: 0.50
+Nodes (3): AIS Teacher Photo Mirror (Apps Script), Heal / big photo drop, One-time setup (browser editor, as admin.user@ais.ae)
+
+### Community 140 - "Community 140"
+Cohesion: 0.50
+Nodes (3): createdAt, id, name
+
+### Community 141 - "Community 141"
+Cohesion: 0.50
+Nodes (3): createdAt, id, name
+
 ## Ambiguous Edges - Review These
 - `Teacher Observation Pitch Deck (index.html)` → `Curtis All Portrait`  [AMBIGUOUS]
   SPEA Data Report/Curtis All.jpg · relation: conceptually_related_to
@@ -224,9 +613,9 @@ Nodes (6): 2026-06-25 . v3 redesign (redeploy @8), Contract, Dashboard Google Do
   SPEA Data Report/Lana Mosleh.jpg · relation: conceptually_related_to
 
 ## Knowledge Gaps
-- **327 isolated node(s):** `version`, `configurations`, `allow`, `generated`, `round` (+322 more)
+- **789 isolated node(s):** `generated`, `certificate`, `round_example`, `prompts`, `generated` (+784 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **11 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **40 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
@@ -241,7 +630,7 @@ _Questions this graph is uniquely positioned to answer:_
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
 - **What is the exact relationship between `Teacher Observation Pitch Deck (index.html)` and `Lana Mosleh Portrait`?**
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
-- **Why does `ce` connect `TomSelect Plugin Hooks` to `Pitch Deck Build & Bugs`?**
-  _High betweenness centrality (0.027) - this node is a cross-community bridge._
-- **Why does `R3 Evidence Form Master Source` connect `AIS Observation Forms & Scripts` to `TomSelect Item Selection`?**
-  _High betweenness centrality (0.006) - this node is a cross-community bridge._
+- **Why does `$()` connect `Community 45` to `Community 130`, `Community 131`, `TomSelect Item Selection`, `Community 132`, `Community 133`, `Pitch Deck Build & Bugs`, `TomSelect Plugin Hooks`, `TomSelect Option Registration`, `Community 146`, `Community 147`, `Community 148`, `Community 149`, `Community 41`, `Community 43`, `Community 44`, `Community 46`, `Community 50`, `Community 51`, `Community 53`, `Community 54`, `Community 55`, `Community 56`, `Community 57`, `Community 59`, `Community 64`, `Community 74`, `Community 75`, `Community 79`, `Community 86`, `Community 87`, `Community 99`, `Community 108`, `Community 111`, `Community 112`, `Community 113`, `Community 115`, `Community 116`?**
+  _High betweenness centrality (0.107) - this node is a cross-community bridge._
+- **Why does `ce` connect `TomSelect Plugin Hooks` to `Community 65`, `Pitch Deck Build & Bugs`, `Community 67`, `Community 109`, `Community 52`, `Community 87`, `Community 58`?**
+  _High betweenness centrality (0.026) - this node is a cross-community bridge._
