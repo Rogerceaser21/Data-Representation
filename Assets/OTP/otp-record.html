@@ -1930,6 +1930,7 @@ body.is-viewer .cog-btn { display: none; }
 /* SP1 rubric. Equal column widths; the table scrolls inside its own wrapper on
    narrow screens so the page body never scrolls horizontally. */
 .rub-wrap {
+  margin: 0 calc(-1 * clamp(1.4rem, 3vw, 2.6rem) + 4px);
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   border: 1px solid var(--rule);
@@ -1938,13 +1939,13 @@ body.is-viewer .cog-btn { display: none; }
 }
 .rub-table {
   width: 100%;
-  min-width: 900px;
+  min-width: 700px;
   table-layout: fixed;
   border-collapse: separate;
   border-spacing: 0;
 }
 .rub-table th {
-  width: 16.6667%;
+  width: 20%;
   background: var(--navy);
   color: #ffffff;
   font-family: var(--body-font);
@@ -1952,39 +1953,59 @@ body.is-viewer .cog-btn { display: none; }
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  padding: clamp(0.4rem, 0.8vw, 0.6rem) clamp(0.35rem, 0.7vw, 0.55rem);
+  padding: 0.26rem 0.2rem;
   text-align: center;
   border-right: 1px solid rgba(255, 255, 255, 0.14);
 }
 :root[data-theme="dark"] .rub-table th { background: var(--navy-edge); color: var(--paper); }
 .rub-table th:last-child { border-right: none; }
+.rub-table tr.rub-caption th {
+  width: auto;
+  text-align: left;
+  text-transform: none;
+  letter-spacing: 0;
+  background: var(--surface-soft);
+  color: var(--paper);
+  border-right: none;
+  border-bottom: 1px solid var(--rule-soft);
+  padding: 0.26rem 0.4rem;
+  font-size: var(--small);
+  font-weight: 400;
+}
+:root[data-theme="dark"] .rub-table tr.rub-caption th { background: var(--surface-soft); color: var(--paper); }
+.rub-cap-k {
+  font-size: var(--tiny);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--navy);
+  margin-right: 0.7rem;
+}
+:root[data-theme="dark"] .rub-cap-k { color: var(--paper); }
+.rub-cap-v {
+  font-family: var(--display-font);
+  font-size: var(--body);
+}
 .rub-table td {
   vertical-align: top;
-  padding: clamp(0.35rem, 0.7vw, 0.55rem);
+  padding: 0.12rem;
   border-right: 1px solid var(--rule-soft);
   border-top: 1px solid var(--rule-soft);
 }
 .rub-table td:last-child { border-right: none; }
-.rub-aspect {
-  font-family: var(--display-font);
-  font-size: var(--body);
-  line-height: 1.35;
-  color: var(--paper);
-  background: var(--surface-soft);
-}
-.rub-cell { display: flex; flex-direction: column; gap: 0.35rem; }
+.rub-cell { display: flex; flex-direction: column; gap: 0.14rem; }
 .rub-chip {
   display: block;
   width: 100%;
   text-align: left;
   font-family: var(--body-font);
-  font-size: var(--tiny);
-  line-height: 1.35;
+  font-size: calc(var(--tiny) - 2px);
+  line-height: 1.25;
   color: var(--paper);
   background: var(--surface-soft);
   border: 1px solid var(--rule);
-  border-radius: 0.4rem;
-  padding: 0.45rem 0.55rem;
+  border-radius: 0.25rem;
+  padding: 0.2rem 0.28rem;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition: background 0.16s ease, color 0.16s ease, border-color 0.16s ease;
@@ -4249,13 +4270,15 @@ body.is-viewer .cog-btn { display: none; }
     const head = document.getElementById('rubric-head');
     const row = document.getElementById('rubric-row');
     if (!head || !row) return;
-    const th0 = document.createElement('th');
-    th0.textContent = 'Aspect of Practice';
-    head.appendChild(th0);
-    const td0 = document.createElement('td');
-    td0.className = 'rub-aspect';
-    td0.textContent = SP1.aspect;
-    row.appendChild(td0);
+    const cap = document.createElement('tr');
+    cap.className = 'rub-caption';
+    const capTh = document.createElement('th');
+    capTh.colSpan = SP1.levels.length;
+    const capK = document.createElement('span'); capK.className = 'rub-cap-k'; capK.textContent = 'Aspect of Practice';
+    const capV = document.createElement('span'); capV.className = 'rub-cap-v'; capV.textContent = SP1.aspect;
+    capTh.appendChild(capK); capTh.appendChild(capV);
+    cap.appendChild(capTh);
+    head.parentNode.insertBefore(cap, head);
     SP1.levels.forEach(l => {
       const th = document.createElement('th');
       th.textContent = l.label;

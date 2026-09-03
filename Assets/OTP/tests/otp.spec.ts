@@ -391,3 +391,26 @@ test('the removed R3 fields are absent from the DOM', async ({ page }) => {
 
   expect(h.errors).toEqual([]);
 });
+
+test('rubric layout v2: caption row above the levels, five even columns, edge-to-edge, chips 2px smaller', async ({ page }) => {
+  await harness(page);
+  await openForm(page);
+  const table = page.locator('.rub-table');
+  await expect(table.locator('thead tr').first()).toHaveClass(/rub-caption/);
+  await expect(table.locator('tr.rub-caption th')).toHaveAttribute('colspan', '5');
+  await expect(table.locator('tr.rub-caption')).toContainText('Facilitating better than expected progress');
+  await expect(page.locator('.rub-aspect')).toHaveCount(0);
+  await expect(page.locator('#rubric-head th')).toHaveCount(5);
+  const widths = await page.locator('#rubric-head th').evaluateAll(ths => ths.map(t => t.getBoundingClientRect().width));
+  expect(Math.max(...widths) - Math.min(...widths)).toBeLessThan(2);
+  const wrap = await page.locator('.rub-wrap').boundingBox();
+  const title = await page.locator('.rub-wrap').locator('xpath=preceding-sibling::h2[1]').boundingBox();
+  expect(wrap!.width).toBeGreaterThan(title!.width + 20);
+  const px = await page.evaluate(() => {
+    const probe = document.createElement('span'); probe.style.fontSize = 'var(--tiny)'; document.body.appendChild(probe);
+    const tiny = parseFloat(getComputedStyle(probe).fontSize); probe.remove();
+    return { tiny, chip: parseFloat(getComputedStyle(document.querySelector('.rub-chip')!).fontSize) };
+  });
+  expect(Math.abs(px.tiny - 2 - px.chip)).toBeLessThan(0.1);
+  expect(await page.evaluate(() => document.scrollingElement!.scrollWidth - document.scrollingElement!.clientWidth)).toBe(0);
+});
