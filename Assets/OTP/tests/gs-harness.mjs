@@ -339,9 +339,17 @@ function otpRow(token) {
   });
 }
 
+// 2026-09-03 deploy: the live tabs were renamed 'Teachers 25-26' / 'Inspectors 25-26'
+// (the current code reads those); the un-suffixed names stay seeded so the
+// origin/main baseline (which still reads 'Teachers' / 'Inspectors') sees the
+// same rows and the byte-identity comparison stays meaningful.
+const R3_TEACHERS_ROWS = [['name'], ['R3 Teacher One'], ['R3 Teacher Two']];
+const R3_INSPECTORS_ROWS = [['Inspector', 'Email'], ['Dave Richards', 'dave.richards@ais.ae'], ['Hayden Ryan', 'hayden.ryan@ais.ae']];
 const ROSTER_R3 = {
-  Teachers: [['name'], ['R3 Teacher One'], ['R3 Teacher Two']],
-  Inspectors: [['Inspector', 'Email'], ['Dave Richards', 'dave.richards@ais.ae'], ['Hayden Ryan', 'hayden.ryan@ais.ae']],
+  Teachers: R3_TEACHERS_ROWS,
+  Inspectors: R3_INSPECTORS_ROWS,
+  'Teachers 25-26': R3_TEACHERS_ROWS,
+  'Inspectors 25-26': R3_INSPECTORS_ROWS,
   Curriculum: [['Curriculum'], ['Australian'], ['Ministry']],
   Subjects: [
     ['Subject', 'Yes/No', 'Kindy', 'Primary', 'Secondary'],

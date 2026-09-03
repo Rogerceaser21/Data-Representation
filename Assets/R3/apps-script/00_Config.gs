@@ -11,8 +11,8 @@
  */
 
 const SHEET_NAME_SUBMISSIONS = 'Submissions';
-const SHEET_NAME_TEACHERS    = 'Teachers';
-const SHEET_NAME_INSPECTORS  = 'Inspectors';
+const SHEET_NAME_TEACHERS    = 'Teachers 25-26';   // otp-v0.1 deploy 2026-09-03: tab renamed; 26-27 copy is read by the OTP form
+const SHEET_NAME_INSPECTORS  = 'Inspectors 25-26'; // otp-v0.1 deploy 2026-09-03: tab renamed; 26-27 copy is read by the OTP form
 const SHEET_NAME_CURRICULUM  = 'Curriculum';
 const SHEET_NAME_SUBJECTS    = 'Subjects';
 
