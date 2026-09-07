@@ -173,7 +173,7 @@ function getTabWithFallback(ss, preferred, fallback) {
 }
 
 /**
- * Column layout for the OTP Submissions tab (26 columns).
+ * Column layout for the OTP Submissions tab (29 columns).
  *
  * Order is load-bearing once the header row is written (hard rule 1). To add
  * columns, append at the end. Never reorder or insert in the middle.
@@ -192,7 +192,11 @@ function getOtpColumns() {
     'sp1_selected_text',
     'observer_comments', 'other_observations',
     'next_step_1', 'next_step_2', 'next_step_3',
-    'record_token', 'evidence_pad_id'
+    'record_token', 'evidence_pad_id',
+    // otp-v0.2: sp1_present / sp1_partially_present / sp1_not_present hold
+    // the rubric chips' colour state, grouped by criterion. Append-only, per
+    // the rule above.
+    'sp1_present', 'sp1_partially_present', 'sp1_not_present'
   ];
 }
 

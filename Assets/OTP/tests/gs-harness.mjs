@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * otp-v0.1 · Apps Script harness for Assets/R3/apps-script/*.gs
+ * otp-v0.2 · Apps Script harness for Assets/R3/apps-script/*.gs
  *
  *   node Assets/OTP/tests/gs-harness.mjs
  *
@@ -9,9 +9,9 @@
  * PropertiesService, CacheService, UrlFetchApp, MailApp, Utilities, Logger and
  * ContentService, then proves four things:
  *
- *   (a) an OTP submission appends ONE 26-cell row to "OTP Submissions" in the
+ *   (a) an OTP submission appends ONE 29-cell row to "OTP Submissions" in the
  *       load-bearing column order, mails the OTP subject + viewer link, and
- *       mirrors to /rest/v1/rpc/ingest_otp as { payload: {...26 keys...} };
+ *       mirrors to /rest/v1/rpc/ingest_otp as { payload: {...29 keys...} };
  *   (b) the R3 paths (submit, options, token lookup, status) are byte-identical
  *       to the SAME scenarios run against the untouched files from origin/main;
  *   (c) ?action=options&form=otp reads the 26-27 roster tabs, falls back to the
@@ -50,7 +50,8 @@ const EXPECTED_OTP_COLUMNS = [
   'support_teachers_cas', 'otp_ref', 'otp_aspect',
   'sp1_beginner', 'sp1_emerging', 'sp1_good', 'sp1_great', 'sp1_outstanding',
   'sp1_selected_text', 'observer_comments', 'other_observations',
-  'next_step_1', 'next_step_2', 'next_step_3', 'record_token', 'evidence_pad_id'
+  'next_step_1', 'next_step_2', 'next_step_3', 'record_token', 'evidence_pad_id',
+  'sp1_present', 'sp1_partially_present', 'sp1_not_present'
 ];
 
 const OTP_PAYLOAD = {
@@ -67,11 +68,14 @@ const OTP_PAYLOAD = {
   otp_ref: 'SP1',
   otp_aspect: 'Facilitating better than expected progress',
   sp1_beginner: '',
-  sp1_emerging: '2',
-  sp1_good: '1,3',
+  sp1_emerging: '2:not present',
+  sp1_good: '1:present, 3:partially present',
   sp1_great: '',
-  sp1_outstanding: '4',
-  sp1_selected_text: 'Good 1: Pupils make progress | Good 3: Tasks are matched',
+  sp1_outstanding: '4:present',
+  sp1_selected_text: 'Emerging 2 (Not present): Pupils need adult prompts to move on | Good 1 (Present): Pupils make progress | Good 3 (Partially present): Tasks are matched | Outstanding 4 (Present): Pupils independently apply prior learning',
+  sp1_present: 'Good 1, Outstanding 4',
+  sp1_partially_present: 'Good 3',
+  sp1_not_present: 'Emerging 2',
   observer_comments: 'Strong start, retrieval routine embedded.',
   other_observations: 'Display used as a working wall.',
   next_step_1: 'Plan a stretch task for the top table.',
@@ -422,7 +426,7 @@ function eqJson(actual, expected, label) {
 }
 function section(t) { console.log('\n' + t); }
 
-console.log('AIS Apps Script harness · otp-v0.1');
+console.log('AIS Apps Script harness · otp-v0.2');
 console.log('files: ' + GS_FILES.join(', '));
 console.log('baseline: origin/main (' + execSync('git rev-parse --short origin/main', { cwd: REPO }).toString().trim() + ') -> ' + BASE_DIR);
 
@@ -437,10 +441,10 @@ section('(a) OTP submission · row + email + Supabase mirror');
   const row = tab[1] || [];
   const idx = (c) => EXPECTED_OTP_COLUMNS.indexOf(c);
 
-  eqJson(env.ctx.getOtpColumns(), EXPECTED_OTP_COLUMNS, 'getOtpColumns() is the 26-column contract, in order');
+  eqJson(env.ctx.getOtpColumns(), EXPECTED_OTP_COLUMNS, 'getOtpColumns() is the 29-column contract, in order');
   ok(tab.length === 2, 'OTP Submissions holds exactly one header + ONE appended row', 'rows: ' + tab.length);
   eqJson(header, EXPECTED_OTP_COLUMNS, 'header row written in the load-bearing column order');
-  ok(row.length === 26, 'appended row has 26 cells', 'cells: ' + row.length);
+  ok(row.length === 29, 'appended row has 29 cells', 'cells: ' + row.length);
   ok(/^AIS-OTP-\d{8}-\d{6}$/.test(row[idx('record_id')]), 'record_id is a fresh AIS-OTP-YYYYMMDD-HHMMSS id', 'got: ' + row[idx('record_id')]);
   ok(/^[0-9a-f]{32}$/.test(row[idx('record_token')]), 'record_token is 32 hex chars', 'got: ' + row[idx('record_token')]);
   ok(row[idx('observer')] === OTP_PAYLOAD.inspector, 'observer column <- payload.inspector', 'got: ' + row[idx('observer')]);
@@ -449,7 +453,7 @@ section('(a) OTP submission · row + email + Supabase mirror');
   const fieldsOk = ['teacher', 'curriculum', 'room_number', 'time_in', 'subject', 'school', 'support_teachers_cas',
     'otp_ref', 'otp_aspect', 'sp1_beginner', 'sp1_emerging', 'sp1_good', 'sp1_great', 'sp1_outstanding',
     'sp1_selected_text', 'observer_comments', 'other_observations', 'next_step_1', 'next_step_2', 'next_step_3',
-    'evidence_pad_id'].filter((k) => row[idx(k)] !== OTP_PAYLOAD[k]);
+    'evidence_pad_id', 'sp1_present', 'sp1_partially_present', 'sp1_not_present'].filter((k) => row[idx(k)] !== OTP_PAYLOAD[k]);
   eqJson(fieldsOk, [], 'every posted OTP field landed in its own column');
   ok(!dump.sheets['Submissions'], 'the R3 Submissions tab was never touched by an OTP post');
   eqJson(out, { success: true, id: row[idx('record_id')] }, 'response is { success:true, id } exactly like R3');
@@ -461,7 +465,8 @@ section('(a) OTP submission · row + email + Supabase mirror');
   ok(mail.cc === 'dave.richards2627@ais.ae', 'observer CC resolved over the Inspectors 26-27 tab', 'got: ' + mail.cc);
   const viewerLink = 'https://rogerceaser21.github.io/Data-Representation/Assets/OTP/otp-record.html?token=' + row[idx('record_token')];
   ok(String(mail.htmlBody).indexOf(viewerLink) > -1, 'email body carries the OTP viewer link (token only)', 'looked for: ' + viewerLink);
-  const labelsMissing = ['Observer Comments', 'Other Observations', 'Next Steps / Support 1', 'Selected criteria', 'Support teachers / CAs']
+  const labelsMissing = ['Observer Comments', 'Other Observations', 'Next Steps / Support 1', 'Selected criteria', 'Support teachers / CAs',
+    'Present in lesson', 'Partially present', 'Not present']
     .filter((l) => String(mail.htmlBody).indexOf(l) < 0);
   eqJson(labelsMissing, [], 'email body lists the OTP columns with readable labels');
 
@@ -469,7 +474,7 @@ section('(a) OTP submission · row + email + Supabase mirror');
   ok(ingest.length === 1, 'exactly one Supabase mirror call, to /rest/v1/rpc/ingest_otp', 'urls: ' + JSON.stringify(dump.fetches.map((f) => f.url)));
   const body = JSON.parse((ingest[0] || {}).payload || '{}');
   eqJson(Object.keys(body), ['payload'], 'mirror body is { payload: ... }');
-  eqJson(Object.keys(body.payload || {}), EXPECTED_OTP_COLUMNS, 'mirror payload carries the 26 columns, in order');
+  eqJson(Object.keys(body.payload || {}), EXPECTED_OTP_COLUMNS, 'mirror payload carries the 29 columns, in order');
   eqJson(EXPECTED_OTP_COLUMNS.map((c) => body.payload[c]), row, 'mirror payload is a field-for-field copy of the Sheet row');
   ok((ingest[0] || {}).headers.apikey === SECRET, 'mirror authenticates with the service_role key from Script Properties');
   ok(dump.fetches.every((f) => f.url.indexOf('/rest/v1/rpc/ingest_r3') < 0), 'the R3 ingest RPC was never called for an OTP post');
@@ -556,6 +561,32 @@ section('(d) token lookup · form=otp vs no form');
     const wrong = JSON.parse(padEnv.ctx.doGet({ parameter: { action: 'pad_image', token: 'deadbeef' + '0'.repeat(24), name: 'page-1.jpg' } }).getContent());
     eqJson(wrong, { success: false, error: 'Record not found' }, 'pad_image wrong token still a generic miss with the ' + label);
   }
+}
+
+/* (e) header heal ---------------------------------------------------------- */
+section('(e) header heal · a pre-existing v0.1 26-column OTP tab gains the 3 new trailing columns');
+{
+  const OLD_OTP_COLUMNS = EXPECTED_OTP_COLUMNS.slice(0, 26);
+  const OLD_OTP_ROW = OLD_OTP_COLUMNS.map((c) => {
+    if (c === 'record_token') return '11223344556677889900aabbccddeeff';
+    if (c === 'record_id') return 'AIS-OTP-20260801-070000';
+    if (c === 'teacher') return 'Old OTP Teacher';
+    if (c === 'observer') return 'Hayden Ryan';
+    if (c === 'observation_date') return '2026-08-01';
+    return '';
+  });
+  const env = buildEnv(SRC_NEW, JSON.parse(JSON.stringify({
+    ...ROSTER_R3,
+    'OTP Submissions': [OLD_OTP_COLUMNS, OLD_OTP_ROW]
+  })));
+  env.ctx.doPost({ postData: { contents: JSON.stringify(OTP_PAYLOAD) } });
+  const tab = env.dump().sheets['OTP Submissions'] || [];
+
+  ok(tab.length === 3, 'healed tab holds header + the untouched old row + the new appended row', 'rows: ' + tab.length);
+  eqJson(tab[0], EXPECTED_OTP_COLUMNS, 'header healed to the 29-column contract, in order');
+  eqJson((tab[0] || []).slice(26), ['sp1_present', 'sp1_partially_present', 'sp1_not_present'], 'the 3 new header cells land in positions 27-29');
+  eqJson(tab[1], OLD_OTP_ROW, 'the pre-existing v0.1 row keeps its original 26 cells untouched');
+  ok((tab[2] || []).length === 29, 'the newly appended row has 29 cells', 'cells: ' + (tab[2] || []).length);
 }
 
 section('');

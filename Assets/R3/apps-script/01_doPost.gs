@@ -299,7 +299,7 @@ function formatStampSafe(iso) {
 /* ─────────────────────────────────────────────────────────────────────────────
  * otp-v0.1 · Progress in Lessons OTP submissions.
  *
- * Same shape as the R3 path above, on its own tab and its own 26-column schema:
+ * Same shape as the R3 path above, on its own tab and its own 29-column schema:
  *   Sheet row first (source of truth)  →  backup email (CC the observer)
  *   →  Supabase mirror, each side effect inside its own try/catch so a failure
  *   is logged and swallowed and the observer never sees an error (rules 12/14).
@@ -476,6 +476,9 @@ function buildOtpSubmissionHtml(recordId, lockedUrl, submittedAt, data) {
   html += row('Great',                  data.sp1_great);
   html += row('Outstanding',            data.sp1_outstanding);
   html += row('Selected criteria',      data.sp1_selected_text);
+  html += row('Present in lesson',      data.sp1_present);
+  html += row('Partially present',      data.sp1_partially_present);
+  html += row('Not present',            data.sp1_not_present);
 
   html += sectionTitle('Observer notes');
   html += row('Observer Comments',      data.observer_comments);
