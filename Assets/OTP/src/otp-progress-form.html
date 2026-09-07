@@ -2029,38 +2029,6 @@ body.is-viewer .cog-btn { display: none; }
   color: #ffffff;
 }
 .form-container.is-locked .rub-chip { cursor: default; }
-/* Caption row: title + aspect left, the legend toggle pushed to the right end. */
-.rub-cap { display: flex; align-items: center; gap: 0.4rem; }
-.rub-info {
-  margin-left: auto;
-  flex: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.32rem;
-  font-family: var(--body-font);
-  font-size: calc(var(--tiny) - 2px);
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--navy);
-  background: var(--card-bg);
-  border: 1px solid var(--rule);
-  border-radius: 0.25rem;
-  padding: 0.14rem 0.34rem;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-}
-:root[data-theme="dark"] .rub-info { color: var(--paper); }
-.rub-info-sw {
-  display: block;
-  width: 14px;
-  height: 14px;
-  border-radius: 2px;
-  background: linear-gradient(
-    var(--rate-success) 0 33.34%,
-    var(--ais-yellow) 33.34% 66.67%,
-    var(--ais-red) 66.67% 100%);
-}
 .rub-table tr.rub-legend th {
   width: auto;
   text-align: left;
@@ -2117,7 +2085,7 @@ body.is-viewer .cog-btn { display: none; }
 </button>
 
 <!-- Floating quick-links (v0.38). Open in a new tab so form entries are kept. -->
-<a class="float-link agenda" href="https://docs.google.com/document/d/1CeO6AHhRx7_JhyskIw7m-i-gwpSMzaQMkO0Q-gddTag/edit?tab=t.0" target="_blank" rel="noopener" title="Open the inspection agenda">
+<a class="float-link agenda" href="https://docs.google.com/spreadsheets/d/1CL6zQqxtoXx0MPxjViyiAbwOTPujDkmWCmLD4tJXgcU/edit?gid=0#gid=0" target="_blank" rel="noopener" title="Open the OTP agenda">
   <svg class="fl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
     <path d="M9 2h6a2 2 0 0 1 2 2v0H7v0a2 2 0 0 1 2-2z"/>
     <path d="M7 4H6a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1"/>
@@ -2456,7 +2424,7 @@ body.is-viewer .cog-btn { display: none; }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · Progress in Lessons OTP · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">otp-v0.2</a></span>
+    <span>Form · Progress in Lessons OTP · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">otp-v0.3</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -4388,55 +4356,11 @@ body.is-viewer .cog-btn { display: none; }
     cap.className = 'rub-caption';
     const capTh = document.createElement('th');
     capTh.colSpan = SP1.levels.length;
-    const capBox = document.createElement('div'); capBox.className = 'rub-cap';
     const capK = document.createElement('span'); capK.className = 'rub-cap-k'; capK.textContent = 'Aspect of Practice';
     const capV = document.createElement('span'); capV.className = 'rub-cap-v'; capV.textContent = SP1.aspect;
-    capBox.appendChild(capK); capBox.appendChild(capV);
-    // otp-v0.2: colour legend, opened from the right end of the caption row.
-    const info = document.createElement('button');
-    info.type = 'button';
-    info.className = 'rub-info';
-    info.setAttribute('aria-expanded', 'false');
-    info.setAttribute('aria-controls', 'rubric-legend');
-    const infoSw = document.createElement('span');
-    infoSw.className = 'rub-info-sw';
-    infoSw.setAttribute('aria-hidden', 'true');
-    info.appendChild(infoSw);
-    info.appendChild(document.createTextNode('Info'));
-    capBox.appendChild(info);
-    capTh.appendChild(capBox);
+    capTh.appendChild(capK); capTh.appendChild(capV);
     cap.appendChild(capTh);
     head.parentNode.insertBefore(cap, head);
-    // The legend is a table row, so the rubric's scroll wrapper can never clip
-    // it and nothing has to be positioned in JS.
-    const leg = document.createElement('tr');
-    leg.className = 'rub-legend';
-    leg.id = 'rubric-legend';
-    leg.hidden = true;
-    const legTh = document.createElement('th');
-    legTh.colSpan = SP1.levels.length;
-    const legBox = document.createElement('div'); legBox.className = 'rub-legend-row';
-    RUB_LEGEND.forEach(item => {
-      const wrap = document.createElement('span'); wrap.className = 'rub-legend-item';
-      const sw = document.createElement('span');
-      sw.className = 'rub-legend-sw';
-      sw.dataset.state = item.state;
-      sw.setAttribute('aria-hidden', 'true');
-      wrap.appendChild(sw);
-      wrap.appendChild(document.createTextNode(item.text));
-      legBox.appendChild(wrap);
-    });
-    const hint = document.createElement('span'); hint.className = 'rub-legend-hint'; hint.textContent = RUB_HINT;
-    legBox.appendChild(hint);
-    legTh.appendChild(legBox);
-    leg.appendChild(legTh);
-    cap.parentNode.insertBefore(leg, cap.nextSibling);
-    // Stays live on a locked record: lockForm only disables input/textarea/select.
-    info.addEventListener('click', () => {
-      const opening = leg.hidden;
-      leg.hidden = !opening;
-      info.setAttribute('aria-expanded', opening ? 'true' : 'false');
-    });
     SP1.levels.forEach(l => {
       const th = document.createElement('th');
       th.textContent = l.label;
@@ -4458,6 +4382,31 @@ body.is-viewer .cog-btn { display: none; }
       td.appendChild(box);
       row.appendChild(td);
     });
+    // otp-v0.3: permanent colour legend, last row of thead (between the level
+    // headers and the first tbody row of chips). The legend is a table row,
+    // so the rubric's scroll wrapper can never clip it and nothing has to be
+    // positioned in JS.
+    const leg = document.createElement('tr');
+    leg.className = 'rub-legend';
+    leg.id = 'rubric-legend';
+    const legTh = document.createElement('th');
+    legTh.colSpan = SP1.levels.length;
+    const legBox = document.createElement('div'); legBox.className = 'rub-legend-row';
+    RUB_LEGEND.forEach(item => {
+      const wrap = document.createElement('span'); wrap.className = 'rub-legend-item';
+      const sw = document.createElement('span');
+      sw.className = 'rub-legend-sw';
+      sw.dataset.state = item.state;
+      sw.setAttribute('aria-hidden', 'true');
+      wrap.appendChild(sw);
+      wrap.appendChild(document.createTextNode(item.text));
+      legBox.appendChild(wrap);
+    });
+    const hint = document.createElement('span'); hint.className = 'rub-legend-hint'; hint.textContent = RUB_HINT;
+    legBox.appendChild(hint);
+    legTh.appendChild(legBox);
+    leg.appendChild(legTh);
+    head.parentNode.insertBefore(leg, head.nextSibling);
     row.addEventListener('click', e => {
       const chip = e.target.closest('.rub-chip');
       if (!chip || !row.contains(chip)) return;

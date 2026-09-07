@@ -1,5 +1,5 @@
 /**
- * otp-v0.2 · Progress in Lessons OTP form
+ * otp-v0.3 · Progress in Lessons OTP form
  *
  * Tests the BUILT artifacts (the StatiCrypt-gated form and the ungated record
  * viewer), not the master, because the master's relative paths (../R3/lib/,
@@ -205,7 +205,7 @@ test('renders all 26 SP1 rubric chips verbatim, in order', async ({ page }) => {
   );
   await expect(page.locator('tr.rub-caption .rub-cap-k')).toHaveText('Aspect of Practice');
   await expect(page.locator('tr.rub-caption .rub-cap-v')).toHaveText(RUBRIC.aspect);
-  await expect(page.locator('.form-footer')).toContainText('otp-v0.2');
+  await expect(page.locator('.form-footer')).toContainText('otp-v0.3');
 
   expect(h.errors).toEqual([]);
 });
@@ -507,23 +507,14 @@ test('the three recorded states paint the AIS state colours in the light theme',
   expect(h.errors).toEqual([]);
 });
 
-test('the Info button opens the colour legend, on the form and on a record', async ({ page }) => {
+test('the colour legend is a permanent strip under the level headers; the Info button is gone', async ({ page }) => {
   const h = await harness(page);
   await openForm(page);
 
-  const info = page.locator('.rub-info');
   const legend = page.locator('#rubric-legend');
 
-  // the button lives in the caption row; the legend is its own header row, so
-  // the rubric's scroll wrapper can never clip it
-  await expect(page.locator('tr.rub-caption .rub-cap .rub-info')).toHaveCount(1);
-  await expect(info).toHaveAttribute('aria-controls', 'rubric-legend');
-  await expect(info).toHaveAttribute('aria-expanded', 'false');
-  await expect(legend).toBeHidden();
-
-  await info.click();
+  // visible on load, no toggle to click
   await expect(legend).toBeVisible();
-  await expect(info).toHaveAttribute('aria-expanded', 'true');
   expect(await legend.locator('.rub-legend-item').allTextContents()).toEqual([
     'Green: present in lesson',
     'Yellow: partially present in lesson',
@@ -533,17 +524,41 @@ test('the Info button opens the colour legend, on the form and on a record', asy
     'Tap a criterion to mark it green; tap again for yellow, again for red; a fourth tap clears it.'
   );
 
-  await info.click();
-  await expect(legend).toBeHidden();
-  await expect(info).toHaveAttribute('aria-expanded', 'false');
+  // last row of thead: immediately after #rubric-head, before the first tbody row
+  const rowOrder = await page.evaluate(() => {
+    const table = document.querySelector('.rub-table')!;
+    const theadIds = Array.from(table.querySelector('thead')!.children).map(
+      (tr) => tr.id || tr.className
+    );
+    const legendEl = document.getElementById('rubric-legend')!;
+    return {
+      theadIds,
+      legendParentTag: legendEl.parentElement!.tagName,
+      legendIsLastInThead: legendEl.nextElementSibling === null,
+      firstTbodyRowId: table.querySelector('tbody')!.firstElementChild!.id,
+    };
+  });
+  expect(rowOrder.theadIds).toEqual(['rub-caption', 'rubric-head', 'rubric-legend']);
+  expect(rowOrder.legendParentTag).toBe('THEAD');
+  expect(rowOrder.legendIsLastInThead).toBe(true);
+  expect(rowOrder.firstTbodyRowId).toBe('rubric-row');
 
-  // and it still opens on a locked record view (lockForm disables fields only)
+  // no Info button, no wrapper div, anywhere in the rubric
+  await expect(page.locator('.rub-info')).toHaveCount(0);
+  await expect(page.locator('.rub-cap')).toHaveCount(0);
+
+  // the Agenda button now opens the OTP Sheet, not the inherited R3 agenda Doc
+  await expect(page.locator('a.float-link.agenda')).toHaveAttribute(
+    'href',
+    'https://docs.google.com/spreadsheets/d/1CL6zQqxtoXx0MPxjViyiAbwOTPujDkmWCmLD4tJXgcU/edit?gid=0#gid=0'
+  );
+
+  // and the same permanent legend shows on a locked record view
   await page.goto(RECORD_URL + '?token=abc');
   await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 20_000 });
-  await expect(page.locator('#rubric-legend')).toBeHidden();
-  await page.locator('.rub-info').click();
   await expect(page.locator('#rubric-legend')).toBeVisible();
   await expect(page.locator('#rubric-legend')).toContainText('Yellow: partially present in lesson');
+  await expect(page.locator('.rub-info')).toHaveCount(0);
 
   expect(h.errors).toEqual([]);
 });

@@ -1,4 +1,4 @@
-# Progress in Lessons OTP form · otp-v0.2
+# Progress in Lessons OTP form · otp-v0.3
 
 Third AIS observation form: **Lesson Observation form WHOLE SCHOOL, Observation
 against the Outstanding Teacher Profile**. It is a COPY of the R3 Evidence form
@@ -22,10 +22,10 @@ practice through observational support and coaching.
    verbatim as a JS constant, no runtime fetch). otp-v0.2: the chip colour is
    RECORDED DATA, not an on/off toggle. Each tap cycles the criterion clear ->
    green (present in lesson) -> yellow (partially present in lesson) -> red (not
-   present in lesson) -> clear; any number of chips across any columns. An
-   **Info** button at the right end of the "Aspect of Practice" caption row
-   opens a legend row explaining the three colours; it stays usable on a locked
-   record view.
+   present in lesson) -> clear; any number of chips across any columns.
+   otp-v0.3: the colour legend is a permanent strip directly under the level
+   headers (Beginner..Outstanding) and above the chip row, always visible on
+   the form and on a locked record view; there is no Info button.
 4. Five Observer Notes blocks, each with the Evidence Pad pencil button and the
    pad-pages paperclip: Observer Comments, Other Observations, and Next Steps /
    Support 1-3.
@@ -101,6 +101,10 @@ ungated viewer) with every `script.google.com` / `supabase.co` call mocked.
 
 ## Changelog
 
+- **otp-v0.3** · The colour legend became a permanent strip under the level
+  headers instead of behind a toggle; the Info button is removed. The floating
+  Agenda button now opens the OTP Sheet instead of the inherited R3 inspection
+  agenda Doc.
 - **otp-v0.2** · SP1 chips became a four-state tap cycle whose colour is
   recorded data (clear / green present / yellow partially present / red not
   present), plus an Info button opening a colour legend row in the rubric head.
