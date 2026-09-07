@@ -1961,7 +1961,7 @@ body.is-viewer .cog-btn { display: none; }
 .rub-table th:last-child { border-right: none; }
 .rub-table tr.rub-caption th {
   width: auto;
-  text-align: left;
+  text-align: center;
   text-transform: none;
   letter-spacing: 0;
   background: var(--surface-soft);
@@ -2042,7 +2042,10 @@ body.is-viewer .cog-btn { display: none; }
   font-size: calc(var(--tiny) - 1px);
   font-weight: 400;
 }
-.rub-legend-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem 1rem; }
+.rub-legend-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-evenly; gap: 0.2rem 1rem; }
+/* otp-v0.4: a zero-height full-width flex item after the three colour items
+   forces the tap hint onto its own line, where space-evenly centres it. */
+.rub-legend-row::after { content: ''; flex-basis: 100%; height: 0; order: 1; }
 .rub-legend-item { display: inline-flex; align-items: center; gap: 0.34rem; }
 .rub-legend-sw {
   display: block;
@@ -2051,7 +2054,16 @@ body.is-viewer .cog-btn { display: none; }
   border-radius: 2px;
   border: 1px solid var(--rule);
 }
-.rub-legend-hint { opacity: 0.78; }
+.rub-legend-hint {
+  order: 2;
+  padding: 0.16rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(18, 87, 255, 0.09);
+  border: 1px solid rgba(18, 87, 255, 0.28);
+  color: var(--paper);
+  font-weight: 600;
+}
+:root[data-theme="dark"] .rub-legend-hint { background: rgba(18, 87, 255, 0.2); border-color: rgba(18, 87, 255, 0.5); }
 @media print {
   .rub-wrap { overflow: visible; }
   .rub-table { min-width: 0; }
@@ -2424,7 +2436,7 @@ body.is-viewer .cog-btn { display: none; }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · Progress in Lessons OTP · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">otp-v0.3</a></span>
+    <span>Form · Progress in Lessons OTP · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">otp-v0.4</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>

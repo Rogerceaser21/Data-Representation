@@ -1,5 +1,5 @@
 /**
- * otp-v0.3 · Progress in Lessons OTP form
+ * otp-v0.4 · Progress in Lessons OTP form
  *
  * Tests the BUILT artifacts (the StatiCrypt-gated form and the ungated record
  * viewer), not the master, because the master's relative paths (../R3/lib/,
@@ -205,7 +205,7 @@ test('renders all 26 SP1 rubric chips verbatim, in order', async ({ page }) => {
   );
   await expect(page.locator('tr.rub-caption .rub-cap-k')).toHaveText('Aspect of Practice');
   await expect(page.locator('tr.rub-caption .rub-cap-v')).toHaveText(RUBRIC.aspect);
-  await expect(page.locator('.form-footer')).toContainText('otp-v0.3');
+  await expect(page.locator('.form-footer')).toContainText('otp-v0.4');
 
   expect(h.errors).toEqual([]);
 });
@@ -542,6 +542,45 @@ test('the colour legend is a permanent strip under the level headers; the Info b
   expect(rowOrder.legendParentTag).toBe('THEAD');
   expect(rowOrder.legendIsLastInThead).toBe(true);
   expect(rowOrder.firstTbodyRowId).toBe('rubric-row');
+
+  // otp-v0.4: caption centred; the three colour items spread evenly and
+  // centred; the tap hint on its own centred line below them, as a quiet pill
+  const geo = await page.evaluate(() => {
+    const capTh = document.querySelector('tr.rub-caption th')!;
+    const capK = capTh.querySelector('.rub-cap-k')!.getBoundingClientRect();
+    const capV = capTh.querySelector('.rub-cap-v')!.getBoundingClientRect();
+    const capRect = capTh.getBoundingClientRect();
+    const row = document.querySelector('.rub-legend-row')!;
+    const rowRect = row.getBoundingClientRect();
+    const items = Array.from(row.querySelectorAll('.rub-legend-item')).map((el) =>
+      el.getBoundingClientRect()
+    );
+    const hintEl = row.querySelector('.rub-legend-hint')!;
+    const hint = hintEl.getBoundingClientRect();
+    const hintCs = getComputedStyle(hintEl);
+    return {
+      capAlign: getComputedStyle(capTh).textAlign,
+      capCentreDelta: Math.abs((capK.left + capV.right) / 2 - (capRect.left + capRect.right) / 2),
+      justify: getComputedStyle(row).justifyContent,
+      itemsOnOneLine: Math.max(...items.map((r) => r.top)) - Math.min(...items.map((r) => r.top)) < 2,
+      spreadDelta: Math.abs(items[0].left - rowRect.left - (rowRect.right - items[items.length - 1].right)),
+      hintBelowItems: hint.top >= Math.max(...items.map((r) => r.bottom)),
+      hintCentreDelta: Math.abs((hint.left + hint.right) / 2 - (rowRect.left + rowRect.right) / 2),
+      hintIsPill: hint.width < rowRect.width * 0.9 && parseFloat(hintCs.borderRadius) > 20,
+      hintBg: hintCs.backgroundColor,
+      hintWeight: hintCs.fontWeight,
+    };
+  });
+  expect(geo.capAlign).toBe('center');
+  expect(geo.capCentreDelta).toBeLessThan(2);
+  expect(geo.justify).toBe('space-evenly');
+  expect(geo.itemsOnOneLine).toBe(true);
+  expect(geo.spreadDelta).toBeLessThan(2);
+  expect(geo.hintBelowItems).toBe(true);
+  expect(geo.hintCentreDelta).toBeLessThan(2);
+  expect(geo.hintIsPill).toBe(true);
+  expect(geo.hintBg).not.toBe('rgba(0, 0, 0, 0)');
+  expect(geo.hintWeight).toBe('600');
 
   // no Info button, no wrapper div, anywhere in the rubric
   await expect(page.locator('.rub-info')).toHaveCount(0);
