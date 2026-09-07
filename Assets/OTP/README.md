@@ -1,4 +1,4 @@
-# Progress in Lessons OTP form · otp-v0.1
+# Progress in Lessons OTP form · otp-v0.2
 
 Third AIS observation form: **Lesson Observation form WHOLE SCHOOL, Observation
 against the Outstanding Teacher Profile**. It is a COPY of the R3 Evidence form
@@ -19,8 +19,13 @@ practice through observational support and coaching.
 2. The static Who / What / Why strip from the doc.
 3. **OTP Reference: SP1 Student Progress** rendered as the doc's table, one
    tappable chip per rubric paragraph (26 of them, `rubric-sp1.json` inlined
-   verbatim as a JS constant, no runtime fetch). Tap selects (AIS blue), tap
-   again deselects; any number of chips across any columns.
+   verbatim as a JS constant, no runtime fetch). otp-v0.2: the chip colour is
+   RECORDED DATA, not an on/off toggle. Each tap cycles the criterion clear ->
+   green (present in lesson) -> yellow (partially present in lesson) -> red (not
+   present in lesson) -> clear; any number of chips across any columns. An
+   **Info** button at the right end of the "Aspect of Practice" caption row
+   opens a legend row explaining the three colours; it stays usable on a locked
+   record view.
 4. Five Observer Notes blocks, each with the Evidence Pad pencil button and the
    pad-pages paperclip: Observer Comments, Other Observations, and Next Steps /
    Support 1-3.
@@ -51,13 +56,25 @@ form ("otp"), teacher, curriculum, inspector, date, room_number, time_in,
 subject, school, support_teachers_cas, otp_ref ("SP1"),
 otp_aspect ("Facilitating better than expected progress"),
 sp1_beginner, sp1_emerging, sp1_good, sp1_great, sp1_outstanding,
-sp1_selected_text, observer_comments, other_observations,
+sp1_selected_text, sp1_present, sp1_partially_present, sp1_not_present,
+observer_comments, other_observations,
 next_step_1, next_step_2, next_step_3, evidence_pad_id
 ```
 
-`sp1_<level>` hold 1-based paragraph numbers, comma separated (`"1,3"`, empty
-when none). `sp1_selected_text` is the selected paragraphs as
-`"<Level> <n>: <text>"` joined with `" | "`.
+otp-v0.2 value formats. The three state words are exactly `present`,
+`partially present`, `not present`.
+
+- `sp1_<level>` hold that level's rated criteria as `"n:<state word>"` tokens
+  joined by `", "` in ascending `n` (`"1:present, 3:partially present"`, empty
+  string when none). A bare number is a legacy otp-v0.1 value and reads as
+  `present`.
+- `sp1_selected_text` is `"<Level> <n> (<State>): <paragraph text>"` joined with
+  `" | "`, level order Beginner..Outstanding then ascending `n`, `State`
+  capitalised (`Present` / `Partially present` / `Not present`).
+- `sp1_present`, `sp1_partially_present`, `sp1_not_present` are the same
+  selection grouped by state: `"<Level> <n>"` items joined by `", "` in level
+  order then ascending `n` (`"Good 1, Great 2"`), empty string when none. These
+  three are **appended** Sheet columns (hard rule 1: append, never reorder).
 
 - Options: `WEB_APP_URL + '?action=options&form=otp'` (same response shape as R3).
 - Record view: `otp-record.html?token=...` fetches
@@ -81,3 +98,14 @@ npx playwright test    # config at the repo root, spec at Assets/OTP/tests/otp.s
 
 The spec drives the BUILT artifacts (through the StatiCrypt gate, and the
 ungated viewer) with every `script.google.com` / `supabase.co` call mocked.
+
+## Changelog
+
+- **otp-v0.2** · SP1 chips became a four-state tap cycle whose colour is
+  recorded data (clear / green present / yellow partially present / red not
+  present), plus an Info button opening a colour legend row in the rubric head.
+  Adds the three by-state hidden inputs and Sheet columns `sp1_present`,
+  `sp1_partially_present`, `sp1_not_present`; `sp1_<level>` and
+  `sp1_selected_text` changed shape (legacy otp-v0.1 rows still read as
+  present). Same chip size, layout and feel as v0.1.
+- **otp-v0.1** · First release: R3 v0.58 master copied, content sections swapped.

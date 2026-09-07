@@ -2011,16 +2011,85 @@ body.is-viewer .cog-btn { display: none; }
   transition: background 0.16s ease, color 0.16s ease, border-color 0.16s ease;
 }
 .rub-chip:hover { background: var(--surface-mid); }
-.rub-chip[aria-pressed="true"] {
-  background: var(--ais-blue);
-  border-color: var(--ais-blue);
+/* otp-v0.2: the chip colour IS the recorded state, so these rules sit after
+   :hover and win over it. The legend swatches share them. */
+.rub-chip[data-state="present"], .rub-chip[data-state="present"]:hover, .rub-legend-sw[data-state="present"] {
+  background: var(--rate-success);
+  border-color: var(--rate-success);
+  color: #ffffff;
+}
+.rub-chip[data-state="partial"], .rub-chip[data-state="partial"]:hover, .rub-legend-sw[data-state="partial"] {
+  background: var(--ais-yellow);
+  border-color: var(--ais-yellow);
+  color: #143642;
+}
+.rub-chip[data-state="absent"], .rub-chip[data-state="absent"]:hover, .rub-legend-sw[data-state="absent"] {
+  background: var(--ais-red);
+  border-color: var(--ais-red);
   color: #ffffff;
 }
 .form-container.is-locked .rub-chip { cursor: default; }
+/* Caption row: title + aspect left, the legend toggle pushed to the right end. */
+.rub-cap { display: flex; align-items: center; gap: 0.4rem; }
+.rub-info {
+  margin-left: auto;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.32rem;
+  font-family: var(--body-font);
+  font-size: calc(var(--tiny) - 2px);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--navy);
+  background: var(--card-bg);
+  border: 1px solid var(--rule);
+  border-radius: 0.25rem;
+  padding: 0.14rem 0.34rem;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+:root[data-theme="dark"] .rub-info { color: var(--paper); }
+.rub-info-sw {
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-radius: 2px;
+  background: linear-gradient(
+    var(--rate-success) 0 33.34%,
+    var(--ais-yellow) 33.34% 66.67%,
+    var(--ais-red) 66.67% 100%);
+}
+.rub-table tr.rub-legend th {
+  width: auto;
+  text-align: left;
+  text-transform: none;
+  letter-spacing: 0;
+  background: var(--surface-soft);
+  color: var(--paper);
+  border-right: none;
+  border-bottom: 1px solid var(--rule-soft);
+  padding: 0.26rem 0.4rem;
+  font-size: calc(var(--tiny) - 1px);
+  font-weight: 400;
+}
+.rub-legend-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem 1rem; }
+.rub-legend-item { display: inline-flex; align-items: center; gap: 0.34rem; }
+.rub-legend-sw {
+  display: block;
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  border: 1px solid var(--rule);
+}
+.rub-legend-hint { opacity: 0.78; }
 @media print {
   .rub-wrap { overflow: visible; }
   .rub-table { min-width: 0; }
-  .rub-chip[aria-pressed="true"] { background: #1257FF !important; color: #ffffff !important; }
+  .rub-chip[data-state="present"] { background: var(--rate-success) !important; border-color: var(--rate-success) !important; color: #ffffff !important; }
+  .rub-chip[data-state="partial"] { background: var(--ais-yellow) !important; border-color: var(--ais-yellow) !important; color: #143642 !important; }
+  .rub-chip[data-state="absent"] { background: var(--ais-red) !important; border-color: var(--ais-red) !important; color: #ffffff !important; }
 }
 
 </style>
@@ -2336,6 +2405,10 @@ body.is-viewer .cog-btn { display: none; }
     <input type="hidden" name="sp1_great" id="sp1_great" value="">
     <input type="hidden" name="sp1_outstanding" id="sp1_outstanding" value="">
     <input type="hidden" name="sp1_selected_text" id="sp1_selected_text" value="">
+    <!-- otp-v0.2: the same selection grouped by recorded state, "<Level> <n>" items. -->
+    <input type="hidden" name="sp1_present" id="sp1_present" value="">
+    <input type="hidden" name="sp1_partially_present" id="sp1_partially_present" value="">
+    <input type="hidden" name="sp1_not_present" id="sp1_not_present" value="">
   </section>
 
   <!-- ============================================
@@ -2383,7 +2456,7 @@ body.is-viewer .cog-btn { display: none; }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · Progress in Lessons OTP · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">otp-v0.1</a></span>
+    <span>Form · Progress in Lessons OTP · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">otp-v0.2</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -4157,12 +4230,16 @@ body.is-viewer .cog-btn { display: none; }
   /* === SP1 rubric chips (otp-v0.1) =================================
      The rubric is INLINED verbatim from Assets/OTP/rubric-sp1.json — no
      runtime fetch, so it renders behind the StatiCrypt gate and offline.
-     Every paragraph is a tappable chip: tap selects, tap again deselects,
-     any number of chips across any columns. Selection is mirrored into the
-     hidden sp1_<level> inputs (1-based paragraph numbers, comma separated)
-     plus a readable sp1_selected_text, and each write dispatches the same
-     bubbling change event the debounced autosave already listens for, so a
-     selection restores with the draft and from a loaded record. */
+     Every paragraph is a tappable chip. otp-v0.2: the tap CYCLES a recorded
+     state, clear -> present (green) -> partially present (yellow) -> not
+     present (red) -> clear, any number of chips across any columns. The
+     selection is mirrored into the hidden sp1_<level> inputs ("n:<state word>"
+     tokens, comma separated), a readable sp1_selected_text, and the three
+     by-state inputs sp1_present / sp1_partially_present / sp1_not_present, and
+     each write dispatches the same bubbling change event the debounced autosave
+     already listens for, so a selection restores with the draft and from a
+     loaded record. A bare number is a legacy otp-v0.1 value and reads as
+     present. */
   const SP1 = {
     "reference": "SP1",
     "reference_title": "Student Progress",
@@ -4229,40 +4306,77 @@ body.is-viewer .cog-btn { display: none; }
 
   function rubHidden(key) { return document.getElementById('sp1_' + key); }
 
+  /* otp-v0.2: three recorded states per criterion. The tap order is the cycle
+     order; RUB_WORD is what the Sheet stores, RUB_CAP what sp1_selected_text
+     reads, RUB_BY_WORD parses a stored value back. */
+  const RUB_STATES = ['present', 'partial', 'absent'];
+  const RUB_WORD = { present: 'present', partial: 'partially present', absent: 'not present' };
+  const RUB_CAP = { present: 'Present', partial: 'Partially present', absent: 'Not present' };
+  const RUB_BY_WORD = { 'present': 'present', 'partially present': 'partial', 'not present': 'absent' };
+  const RUB_LEGEND = [
+    { state: 'present', text: 'Green: present in lesson' },
+    { state: 'partial', text: 'Yellow: partially present in lesson' },
+    { state: 'absent', text: 'Red: not present in lesson' }
+  ];
+  const RUB_HINT = 'Tap a criterion to mark it green; tap again for yellow, again for red; a fourth tap clears it.';
+  const RUB_STATE_INPUT = { present: 'sp1_present', partial: 'sp1_partially_present', absent: 'sp1_not_present' };
+
+  // sel[levelKey] = { <paragraph number>: <state> }
   function readRubSelection() {
     const sel = {};
     SP1.levels.forEach(l => {
       const el = rubHidden(l.key);
       const raw = el ? String(el.value || '') : '';
-      sel[l.key] = raw.split(',')
-        .map(n => parseInt(n, 10))
-        .filter(n => n >= 1 && n <= l.paragraphs.length);
+      const map = {};
+      raw.split(',').forEach(tok => {
+        const bits = tok.split(':');
+        const n = parseInt(bits[0], 10);
+        if (!(n >= 1 && n <= l.paragraphs.length)) return;
+        // A bare number is a legacy otp-v0.1 value and reads as "present".
+        const state = bits.length > 1 ? RUB_BY_WORD[bits[1].trim().toLowerCase()] : 'present';
+        if (state) map[n] = state;
+      });
+      sel[l.key] = map;
     });
     return sel;
   }
 
   function writeRubSelection(sel) {
     const parts = [];
+    const byState = { present: [], partial: [], absent: [] };
     SP1.levels.forEach(l => {
-      const nums = (sel[l.key] || []).slice().sort((a, b) => a - b);
+      const map = sel[l.key] || {};
+      const nums = Object.keys(map).map(Number).filter(n => map[n]).sort((a, b) => a - b);
       const el = rubHidden(l.key);
-      if (el) el.value = nums.join(',');
-      nums.forEach(n => parts.push(l.label + ' ' + n + ': ' + l.paragraphs[n - 1]));
+      if (el) el.value = nums.map(n => n + ':' + RUB_WORD[map[n]]).join(', ');
+      nums.forEach(n => {
+        parts.push(l.label + ' ' + n + ' (' + RUB_CAP[map[n]] + '): ' + l.paragraphs[n - 1]);
+        byState[map[n]].push(l.label + ' ' + n);
+      });
     });
     const txt = document.getElementById('sp1_selected_text');
     if (txt) txt.value = parts.join(' | ');
+    Object.keys(RUB_STATE_INPUT).forEach(s => {
+      const el = document.getElementById(RUB_STATE_INPUT[s]);
+      if (el) el.value = byState[s].join(', ');
+    });
     SP1.levels.forEach(l => {
       const el = rubHidden(l.key);
       if (el) el.dispatchEvent(new Event('change', { bubbles: true }));
     });
     if (txt) txt.dispatchEvent(new Event('change', { bubbles: true }));
+    Object.keys(RUB_STATE_INPUT).forEach(s => {
+      const el = document.getElementById(RUB_STATE_INPUT[s]);
+      if (el) el.dispatchEvent(new Event('change', { bubbles: true }));
+    });
   }
 
   function syncRubricChips() {
     const sel = readRubSelection();
     document.querySelectorAll('.rub-chip').forEach(chip => {
-      const on = (sel[chip.dataset.level] || []).indexOf(parseInt(chip.dataset.n, 10)) > -1;
-      chip.setAttribute('aria-pressed', on ? 'true' : 'false');
+      const state = (sel[chip.dataset.level] || {})[parseInt(chip.dataset.n, 10)] || '';
+      chip.dataset.state = state;
+      chip.setAttribute('aria-pressed', state ? 'true' : 'false');
     });
   }
 
@@ -4274,11 +4388,55 @@ body.is-viewer .cog-btn { display: none; }
     cap.className = 'rub-caption';
     const capTh = document.createElement('th');
     capTh.colSpan = SP1.levels.length;
+    const capBox = document.createElement('div'); capBox.className = 'rub-cap';
     const capK = document.createElement('span'); capK.className = 'rub-cap-k'; capK.textContent = 'Aspect of Practice';
     const capV = document.createElement('span'); capV.className = 'rub-cap-v'; capV.textContent = SP1.aspect;
-    capTh.appendChild(capK); capTh.appendChild(capV);
+    capBox.appendChild(capK); capBox.appendChild(capV);
+    // otp-v0.2: colour legend, opened from the right end of the caption row.
+    const info = document.createElement('button');
+    info.type = 'button';
+    info.className = 'rub-info';
+    info.setAttribute('aria-expanded', 'false');
+    info.setAttribute('aria-controls', 'rubric-legend');
+    const infoSw = document.createElement('span');
+    infoSw.className = 'rub-info-sw';
+    infoSw.setAttribute('aria-hidden', 'true');
+    info.appendChild(infoSw);
+    info.appendChild(document.createTextNode('Info'));
+    capBox.appendChild(info);
+    capTh.appendChild(capBox);
     cap.appendChild(capTh);
     head.parentNode.insertBefore(cap, head);
+    // The legend is a table row, so the rubric's scroll wrapper can never clip
+    // it and nothing has to be positioned in JS.
+    const leg = document.createElement('tr');
+    leg.className = 'rub-legend';
+    leg.id = 'rubric-legend';
+    leg.hidden = true;
+    const legTh = document.createElement('th');
+    legTh.colSpan = SP1.levels.length;
+    const legBox = document.createElement('div'); legBox.className = 'rub-legend-row';
+    RUB_LEGEND.forEach(item => {
+      const wrap = document.createElement('span'); wrap.className = 'rub-legend-item';
+      const sw = document.createElement('span');
+      sw.className = 'rub-legend-sw';
+      sw.dataset.state = item.state;
+      sw.setAttribute('aria-hidden', 'true');
+      wrap.appendChild(sw);
+      wrap.appendChild(document.createTextNode(item.text));
+      legBox.appendChild(wrap);
+    });
+    const hint = document.createElement('span'); hint.className = 'rub-legend-hint'; hint.textContent = RUB_HINT;
+    legBox.appendChild(hint);
+    legTh.appendChild(legBox);
+    leg.appendChild(legTh);
+    cap.parentNode.insertBefore(leg, cap.nextSibling);
+    // Stays live on a locked record: lockForm only disables input/textarea/select.
+    info.addEventListener('click', () => {
+      const opening = leg.hidden;
+      leg.hidden = !opening;
+      info.setAttribute('aria-expanded', opening ? 'true' : 'false');
+    });
     SP1.levels.forEach(l => {
       const th = document.createElement('th');
       th.textContent = l.label;
@@ -4292,6 +4450,7 @@ body.is-viewer .cog-btn { display: none; }
         b.className = 'rub-chip';
         b.dataset.level = l.key;
         b.dataset.n = String(i + 1);
+        b.dataset.state = '';
         b.setAttribute('aria-pressed', 'false');
         b.textContent = p;
         box.appendChild(b);
@@ -4306,9 +4465,10 @@ body.is-viewer .cog-btn { display: none; }
       const sel = readRubSelection();
       const key = chip.dataset.level;
       const n = parseInt(chip.dataset.n, 10);
-      const arr = sel[key] || (sel[key] = []);
-      const at = arr.indexOf(n);
-      if (at > -1) arr.splice(at, 1); else arr.push(n);
+      const map = sel[key] || (sel[key] = {});
+      // clear -> present -> partial -> absent -> clear
+      const next = RUB_STATES[RUB_STATES.indexOf(map[n] || '') + 1] || '';
+      if (next) map[n] = next; else delete map[n];
       writeRubSelection(sel);
       syncRubricChips();
     });

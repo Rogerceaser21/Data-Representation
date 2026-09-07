@@ -1,5 +1,5 @@
 /**
- * otp-v0.1 · Progress in Lessons OTP form
+ * otp-v0.2 · Progress in Lessons OTP form
  *
  * Tests the BUILT artifacts (the StatiCrypt-gated form and the ungated record
  * viewer), not the master, because the master's relative paths (../R3/lib/,
@@ -44,6 +44,9 @@ const CONTRACT_KEYS = [
   'sp1_great',
   'sp1_outstanding',
   'sp1_selected_text',
+  'sp1_present',
+  'sp1_partially_present',
+  'sp1_not_present',
   'observer_comments',
   'other_observations',
   'next_step_1',
@@ -82,9 +85,13 @@ const RECORD_PAYLOAD = {
     subject: 'Mathematics',
     otp_ref: 'SP1',
     otp_aspect: 'Facilitating better than expected progress',
-    sp1_good: '1,3',
+    // otp-v0.2 format, plus sp1_great as a legacy otp-v0.1 bare number
+    sp1_good: '1:not present, 3:partially present',
     sp1_great: '2',
     sp1_selected_text: 'recorded selection',
+    sp1_present: 'Great 2',
+    sp1_partially_present: 'Good 3',
+    sp1_not_present: 'Good 1',
     observer_comments: 'Record observer comments',
     other_observations: 'Record other observations',
     next_step_1: 'Record next step one',
@@ -198,42 +205,87 @@ test('renders all 26 SP1 rubric chips verbatim, in order', async ({ page }) => {
   );
   await expect(page.locator('tr.rub-caption .rub-cap-k')).toHaveText('Aspect of Practice');
   await expect(page.locator('tr.rub-caption .rub-cap-v')).toHaveText(RUBRIC.aspect);
+  await expect(page.locator('.form-footer')).toContainText('otp-v0.2');
 
   expect(h.errors).toEqual([]);
 });
 
-test('a chip toggles aria-pressed and its hidden sp1_* value', async ({ page }) => {
+test('a chip cycles clear -> present -> partial -> absent -> clear', async ({ page }) => {
   const h = await harness(page);
   await openForm(page);
 
+  const good = RUBRIC.levels.find((l) => l.key === 'good')!;
+  const beginner = RUBRIC.levels.find((l) => l.key === 'beginner')!;
   const chip = page.locator('.rub-chip[data-level="good"][data-n="2"]');
-  await expect(chip).toHaveAttribute('aria-pressed', 'false');
-  await expect(page.locator('#sp1_good')).toHaveValue('');
+  const lvl = page.locator('#sp1_good');
+  const txt = page.locator('#sp1_selected_text');
+  const present = page.locator('#sp1_present');
+  const partial = page.locator('#sp1_partially_present');
+  const absent = page.locator('#sp1_not_present');
 
+  await expect(chip).toHaveAttribute('data-state', '');
+  await expect(chip).toHaveAttribute('aria-pressed', 'false');
+  await expect(lvl).toHaveValue('');
+
+  const cycle = [
+    { state: 'present', word: 'present', cap: 'Present' },
+    { state: 'partial', word: 'partially present', cap: 'Partially present' },
+    { state: 'absent', word: 'not present', cap: 'Not present' },
+  ];
+
+  for (const step of cycle) {
+    await chip.click();
+    await expect(chip).toHaveAttribute('data-state', step.state);
+    await expect(chip).toHaveAttribute('aria-pressed', 'true');
+    await expect(lvl).toHaveValue('2:' + step.word);
+    await expect(txt).toHaveValue(`Good 2 (${step.cap}): ` + good.paragraphs[1]);
+    await expect(present).toHaveValue(step.state === 'present' ? 'Good 2' : '');
+    await expect(partial).toHaveValue(step.state === 'partial' ? 'Good 2' : '');
+    await expect(absent).toHaveValue(step.state === 'absent' ? 'Good 2' : '');
+  }
+
+  // fourth tap clears it
   await chip.click();
-  await expect(chip).toHaveAttribute('aria-pressed', 'true');
-  await expect(page.locator('#sp1_good')).toHaveValue('2');
-  await expect(page.locator('#sp1_selected_text')).toHaveValue(
-    'Good 2: ' + RUBRIC.levels.find((l) => l.key === 'good')!.paragraphs[1]
+  await expect(chip).toHaveAttribute('data-state', '');
+  await expect(chip).toHaveAttribute('aria-pressed', 'false');
+  await expect(lvl).toHaveValue('');
+  await expect(txt).toHaveValue('');
+  await expect(present).toHaveValue('');
+  await expect(partial).toHaveValue('');
+  await expect(absent).toHaveValue('');
+
+  // a chip in another column keeps its own state alongside
+  await chip.click(); // Good 2 -> present
+  const other = page.locator('.rub-chip[data-level="beginner"][data-n="1"]');
+  await other.click();
+  await other.click(); // Beginner 1 -> partially present
+  await expect(chip).toHaveAttribute('data-state', 'present');
+  await expect(other).toHaveAttribute('data-state', 'partial');
+  await expect(lvl).toHaveValue('2:present');
+  await expect(page.locator('#sp1_beginner')).toHaveValue('1:partially present');
+  await expect(present).toHaveValue('Good 2');
+  await expect(partial).toHaveValue('Beginner 1');
+  await expect(absent).toHaveValue('');
+  await expect(txt).toHaveValue(
+    'Beginner 1 (Partially present): ' +
+      beginner.paragraphs[0] +
+      ' | Good 2 (Present): ' +
+      good.paragraphs[1]
   );
 
-  // second chip in another column: both selections coexist
-  await page.locator('.rub-chip[data-level="beginner"][data-n="1"]').click();
-  await expect(page.locator('#sp1_beginner')).toHaveValue('1');
-
-  await chip.click();
-  await expect(chip).toHaveAttribute('aria-pressed', 'false');
-  await expect(page.locator('#sp1_good')).toHaveValue('');
-  await expect(page.locator('#sp1_beginner')).toHaveValue('1');
-
   expect(h.errors).toEqual([]);
 });
 
-test('a chip selection and a note survive a reload via the ais-otp-form-v1 draft', async ({ page }) => {
+test('two chip states and a note survive a reload via the ais-otp-form-v1 draft', async ({ page }) => {
   const h = await harness(page);
   await openForm(page);
 
-  await page.locator('.rub-chip[data-level="great"][data-n="4"]').click();
+  const presentChip = page.locator('.rub-chip[data-level="great"][data-n="4"]');
+  const absentChip = page.locator('.rub-chip[data-level="emerging"][data-n="2"]');
+  await presentChip.click(); // one tap  -> present
+  await absentChip.click();
+  await absentChip.click();
+  await absentChip.click(); // three taps -> not present
   await page.fill('#observer_comments', 'Draft survives the reload');
   await page.waitForTimeout(600); // debounced autosave is 220ms
 
@@ -246,11 +298,15 @@ test('a chip selection and a note survive a reload via the ais-otp-form-v1 draft
   await openFormAfterReload(page);
 
   await expect(page.locator('#observer_comments')).toHaveValue('Draft survives the reload');
-  await expect(page.locator('#sp1_great')).toHaveValue('4');
-  await expect(page.locator('.rub-chip[data-level="great"][data-n="4"]')).toHaveAttribute(
-    'aria-pressed',
-    'true'
-  );
+  await expect(page.locator('#sp1_great')).toHaveValue('4:present');
+  await expect(page.locator('#sp1_emerging')).toHaveValue('2:not present');
+  await expect(page.locator('#sp1_present')).toHaveValue('Great 4');
+  await expect(page.locator('#sp1_not_present')).toHaveValue('Emerging 2');
+  await expect(page.locator('#sp1_partially_present')).toHaveValue('');
+  await expect(presentChip).toHaveAttribute('data-state', 'present');
+  await expect(presentChip).toHaveAttribute('aria-pressed', 'true');
+  await expect(absentChip).toHaveAttribute('data-state', 'absent');
+  await expect(absentChip).toHaveAttribute('aria-pressed', 'true');
 
   expect(h.errors).toEqual([]);
 });
@@ -293,8 +349,11 @@ test('submit posts exactly the CONTRACT keys with form="otp"', async ({ page }) 
   expect(body.inspector).toBe('Test Observer');
   expect(body.subject).toBe('Mathematics');
   expect(body.school).toBe('Primary');
-  expect(body.sp1_outstanding).toBe('1');
+  expect(body.sp1_outstanding).toBe('1:present');
   expect(body.sp1_beginner).toBe('');
+  expect(body.sp1_present).toBe('Outstanding 1');
+  expect(body.sp1_partially_present).toBe('');
+  expect(body.sp1_not_present).toBe('');
   expect(body.next_step_3).toBe('Step three');
 
   expect(h.errors).toEqual([]);
@@ -321,22 +380,20 @@ test('the record view repopulates header fields, chips and the five notes', asyn
     'Test Observer'
   );
 
-  await expect(page.locator('.rub-chip[data-level="good"][data-n="1"]')).toHaveAttribute(
-    'aria-pressed',
-    'true'
-  );
-  await expect(page.locator('.rub-chip[data-level="good"][data-n="3"]')).toHaveAttribute(
-    'aria-pressed',
-    'true'
-  );
-  await expect(page.locator('.rub-chip[data-level="good"][data-n="2"]')).toHaveAttribute(
-    'aria-pressed',
-    'false'
-  );
-  await expect(page.locator('.rub-chip[data-level="great"][data-n="2"]')).toHaveAttribute(
-    'aria-pressed',
-    'true'
-  );
+  const state = (level: string, n: number) =>
+    page.locator(`.rub-chip[data-level="${level}"][data-n="${n}"]`);
+  await expect(state('good', 1)).toHaveAttribute('data-state', 'absent');
+  await expect(state('good', 1)).toHaveAttribute('aria-pressed', 'true');
+  await expect(state('good', 3)).toHaveAttribute('data-state', 'partial');
+  await expect(state('good', 3)).toHaveAttribute('aria-pressed', 'true');
+  await expect(state('good', 2)).toHaveAttribute('data-state', '');
+  await expect(state('good', 2)).toHaveAttribute('aria-pressed', 'false');
+  // legacy otp-v0.1 bare number reads as "present"
+  await expect(state('great', 2)).toHaveAttribute('data-state', 'present');
+  await expect(state('great', 2)).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('#sp1_present')).toHaveValue('Great 2');
+  await expect(page.locator('#sp1_partially_present')).toHaveValue('Good 3');
+  await expect(page.locator('#sp1_not_present')).toHaveValue('Good 1');
 
   await expect(page.locator('#observer_comments')).toHaveValue('Record observer comments');
   await expect(page.locator('#other_observations')).toHaveValue('Record other observations');
@@ -414,4 +471,79 @@ test('rubric layout v2: caption row above the levels, five even columns, edge-to
   });
   expect(Math.abs(px.tiny - 2 - px.chip)).toBeLessThan(0.1);
   expect(await page.evaluate(() => document.scrollingElement!.scrollWidth - document.scrollingElement!.clientWidth)).toBe(0);
+});
+
+test('the three recorded states paint the AIS state colours in the light theme', async ({ page }) => {
+  const h = await harness(page);
+  await openForm(page);
+  // pin the light palette: the runner's prefers-color-scheme must not decide it
+  await page.evaluate(() => document.documentElement.removeAttribute('data-theme'));
+
+  const targets = [
+    { sel: '.rub-chip[data-level="good"][data-n="1"]', taps: 1, paint: 'rgb(46, 161, 90)' },
+    { sel: '.rub-chip[data-level="good"][data-n="2"]', taps: 2, paint: 'rgb(255, 186, 20)' },
+    { sel: '.rub-chip[data-level="good"][data-n="3"]', taps: 3, paint: 'rgb(239, 52, 58)' },
+  ];
+  for (const t of targets) {
+    for (let i = 0; i < t.taps; i++) await page.locator(t.sel).click();
+  }
+  await page.mouse.move(0, 0); // no chip left under the pointer
+  await page.waitForTimeout(400); // the 0.16s colour transition has settled
+
+  for (const t of targets) {
+    const css = await page.locator(t.sel).evaluate((el) => {
+      const s = getComputedStyle(el);
+      return { bg: s.backgroundColor, border: s.borderTopColor, color: s.color };
+    });
+    expect(css.bg, t.sel).toBe(t.paint);
+    expect(css.border, t.sel).toBe(t.paint);
+  }
+  // yellow is the one state that takes the dark ink
+  const yellow = await page
+    .locator(targets[1].sel)
+    .evaluate((el) => getComputedStyle(el).color);
+  expect(yellow).toBe('rgb(20, 54, 66)');
+
+  expect(h.errors).toEqual([]);
+});
+
+test('the Info button opens the colour legend, on the form and on a record', async ({ page }) => {
+  const h = await harness(page);
+  await openForm(page);
+
+  const info = page.locator('.rub-info');
+  const legend = page.locator('#rubric-legend');
+
+  // the button lives in the caption row; the legend is its own header row, so
+  // the rubric's scroll wrapper can never clip it
+  await expect(page.locator('tr.rub-caption .rub-cap .rub-info')).toHaveCount(1);
+  await expect(info).toHaveAttribute('aria-controls', 'rubric-legend');
+  await expect(info).toHaveAttribute('aria-expanded', 'false');
+  await expect(legend).toBeHidden();
+
+  await info.click();
+  await expect(legend).toBeVisible();
+  await expect(info).toHaveAttribute('aria-expanded', 'true');
+  expect(await legend.locator('.rub-legend-item').allTextContents()).toEqual([
+    'Green: present in lesson',
+    'Yellow: partially present in lesson',
+    'Red: not present in lesson',
+  ]);
+  await expect(legend.locator('.rub-legend-hint')).toHaveText(
+    'Tap a criterion to mark it green; tap again for yellow, again for red; a fourth tap clears it.'
+  );
+
+  await info.click();
+  await expect(legend).toBeHidden();
+  await expect(info).toHaveAttribute('aria-expanded', 'false');
+
+  // and it still opens on a locked record view (lockForm disables fields only)
+  await page.goto(RECORD_URL + '?token=abc');
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 20_000 });
+  await expect(page.locator('#rubric-legend')).toBeHidden();
+  await page.locator('.rub-info').click();
+  await expect(page.locator('#rubric-legend')).toBeVisible();
+  await expect(page.locator('#rubric-legend')).toContainText('Yellow: partially present in lesson');
+
+  expect(h.errors).toEqual([]);
 });
