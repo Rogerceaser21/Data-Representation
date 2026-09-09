@@ -1,16 +1,16 @@
 # Graph Report - otp-v06  (2026-09-09)
 
 ## Corpus Check
-- 126 files · ~1,155,107 words
+- 127 files · ~1,163,559 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 2014 nodes · 3335 edges · 180 communities (138 shown, 42 thin omitted)
+- 2033 nodes · 3361 edges · 176 communities (141 shown, 35 thin omitted)
 - Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 99 edges (avg confidence: 0.83)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `43285ec6`
+- Built from commit: `5d188ea5`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -92,14 +92,12 @@
 - [[_COMMUNITY_Community 76|Community 76]]
 - [[_COMMUNITY_Community 77|Community 77]]
 - [[_COMMUNITY_Community 78|Community 78]]
-- [[_COMMUNITY_Community 79|Community 79]]
 - [[_COMMUNITY_Community 80|Community 80]]
 - [[_COMMUNITY_Community 81|Community 81]]
 - [[_COMMUNITY_Community 82|Community 82]]
 - [[_COMMUNITY_Community 83|Community 83]]
 - [[_COMMUNITY_Community 84|Community 84]]
 - [[_COMMUNITY_Community 85|Community 85]]
-- [[_COMMUNITY_Community 86|Community 86]]
 - [[_COMMUNITY_Community 88|Community 88]]
 - [[_COMMUNITY_Community 89|Community 89]]
 - [[_COMMUNITY_Community 90|Community 90]]
@@ -125,7 +123,6 @@
 - [[_COMMUNITY_Community 110|Community 110]]
 - [[_COMMUNITY_Community 111|Community 111]]
 - [[_COMMUNITY_Community 112|Community 112]]
-- [[_COMMUNITY_Community 113|Community 113]]
 - [[_COMMUNITY_Community 115|Community 115]]
 - [[_COMMUNITY_Community 116|Community 116]]
 - [[_COMMUNITY_Community 117|Community 117]]
@@ -189,7 +186,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (180 total, 42 thin omitted)
+## Communities (176 total, 35 thin omitted)
 
 ### Community 0 - "AIS Observation Forms & Scripts"
 Cohesion: 0.06
@@ -248,7 +245,7 @@ Cohesion: 0.18
 Nodes (10): Critical caveat · verification, Current git state (as of handoff), Handoff · Data-Representation deck (next session), Igor's communication preferences (read before responding to him), Open questions for Igor (ask before code changes), Read these in this order before doing anything, Sensitive data note, Suggested skills for next session (+2 more)
 
 ### Community 15 - "TomSelect Option Registration"
-Cohesion: 0.07
+Cohesion: 0.06
 Nodes (4): cloneObject(), isValidSelector(), _prepareToStringify(), q
 
 ### Community 21 - "Project README"
@@ -319,13 +316,13 @@ Nodes (6): How this connects to existing work, Implementation notes for whoever 
 Cohesion: 0.29
 Nodes (6): 2026-06-25 . v3 redesign (redeploy @8), Contract, Dashboard Google Doc export (Phase D), Deploy (one time), Deployed 2026-06-24 (admin.user@ais.ae, via clasp), Redeploy after editing Code.gs
 
-### Community 41 - "Community 41"
-Cohesion: 0.09
-Nodes (3): Ft, get(), Ot()
-
 ### Community 42 - "Community 42"
 Cohesion: 0.05
 Nodes (39): (a) How Chrome iOS manages its toolbar, and what it does to the viewport, (a) In-document swap (form hidden while pad open), (a) iPad keyboard variants and the visual viewport, (a) Known WKWebView stale-extent bugs, (b)+(c) 100vh's role, (b) True separate page/URL, (b) What each measurement tracks during transitions (Chrome iPadOS vs Safari), (b) What happens during focus auto-scroll (+31 more)
+
+### Community 44 - "Community 44"
+Cohesion: 0.10
+Nodes (4): de, Me(), qe, we
 
 ### Community 45 - "Community 45"
 Cohesion: 0.06
@@ -343,20 +340,28 @@ Nodes (28): bAll, bGaps, body, bodyDur, cfg, ff(), firstWord, gapFiles (+20 more
 Cohesion: 0.06
 Nodes (28): bAll, bGaps, body, bodyDur, cfg, ff(), firstWord, gapFiles (+20 more)
 
+### Community 51 - "Community 51"
+Cohesion: 0.08
+Nodes (3): be, fe, ni
+
 ### Community 52 - "Community 52"
 Cohesion: 0.24
 Nodes (21): _(), A(), c(), ee(), f(), g(), h(), j() (+13 more)
 
 ### Community 53 - "Community 53"
-Cohesion: 0.12
-Nodes (5): createCanvasElement(), Me(), qe, we, ze()
+Cohesion: 0.25
+Nodes (3): createCanvasElement(), Ot(), ze()
+
+### Community 54 - "Community 54"
+Cohesion: 0.10
+Nodes (3): et(), J(), tt()
 
 ### Community 55 - "Community 55"
-Cohesion: 0.11
-Nodes (3): error(), si, y
+Cohesion: 0.13
+Nodes (4): error(), si, x, y
 
 ### Community 56 - "Community 56"
-Cohesion: 0.15
+Cohesion: 0.13
 Nodes (5): A(), addComponentsGetterSetter(), C(), k(), warn()
 
 ### Community 60 - "Community 60"
@@ -407,6 +412,10 @@ Nodes (8): client, env, failures, FAKE, out, rawSql, sql, SQL_PATH
 Cohesion: 0.22
 Nodes (8): description, devDependencies, @playwright/test, name, private, scripts, test, version
 
+### Community 75 - "Community 75"
+Cohesion: 0.22
+Nodes (8): 0. What Igor rejected in v0.6 (measured on the live form, 1280 / 1180x820 / 820x1180), 1. Rubric wrapper: no scrollbars, 2. The `+` note button, 3. The pop-up (`.rub-note-pop`) and scrim (`.rub-note-scrim`), 4. Calm palette (chips, legend, record view, print), 5. Tests · `Assets/OTP/tests/otp.spec.ts` (build first: `bash Assets/OTP/encrypt.sh`), 6. Out of scope, otp-v0.7 contract · anchored note pop-up, + button geometry, calm palette, no scrollbars
+
 ### Community 76 - "Community 76"
 Cohesion: 0.18
 Nodes (9): openGross, openSpeech, over, ROOT, rows, sub, t, voiced (+1 more)
@@ -436,8 +445,8 @@ Cohesion: 0.20
 Nodes (9): Brand config · AIS Observation system, Card style, Colours, Fonts, Motion, Never, Scale, The SEAS six-point ramp (+1 more)
 
 ### Community 84 - "Community 84"
-Cohesion: 0.07
-Nodes (21): ALL_CRITERIA, ALL_CRITERIA_V1, CONTRACT_DOC, CONTRACT_KEYS, criterion(), fillRequired(), Harness, level() (+13 more)
+Cohesion: 0.06
+Nodes (31): ALL_CRITERIA, ALL_CRITERIA_V1, chipSel(), CONTRACT_DOC, CONTRACT_KEYS, criterion(), expectPop(), fillRequired() (+23 more)
 
 ### Community 85 - "Community 85"
 Cohesion: 0.50
@@ -523,13 +532,17 @@ Nodes (6): Files, Known deliberate choices, Numbers on screen, Regenerating, Sta
 Cohesion: 0.40
 Nodes (6): addDeprecatedGetterSetter(), addGetter(), addGetterSetter(), addOverloadedGetterSetter(), addSetter(), overWriteSetter()
 
+### Community 116 - "Community 116"
+Cohesion: 0.24
+Nodes (3): _endDragAfter(), _endDragBefore(), isTransforming()
+
 ### Community 117 - "Community 117"
 Cohesion: 0.33
 Nodes (5): approved, model, note, scenes, voice
 
 ### Community 118 - "Community 118"
 Cohesion: 0.29
-Nodes (6): Backend contract, Build, Changelog, Progress in Lessons OTP form · otp-v0.6, Tests, What is on the page
+Nodes (6): Backend contract, Build, Changelog, Progress in Lessons OTP form · otp-v0.7, Tests, What is on the page
 
 ### Community 119 - "Community 119"
 Cohesion: 0.33
@@ -620,9 +633,9 @@ Nodes (6): aspect, levels, reference, reference_title, source, version
   SPEA Data Report/Lana Mosleh.jpg · relation: conceptually_related_to
 
 ## Knowledge Gaps
-- **815 isolated node(s):** `generated`, `certificate`, `round_example`, `prompts`, `generated` (+810 more)
+- **823 isolated node(s):** `generated`, `certificate`, `round_example`, `prompts`, `generated` (+818 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **42 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **35 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
@@ -637,7 +650,7 @@ _Questions this graph is uniquely positioned to answer:_
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
 - **What is the exact relationship between `Teacher Observation Pitch Deck (index.html)` and `Lana Mosleh Portrait`?**
   _Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low._
-- **Why does `$()` connect `Community 45` to `Community 130`, `Community 131`, `TomSelect Item Selection`, `Community 132`, `Community 133`, `Pitch Deck Build & Bugs`, `TomSelect Plugin Hooks`, `TomSelect Option Registration`, `Community 146`, `Community 147`, `Community 148`, `Community 149`, `Community 41`, `Community 44`, `Community 46`, `Community 50`, `Community 51`, `Community 53`, `Community 54`, `Community 55`, `Community 56`, `Community 57`, `Community 58`, `Community 59`, `Community 64`, `Community 75`, `Community 79`, `Community 86`, `Community 87`, `Community 99`, `Community 108`, `Community 109`, `Community 111`, `Community 112`, `Community 113`, `Community 115`, `Community 116`?**
-  _High betweenness centrality (0.098) - this node is a cross-community bridge._
-- **Why does `q` connect `TomSelect Option Registration` to `Community 130`, `TomSelect Item Selection`, `Community 41`, `Community 43`, `Community 45`, `Community 46`, `Community 51`, `Community 55`, `Community 56`, `Community 57`, `Community 58`, `Community 59`, `Community 64`, `Community 75`, `Community 79`, `Community 86`, `Community 113`, `Community 115`, `Community 116`?**
-  _High betweenness centrality (0.028) - this node is a cross-community bridge._
+- **Why does `$()` connect `Community 45` to `Community 130`, `Community 131`, `TomSelect Item Selection`, `Community 132`, `Community 133`, `Pitch Deck Build & Bugs`, `TomSelect Plugin Hooks`, `TomSelect Option Registration`, `Community 146`, `Community 147`, `Community 148`, `Community 149`, `Community 41`, `Community 44`, `Community 46`, `Community 50`, `Community 51`, `Community 53`, `Community 54`, `Community 55`, `Community 56`, `Community 57`, `Community 58`, `Community 59`, `Community 64`, `Community 99`, `Community 108`, `Community 109`, `Community 111`, `Community 112`, `Community 115`, `Community 116`?**
+  _High betweenness centrality (0.104) - this node is a cross-community bridge._
+- **Why does `q` connect `TomSelect Option Registration` to `Community 64`, `Community 130`, `TomSelect Item Selection`, `Community 41`, `Community 43`, `Community 45`, `Community 46`, `Community 51`, `Community 115`, `Community 116`, `Community 54`, `Community 55`, `Community 56`, `Community 57`, `Community 58`, `Community 59`?**
+  _High betweenness centrality (0.026) - this node is a cross-community bridge._

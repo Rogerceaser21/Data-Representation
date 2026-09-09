@@ -70,8 +70,8 @@
     "semantic_hash": ""
   },
   "CLAUDE.md": {
-    "mtime": 1788945155.4285975,
-    "ast_hash": "1052154d75dd5a67ce5c607ecac17129",
+    "mtime": 1788955078.698116,
+    "ast_hash": "b0197f0e2b88325e96abdb0a304c42f3",
     "semantic_hash": ""
   },
   "README.md": {
@@ -550,8 +550,8 @@
     "semantic_hash": ""
   },
   "Assets/OTP/tests/otp.spec.ts": {
-    "mtime": 1788947729.7608669,
-    "ast_hash": "52203875c744410536095cf8b75939e3",
+    "mtime": 1788960597.0043745,
+    "ast_hash": "c984a0ec9aeeaf2a23b3e5e8f8691ad2",
     "semantic_hash": ""
   },
   "Assets/R3/lib/konva.min.js": {
@@ -920,23 +920,23 @@
     "semantic_hash": ""
   },
   "Assets/OTP/README.md": {
-    "mtime": 1788947661.1341915,
-    "ast_hash": "24ac7d7abe40ecef2e14a595ab3775ea",
+    "mtime": 1788958322.7237973,
+    "ast_hash": "9070d1b03b0a486e0a2f43c7c87ca4f1",
     "semantic_hash": ""
   },
   "Assets/OTP/otp-progress-form.html": {
-    "mtime": 1788948547.242807,
-    "ast_hash": "57a8fcd47e9078df71dd5b1c7e1cac0d",
+    "mtime": 1788960867.2501643,
+    "ast_hash": "f38be71ee1ef70779612ee425b78c066",
     "semantic_hash": ""
   },
   "Assets/OTP/otp-record.html": {
-    "mtime": 1788948547.2686665,
-    "ast_hash": "336ce9f69ac41a4e52fe61ac2f37c832",
+    "mtime": 1788960867.2751257,
+    "ast_hash": "aec1cec800c8bf851785fea95a42ac2b",
     "semantic_hash": ""
   },
   "Assets/OTP/src/otp-progress-form.html": {
-    "mtime": 1788946375.5407898,
-    "ast_hash": "a1ba119a70cbf4aaac8a8001f9614484",
+    "mtime": 1788959843.6750033,
+    "ast_hash": "d6fe4254471cdfb417373a38e572adef",
     "semantic_hash": ""
   },
   "dashboard/apps-script-photos/README.md": {
@@ -1370,23 +1370,28 @@
     "semantic_hash": ""
   },
   "graphify-out/converted/24-25-Primary School OTP - v4_c097c367.md": {
-    "mtime": 1788949282.444332,
+    "mtime": 1788961626.2030838,
     "ast_hash": "29e9db9bc82395fe4a3857e7a969dc31",
     "semantic_hash": ""
   },
   "graphify-out/converted/Lesson Observation - Igor- 12_11_aaa9c66e.md": {
-    "mtime": 1788949282.4743195,
+    "mtime": 1788961626.2411277,
     "ast_hash": "aef19a2faf53299a5b6c988416c1abc6",
     "semantic_hash": ""
   },
   "graphify-out/converted/R3 Evidence Form Template_4839e027.md": {
-    "mtime": 1788949282.3689597,
+    "mtime": 1788961626.1343462,
     "ast_hash": "6319e8fd83ccd51a82b75f6fee5d3196",
     "semantic_hash": ""
   },
   "graphify-out/converted/Year 6 Lesson Plan_2942df7e.md": {
-    "mtime": 1788949282.4948516,
+    "mtime": 1788961626.2621813,
     "ast_hash": "7b799f7585159522ff68c298c29bb0d0",
+    "semantic_hash": ""
+  },
+  ".planning/2026-09-09-otp-v0.7-contract.md": {
+    "mtime": 1788954922.9567008,
+    "ast_hash": "58d07827048967992b047be9ad527d86",
     "semantic_hash": ""
   }
 }
