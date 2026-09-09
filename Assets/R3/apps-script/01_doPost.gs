@@ -299,7 +299,7 @@ function formatStampSafe(iso) {
 /* ─────────────────────────────────────────────────────────────────────────────
  * otp-v0.1 · Progress in Lessons OTP submissions.
  *
- * Same shape as the R3 path above, on its own tab and its own 29-column schema:
+ * Same shape as the R3 path above, on its own tab and its own 31-column schema:
  *   Sheet row first (source of truth)  →  backup email (CC the observer)
  *   →  Supabase mirror, each side effect inside its own try/catch so a failure
  *   is logged and swallowed and the observer never sees an error (rules 12/14).
@@ -343,6 +343,10 @@ function handleOtpPost(data) {
   // One mapping builds BOTH the Sheet row and the Supabase mirror, so the
   // mirror is a field-for-field copy of the row (hard rule 14).
   const record = buildOtpRecord(columns, data, recordId, recordToken, submittedAt);
+  // otp-v0.5: `school` is derived from `grade` inside buildOtpRecord. The backup
+  // email and the Supabase mirror both read `data`, so hand them the same value
+  // the Sheet row carries.
+  data.school = record.school;
   sheet.appendRow(columns.map(function(col) { return record[col]; }));
 
   try {
@@ -373,6 +377,8 @@ function generateOtpRecordId(iso) {
  * Resolves one OTP submission into an object keyed by Sheet column name.
  * `observer` comes from the form's `inspector` field (the OTP form is a copy of
  * the R3 master and still posts that key); `observation_date` from `date`.
+ * otp-v0.5: `school` is derived from `grade` (schoolForGrade), so the Sheet row
+ * and the Supabase mirror always agree with the year group that was observed.
  */
 function buildOtpRecord(columns, data, recordId, recordToken, submittedAt) {
   const record = {};
@@ -382,9 +388,28 @@ function buildOtpRecord(columns, data, recordId, recordToken, submittedAt) {
     else if (col === 'observer') record[col] = data.inspector || data.observer || '';
     else if (col === 'observation_date') record[col] = data.date || data.observation_date || '';
     else if (col === 'record_token') record[col] = recordToken;
+    else if (col === 'school') record[col] = schoolForGrade(data.grade) || (data[col] != null ? data[col] : '');
     else record[col] = data[col] != null ? data[col] : '';
   });
   return record;
+}
+
+/**
+ * otp-v0.5 · the sub-school a grade belongs to. Grade WINS over any school the
+ * form posted: Pre-Kindy / Kindy -> Kindy, Prep and 1-6 -> Primary, 7-12 ->
+ * Secondary. An empty or unrecognised grade returns '' so the caller keeps the
+ * payload's own school (legacy rows and gradeless posts).
+ */
+function schoolForGrade(grade) {
+  const g = String(grade == null ? '' : grade).trim();
+  if (g === 'Pre-Kindy' || g === 'Kindy') return 'Kindy';
+  if (g === 'Prep') return 'Primary';
+  if (/^\d{1,2}$/.test(g)) {
+    const n = parseInt(g, 10);
+    if (n >= 1 && n <= 6) return 'Primary';
+    if (n >= 7 && n <= 12) return 'Secondary';
+  }
+  return '';
 }
 
 /**
@@ -465,6 +490,7 @@ function buildOtpSubmissionHtml(recordId, lockedUrl, submittedAt, data) {
   html += row('Time in',                data.time_in);
   html += row('Subject',                data.subject);
   html += row('School',                 data.school);
+  html += row('Grade',                  data.grade);
   html += row('Support teachers / CAs', data.support_teachers_cas);
 
   html += sectionTitle('OTP reference');
@@ -479,6 +505,7 @@ function buildOtpSubmissionHtml(recordId, lockedUrl, submittedAt, data) {
   html += row('Present in lesson',      data.sp1_present);
   html += row('Partially present',      data.sp1_partially_present);
   html += row('Not present',            data.sp1_not_present);
+  html += row('Not seen (does not count)', data.sp1_not_seen);
 
   html += sectionTitle('Observer notes');
   html += row('Observer Comments',      data.observer_comments);

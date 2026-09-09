@@ -173,7 +173,7 @@ function getTabWithFallback(ss, preferred, fallback) {
 }
 
 /**
- * Column layout for the OTP Submissions tab (29 columns).
+ * Column layout for the OTP Submissions tab (31 columns).
  *
  * Order is load-bearing once the header row is written (hard rule 1). To add
  * columns, append at the end. Never reorder or insert in the middle.
@@ -196,7 +196,11 @@ function getOtpColumns() {
     // otp-v0.2: sp1_present / sp1_partially_present / sp1_not_present hold
     // the rubric chips' colour state, grouped by criterion. Append-only, per
     // the rule above.
-    'sp1_present', 'sp1_partially_present', 'sp1_not_present'
+    'sp1_present', 'sp1_partially_present', 'sp1_not_present',
+    // otp-v0.5: sp1_not_seen holds the criteria left uncoloured (seen by
+    // nobody, so they count for nothing), and grade holds the year group the
+    // lesson was observed in. Append-only, per the rule above.
+    'sp1_not_seen', 'grade'
   ];
 }
 
