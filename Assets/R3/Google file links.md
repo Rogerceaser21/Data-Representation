@@ -42,7 +42,7 @@ behaves exactly as the R3 calls above.
 
 | Tab | Purpose |
 |---|---|
-| `OTP Submissions` | All OTP submissions (31 columns, append-only; `record_token` is 25th, `evidence_pad_id` 26th) |
+| `OTP Submissions` | All OTP submissions (33 columns, append-only; `record_token` is 25th, `evidence_pad_id` 26th) |
 | `Teachers 26-27` | 26-27 staff roster for the OTP teacher dropdown. **Not created yet**; until it exists the form silently reads `Teachers`. |
 | `Inspectors 26-27` | 26-27 observer names + emails (A = name, B = email). **Not created yet**; until it exists the form silently reads `Inspectors`. |
 
@@ -54,7 +54,7 @@ room_number, time_in, subject, school, support_teachers_cas, otp_ref, otp_aspect
 sp1_beginner, sp1_emerging, sp1_good, sp1_great, sp1_outstanding, sp1_selected_text,
 observer_comments, other_observations, next_step_1, next_step_2, next_step_3,
 record_token, evidence_pad_id, sp1_present, sp1_partially_present, sp1_not_present,
-sp1_not_seen, grade
+sp1_not_seen, grade, sp1_notes, rubric_version
 ```
 
 | Endpoint | Value |

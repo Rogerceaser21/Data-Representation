@@ -299,7 +299,7 @@ function formatStampSafe(iso) {
 /* ─────────────────────────────────────────────────────────────────────────────
  * otp-v0.1 · Progress in Lessons OTP submissions.
  *
- * Same shape as the R3 path above, on its own tab and its own 31-column schema:
+ * Same shape as the R3 path above, on its own tab and its own 33-column schema:
  *   Sheet row first (source of truth)  →  backup email (CC the observer)
  *   →  Supabase mirror, each side effect inside its own try/catch so a failure
  *   is logged and swallowed and the observer never sees an error (rules 12/14).
@@ -466,6 +466,53 @@ function buildOtpSubmissionHtml(recordId, lockedUrl, submittedAt, data) {
     return '<tr><td colspan="2" style="padding:18px 0 6px;border-bottom:1px solid #e3e2dc;color:#143642;font-weight:600;font-size:12px;letter-spacing:0.16em;text-transform:uppercase;">' + esc(title) + '</td></tr>';
   };
 
+  // otp-v0.6: a note row keeps the observer's line breaks (escaped first, so the
+  // <br> is the only markup that survives).
+  const noteRow = function(label, value) {
+    return '<tr>' +
+           '<td style="padding:6px 12px 6px 0;color:#6b7e85;font-size:13px;vertical-align:top;white-space:nowrap;">' + esc(label) + '</td>' +
+           '<td style="padding:6px 0;color:#143642;font-size:14px;vertical-align:top;">' + esc(value).replace(/\r\n|\r|\n/g, '<br>') + '</td>' +
+           '</tr>';
+  };
+
+  /**
+   * otp-v0.6: the Criterion notes section, built from the posted sp1_notes JSON
+   * ({ "<Level> <n>": "note" }). One row per note, ordered by level then
+   * criterion number, labelled with the criterion's colour state read from the
+   * sp1_present / sp1_partially_present / sp1_not_present lists ('Not assessed'
+   * when it is in none of them). Returns '' (so the section is omitted whole)
+   * when sp1_notes is empty, is not a JSON object, or holds no note text.
+   */
+  const criterionNoteRows = function() {
+    let parsed;
+    try { parsed = JSON.parse(String(data.sp1_notes || '')); } catch (e) { return ''; }
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return '';
+
+    const LEVELS = ['Beginner', 'Emerging', 'Good', 'Great', 'Outstanding'];
+    const rank = function(key) {
+      const m = /^(Beginner|Emerging|Good|Great|Outstanding) (\d+)$/.exec(key);
+      return m ? LEVELS.indexOf(m[1]) * 1000 + parseInt(m[2], 10) : 1000000;
+    };
+    const listHas = function(list, key) {
+      return String(list == null ? '' : list).split(',').some(function(item) { return item.trim() === key; });
+    };
+    const stateOf = function(key) {
+      if (listHas(data.sp1_present, key)) return 'Present';
+      if (listHas(data.sp1_partially_present, key)) return 'Partially present';
+      if (listHas(data.sp1_not_present, key)) return 'Not present';
+      return 'Not assessed';
+    };
+
+    const keys = Object.keys(parsed)
+      .filter(function(k) { return String(parsed[k] == null ? '' : parsed[k]).trim() !== ''; })
+      .sort(function(a, b) { return rank(a) - rank(b); });
+    if (!keys.length) return '';
+
+    let out = sectionTitle('Criterion notes');
+    keys.forEach(function(k) { out += noteRow(k + ' · ' + stateOf(k), parsed[k]); });
+    return out;
+  };
+
   let html = '';
   html += '<div style="font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;background:#efece2;padding:24px;color:#143642;">';
   html += '  <div style="max-width:680px;margin:0 auto;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 8px 24px -8px rgba(20,54,66,0.18);">';
@@ -505,7 +552,9 @@ function buildOtpSubmissionHtml(recordId, lockedUrl, submittedAt, data) {
   html += row('Present in lesson',      data.sp1_present);
   html += row('Partially present',      data.sp1_partially_present);
   html += row('Not present',            data.sp1_not_present);
-  html += row('Not seen (does not count)', data.sp1_not_seen);
+  html += row('Not assessed (does not count)', data.sp1_not_seen);
+
+  html += criterionNoteRows();
 
   html += sectionTitle('Observer notes');
   html += row('Observer Comments',      data.observer_comments);

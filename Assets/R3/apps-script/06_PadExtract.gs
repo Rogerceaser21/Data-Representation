@@ -43,6 +43,20 @@ const PAD_EXTRACT_LABELS = {
   next_step_3:        'Next Steps / Support 3'
 };
 
+/**
+ * otp-v0.6: the Progress in Lessons OTP form also scopes a pad page to ONE
+ * rubric criterion's note, target `sp1_<level>_<n>_note`. These are generated
+ * from the rubric (32 of them today), so they are matched by pattern rather
+ * than listed. The classify schema's enum stays the fixed field list above:
+ * a note page is always field-scoped, so the model never picks its target.
+ */
+const PAD_NOTE_TARGET_RE = /^sp1_(beginner|emerging|good|great|outstanding)_(?:[1-9]|1[0-9])_note$/;
+
+function isPadExtractTarget(target) {
+  const t = String(target == null ? '' : target);
+  return PAD_EXTRACT_TARGETS.indexOf(t) > -1 || PAD_NOTE_TARGET_RE.test(t);
+}
+
 const PAD_EXTRACT_SCHEMA = {
   type: 'object',
   properties: {
@@ -82,6 +96,22 @@ const PAD_EXTRACT_SCHEMA_TARGETED = {
   required: ['items'],
   additionalProperties: false
 };
+
+/**
+ * otp-v0.6: the subject of a targeted page's field line. Every target that
+ * existed before v0.6 comes back unchanged, so padExtractTargetedPrompt below
+ * stays byte-identical to main and still resolves it through
+ * PAD_EXTRACT_LABELS; an OTP criterion-note target instead yields the phrase
+ * naming the criterion the note belongs to. That wording is trimmed, capped at
+ * 400 chars and stripped of double quotes (so it can never close the quoted
+ * span), and falls back to the target name when the form sent no context.
+ */
+function padExtractPromptField(target, context) {
+  const t = String(target == null ? '' : target);
+  if (!PAD_NOTE_TARGET_RE.test(t)) return t;
+  const c = String(context == null ? '' : context).trim().slice(0, 400).replace(/"/g, '');
+  return 'the observer\'s note about the OTP criterion "' + (c || t) + '"';
+}
 
 function padExtractTargetedPrompt(target) {
   return [
@@ -130,7 +160,7 @@ function handlePadExtract(data) {
 
     // v0.51: page tied to one form field -> transcription-only prompt/schema.
     // No target (older form during deploy skew) -> v0.50 classification.
-    const target = PAD_EXTRACT_TARGETS.indexOf(String(data.target || '')) > -1 ? String(data.target) : '';
+    const target = isPadExtractTarget(data.target) ? String(data.target) : '';
 
     const payload = {
       model: PAD_EXTRACT_MODEL,
@@ -141,7 +171,7 @@ function handlePadExtract(data) {
         role: 'user',
         content: [
           { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: image } },
-          { type: 'text', text: target ? padExtractTargetedPrompt(target) : PAD_EXTRACT_PROMPT }
+          { type: 'text', text: target ? padExtractTargetedPrompt(padExtractPromptField(target, data.context)) : PAD_EXTRACT_PROMPT }
         ]
       }]
     };
@@ -173,7 +203,7 @@ function handlePadExtract(data) {
         return it && target ? { target: target, text: it.text } : it;
       })
       .filter(function(it) {
-        return it && PAD_EXTRACT_TARGETS.indexOf(it.target) > -1 && String(it.text || '').trim();
+        return it && isPadExtractTarget(it.target) && String(it.text || '').trim();
       });
     return jsonOut({ success: true, items: items });
   } catch (err) {

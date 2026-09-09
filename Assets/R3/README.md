@@ -115,7 +115,7 @@ without it takes the R3 path unchanged.
 
 | Thing | Value |
 |---|---|
-| Sheet tab | `OTP Submissions` (31 columns, append-only, hard rule 1) |
+| Sheet tab | `OTP Submissions` (33 columns, append-only, hard rule 1) |
 | Roster tabs | `Teachers 26-27` / `Inspectors 26-27`, silently falling back to `Teachers` / `Inspectors` until Igor creates them |
 | Options endpoint | `WEB_APP_URL + '?action=options&form=otp'` (cached under its own key `OTP_OPTIONS_v1`, 5-min TTL; `clearOptionsCache` clears both forms) |
 | Record endpoint | `WEB_APP_URL + '?token=<32-hex>&form=otp'` (legacy `?id=...&token=...&form=otp` also accepted); the response adds `form: 'otp' \| 'r3'` |
@@ -131,13 +131,20 @@ room_number, time_in, subject, school, support_teachers_cas, otp_ref, otp_aspect
 sp1_beginner, sp1_emerging, sp1_good, sp1_great, sp1_outstanding, sp1_selected_text,
 observer_comments, other_observations, next_step_1, next_step_2, next_step_3,
 record_token, evidence_pad_id, sp1_present, sp1_partially_present, sp1_not_present,
-sp1_not_seen, grade
+sp1_not_seen, grade, sp1_notes, rubric_version
 ```
 
 `observer` is the form's `inspector` field; there is no `time_out`, so no `duration`.
 otp-v0.5: `school` is DERIVED server-side from `grade` and grade wins (Pre-Kindy /
 Kindy -> Kindy, Prep and 1-6 -> Primary, 7-12 -> Secondary); an empty or unknown
 grade keeps the school the form posted.
+otp-v0.6: `sp1_notes` (column 32) holds the observer's per-criterion notes as a
+JSON object keyed `"<Level> <n>"`, written exactly as posted, and `rubric_version`
+(column 33) records the rubric that numbering refers to (`sp1-v2`; empty on rows
+written before otp-v0.6). The backup email renames the `Not seen (does not count)`
+row to `Not assessed (does not count)` and adds a `Criterion notes` section, one
+row per note in level order labelled `<Level> <n> · <State>`, omitted when there
+is no note. The Evidence Pad also accepts `sp1_<level>_<n>_note` page targets.
 Backend regression harness: `node Assets/OTP/tests/gs-harness.mjs` (proves the OTP path
 and that every R3 path is byte-identical to `origin/main`).
 

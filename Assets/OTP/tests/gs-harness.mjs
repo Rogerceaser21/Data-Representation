@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * otp-v0.5 · Apps Script harness for Assets/R3/apps-script/*.gs
+ * otp-v0.6 · Apps Script harness for Assets/R3/apps-script/*.gs
  *
  *   node Assets/OTP/tests/gs-harness.mjs
  *
@@ -9,9 +9,9 @@
  * PropertiesService, CacheService, UrlFetchApp, MailApp, Utilities, Logger and
  * ContentService, then proves four things:
  *
- *   (a) an OTP submission appends ONE 31-cell row to "OTP Submissions" in the
+ *   (a) an OTP submission appends ONE 33-cell row to "OTP Submissions" in the
  *       load-bearing column order, mails the OTP subject + viewer link, and
- *       mirrors to /rest/v1/rpc/ingest_otp as { payload: {...31 keys...} };
+ *       mirrors to /rest/v1/rpc/ingest_otp as { payload: {...33 keys...} };
  *   (b) the R3 paths (submit, options, token lookup, status) are byte-identical
  *       to the SAME scenarios run against the untouched files from origin/main;
  *   (c) ?action=options&form=otp reads the 26-27 roster tabs, falls back to the
@@ -21,7 +21,14 @@
  *       form:'otp', while the same token with no form parameter still resolves
  *       from the R3 tab exactly as baseline;
  *   (f) otp-v0.5: `school` is DERIVED from the posted `grade` and grade wins,
- *       on the Sheet row, on the Supabase mirror and in the backup email.
+ *       on the Sheet row, on the Supabase mirror and in the backup email;
+ *   (g) otp-v0.6: `sp1_notes` (JSON) + `rubric_version` are columns 32 and 33,
+ *       written exactly as posted; the backup email says "Not assessed (does
+ *       not count)" and carries a "Criterion notes" section (level order, state
+ *       per criterion, omitted when there is nothing to show); a v0.5-shaped
+ *       31-cell row still reads back;
+ *   (h) otp-v0.6: the pad extractor accepts `sp1_<level>_<n>_note` targets and
+ *       names the criterion in the prompt, while rejecting malformed ones.
  *
  * Determinism: TZ is pinned to UTC, `new Date()` is frozen, and
  * Utilities.getUuid() is a counter, so the modified run and the baseline run
@@ -54,8 +61,20 @@ const EXPECTED_OTP_COLUMNS = [
   'sp1_selected_text', 'observer_comments', 'other_observations',
   'next_step_1', 'next_step_2', 'next_step_3', 'record_token', 'evidence_pad_id',
   'sp1_present', 'sp1_partially_present', 'sp1_not_present',
-  'sp1_not_seen', 'grade'
+  'sp1_not_seen', 'grade', 'sp1_notes', 'rubric_version'
 ];
+
+// otp-v0.6 · the note fixture is deliberately NOT in level order, carries a
+// newline and an HTML-meaningful character, and includes one criterion nobody
+// coloured (Great 5), so the email section proves ordering, escaping and the
+// "Not assessed" state in one pass.
+const OTP_NOTES = {
+  'Good 3': 'Pace slipped in the middle third.\nRecovered after the timer.',
+  'Emerging 2': 'Pupils waited for a prompt <every time>.',
+  'Great 5': 'No colour on this one, just a note.',
+  'Outstanding 4': 'Applied prior learning unprompted.'
+};
+const OTP_NOTES_JSON = JSON.stringify(OTP_NOTES);
 
 const OTP_PAYLOAD = {
   form: 'otp',
@@ -80,7 +99,9 @@ const OTP_PAYLOAD = {
   sp1_present: 'Good 1, Outstanding 4',
   sp1_partially_present: 'Good 3',
   sp1_not_present: 'Emerging 2',
-  sp1_not_seen: 'Beginner 1, Beginner 2, Emerging 1, Good 2, Great 1, Great 2, Outstanding 1',
+  sp1_not_seen: 'Beginner 1, Beginner 2, Emerging 1, Good 2, Great 1, Great 2, Great 5, Outstanding 1',
+  sp1_notes: OTP_NOTES_JSON,
+  rubric_version: 'sp1-v2',
   observer_comments: 'Strong start, retrieval routine embedded.',
   other_observations: 'Display used as a working wall.',
   next_step_1: 'Plan a stretch task for the top table.',
@@ -248,6 +269,14 @@ function buildEnv(source, seed) {
         if (url.indexOf('/storage/v1/object/list/') > -1) return makeResponse(200, '[]');
         if (url.indexOf('/rest/v1/rpc/') > -1) return makeResponse(200, '{"ok":true}');
         if (url.indexOf('/rest/v1/app_config') > -1) return makeResponse(200, '[]');
+        // otp-v0.6 · pad extraction. One transcribed item, no target: the
+        // targeted path stamps the page's own target, the classify path filters
+        // it out (exactly as a real untargeted item without a target would be).
+        if (url.indexOf('api.anthropic.com') > -1) {
+          return makeResponse(200, JSON.stringify({
+            content: [{ type: 'text', text: JSON.stringify({ items: [{ text: 'transcribed note' }] }) }]
+          }));
+        }
         return makeResponse(200, '{}');
       }
     },
@@ -346,8 +375,17 @@ function otpRow(token) {
     if (c === 'evidence_pad_id') return '';
     if (c === 'grade') return '11';
     if (c === 'sp1_not_seen') return 'Beginner 1, Great 2';
+    if (c === 'sp1_notes') return '{"Good 1":"Seen on the working wall."}';
+    if (c === 'rubric_version') return 'sp1-v2';
     return '';
   });
+}
+
+/** Real Sheets pads every row out to the widest column when it is read back. */
+function padRow(row, width) {
+  const out = row.slice();
+  while (out.length < width) out.push('');
+  return out;
 }
 
 // 2026-09-03 deploy: the live tabs were renamed 'Teachers 25-26' / 'Inspectors 25-26'
@@ -409,8 +447,37 @@ const SCENARIOS = {
   r3_bad_token: {
     seed: seedRecords,
     run: (env) => JSON.parse(env.ctx.doGet({ parameter: { token: '00000000000000000000000000000000' } }).getContent())
+  },
+  // otp-v0.6 · every target that existed before the note targets must behave
+  // byte-identically, prompt bytes included (the request payload is in the dump).
+  pad_extract_r3_target: {
+    seed: seedFull,
+    run: (env) => extractPad(env, { target: 'summary_strengths' }).res
+  },
+  pad_extract_otp_target: {
+    seed: seedFull,
+    run: (env) => extractPad(env, { target: 'observer_comments' }).res
+  },
+  pad_extract_no_target: {
+    seed: seedFull,
+    run: (env) => extractPad(env, {}).res
   }
 };
+
+/**
+ * Posts ONE pad page through doPost's extract route with the Anthropic key
+ * stubbed in, and returns the response plus the prompt that was actually sent.
+ */
+function extractPad(env, extra) {
+  env.ctx.getAnthropicKey = () => 'STUB_ANTHROPIC_KEY';
+  const body = Object.assign({ action: 'extract_pad', image: 'QUJD' }, extra);
+  const res = JSON.parse(env.ctx.doPost({ postData: { contents: JSON.stringify(body) } }).getContent());
+  const call = env.state.fetches.filter((f) => f.url.indexOf('api.anthropic.com') > -1).pop() || {};
+  const sent = JSON.parse(call.payload || '{}');
+  const prompt = (((sent.messages || [{}])[0] || {}).content || [])
+    .filter((c) => c.type === 'text').map((c) => c.text).join('');
+  return { res, prompt, sent };
+}
 
 function runScenario(source, name) {
   const spec = SCENARIOS[name];
@@ -446,7 +513,22 @@ function mailRowValue(html, label) {
   return s.slice(open + 1, close);
 }
 
-console.log('AIS Apps Script harness · otp-v0.5');
+/** The [label, value] pairs of one section of a buildOtpSubmissionHtml table. */
+function mailSectionRows(html, title) {
+  const s = String(html);
+  const at = s.indexOf('>' + title + '</td>');
+  if (at < 0) return null;
+  const rest = s.slice(at);
+  const next = rest.indexOf('colspan="2"', 1);
+  const body = next > -1 ? rest.slice(0, next) : rest;
+  const re = /<td style="padding:6px 12px 6px 0;[^"]*">([^<]*)<\/td><td[^>]*>([\s\S]*?)<\/td>/g;
+  const out = [];
+  let m;
+  while ((m = re.exec(body))) out.push([m[1], m[2]]);
+  return out;
+}
+
+console.log('AIS Apps Script harness · otp-v0.6');
 console.log('files: ' + GS_FILES.join(', '));
 console.log('baseline: origin/main (' + execSync('git rev-parse --short origin/main', { cwd: REPO }).toString().trim() + ') -> ' + BASE_DIR);
 
@@ -461,10 +543,11 @@ section('(a) OTP submission · row + email + Supabase mirror');
   const row = tab[1] || [];
   const idx = (c) => EXPECTED_OTP_COLUMNS.indexOf(c);
 
-  eqJson(env.ctx.getOtpColumns(), EXPECTED_OTP_COLUMNS, 'getOtpColumns() is the 31-column contract, in order');
+  eqJson(env.ctx.getOtpColumns(), EXPECTED_OTP_COLUMNS, 'getOtpColumns() is the 33-column contract, in order');
+  eqJson(EXPECTED_OTP_COLUMNS.slice(31), ['sp1_notes', 'rubric_version'], 'sp1_notes and rubric_version are columns 32 and 33 (appended, hard rule 1)');
   ok(tab.length === 2, 'OTP Submissions holds exactly one header + ONE appended row', 'rows: ' + tab.length);
   eqJson(header, EXPECTED_OTP_COLUMNS, 'header row written in the load-bearing column order');
-  ok(row.length === 31, 'appended row has 31 cells', 'cells: ' + row.length);
+  ok(row.length === 33, 'appended row has 33 cells', 'cells: ' + row.length);
   ok(/^AIS-OTP-\d{8}-\d{6}$/.test(row[idx('record_id')]), 'record_id is a fresh AIS-OTP-YYYYMMDD-HHMMSS id', 'got: ' + row[idx('record_id')]);
   ok(/^[0-9a-f]{32}$/.test(row[idx('record_token')]), 'record_token is 32 hex chars', 'got: ' + row[idx('record_token')]);
   ok(row[idx('observer')] === OTP_PAYLOAD.inspector, 'observer column <- payload.inspector', 'got: ' + row[idx('observer')]);
@@ -474,7 +557,7 @@ section('(a) OTP submission · row + email + Supabase mirror');
     'otp_ref', 'otp_aspect', 'sp1_beginner', 'sp1_emerging', 'sp1_good', 'sp1_great', 'sp1_outstanding',
     'sp1_selected_text', 'observer_comments', 'other_observations', 'next_step_1', 'next_step_2', 'next_step_3',
     'evidence_pad_id', 'sp1_present', 'sp1_partially_present', 'sp1_not_present',
-    'sp1_not_seen', 'grade'].filter((k) => row[idx(k)] !== OTP_PAYLOAD[k]);
+    'sp1_not_seen', 'grade', 'sp1_notes', 'rubric_version'].filter((k) => row[idx(k)] !== OTP_PAYLOAD[k]);
   eqJson(fieldsOk, [], 'every posted OTP field landed in its own column');
   ok(!dump.sheets['Submissions'], 'the R3 Submissions tab was never touched by an OTP post');
   eqJson(out, { success: true, id: row[idx('record_id')] }, 'response is { success:true, id } exactly like R3');
@@ -487,7 +570,7 @@ section('(a) OTP submission · row + email + Supabase mirror');
   const viewerLink = 'https://rogerceaser21.github.io/Data-Representation/Assets/OTP/otp-record.html?token=' + row[idx('record_token')];
   ok(String(mail.htmlBody).indexOf(viewerLink) > -1, 'email body carries the OTP viewer link (token only)', 'looked for: ' + viewerLink);
   const labelsMissing = ['Observer Comments', 'Other Observations', 'Next Steps / Support 1', 'Selected criteria', 'Support teachers / CAs',
-    'Present in lesson', 'Partially present', 'Not present', 'Not seen (does not count)', 'Grade']
+    'Present in lesson', 'Partially present', 'Not present', 'Not assessed (does not count)', 'Grade']
     .filter((l) => String(mail.htmlBody).indexOf(l) < 0);
   eqJson(labelsMissing, [], 'email body lists the OTP columns with readable labels');
 
@@ -495,7 +578,7 @@ section('(a) OTP submission · row + email + Supabase mirror');
   ok(ingest.length === 1, 'exactly one Supabase mirror call, to /rest/v1/rpc/ingest_otp', 'urls: ' + JSON.stringify(dump.fetches.map((f) => f.url)));
   const body = JSON.parse((ingest[0] || {}).payload || '{}');
   eqJson(Object.keys(body), ['payload'], 'mirror body is { payload: ... }');
-  eqJson(Object.keys(body.payload || {}), EXPECTED_OTP_COLUMNS, 'mirror payload carries the 31 columns, in order');
+  eqJson(Object.keys(body.payload || {}), EXPECTED_OTP_COLUMNS, 'mirror payload carries the 33 columns, in order');
   eqJson(EXPECTED_OTP_COLUMNS.map((c) => body.payload[c]), row, 'mirror payload is a field-for-field copy of the Sheet row');
   ok((ingest[0] || {}).headers.apikey === SECRET, 'mirror authenticates with the service_role key from Script Properties');
   ok(dump.fetches.every((f) => f.url.indexOf('/rest/v1/rpc/ingest_r3') < 0), 'the R3 ingest RPC was never called for an OTP post');
@@ -504,10 +587,20 @@ section('(a) OTP submission · row + email + Supabase mirror');
 /* (b) R3 parity ------------------------------------------------------------ */
 section('(b) R3 paths byte-identical to origin/main baseline');
 Object.keys(SCENARIOS).forEach((name) => {
-  const a = JSON.stringify(runScenario(SRC_NEW, name));
-  const b = JSON.stringify(runScenario(SRC_BASE, name));
+  const runNew = runScenario(SRC_NEW, name);
+  const runBase = runScenario(SRC_BASE, name);
+  const a = JSON.stringify(runNew);
+  const b = JSON.stringify(runBase);
   ok(a === b, 'scenario ' + name + ' identical (sheet rows + mail + fetches + logs + cache + response)',
     a === b ? '' : 'baseline: ' + b + '\n        current:  ' + a);
+  // Guard against a vacuous pass: an extract scenario that never reached the
+  // model (a stub that failed on BOTH sides) would compare equal and prove
+  // nothing about the prompt bytes.
+  if (name.indexOf('pad_extract') === 0) {
+    const reached = (dump) => (dump.fetches || []).some((f) => f.url.indexOf('api.anthropic.com') > -1);
+    ok(reached(runNew) && reached(runBase), 'scenario ' + name + ' really called the model on BOTH sources (prompt bytes compared)',
+      'new: ' + reached(runNew) + ' baseline: ' + reached(runBase));
+  }
 });
 
 /* (c) options ------------------------------------------------------------- */
@@ -609,23 +702,33 @@ section('(e) header heal · an older OTP tab gains exactly the new trailing colu
     return { OLD_OTP_ROW, tab: env.dump().sheets['OTP Submissions'] || [] };
   };
 
-  // a v0.1 tab is 26 columns wide, so it gains 5 cells (otp-v0.2's 3 + otp-v0.5's 2)
+  // a v0.1 tab is 26 columns wide, so it gains 7 cells
+  // (otp-v0.2's 3 + otp-v0.5's 2 + otp-v0.6's 2)
   const v1 = heal(26);
   ok(v1.tab.length === 3, 'v0.1 tab: header + the untouched old row + the new appended row', 'rows: ' + v1.tab.length);
-  eqJson(v1.tab[0], EXPECTED_OTP_COLUMNS, 'v0.1 header healed to the 31-column contract, in order');
+  eqJson(v1.tab[0], EXPECTED_OTP_COLUMNS, 'v0.1 header healed to the 33-column contract, in order');
   eqJson((v1.tab[0] || []).slice(26),
-    ['sp1_present', 'sp1_partially_present', 'sp1_not_present', 'sp1_not_seen', 'grade'],
-    'the 5 new header cells land in positions 27-31');
+    ['sp1_present', 'sp1_partially_present', 'sp1_not_present', 'sp1_not_seen', 'grade', 'sp1_notes', 'rubric_version'],
+    'the 7 new header cells land in positions 27-33');
   eqJson(v1.tab[1], v1.OLD_OTP_ROW, 'the pre-existing v0.1 row keeps its original 26 cells untouched');
-  ok((v1.tab[2] || []).length === 31, 'the row appended to the healed v0.1 tab has 31 cells', 'cells: ' + (v1.tab[2] || []).length);
+  ok((v1.tab[2] || []).length === 33, 'the row appended to the healed v0.1 tab has 33 cells', 'cells: ' + (v1.tab[2] || []).length);
 
-  // a v0.2 tab is 29 columns wide, so it gains EXACTLY the 2 otp-v0.5 cells
+  // a v0.2 tab is 29 columns wide, so it gains otp-v0.5's 2 + otp-v0.6's 2
   const v2 = heal(29);
   ok(v2.tab.length === 3, 'v0.2 tab: header + the untouched old row + the new appended row', 'rows: ' + v2.tab.length);
-  eqJson(v2.tab[0], EXPECTED_OTP_COLUMNS, 'v0.2 header healed to the 31-column contract, in order');
-  eqJson((v2.tab[0] || []).slice(29), ['sp1_not_seen', 'grade'], 'exactly the 2 new header cells land in positions 30-31');
+  eqJson(v2.tab[0], EXPECTED_OTP_COLUMNS, 'v0.2 header healed to the 33-column contract, in order');
+  eqJson((v2.tab[0] || []).slice(29), ['sp1_not_seen', 'grade', 'sp1_notes', 'rubric_version'],
+    'exactly the 4 new header cells land in positions 30-33');
   eqJson(v2.tab[1], v2.OLD_OTP_ROW, 'the pre-existing v0.2 row keeps its original 29 cells untouched');
-  ok((v2.tab[2] || []).length === 31, 'the row appended to the healed v0.2 tab has 31 cells', 'cells: ' + (v2.tab[2] || []).length);
+  ok((v2.tab[2] || []).length === 33, 'the row appended to the healed v0.2 tab has 33 cells', 'cells: ' + (v2.tab[2] || []).length);
+
+  // the live otp-v0.5 tab is 31 columns wide, so it gains EXACTLY the 2 new ones
+  const v5 = heal(31);
+  ok(v5.tab.length === 3, 'v0.5 tab: header + the untouched old row + the new appended row', 'rows: ' + v5.tab.length);
+  eqJson(v5.tab[0], EXPECTED_OTP_COLUMNS, 'v0.5 header healed to the 33-column contract, in order');
+  eqJson((v5.tab[0] || []).slice(31), ['sp1_notes', 'rubric_version'], 'exactly the 2 new header cells land in positions 32-33');
+  eqJson(v5.tab[1], v5.OLD_OTP_ROW, 'the pre-existing v0.5 row keeps its original 31 cells untouched');
+  ok((v5.tab[2] || []).length === 33, 'the row appended to the healed v0.5 tab has 33 cells', 'cells: ' + (v5.tab[2] || []).length);
 }
 
 /* (f) school derived from grade ------------------------------------------- */
@@ -652,8 +755,8 @@ section('(f) otp-v0.5 · school is DERIVED from grade, and grade wins');
   const html = (wrong.dump.mail[0] || {}).htmlBody || '';
   ok(mailRowValue(html, 'School') === 'Secondary', 'the backup email School row shows the DERIVED school', 'got: ' + mailRowValue(html, 'School'));
   ok(mailRowValue(html, 'Grade') === '9', 'the backup email Grade row shows the posted grade', 'got: ' + mailRowValue(html, 'Grade'));
-  ok(mailRowValue(html, 'Not seen (does not count)') === OTP_PAYLOAD.sp1_not_seen,
-    'the backup email Not seen row shows the posted sp1_not_seen', 'got: ' + mailRowValue(html, 'Not seen (does not count)'));
+  ok(mailRowValue(html, 'Not assessed (does not count)') === OTP_PAYLOAD.sp1_not_seen,
+    'the backup email Not assessed row shows the posted sp1_not_seen', 'got: ' + mailRowValue(html, 'Not assessed (does not count)'));
 
   // every branch of the mapping, each posted with a contradicting school
   [
@@ -683,12 +786,173 @@ section('(f) otp-v0.5 · school is DERIVED from grade, and grade wins');
   const staleDump = staleEnv.dump();
   const staleRow = (staleDump.sheets['OTP Submissions'] || [])[1] || [];
   const notSeenIdx = EXPECTED_OTP_COLUMNS.indexOf('sp1_not_seen');
-  ok(staleRow.length === 31, 'a stale otp-v0.4 payload (grade and sp1_not_seen keys absent) still appends a 31-cell row', 'cells: ' + staleRow.length);
+  ok(staleRow.length === 33, 'a stale otp-v0.4 payload (grade and sp1_not_seen keys absent) still appends a 33-cell row', 'cells: ' + staleRow.length);
   ok(staleRow[schoolIdx] === OTP_PAYLOAD.school, 'a stale payload keeps its posted school', 'got: ' + staleRow[schoolIdx]);
   ok(staleRow[gradeIdx] === '' && staleRow[notSeenIdx] === '', 'the two new cells are empty strings for a stale payload',
     'grade: ' + JSON.stringify(staleRow[gradeIdx]) + ' not_seen: ' + JSON.stringify(staleRow[notSeenIdx]));
   ok((staleDump.mail || []).length === 1, 'a stale payload still sends the backup email', 'mails: ' + (staleDump.mail || []).length);
   ok((staleDump.fetches || []).some((f) => f.url.endsWith('/rest/v1/rpc/ingest_otp')), 'a stale payload still calls the Supabase mirror');
+}
+
+/* (g) otp-v0.6 notes columns + Criterion notes email section --------------- */
+section('(g) otp-v0.6 · sp1_notes + rubric_version, and the Criterion notes email section');
+{
+  const postOtp = (over) => {
+    const env = buildEnv(SRC_NEW, seedFull());
+    env.ctx.doPost({ postData: { contents: JSON.stringify({ ...OTP_PAYLOAD, ...over }) } });
+    const dump = env.dump();
+    return { row: (dump.sheets['OTP Submissions'] || [])[1] || [], dump, html: (dump.mail[0] || {}).htmlBody || '' };
+  };
+  const notesIdx = EXPECTED_OTP_COLUMNS.indexOf('sp1_notes');
+  const versionIdx = EXPECTED_OTP_COLUMNS.indexOf('rubric_version');
+
+  const full = postOtp({});
+  ok(full.row[notesIdx] === OTP_NOTES_JSON, 'sp1_notes lands in its column as the exact JSON string posted', 'got: ' + JSON.stringify(full.row[notesIdx]));
+  ok(full.row[versionIdx] === 'sp1-v2', 'rubric_version lands in its column as posted', 'got: ' + full.row[versionIdx]);
+  const mirror = JSON.parse((full.dump.fetches.filter((f) => f.url.endsWith('/rest/v1/rpc/ingest_otp'))[0] || {}).payload || '{}').payload || {};
+  ok(mirror.sp1_notes === OTP_NOTES_JSON && mirror.rubric_version === 'sp1-v2',
+    'the Supabase mirror carries both new values verbatim (05_Supabase.gs unchanged)', JSON.stringify([mirror.sp1_notes, mirror.rubric_version]));
+
+  ok(full.html.indexOf('Not seen (does not count)') < 0, 'the old "Not seen (does not count)" email label is gone');
+
+  const noteRows = mailSectionRows(full.html, 'Criterion notes') || [];
+  eqJson(noteRows.map((r) => r[0]),
+    ['Emerging 2 · Not present', 'Good 3 · Partially present', 'Great 5 · Not assessed', 'Outstanding 4 · Present'],
+    'Criterion notes: one row per note, level order then n, state read from the colour lists');
+  eqJson(noteRows.map((r) => r[1]),
+    ['Pupils waited for a prompt &lt;every time&gt;.',
+     'Pace slipped in the middle third.<br>Recovered after the timer.',
+     'No colour on this one, just a note.',
+     'Applied prior learning unprompted.'],
+    'note values are HTML-escaped and their newlines render as <br>');
+
+  const posRef = full.html.indexOf('>OTP reference</td>');
+  const posNotes = full.html.indexOf('>Criterion notes</td>');
+  const posObs = full.html.indexOf('>Observer notes</td>');
+  ok(posRef > -1 && posRef < posNotes && posNotes < posObs,
+    'Criterion notes sits after the OTP reference section and before Observer notes', [posRef, posNotes, posObs].join(' / '));
+
+  const empty = postOtp({ sp1_notes: '' });
+  ok(empty.html.indexOf('Criterion notes') < 0, 'the whole section is omitted when sp1_notes is empty');
+  ok(empty.row[notesIdx] === '', 'an empty sp1_notes is stored as an empty cell');
+  const broken = postOtp({ sp1_notes: '{not json' });
+  ok(broken.html.indexOf('Criterion notes') < 0, 'the whole section is omitted when sp1_notes is not valid JSON');
+  ok(broken.row[notesIdx] === '{not json', 'an unparseable sp1_notes is still stored verbatim (the Sheet never loses data)');
+  const blankNotes = postOtp({ sp1_notes: '{"Good 3":"   "}' });
+  ok(blankNotes.html.indexOf('Criterion notes') < 0, 'the section is omitted when the JSON holds no note text');
+
+  // a cached otp-v0.5 form during deploy skew posts neither new key
+  const staleEnv6 = buildEnv(SRC_NEW, seedFull());
+  const stale6 = { ...OTP_PAYLOAD };
+  delete stale6.sp1_notes;
+  delete stale6.rubric_version;
+  staleEnv6.ctx.doPost({ postData: { contents: JSON.stringify(stale6) } });
+  const stale6Dump = staleEnv6.dump();
+  const stale6Row = (stale6Dump.sheets['OTP Submissions'] || [])[1] || [];
+  ok(stale6Row.length === 33, 'a stale otp-v0.5 payload still appends a 33-cell row', 'cells: ' + stale6Row.length);
+  ok(stale6Row[notesIdx] === '' && stale6Row[versionIdx] === '', 'the two new cells are empty strings for a stale payload',
+    JSON.stringify([stale6Row[notesIdx], stale6Row[versionIdx]]));
+  ok(String((stale6Dump.mail[0] || {}).htmlBody).indexOf('Criterion notes') < 0, 'a stale payload sends the email with no Criterion notes section');
+
+  // A v0.5-shaped row (31 cells) under the healed 33-column header still reads
+  // back. NB real Sheets pads ragged rows out to the widest column on read and
+  // this harness's getValues() stub does not, so the padding is modelled here.
+  const LEGACY_TOKEN = '99887766554433221100ffeeddccbbaa';
+  const legacyEnv = buildEnv(SRC_NEW, JSON.parse(JSON.stringify({
+    ...ROSTER_R3,
+    'OTP Submissions': [EXPECTED_OTP_COLUMNS, padRow(otpRow(LEGACY_TOKEN).slice(0, 31), EXPECTED_OTP_COLUMNS.length)]
+  })));
+  const legacy = JSON.parse(legacyEnv.ctx.doGet({ parameter: { token: LEGACY_TOKEN, form: 'otp' } }).getContent());
+  ok(legacy.success === true && legacy.data.teacher === 'Existing OTP Teacher',
+    'a 31-cell otp-v0.5 row still reads back under the 33-column header', JSON.stringify(legacy).slice(0, 140));
+  ok(legacy.data.grade === '11' && legacy.data.sp1_not_seen === 'Beginner 1, Great 2', 'the legacy row keeps its own otp-v0.5 values');
+  ok(legacy.data.sp1_notes === '' && legacy.data.rubric_version === '',
+    'the two new fields read back as empty strings on a legacy row', JSON.stringify([legacy.data.sp1_notes, legacy.data.rubric_version]));
+
+  // a v0.6 row returns both new fields, mapped by header name (02_doGet.gs unchanged)
+  const freshEnv = buildEnv(SRC_NEW, seedRecords());
+  const fresh = JSON.parse(freshEnv.ctx.doGet({ parameter: { token: SHARED_TOKEN, form: 'otp' } }).getContent());
+  ok(fresh.data.sp1_notes === '{"Good 1":"Seen on the working wall."}', 'the record fetch returns sp1_notes by header', 'got: ' + fresh.data.sp1_notes);
+  ok(fresh.data.rubric_version === 'sp1-v2', 'the record fetch returns rubric_version by header', 'got: ' + fresh.data.rubric_version);
+
+  // the pad-page name gate accepts a criterion-note page (02_doGet.gs unchanged)
+  const padIdx = EXPECTED_OTP_COLUMNS.indexOf('evidence_pad_id');
+  const notePadRow = otpRow(SHARED_TOKEN); notePadRow[padIdx] = 'a1b2c3d4e5f60718293a4b5c6d7e8f90';
+  const padEnv = buildEnv(SRC_NEW, JSON.parse(JSON.stringify({ ...ROSTER_R3, 'OTP Submissions': [EXPECTED_OTP_COLUMNS, notePadRow] })));
+  padEnv.ctx.listPadFiles = () => ['sp1-good-3-note-1.jpg'];
+  padEnv.ctx.fetchPadImageBytes = () => ({ getBytes: () => [1, 2, 3] });
+  const noteImg = JSON.parse(padEnv.ctx.doGet({ parameter: { action: 'pad_image', token: SHARED_TOKEN, name: 'sp1-good-3-note-1.jpg' } }).getContent());
+  ok(noteImg.success === true && noteImg.mime === 'image/jpeg',
+    'the pad_image name gate accepts a criterion-note page (sp1-good-3-note-1.jpg)', JSON.stringify(noteImg).slice(0, 120));
+  const badName = JSON.parse(padEnv.ctx.doGet({ parameter: { action: 'pad_image', token: SHARED_TOKEN, name: 'sp1_good_3_note-1.jpg' } }).getContent());
+  eqJson(badName, { success: false, error: 'Record not found' }, 'the name gate still rejects a name outside [a-z0-9-]+.jpg');
+}
+
+/* (h) otp-v0.6 pad extraction targets -------------------------------------- */
+section('(h) otp-v0.6 · pad extraction accepts sp1_<level>_<n>_note targets');
+{
+  const CRITERION = 'Lesson pace is well managed with planned strategies to support appropriate pace implemented.';
+  const fieldLine = (ctx) => 'This whole page belongs to ONE form field: the observer\'s note about the OTP criterion "' + ctx + '".';
+  const run = (extra) => extractPad(buildEnv(SRC_NEW, seedFull()), extra);
+
+  const good = run({ target: 'sp1_good_3_note', context: CRITERION });
+  eqJson(good.res, { success: true, items: [{ target: 'sp1_good_3_note', text: 'transcribed note' }] },
+    'a note target is accepted and the item is stamped with the page target');
+  ok(good.prompt.indexOf(fieldLine(CRITERION)) > -1, 'the targeted prompt names the criterion in the field line', good.prompt.split('\n')[3]);
+  ok(good.sent.output_config.format.schema.properties.items.items.required.join() === 'text',
+    'a note page uses the transcription-only schema (no target for the model to guess)');
+
+  const noCtx = run({ target: 'sp1_beginner_1_note' });
+  ok(noCtx.prompt.indexOf(fieldLine('sp1_beginner_1_note')) > -1, 'a note target with no context falls back to the target name');
+
+  const messy = run({ target: 'sp1_great_8_note', context: '  He said "go" ' + 'x'.repeat(500) + '  ' });
+  const quoted = /ONE form field: the observer's note about the OTP criterion "([^"]*)"\./.exec(messy.prompt);
+  ok(!!quoted, 'a messy context still yields exactly one quoted criterion span');
+  const ctxOut = quoted ? quoted[1] : '';
+  ok(ctxOut.length <= 400, 'the criterion context is capped at 400 chars', 'len: ' + ctxOut.length);
+  ok(ctxOut.indexOf('"') < 0, 'double quotes are stripped from the criterion context');
+  ok(ctxOut.slice(0, 11) === 'He said go ', 'the context is trimmed and otherwise verbatim', JSON.stringify(ctxOut.slice(0, 20)));
+
+  const n19 = run({ target: 'sp1_outstanding_19_note', context: CRITERION });
+  ok(n19.res.items.length === 1 && n19.res.items[0].target === 'sp1_outstanding_19_note', 'n up to 19 is accepted', JSON.stringify(n19.res));
+
+  ['sp1_good_99_note', 'sp1_x_1_note', '../etc', 'sp1_good_20_note', 'sp1_good_0_note'].forEach((bad) => {
+    const out = run({ target: bad, context: CRITERION });
+    ok(out.prompt.indexOf('This whole page belongs to ONE form field:') < 0,
+      'target "' + bad + '" is rejected: the classify prompt is used, not a targeted one');
+    eqJson(out.res, { success: true, items: [] }, 'target "' + bad + '" never reaches the response items');
+  });
+
+  const legacyTarget = run({ target: 'observer_comments', context: CRITERION });
+  ok(legacyTarget.prompt.indexOf('This whole page belongs to ONE form field: Observer Comments.') > -1,
+    'an existing target keeps its own label line, context ignored');
+
+  // Skeptic-found defect (2026-09-09): note support is additive everywhere in
+  // this file except three lines inside the SHARED handlePadExtract (a widened
+  // target predicate, twice, and the prompt argument). Prove mechanically that
+  // those three add ONLY note targets: for every pre-v0.6 target and a set of
+  // junk values, the new predicate answers exactly what main's expression
+  // answered, the prompt argument is the target itself, and the prompt bytes
+  // come from main's own untouched function.
+  const newCtx = buildEnv(SRC_NEW, seedFull()).ctx;
+  const baseCtx = buildEnv(SRC_BASE, seedFull()).ctx;
+  const constOf = (ctx, name) => vm.runInContext(name, ctx);
+  const PRE_V06 = constOf(baseCtx, 'PAD_EXTRACT_TARGETS').slice();
+  ok(PRE_V06.length === 9, 'main lists nine pad targets', 'count: ' + PRE_V06.length);
+  eqJson(constOf(newCtx, 'PAD_EXTRACT_TARGETS'), PRE_V06,
+    'PAD_EXTRACT_TARGETS is untouched, so the classify schema enum still offers only those nine');
+  const PROBES = PRE_V06.concat(['', 0, false, null, undefined, 'observer_notes ', 'sp1_good_99_note', 'sp1_x_1_note', '../etc']);
+  let agree = true; let sameArg = true; let samePrompt = true;
+  PROBES.forEach((t) => {
+    if (newCtx.isPadExtractTarget(t) !== (PRE_V06.indexOf(String(t || '')) > -1)) agree = false;
+    if (newCtx.padExtractPromptField(t, CRITERION) !== String(t == null ? '' : t)) sameArg = false;
+    if (newCtx.padExtractTargetedPrompt(t) !== baseCtx.padExtractTargetedPrompt(t)) samePrompt = false;
+  });
+  ok(agree, 'the widened target predicate answers exactly as main for every non-note value');
+  ok(sameArg, 'a non-note target reaches padExtractTargetedPrompt unchanged');
+  ok(samePrompt, 'padExtractTargetedPrompt returns main bytes for every non-note value');
+  ok(newCtx.isPadExtractTarget('sp1_good_3_note') === true && PRE_V06.indexOf('sp1_good_3_note') < 0,
+    'the ONLY values the predicate adds are the note targets');
 }
 
 section('');
