@@ -1,0 +1,113 @@
+{
+  "version": "sp1-v2",
+  "reference": "SP1",
+  "reference_title": "Student Progress",
+  "aspect": "Facilitating better than expected progress",
+  "source": "otp-v0.6 (2026-09-09): rubric-sp1.json (26 paragraphs, transcribed verbatim 2026-09-03) split at sentence boundaries into 32 single-sentence criteria per Igor's instruction; wording untouched. origins[i] = source paragraph number, or paragraph.sentence for a split paragraph.",
+  "levels": [
+    {
+      "key": "beginner",
+      "label": "Beginner",
+      "paragraphs": [
+        "Challenge provided to students is appropriate (not excessively difficult or excessively easy) for students to successfully engage in new learning.",
+        "One or more groups of students are not differentiated for and therefore make no progress.",
+        "The teacher is unresponsive to the needs of their students.",
+        "Student work observed does not provide evidence that is useful to determine progress over time."
+      ],
+      "origins": [
+        "1",
+        "2.1",
+        "2.2",
+        "3"
+      ]
+    },
+    {
+      "key": "emerging",
+      "label": "Emerging",
+      "paragraphs": [
+        "Starting points may be established but response to these is variable with the data having no visible effect on the lesson structure, pace or progress.",
+        "One or more groups of students, (SEN, AMA etc), is ineffectively differentiated for and makes less progress than most students in the class.",
+        "A balance of pace is sought but doesn't effectively contribute to maintaining an effective pace of learning.",
+        "Collaboration and student student dialogue are a planned feature of the lesson but a lack of structure and/or poor timing reduces the effectiveness of the strategy.",
+        "Observations of student work do not provide enough evidence to confirm level of progress over time."
+      ],
+      "origins": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5"
+      ]
+    },
+    {
+      "key": "good",
+      "label": "Good",
+      "paragraphs": [
+        "The teacher establishes clear starting points that lead to an explicit planned response.",
+        "Differentiated activities are provided to accommodate all groups of learners including any students with significant needs (SEN/AMA).",
+        "Lesson pace is well managed with planned strategies to support appropriate pace implemented.",
+        "Students are given structured opportunities to work together and do so with teacher guidance and support.",
+        "Tasks provided allows some students to access better than expected progress, (closed ended, low challenge, low cognitive load etc).",
+        "The teacher engages deliberately with groups to provide intervention and acceleration where appropriate.",
+        "Observations of students' work shows progress in line with curriculum expectations."
+      ],
+      "origins": [
+        "1",
+        "2",
+        "3",
+        "4.1",
+        "4.2",
+        "5",
+        "6"
+      ]
+    },
+    {
+      "key": "great",
+      "label": "Great",
+      "paragraphs": [
+        "The teacher establishes clear starting points for students and adapts to their immediate needs, (grouping, support etc).",
+        "They provide and maintain challenge and pace for most groups of students, to ensure progress is not limited by learning that is too easy or too hard, with varied success.",
+        "In-lesson, unplanned interventions occur, and are mostly effective.",
+        "Students are provided with well structured opportunities to collaborate and engage in dialogue and these are mostly effective in terms of timing and/or implementation.",
+        "This allows more students to access better than expected progress.",
+        "Students can show and/or discuss their attainment and effectively share their new learning.",
+        "The teacher engages deliberately with groups to provide intervention and acceleration where appropriate.",
+        "Observations of students' work demonstrates a history of BtE progress over time from their individual starting point."
+      ],
+      "origins": [
+        "1",
+        "2.1",
+        "2.2",
+        "3.1",
+        "3.2",
+        "4",
+        "5",
+        "6"
+      ]
+    },
+    {
+      "key": "outstanding",
+      "label": "Outstanding",
+      "paragraphs": [
+        "The Teacher establishes clear starting points and responds to these to determine the best learning pathway for students, (more/less support, differentiated tasks, skipping unrequired learning etc).",
+        "They provide and maintain challenge for all groups of students to ensure progress is not limited by learning that is too easy or too hard.",
+        "Lesson pace is effectively maintained to provide a sense of urgency and enthusiasm for new learning.",
+        "The teacher is aware and responsive to the pace of learning for all groups of students.",
+        "The teacher engages deliberately with groups to provide highly effective intervention and acceleration where appropriate.",
+        "Most students participate successfully in tasks that promote effective collaboration and student student communication that provides them with opportunities to go beyond the limits of the activity and/or teacher expectations.",
+        "Students can accurately articulate and/or demonstrate the progress they have made in class in relation to their individual starting point for the lesson.",
+        "Observations of students' work supports a history of BtE progress over time and in lessons from their individual starting points."
+      ],
+      "origins": [
+        "1",
+        "2.1",
+        "2.2",
+        "2.3",
+        "3",
+        "4",
+        "5",
+        "6"
+      ]
+    }
+  ]
+}
