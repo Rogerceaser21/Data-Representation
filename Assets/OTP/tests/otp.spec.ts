@@ -1,5 +1,5 @@
 /**
- * otp-v0.4 · Progress in Lessons OTP form
+ * otp-v0.5 · Progress in Lessons OTP form
  *
  * Tests the BUILT artifacts (the StatiCrypt-gated form and the ungated record
  * viewer), not the master, because the master's relative paths (../R3/lib/,
@@ -20,6 +20,17 @@ const RUBRIC = JSON.parse(
   levels: { key: string; label: string; paragraphs: string[] }[];
 };
 
+/** Every "<Level> <n>" criterion label, level order then ascending n. */
+const ALL_CRITERIA: string[] = RUBRIC.levels.flatMap((l) =>
+  l.paragraphs.map((_p, i) => `${l.label} ${i + 1}`),
+);
+/** The complement list, i.e. everything that is NOT one of `coloured`. */
+const notSeenWithout = (...coloured: string[]) =>
+  ALL_CRITERIA.filter((c) => !coloured.includes(c)).join(', ');
+
+/** The record fixture colours Good 1, Good 3 and Great 2. */
+const RECORD_NOT_SEEN = notSeenWithout('Good 1', 'Good 3', 'Great 2');
+
 const FORM_URL = '/Assets/OTP/otp-progress-form.html';
 const RECORD_URL = '/Assets/OTP/otp-record.html';
 const GATE_PASSWORD = 'ais2026ais';
@@ -35,6 +46,7 @@ const CONTRACT_KEYS = [
   'time_in',
   'subject',
   'school',
+  'grade',
   'support_teachers_cas',
   'otp_ref',
   'otp_aspect',
@@ -47,6 +59,7 @@ const CONTRACT_KEYS = [
   'sp1_present',
   'sp1_partially_present',
   'sp1_not_present',
+  'sp1_not_seen',
   'observer_comments',
   'other_observations',
   'next_step_1',
@@ -80,6 +93,7 @@ const RECORD_PAYLOAD = {
     inspector: 'Test Observer',
     curriculum: 'Australian',
     school: 'Primary',
+    grade: '3',
     observation_date: '2026-09-03',
     room_number: '12B',
     subject: 'Mathematics',
@@ -92,6 +106,7 @@ const RECORD_PAYLOAD = {
     sp1_present: 'Great 2',
     sp1_partially_present: 'Good 3',
     sp1_not_present: 'Good 1',
+    sp1_not_seen: RECORD_NOT_SEEN,
     observer_comments: 'Record observer comments',
     other_observations: 'Record other observations',
     next_step_1: 'Record next step one',
@@ -169,11 +184,21 @@ async function pickTomSelect(page: Page, field: string, label: string) {
   await page.locator('.ts-dropdown .option', { hasText: label }).first().click();
 }
 
+/** The visible Tom Select control rendered next to a wrapped <select>. */
+const gradeControl = (page: Page) =>
+  page.locator('#grade').locator('xpath=following-sibling::div[1]');
+
+/** Grade is a number-picker grid: exact option text, no typing. */
+async function pickGrade(page: Page, label: string) {
+  await page.locator('#grade').locator('xpath=following-sibling::div[1]').click();
+  await page.locator('.ts-dropdown.number-picker .option').filter({ hasText: new RegExp(`^${label}$`) }).click();
+}
+
 async function fillRequired(page: Page) {
   await pickTomSelect(page, 'teacher', 'Test Teacher');
   await pickTomSelect(page, 'inspector', 'Test Observer');
   await page.locator('#curriculum-pills .pill', { hasText: 'Australian' }).click();
-  await page.locator('#school-pills .pill', { hasText: 'Primary' }).click();
+  await pickGrade(page, '3');   // otp-v0.5: grade 3 derives school "Primary"
   await pickTomSelect(page, 'subject', 'Mathematics');
   await page.fill('#date', '2026-09-03');
   await page.fill('#time_in', '09:15');
@@ -205,7 +230,7 @@ test('renders all 26 SP1 rubric chips verbatim, in order', async ({ page }) => {
   );
   await expect(page.locator('tr.rub-caption .rub-cap-k')).toHaveText('Aspect of Practice');
   await expect(page.locator('tr.rub-caption .rub-cap-v')).toHaveText(RUBRIC.aspect);
-  await expect(page.locator('.form-footer')).toContainText('otp-v0.4');
+  await expect(page.locator('.form-footer')).toContainText('otp-v0.5');
 
   expect(h.errors).toEqual([]);
 });
@@ -222,10 +247,14 @@ test('a chip cycles clear -> present -> partial -> absent -> clear', async ({ pa
   const present = page.locator('#sp1_present');
   const partial = page.locator('#sp1_partially_present');
   const absent = page.locator('#sp1_not_present');
+  const notSeen = page.locator('#sp1_not_seen');
 
   await expect(chip).toHaveAttribute('data-state', '');
   await expect(chip).toHaveAttribute('aria-pressed', 'false');
   await expect(lvl).toHaveValue('');
+  // otp-v0.5: nothing coloured yet, so every one of the 26 is "not seen"
+  expect(ALL_CRITERIA).toHaveLength(26);
+  await expect(notSeen).toHaveValue(ALL_CRITERIA.join(', '));
 
   const cycle = [
     { state: 'present', word: 'present', cap: 'Present' },
@@ -242,6 +271,8 @@ test('a chip cycles clear -> present -> partial -> absent -> clear', async ({ pa
     await expect(present).toHaveValue(step.state === 'present' ? 'Good 2' : '');
     await expect(partial).toHaveValue(step.state === 'partial' ? 'Good 2' : '');
     await expect(absent).toHaveValue(step.state === 'absent' ? 'Good 2' : '');
+    // whatever the colour, the coloured criterion drops out of "not seen"
+    await expect(notSeen).toHaveValue(notSeenWithout('Good 2'));
   }
 
   // fourth tap clears it
@@ -253,6 +284,7 @@ test('a chip cycles clear -> present -> partial -> absent -> clear', async ({ pa
   await expect(present).toHaveValue('');
   await expect(partial).toHaveValue('');
   await expect(absent).toHaveValue('');
+  await expect(notSeen).toHaveValue(ALL_CRITERIA.join(', '));
 
   // a chip in another column keeps its own state alongside
   await chip.click(); // Good 2 -> present
@@ -266,6 +298,7 @@ test('a chip cycles clear -> present -> partial -> absent -> clear', async ({ pa
   await expect(present).toHaveValue('Good 2');
   await expect(partial).toHaveValue('Beginner 1');
   await expect(absent).toHaveValue('');
+  await expect(notSeen).toHaveValue(notSeenWithout('Beginner 1', 'Good 2'));
   await expect(txt).toHaveValue(
     'Beginner 1 (Partially present): ' +
       beginner.paragraphs[0] +
@@ -286,6 +319,7 @@ test('two chip states and a note survive a reload via the ais-otp-form-v1 draft'
   await absentChip.click();
   await absentChip.click();
   await absentChip.click(); // three taps -> not present
+  await pickGrade(page, '9');   // otp-v0.5: derives school "Secondary"
   await page.fill('#observer_comments', 'Draft survives the reload');
   await page.waitForTimeout(600); // debounced autosave is 220ms
 
@@ -298,11 +332,17 @@ test('two chip states and a note survive a reload via the ais-otp-form-v1 draft'
   await openFormAfterReload(page);
 
   await expect(page.locator('#observer_comments')).toHaveValue('Draft survives the reload');
+  await expect(page.locator('#grade')).toHaveValue('9');
+  await expect(gradeControl(page)).toContainText('9');
+  await expect(page.locator('#school')).toHaveValue('Secondary');
   await expect(page.locator('#sp1_great')).toHaveValue('4:present');
   await expect(page.locator('#sp1_emerging')).toHaveValue('2:not present');
   await expect(page.locator('#sp1_present')).toHaveValue('Great 4');
   await expect(page.locator('#sp1_not_present')).toHaveValue('Emerging 2');
   await expect(page.locator('#sp1_partially_present')).toHaveValue('');
+  await expect(page.locator('#sp1_not_seen')).toHaveValue(
+    notSeenWithout('Emerging 2', 'Great 4'),
+  );
   await expect(presentChip).toHaveAttribute('data-state', 'present');
   await expect(presentChip).toHaveAttribute('aria-pressed', 'true');
   await expect(absentChip).toHaveAttribute('data-state', 'absent');
@@ -349,11 +389,13 @@ test('submit posts exactly the CONTRACT keys with form="otp"', async ({ page }) 
   expect(body.inspector).toBe('Test Observer');
   expect(body.subject).toBe('Mathematics');
   expect(body.school).toBe('Primary');
+  expect(body.grade).toBe('3');
   expect(body.sp1_outstanding).toBe('1:present');
   expect(body.sp1_beginner).toBe('');
   expect(body.sp1_present).toBe('Outstanding 1');
   expect(body.sp1_partially_present).toBe('');
   expect(body.sp1_not_present).toBe('');
+  expect(body.sp1_not_seen).toBe(notSeenWithout('Outstanding 1'));
   expect(body.next_step_3).toBe('Step three');
 
   expect(h.errors).toEqual([]);
@@ -370,6 +412,8 @@ test('the record view repopulates header fields, chips and the five notes', asyn
   await expect(page.locator('#support_teachers_cas')).toHaveValue('Ms Support CA');
   await expect(page.locator('#curriculum')).toHaveValue('Australian');
   await expect(page.locator('#school')).toHaveValue('Primary');
+  await expect(page.locator('#grade')).toHaveValue('3');
+  await expect(gradeControl(page)).toContainText('3');
   await expect(page.locator('#teacher')).toHaveValue('t0');
   await expect(page.locator('#inspector')).toHaveValue('i0');
   await expect(page.locator('#subject')).toHaveValue('s0');
@@ -394,6 +438,7 @@ test('the record view repopulates header fields, chips and the five notes', asyn
   await expect(page.locator('#sp1_present')).toHaveValue('Great 2');
   await expect(page.locator('#sp1_partially_present')).toHaveValue('Good 3');
   await expect(page.locator('#sp1_not_present')).toHaveValue('Good 1');
+  await expect(page.locator('#sp1_not_seen')).toHaveValue(RECORD_NOT_SEEN);
 
   await expect(page.locator('#observer_comments')).toHaveValue('Record observer comments');
   await expect(page.locator('#other_observations')).toHaveValue('Record other observations');
@@ -516,10 +561,23 @@ test('the colour legend is a permanent strip under the level headers; the Info b
   // visible on load, no toggle to click
   await expect(legend).toBeVisible();
   expect(await legend.locator('.rub-legend-item').allTextContents()).toEqual([
+    'No colour: not seen in lesson (does not count)',
     'Green: present in lesson',
     'Yellow: partially present in lesson',
     'Red: not present in lesson',
   ]);
+  // otp-v0.5: the "not seen" swatch is the untouched chip, not a fourth colour
+  const swatches = legend.locator('.rub-legend-sw');
+  expect(await swatches.evaluateAll((els) => els.map((e) => (e as HTMLElement).dataset.state)))
+    .toEqual(['', 'present', 'partial', 'absent']);
+  const paint = await page.evaluate(() => ({
+    swatch: getComputedStyle(document.querySelector('.rub-legend-sw[data-state=""]')!).backgroundColor,
+    swatchBorder: getComputedStyle(document.querySelector('.rub-legend-sw[data-state=""]')!).borderTopColor,
+    chip: getComputedStyle(document.querySelector('.rub-chip[data-state=""]')!).backgroundColor,
+    chipBorder: getComputedStyle(document.querySelector('.rub-chip[data-state=""]')!).borderTopColor,
+  }));
+  expect(paint.swatch).toBe(paint.chip);
+  expect(paint.swatchBorder).toBe(paint.chipBorder);
   await expect(legend.locator('.rub-legend-hint')).toHaveText(
     'Tap a criterion to mark it green; tap again for yellow, again for red; a fourth tap clears it.'
   );
@@ -564,7 +622,10 @@ test('the colour legend is a permanent strip under the level headers; the Info b
       justify: getComputedStyle(row).justifyContent,
       itemsOnOneLine: Math.max(...items.map((r) => r.top)) - Math.min(...items.map((r) => r.top)) < 2,
       spreadDelta: Math.abs(items[0].left - rowRect.left - (rowRect.right - items[items.length - 1].right)),
+      itemCount: items.length,
       hintBelowItems: hint.top >= Math.max(...items.map((r) => r.bottom)),
+      // otp-v0.5: nothing shares the hint's line, whether the items wrapped or not
+      hintAloneOnLastLine: items.every((r) => r.bottom <= hint.top + 1),
       hintCentreDelta: Math.abs((hint.left + hint.right) / 2 - (rowRect.left + rowRect.right) / 2),
       hintIsPill: hint.width < rowRect.width * 0.9 && parseFloat(hintCs.borderRadius) > 20,
       hintBg: hintCs.backgroundColor,
@@ -574,9 +635,11 @@ test('the colour legend is a permanent strip under the level headers; the Info b
   expect(geo.capAlign).toBe('center');
   expect(geo.capCentreDelta).toBeLessThan(2);
   expect(geo.justify).toBe('space-evenly');
-  expect(geo.itemsOnOneLine).toBe(true);
+  expect(geo.itemCount).toBe(4);
+  expect(geo.itemsOnOneLine).toBe(true);   // at this desktop width; iPad portrait may wrap
   expect(geo.spreadDelta).toBeLessThan(2);
   expect(geo.hintBelowItems).toBe(true);
+  expect(geo.hintAloneOnLastLine).toBe(true);
   expect(geo.hintCentreDelta).toBeLessThan(2);
   expect(geo.hintIsPill).toBe(true);
   expect(geo.hintBg).not.toBe('rgba(0, 0, 0, 0)');
@@ -599,5 +662,81 @@ test('the colour legend is a permanent strip under the level headers; the Info b
   await expect(page.locator('#rubric-legend')).toContainText('Yellow: partially present in lesson');
   await expect(page.locator('.rub-info')).toHaveCount(0);
 
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.5: Grade replaces School and derives it, Kindy through Secondary', async ({ page }) => {
+  const h = await harness(page);
+  await openForm(page);
+
+  // the School pill group is gone; the hidden input that carries it stays
+  await expect(page.locator('#school-pills')).toHaveCount(0);
+  await expect(page.locator('#school')).toHaveAttribute('type', 'hidden');
+  // (Tom Select rewrites label[for] to its own control input, so match by cell)
+  const gradeCell = page.locator('.info-cell', { has: page.locator('#grade') });
+  await expect(gradeCell.locator('label')).toHaveText('Grade');
+  await expect(gradeCell.locator('label')).toHaveClass(/required-field/);
+
+  // 15 options, Pre-Kindy / Kindy / Prep first, then 1..12
+  await gradeControl(page).click();
+  expect(await page.locator('.ts-dropdown.number-picker .option').allTextContents()).toEqual([
+    'Pre-Kindy', 'Kindy', 'Prep',
+    '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12',
+  ]);
+  // consume the open dropdown with the first pick rather than closing it
+  await page.locator('.ts-dropdown.number-picker .option').filter({ hasText: /^Pre-Kindy$/ }).click();
+  await expect(page.locator('#grade')).toHaveValue('Pre-Kindy');
+  await expect(page.locator('#school')).toHaveValue('Kindy');
+
+  for (const [grade, school] of [
+    ['Kindy', 'Kindy'],
+    ['Prep', 'Primary'],
+    ['6', 'Primary'],
+    ['7', 'Secondary'],
+    ['12', 'Secondary'],
+  ] as const) {
+    await pickGrade(page, grade);
+    await expect(page.locator('#grade'), grade).toHaveValue(grade);
+    await expect(page.locator('#school'), grade).toHaveValue(school);
+  }
+
+  // Secondary is showing, so Subject is enabled and filtered
+  const subjectInput = page.locator('#subject').locator('xpath=following-sibling::div[1]').locator('input');
+  await expect(page.locator('#subject')).toBeEnabled();
+  await pickTomSelect(page, 'subject', 'Science');
+
+  // clearing Grade clears School and puts Subject back to its resting state
+  await gradeControl(page).locator('.clear-button').click();
+  await expect(page.locator('#grade')).toHaveValue('');
+  await expect(page.locator('#school')).toHaveValue('');
+  await expect(page.locator('#subject')).toBeDisabled();
+  await expect(subjectInput).toHaveAttribute('placeholder', 'Select Grade first');
+  await expect(page.locator('#btn-submit')).toBeDisabled();
+  await expect(page.locator('#btn-submit')).toHaveAttribute(
+    'title',
+    'Fill Teacher / Time In / Observer / Curriculum / Grade / Date / Subject to enable saving',
+  );
+
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.5: the empty Grade control paints a placeholder and hides its clear button', async ({ page }) => {
+  const h = await harness(page);
+  await openForm(page);
+  const wrapper = page.locator('#grade').locator('xpath=following-sibling::div[1]');
+  const placeholder = () => page.evaluate(() => {
+    const ctl = document.querySelector('#grade')!.nextElementSibling!.querySelector('.ts-control')!;
+    return getComputedStyle(ctl, '::before').content;
+  });
+  expect(await placeholder()).toBe('"Tap to pick a grade"');
+  await expect(wrapper.locator('.clear-button')).toBeHidden();
+  await pickGrade(page, '7');
+  expect(await placeholder()).toBe('none');
+  await expect(wrapper.locator('.clear-button')).toBeVisible();
+  await expect(page.locator('#school')).toHaveValue('Secondary');
+  await wrapper.locator('.clear-button').click();
+  expect(await placeholder()).toBe('"Tap to pick a grade"');
+  await expect(wrapper.locator('.clear-button')).toBeHidden();
+  await expect(page.locator('#school')).toHaveValue('');
   expect(h.errors).toEqual([]);
 });

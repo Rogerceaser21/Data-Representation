@@ -983,6 +983,17 @@ body.is-locked .action-btn.new { display: inline-flex; }
   color: var(--paper);
 }
 .ts-wrapper.disabled .clear-button { display: none; }
+/* otp-v0.5: the Grade grid has no text input (controlInput: null), so Tom
+   Select has nowhere to print its placeholder and its clear button would sit
+   on an empty box. Paint the placeholder while empty (Tom Select keeps
+   .has-items on the wrapper while a value is set) and hide the x until then.
+   The wrapper carries the class from the original <select class="grade-picker">. */
+.ts-wrapper.grade-picker:not(.has-items) .ts-control::before {
+  content: 'Tap to pick a grade';
+  color: var(--paper-faint);
+  font-style: italic;
+}
+.ts-wrapper.grade-picker:not(.has-items) .clear-button { display: none; }
 .ts-wrapper .ts-control .item {
   font-family: var(--display-font);
   font-weight: 600;
@@ -1134,6 +1145,16 @@ form.is-locked .pill { pointer-events: none; opacity: 0.7; }
 }
 .ts-dropdown.number-picker .option.selected.active {
   background: var(--rate-success-deep);
+}
+/* otp-v0.5: the Grade picker is the only number picker left on this form, and
+   a 5-column cell is ~37px wide here, which ellipsises the three word labels
+   ("Pre-Kindy" -> "Pre…", "Kindy" -> "Kin…"; "Pre…" and "Prep" then read the
+   same, and picking the wrong one is a wrong record). The three words take a
+   full row each; the twelve numbered grades keep the compact 5-column grid. */
+.ts-dropdown.number-picker .option[data-value="Pre-Kindy"],
+.ts-dropdown.number-picker .option[data-value="Kindy"],
+.ts-dropdown.number-picker .option[data-value="Prep"] {
+  grid-column: 1 / -1;
 }
 
 /* Judgement legend */
@@ -2043,7 +2064,7 @@ body.is-viewer .cog-btn { display: none; }
   font-weight: 400;
 }
 .rub-legend-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-evenly; gap: 0.2rem 1rem; }
-/* otp-v0.4: a zero-height full-width flex item after the three colour items
+/* otp-v0.4: a zero-height full-width flex item after the colour items
    forces the tap hint onto its own line, where space-evenly centres it. */
 .rub-legend-row::after { content: ''; flex-basis: 100%; height: 0; order: 1; }
 .rub-legend-item { display: inline-flex; align-items: center; gap: 0.34rem; }
@@ -2053,6 +2074,10 @@ body.is-viewer .cog-btn { display: none; }
   height: 12px;
   border-radius: 2px;
   border: 1px solid var(--rule);
+  /* otp-v0.5: the empty-state swatch (data-state="") must read as an
+     untouched chip, so it takes the chip's own resting surface. The three
+     coloured rules above carry an attribute selector and still win. */
+  background: var(--surface-soft);
 }
 .rub-legend-hint {
   order: 2;
@@ -2327,8 +2352,10 @@ body.is-viewer .cog-btn { display: none; }
         <input type="hidden" name="curriculum" id="curriculum" value="">
       </div>
       <div class="info-cell">
-        <label class="required-field">School</label>
-        <div class="pill-group pill-group-inline" data-name="school" id="school-pills"></div>
+        <label for="grade" class="required-field">Grade</label>
+        <select id="grade" name="grade" class="grade-picker" placeholder="Select grade" required></select>
+        <!-- otp-v0.5: School is no longer picked by hand. It stays in the
+             payload (Sheet + dashboard key on it) and is derived from Grade. -->
         <input type="hidden" name="school" id="school" value="">
       </div>
 
@@ -2342,7 +2369,7 @@ body.is-viewer .cog-btn { display: none; }
       </div>
       <div class="info-cell">
         <label for="subject" class="required-field">Subject</label>
-        <select id="subject" name="subject" placeholder="Select School first" required></select>
+        <select id="subject" name="subject" placeholder="Select Grade first" required></select>
       </div>
 
     </div>
@@ -2389,6 +2416,8 @@ body.is-viewer .cog-btn { display: none; }
     <input type="hidden" name="sp1_present" id="sp1_present" value="">
     <input type="hidden" name="sp1_partially_present" id="sp1_partially_present" value="">
     <input type="hidden" name="sp1_not_present" id="sp1_not_present" value="">
+    <!-- otp-v0.5: the complement, every criterion left CLEAR ("not seen"). -->
+    <input type="hidden" name="sp1_not_seen" id="sp1_not_seen" value="">
   </section>
 
   <!-- ============================================
@@ -2436,7 +2465,7 @@ body.is-viewer .cog-btn { display: none; }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · Progress in Lessons OTP · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">otp-v0.4</a></span>
+    <span>Form · Progress in Lessons OTP · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">otp-v0.5</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -3784,7 +3813,7 @@ body.is-viewer .cog-btn { display: none; }
 
   /* === Cloud submit + lock + closed-record viewer ================== */
   const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbx3efKiQzs2MSwESEuNBCceXr5FqBCXuk1IgSzPFbOVgLSc3fvXy40e8V9lhw_KH0z2nQ/exec';
-  const REQUIRED_FIELDS = ['teacher', 'inspector', 'curriculum', 'school', 'subject', 'date', 'time_in'];
+  const REQUIRED_FIELDS = ['teacher', 'inspector', 'curriculum', 'grade', 'subject', 'date', 'time_in'];
 
   function updateSubmitState() {
     const btn = document.getElementById('btn-submit');
@@ -3795,7 +3824,7 @@ body.is-viewer .cog-btn { display: none; }
     });
     btn.classList.toggle('disabled', !allFilled);
     btn.disabled = !allFilled;
-    btn.title = allFilled ? 'Save and lock this OTP observation form' : 'Fill Teacher / Time In / Observer / Curriculum / School / Date / Subject to enable saving';
+    btn.title = allFilled ? 'Save and lock this OTP observation form' : 'Fill Teacher / Time In / Observer / Curriculum / Grade / Date / Subject to enable saving';
   }
   FORM.addEventListener('input', updateSubmitState);
   FORM.addEventListener('change', updateSubmitState);
@@ -3869,7 +3898,7 @@ body.is-viewer .cog-btn { display: none; }
     try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
     EvidencePad.reset();   // v0.50: a finished observation clears its Evidence Pad too
     // v0.24: school just got cleared by the reset loop above; let Subject
-    // reflect that (back to disabled "Select School first" state).
+    // reflect that (back to disabled "Select Grade first" state).
     if (typeof refreshSubjectOptions === 'function') refreshSubjectOptions();
     applyMandatoryDefaults();
     if (typeof syncRubricChips === 'function') syncRubricChips();
@@ -4019,12 +4048,15 @@ body.is-viewer .cog-btn { display: none; }
           if (el) {
             if (el.type === 'date') {
               el.value = toDateInput(value);
-            } else if (el.tagName === 'SELECT' && ['teacher', 'inspector', 'subject'].includes(cand)) {
+            } else if (el.tagName === 'SELECT' && ['teacher', 'inspector', 'subject', 'grade'].includes(cand)) {
               // v0.34: opaque-keyed Tom Selects. The Sheet stores the display
               // text (e.g. "Alisja De Bruyn"); the option value is "t0".
               // Stash text in dataset.pendingValue so populateTomSelect picks
               // it up if options are still in flight, AND try a direct text →
               // value lookup in case options have already landed.
+              // otp-v0.5: grade joins this path. Its options are static (added
+              // at init), but Tom Select strips the original <select>, so a
+              // plain el.value assignment would be dropped.
               el.dataset.pendingValue = String(value);
               const ts = tomSelects[cand];
               if (ts) {
@@ -4043,6 +4075,11 @@ body.is-viewer .cog-btn { display: none; }
 
       syncSingleSelectVisuals();
       syncRubricChips();          // otp-v0.1: re-press the SP1 chips from sp1_*
+      // otp-v0.5: a record carries both grade and school. Derive school from
+      // the restored grade so the two can never disagree; a record with no
+      // grade keeps the school it recorded.
+      const gradeEl = document.getElementById('grade');
+      if (gradeEl && gradeEl.value) syncSchoolFromGrade();
       // v0.24: Subject is school-filtered. Refresh its options based on the
       // now-set school value BEFORE pushing other Tom Select values, so the
       // saved Subject can be re-selected from the correct filtered list.
@@ -4294,6 +4331,7 @@ body.is-viewer .cog-btn { display: none; }
   const RUB_CAP = { present: 'Present', partial: 'Partially present', absent: 'Not present' };
   const RUB_BY_WORD = { 'present': 'present', 'partially present': 'partial', 'not present': 'absent' };
   const RUB_LEGEND = [
+    { state: '', text: 'No colour: not seen in lesson (does not count)' },
     { state: 'present', text: 'Green: present in lesson' },
     { state: 'partial', text: 'Yellow: partially present in lesson' },
     { state: 'absent', text: 'Red: not present in lesson' }
@@ -4321,6 +4359,25 @@ body.is-viewer .cog-btn { display: none; }
     return sel;
   }
 
+  /* otp-v0.5: the complement of the coloured criteria, i.e. everything left
+     CLEAR. Same "<Level> <n>" shape as sp1_present, level order then ascending
+     n; all 26 when nothing is coloured, "" when everything is. Value only, no
+     change event: syncRubricChips calls this on every load/restore/reset and
+     must not manufacture a draft save. writeRubSelection (the tap path) does
+     the dispatch. */
+  function writeNotSeen(sel) {
+    const el = document.getElementById('sp1_not_seen');
+    if (!el) return;
+    const items = [];
+    SP1.levels.forEach(l => {
+      const map = sel[l.key] || {};
+      for (let n = 1; n <= l.paragraphs.length; n++) {
+        if (!map[n]) items.push(l.label + ' ' + n);
+      }
+    });
+    el.value = items.join(', ');
+  }
+
   function writeRubSelection(sel) {
     const parts = [];
     const byState = { present: [], partial: [], absent: [] };
@@ -4340,6 +4397,7 @@ body.is-viewer .cog-btn { display: none; }
       const el = document.getElementById(RUB_STATE_INPUT[s]);
       if (el) el.value = byState[s].join(', ');
     });
+    writeNotSeen(sel);
     SP1.levels.forEach(l => {
       const el = rubHidden(l.key);
       if (el) el.dispatchEvent(new Event('change', { bubbles: true }));
@@ -4349,10 +4407,13 @@ body.is-viewer .cog-btn { display: none; }
       const el = document.getElementById(RUB_STATE_INPUT[s]);
       if (el) el.dispatchEvent(new Event('change', { bubbles: true }));
     });
+    const notSeen = document.getElementById('sp1_not_seen');
+    if (notSeen) notSeen.dispatchEvent(new Event('change', { bubbles: true }));
   }
 
   function syncRubricChips() {
     const sel = readRubSelection();
+    writeNotSeen(sel);   // otp-v0.5: correct on load, draft restore, record and reset
     document.querySelectorAll('.rub-chip').forEach(chip => {
       const state = (sel[chip.dataset.level] || {})[parseInt(chip.dataset.n, 10)] || '';
       chip.dataset.state = state;
@@ -4435,7 +4496,7 @@ body.is-viewer .cog-btn { display: none; }
     });
   }
 
-  // Single-select toggle for pill groups (Curriculum, School).
+  // Single-select toggle for pill groups (Curriculum).
   // Click a button to select; click it again to deselect (unless data-mandatory="1"
   // on the group, in which case the user can only switch between options and can't
   // end up with nothing picked). Hidden input mirrors value.
@@ -4518,6 +4579,38 @@ body.is-viewer .cog-btn { display: none; }
     // Disable until loadDropdownOptions finishes (greys out the controls).
     setSearchableLoadingState(true);
 
+    // otp-v0.5: Grade picker, ported from the R3 master's grade_class control.
+    // Tom Select again, but with the dropdown content CSS-grid-styled
+    // (.ts-dropdown.number-picker): a compact 5-column grid of cells, and no
+    // keyboard on iPad (controlInput: null). The 15 options are static, so
+    // this control never waits on the options fetch. sortField '$order' keeps
+    // Pre-Kindy / Kindy / Prep at the front instead of sorting them
+    // alphabetically to the end of the list.
+    const numberOpts = Object.assign({}, baseOpts, {
+      sortField: null,
+      placeholder: 'Select number',
+      dropdownClass: 'ts-dropdown number-picker',
+      controlInput: null,
+    });
+    tomSelects.grade = new TomSelect('#grade', Object.assign({}, numberOpts, {
+      placeholder: 'Select grade',
+      sortField: { field: '$order', direction: 'asc' },
+      // Grade drives School, which drives the Subject list.
+      onChange: () => { syncSchoolFromGrade(); updateSubmitState(); },
+    }));
+    const gradeOpts = [
+      { value: 'Pre-Kindy', text: 'Pre-Kindy' },
+      { value: 'Kindy',     text: 'Kindy'     },
+      { value: 'Prep',      text: 'Prep'      }
+    ];
+    for (let n = 1; n <= 12; n++) gradeOpts.push({ value: String(n), text: String(n) });
+    tomSelects.grade.addOptions(gradeOpts);
+    tomSelects.grade.refreshOptions(false);
+    const gradePending = readRestoredFromLocalStorage('grade');
+    if (gradePending) {
+      tomSelects.grade.setValue(gradePending, true);   // silent: no onChange
+      syncSchoolFromGrade();                           // so derive School by hand
+    }
   }
 
   function readRestoredFromLocalStorage(name) {
@@ -4561,7 +4654,7 @@ body.is-viewer .cog-btn { display: none; }
     }
   }
 
-  // Helper to render a pill-group from a dynamic value list (Curriculum + School).
+  // Helper to render a pill-group from a dynamic value list (Curriculum).
   function renderPillGroup(elementId, values) {
     const group = document.getElementById(elementId);
     if (!group) return;
@@ -4597,6 +4690,24 @@ body.is-viewer .cog-btn { display: none; }
     });
   }
 
+  // otp-v0.5: Grade -> School. The observer picks a grade; School is derived
+  // from it and stays in the payload for the Sheet and the dashboard. The
+  // hidden #school input is still the single source the Subject filter reads,
+  // so the derived value is written there and announced with a bubbling
+  // change event (wireSchoolToSubject + updateSubmitState listen for it).
+  const GRADE_SCHOOL = { 'Pre-Kindy': 'Kindy', 'Kindy': 'Kindy', 'Prep': 'Primary' };
+  for (let n = 1; n <= 12; n++) GRADE_SCHOOL[String(n)] = n <= 6 ? 'Primary' : 'Secondary';
+
+  function syncSchoolFromGrade() {
+    const gradeEl = document.getElementById('grade');
+    const schoolEl = document.getElementById('school');
+    if (!gradeEl || !schoolEl) return;
+    const next = GRADE_SCHOOL[String(gradeEl.value || '')] || '';
+    if (schoolEl.value === next) return;   // grade moved within the same school
+    schoolEl.value = next;
+    schoolEl.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
   // v0.24: school-aware Subject. SUBJECTS_RAW holds the full {name, active,
   // kindy, primary, secondary} list from the Sheet. refreshSubjectOptions
   // filters that list by the currently-selected School and feeds the result
@@ -4623,8 +4734,8 @@ body.is-viewer .cog-btn { display: none; }
       ts.clearOptions();
       ts.refreshOptions(false);
       ts.disable();
-      ts.settings.placeholder = 'Select School first';
-      if (ts.control_input) ts.control_input.setAttribute('placeholder', 'Select School first');
+      ts.settings.placeholder = 'Select Grade first';
+      if (ts.control_input) ts.control_input.setAttribute('placeholder', 'Select Grade first');
       ts.clear(true);
       if (typeof ts.inputState === 'function') ts.inputState();
       return;
@@ -4687,7 +4798,8 @@ body.is-viewer .cog-btn { display: none; }
     populateTomSelect('teacher',   (opts.teachers   || []).map((t, i) => ({ value: 't' + i, text: t.name })));
     populateTomSelect('inspector', (opts.inspectors || []).map((s, i) => ({ value: 'i' + i, text: s })));
     renderPillGroup('curriculum-pills', opts.curricula || []);
-    renderPillGroup('school-pills', opts.schools || ['Kindy', 'Primary', 'Secondary']);
+    // otp-v0.5: no School pills any more (Grade derives School); the options
+    // payload may still carry options.schools, which is simply ignored.
 
     // Subject is school-filtered; store raw + run filter for currently-set school.
     SUBJECTS_RAW = opts.subjects || [];
