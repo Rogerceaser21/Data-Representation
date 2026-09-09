@@ -1,4 +1,4 @@
-# Progress in Lessons OTP form · otp-v0.6
+# Progress in Lessons OTP form · otp-v0.7
 
 Third AIS observation form: **Lesson Observation form WHOLE SCHOOL, Observation
 against the Outstanding Teacher Profile**. It is a COPY of the R3 Evidence form
@@ -42,15 +42,30 @@ practice through observational support and coaching.
    cycle is unchanged.
    otp-v0.6: every chip also carries a small **`+` note button** at its
    bottom-right (a sibling of the chip, never nested, so it can never cycle the
-   colour). Tapping it opens an in-place note panel as a normal table row under
-   the rubric, one open at a time, in the document flow: no fixed overlay, no
-   scroll lock, no auto-focus, so an Apple Pencil user never gets the keyboard
-   thrown at them. The panel holds the criterion text, a textarea, the Evidence
-   Pad pencil and paperclip for that criterion, and a Done button. A filled note
-   turns the badge solid AIS blue. The legend wording is now
+   colour). The legend wording is now
    `No colour: not assessed (does not count)`, `Green: present in lesson`,
    `Yellow: partially present in lesson`,
    `Red: expected but not present in lesson`.
+   otp-v0.7: the note opens as a **pop-up card anchored to the chip it came
+   from**, not as a table row, so it is impossible to miss on the bottom rows.
+   There is ONE card and ONE scrim, permanently mounted inside the rubric
+   section and driven by `data-state` alone (never `display`, `hidden` or
+   `visibility`, the iOS raster rule), positioned `absolute` inside that
+   section (never `fixed`, the keyboard engine owns `fixed`), so there is no
+   scroll lock, no body reposition and no auto-focus: an Apple Pencil user
+   never gets the keyboard thrown at them. It materialises out of the `+` and
+   settles (280 ms in, 200 ms mirrored out, transform and opacity only; a
+   reduced-motion reader gets the fade alone), and closes on Done, the scrim,
+   Esc or the same `+`; another chip's `+` re-anchors the same card. It holds
+   the criterion text, a textarea, the Evidence Pad pencil and paperclip for
+   that criterion, and a Done button. otp-v0.7 also calms the colours: the
+   `+` is a 22 px circle inset 6 px from the chip's corner with its plus drawn
+   in CSS, a filled note turns it solid AIS navy `#143642` (not electric
+   blue), and a coloured chip is a pale tint with a 3 px coloured left edge
+   (`#E8F3EC`/`#2F7D4F`, `#FBF3DC`/`#C28E0E`, `#FBE9EA`/`#B23B3B`) keeping the
+   normal dark ink, so a marked-up rubric reads calm rather than as a
+   Christmas tree. The rubric wrapper no longer scrolls at tablet or desktop
+   widths, so no scrollbar paints beside or under the table.
 4. Five Observer Notes blocks, each with the Evidence Pad pencil button and the
    pad-pages paperclip: Observer Comments, Other Observations, and Next Steps /
    Support 1-3. otp-v0.6 adds 32 more Evidence Pad targets, one per criterion
@@ -170,10 +185,27 @@ npx playwright test    # config at the repo root, spec at Assets/OTP/tests/otp.s
 
 The spec drives the BUILT artifacts (through the StatiCrypt gate, and the
 ungated viewer) with every `script.google.com` / `supabase.co` call mocked.
-21 specs as of otp-v0.6.
+28 specs as of otp-v0.7.
 
 ## Changelog
 
+- **otp-v0.7** · The note UI reworked to Igor's eye, form only; the data
+  contract is untouched (same 31 POST keys, same `sp1_notes` /
+  `sp1_selected_text` values, same 33 Sheet columns, no Apps Script change).
+  The in-row note panel becomes ONE persistent pop-up card anchored to the
+  chip's `+`, absolute inside the rubric section with its own scrim, growing
+  out of the button it came from and shrinking back into it (280 ms
+  `cubic-bezier(.22, 1, .36, 1)` in, 200 ms mirrored out, transform and
+  opacity only, opacity-only under `prefers-reduced-motion`); Done, the scrim,
+  Esc and the same `+` close it, another `+` re-anchors it. The `+` is a 22 px
+  circle inset 6 px / 6 px with its plus drawn as CSS bars instead of a text
+  glyph, a 36 px hit pad, and a one-shot pop when a note is filled by hand or
+  by the pad (never on load or a draft restore); filled it is solid AIS navy
+  `#143642`, and it prints as a solid dot. Coloured chips become calm tints
+  with a 3 px coloured left edge and the normal dark ink, matched by the
+  legend swatches, in light, dark and print. The rubric wrapper is
+  `overflow: visible` above 760 px (only a phone still scrolls it sideways)
+  and the overflow that forced the 1 px / 3 px scrollbars is gone.
 - **otp-v0.6** · Sentence chips plus a note per criterion. The live rubric
   becomes `rubric-sp1-v2.json`, the same wording split at sentence boundaries
   into 32 single-sentence criteria (4/5/7/8/8); `rubric-sp1.json` stays in the

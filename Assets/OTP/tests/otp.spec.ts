@@ -298,6 +298,55 @@ const expectPop = (page: Page, state: 'open' | 'closed') =>
 const noteText = (page: Page, key: string, n: number) =>
   page.locator(`#sp1_note_${key}_${n}`);
 
+/** otp-v0.7: the viewport point of an element (its centre, or `dy` px below
+ *  its top edge), with the page scrolled so that point sits mid-viewport,
+ *  clear of the sticky masthead. */
+async function pointOf(page: Page, sel: string, dy?: number) {
+  return page.evaluate(
+    ([s, d]) => {
+      const el = document.querySelector(s as string)!;
+      const at = (r: DOMRect) => (d === null ? r.top + r.height / 2 : r.top + (d as number));
+      window.scrollBy(0, at(el.getBoundingClientRect() as DOMRect) - window.innerHeight * 0.5);
+      const r = el.getBoundingClientRect() as DOMRect;
+      return { x: r.left + r.width / 2, y: at(r) };
+    },
+    [sel, dy === undefined ? null : dy] as [string, number | null],
+  );
+}
+
+/** A real tap at that point: whatever the browser paints on top receives it
+ *  (while a card is open that is the scrim, never the chip underneath). */
+async function tapAt(page: Page, sel: string, dy?: number) {
+  const p = await pointOf(page, sel, dy);
+  await page.mouse.click(p.x, p.y);
+}
+
+/** Everything stacked at that same point, topmost first. */
+async function stackAt(page: Page, sel: string, dy?: number): Promise<string[]> {
+  const p = await pointOf(page, sel, dy);
+  return page.evaluate(
+    ([x, y]) => document.elementsFromPoint(x, y).map((e) => e.id || e.getAttribute('class') || e.tagName),
+    [p.x, p.y] as [number, number],
+  );
+}
+
+/** A tap on a chip, 8px below its top edge: never behind a card anchored at
+ *  that chip's own "+", which sits at its bottom-right corner. */
+const chipSel = (key: string, n: number) => `.rub-chip[data-level="${key}"][data-n="${n}"]`;
+const tapChip = (page: Page, key: string, n: number) => tapAt(page, chipSel(key, n), 8);
+
+/** A tap on a "+". With the card shut this is an ordinary click; while it is
+ *  open the scrim covers the table, so the tap lands on the scrim and the form
+ *  routes it to the button underneath (Playwright's own click would refuse an
+ *  intercepted element). */
+async function tapNoteBtn(page: Page, key: string, n: number) {
+  if ((await notePop(page).getAttribute('data-state')) === 'open') {
+    await tapAt(page, `.rub-note-btn[data-level="${key}"][data-n="${n}"]`);
+    return;
+  }
+  await noteBtnAt(page, key, n).click();
+}
+
 /** The three viewports the otp-v0.7 contract measures at. */
 const VIEWPORTS = [
   { width: 1280, height: 900 },
@@ -482,7 +531,7 @@ test('otp-v0.7: "+" opens the one anchored card, in flow rules, with this criter
   expect(shut.hidden).toBe(false);
   expect(shut.opacity).toBe('0');
 
-  await noteBtnAt(page, 'good', 3).click();
+  await tapNoteBtn(page, 'good', 3);
   await expectPop(page, 'open');
   await expect(notePop(page)).toHaveAttribute('aria-hidden', 'false');
   await expect(page.locator('#rub-note-head')).toHaveText('Good 3 · Not assessed');
@@ -549,13 +598,19 @@ test('otp-v0.7: Done, the scrim, Esc and the same "+" close the card; another "+
   await openForm(page);
 
   // Done
-  await noteBtnAt(page, 'good', 3).click();
+  await tapNoteBtn(page, 'good', 3);
   await expectPop(page, 'open');
   await page.locator('.rub-note-done').click();
   await expectPop(page, 'closed');
 
-  // the scrim: it covers the rubric section and closes on a tap
-  await noteBtnAt(page, 'good', 3).click();
+  // the scrim: it covers the rubric section and closes on a tap. otp-v0.7:
+  // that tap lands on a CHIP, because the scrim paints OVER the table. The
+  // card closes and the chip underneath keeps its colour, so an observer
+  // tapping "outside" to dismiss never changes their data by accident.
+  const dismissChip = chipAt(page, 'beginner', 1);
+  await dismissChip.click();                       // card shut: the tap cycles
+  await expect(dismissChip).toHaveAttribute('data-state', 'present');
+  await tapNoteBtn(page, 'good', 3);
   await expectPop(page, 'open');
   await expect(noteScrim(page)).toHaveAttribute('data-state', 'open');
   const scrimBox = await page.evaluate(() => {
@@ -567,34 +622,46 @@ test('otp-v0.7: Done, the scrim, Esc and the same "+" close the card; another "+
   expect(Math.abs(scrimBox.dt)).toBeLessThan(0.5);
   expect(Math.abs(scrimBox.dw)).toBeLessThan(0.5);
   expect(Math.abs(scrimBox.dh)).toBeLessThan(0.5);
-  await noteScrim(page).click({ position: { x: 5, y: 5 } });
+  // the scrim, not the chip, is what that tap point hits
+  const dismissStack = await stackAt(page, chipSel('beginner', 1), 8);
+  expect(dismissStack[0]).toBe('rub-note-scrim');
+  expect(dismissStack.some((c) => c.includes('rub-chip'))).toBe(true);
+  await tapChip(page, 'beginner', 1);
   await expectPop(page, 'closed');
   await expect(noteScrim(page)).toHaveAttribute('data-state', 'closed');
+  // the chip it landed on did NOT cycle
+  await expect(dismissChip).toHaveAttribute('data-state', 'present');
+  await expect(page.locator('#sp1_beginner')).toHaveValue('1:present');
   expect(
     await notePop(page).evaluate((el) => getComputedStyle(el).pointerEvents),
   ).toBe('none');
+  // back to clear, so the rest of the spec starts where it did
+  await dismissChip.click();
+  await dismissChip.click();
+  await dismissChip.click();
+  await expect(dismissChip).toHaveAttribute('data-state', '');
 
   // Esc
-  await noteBtnAt(page, 'good', 3).click();
+  await tapNoteBtn(page, 'good', 3);
   await expectPop(page, 'open');
   await page.keyboard.press('Escape');
   await expectPop(page, 'closed');
 
   // the same "+" again
-  await noteBtnAt(page, 'good', 3).click();
+  await tapNoteBtn(page, 'good', 3);
   await expectPop(page, 'open');
-  await noteBtnAt(page, 'good', 3).click();
+  await tapNoteBtn(page, 'good', 3);
   await expectPop(page, 'closed');
 
   // another "+" re-anchors the one card: still open, at a new spot
-  await noteBtnAt(page, 'beginner', 1).click();
+  await tapNoteBtn(page, 'beginner', 1);
   await expectPop(page, 'open');
   const first = await notePop(page).evaluate((el) => ({
     left: (el as HTMLElement).style.left,
     top: (el as HTMLElement).style.top,
     origin: (el as HTMLElement).style.transformOrigin,
   }));
-  await noteBtnAt(page, 'outstanding', 8).click();
+  await tapNoteBtn(page, 'outstanding', 8);
   await expectPop(page, 'open');
   await expect(page.locator('#rub-note-head')).toHaveText('Outstanding 8 · Not assessed');
   const second = await notePop(page).evaluate((el) => ({
@@ -612,6 +679,96 @@ test('otp-v0.7: Done, the scrim, Esc and the same "+" close the card; another "+
   expect(h.errors).toEqual([]);
 });
 
+test('otp-v0.7: a tap through the scrim on another "+" re-anchors the card there', async ({ page }) => {
+  const h = await harness(page);
+  await openForm(page);
+
+  await tapNoteBtn(page, 'good', 1);
+  await expectPop(page, 'open');
+  await expect(noteText(page, 'good', 1)).toHaveCount(1);
+
+  // the point over Great 2's "+" belongs to the scrim now, with the button
+  // still underneath it: the tap is routed, not swallowed
+  const stack = await stackAt(page, '.rub-note-btn[data-level="great"][data-n="2"]');
+  expect(stack[0]).toBe('rub-note-scrim');
+  expect(stack.some((c) => c.includes('rub-note-btn'))).toBe(true);
+
+  await tapNoteBtn(page, 'great', 2);
+  await expectPop(page, 'open');
+  await expect(noteText(page, 'great', 2)).toHaveCount(1);
+  await expect(noteText(page, 'good', 1)).toHaveCount(0);
+  await expect(page.locator('#rub-note-head')).toHaveText('Great 2 · Not assessed');
+  await expect(page.locator('#rub-note-crit')).toHaveText(criterion('great', 2));
+  // still one card, and the chip under that tap kept its colour
+  await expect(page.locator('[data-state="open"].rub-note-pop')).toHaveCount(1);
+  await expect(chipAt(page, 'great', 2)).toHaveAttribute('data-state', '');
+  await expect(page.locator('#sp1_great')).toHaveValue('');
+
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.7: the scrim paints over the table, under the card, and its dim shows', async ({ page }) => {
+  const h = await harness(page);
+  await openForm(page);
+
+  // shut: no dim, no hit area, still mounted (never display or visibility)
+  const shut = await noteScrim(page).evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { opacity: s.opacity, pe: s.pointerEvents, display: s.display, visibility: s.visibility };
+  });
+  expect(shut.opacity).toBe('0');
+  expect(shut.pe).toBe('none');
+  expect(shut.display).not.toBe('none');
+  expect(shut.visibility).toBe('visible');
+
+  await tapNoteBtn(page, 'good', 3);
+  await expectPop(page, 'open');
+  // the 200ms fade SETTLES at 1: the dim itself is the alpha of the
+  // background, so a stalled fade would leave the card looking unopened
+  await page.waitForFunction(
+    () => getComputedStyle(document.getElementById('rub-note-scrim')!).opacity === '1',
+    null, { timeout: 5_000 },
+  );
+  const open = await page.evaluate(() => {
+    const z = (sel: string) => getComputedStyle(document.querySelector(sel)!).zIndex;
+    const s = getComputedStyle(document.getElementById('rub-note-scrim')!);
+    return {
+      wrap: z('.rub-wrap'), scrim: z('#rub-note-scrim'), pop: z('#rub-note-pop'),
+      bg: s.backgroundColor, pe: s.pointerEvents, opacity: s.opacity,
+    };
+  });
+  // above the table and every chip in it, below the card
+  expect(Number(open.scrim)).toBeGreaterThan(Number(open.wrap));
+  expect(Number(open.scrim)).toBeLessThan(Number(open.pop));
+  expect(open.bg).toBe('rgba(20, 54, 66, 0.16)');
+  expect(open.pe).toBe('auto');
+  expect(open.opacity).toBe('1');
+  // and that layering is what a tap sees, across the table
+  for (const [key, n] of [['beginner', 1], ['emerging', 3], ['outstanding', 8]] as const) {
+    expect((await stackAt(page, chipSel(key, n), 8))[0], `${key} ${n}`).toBe('rub-note-scrim');
+  }
+  // the card itself stays fully interactive above it
+  await noteText(page, 'good', 3).fill('typed while the dim is up');
+  await expect(page.locator('#sp1_notes')).toHaveValue('{"Good 3":"typed while the dim is up"}');
+
+  // closed: the dim goes, the element stays
+  await page.locator('.rub-note-done').click();
+  await expectPop(page, 'closed');
+  await page.waitForFunction(
+    () => getComputedStyle(document.getElementById('rub-note-scrim')!).opacity === '0',
+    null, { timeout: 5_000 },
+  );
+  const after = await noteScrim(page).evaluate((el) => {
+    const s = getComputedStyle(el);
+    return { pe: s.pointerEvents, display: s.display, visibility: s.visibility };
+  });
+  expect(after.pe).toBe('none');
+  expect(after.display).not.toBe('none');
+  expect(after.visibility).toBe('visible');
+
+  expect(h.errors).toEqual([]);
+});
+
 test('otp-v0.7: the open card lies inside the rubric section at every viewport', async ({ page }) => {
   const h = await harness(page);
 
@@ -620,7 +777,7 @@ test('otp-v0.7: the open card lies inside the rubric section at every viewport',
     await openForm(page);
 
     for (const [key, n] of [['beginner', 1], ['good', 4], ['great', 8], ['outstanding', 8]] as const) {
-      await noteBtnAt(page, key, n).click();
+      await tapNoteBtn(page, key, n);
       await expectPop(page, 'open');
       const box = await page.evaluate(() => {
         const pop = document.getElementById('rub-note-pop')!.getBoundingClientRect();
@@ -655,24 +812,29 @@ test('otp-v0.6: "+" never cycles the colour, and the chip never opens the panel'
   const chip = chipAt(page, 'good', 2);
   await expect(chip).toHaveAttribute('data-state', '');
   for (let i = 0; i < 3; i++) {
-    await noteBtnAt(page, 'good', 2).click();
+    await tapNoteBtn(page, 'good', 2);
     await expect(chip).toHaveAttribute('data-state', '');
     await expect(chip).toHaveAttribute('aria-pressed', 'false');
   }
   await expect(page.locator('#sp1_good')).toHaveValue('');
 
   // and tapping the chip cycles the colour without opening the card
-  await noteBtnAt(page, 'good', 2).click();       // close the card first
+  await tapNoteBtn(page, 'good', 2);       // close the card first
   await expectPop(page, 'closed');
   await chip.click();
   await expect(chip).toHaveAttribute('data-state', 'present');
   await expectPop(page, 'closed');
-  // a chip tap while the card IS open never closes it either
-  await noteBtnAt(page, 'good', 2).click();
+  // otp-v0.7: a chip tap while the card IS open closes the card and leaves
+  // that chip's colour exactly as it was
+  await tapNoteBtn(page, 'good', 2);
   await expectPop(page, 'open');
+  await tapChip(page, 'good', 2);
+  await expect(chip).toHaveAttribute('data-state', 'present');
+  await expectPop(page, 'closed');
+  // and with the card shut the same chip cycles again
   await chip.click();
   await expect(chip).toHaveAttribute('data-state', 'partial');
-  await expectPop(page, 'open');
+  await expectPop(page, 'closed');
 
   expect(h.errors).toEqual([]);
 });
@@ -686,7 +848,7 @@ test('otp-v0.6: a typed note writes sp1_notes, sp1_selected_text and the badge',
   await expect(notes).toHaveValue('');
 
   // a note on an UNCOLOURED chip reads "(Not assessed)" and still lands
-  await noteBtnAt(page, 'good', 3).click();
+  await tapNoteBtn(page, 'good', 3);
   await noteText(page, 'good', 3).fill('challenge is not provided');
   await expect(notes).toHaveValue('{"Good 3":"challenge is not provided"}');
   await expect(txt).toHaveValue(
@@ -698,19 +860,21 @@ test('otp-v0.6: a typed note writes sp1_notes, sp1_selected_text and the badge',
     'Edit the note for Good 3',
   );
 
-  // colouring the chip while the card is open updates the header and its dot live
-  await chipAt(page, 'good', 3).click();
+  // colouring the chip while the card is open updates the header and its dot
+  // live. otp-v0.7: the scrim swallows a real tap on a chip (spec below), so
+  // the cycle is driven straight on the row's own click handler here.
+  await chipAt(page, 'good', 3).dispatchEvent('click');
   await expect(page.locator('#rub-note-head')).toHaveText('Good 3 · Present');
   await expect(page.locator('#rub-note-dot')).toHaveAttribute('data-state', 'present');
   await expect(txt).toHaveValue(
     `Good 3 (Present): ${criterion('good', 3)} Note: challenge is not provided`,
   );
-  await chipAt(page, 'good', 3).click();
+  await chipAt(page, 'good', 3).dispatchEvent('click');
   await expect(page.locator('#rub-note-head')).toHaveText('Good 3 · Partially present');
   await expect(page.locator('#rub-note-dot')).toHaveAttribute('data-state', 'partial');
 
   // a second note, on a different level: keys stay in level order then ascending n
-  await noteBtnAt(page, 'great', 5).click();
+  await tapNoteBtn(page, 'great', 5);
   await noteText(page, 'great', 5).fill('students still on SC1');
   await expect(notes).toHaveValue(
     '{"Good 3":"challenge is not provided","Great 5":"students still on SC1"}',
@@ -735,7 +899,7 @@ test('otp-v0.6: a typed note writes sp1_notes, sp1_selected_text and the badge',
     'Add a note for Great 5',
   );
   // only one card is ever open, so come back to Good 3 before clearing it
-  await noteBtnAt(page, 'good', 3).click();
+  await tapNoteBtn(page, 'good', 3);
   await expect(page.locator('#rub-note-head')).toHaveText('Good 3 · Partially present');
   await noteText(page, 'good', 3).fill('');
   await expect(notes).toHaveValue('');
@@ -835,7 +999,7 @@ test('chip states, a note and its badge survive a reload via the ais-otp-form-v1
   await page.fill('#observer_comments', 'Draft survives the reload');
   // otp-v0.6: a note on a chip that is NOT coloured, so the draft has to carry
   // the note in its own right
-  await noteBtnAt(page, 'outstanding', 6).click();
+  await tapNoteBtn(page, 'outstanding', 6);
   await noteText(page, 'outstanding', 6).fill('group work ran out of time');
   await page.waitForTimeout(600); // debounced autosave is 220ms
 
@@ -876,7 +1040,7 @@ test('chip states, a note and its badge survive a reload via the ais-otp-form-v1
   await expect(page.locator('#rubric_version')).toHaveValue('sp1-v2');
   await expect(noteBtnAt(page, 'outstanding', 6)).toHaveClass(/has-note/);
   await expect(noteBtnAt(page, 'good', 3)).not.toHaveClass(/has-note/);
-  await noteBtnAt(page, 'outstanding', 6).click();
+  await tapNoteBtn(page, 'outstanding', 6);
   await expect(noteText(page, 'outstanding', 6)).toHaveValue('group work ran out of time');
 
   expect(h.errors).toEqual([]);
@@ -948,9 +1112,9 @@ test('submit posts exactly the CONTRACT keys with form="otp" and rubric_version=
   await page.fill('#support_teachers_cas', 'Ms Support CA');
   await chipAt(page, 'outstanding', 1).click();
   // otp-v0.6: one note on the coloured criterion, one on an untouched one
-  await noteBtnAt(page, 'outstanding', 1).click();
+  await tapNoteBtn(page, 'outstanding', 1);
   await noteText(page, 'outstanding', 1).fill('pathway chosen from the exit ticket');
-  await noteBtnAt(page, 'beginner', 2).click();
+  await tapNoteBtn(page, 'beginner', 2);
   await noteText(page, 'beginner', 2).fill('bottom table had nothing to do');
   await page.fill('#observer_comments', 'Comments');
   await page.fill('#other_observations', 'Other');
@@ -1048,7 +1212,7 @@ test('the record view repopulates header fields, chips, notes and the five secti
   await expect(page.locator('.rub-note-btn.has-note')).toHaveCount(2);
   await expect(noteBtnAt(page, 'good', 3)).toHaveClass(/has-note/);
   await expect(noteBtnAt(page, 'great', 5)).toHaveClass(/has-note/);
-  await noteBtnAt(page, 'great', 5).click();
+  await tapNoteBtn(page, 'great', 5);
   await expectPop(page, 'open');
   await expect(page.locator('#rub-note-head')).toHaveText('Great 5 · Not assessed');
   await expect(noteText(page, 'great', 5)).toHaveValue('students still on SC1');
@@ -1062,7 +1226,7 @@ test('the record view repopulates header fields, chips, notes and the five secti
   ).toBeVisible();
   await page.locator('.rub-note-done').click();
   await expectPop(page, 'closed');
-  await noteBtnAt(page, 'good', 3).click();
+  await tapNoteBtn(page, 'good', 3);
   await expectPop(page, 'open');
   await expect(page.locator('#rub-note-head')).toHaveText('Good 3 · Partially present');
   await expect(page.locator('#rub-note-dot')).toHaveAttribute('data-state', 'partial');
@@ -1265,7 +1429,7 @@ test('otp-v0.7: the three recorded states paint calm tints with a 3px coloured l
 
   // otp-v0.7: a filled note badge is solid AIS navy with white bars, and the
   // dark theme mirrors it on the dark ink
-  await noteBtnAt(page, 'good', 1).click();
+  await tapNoteBtn(page, 'good', 1);
   await expectPop(page, 'open');
   await noteText(page, 'good', 1).fill('badge paint');
   const badge = noteBtnAt(page, 'good', 1);
@@ -1321,13 +1485,22 @@ test('otp-v0.7: the card materialises and settles on transform and opacity only'
   expect(closed.opacity).toBe('0');
   expect(closed.transform).not.toBe('none');
 
-  await noteBtnAt(page, 'good', 3).click();
+  await tapNoteBtn(page, 'good', 3);
   await expectPop(page, 'open');
+  // the enter transition is 280ms, so the computed values are mid-flight the
+  // instant data-state flips; wait for it to SETTLE, which also proves the
+  // card actually arrives at full opacity and the identity transform rather
+  // than stalling part way (the freeze class of bug the iPad law guards).
+  await page.waitForFunction(() => {
+    const s = getComputedStyle(document.getElementById('rub-note-pop')!);
+    return s.opacity === '1' && s.transform === 'matrix(1, 0, 0, 1, 0, 0)';
+  }, null, { timeout: 5_000 });
   const open = await notePop(page).evaluate((el) => {
     const s = getComputedStyle(el);
     return {
       prop: s.transitionProperty, dur: s.transitionDuration, ease: s.transitionTimingFunction,
       origin: (el as HTMLElement).style.transformOrigin, opacity: s.opacity,
+      transform: s.transform,
     };
   });
   // enter: 280ms transform, 200ms opacity, no overshoot in the curve
@@ -1335,6 +1508,7 @@ test('otp-v0.7: the card materialises and settles on transform and opacity only'
   expect(open.dur).toBe('0.28s, 0.2s');
   expect(open.ease).toBe('cubic-bezier(0.22, 1, 0.36, 1), linear');
   expect(open.opacity).toBe('1');
+  expect(open.transform).toBe('matrix(1, 0, 0, 1, 0, 0)');
   // transform-origin is set from the "+" button that opened it
   expect(open.origin).toMatch(/^-?[\d.]+px -?[\d.]+px$/);
   // the scrim fades on opacity alone
@@ -1363,30 +1537,58 @@ test('otp-v0.7: the card materialises and settles on transform and opacity only'
 
 test('otp-v0.7: the badge pops on user input only, never on a draft restore', async ({ page }) => {
   const h = await harness(page);
-  // record every badge animation from the very first paint of the page
+  /* Record every badge pop from the FIRST paint of the decrypted page, load
+     and draft restore included. It has to be a MutationObserver: StatiCrypt
+     renders the form with document.write, which implies document.open() and so
+     strips every event listener registered on the document AND the window
+     (measured), while a MutationObserver registered on the document node
+     survives it. The observer is edge-triggered per button, because
+     popNoteBadge removes the class and re-adds it to restart the keyframe. */
   await page.addInitScript(() => {
     (window as any).__pops = [];
+    const popping = new Set<Element>();
+    new MutationObserver((recs) => {
+      recs.forEach((r) => {
+        const el = r.target as HTMLElement;
+        if (!el.classList || !el.classList.contains('rub-note-btn')) return;
+        if (!el.classList.contains('badge-pop')) { popping.delete(el); return; }
+        if (popping.has(el)) return;
+        popping.add(el);
+        (window as any).__pops.push(el.getAttribute('aria-label'));
+      });
+    }).observe(document, { subtree: true, attributes: true, attributeFilter: ['class'] });
+  });
+  await openForm(page);
+  // and the keyframe itself, watched live now that the written document exists
+  await page.evaluate(() => {
+    (window as any).__anims = [];
     document.addEventListener('animationstart', (e) => {
       const t = e.target as HTMLElement;
       if (t && t.classList && t.classList.contains('rub-note-btn')) {
-        (window as any).__pops.push(t.getAttribute('aria-label'));
+        (window as any).__anims.push((e as AnimationEvent).animationName);
       }
     }, true);
   });
-  await openForm(page);
 
   expect(await page.evaluate(() => (window as any).__pops)).toEqual([]);
 
-  await noteBtnAt(page, 'good', 3).click();
+  await tapNoteBtn(page, 'good', 3);
   await expectPop(page, 'open');
   await noteText(page, 'good', 3).fill('the badge pops on this');
   await expect(noteBtnAt(page, 'good', 3)).toHaveClass(/has-note/);
   expect(await page.evaluate(() => (window as any).__pops)).toEqual([
     'Edit the note for Good 3',
   ]);
+  // the 220ms keyframe really ran on that button, once
+  await expect
+    .poll(() => page.evaluate(() => (window as any).__anims), { timeout: 5_000 })
+    .toEqual(['rub-badge-pop']);
   // a second keystroke on an already-filled note does not pop again
-  await noteText(page, 'good', 3).fill('the badge pops on this once');
+  await noteText(page, 'good', 3).pressSequentially(' once');
+  await expect(noteText(page, 'good', 3)).toHaveValue('the badge pops on this once');
+  await page.waitForTimeout(400);   // longer than the 220ms keyframe
   expect(await page.evaluate(() => (window as any).__pops)).toHaveLength(1);
+  expect(await page.evaluate(() => (window as any).__anims)).toEqual(['rub-badge-pop']);
   await page.waitForTimeout(600);   // the debounced autosave has run
 
   // the draft restore sets .has-note silently
@@ -1602,11 +1804,11 @@ test('otp-v0.7: no console errors and no horizontal overflow at 1280, 1180x820 a
 
     // exercise the whole note surface at this size
     await chipAt(page, 'good', 3).click();
-    await noteBtnAt(page, 'good', 3).click();
+    await tapNoteBtn(page, 'good', 3);
     await expectPop(page, 'open');
     await noteText(page, 'good', 3).fill('note typed at ' + size.width);
     await expect(noteBtnAt(page, 'good', 3)).toHaveClass(/has-note/);
-    await noteBtnAt(page, 'outstanding', 8).click();
+    await tapNoteBtn(page, 'outstanding', 8);
     await expectPop(page, 'open');
 
     const box = await page.evaluate(() => ({
@@ -1668,7 +1870,7 @@ test('otp-v0.6: the pad writes a criterion note, and its extract call carries th
   await openForm(page);
 
   // the pencil inside the note panel opens the pad on THAT criterion's page
-  await noteBtnAt(page, 'good', 3).click();
+  await tapNoteBtn(page, 'good', 3);
   await expectPop(page, 'open');
   await notePop(page).locator('.pad-field-btn[data-pad-target="sp1_good_3_note"]').click();
   await expect(page.locator('#pad-modal')).toHaveClass(/open/, { timeout: 10_000 });
@@ -1718,9 +1920,9 @@ test('otp-v0.6: the notes print as a Criterion notes list under the rubric table
   await expect(printBox).toBeEmpty();
 
   await chipAt(page, 'good', 3).click();     // present
-  await noteBtnAt(page, 'good', 3).click();
+  await tapNoteBtn(page, 'good', 3);
   await noteText(page, 'good', 3).fill('only one group was stretched');
-  await noteBtnAt(page, 'beginner', 2).click();
+  await tapNoteBtn(page, 'beginner', 2);
   await noteText(page, 'beginner', 2).fill('bottom table idle for ten minutes');
 
   await page.emulateMedia({ media: 'print' });
@@ -1741,6 +1943,13 @@ test('otp-v0.6: the notes print as a Criterion notes list under the rubric table
   expect(
     await noteBtnAt(page, 'good', 3).evaluate((el) => getComputedStyle(el).backgroundColor),
   ).toBe('rgb(20, 54, 66)');
+  // otp-v0.7: on paper the filled badge is a marker, so it prints as a SOLID
+  // dot: the bars come off, the navy circle stays
+  expect(
+    await noteBtnAt(page, 'good', 3).evaluate(
+      (el) => getComputedStyle(el, '::after').display,
+    ),
+  ).toBe('none');
   // the calm tints and their 3px edges print as they paint
   expect(
     await chipAt(page, 'good', 3).evaluate((el) => getComputedStyle(el).backgroundColor),
@@ -1759,7 +1968,7 @@ test('otp-v0.6: Reset clears the notes and keeps rubric_version stamped', async 
   await openForm(page);
 
   await chipAt(page, 'great', 1).click();
-  await noteBtnAt(page, 'great', 1).click();
+  await tapNoteBtn(page, 'great', 1);
   await noteText(page, 'great', 1).fill('to be wiped');
   await page.fill('#observer_comments', 'to be wiped too');
   await expect(page.locator('#sp1_notes')).toHaveValue('{"Great 1":"to be wiped"}');

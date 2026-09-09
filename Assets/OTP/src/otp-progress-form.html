@@ -1968,9 +1968,9 @@ body.is-viewer .cog-btn { display: none; }
    there; only a phone still scrolls it sideways. The note button's tap pad is
    inset far enough that the wrapper's scrollable overflow equals its client
    box even when overflow is forced to auto.
-   The rubric section is the pop-up's containing block, and the table sits
-   above the scrim so both the chips and their "+" stay tappable while a note
-   card is open. */
+   The rubric section is the pop-up's containing block. While a card is open
+   the scrim paints OVER the table, so the dim is visible on the chips and no
+   tap can reach one by accident; the scrim's own handler routes that tap. */
 #rubric-section { position: relative; }
 .rub-wrap {
   position: relative;
@@ -2152,14 +2152,17 @@ body.is-viewer .cog-btn { display: none; }
    and driven by data-state alone: display, hidden and visibility are never
    toggled on them (the iOS raster rule), the card is position:absolute and
    never position:fixed (the keyboard engine owns fixed), there is no scroll
-   lock and no body reposition, and it never steals focus on open. */
+   lock and no body reposition, and it never steals focus on open.
+   Layering while open: .rub-wrap (1) < scrim (2) < card (3). The scrim ABOVE
+   the table is what makes the dim visible on the chips, and what stops an
+   "outside" tap from cycling the colour of the chip it lands on. */
 .rub-note-scrim {
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
-  z-index: 0;
+  z-index: 2;
   background: rgba(20, 54, 66, 0.16);
   opacity: 0;
   pointer-events: none;
@@ -2170,7 +2173,7 @@ body.is-viewer .cog-btn { display: none; }
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 2;
+  z-index: 3;
   display: flex;
   flex-direction: column;
   gap: 0.45rem;
@@ -2324,6 +2327,8 @@ body.is-viewer .cog-btn { display: none; }
      as a list. The card is faded out rather than display-toggled (iPad law);
      it is absolutely positioned, so it takes no space either way. */
   .rub-note-btn.has-note { background: var(--navy) !important; border-color: var(--navy) !important; color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  /* on paper it is a marker, not an affordance, so it prints as a solid dot */
+  .rub-note-btn.has-note::after { display: none !important; }
   .rub-note-btn:not(.has-note) { display: none !important; }
   .rub-note-pop, .rub-note-scrim { opacity: 0 !important; }
   .rub-print-notes { display: block; margin-top: 0.6rem; }
@@ -5170,7 +5175,22 @@ body.is-viewer .cog-btn { display: none; }
       pop.querySelector('.rub-note-done').addEventListener('click', closeNotePanel);
     }
     const scrim = noteScrim();
-    if (scrim) scrim.addEventListener('click', closeNotePanel);
+    /* The scrim covers the table while the card is open, so a tap "outside"
+       lands on it and can never cycle the chip underneath: an observer
+       dismissing the card never changes their data by accident. The tap is
+       routed by hand instead: over another criterion's "+" it re-anchors the
+       card there (openNotePanel closes it again when it is the open one's own
+       "+"), anywhere else it just closes. */
+    if (scrim) scrim.addEventListener('click', function (e) {
+      const under = document.elementsFromPoint(e.clientX, e.clientY);
+      let btn = null;
+      for (let i = 0; i < under.length && !btn; i++) {
+        if (under[i] === scrim || !under[i].closest) continue;
+        btn = under[i].closest('.rub-note-btn');
+      }
+      if (btn) openNotePanel(btn.dataset.level, parseInt(btn.dataset.n, 10));
+      else closeNotePanel();
+    });
     document.addEventListener('keydown', function (e) {
       if (e.key !== 'Escape' || !openNote) return;
       // the pad and the pad viewer have their own Escape handler and open OVER
