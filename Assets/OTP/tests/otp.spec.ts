@@ -1,5 +1,5 @@
 /**
- * otp-v0.5 · Progress in Lessons OTP form
+ * otp-v0.6 · Progress in Lessons OTP form
  *
  * Tests the BUILT artifacts (the StatiCrypt-gated form and the ungated record
  * viewer), not the master, because the master's relative paths (../R3/lib/,
@@ -13,29 +13,44 @@ import { test, expect, Page, Route } from '@playwright/test';
 import * as fs from 'fs';
 import * as path from 'path';
 
-const RUBRIC = JSON.parse(
-  fs.readFileSync(path.join(__dirname, '..', 'rubric-sp1.json'), 'utf8')
-) as {
+type Rubric = {
   aspect: string;
   levels: { key: string; label: string; paragraphs: string[] }[];
 };
 
+/** otp-v0.6: v2 is LIVE (32 single-sentence criteria); v1 renders legacy records. */
+const RUBRIC = JSON.parse(
+  fs.readFileSync(path.join(__dirname, '..', 'rubric-sp1-v2.json'), 'utf8'),
+) as Rubric;
+const RUBRIC_V1 = JSON.parse(
+  fs.readFileSync(path.join(__dirname, '..', 'rubric-sp1.json'), 'utf8'),
+) as Rubric;
+
+const level = (key: string) => RUBRIC.levels.find((l) => l.key === key)!;
+const criterion = (key: string, n: number) => level(key).paragraphs[n - 1];
+
 /** Every "<Level> <n>" criterion label, level order then ascending n. */
-const ALL_CRITERIA: string[] = RUBRIC.levels.flatMap((l) =>
-  l.paragraphs.map((_p, i) => `${l.label} ${i + 1}`),
-);
+const criteriaOf = (r: Rubric): string[] =>
+  r.levels.flatMap((l) => l.paragraphs.map((_p, i) => `${l.label} ${i + 1}`));
+const ALL_CRITERIA = criteriaOf(RUBRIC);
+const ALL_CRITERIA_V1 = criteriaOf(RUBRIC_V1);
+
 /** The complement list, i.e. everything that is NOT one of `coloured`. */
 const notSeenWithout = (...coloured: string[]) =>
   ALL_CRITERIA.filter((c) => !coloured.includes(c)).join(', ');
+const notSeenWithoutV1 = (...coloured: string[]) =>
+  ALL_CRITERIA_V1.filter((c) => !coloured.includes(c)).join(', ');
 
-/** The record fixture colours Good 1, Good 3 and Great 2. */
+/** Both record fixtures colour Good 1, Good 3 and Great 2. */
 const RECORD_NOT_SEEN = notSeenWithout('Good 1', 'Good 3', 'Great 2');
+const RECORD_NOT_SEEN_V1 = notSeenWithoutV1('Good 1', 'Good 3', 'Great 2');
 
 const FORM_URL = '/Assets/OTP/otp-progress-form.html';
 const RECORD_URL = '/Assets/OTP/otp-record.html';
 const GATE_PASSWORD = 'ais2026ais';
+const DRAFT_KEY = 'ais-otp-form-v1';
 
-/** Exactly the CONTRACT the OTP backend tasks are built against. */
+/** Exactly the CONTRACT the OTP backend tasks are built against (otp-v0.6 §2). */
 const CONTRACT_KEYS = [
   'form',
   'teacher',
@@ -60,6 +75,8 @@ const CONTRACT_KEYS = [
   'sp1_partially_present',
   'sp1_not_present',
   'sp1_not_seen',
+  'sp1_notes',
+  'rubric_version',
   'observer_comments',
   'other_observations',
   'next_step_1',
@@ -67,6 +84,27 @@ const CONTRACT_KEYS = [
   'next_step_3',
   'evidence_pad_id',
 ].sort();
+
+/**
+ * The contract document itself, so the list above is proved against the spec
+ * rather than against a second hand typed copy of it. NB the heading of §2
+ * reads "32 keys" while the list it governs names 31: the enumerated list is
+ * the normative one (the 29 keys of otp-v0.5 plus the two new ones, sp1_notes
+ * and rubric_version), and the form posts exactly those 31.
+ */
+const CONTRACT_DOC = path.join(
+  __dirname, '..', '..', '..', '.planning', '2026-09-09-otp-v0.6-contract.md',
+);
+
+/** The §2 code block of the contract, read as a sorted key list. */
+const contractKeysFromDoc = (): string[] => {
+  const section = fs
+    .readFileSync(CONTRACT_DOC, 'utf8')
+    .split(/^## /m)
+    .find((part) => part.startsWith('2. Payload'));
+  const block = /```\n([\s\S]*?)```/.exec(section || '');
+  return (block ? block[1] : '').split(/[,\s]+/).filter(Boolean).sort();
+};
 
 const OPTIONS_PAYLOAD = {
   success: true,
@@ -82,36 +120,70 @@ const OPTIONS_PAYLOAD = {
   },
 };
 
+const RECORD_HEADER = {
+  record_id: 'AIS-OTP-20260903-101500',
+  submitted_at: '2026-09-03T10:15:00.000Z',
+  teacher: 'Test Teacher',
+  support_teachers_cas: 'Ms Support CA',
+  time_in: '09:15',
+  inspector: 'Test Observer',
+  curriculum: 'Australian',
+  school: 'Primary',
+  grade: '3',
+  observation_date: '2026-09-03',
+  room_number: '12B',
+  subject: 'Mathematics',
+  otp_ref: 'SP1',
+  otp_aspect: 'Facilitating better than expected progress',
+  observer_comments: 'Record observer comments',
+  other_observations: 'Record other observations',
+  next_step_1: 'Record next step one',
+  next_step_2: 'Record next step two',
+  next_step_3: 'Record next step three',
+};
+
+const RECORD_NOTES = {
+  'Good 3': 'challenge is not provided',
+  'Great 5': 'students still on SC1',
+};
+
+/** otp-v0.6 record: rubric_version "sp1-v2", so it renders on the 32 criteria. */
 const RECORD_PAYLOAD = {
   success: true,
   data: {
-    record_id: 'AIS-OTP-20260903-101500',
-    submitted_at: '2026-09-03T10:15:00.000Z',
-    teacher: 'Test Teacher',
-    support_teachers_cas: 'Ms Support CA',
-    time_in: '09:15',
-    inspector: 'Test Observer',
-    curriculum: 'Australian',
-    school: 'Primary',
-    grade: '3',
-    observation_date: '2026-09-03',
-    room_number: '12B',
-    subject: 'Mathematics',
-    otp_ref: 'SP1',
-    otp_aspect: 'Facilitating better than expected progress',
+    ...RECORD_HEADER,
     // otp-v0.2 format, plus sp1_great as a legacy otp-v0.1 bare number
+    sp1_good: '1:not present, 3:partially present',
+    sp1_great: '2',
+    sp1_selected_text: [
+      `Good 1 (Not present): ${criterion('good', 1)}`,
+      `Good 3 (Partially present): ${criterion('good', 3)} Note: ${RECORD_NOTES['Good 3']}`,
+      `Great 2 (Present): ${criterion('great', 2)}`,
+      `Great 5 (Not assessed): ${criterion('great', 5)} Note: ${RECORD_NOTES['Great 5']}`,
+    ].join(' | '),
+    sp1_present: 'Great 2',
+    sp1_partially_present: 'Good 3',
+    sp1_not_present: 'Good 1',
+    sp1_not_seen: RECORD_NOT_SEEN,
+    sp1_notes: JSON.stringify(RECORD_NOTES),
+    rubric_version: 'sp1-v2',
+  },
+  // otp-v0.6: a handwritten pad page for the Great 5 note, none for Good 3
+  pad_files: ['sp1-great-5-note.jpg'],
+};
+
+/** otp-v0.5 record: no rubric_version, so it renders on the 26 v1 paragraphs. */
+const RECORD_PAYLOAD_LEGACY = {
+  success: true,
+  data: {
+    ...RECORD_HEADER,
     sp1_good: '1:not present, 3:partially present',
     sp1_great: '2',
     sp1_selected_text: 'recorded selection',
     sp1_present: 'Great 2',
     sp1_partially_present: 'Good 3',
     sp1_not_present: 'Good 1',
-    sp1_not_seen: RECORD_NOT_SEEN,
-    observer_comments: 'Record observer comments',
-    other_observations: 'Record other observations',
-    next_step_1: 'Record next step one',
-    next_step_2: 'Record next step two',
-    next_step_3: 'Record next step three',
+    sp1_not_seen: RECORD_NOT_SEEN_V1,
   },
   pad_files: [],
 };
@@ -119,9 +191,10 @@ const RECORD_PAYLOAD = {
 type Harness = { errors: string[]; posts: any[] };
 
 /** Route every outbound call and collect console/page errors. */
-async function harness(page: Page): Promise<Harness> {
+async function harness(page: Page, opts: { record?: any; extract?: string } = {}): Promise<Harness> {
   const errors: string[] = [];
   const posts: any[] = [];
+  const record = opts.record || RECORD_PAYLOAD;
 
   page.on('console', (m) => {
     if (m.type() === 'error') errors.push('console: ' + m.text());
@@ -155,6 +228,10 @@ async function harness(page: Page): Promise<Harness> {
         /* keep the raw failure visible via an empty object */
       }
       posts.push(parsed);
+      // the Evidence Pad extract call shares this endpoint
+      if (parsed.action === 'extract_pad') {
+        return json({ success: true, items: [{ text: opts.extract || 'transcribed pad text' }] });
+      }
       return json({ success: true, id: 'AIS-OTP-TEST' });
     }
     if (url.includes('action=options')) {
@@ -162,7 +239,7 @@ async function harness(page: Page): Promise<Harness> {
       return json(OPTIONS_PAYLOAD);
     }
     if (url.includes('form=otp') && url.includes('token=')) {
-      return json(RECORD_PAYLOAD);
+      return json(record);
     }
     return json({ success: false, error: 'unexpected request: ' + url });
   });
@@ -173,6 +250,10 @@ async function harness(page: Page): Promise<Harness> {
 /** Open the gated form: pass the StatiCrypt gate, wait for options to land. */
 async function openForm(page: Page) {
   await page.goto(FORM_URL);
+  await passGate(page);
+}
+
+async function passGate(page: Page) {
   await page.fill('#staticrypt-password', GATE_PASSWORD);
   await page.click('#staticrypt-form .staticrypt-decrypt-button');
   await page.waitForSelector('#otp-form', { state: 'attached' });
@@ -204,24 +285,42 @@ async function fillRequired(page: Page) {
   await page.fill('#time_in', '09:15');
 }
 
+/** otp-v0.6 helpers: the chip, its "+" note button and the open panel. */
+const chipAt = (page: Page, key: string, n: number) =>
+  page.locator(`.rub-chip[data-level="${key}"][data-n="${n}"]`);
+const noteBtnAt = (page: Page, key: string, n: number) =>
+  page.locator(`.rub-note-btn[data-level="${key}"][data-n="${n}"]`);
+const notePanel = (page: Page) => page.locator('tr.rub-note-row');
+const noteText = (page: Page, key: string, n: number) =>
+  page.locator(`#sp1_note_${key}_${n}`);
+
 test.beforeAll(() => {
   for (const f of ['otp-progress-form.html', 'otp-record.html']) {
     const p = path.join(__dirname, '..', f);
-    expect(fs.existsSync(p), `${f} missing — run: bash Assets/OTP/encrypt.sh`).toBeTruthy();
+    expect(fs.existsSync(p), `${f} missing, run: bash Assets/OTP/encrypt.sh`).toBeTruthy();
   }
 });
 
-test('renders all 26 SP1 rubric chips verbatim, in order', async ({ page }) => {
+test('renders all 32 SP1 v2 rubric chips verbatim, in order, 4/5/7/8/8', async ({ page }) => {
   const h = await harness(page);
   await openForm(page);
 
   const expected: string[] = [];
   for (const lvl of RUBRIC.levels) expected.push(...lvl.paragraphs);
-  expect(expected).toHaveLength(26);
+  expect(expected).toHaveLength(32);
+  expect(RUBRIC.levels.map((l) => l.paragraphs.length)).toEqual([4, 5, 7, 8, 8]);
 
   const chips = page.locator('.rub-chip');
-  await expect(chips).toHaveCount(26);
+  await expect(chips).toHaveCount(32);
   expect(await chips.allTextContents()).toEqual(expected);
+
+  // per-level counts on the page itself, not just in the JSON
+  for (const l of RUBRIC.levels) {
+    await expect(
+      page.locator(`.rub-chip[data-level="${l.key}"]`),
+      l.key,
+    ).toHaveCount(l.paragraphs.length);
+  }
 
   // layout v2 (approved mock 2026-09-03): the level header carries only the five
   // levels; the aspect sits in a full-width caption row above it.
@@ -230,7 +329,229 @@ test('renders all 26 SP1 rubric chips verbatim, in order', async ({ page }) => {
   );
   await expect(page.locator('tr.rub-caption .rub-cap-k')).toHaveText('Aspect of Practice');
   await expect(page.locator('tr.rub-caption .rub-cap-v')).toHaveText(RUBRIC.aspect);
-  await expect(page.locator('.form-footer')).toContainText('otp-v0.5');
+  // the footer renders uppercase through CSS, so match the text case-insensitively
+  await expect(page.locator('.form-footer')).toContainText(/otp-v0\.6/i);
+  await expect(page.locator('#rubric_version')).toHaveValue('sp1-v2');
+
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.6: every chip carries a sibling "+" note button, never a nested one', async ({ page }) => {
+  const h = await harness(page);
+  await openForm(page);
+
+  await expect(page.locator('.rub-note-btn')).toHaveCount(32);
+  // a button inside a button is invalid HTML and would swallow the tap cycle
+  await expect(page.locator('.rub-chip .rub-note-btn')).toHaveCount(0);
+
+  const shape = await page.evaluate(() =>
+    Array.from(document.querySelectorAll('.rub-chip')).map((chip) => {
+      const next = chip.nextElementSibling as HTMLElement | null;
+      const c = chip as HTMLElement;
+      return {
+        sibling: !!next && next.classList.contains('rub-note-btn'),
+        sameCell: !!next && next.parentElement === chip.parentElement,
+        inCell: !!chip.closest('.rub-cell') && !!(next && next.closest('.rub-cell')),
+        matches: !!next && next.dataset.level === c.dataset.level && next.dataset.n === c.dataset.n,
+        type: next ? (next as HTMLButtonElement).type : '',
+        glyph: next ? (next.textContent || '').trim() : '',
+        label: next ? next.getAttribute('aria-label') : '',
+      };
+    }),
+  );
+  expect(shape).toHaveLength(32);
+  for (const s of shape) {
+    expect(s.sibling).toBe(true);
+    expect(s.sameCell).toBe(true);
+    expect(s.inCell).toBe(true);
+    expect(s.matches).toBe(true);
+    expect(s.type).toBe('button');
+    expect(s.glyph).toBe('+');
+  }
+  expect(shape[0].label).toBe('Add a note for Beginner 1');
+
+  // hit area at least 36x36 (the button is a small circle plus a padded ::before)
+  const hit = await page.evaluate(() => {
+    const btn = document.querySelector('.rub-note-btn') as HTMLElement;
+    const r = btn.getBoundingClientRect();
+    const before = getComputedStyle(btn, '::before');
+    const pad = Math.abs(parseFloat(before.top || '0'));
+    return { w: r.width + 2 * pad, h: r.height + 2 * pad, content: before.content };
+  });
+  expect(hit.w).toBeGreaterThanOrEqual(36);
+  expect(hit.h).toBeGreaterThanOrEqual(36);
+
+  // and the "+" never covers a word: the chip reserves the bottom strip it sits in
+  const clear = await page.evaluate(() => {
+    const chip = document.querySelector('.rub-chip') as HTMLElement;
+    const btn = chip.nextElementSibling as HTMLElement;
+    const cs = getComputedStyle(chip);
+    const chipBox = chip.getBoundingClientRect();
+    const btnBox = btn.getBoundingClientRect();
+    const textBottom = chipBox.bottom - parseFloat(cs.borderBottomWidth) - parseFloat(cs.paddingBottom);
+    return { gap: btnBox.top - textBottom, inside: chipBox.bottom - btnBox.bottom };
+  });
+  expect(clear.gap).toBeGreaterThan(0);
+  expect(clear.inside).toBeGreaterThan(0);
+
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.6: "+" opens exactly one in-flow panel, toggles it, and swaps between chips', async ({ page }) => {
+  const h = await harness(page);
+  await openForm(page);
+
+  await expect(notePanel(page)).toHaveCount(0);
+
+  await noteBtnAt(page, 'good', 3).click();
+  await expect(notePanel(page)).toHaveCount(1);
+  await expect(page.locator('#rub-note-head')).toHaveText('Note · Good 3 · Not assessed');
+  await expect(page.locator('.rub-note-crit')).toHaveText(criterion('good', 3));
+  await expect(noteText(page, 'good', 3)).toHaveCount(1);
+  // no name attribute: the note is never posted or drafted from the textarea
+  expect(
+    await noteText(page, 'good', 3).evaluate((el) => (el as HTMLTextAreaElement).name),
+  ).toBe('');
+
+  // the panel is a normal table row directly after the chip row, one td colspan 5
+  const flow = await page.evaluate(() => {
+    const row = document.querySelector('tr.rub-note-row') as HTMLElement;
+    const td = row.querySelector('td') as HTMLElement;
+    return {
+      afterChipRow: row.previousElementSibling!.id,
+      parentTag: row.parentElement!.tagName,
+      tdCount: row.querySelectorAll('td').length,
+      colspan: td.getAttribute('colspan'),
+      rowPosition: getComputedStyle(row).position,
+      tdPosition: getComputedStyle(td).position,
+      bodyPosition: getComputedStyle(document.body).position,
+      bodyOverflow: getComputedStyle(document.body).overflow,
+      bodyTop: document.body.style.top,
+      focusIsTextarea: document.activeElement === document.querySelector('#sp1_note_good_3'),
+    };
+  });
+  expect(flow.afterChipRow).toBe('rubric-row');
+  expect(flow.parentTag).toBe('TBODY');
+  expect(flow.tdCount).toBe(1);
+  expect(flow.colspan).toBe('5');
+  // iPad law: never a fixed overlay, never a scroll lock, never a body reposition
+  expect(flow.rowPosition).not.toBe('fixed');
+  expect(flow.tdPosition).not.toBe('fixed');
+  expect(flow.bodyPosition).toBe('static');
+  expect(flow.bodyOverflow).not.toBe('hidden');
+  expect(flow.bodyTop).toBe('');
+  // and no auto-focus: a Pencil user must not get the keyboard
+  expect(flow.focusIsTextarea).toBe(false);
+
+  // the panel carries this criterion's Evidence Pad buttons
+  await expect(
+    notePanel(page).locator('.pad-field-btn[data-pad-target="sp1_good_3_note"]'),
+  ).toHaveCount(1);
+  await expect(
+    notePanel(page).locator('.pad-attach[data-pad-target="sp1_good_3_note"]'),
+  ).toBeHidden();
+
+  // another chip's "+" swaps the panel rather than opening a second one
+  await noteBtnAt(page, 'great', 5).click();
+  await expect(notePanel(page)).toHaveCount(1);
+  await expect(page.locator('#rub-note-head')).toHaveText('Note · Great 5 · Not assessed');
+
+  // the same "+" again closes it, and so does Done
+  await noteBtnAt(page, 'great', 5).click();
+  await expect(notePanel(page)).toHaveCount(0);
+  await noteBtnAt(page, 'great', 5).click();
+  await page.locator('.rub-note-done').click();
+  await expect(notePanel(page)).toHaveCount(0);
+
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.6: "+" never cycles the colour, and the chip never opens the panel', async ({ page }) => {
+  const h = await harness(page);
+  await openForm(page);
+
+  const chip = chipAt(page, 'good', 2);
+  await expect(chip).toHaveAttribute('data-state', '');
+  for (let i = 0; i < 3; i++) {
+    await noteBtnAt(page, 'good', 2).click();
+    await expect(chip).toHaveAttribute('data-state', '');
+    await expect(chip).toHaveAttribute('aria-pressed', 'false');
+  }
+  await expect(page.locator('#sp1_good')).toHaveValue('');
+
+  // and tapping the chip cycles the colour without opening a panel
+  await noteBtnAt(page, 'good', 2).click();       // close the panel first
+  await expect(notePanel(page)).toHaveCount(0);
+  await chip.click();
+  await expect(chip).toHaveAttribute('data-state', 'present');
+  await expect(notePanel(page)).toHaveCount(0);
+
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.6: a typed note writes sp1_notes, sp1_selected_text and the badge', async ({ page }) => {
+  const h = await harness(page);
+  await openForm(page);
+
+  const notes = page.locator('#sp1_notes');
+  const txt = page.locator('#sp1_selected_text');
+  await expect(notes).toHaveValue('');
+
+  // a note on an UNCOLOURED chip reads "(Not assessed)" and still lands
+  await noteBtnAt(page, 'good', 3).click();
+  await noteText(page, 'good', 3).fill('challenge is not provided');
+  await expect(notes).toHaveValue('{"Good 3":"challenge is not provided"}');
+  await expect(txt).toHaveValue(
+    `Good 3 (Not assessed): ${criterion('good', 3)} Note: challenge is not provided`,
+  );
+  await expect(noteBtnAt(page, 'good', 3)).toHaveClass(/has-note/);
+  await expect(noteBtnAt(page, 'good', 3)).toHaveAttribute(
+    'aria-label',
+    'Edit the note for Good 3',
+  );
+
+  // colouring the chip while the panel is open updates the header live
+  await chipAt(page, 'good', 3).click();
+  await expect(page.locator('#rub-note-head')).toHaveText('Note · Good 3 · Present');
+  await expect(txt).toHaveValue(
+    `Good 3 (Present): ${criterion('good', 3)} Note: challenge is not provided`,
+  );
+  await chipAt(page, 'good', 3).click();
+  await expect(page.locator('#rub-note-head')).toHaveText('Note · Good 3 · Partially present');
+
+  // a second note, on a different level: keys stay in level order then ascending n
+  await noteBtnAt(page, 'great', 5).click();
+  await noteText(page, 'great', 5).fill('students still on SC1');
+  await expect(notes).toHaveValue(
+    '{"Good 3":"challenge is not provided","Great 5":"students still on SC1"}',
+  );
+  await expect(txt).toHaveValue(
+    `Good 3 (Partially present): ${criterion('good', 3)} Note: challenge is not provided` +
+      ` | Great 5 (Not assessed): ${criterion('great', 5)} Note: students still on SC1`,
+  );
+
+  // a multi-line note is trimmed, keeps its newlines in sp1_notes, and collapses
+  // its whitespace inside the one-line sp1_selected_text cell
+  await noteText(page, 'great', 5).fill('  line one\nline two  ');
+  expect(JSON.parse(await notes.inputValue())['Great 5']).toBe('line one\nline two');
+  expect(await txt.inputValue()).toContain('Note: line one line two');
+
+  // clearing the text removes the key and the badge
+  await noteText(page, 'great', 5).fill('');
+  await expect(notes).toHaveValue('{"Good 3":"challenge is not provided"}');
+  await expect(noteBtnAt(page, 'great', 5)).not.toHaveClass(/has-note/);
+  await expect(noteBtnAt(page, 'great', 5)).toHaveAttribute(
+    'aria-label',
+    'Add a note for Great 5',
+  );
+  // only one panel is ever open, so come back to Good 3 before clearing it
+  await noteBtnAt(page, 'good', 3).click();
+  await expect(page.locator('#rub-note-head')).toHaveText('Note · Good 3 · Partially present');
+  await noteText(page, 'good', 3).fill('');
+  await expect(notes).toHaveValue('');
+  await expect(txt).toHaveValue(
+    `Good 3 (Partially present): ${criterion('good', 3)}`,
+  );
 
   expect(h.errors).toEqual([]);
 });
@@ -239,9 +560,9 @@ test('a chip cycles clear -> present -> partial -> absent -> clear', async ({ pa
   const h = await harness(page);
   await openForm(page);
 
-  const good = RUBRIC.levels.find((l) => l.key === 'good')!;
-  const beginner = RUBRIC.levels.find((l) => l.key === 'beginner')!;
-  const chip = page.locator('.rub-chip[data-level="good"][data-n="2"]');
+  const good = level('good');
+  const beginner = level('beginner');
+  const chip = chipAt(page, 'good', 2);
   const lvl = page.locator('#sp1_good');
   const txt = page.locator('#sp1_selected_text');
   const present = page.locator('#sp1_present');
@@ -252,9 +573,10 @@ test('a chip cycles clear -> present -> partial -> absent -> clear', async ({ pa
   await expect(chip).toHaveAttribute('data-state', '');
   await expect(chip).toHaveAttribute('aria-pressed', 'false');
   await expect(lvl).toHaveValue('');
-  // otp-v0.5: nothing coloured yet, so every one of the 26 is "not seen"
-  expect(ALL_CRITERIA).toHaveLength(26);
+  // otp-v0.6: nothing coloured yet, so every one of the 32 is "not assessed"
+  expect(ALL_CRITERIA).toHaveLength(32);
   await expect(notSeen).toHaveValue(ALL_CRITERIA.join(', '));
+  expect((await notSeen.inputValue()).split(', ')).toHaveLength(32);
 
   const cycle = [
     { state: 'present', word: 'present', cap: 'Present' },
@@ -271,7 +593,7 @@ test('a chip cycles clear -> present -> partial -> absent -> clear', async ({ pa
     await expect(present).toHaveValue(step.state === 'present' ? 'Good 2' : '');
     await expect(partial).toHaveValue(step.state === 'partial' ? 'Good 2' : '');
     await expect(absent).toHaveValue(step.state === 'absent' ? 'Good 2' : '');
-    // whatever the colour, the coloured criterion drops out of "not seen"
+    // whatever the colour, the coloured criterion drops out of "not assessed"
     await expect(notSeen).toHaveValue(notSeenWithout('Good 2'));
   }
 
@@ -288,7 +610,7 @@ test('a chip cycles clear -> present -> partial -> absent -> clear', async ({ pa
 
   // a chip in another column keeps its own state alongside
   await chip.click(); // Good 2 -> present
-  const other = page.locator('.rub-chip[data-level="beginner"][data-n="1"]');
+  const other = chipAt(page, 'beginner', 1);
   await other.click();
   await other.click(); // Beginner 1 -> partially present
   await expect(chip).toHaveAttribute('data-state', 'present');
@@ -309,27 +631,36 @@ test('a chip cycles clear -> present -> partial -> absent -> clear', async ({ pa
   expect(h.errors).toEqual([]);
 });
 
-test('two chip states and a note survive a reload via the ais-otp-form-v1 draft', async ({ page }) => {
+test('chip states, a note and its badge survive a reload via the ais-otp-form-v1 draft', async ({ page }) => {
   const h = await harness(page);
   await openForm(page);
 
-  const presentChip = page.locator('.rub-chip[data-level="great"][data-n="4"]');
-  const absentChip = page.locator('.rub-chip[data-level="emerging"][data-n="2"]');
+  const presentChip = chipAt(page, 'great', 4);
+  const absentChip = chipAt(page, 'emerging', 2);
   await presentChip.click(); // one tap  -> present
   await absentChip.click();
   await absentChip.click();
   await absentChip.click(); // three taps -> not present
   await pickGrade(page, '9');   // otp-v0.5: derives school "Secondary"
   await page.fill('#observer_comments', 'Draft survives the reload');
+  // otp-v0.6: a note on a chip that is NOT coloured, so the draft has to carry
+  // the note in its own right
+  await noteBtnAt(page, 'outstanding', 6).click();
+  await noteText(page, 'outstanding', 6).fill('group work ran out of time');
   await page.waitForTimeout(600); // debounced autosave is 220ms
 
   const key = await page.evaluate(() =>
     Object.keys(localStorage).filter((k) => k.indexOf('ais-otp-form-v1') > -1)
   );
-  expect(key).toEqual(['ais-otp-form-v1']);
+  expect(key).toEqual([DRAFT_KEY]);
+  const draft = JSON.parse(
+    await page.evaluate((k) => localStorage.getItem(k)!, DRAFT_KEY),
+  );
+  expect(draft.rubric_version).toBe('sp1-v2');
+  expect(draft.sp1_notes).toBe('{"Outstanding 6":"group work ran out of time"}');
 
   await page.reload();
-  await openFormAfterReload(page);
+  await passGate(page);
 
   await expect(page.locator('#observer_comments')).toHaveValue('Draft survives the reload');
   await expect(page.locator('#grade')).toHaveValue('9');
@@ -348,17 +679,76 @@ test('two chip states and a note survive a reload via the ais-otp-form-v1 draft'
   await expect(absentChip).toHaveAttribute('data-state', 'absent');
   await expect(absentChip).toHaveAttribute('aria-pressed', 'true');
 
+  // otp-v0.6: the note, its badge and the panel content all come back
+  await expect(page.locator('#sp1_notes')).toHaveValue(
+    '{"Outstanding 6":"group work ran out of time"}',
+  );
+  await expect(page.locator('#rubric_version')).toHaveValue('sp1-v2');
+  await expect(noteBtnAt(page, 'outstanding', 6)).toHaveClass(/has-note/);
+  await expect(noteBtnAt(page, 'good', 3)).not.toHaveClass(/has-note/);
+  await noteBtnAt(page, 'outstanding', 6).click();
+  await expect(noteText(page, 'outstanding', 6)).toHaveValue('group work ran out of time');
+
   expect(h.errors).toEqual([]);
 });
 
-async function openFormAfterReload(page: Page) {
-  await page.fill('#staticrypt-password', GATE_PASSWORD);
-  await page.click('#staticrypt-form .staticrypt-decrypt-button');
-  await page.waitForSelector('#otp-form', { state: 'attached' });
-  await expect(page.locator('#form-loading')).toHaveClass(/is-hidden/, { timeout: 15_000 });
-}
+test('otp-v0.6: a draft without rubric_version restores its header fields but no chips', async ({ page }) => {
+  const h = await harness(page);
+  await openForm(page);
 
-test('submit posts exactly the CONTRACT keys with form="otp"', async ({ page }) => {
+  // an otp-v0.5 draft: paragraph numbering, no rubric_version, no sp1_notes
+  await page.evaluate(
+    ([k, v]) => localStorage.setItem(k, v),
+    [
+      DRAFT_KEY,
+      JSON.stringify({
+        observer_comments: 'Carried over from otp-v0.5',
+        room_number: '9A',
+        support_teachers_cas: 'Ms Legacy CA',
+        sp1_good: '4:present',
+        sp1_great: '2:not present',
+        sp1_present: 'Good 4',
+        sp1_not_present: 'Great 2',
+        sp1_selected_text: 'stale v1 selection',
+        sp1_not_seen: 'stale v1 complement',
+      }),
+    ] as [string, string],
+  );
+
+  await page.reload();
+  await passGate(page);
+
+  // every non-rubric field still restores
+  await expect(page.locator('#observer_comments')).toHaveValue('Carried over from otp-v0.5');
+  await expect(page.locator('#room_number')).toHaveValue('9A');
+  await expect(page.locator('#support_teachers_cas')).toHaveValue('Ms Legacy CA');
+
+  // and every sp1_* value is dropped, so nothing lights the wrong criterion
+  await expect(page.locator('#sp1_good')).toHaveValue('');
+  await expect(page.locator('#sp1_great')).toHaveValue('');
+  await expect(page.locator('#sp1_present')).toHaveValue('');
+  await expect(page.locator('#sp1_not_present')).toHaveValue('');
+  await expect(page.locator('#sp1_selected_text')).toHaveValue('');
+  await expect(page.locator('#sp1_notes')).toHaveValue('');
+  await expect(page.locator('#rubric_version')).toHaveValue('sp1-v2');
+  await expect(page.locator('#sp1_not_seen')).toHaveValue(ALL_CRITERIA.join(', '));
+  await expect(page.locator('.rub-chip[data-state="present"]')).toHaveCount(0);
+  await expect(page.locator('.rub-chip[data-state="partial"]')).toHaveCount(0);
+  await expect(page.locator('.rub-chip[data-state="absent"]')).toHaveCount(0);
+  await expect(page.locator('.rub-note-btn.has-note')).toHaveCount(0);
+
+  expect(h.errors).toEqual([]);
+});
+
+test('the CONTRACT key list is the contract §2 list verbatim, 31 keys', async () => {
+  const fromDoc = contractKeysFromDoc();
+  expect(fromDoc).toEqual(CONTRACT_KEYS);
+  expect(fromDoc).toHaveLength(31);
+  expect(fromDoc).toContain('sp1_notes');
+  expect(fromDoc).toContain('rubric_version');
+});
+
+test('submit posts exactly the CONTRACT keys with form="otp" and rubric_version="sp1-v2"', async ({ page }) => {
   const h = await harness(page);
   page.on('dialog', (d) => d.accept());
   await openForm(page);
@@ -366,7 +756,12 @@ test('submit posts exactly the CONTRACT keys with form="otp"', async ({ page }) 
   await fillRequired(page);
   await page.fill('#room_number', '12B');
   await page.fill('#support_teachers_cas', 'Ms Support CA');
-  await page.locator('.rub-chip[data-level="outstanding"][data-n="1"]').click();
+  await chipAt(page, 'outstanding', 1).click();
+  // otp-v0.6: one note on the coloured criterion, one on an untouched one
+  await noteBtnAt(page, 'outstanding', 1).click();
+  await noteText(page, 'outstanding', 1).fill('pathway chosen from the exit ticket');
+  await noteBtnAt(page, 'beginner', 2).click();
+  await noteText(page, 'beginner', 2).fill('bottom table had nothing to do');
   await page.fill('#observer_comments', 'Comments');
   await page.fill('#other_observations', 'Other');
   await page.fill('#next_step_1', 'Step one');
@@ -382,6 +777,7 @@ test('submit posts exactly the CONTRACT keys with form="otp"', async ({ page }) 
   expect(h.posts).toHaveLength(1);
   const body = h.posts[0];
   expect(Object.keys(body).sort()).toEqual(CONTRACT_KEYS);
+  expect(Object.keys(body)).toHaveLength(31);   // §2 list, counted not assumed
   expect(body.form).toBe('otp');
   expect(body.otp_ref).toBe('SP1');
   expect(body.otp_aspect).toBe('Facilitating better than expected progress');
@@ -397,11 +793,28 @@ test('submit posts exactly the CONTRACT keys with form="otp"', async ({ page }) 
   expect(body.sp1_not_present).toBe('');
   expect(body.sp1_not_seen).toBe(notSeenWithout('Outstanding 1'));
   expect(body.next_step_3).toBe('Step three');
+  // otp-v0.6 value formats (contract §3)
+  expect(body.rubric_version).toBe('sp1-v2');
+  expect(body.sp1_notes).toBe(
+    '{"Beginner 2":"bottom table had nothing to do","Outstanding 1":"pathway chosen from the exit ticket"}',
+  );
+  expect(JSON.parse(body.sp1_notes)).toEqual({
+    'Beginner 2': 'bottom table had nothing to do',
+    'Outstanding 1': 'pathway chosen from the exit ticket',
+  });
+  expect(body.sp1_selected_text).toBe(
+    `Beginner 2 (Not assessed): ${criterion('beginner', 2)} Note: bottom table had nothing to do` +
+      ` | Outstanding 1 (Present): ${criterion('outstanding', 1)} Note: pathway chosen from the exit ticket`,
+  );
+  // the four by-state lists still partition the 32 criteria
+  const buckets = ['sp1_present', 'sp1_partially_present', 'sp1_not_present', 'sp1_not_seen']
+    .flatMap((k) => String(body[k]).split(', ').filter(Boolean));
+  expect(buckets.sort()).toEqual([...ALL_CRITERIA].sort());
 
   expect(h.errors).toEqual([]);
 });
 
-test('the record view repopulates header fields, chips and the five notes', async ({ page }) => {
+test('the record view repopulates header fields, chips, notes and the five sections', async ({ page }) => {
   const h = await harness(page);
   await page.goto(RECORD_URL + '?token=abc');
   await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 20_000 });
@@ -424,21 +837,49 @@ test('the record view repopulates header fields, chips and the five notes', asyn
     'Test Observer'
   );
 
-  const state = (level: string, n: number) =>
-    page.locator(`.rub-chip[data-level="${level}"][data-n="${n}"]`);
-  await expect(state('good', 1)).toHaveAttribute('data-state', 'absent');
-  await expect(state('good', 1)).toHaveAttribute('aria-pressed', 'true');
-  await expect(state('good', 3)).toHaveAttribute('data-state', 'partial');
-  await expect(state('good', 3)).toHaveAttribute('aria-pressed', 'true');
-  await expect(state('good', 2)).toHaveAttribute('data-state', '');
-  await expect(state('good', 2)).toHaveAttribute('aria-pressed', 'false');
+  // otp-v0.6: rubric_version "sp1-v2", so the 32 v2 criteria render
+  await expect(page.locator('.rub-chip')).toHaveCount(32);
+  await expect(chipAt(page, 'good', 1)).toHaveAttribute('data-state', 'absent');
+  await expect(chipAt(page, 'good', 1)).toHaveAttribute('aria-pressed', 'true');
+  await expect(chipAt(page, 'good', 3)).toHaveAttribute('data-state', 'partial');
+  await expect(chipAt(page, 'good', 3)).toHaveAttribute('aria-pressed', 'true');
+  await expect(chipAt(page, 'good', 2)).toHaveAttribute('data-state', '');
+  await expect(chipAt(page, 'good', 2)).toHaveAttribute('aria-pressed', 'false');
   // legacy otp-v0.1 bare number reads as "present"
-  await expect(state('great', 2)).toHaveAttribute('data-state', 'present');
-  await expect(state('great', 2)).toHaveAttribute('aria-pressed', 'true');
+  await expect(chipAt(page, 'great', 2)).toHaveAttribute('data-state', 'present');
+  await expect(chipAt(page, 'great', 2)).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('#sp1_present')).toHaveValue('Great 2');
   await expect(page.locator('#sp1_partially_present')).toHaveValue('Good 3');
   await expect(page.locator('#sp1_not_present')).toHaveValue('Good 1');
   await expect(page.locator('#sp1_not_seen')).toHaveValue(RECORD_NOT_SEEN);
+  await expect(page.locator('#rubric_version')).toHaveValue('sp1-v2');
+
+  // otp-v0.6: the two recorded notes show as badges, and the panel is read-only
+  await expect(page.locator('.rub-note-btn.has-note')).toHaveCount(2);
+  await expect(noteBtnAt(page, 'good', 3)).toHaveClass(/has-note/);
+  await expect(noteBtnAt(page, 'great', 5)).toHaveClass(/has-note/);
+  await noteBtnAt(page, 'great', 5).click();
+  await expect(notePanel(page)).toHaveCount(1);
+  await expect(page.locator('#rub-note-head')).toHaveText('Note · Great 5 · Not assessed');
+  await expect(noteText(page, 'great', 5)).toHaveValue('students still on SC1');
+  expect(
+    await noteText(page, 'great', 5).evaluate((el) => (el as HTMLTextAreaElement).readOnly),
+  ).toBe(true);
+  await expect(notePanel(page).locator('.pad-field-btn')).toBeHidden();
+  // this criterion HAS a pad page, so its paperclip shows (slug sp1-great-5-note)
+  await expect(
+    notePanel(page).locator('.pad-attach[data-pad-target="sp1_great_5_note"]'),
+  ).toBeVisible();
+  await noteBtnAt(page, 'good', 3).click();
+  await expect(page.locator('#rub-note-head')).toHaveText('Note · Good 3 · Partially present');
+  // Good 3 has no pad page, so its paperclip stays hidden
+  await expect(
+    notePanel(page).locator('.pad-attach[data-pad-target="sp1_good_3_note"]'),
+  ).toBeHidden();
+
+  // hard rule 13: a record view never writes the shared draft
+  await page.waitForTimeout(600);
+  expect(await page.evaluate((k) => localStorage.getItem(k), DRAFT_KEY)).toBeNull();
 
   await expect(page.locator('#observer_comments')).toHaveValue('Record observer comments');
   await expect(page.locator('#other_observations')).toHaveValue('Record other observations');
@@ -450,6 +891,34 @@ test('the record view repopulates header fields, chips and the five notes', asyn
   expect(
     fs.readFileSync(path.join(__dirname, '..', 'otp-record.html'), 'utf8')
   ).not.toContain('sb_publishable');
+
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.6: a legacy record (no rubric_version) renders the 26 v1 paragraphs', async ({ page }) => {
+  const h = await harness(page, { record: RECORD_PAYLOAD_LEGACY });
+  await page.goto(RECORD_URL + '?token=abc');
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 20_000 });
+
+  const expected: string[] = [];
+  for (const lvl of RUBRIC_V1.levels) expected.push(...lvl.paragraphs);
+  expect(expected).toHaveLength(26);
+  await expect(page.locator('.rub-chip')).toHaveCount(26);
+  expect(await page.locator('.rub-chip').allTextContents()).toEqual(expected);
+  await expect(page.locator('.rub-note-btn')).toHaveCount(26);
+  // one caption row and one legend row, not two of each
+  await expect(page.locator('tr.rub-caption')).toHaveCount(1);
+  await expect(page.locator('#rubric-legend')).toHaveCount(1);
+
+  // the v1 selection lights the v1 paragraphs
+  await expect(chipAt(page, 'good', 1)).toHaveAttribute('data-state', 'absent');
+  await expect(chipAt(page, 'good', 3)).toHaveAttribute('data-state', 'partial');
+  await expect(chipAt(page, 'great', 2)).toHaveAttribute('data-state', 'present');
+  await expect(page.locator('#sp1_not_seen')).toHaveValue(RECORD_NOT_SEEN_V1);
+  await expect(page.locator('#rubric_version')).toHaveValue('');
+  // legacy records carry no criterion notes
+  await expect(page.locator('#sp1_notes')).toHaveValue('');
+  await expect(page.locator('.rub-note-btn.has-note')).toHaveCount(0);
 
   expect(h.errors).toEqual([]);
 });
@@ -472,7 +941,8 @@ test('the removed R3 fields are absent from the DOM', async ({ page }) => {
     await expect(page.locator(`[name="${id}"]`), `[name=${id}] should be gone`).toHaveCount(0);
   }
 
-  // the five pad targets replaced the four R3 ones
+  // the five pad targets replaced the four R3 ones (the 32 criterion-note
+  // launchers live inside a note panel, which is closed here)
   await expect(page.locator('.pad-field-btn[data-pad-target]')).toHaveCount(5);
   expect(
     await page.locator('.pad-field-btn').evaluateAll((els) =>
@@ -549,6 +1019,23 @@ test('the three recorded states paint the AIS state colours in the light theme',
     .evaluate((el) => getComputedStyle(el).color);
   expect(yellow).toBe('rgb(20, 54, 66)');
 
+  // otp-v0.6: a filled note badge paints the AIS blue, white glyph, in both themes
+  await noteBtnAt(page, 'good', 1).click();
+  await noteText(page, 'good', 1).fill('badge paint');
+  const badge = noteBtnAt(page, 'good', 1);
+  for (const theme of ['light', 'dark']) {
+    await page.evaluate((t) => document.documentElement.setAttribute('data-theme', t), theme);
+    await page.mouse.move(0, 0);      // no hover state on the badge
+    await page.waitForTimeout(400);   // the 0.15s colour transition has settled
+    const css = await badge.evaluate((el) => {
+      const s = getComputedStyle(el);
+      return { bg: s.backgroundColor, border: s.borderTopColor, color: s.color };
+    });
+    expect(css.bg, theme).toBe('rgb(18, 87, 255)');
+    expect(css.border, theme).toBe('rgb(18, 87, 255)');
+    expect(css.color, theme).toBe('rgb(255, 255, 255)');
+  }
+
   expect(h.errors).toEqual([]);
 });
 
@@ -560,13 +1047,14 @@ test('the colour legend is a permanent strip under the level headers; the Info b
 
   // visible on load, no toggle to click
   await expect(legend).toBeVisible();
+  // otp-v0.6 wording (contract §4)
   expect(await legend.locator('.rub-legend-item').allTextContents()).toEqual([
-    'No colour: not seen in lesson (does not count)',
+    'No colour: not assessed (does not count)',
     'Green: present in lesson',
     'Yellow: partially present in lesson',
-    'Red: not present in lesson',
+    'Red: expected but not present in lesson',
   ]);
-  // otp-v0.5: the "not seen" swatch is the untouched chip, not a fourth colour
+  // otp-v0.5: the "no colour" swatch is the untouched chip, not a fourth colour
   const swatches = legend.locator('.rub-legend-sw');
   expect(await swatches.evaluateAll((els) => els.map((e) => (e as HTMLElement).dataset.state)))
     .toEqual(['', 'present', 'partial', 'absent']);
@@ -578,6 +1066,7 @@ test('the colour legend is a permanent strip under the level headers; the Info b
   }));
   expect(paint.swatch).toBe(paint.chip);
   expect(paint.swatchBorder).toBe(paint.chipBorder);
+  // the tap hint is unchanged
   await expect(legend.locator('.rub-legend-hint')).toHaveText(
     'Tap a criterion to mark it green; tap again for yellow, again for red; a fourth tap clears it.'
   );
@@ -601,7 +1090,7 @@ test('the colour legend is a permanent strip under the level headers; the Info b
   expect(rowOrder.legendIsLastInThead).toBe(true);
   expect(rowOrder.firstTbodyRowId).toBe('rubric-row');
 
-  // otp-v0.4: caption centred; the three colour items spread evenly and
+  // otp-v0.4: caption centred; the four colour items spread evenly and
   // centred; the tap hint on its own centred line below them, as a quiet pill
   const geo = await page.evaluate(() => {
     const capTh = document.querySelector('tr.rub-caption th')!;
@@ -738,5 +1227,152 @@ test('otp-v0.5: the empty Grade control paints a placeholder and hides its clear
   expect(await placeholder()).toBe('"Tap to pick a grade"');
   await expect(wrapper.locator('.clear-button')).toBeHidden();
   await expect(page.locator('#school')).toHaveValue('');
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.6: no console errors and no horizontal overflow at 1280 and at 820x1180', async ({ page }) => {
+  const h = await harness(page);
+
+  for (const size of [
+    { width: 1280, height: 900 },
+    { width: 820, height: 1180 },   // iPad portrait
+  ]) {
+    await page.setViewportSize(size);
+    await openForm(page);
+
+    // exercise the whole otp-v0.6 surface at this size
+    await chipAt(page, 'good', 3).click();
+    await noteBtnAt(page, 'good', 3).click();
+    await expect(notePanel(page)).toHaveCount(1);
+    await noteText(page, 'good', 3).fill('note typed at ' + size.width);
+    await expect(noteBtnAt(page, 'good', 3)).toHaveClass(/has-note/);
+    await noteBtnAt(page, 'outstanding', 8).click();
+    await expect(notePanel(page)).toHaveCount(1);
+
+    const box = await page.evaluate(() => ({
+      bodyScroll: document.body.scrollWidth,
+      bodyClient: document.body.clientWidth,
+      docScroll: document.documentElement.scrollWidth,
+      docClient: document.documentElement.clientWidth,
+    }));
+    expect(box.bodyScroll, `body at ${size.width}`).toBe(box.bodyClient);
+    expect(box.docScroll, `doc at ${size.width}`).toBeLessThanOrEqual(box.docClient);
+
+    // the panel is still in normal flow, never a fixed overlay
+    expect(
+      await notePanel(page).evaluate((el) => getComputedStyle(el).position),
+    ).not.toBe('fixed');
+
+    await expect(page.locator('.form-footer')).toContainText(/otp-v0\.6/i);
+    await page.evaluate((k) => localStorage.removeItem(k), DRAFT_KEY);
+  }
+
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.6: the pad writes a criterion note, and its extract call carries the criterion as context', async ({ page }) => {
+  const h = await harness(page, { extract: 'only two of the six groups were stretched' });
+  await openForm(page);
+
+  // the pencil inside the note panel opens the pad on THAT criterion's page
+  await noteBtnAt(page, 'good', 3).click();
+  await notePanel(page).locator('.pad-field-btn[data-pad-target="sp1_good_3_note"]').click();
+  await expect(page.locator('#pad-modal')).toHaveClass(/open/, { timeout: 10_000 });
+  await expect(page.locator('#pad-pageind')).toContainText('Note · Good 3');
+
+  // draw one stroke, then Done
+  const stage = await page.locator('#pad-stage').boundingBox();
+  await page.mouse.move(stage!.x + 60, stage!.y + 60);
+  await page.mouse.down();
+  await page.mouse.move(stage!.x + 160, stage!.y + 110, { steps: 8 });
+  await page.mouse.up();
+  await page.locator('#pad-done').click();
+  await expect(page.locator('#pad-modal')).not.toHaveClass(/open/);
+
+  // the transcription lands in that criterion's note, not in any of the five fields
+  await expect(page.locator('#sp1_notes')).toHaveValue(
+    '{"Good 3":"only two of the six groups were stretched"}',
+    { timeout: 15_000 },
+  );
+  await expect(noteBtnAt(page, 'good', 3)).toHaveClass(/has-note/);
+  expect(await page.locator('#sp1_selected_text').inputValue()).toContain(
+    'Note: only two of the six groups were stretched',
+  );
+  await expect(page.locator('#observer_comments')).toHaveValue('');
+
+  // the request named the target and carried the criterion text as context
+  const extract = h.posts.filter((p) => p.action === 'extract_pad');
+  expect(extract).toHaveLength(1);
+  expect(extract[0].target).toBe('sp1_good_3_note');
+  expect(extract[0].context).toBe(criterion('good', 3));
+  expect(String(extract[0].context).length).toBeLessThanOrEqual(400);
+
+  // and the open panel shows it
+  await expect(noteText(page, 'good', 3)).toHaveValue(
+    'only two of the six groups were stretched',
+  );
+
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.6: the notes print as a Criterion notes list under the rubric table', async ({ page }) => {
+  const h = await harness(page);
+  await openForm(page);
+
+  const printBox = page.locator('#rub-print-notes');
+  expect(await printBox.evaluate((el) => getComputedStyle(el).display)).toBe('none');
+  await expect(printBox).toBeEmpty();
+
+  await chipAt(page, 'good', 3).click();     // present
+  await noteBtnAt(page, 'good', 3).click();
+  await noteText(page, 'good', 3).fill('only one group was stretched');
+  await noteBtnAt(page, 'beginner', 2).click();
+  await noteText(page, 'beginner', 2).fill('bottom table idle for ten minutes');
+
+  await page.emulateMedia({ media: 'print' });
+  await expect(printBox).toBeVisible();
+  await expect(printBox.locator('.rub-print-head')).toHaveText('Criterion notes');
+  expect(await printBox.locator('.rub-print-item').allTextContents()).toEqual([
+    'Beginner 2 (Not assessed): bottom table idle for ten minutes',
+    'Good 3 (Present): only one group was stretched',
+  ]);
+  // the open panel and the empty "+" affordances do not print; a filled one does
+  expect(await notePanel(page).evaluate((el) => getComputedStyle(el).display)).toBe('none');
+  expect(
+    await noteBtnAt(page, 'good', 1).evaluate((el) => getComputedStyle(el).display),
+  ).toBe('none');
+  await page.waitForTimeout(400);   // the 0.15s badge colour transition has settled
+  expect(
+    await noteBtnAt(page, 'good', 3).evaluate((el) => getComputedStyle(el).backgroundColor),
+  ).toBe('rgb(18, 87, 255)');
+  await page.emulateMedia({ media: 'screen' });
+
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.6: Reset clears the notes and keeps rubric_version stamped', async ({ page }) => {
+  const h = await harness(page);
+  page.on('dialog', (d) => d.accept());
+  await openForm(page);
+
+  await chipAt(page, 'great', 1).click();
+  await noteBtnAt(page, 'great', 1).click();
+  await noteText(page, 'great', 1).fill('to be wiped');
+  await page.fill('#observer_comments', 'to be wiped too');
+  await expect(page.locator('#sp1_notes')).toHaveValue('{"Great 1":"to be wiped"}');
+
+  await page.locator('#btn-reset').click();
+
+  await expect(page.locator('#observer_comments')).toHaveValue('');
+  await expect(page.locator('#sp1_notes')).toHaveValue('');
+  await expect(page.locator('#sp1_selected_text')).toHaveValue('');
+  await expect(page.locator('#sp1_great')).toHaveValue('');
+  await expect(page.locator('#sp1_not_seen')).toHaveValue(ALL_CRITERIA.join(', '));
+  // the reset loop blanks every named input, so the stamp has to be re-applied
+  await expect(page.locator('#rubric_version')).toHaveValue('sp1-v2');
+  await expect(page.locator('.rub-note-btn.has-note')).toHaveCount(0);
+  await expect(notePanel(page)).toHaveCount(0);
+  await expect(page.locator('#rub-print-notes')).toBeEmpty();
+
   expect(h.errors).toEqual([]);
 });

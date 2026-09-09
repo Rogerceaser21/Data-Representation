@@ -2026,7 +2026,9 @@ body.is-viewer .cog-btn { display: none; }
   background: var(--surface-soft);
   border: 1px solid var(--rule);
   border-radius: 0.25rem;
-  padding: 0.2rem 0.28rem;
+  /* otp-v0.6: the bottom strip is reserved for the "+" note button, which is a
+     sibling pulled up over this padding, so no word is ever covered. */
+  padding: 0.2rem 0.28rem 1.45rem;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition: background 0.16s ease, color 0.16s ease, border-color 0.16s ease;
@@ -2050,6 +2052,105 @@ body.is-viewer .cog-btn { display: none; }
   color: #ffffff;
 }
 .form-container.is-locked .rub-chip { cursor: default; }
+
+/* otp-v0.6: per-criterion note button. A SIBLING of the chip inside .rub-cell
+   (never nested: a button inside a button is invalid HTML and would swallow
+   the tap cycle), pulled up by a negative margin so it sits in the strip the
+   chip reserves at its bottom-right corner. */
+.rub-note-btn {
+  appearance: none;
+  align-self: flex-end;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin: -1.44rem 0.25rem 0.1rem 0;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--rule);
+  background: var(--card-bg);
+  color: var(--paper-mid);
+  font-family: var(--body-font);
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+/* a 36x36 tap target without changing the layout */
+.rub-note-btn::before { content: ''; position: absolute; top: -8px; right: -8px; bottom: -8px; left: -8px; }
+.rub-note-btn:hover { border-color: var(--ais-blue); color: var(--ais-blue); }
+.rub-note-btn.has-note {
+  background: #1257FF;
+  border-color: #1257FF;
+  color: #ffffff;
+}
+
+/* otp-v0.6: the criterion-note panel is a NORMAL table row directly under the
+   chip row, one open at a time. Never a fixed overlay, never a scroll lock,
+   never a body reposition (iPad law), and it never steals focus on open. */
+.rub-note-row > td {
+  padding: 0.55rem 0.7rem 0.75rem;
+  background: var(--surface-soft);
+  border-top: 1px solid var(--rule);
+}
+.rub-note { display: flex; flex-direction: column; gap: 0.45rem; }
+.rub-note-head {
+  font-family: var(--body-font);
+  font-size: var(--tiny);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ais-blue);
+}
+.rub-note-crit {
+  margin: 0;
+  font-size: var(--small);
+  line-height: 1.4;
+  color: var(--paper-dim);
+}
+.rub-note-text {
+  width: 100%;
+  min-height: 4.5rem;
+  resize: vertical;
+  font-family: var(--body-font);
+  font-size: var(--body);
+  line-height: 1.5;
+  color: var(--paper);
+  background: var(--card-bg);
+  border: 1px solid var(--rule);
+  border-radius: 0.4rem;
+  padding: 0.5rem 0.6rem;
+}
+.rub-note-text:focus { outline: none; border-color: var(--ais-blue); }
+.rub-note-acts { display: flex; align-items: center; gap: 0.3rem; }
+/* .pad-attach sets display:inline-flex, which beats the browser's own
+   [hidden] rule, so the panel's paperclip needs this to stay hidden until the
+   record actually carries pad pages for the criterion. */
+.rub-note-acts .pad-attach[hidden] { display: none; }
+.rub-note-done {
+  appearance: none;
+  margin-left: auto;
+  min-height: 2.25rem;
+  padding: 0 1.15rem;
+  border-radius: 999px;
+  border: 1px solid var(--rule);
+  background: var(--surface-mid);
+  color: var(--paper);
+  font-family: var(--body-font);
+  font-size: var(--small);
+  font-weight: 600;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.rub-note-done:hover { border-color: var(--ais-blue); color: var(--ais-blue); }
+
+/* otp-v0.6: the notes as a printable list under the table (screen: hidden). */
+.rub-print-notes { display: none; }
 .rub-table tr.rub-legend th {
   width: auto;
   text-align: left;
@@ -2095,6 +2196,14 @@ body.is-viewer .cog-btn { display: none; }
   .rub-chip[data-state="present"] { background: var(--rate-success) !important; border-color: var(--rate-success) !important; color: #ffffff !important; }
   .rub-chip[data-state="partial"] { background: var(--ais-yellow) !important; border-color: var(--ais-yellow) !important; color: #143642 !important; }
   .rub-chip[data-state="absent"] { background: var(--ais-red) !important; border-color: var(--ais-red) !important; color: #ffffff !important; }
+  /* otp-v0.6: the filled badge is data, so it prints; an empty "+" affordance
+     and an open panel are not, so they do not. The notes print as a list. */
+  .rub-note-btn.has-note { background: #1257FF !important; border-color: #1257FF !important; color: #ffffff !important; }
+  .rub-note-btn:not(.has-note) { display: none !important; }
+  .rub-note-row { display: none !important; }
+  .rub-print-notes { display: block; margin-top: 0.6rem; }
+  .rub-print-head { font-weight: 700; margin-bottom: 0.2rem; }
+  .rub-print-item { margin: 0 0 0.2rem; font-size: var(--small); line-height: 1.4; break-inside: avoid; }
 }
 
 </style>
@@ -2416,8 +2525,14 @@ body.is-viewer .cog-btn { display: none; }
     <input type="hidden" name="sp1_present" id="sp1_present" value="">
     <input type="hidden" name="sp1_partially_present" id="sp1_partially_present" value="">
     <input type="hidden" name="sp1_not_present" id="sp1_not_present" value="">
-    <!-- otp-v0.5: the complement, every criterion left CLEAR ("not seen"). -->
+    <!-- otp-v0.5: the complement, every criterion left CLEAR ("not assessed"). -->
     <input type="hidden" name="sp1_not_seen" id="sp1_not_seen" value="">
+    <!-- otp-v0.6: one note per criterion (JSON, keys "<Level> <n>"), and the
+         rubric its numbering refers to. -->
+    <input type="hidden" name="sp1_notes" id="sp1_notes" value="">
+    <input type="hidden" name="rubric_version" id="rubric_version" value="sp1-v2">
+    <!-- otp-v0.6: print-only list of the criterion notes. -->
+    <div class="rub-print-notes" id="rub-print-notes" aria-hidden="true"></div>
   </section>
 
   <!-- ============================================
@@ -2465,7 +2580,7 @@ body.is-viewer .cog-btn { display: none; }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · Progress in Lessons OTP · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">otp-v0.5</a></span>
+    <span>Form · Progress in Lessons OTP · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">otp-v0.6</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -2738,6 +2853,14 @@ body.is-viewer .cog-btn { display: none; }
     let data;
     try { data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
     catch (e) { data = {}; }
+    /* otp-v0.6: a draft written before the sentence split numbers its chips
+       against the v1 paragraphs, so restoring them would light the wrong
+       criteria. Drop ONLY the rubric values; every other field still restores. */
+    if (data.rubric_version !== 'sp1-v2') {
+      Object.keys(data).forEach(k => {
+        if (k.indexOf('sp1_') === 0 || k === 'rubric_version') delete data[k];
+      });
+    }
     Object.entries(data).forEach(([key, value]) => {
       const radios = FORM.querySelectorAll(`input[type="radio"][name="${CSS.escape(key)}"]`);
       if (radios.length) {
@@ -2783,7 +2906,9 @@ body.is-viewer .cog-btn { display: none; }
     // v0.24: school just cleared; let Subject revert to disabled state.
     if (typeof refreshSubjectOptions === 'function') refreshSubjectOptions();
     if (typeof applyMandatoryDefaults === 'function') applyMandatoryDefaults();
+    if (typeof closeNotePanel === 'function') closeNotePanel();
     if (typeof syncRubricChips === 'function') syncRubricChips();
+    if (typeof syncRubricNotes === 'function') syncRubricNotes();
     EvidencePad.reset();   // v0.50: Reset wipes the Evidence Pad draft too
     showSaved();
     updateSubmitState();
@@ -2981,12 +3106,186 @@ body.is-viewer .cog-btn { display: none; }
     }
   }
 
+  /* === SP1 rubric data (otp-v0.6) ==================================
+     Both rubrics are INLINED verbatim from Assets/OTP/rubric-sp1-v2.json and
+     Assets/OTP/rubric-sp1.json (wording untouched, provenance keys dropped) so
+     they render behind the StatiCrypt gate and offline, with no runtime fetch.
+       SP1     = v2, LIVE: 32 single-sentence criteria (4 / 5 / 7 / 8 / 8).
+       SP1_V1  = v1, LEGACY: the 26 original paragraphs. Only a record saved
+                 before otp-v0.6 (rubric_version other than "sp1-v2") renders on
+                 it; nothing new is ever numbered against it.
+     RUB is the ACTIVE rubric, which every rubric routine reads.
+     This block sits above the Evidence Pad because the pad's 32 criterion-note
+     targets (labels, slugs, PAD_SLUG_TARGETS) are GENERATED from SP1. */
+  const SP1 = {
+    "version": "sp1-v2",
+    "reference": "SP1",
+    "reference_title": "Student Progress",
+    "aspect": "Facilitating better than expected progress",
+    "levels": [
+      {
+        "key": "beginner",
+        "label": "Beginner",
+        "paragraphs": [
+          "Challenge provided to students is appropriate (not excessively difficult or excessively easy) for students to successfully engage in new learning.",
+          "One or more groups of students are not differentiated for and therefore make no progress.",
+          "The teacher is unresponsive to the needs of their students.",
+          "Student work observed does not provide evidence that is useful to determine progress over time."
+        ]
+      },
+      {
+        "key": "emerging",
+        "label": "Emerging",
+        "paragraphs": [
+          "Starting points may be established but response to these is variable with the data having no visible effect on the lesson structure, pace or progress.",
+          "One or more groups of students, (SEN, AMA etc), is ineffectively differentiated for and makes less progress than most students in the class.",
+          "A balance of pace is sought but doesn't effectively contribute to maintaining an effective pace of learning.",
+          "Collaboration and student student dialogue are a planned feature of the lesson but a lack of structure and/or poor timing reduces the effectiveness of the strategy.",
+          "Observations of student work do not provide enough evidence to confirm level of progress over time."
+        ]
+      },
+      {
+        "key": "good",
+        "label": "Good",
+        "paragraphs": [
+          "The teacher establishes clear starting points that lead to an explicit planned response.",
+          "Differentiated activities are provided to accommodate all groups of learners including any students with significant needs (SEN/AMA).",
+          "Lesson pace is well managed with planned strategies to support appropriate pace implemented.",
+          "Students are given structured opportunities to work together and do so with teacher guidance and support.",
+          "Tasks provided allows some students to access better than expected progress, (closed ended, low challenge, low cognitive load etc).",
+          "The teacher engages deliberately with groups to provide intervention and acceleration where appropriate.",
+          "Observations of students' work shows progress in line with curriculum expectations."
+        ]
+      },
+      {
+        "key": "great",
+        "label": "Great",
+        "paragraphs": [
+          "The teacher establishes clear starting points for students and adapts to their immediate needs, (grouping, support etc).",
+          "They provide and maintain challenge and pace for most groups of students, to ensure progress is not limited by learning that is too easy or too hard, with varied success.",
+          "In-lesson, unplanned interventions occur, and are mostly effective.",
+          "Students are provided with well structured opportunities to collaborate and engage in dialogue and these are mostly effective in terms of timing and/or implementation.",
+          "This allows more students to access better than expected progress.",
+          "Students can show and/or discuss their attainment and effectively share their new learning.",
+          "The teacher engages deliberately with groups to provide intervention and acceleration where appropriate.",
+          "Observations of students' work demonstrates a history of BtE progress over time from their individual starting point."
+        ]
+      },
+      {
+        "key": "outstanding",
+        "label": "Outstanding",
+        "paragraphs": [
+          "The Teacher establishes clear starting points and responds to these to determine the best learning pathway for students, (more/less support, differentiated tasks, skipping unrequired learning etc).",
+          "They provide and maintain challenge for all groups of students to ensure progress is not limited by learning that is too easy or too hard.",
+          "Lesson pace is effectively maintained to provide a sense of urgency and enthusiasm for new learning.",
+          "The teacher is aware and responsive to the pace of learning for all groups of students.",
+          "The teacher engages deliberately with groups to provide highly effective intervention and acceleration where appropriate.",
+          "Most students participate successfully in tasks that promote effective collaboration and student student communication that provides them with opportunities to go beyond the limits of the activity and/or teacher expectations.",
+          "Students can accurately articulate and/or demonstrate the progress they have made in class in relation to their individual starting point for the lesson.",
+          "Observations of students' work supports a history of BtE progress over time and in lessons from their individual starting points."
+        ]
+      }
+    ]
+  };
+  const SP1_V1 = {
+    "reference": "SP1",
+    "reference_title": "Student Progress",
+    "aspect": "Facilitating better than expected progress",
+    "levels": [
+      {
+        "key": "beginner",
+        "label": "Beginner",
+        "paragraphs": [
+          "Challenge provided to students is appropriate (not excessively difficult or excessively easy) for students to successfully engage in new learning.",
+          "One or more groups of students are not differentiated for and therefore make no progress. The teacher is unresponsive to the needs of their students.",
+          "Student work observed does not provide evidence that is useful to determine progress over time."
+        ]
+      },
+      {
+        "key": "emerging",
+        "label": "Emerging",
+        "paragraphs": [
+          "Starting points may be established but response to these is variable with the data having no visible effect on the lesson structure, pace or progress.",
+          "One or more groups of students, (SEN, AMA etc), is ineffectively differentiated for and makes less progress than most students in the class.",
+          "A balance of pace is sought but doesn't effectively contribute to maintaining an effective pace of learning.",
+          "Collaboration and student student dialogue are a planned feature of the lesson but a lack of structure and/or poor timing reduces the effectiveness of the strategy.",
+          "Observations of student work do not provide enough evidence to confirm level of progress over time."
+        ]
+      },
+      {
+        "key": "good",
+        "label": "Good",
+        "paragraphs": [
+          "The teacher establishes clear starting points that lead to an explicit planned response.",
+          "Differentiated activities are provided to accommodate all groups of learners including any students with significant needs (SEN/AMA).",
+          "Lesson pace is well managed with planned strategies to support appropriate pace implemented.",
+          "Students are given structured opportunities to work together and do so with teacher guidance and support. Tasks provided allows some students to access better than expected progress, (closed ended, low challenge, low cognitive load etc).",
+          "The teacher engages deliberately with groups to provide intervention and acceleration where appropriate.",
+          "Observations of students' work shows progress in line with curriculum expectations."
+        ]
+      },
+      {
+        "key": "great",
+        "label": "Great",
+        "paragraphs": [
+          "The teacher establishes clear starting points for students and adapts to their immediate needs, (grouping, support etc).",
+          "They provide and maintain challenge and pace for most groups of students, to ensure progress is not limited by learning that is too easy or too hard, with varied success. In-lesson, unplanned interventions occur, and are mostly effective.",
+          "Students are provided with well structured opportunities to collaborate and engage in dialogue and these are mostly effective in terms of timing and/or implementation. This allows more students to access better than expected progress.",
+          "Students can show and/or discuss their attainment and effectively share their new learning.",
+          "The teacher engages deliberately with groups to provide intervention and acceleration where appropriate.",
+          "Observations of students' work demonstrates a history of BtE progress over time from their individual starting point."
+        ]
+      },
+      {
+        "key": "outstanding",
+        "label": "Outstanding",
+        "paragraphs": [
+          "The Teacher establishes clear starting points and responds to these to determine the best learning pathway for students, (more/less support, differentiated tasks, skipping unrequired learning etc).",
+          "They provide and maintain challenge for all groups of students to ensure progress is not limited by learning that is too easy or too hard. Lesson pace is effectively maintained to provide a sense of urgency and enthusiasm for new learning. The teacher is aware and responsive to the pace of learning for all groups of students.",
+          "The teacher engages deliberately with groups to provide highly effective intervention and acceleration where appropriate.",
+          "Most students participate successfully in tasks that promote effective collaboration and student student communication that provides them with opportunities to go beyond the limits of the activity and/or teacher expectations.",
+          "Students can accurately articulate and/or demonstrate the progress they have made in class in relation to their individual starting point for the lesson.",
+          "Observations of students' work supports a history of BtE progress over time and in lessons from their individual starting points."
+        ]
+      }
+    ]
+  };
+  let RUB = SP1;
+  const RUB_VERSION = 'sp1-v2';
+
+  /* One Evidence Pad target per criterion, sp1_<level>_<n>_note, generated from
+     the rubric so the numbering never has to be maintained by hand. */
+  const SP1_NOTE_TARGETS = [];
+  SP1.levels.forEach(function (l) {
+    l.paragraphs.forEach(function (p, i) {
+      const n = i + 1;
+      SP1_NOTE_TARGETS.push({
+        target: 'sp1_' + l.key + '_' + n + '_note',
+        slug:   'sp1-' + l.key + '-' + n + '-note',
+        label:  'Note \u00b7 ' + l.label + ' ' + n,
+        level:  l.key,
+        n:      n,
+        text:   p
+      });
+    });
+  });
+  const NOTE_TARGET_BY_NAME = {};
+  SP1_NOTE_TARGETS.forEach(function (t) { NOTE_TARGET_BY_NAME[t.target] = t; });
+
+  /* The pad pencil / paperclip live inside a note panel that is built in JS, so
+     their markup is the same string the five standing sections carry inline. */
+  const PAD_PEN_SVG = '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>';
+  const PAD_CLIP_SVG = '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>';
+
   const EvidencePad = (function () {
     const EXPORT_EDGE = 1280;                    // flatten: long edge ≈ 1280px
     const PHOTO_MAX_EDGE = 1280;                 // capture downscale (photos are context, not the record)
     const IDB_NAME = 'ais-otp-pad-v1', IDB_STORE = 'pads', IDB_KEY = 'draft';
     const HIGH_COLOR = '#FFBA14';
-    const TARGETS = ['observer_comments', 'other_observations', 'next_step_1', 'next_step_2', 'next_step_3'];
+    const FIELD_TARGETS = ['observer_comments', 'other_observations', 'next_step_1', 'next_step_2', 'next_step_3'];
+    // otp-v0.6: the five standing note fields, plus one target per SP1
+    // criterion (generated from the rubric, never hand-listed).
+    const TARGETS = FIELD_TARGETS.concat(SP1_NOTE_TARGETS.map(function (t) { return t.target; }));
     const TARGET_LABELS = {
       observer_comments:  'Observer Comments',
       other_observations: 'Other Observations',
@@ -3001,6 +3300,24 @@ body.is-viewer .cog-btn { display: none; }
       next_step_2:        'next-step-2',
       next_step_3:        'next-step-3'
     };
+    SP1_NOTE_TARGETS.forEach(function (t) {
+      TARGET_LABELS[t.target] = t.label;
+      TARGET_SLUGS[t.target] = t.slug;
+    });
+
+    /* otp-v0.6: a criterion-note target has no named textarea (its panel is
+       built on demand), so the pad reads and writes it through sp1_notes, which
+       is exactly where a typed note lives. Everything else resolves to its
+       own field, unchanged. */
+    function padField(target) {
+      const nt = NOTE_TARGET_BY_NAME[target];
+      if (!nt) return FORM.querySelector('[name="' + target + '"]');
+      return {
+        get value() { return readCriterionNote(nt.level, nt.n); },
+        set value(v) { writeCriterionNote(nt.level, nt.n, v); },
+        dispatchEvent: function () {}
+      };
+    }
 
     const libsOk = !!(window.Konva && window.PerfectFreehand);
 
@@ -3009,7 +3326,10 @@ body.is-viewer .cog-btn { display: none; }
     // for the current field). Each page freezes its logical size (w/h) from the
     // stage area the first time it is shown, so ink survives rotation via fit-scale.
     const blankPage = (target) => ({ target: target, photos: [], strokes: [], w: 0, h: 0 });
-    const freshPages = () => TARGETS.map(blankPage);
+    // otp-v0.6: only the five standing fields get a page up front; a criterion
+    // note page is added the first time its pencil is tapped, so the pad keeps
+    // its familiar five-page shape until a note is actually written.
+    const freshPages = () => FIELD_TARGETS.map(blankPage);
     let state = { id: '', cur: 0, pages: freshPages() };
     let tool = 'pen';
     let penColor = '#143642';
@@ -3090,7 +3410,7 @@ body.is-viewer .cog-btn { display: none; }
         const btn = document.querySelector('.pad-field-btn[data-pad-target="' + t + '"]');
         if (!btn) return;
         const padHas = state.pages.some(p => p.target === t && (p.photos.length || p.strokes.length));
-        const field = FORM.querySelector('[name="' + t + '"]');
+        const field = padField(t);
         btn.classList.toggle('has-evi', padHas || !!(field && field.value.trim()));
       });
     }
@@ -3484,11 +3804,16 @@ body.is-viewer .cog-btn { display: none; }
     }
 
     async function extractPage(page) {
+      // otp-v0.6: a criterion-note page sends its criterion text as context so
+      // the backend prompt can name the field it is transcribing (max 400).
+      const nt = NOTE_TARGET_BY_NAME[page.target];
       const attempt = async () => {
+        const body = { action: 'extract_pad', image: page.b64, target: page.target };
+        if (nt) body.context = nt.text.slice(0, 400);
         const resp = await fetch(WEB_APP_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({ action: 'extract_pad', image: page.b64, target: page.target }),
+          body: JSON.stringify(body),
           redirect: 'follow'
         });
         const out = await resp.json();
@@ -3521,7 +3846,7 @@ body.is-viewer .cog-btn { display: none; }
     }
 
     function applyTextToField(page, hash, text, quiet) {
-      const field = FORM.querySelector('[name="' + page.target + '"]');
+      const field = padField(page.target);
       if (!field) return;
       if (text) {
         const prev = String(page.at || '');
@@ -3665,7 +3990,14 @@ body.is-viewer .cog-btn { display: none; }
     }
     // Per-field launcher: jump to that field's first page, then open.
     async function openPadAt(target) {
-      const idx = state.pages.findIndex(p => p.target === target);
+      let idx = state.pages.findIndex(p => p.target === target);
+      // otp-v0.6: criterion-note pages (and any page a pre-v0.6 draft predates)
+      // are created here, on first use.
+      if (idx < 0 && TARGET_LABELS[target]) {
+        state.pages.push(blankPage(target));
+        idx = state.pages.length - 1;
+        scheduleDraftSave();
+      }
       if (idx > -1) state.cur = idx;
       await openPad();
     }
@@ -3808,7 +4140,9 @@ body.is-viewer .cog-btn { display: none; }
 
     init();
 
-    return { commitForSubmit, applyPendingToForm, reset, hasContent: padHasContent };
+    // otp-v0.6: openAt/available let a note panel built after init open the pad.
+    return { commitForSubmit, applyPendingToForm, reset, hasContent: padHasContent,
+             openAt: openPadAt, available: !CLOSED_RECORD_VIEW && libsOk };
   })();
 
   /* === Cloud submit + lock + closed-record viewer ================== */
@@ -3901,7 +4235,9 @@ body.is-viewer .cog-btn { display: none; }
     // reflect that (back to disabled "Select Grade first" state).
     if (typeof refreshSubjectOptions === 'function') refreshSubjectOptions();
     applyMandatoryDefaults();
+    if (typeof closeNotePanel === 'function') closeNotePanel();
     if (typeof syncRubricChips === 'function') syncRubricChips();
+    if (typeof syncRubricNotes === 'function') syncRubricNotes();
     updateSubmitState();
   }
 
@@ -4023,6 +4359,9 @@ body.is-viewer .cog-btn { display: none; }
       if (!result.success) throw new Error(result.error || 'Record not found');
 
       const rec = result.data;
+      // otp-v0.6: render the record on the rubric its numbering refers to,
+      // BEFORE populating, so a pre-v0.6 record lights the right paragraphs.
+      setActiveRubric(rec.rubric_version === 'sp1-v2' ? SP1 : SP1_V1);
       Object.entries(rec).forEach(([key, value]) => {
         if (value === null || value === undefined || value === '') return;
 
@@ -4075,6 +4414,7 @@ body.is-viewer .cog-btn { display: none; }
 
       syncSingleSelectVisuals();
       syncRubricChips();          // otp-v0.1: re-press the SP1 chips from sp1_*
+      syncRubricNotes();          // otp-v0.6: badges from sp1_notes (read-only here)
       // otp-v0.5: a record carries both grade and school. Derive school from
       // the restored grade so the two can never disagree; a record with no
       // grade keeps the school it recorded.
@@ -4122,6 +4462,11 @@ body.is-viewer .cog-btn { display: none; }
     next_step_2:        'Next Steps / Support 2',
     next_step_3:        'Next Steps / Support 3'
   };
+  // otp-v0.6: the 32 criterion-note pads, generated from the rubric.
+  SP1_NOTE_TARGETS.forEach(function (t) {
+    PAD_SLUG_TARGETS[t.slug] = t.target;
+    PAD_VIEW_LABELS[t.target] = t.label;
+  });
   const padViewCache = new Map();          // file name → data URI
   let padViewToken = '';
   let padViewFiles = {};                   // target → [names]
@@ -4244,82 +4589,27 @@ body.is-viewer .cog-btn { display: none; }
 
   /* === OTP form additions ========================================== */
 
-  /* === SP1 rubric chips (otp-v0.1) =================================
-     The rubric is INLINED verbatim from Assets/OTP/rubric-sp1.json — no
-     runtime fetch, so it renders behind the StatiCrypt gate and offline.
-     Every paragraph is a tappable chip. otp-v0.2: the tap CYCLES a recorded
-     state, clear -> present (green) -> partially present (yellow) -> not
-     present (red) -> clear, any number of chips across any columns. The
-     selection is mirrored into the hidden sp1_<level> inputs ("n:<state word>"
-     tokens, comma separated), a readable sp1_selected_text, and the three
-     by-state inputs sp1_present / sp1_partially_present / sp1_not_present, and
-     each write dispatches the same bubbling change event the debounced autosave
-     already listens for, so a selection restores with the draft and from a
-     loaded record. A bare number is a legacy otp-v0.1 value and reads as
-     present. */
-  const SP1 = {
-    "reference": "SP1",
-    "reference_title": "Student Progress",
-    "aspect": "Facilitating better than expected progress",
-    "levels": [
-      {
-        "key": "beginner",
-        "label": "Beginner",
-        "paragraphs": [
-          "Challenge provided to students is appropriate (not excessively difficult or excessively easy) for students to successfully engage in new learning.",
-          "One or more groups of students are not differentiated for and therefore make no progress. The teacher is unresponsive to the needs of their students.",
-          "Student work observed does not provide evidence that is useful to determine progress over time."
-        ]
-      },
-      {
-        "key": "emerging",
-        "label": "Emerging",
-        "paragraphs": [
-          "Starting points may be established but response to these is variable with the data having no visible effect on the lesson structure, pace or progress.",
-          "One or more groups of students, (SEN, AMA etc), is ineffectively differentiated for and makes less progress than most students in the class.",
-          "A balance of pace is sought but doesn't effectively contribute to maintaining an effective pace of learning.",
-          "Collaboration and student student dialogue are a planned feature of the lesson but a lack of structure and/or poor timing reduces the effectiveness of the strategy.",
-          "Observations of student work do not provide enough evidence to confirm level of progress over time."
-        ]
-      },
-      {
-        "key": "good",
-        "label": "Good",
-        "paragraphs": [
-          "The teacher establishes clear starting points that lead to an explicit planned response.",
-          "Differentiated activities are provided to accommodate all groups of learners including any students with significant needs (SEN/AMA).",
-          "Lesson pace is well managed with planned strategies to support appropriate pace implemented.",
-          "Students are given structured opportunities to work together and do so with teacher guidance and support. Tasks provided allows some students to access better than expected progress, (closed ended, low challenge, low cognitive load etc).",
-          "The teacher engages deliberately with groups to provide intervention and acceleration where appropriate.",
-          "Observations of students' work shows progress in line with curriculum expectations."
-        ]
-      },
-      {
-        "key": "great",
-        "label": "Great",
-        "paragraphs": [
-          "The teacher establishes clear starting points for students and adapts to their immediate needs, (grouping, support etc).",
-          "They provide and maintain challenge and pace for most groups of students, to ensure progress is not limited by learning that is too easy or too hard, with varied success. In-lesson, unplanned interventions occur, and are mostly effective.",
-          "Students are provided with well structured opportunities to collaborate and engage in dialogue and these are mostly effective in terms of timing and/or implementation. This allows more students to access better than expected progress.",
-          "Students can show and/or discuss their attainment and effectively share their new learning.",
-          "The teacher engages deliberately with groups to provide intervention and acceleration where appropriate.",
-          "Observations of students' work demonstrates a history of BtE progress over time from their individual starting point."
-        ]
-      },
-      {
-        "key": "outstanding",
-        "label": "Outstanding",
-        "paragraphs": [
-          "The Teacher establishes clear starting points and responds to these to determine the best learning pathway for students, (more/less support, differentiated tasks, skipping unrequired learning etc).",
-          "They provide and maintain challenge for all groups of students to ensure progress is not limited by learning that is too easy or too hard. Lesson pace is effectively maintained to provide a sense of urgency and enthusiasm for new learning. The teacher is aware and responsive to the pace of learning for all groups of students.",
-          "The teacher engages deliberately with groups to provide highly effective intervention and acceleration where appropriate.",
-          "Most students participate successfully in tasks that promote effective collaboration and student student communication that provides them with opportunities to go beyond the limits of the activity and/or teacher expectations.",
-          "Students can accurately articulate and/or demonstrate the progress they have made in class in relation to their individual starting point for the lesson.",
-          "Observations of students' work supports a history of BtE progress over time and in lessons from their individual starting points."
-        ]
-      }
-    ]
-  };
+  /* === SP1 rubric chips + criterion notes ==========================
+     The rubric data (SP1 = v2 live, SP1_V1 = v1 legacy, RUB = active) is
+     declared above the Evidence Pad, which generates its note targets from it.
+
+     Every criterion is a tappable chip whose tap CYCLES a recorded state,
+     clear -> present (green) -> partially present (yellow) -> not present
+     (red) -> clear, any number of chips across any columns. The selection is
+     mirrored into the hidden sp1_<level> inputs ("n:<state word>" tokens,
+     comma separated), a readable sp1_selected_text, the three by-state inputs
+     sp1_present / sp1_partially_present / sp1_not_present and the complement
+     sp1_not_seen, and each write dispatches the same bubbling change event the
+     debounced autosave already listens for, so a selection restores with the
+     draft and from a loaded record. A bare number is a legacy otp-v0.1 value
+     and reads as present.
+
+     otp-v0.6: every chip also carries a "+" note button (a SIBLING of the chip,
+     never nested, so the tap cycle is untouched) that opens an in-place note
+     panel row under the chip row. A note is typed, or handwritten on the
+     Evidence Pad page for that criterion. The notes live in the hidden
+     sp1_notes JSON input and are folded into sp1_selected_text; rubric_version
+     records which rubric the numbering refers to. */
 
   function rubHidden(key) { return document.getElementById('sp1_' + key); }
 
@@ -4330,19 +4620,26 @@ body.is-viewer .cog-btn { display: none; }
   const RUB_WORD = { present: 'present', partial: 'partially present', absent: 'not present' };
   const RUB_CAP = { present: 'Present', partial: 'Partially present', absent: 'Not present' };
   const RUB_BY_WORD = { 'present': 'present', 'partially present': 'partial', 'not present': 'absent' };
+  const RUB_NOT_ASSESSED = 'Not assessed';
   const RUB_LEGEND = [
-    { state: '', text: 'No colour: not seen in lesson (does not count)' },
+    { state: '', text: 'No colour: not assessed (does not count)' },
     { state: 'present', text: 'Green: present in lesson' },
     { state: 'partial', text: 'Yellow: partially present in lesson' },
-    { state: 'absent', text: 'Red: not present in lesson' }
+    { state: 'absent', text: 'Red: expected but not present in lesson' }
   ];
   const RUB_HINT = 'Tap a criterion to mark it green; tap again for yellow, again for red; a fourth tap clears it.';
   const RUB_STATE_INPUT = { present: 'sp1_present', partial: 'sp1_partially_present', absent: 'sp1_not_present' };
 
-  // sel[levelKey] = { <paragraph number>: <state> }
+  function rubLevel(key) {
+    for (let i = 0; i < RUB.levels.length; i++) if (RUB.levels[i].key === key) return RUB.levels[i];
+    return null;
+  }
+  function noteKey(label, n) { return label + ' ' + n; }
+
+  // sel[levelKey] = { <criterion number>: <state> }
   function readRubSelection() {
     const sel = {};
-    SP1.levels.forEach(l => {
+    RUB.levels.forEach(l => {
       const el = rubHidden(l.key);
       const raw = el ? String(el.value || '') : '';
       const map = {};
@@ -4359,17 +4656,47 @@ body.is-viewer .cog-btn { display: none; }
     return sel;
   }
 
+  /* otp-v0.6: sp1_notes (hidden, JSON) is the single source of truth for the
+     criterion notes. Keys "<Level> <n>", values the trimmed note text. */
+  function readNoteMap() {
+    const el = document.getElementById('sp1_notes');
+    if (!el || !el.value) return {};
+    try {
+      const o = JSON.parse(el.value);
+      return (o && typeof o === 'object' && !Array.isArray(o)) ? o : {};
+    } catch (e) { return {}; }
+  }
+
+  function readCriterionNote(levelKey, n) {
+    const l = rubLevel(levelKey);
+    return l ? String(readNoteMap()[noteKey(l.label, n)] || '') : '';
+  }
+
+  /* Level order then ascending n, non-empty notes only; "" when there are none. */
+  function serialiseNotes(map) {
+    const out = {};
+    let any = false;
+    RUB.levels.forEach(l => {
+      for (let n = 1; n <= l.paragraphs.length; n++) {
+        const k = noteKey(l.label, n);
+        const v = String(map[k] == null ? '' : map[k]).trim();
+        if (v) { out[k] = v; any = true; }
+      }
+    });
+    return any ? JSON.stringify(out) : '';
+  }
+
   /* otp-v0.5: the complement of the coloured criteria, i.e. everything left
      CLEAR. Same "<Level> <n>" shape as sp1_present, level order then ascending
-     n; all 26 when nothing is coloured, "" when everything is. Value only, no
-     change event: syncRubricChips calls this on every load/restore/reset and
+     n; all of them when nothing is coloured, "" when everything is. Value only,
+     no change event: syncRubricChips calls this on every load/restore/reset and
      must not manufacture a draft save. writeRubSelection (the tap path) does
      the dispatch. */
   function writeNotSeen(sel) {
     const el = document.getElementById('sp1_not_seen');
     if (!el) return;
     const items = [];
-    SP1.levels.forEach(l => {
+    RUB.levels.forEach(l => {
       const map = sel[l.key] || {};
       for (let n = 1; n <= l.paragraphs.length; n++) {
         if (!map[n]) items.push(l.label + ' ' + n);
@@ -4378,30 +4705,79 @@ body.is-viewer .cog-btn { display: none; }
     el.value = items.join(', ');
   }
 
-  function writeRubSelection(sel) {
+  /* otp-v0.6: sp1_selected_text carries one item per criterion that is COLOURED
+     OR CARRIES A NOTE, so a note on an untouched criterion is never lost. An
+     uncoloured criterion reads "(Not assessed)"; the note's whitespace is
+     collapsed inside this one-line cell. */
+  function writeSelectedText() {
+    const sel = readRubSelection();
+    const notes = readNoteMap();
     const parts = [];
+    RUB.levels.forEach(l => {
+      const map = sel[l.key] || {};
+      for (let n = 1; n <= l.paragraphs.length; n++) {
+        const state = map[n];
+        const note = String(notes[noteKey(l.label, n)] || '');
+        if (!state && !note) continue;
+        let item = l.label + ' ' + n + ' (' + (state ? RUB_CAP[state] : RUB_NOT_ASSESSED) + '): ' + l.paragraphs[n - 1];
+        if (note) item += ' Note: ' + note.replace(/\s+/g, ' ').trim();
+        parts.push(item);
+      }
+    });
+    const txt = document.getElementById('sp1_selected_text');
+    if (txt) txt.value = parts.join(' | ');
+    writePrintNotes(sel, notes);
+  }
+
+  /* Print-only list under the rubric table: "<Level> <n> (<State>): note". */
+  function writePrintNotes(sel, notes) {
+    const box = document.getElementById('rub-print-notes');
+    if (!box) return;
+    box.innerHTML = '';
+    const rows = [];
+    RUB.levels.forEach(l => {
+      const map = sel[l.key] || {};
+      for (let n = 1; n <= l.paragraphs.length; n++) {
+        const note = String(notes[noteKey(l.label, n)] || '');
+        if (!note) continue;
+        rows.push(l.label + ' ' + n + ' (' + (map[n] ? RUB_CAP[map[n]] : RUB_NOT_ASSESSED) + '): ' + note);
+      }
+    });
+    if (!rows.length) return;
+    const head = document.createElement('div');
+    head.className = 'rub-print-head';
+    head.textContent = 'Criterion notes';
+    box.appendChild(head);
+    rows.forEach(r => {
+      const p = document.createElement('p');
+      p.className = 'rub-print-item';
+      p.textContent = r;
+      box.appendChild(p);
+    });
+  }
+
+  function writeRubSelection(sel) {
     const byState = { present: [], partial: [], absent: [] };
-    SP1.levels.forEach(l => {
+    RUB.levels.forEach(l => {
       const map = sel[l.key] || {};
       const nums = Object.keys(map).map(Number).filter(n => map[n]).sort((a, b) => a - b);
       const el = rubHidden(l.key);
       if (el) el.value = nums.map(n => n + ':' + RUB_WORD[map[n]]).join(', ');
-      nums.forEach(n => {
-        parts.push(l.label + ' ' + n + ' (' + RUB_CAP[map[n]] + '): ' + l.paragraphs[n - 1]);
-        byState[map[n]].push(l.label + ' ' + n);
-      });
+      nums.forEach(n => { byState[map[n]].push(l.label + ' ' + n); });
     });
-    const txt = document.getElementById('sp1_selected_text');
-    if (txt) txt.value = parts.join(' | ');
     Object.keys(RUB_STATE_INPUT).forEach(s => {
       const el = document.getElementById(RUB_STATE_INPUT[s]);
       if (el) el.value = byState[s].join(', ');
     });
     writeNotSeen(sel);
-    SP1.levels.forEach(l => {
+    // otp-v0.6: sp1_selected_text now folds in the notes, so it is rebuilt from
+    // the hidden inputs rather than from this pass.
+    writeSelectedText();
+    RUB.levels.forEach(l => {
       const el = rubHidden(l.key);
       if (el) el.dispatchEvent(new Event('change', { bubbles: true }));
     });
+    const txt = document.getElementById('sp1_selected_text');
     if (txt) txt.dispatchEvent(new Event('change', { bubbles: true }));
     Object.keys(RUB_STATE_INPUT).forEach(s => {
       const el = document.getElementById(RUB_STATE_INPUT[s]);
@@ -4409,6 +4785,41 @@ body.is-viewer .cog-btn { display: none; }
     });
     const notSeen = document.getElementById('sp1_not_seen');
     if (notSeen) notSeen.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  /* otp-v0.6: write one criterion's note and refresh everything that depends on
+     it. Mirrors writeRubSelection: values first, then the same bubbling change
+     event the debounced autosave listens for. keepTextarea is set by the
+     panel's own input handler, so typing a trailing space is never eaten. */
+  function writeCriterionNote(levelKey, n, text, keepTextarea) {
+    const l = rubLevel(levelKey);
+    if (!l) return;
+    const map = readNoteMap();
+    const v = String(text == null ? '' : text).trim();
+    if (v) map[noteKey(l.label, n)] = v; else delete map[noteKey(l.label, n)];
+    const el = document.getElementById('sp1_notes');
+    if (!el) return;
+    el.value = serialiseNotes(map);
+    writeSelectedText();
+    syncNoteBadges();
+    refreshNotePanel(!keepTextarea);
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+    const txt = document.getElementById('sp1_selected_text');
+    if (txt) txt.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  function syncNoteBadges() {
+    const notes = readNoteMap();
+    document.querySelectorAll('.rub-note-btn').forEach(btn => {
+      const l = rubLevel(btn.dataset.level);
+      if (!l) return;
+      const n = parseInt(btn.dataset.n, 10);
+      const has = !!String(notes[noteKey(l.label, n)] || '').trim();
+      btn.classList.toggle('has-note', has);
+      const label = (has ? 'Edit the note for ' : 'Add a note for ') + l.label + ' ' + n;
+      btn.setAttribute('aria-label', label);
+      btn.title = label;
+    });
   }
 
   function syncRubricChips() {
@@ -4419,7 +4830,137 @@ body.is-viewer .cog-btn { display: none; }
       chip.dataset.state = state;
       chip.setAttribute('aria-pressed', state ? 'true' : 'false');
     });
+    refreshNotePanel(false);   // otp-v0.6: an open panel's state word follows the colour
   }
+
+  /* otp-v0.6: mirror of syncRubricChips for the notes. Reads sp1_notes and
+     fills the badges, the open panel and the print list; value only, no change
+     event. Runs on load, draft restore, record load and reset. */
+  function syncRubricNotes() {
+    if (!CLOSED_RECORD_VIEW) {
+      const ver = document.getElementById('rubric_version');
+      if (ver) ver.value = RUB_VERSION;
+    }
+    syncNoteBadges();
+    refreshNotePanel(true);
+    writePrintNotes(readRubSelection(), readNoteMap());
+  }
+
+  /* ---------- the in-place note panel ----------
+     A NORMAL table row directly after the chip row, one <td colspan=5>, at most
+     one open at a time. Never a fixed overlay, never a scroll lock, never a
+     body reposition (the iPad rules), and never auto-focused: a Pencil user
+     must not get the keyboard thrown at them. */
+  let openNote = null;          // { level, n } of the open panel, or null
+
+  function criterionStateWord(levelKey, n) {
+    const state = (readRubSelection()[levelKey] || {})[n];
+    return state ? RUB_CAP[state] : RUB_NOT_ASSESSED;
+  }
+
+  function closeNotePanel() {
+    const row = document.getElementById('rub-note-row');
+    if (row) row.remove();
+    openNote = null;
+  }
+
+  function refreshNotePanel(syncText) {
+    if (!openNote) return;
+    const l = rubLevel(openNote.level);
+    if (!l) return;
+    const head = document.getElementById('rub-note-head');
+    if (head) {
+      head.textContent = 'Note · ' + l.label + ' ' + openNote.n + ' · ' +
+                         criterionStateWord(openNote.level, openNote.n);
+    }
+    if (!syncText) return;
+    const ta = document.getElementById('sp1_note_' + openNote.level + '_' + openNote.n);
+    const v = readCriterionNote(openNote.level, openNote.n);
+    if (ta && ta.value !== v) ta.value = v;
+  }
+
+  function openNotePanel(levelKey, n) {
+    const l = rubLevel(levelKey);
+    if (!l || !(n >= 1 && n <= l.paragraphs.length)) return;
+    // tapping the same "+" again closes the panel
+    if (openNote && openNote.level === levelKey && openNote.n === n) { closeNotePanel(); return; }
+    closeNotePanel();
+    const chipRow = document.getElementById('rubric-row');
+    if (!chipRow) return;
+    const locked = FORM.classList.contains('is-locked');
+    const target = 'sp1_' + levelKey + '_' + n + '_note';
+
+    const tr = document.createElement('tr');
+    tr.className = 'rub-note-row';
+    tr.id = 'rub-note-row';
+    const td = document.createElement('td');
+    td.colSpan = RUB.levels.length;
+    const box = document.createElement('div');
+    box.className = 'rub-note';
+
+    const head = document.createElement('div');
+    head.className = 'rub-note-head';
+    head.id = 'rub-note-head';
+    head.textContent = 'Note · ' + l.label + ' ' + n + ' · ' + criterionStateWord(levelKey, n);
+    box.appendChild(head);
+
+    const crit = document.createElement('p');
+    crit.className = 'rub-note-crit';
+    crit.textContent = l.paragraphs[n - 1];
+    box.appendChild(crit);
+
+    // No name attribute: the note is never posted or drafted from here, only
+    // through the hidden sp1_notes input.
+    const ta = document.createElement('textarea');
+    ta.className = 'rub-note-text';
+    ta.id = 'sp1_note_' + levelKey + '_' + n;
+    ta.rows = 3;
+    ta.placeholder = 'What you saw for this criterion…';
+    ta.value = readCriterionNote(levelKey, n);
+    if (locked) ta.readOnly = true;
+    else ta.addEventListener('input', () => writeCriterionNote(levelKey, n, ta.value, true));
+    box.appendChild(ta);
+
+    const acts = document.createElement('div');
+    acts.className = 'rub-note-acts';
+
+    const pen = document.createElement('button');
+    pen.type = 'button';
+    pen.className = 'pad-field-btn';
+    pen.dataset.padTarget = target;
+    pen.title = 'Open the Evidence Pad on the ' + l.label + ' ' + n + ' note page';
+    pen.setAttribute('aria-label', pen.title);
+    pen.innerHTML = PAD_PEN_SVG;
+    if (locked || !EvidencePad.available) pen.hidden = true;
+    else pen.addEventListener('click', () => { EvidencePad.openAt(target); });
+    acts.appendChild(pen);
+
+    const clip = document.createElement('button');
+    clip.type = 'button';
+    clip.className = 'pad-attach';
+    clip.dataset.padTarget = target;
+    clip.title = 'View the handwritten pad pages for this note';
+    clip.setAttribute('aria-label', clip.title);
+    clip.innerHTML = PAD_CLIP_SVG;
+    clip.hidden = !(padViewFiles[target] && padViewFiles[target].length);
+    clip.addEventListener('click', () => { openPadView(target); });
+    acts.appendChild(clip);
+
+    const done = document.createElement('button');
+    done.type = 'button';
+    done.className = 'rub-note-done';
+    done.textContent = 'Done';
+    done.addEventListener('click', closeNotePanel);
+    acts.appendChild(done);
+
+    box.appendChild(acts);
+    td.appendChild(box);
+    tr.appendChild(td);
+    chipRow.parentNode.insertBefore(tr, chipRow.nextSibling);
+    openNote = { level: levelKey, n: n };
+  }
+
+  let rubRowBound = false;
 
   function buildRubricTable() {
     const head = document.getElementById('rubric-head');
@@ -4428,13 +4969,13 @@ body.is-viewer .cog-btn { display: none; }
     const cap = document.createElement('tr');
     cap.className = 'rub-caption';
     const capTh = document.createElement('th');
-    capTh.colSpan = SP1.levels.length;
+    capTh.colSpan = RUB.levels.length;
     const capK = document.createElement('span'); capK.className = 'rub-cap-k'; capK.textContent = 'Aspect of Practice';
-    const capV = document.createElement('span'); capV.className = 'rub-cap-v'; capV.textContent = SP1.aspect;
+    const capV = document.createElement('span'); capV.className = 'rub-cap-v'; capV.textContent = RUB.aspect;
     capTh.appendChild(capK); capTh.appendChild(capV);
     cap.appendChild(capTh);
     head.parentNode.insertBefore(cap, head);
-    SP1.levels.forEach(l => {
+    RUB.levels.forEach(l => {
       const th = document.createElement('th');
       th.textContent = l.label;
       head.appendChild(th);
@@ -4451,6 +4992,19 @@ body.is-viewer .cog-btn { display: none; }
         b.setAttribute('aria-pressed', 'false');
         b.textContent = p;
         box.appendChild(b);
+        /* otp-v0.6: the note button is a SIBLING of the chip, never a child: a
+           button inside a button is invalid HTML and would swallow the tap
+           cycle. CSS floats it over the strip the chip reserves at its
+           bottom-right corner. */
+        const nb = document.createElement('button');
+        nb.type = 'button';
+        nb.className = 'rub-note-btn';
+        nb.dataset.level = l.key;
+        nb.dataset.n = String(i + 1);
+        nb.setAttribute('aria-label', 'Add a note for ' + l.label + ' ' + (i + 1));
+        nb.title = nb.getAttribute('aria-label');
+        nb.textContent = '+';
+        box.appendChild(nb);
       });
       td.appendChild(box);
       row.appendChild(td);
@@ -4463,7 +5017,7 @@ body.is-viewer .cog-btn { display: none; }
     leg.className = 'rub-legend';
     leg.id = 'rubric-legend';
     const legTh = document.createElement('th');
-    legTh.colSpan = SP1.levels.length;
+    legTh.colSpan = RUB.levels.length;
     const legBox = document.createElement('div'); legBox.className = 'rub-legend-row';
     RUB_LEGEND.forEach(item => {
       const wrap = document.createElement('span'); wrap.className = 'rub-legend-item';
@@ -4480,7 +5034,19 @@ body.is-viewer .cog-btn { display: none; }
     legTh.appendChild(legBox);
     leg.appendChild(legTh);
     head.parentNode.insertBefore(leg, head.nextSibling);
+    // bound once: setActiveRubric re-fills the same row for a legacy record
+    if (rubRowBound) return;
+    rubRowBound = true;
     row.addEventListener('click', e => {
+      /* otp-v0.6: the note button rides in the same cell. It must never cycle
+         the colour, and the chip must never open the panel, so each path keys
+         on its own closest(). The "+" stays live on a locked record so the note
+         can be READ. */
+      const noteBtn = e.target.closest('.rub-note-btn');
+      if (noteBtn && row.contains(noteBtn)) {
+        openNotePanel(noteBtn.dataset.level, parseInt(noteBtn.dataset.n, 10));
+        return;
+      }
       const chip = e.target.closest('.rub-chip');
       if (!chip || !row.contains(chip)) return;
       if (FORM.classList.contains('is-locked')) return;
@@ -4494,6 +5060,24 @@ body.is-viewer .cog-btn { display: none; }
       writeRubSelection(sel);
       syncRubricChips();
     });
+  }
+
+  /* otp-v0.6: a record saved before the sentence split numbers its criteria
+     against the v1 paragraphs, so it is rendered on the rubric it was written
+     with. Nothing else in the form changes: only the table is rebuilt. */
+  function setActiveRubric(rubric) {
+    if (RUB === rubric) return;
+    RUB = rubric;
+    closeNotePanel();
+    const ver = document.getElementById('rubric_version');
+    if (ver) ver.value = rubric.version || '';
+    const head = document.getElementById('rubric-head');
+    const row = document.getElementById('rubric-row');
+    if (!head || !row) return;
+    Array.from(head.parentNode.querySelectorAll('tr.rub-caption, tr.rub-legend')).forEach(tr => tr.remove());
+    head.innerHTML = '';
+    row.innerHTML = '';
+    buildRubricTable();
   }
 
   // Single-select toggle for pill groups (Curriculum).
@@ -4854,6 +5438,7 @@ body.is-viewer .cog-btn { display: none; }
   initTomSelects();              // wraps Teacher / Inspector / Subject
   syncSingleSelectVisuals();
   syncRubricChips();             // otp-v0.1: restore chips from a saved draft
+  syncRubricNotes();             // otp-v0.6: restore notes + badges, stamp rubric_version
   // School-aware Subject: refresh Subject options whenever School value changes.
   (function wireSchoolToSubject() {
     const schoolInput = document.querySelector('input[name="school"]');
