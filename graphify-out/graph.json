@@ -582,6 +582,76 @@
       "norm_label": "encrypt.sh script"
     },
     {
+      "label": "rubric-sp1-v2.json",
+      "file_type": "code",
+      "source_file": "Assets/OTP/rubric-sp1-v2.json",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "otp_rubric_sp1_v2",
+      "community": 156,
+      "norm_label": "rubric-sp1-v2.json"
+    },
+    {
+      "label": "version",
+      "file_type": "code",
+      "source_file": "Assets/OTP/rubric-sp1-v2.json",
+      "source_location": "L2",
+      "_origin": "ast",
+      "id": "otp_rubric_sp1_v2_version",
+      "community": 156,
+      "norm_label": "version"
+    },
+    {
+      "label": "reference",
+      "file_type": "code",
+      "source_file": "Assets/OTP/rubric-sp1-v2.json",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "otp_rubric_sp1_v2_reference",
+      "community": 156,
+      "norm_label": "reference"
+    },
+    {
+      "label": "reference_title",
+      "file_type": "code",
+      "source_file": "Assets/OTP/rubric-sp1-v2.json",
+      "source_location": "L4",
+      "_origin": "ast",
+      "id": "otp_rubric_sp1_v2_reference_title",
+      "community": 156,
+      "norm_label": "reference_title"
+    },
+    {
+      "label": "aspect",
+      "file_type": "code",
+      "source_file": "Assets/OTP/rubric-sp1-v2.json",
+      "source_location": "L5",
+      "_origin": "ast",
+      "id": "otp_rubric_sp1_v2_aspect",
+      "community": 156,
+      "norm_label": "aspect"
+    },
+    {
+      "label": "source",
+      "file_type": "code",
+      "source_file": "Assets/OTP/rubric-sp1-v2.json",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "otp_rubric_sp1_v2_source",
+      "community": 156,
+      "norm_label": "source"
+    },
+    {
+      "label": "levels",
+      "file_type": "code",
+      "source_file": "Assets/OTP/rubric-sp1-v2.json",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "otp_rubric_sp1_v2_levels",
+      "community": 156,
+      "norm_label": "levels"
+    },
+    {
       "label": "rubric-sp1.json",
       "file_type": "code",
       "source_file": "Assets/OTP/rubric-sp1.json",
@@ -655,7 +725,7 @@
       "label": "HERE",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L39",
+      "source_location": "L46",
       "_origin": "ast",
       "id": "tests_gs_harness_here",
       "community": 47,
@@ -665,7 +735,7 @@
       "label": "REPO",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L40",
+      "source_location": "L47",
       "_origin": "ast",
       "id": "tests_gs_harness_repo",
       "community": 47,
@@ -675,7 +745,7 @@
       "label": "GS_DIR",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L41",
+      "source_location": "L48",
       "_origin": "ast",
       "id": "tests_gs_harness_gs_dir",
       "community": 47,
@@ -685,7 +755,7 @@
       "label": "GS_FILES",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L42",
+      "source_location": "L49",
       "_origin": "ast",
       "id": "tests_gs_harness_gs_files",
       "community": 47,
@@ -695,7 +765,7 @@
       "label": "FIXED_MS",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L44",
+      "source_location": "L51",
       "_origin": "ast",
       "id": "tests_gs_harness_fixed_ms",
       "community": 47,
@@ -705,17 +775,37 @@
       "label": "EXPECTED_OTP_COLUMNS",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L49",
+      "source_location": "L56",
       "_origin": "ast",
       "id": "tests_gs_harness_expected_otp_columns",
       "community": 47,
       "norm_label": "expected_otp_columns"
     },
     {
+      "label": "OTP_NOTES",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/gs-harness.mjs",
+      "source_location": "L71",
+      "_origin": "ast",
+      "id": "tests_gs_harness_otp_notes",
+      "community": 47,
+      "norm_label": "otp_notes"
+    },
+    {
+      "label": "OTP_NOTES_JSON",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/gs-harness.mjs",
+      "source_location": "L77",
+      "_origin": "ast",
+      "id": "tests_gs_harness_otp_notes_json",
+      "community": 47,
+      "norm_label": "otp_notes_json"
+    },
+    {
       "label": "OTP_PAYLOAD",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L60",
+      "source_location": "L79",
       "_origin": "ast",
       "id": "tests_gs_harness_otp_payload",
       "community": 47,
@@ -725,7 +815,7 @@
       "label": "R3_PAYLOAD",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L92",
+      "source_location": "L113",
       "_origin": "ast",
       "id": "tests_gs_harness_r3_payload",
       "community": 47,
@@ -735,7 +825,7 @@
       "label": "makeRange()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L129",
+      "source_location": "L150",
       "_origin": "ast",
       "id": "tests_gs_harness_makerange",
       "community": 47,
@@ -745,7 +835,7 @@
       "label": "makeSheet()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L161",
+      "source_location": "L182",
       "_origin": "ast",
       "id": "tests_gs_harness_makesheet",
       "community": 47,
@@ -755,7 +845,7 @@
       "label": "makeResponse()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L178",
+      "source_location": "L199",
       "_origin": "ast",
       "id": "tests_gs_harness_makeresponse",
       "community": 47,
@@ -765,7 +855,7 @@
       "label": "buildEnv()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L189",
+      "source_location": "L210",
       "_origin": "ast",
       "id": "tests_gs_harness_buildenv",
       "community": 47,
@@ -775,7 +865,7 @@
       "label": "readSources()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L309",
+      "source_location": "L338",
       "_origin": "ast",
       "id": "tests_gs_harness_readsources",
       "community": 47,
@@ -785,7 +875,7 @@
       "label": "BASE_DIR",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L313",
+      "source_location": "L342",
       "_origin": "ast",
       "id": "tests_gs_harness_base_dir",
       "community": 47,
@@ -795,7 +885,7 @@
       "label": "SRC_NEW",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L319",
+      "source_location": "L348",
       "_origin": "ast",
       "id": "tests_gs_harness_src_new",
       "community": 47,
@@ -805,7 +895,7 @@
       "label": "SRC_BASE",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L320",
+      "source_location": "L349",
       "_origin": "ast",
       "id": "tests_gs_harness_src_base",
       "community": 47,
@@ -815,7 +905,7 @@
       "label": "R3_COLUMNS",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L323",
+      "source_location": "L352",
       "_origin": "ast",
       "id": "tests_gs_harness_r3_columns",
       "community": 47,
@@ -825,7 +915,7 @@
       "label": "r3Row()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L328",
+      "source_location": "L357",
       "_origin": "ast",
       "id": "tests_gs_harness_r3row",
       "community": 47,
@@ -835,17 +925,27 @@
       "label": "otpRow()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L339",
+      "source_location": "L368",
       "_origin": "ast",
       "id": "tests_gs_harness_otprow",
       "community": 47,
       "norm_label": "otprow()"
     },
     {
+      "label": "padRow()",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/gs-harness.mjs",
+      "source_location": "L385",
+      "_origin": "ast",
+      "id": "tests_gs_harness_padrow",
+      "community": 47,
+      "norm_label": "padrow()"
+    },
+    {
       "label": "R3_TEACHERS_ROWS",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L357",
+      "source_location": "L395",
       "_origin": "ast",
       "id": "tests_gs_harness_r3_teachers_rows",
       "community": 47,
@@ -855,7 +955,7 @@
       "label": "R3_INSPECTORS_ROWS",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L358",
+      "source_location": "L396",
       "_origin": "ast",
       "id": "tests_gs_harness_r3_inspectors_rows",
       "community": 47,
@@ -865,7 +965,7 @@
       "label": "ROSTER_R3",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L359",
+      "source_location": "L397",
       "_origin": "ast",
       "id": "tests_gs_harness_roster_r3",
       "community": 47,
@@ -875,7 +975,7 @@
       "label": "ROSTER_2627",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L371",
+      "source_location": "L409",
       "_origin": "ast",
       "id": "tests_gs_harness_roster_2627",
       "community": 47,
@@ -885,7 +985,7 @@
       "label": "seedFull()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L375",
+      "source_location": "L413",
       "_origin": "ast",
       "id": "tests_gs_harness_seedfull",
       "community": 47,
@@ -895,7 +995,7 @@
       "label": "seedR3Only()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L376",
+      "source_location": "L414",
       "_origin": "ast",
       "id": "tests_gs_harness_seedr3only",
       "community": 47,
@@ -905,7 +1005,7 @@
       "label": "seedRecords()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L377",
+      "source_location": "L415",
       "_origin": "ast",
       "id": "tests_gs_harness_seedrecords",
       "community": 47,
@@ -915,17 +1015,27 @@
       "label": "SCENARIOS",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L384",
+      "source_location": "L422",
       "_origin": "ast",
       "id": "tests_gs_harness_scenarios",
       "community": 47,
       "norm_label": "scenarios"
     },
     {
+      "label": "extractPad()",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/gs-harness.mjs",
+      "source_location": "L471",
+      "_origin": "ast",
+      "id": "tests_gs_harness_extractpad",
+      "community": 47,
+      "norm_label": "extractpad()"
+    },
+    {
       "label": "runScenario()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L415",
+      "source_location": "L482",
       "_origin": "ast",
       "id": "tests_gs_harness_runscenario",
       "community": 47,
@@ -935,7 +1045,7 @@
       "label": "ok()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L425",
+      "source_location": "L492",
       "_origin": "ast",
       "id": "tests_gs_harness_ok",
       "community": 47,
@@ -945,7 +1055,7 @@
       "label": "eqJson()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L429",
+      "source_location": "L496",
       "_origin": "ast",
       "id": "tests_gs_harness_eqjson",
       "community": 47,
@@ -955,7 +1065,7 @@
       "label": "section()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L434",
+      "source_location": "L501",
       "_origin": "ast",
       "id": "tests_gs_harness_section",
       "community": 47,
@@ -965,11 +1075,21 @@
       "label": "mailRowValue()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L437",
+      "source_location": "L504",
       "_origin": "ast",
       "id": "tests_gs_harness_mailrowvalue",
       "community": 47,
       "norm_label": "mailrowvalue()"
+    },
+    {
+      "label": "mailSectionRows()",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/gs-harness.mjs",
+      "source_location": "L517",
+      "_origin": "ast",
+      "id": "tests_gs_harness_mailsectionrows",
+      "community": 47,
+      "norm_label": "mailsectionrows()"
     },
     {
       "label": "otp.spec.ts",
@@ -982,7 +1102,7 @@
       "norm_label": "otp.spec.ts"
     },
     {
-      "label": "RUBRIC",
+      "label": "Rubric",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L16",
@@ -992,70 +1112,190 @@
       "norm_label": "rubric"
     },
     {
+      "label": "RUBRIC_V1",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L25",
+      "_origin": "ast",
+      "id": "tests_otp_spec_rubric_v1",
+      "community": 84,
+      "norm_label": "rubric_v1"
+    },
+    {
+      "label": "level()",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L29",
+      "_origin": "ast",
+      "id": "tests_otp_spec_level",
+      "community": 84,
+      "norm_label": "level()"
+    },
+    {
+      "label": "criterion()",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L30",
+      "_origin": "ast",
+      "id": "tests_otp_spec_criterion",
+      "community": 84,
+      "norm_label": "criterion()"
+    },
+    {
+      "label": "criteriaOf()",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L33",
+      "_origin": "ast",
+      "id": "tests_otp_spec_criteriaof",
+      "community": 84,
+      "norm_label": "criteriaof()"
+    },
+    {
       "label": "ALL_CRITERIA",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L24",
+      "source_location": "L35",
       "_origin": "ast",
       "id": "tests_otp_spec_all_criteria",
       "community": 84,
       "norm_label": "all_criteria"
     },
     {
+      "label": "ALL_CRITERIA_V1",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L36",
+      "_origin": "ast",
+      "id": "tests_otp_spec_all_criteria_v1",
+      "community": 84,
+      "norm_label": "all_criteria_v1"
+    },
+    {
       "label": "notSeenWithout()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L28",
+      "source_location": "L39",
       "_origin": "ast",
       "id": "tests_otp_spec_notseenwithout",
       "community": 84,
       "norm_label": "notseenwithout()"
     },
     {
+      "label": "notSeenWithoutV1()",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L41",
+      "_origin": "ast",
+      "id": "tests_otp_spec_notseenwithoutv1",
+      "community": 84,
+      "norm_label": "notseenwithoutv1()"
+    },
+    {
       "label": "RECORD_NOT_SEEN",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L32",
+      "source_location": "L45",
       "_origin": "ast",
       "id": "tests_otp_spec_record_not_seen",
       "community": 84,
       "norm_label": "record_not_seen"
     },
     {
+      "label": "RECORD_NOT_SEEN_V1",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L46",
+      "_origin": "ast",
+      "id": "tests_otp_spec_record_not_seen_v1",
+      "community": 84,
+      "norm_label": "record_not_seen_v1"
+    },
+    {
       "label": "CONTRACT_KEYS",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L39",
+      "source_location": "L54",
       "_origin": "ast",
       "id": "tests_otp_spec_contract_keys",
       "community": 84,
       "norm_label": "contract_keys"
     },
     {
+      "label": "CONTRACT_DOC",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L95",
+      "_origin": "ast",
+      "id": "tests_otp_spec_contract_doc",
+      "community": 84,
+      "norm_label": "contract_doc"
+    },
+    {
+      "label": "contractKeysFromDoc()",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L100",
+      "_origin": "ast",
+      "id": "tests_otp_spec_contractkeysfromdoc",
+      "community": 84,
+      "norm_label": "contractkeysfromdoc()"
+    },
+    {
       "label": "OPTIONS_PAYLOAD",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L71",
+      "source_location": "L109",
       "_origin": "ast",
       "id": "tests_otp_spec_options_payload",
       "community": 84,
       "norm_label": "options_payload"
     },
     {
+      "label": "RECORD_HEADER",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L123",
+      "_origin": "ast",
+      "id": "tests_otp_spec_record_header",
+      "community": 84,
+      "norm_label": "record_header"
+    },
+    {
+      "label": "RECORD_NOTES",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L145",
+      "_origin": "ast",
+      "id": "tests_otp_spec_record_notes",
+      "community": 84,
+      "norm_label": "record_notes"
+    },
+    {
       "label": "RECORD_PAYLOAD",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L85",
+      "source_location": "L151",
       "_origin": "ast",
       "id": "tests_otp_spec_record_payload",
       "community": 84,
       "norm_label": "record_payload"
     },
     {
+      "label": "RECORD_PAYLOAD_LEGACY",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L176",
+      "_origin": "ast",
+      "id": "tests_otp_spec_record_payload_legacy",
+      "community": 84,
+      "norm_label": "record_payload_legacy"
+    },
+    {
       "label": "Harness",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L119",
+      "source_location": "L191",
       "_origin": "ast",
       "id": "tests_otp_spec_harness",
       "community": 84,
@@ -1065,17 +1305,27 @@
       "label": "openForm()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L174",
+      "source_location": "L251",
       "_origin": "ast",
       "id": "tests_otp_spec_openform",
       "community": 84,
       "norm_label": "openform()"
     },
     {
+      "label": "passGate()",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L256",
+      "_origin": "ast",
+      "id": "tests_otp_spec_passgate",
+      "community": 84,
+      "norm_label": "passgate()"
+    },
+    {
       "label": "pickTomSelect()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L182",
+      "source_location": "L263",
       "_origin": "ast",
       "id": "tests_otp_spec_picktomselect",
       "community": 84,
@@ -1085,7 +1335,7 @@
       "label": "gradeControl()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L188",
+      "source_location": "L269",
       "_origin": "ast",
       "id": "tests_otp_spec_gradecontrol",
       "community": 84,
@@ -1095,7 +1345,7 @@
       "label": "pickGrade()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L192",
+      "source_location": "L273",
       "_origin": "ast",
       "id": "tests_otp_spec_pickgrade",
       "community": 84,
@@ -1105,21 +1355,51 @@
       "label": "fillRequired()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L197",
+      "source_location": "L278",
       "_origin": "ast",
       "id": "tests_otp_spec_fillrequired",
       "community": 84,
       "norm_label": "fillrequired()"
     },
     {
-      "label": "openFormAfterReload()",
+      "label": "chipAt()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L354",
+      "source_location": "L289",
       "_origin": "ast",
-      "id": "tests_otp_spec_openformafterreload",
+      "id": "tests_otp_spec_chipat",
       "community": 84,
-      "norm_label": "openformafterreload()"
+      "norm_label": "chipat()"
+    },
+    {
+      "label": "noteBtnAt()",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L291",
+      "_origin": "ast",
+      "id": "tests_otp_spec_notebtnat",
+      "community": 84,
+      "norm_label": "notebtnat()"
+    },
+    {
+      "label": "notePanel()",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L293",
+      "_origin": "ast",
+      "id": "tests_otp_spec_notepanel",
+      "community": 84,
+      "norm_label": "notepanel()"
+    },
+    {
+      "label": "noteText()",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L294",
+      "_origin": "ast",
+      "id": "tests_otp_spec_notetext",
+      "community": 84,
+      "norm_label": "notetext()"
     },
     {
       "label": ".staticrypt.json",
@@ -1386,7 +1666,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_s",
-      "community": 64,
+      "community": 130,
       "norm_label": "s"
     },
     {
@@ -1396,7 +1676,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_s_constructor",
-      "community": 64,
+      "community": 130,
       "norm_label": ".constructor()"
     },
     {
@@ -1406,7 +1686,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_s_reset",
-      "community": 64,
+      "community": 130,
       "norm_label": ".reset()"
     },
     {
@@ -1426,7 +1706,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_s_copyinto",
-      "community": 64,
+      "community": 130,
       "norm_label": ".copyinto()"
     },
     {
@@ -1446,7 +1726,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_s_translate",
-      "community": 64,
+      "community": 130,
       "norm_label": ".translate()"
     },
     {
@@ -1456,7 +1736,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_s_scale",
-      "community": 64,
+      "community": 130,
       "norm_label": ".scale()"
     },
     {
@@ -1466,7 +1746,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_s_rotate",
-      "community": 64,
+      "community": 130,
       "norm_label": ".rotate()"
     },
     {
@@ -1486,7 +1766,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_s_skew",
-      "community": 64,
+      "community": 130,
       "norm_label": ".skew()"
     },
     {
@@ -1496,7 +1776,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_s_multiply",
-      "community": 64,
+      "community": 130,
       "norm_label": ".multiply()"
     },
     {
@@ -1526,7 +1806,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_s_decompose",
-      "community": 113,
+      "community": 130,
       "norm_label": ".decompose()"
     },
     {
@@ -1836,7 +2116,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_fillshape",
-      "community": 58,
+      "community": 46,
       "norm_label": ".fillshape()"
     },
     {
@@ -1956,7 +2236,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_applyopacity",
-      "community": 41,
+      "community": 43,
       "norm_label": "._applyopacity()"
     },
     {
@@ -2026,7 +2306,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_clearrect",
-      "community": 50,
+      "community": 55,
       "norm_label": ".clearrect()"
     },
     {
@@ -2066,7 +2346,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_createlineargradient",
-      "community": 58,
+      "community": 41,
       "norm_label": ".createlineargradient()"
     },
     {
@@ -2076,7 +2356,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_createpattern",
-      "community": 50,
+      "community": 41,
       "norm_label": ".createpattern()"
     },
     {
@@ -2086,7 +2366,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_createradialgradient",
-      "community": 53,
+      "community": 41,
       "norm_label": ".createradialgradient()"
     },
     {
@@ -2246,7 +2526,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_rotate",
-      "community": 50,
+      "community": 41,
       "norm_label": ".rotate()"
     },
     {
@@ -2326,7 +2606,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_translate",
-      "community": 43,
+      "community": 41,
       "norm_label": ".translate()"
     },
     {
@@ -2356,7 +2636,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_get",
-      "community": 64,
+      "community": 41,
       "norm_label": "get()"
     },
     {
@@ -2496,7 +2776,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_m_fill",
-      "community": 58,
+      "community": 43,
       "norm_label": "._fill()"
     },
     {
@@ -2706,7 +2986,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_enddragbefore",
-      "community": 155,
+      "community": 113,
       "norm_label": "_enddragbefore()"
     },
     {
@@ -2716,7 +2996,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_enddragafter",
-      "community": 155,
+      "community": 113,
       "norm_label": "_enddragafter()"
     },
     {
@@ -2876,7 +3156,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_constructor",
-      "community": 15,
+      "community": 79,
       "norm_label": ".constructor()"
     },
     {
@@ -2906,7 +3186,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_getcache",
-      "community": 64,
+      "community": 41,
       "norm_label": "._getcache()"
     },
     {
@@ -2916,7 +3196,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_calculate",
-      "community": 64,
+      "community": 41,
       "norm_label": "._calculate()"
     },
     {
@@ -2946,7 +3226,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_cache",
-      "community": 43,
+      "community": 55,
       "norm_label": ".cache()"
     },
     {
@@ -2956,7 +3236,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_iscached",
-      "community": 113,
+      "community": 64,
       "norm_label": ".iscached()"
     },
     {
@@ -2976,7 +3256,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_transformedrect",
-      "community": 113,
+      "community": 64,
       "norm_label": "._transformedrect()"
     },
     {
@@ -3016,7 +3296,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_on",
-      "community": 51,
+      "community": 79,
       "norm_label": ".on()"
     },
     {
@@ -3046,7 +3326,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_addeventlistener",
-      "community": 51,
+      "community": 79,
       "norm_label": ".addeventlistener()"
     },
     {
@@ -3056,7 +3336,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_removeeventlistener",
-      "community": 79,
+      "community": 15,
       "norm_label": ".removeeventlistener()"
     },
     {
@@ -3076,7 +3356,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_remove",
-      "community": 155,
+      "community": 113,
       "norm_label": ".remove()"
     },
     {
@@ -3086,7 +3366,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_clearcaches",
-      "community": 155,
+      "community": 113,
       "norm_label": "._clearcaches()"
     },
     {
@@ -3136,7 +3416,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_setattrs",
-      "community": 15,
+      "community": 79,
       "norm_label": ".setattrs()"
     },
     {
@@ -3266,7 +3546,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_getabsoluteposition",
-      "community": 43,
+      "community": 64,
       "norm_label": ".getabsoluteposition()"
     },
     {
@@ -3326,7 +3606,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_rotate",
-      "community": 46,
+      "community": 41,
       "norm_label": ".rotate()"
     },
     {
@@ -3506,7 +3786,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_getabsolutetransform",
-      "community": 64,
+      "community": 41,
       "norm_label": ".getabsolutetransform()"
     },
     {
@@ -3516,7 +3796,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_getabsolutescale",
-      "community": 113,
+      "community": 130,
       "norm_label": ".getabsolutescale()"
     },
     {
@@ -3526,7 +3806,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_getabsoluterotation",
-      "community": 113,
+      "community": 130,
       "norm_label": ".getabsoluterotation()"
     },
     {
@@ -3536,7 +3816,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_gettransform",
-      "community": 64,
+      "community": 41,
       "norm_label": ".gettransform()"
     },
     {
@@ -3556,7 +3836,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_tokonvacanvas",
-      "community": 43,
+      "community": 55,
       "norm_label": "._tokonvacanvas()"
     },
     {
@@ -3746,7 +4026,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_draw",
-      "community": 130,
+      "community": 55,
       "norm_label": ".draw()"
     },
     {
@@ -3786,7 +4066,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_stopdrag",
-      "community": 155,
+      "community": 113,
       "norm_label": ".stopdrag()"
     },
     {
@@ -3846,7 +4126,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_isclientrectonscreen",
-      "community": 15,
+      "community": 59,
       "norm_label": ".isclientrectonscreen()"
     },
     {
@@ -4176,7 +4456,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_tt_clear",
-      "community": 130,
+      "community": 54,
       "norm_label": ".clear()"
     },
     {
@@ -4546,7 +4826,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ot",
-      "community": 53,
+      "community": 41,
       "norm_label": "ot()"
     },
     {
@@ -4576,7 +4856,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ft_getcontext",
-      "community": 43,
+      "community": 41,
       "norm_label": ".getcontext()"
     },
     {
@@ -4626,7 +4906,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ft_getfillpattern",
-      "community": 58,
+      "community": 41,
       "norm_label": "._getfillpattern()"
     },
     {
@@ -4636,7 +4916,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ft_getlineargradient",
-      "community": 58,
+      "community": 41,
       "norm_label": "._getlineargradient()"
     },
     {
@@ -4646,7 +4926,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ft_getradialgradient",
-      "community": 53,
+      "community": 41,
       "norm_label": "._getradialgradient()"
     },
     {
@@ -4696,7 +4976,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ft_intersects",
-      "community": 130,
+      "community": 55,
       "norm_label": ".intersects()"
     },
     {
@@ -4756,7 +5036,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ft_getclientrect",
-      "community": 113,
+      "community": 64,
       "norm_label": ".getclientrect()"
     },
     {
@@ -4876,7 +5156,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_gethitcanvas",
-      "community": 130,
+      "community": 55,
       "norm_label": ".gethitcanvas()"
     },
     {
@@ -4886,7 +5166,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_getcontext",
-      "community": 43,
+      "community": 55,
       "norm_label": ".getcontext()"
     },
     {
@@ -4896,7 +5176,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_clear",
-      "community": 130,
+      "community": 55,
       "norm_label": ".clear()"
     },
     {
@@ -5046,7 +5326,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_setwidth",
-      "community": 56,
+      "community": 59,
       "norm_label": ".setwidth()"
     },
     {
@@ -5066,7 +5346,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_setheight",
-      "community": 56,
+      "community": 59,
       "norm_label": ".setheight()"
     },
     {
@@ -5096,7 +5376,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_drawscene",
-      "community": 130,
+      "community": 55,
       "norm_label": ".drawscene()"
     },
     {
@@ -5106,7 +5386,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_drawhit",
-      "community": 130,
+      "community": 55,
       "norm_label": ".drawhit()"
     },
     {
@@ -5146,7 +5426,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_gethitgraphenabled",
-      "community": 56,
+      "community": 59,
       "norm_label": ".gethitgraphenabled()"
     },
     {
@@ -5786,7 +6066,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ee_gettensionpoints",
-      "community": 46,
+      "community": 108,
       "norm_label": ".gettensionpoints()"
     },
     {
@@ -6026,7 +6306,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ce_scenefunc",
-      "community": 46,
+      "community": 108,
       "norm_label": "._scenefunc()"
     },
     {
@@ -6286,7 +6566,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_be",
-      "community": 4,
+      "community": 79,
       "norm_label": "be"
     },
     {
@@ -6296,7 +6576,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_be_constructor",
-      "community": 4,
+      "community": 79,
       "norm_label": ".constructor()"
     },
     {
@@ -6306,7 +6586,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_be_gettext",
-      "community": 4,
+      "community": 79,
       "norm_label": ".gettext()"
     },
     {
@@ -6316,7 +6596,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_be_gettag",
-      "community": 4,
+      "community": 79,
       "norm_label": ".gettag()"
     },
     {
@@ -6326,7 +6606,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_be_addlisteners",
-      "community": 4,
+      "community": 79,
       "norm_label": "._addlisteners()"
     },
     {
@@ -6336,7 +6616,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_be_getwidth",
-      "community": 4,
+      "community": 79,
       "norm_label": ".getwidth()"
     },
     {
@@ -6346,7 +6626,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_be_getheight",
-      "community": 4,
+      "community": 79,
       "norm_label": ".getheight()"
     },
     {
@@ -6356,7 +6636,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_be_sync",
-      "community": 4,
+      "community": 79,
       "norm_label": "._sync()"
     },
     {
@@ -6396,7 +6676,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we",
-      "community": 44,
+      "community": 53,
       "norm_label": "we"
     },
     {
@@ -6676,7 +6956,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_me",
-      "community": 44,
+      "community": 53,
       "norm_label": "me()"
     },
     {
@@ -6716,7 +6996,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_settext",
-      "community": 44,
+      "community": 53,
       "norm_label": ".settext()"
     },
     {
@@ -6726,7 +7006,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_getwidth",
-      "community": 44,
+      "community": 53,
       "norm_label": ".getwidth()"
     },
     {
@@ -6736,7 +7016,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_getheight",
-      "community": 44,
+      "community": 53,
       "norm_label": ".getheight()"
     },
     {
@@ -6756,7 +7036,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_gettextheight",
-      "community": 44,
+      "community": 53,
       "norm_label": ".gettextheight()"
     },
     {
@@ -6776,7 +7056,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_getcontextfont",
-      "community": 44,
+      "community": 53,
       "norm_label": "._getcontextfont()"
     },
     {
@@ -6786,7 +7066,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_addtextline",
-      "community": 44,
+      "community": 53,
       "norm_label": "._addtextline()"
     },
     {
@@ -6796,7 +7076,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_settextdata",
-      "community": 44,
+      "community": 53,
       "norm_label": "._settextdata()"
     },
     {
@@ -6806,7 +7086,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_shouldhandleellipsis",
-      "community": 44,
+      "community": 53,
       "norm_label": "._shouldhandleellipsis()"
     },
     {
@@ -6816,7 +7096,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_trytoaddellipsistolastline",
-      "community": 44,
+      "community": 53,
       "norm_label": "._trytoaddellipsistolastline()"
     },
     {
@@ -6826,7 +7106,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_getstrokescaleenabled",
-      "community": 44,
+      "community": 53,
       "norm_label": ".getstrokescaleenabled()"
     },
     {
@@ -6866,7 +7146,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_qe",
-      "community": 44,
+      "community": 53,
       "norm_label": "qe"
     },
     {
@@ -6876,7 +7156,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_qe_constructor",
-      "community": 44,
+      "community": 53,
       "norm_label": ".constructor()"
     },
     {
@@ -6916,7 +7196,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_qe_scenefunc",
-      "community": 46,
+      "community": 53,
       "norm_label": "._scenefunc()"
     },
     {
@@ -6936,7 +7216,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_qe_gettextwidth",
-      "community": 44,
+      "community": 53,
       "norm_label": ".gettextwidth()"
     },
     {
@@ -6946,7 +7226,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_qe_gettextheight",
-      "community": 44,
+      "community": 56,
       "norm_label": ".gettextheight()"
     },
     {
@@ -6956,7 +7236,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_qe_settext",
-      "community": 44,
+      "community": 53,
       "norm_label": ".settext()"
     },
     {
@@ -7166,7 +7446,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ni_getnodeshape",
-      "community": 113,
+      "community": 130,
       "norm_label": ".__getnodeshape()"
     },
     {
@@ -7356,7 +7636,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ni_destroy",
-      "community": 79,
+      "community": 86,
       "norm_label": ".destroy()"
     },
     {
@@ -7386,7 +7666,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ni_getclientrect",
-      "community": 43,
+      "community": 55,
       "norm_label": ".getclientrect()"
     },
     {
@@ -8076,7 +8356,7 @@
       "source_location": "L199",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_onkeypress",
-      "community": 3,
+      "community": 87,
       "norm_label": ".onkeypress()"
     },
     {
@@ -8096,7 +8376,7 @@
       "source_location": "L215",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_oninput",
-      "community": 3,
+      "community": 65,
       "norm_label": ".oninput()"
     },
     {
@@ -8106,7 +8386,7 @@
       "source_location": "L218",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_onoptionhover",
-      "community": 3,
+      "community": 65,
       "norm_label": ".onoptionhover()"
     },
     {
@@ -8116,7 +8396,7 @@
       "source_location": "L218",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_onfocus",
-      "community": 3,
+      "community": 154,
       "norm_label": ".onfocus()"
     },
     {
@@ -8126,7 +8406,7 @@
       "source_location": "L220",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_onblur",
-      "community": 3,
+      "community": 154,
       "norm_label": ".onblur()"
     },
     {
@@ -8186,7 +8466,7 @@
       "source_location": "L229",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_loadcallback",
-      "community": 3,
+      "community": 65,
       "norm_label": ".loadcallback()"
     },
     {
@@ -8216,7 +8496,7 @@
       "source_location": "L232",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_getvalue",
-      "community": 65,
+      "community": 90,
       "norm_label": ".getvalue()"
     },
     {
@@ -8236,7 +8516,7 @@
       "source_location": "L232",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_setmaxitems",
-      "community": 65,
+      "community": 3,
       "norm_label": ".setmaxitems()"
     },
     {
@@ -8286,7 +8566,7 @@
       "source_location": "L238",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_setactiveoption",
-      "community": 3,
+      "community": 65,
       "norm_label": ".setactiveoption()"
     },
     {
@@ -8296,7 +8576,7 @@
       "source_location": "L238",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_scrolltooption",
-      "community": 3,
+      "community": 65,
       "norm_label": ".scrolltooption()"
     },
     {
@@ -8306,7 +8586,7 @@
       "source_location": "L240",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_scroll",
-      "community": 3,
+      "community": 65,
       "norm_label": ".scroll()"
     },
     {
@@ -8316,7 +8596,7 @@
       "source_location": "L241",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_clearactiveoption",
-      "community": 3,
+      "community": 65,
       "norm_label": ".clearactiveoption()"
     },
     {
@@ -8346,7 +8626,7 @@
       "source_location": "L245",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_inputvalue",
-      "community": 3,
+      "community": 65,
       "norm_label": ".inputvalue()"
     },
     {
@@ -8366,7 +8646,7 @@
       "source_location": "L250",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_blur",
-      "community": 3,
+      "community": 154,
       "norm_label": ".blur()"
     },
     {
@@ -8406,7 +8686,7 @@
       "source_location": "L254",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_refreshoptions",
-      "community": 3,
+      "community": 65,
       "norm_label": ".refreshoptions()"
     },
     {
@@ -8416,7 +8696,7 @@
       "source_location": "L288",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_selectable",
-      "community": 3,
+      "community": 65,
       "norm_label": ".selectable()"
     },
     {
@@ -8556,7 +8836,7 @@
       "source_location": "L314",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_getitem",
-      "community": 65,
+      "community": 3,
       "norm_label": ".getitem()"
     },
     {
@@ -8566,7 +8846,7 @@
       "source_location": "L316",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_additems",
-      "community": 65,
+      "community": 3,
       "norm_label": ".additems()"
     },
     {
@@ -8576,7 +8856,7 @@
       "source_location": "L318",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_additem",
-      "community": 3,
+      "community": 87,
       "norm_label": ".additem()"
     },
     {
@@ -8586,7 +8866,7 @@
       "source_location": "L321",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_removeitem",
-      "community": 65,
+      "community": 3,
       "norm_label": ".removeitem()"
     },
     {
@@ -8596,7 +8876,7 @@
       "source_location": "L325",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_createitem",
-      "community": 3,
+      "community": 87,
       "norm_label": ".createitem()"
     },
     {
@@ -8606,7 +8886,7 @@
       "source_location": "L332",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_refreshitems",
-      "community": 65,
+      "community": 3,
       "norm_label": ".refreshitems()"
     },
     {
@@ -8616,7 +8896,7 @@
       "source_location": "L333",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_refreshstate",
-      "community": 65,
+      "community": 3,
       "norm_label": ".refreshstate()"
     },
     {
@@ -8626,7 +8906,7 @@
       "source_location": "L339",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_refreshvaliditystate",
-      "community": 65,
+      "community": 3,
       "norm_label": ".refreshvaliditystate()"
     },
     {
@@ -8636,7 +8916,7 @@
       "source_location": "L340",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_isfull",
-      "community": 65,
+      "community": 3,
       "norm_label": ".isfull()"
     },
     {
@@ -8646,7 +8926,7 @@
       "source_location": "L340",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_updateoriginalinput",
-      "community": 65,
+      "community": 90,
       "norm_label": ".updateoriginalinput()"
     },
     {
@@ -8656,7 +8936,7 @@
       "source_location": "L345",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_open",
-      "community": 65,
+      "community": 3,
       "norm_label": ".open()"
     },
     {
@@ -8676,7 +8956,7 @@
       "source_location": "L347",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_positiondropdown",
-      "community": 65,
+      "community": 3,
       "norm_label": ".positiondropdown()"
     },
     {
@@ -8686,7 +8966,7 @@
       "source_location": "L348",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_clear",
-      "community": 87,
+      "community": 90,
       "norm_label": ".clear()"
     },
     {
@@ -8696,7 +8976,7 @@
       "source_location": "L350",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_insertatcaret",
-      "community": 65,
+      "community": 3,
       "norm_label": ".insertatcaret()"
     },
     {
@@ -8756,7 +9036,7 @@
       "source_location": "L364",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_setcaret",
-      "community": 65,
+      "community": 3,
       "norm_label": ".setcaret()"
     },
     {
@@ -8886,7 +9166,7 @@
       "source_location": "L373",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_cancreate",
-      "community": 3,
+      "community": 87,
       "norm_label": ".cancreate()"
     },
     {
@@ -15558,6 +15838,106 @@
       "norm_label": "on-device test matrix (v0.58, chrome + safari, portrait and landscape each)"
     },
     {
+      "label": "2026-09-09-otp-v0.6-contract.md",
+      "file_type": "document",
+      "source_file": ".planning/2026-09-09-otp-v0.6-contract.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "planning_2026_09_09_otp_v0_6_contract",
+      "community": 155,
+      "norm_label": "2026-09-09-otp-v0.6-contract.md"
+    },
+    {
+      "label": "otp-v0.6 contract \u00b7 sentence chips + criterion notes + wording",
+      "file_type": "document",
+      "source_file": ".planning/2026-09-09-otp-v0.6-contract.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "planning_2026_09_09_otp_v0_6_contract_otp_v0_6_contract_sentence_chips_criterion_notes_wording",
+      "community": 155,
+      "norm_label": "otp-v0.6 contract \u00b7 sentence chips + criterion notes + wording"
+    },
+    {
+      "label": "1. Scope",
+      "file_type": "document",
+      "source_file": ".planning/2026-09-09-otp-v0.6-contract.md",
+      "source_location": "L7",
+      "_origin": "ast",
+      "id": "planning_2026_09_09_otp_v0_6_contract_1_scope",
+      "community": 155,
+      "norm_label": "1. scope"
+    },
+    {
+      "label": "2. Payload (POST JSON, `form:\"otp\"`) \u00b7 exactly these 31 keys",
+      "file_type": "document",
+      "source_file": ".planning/2026-09-09-otp-v0.6-contract.md",
+      "source_location": "L24",
+      "_origin": "ast",
+      "id": "planning_2026_09_09_otp_v0_6_contract_2_payload_post_json_form_otp_exactly_these_31_keys",
+      "community": 155,
+      "norm_label": "2. payload (post json, `form:\"otp\"`) \u00b7 exactly these 31 keys"
+    },
+    {
+      "label": "3. Value formats",
+      "file_type": "document",
+      "source_file": ".planning/2026-09-09-otp-v0.6-contract.md",
+      "source_location": "L37",
+      "_origin": "ast",
+      "id": "planning_2026_09_09_otp_v0_6_contract_3_value_formats",
+      "community": 155,
+      "norm_label": "3. value formats"
+    },
+    {
+      "label": "4. Wording (exact, outward-facing, approved)",
+      "file_type": "document",
+      "source_file": ".planning/2026-09-09-otp-v0.6-contract.md",
+      "source_location": "L58",
+      "_origin": "ast",
+      "id": "planning_2026_09_09_otp_v0_6_contract_4_wording_exact_outward_facing_approved",
+      "community": 155,
+      "norm_label": "4. wording (exact, outward-facing, approved)"
+    },
+    {
+      "label": "5. Form (lane A) \u00b7 `Assets/OTP/src/otp-progress-form.html`",
+      "file_type": "document",
+      "source_file": ".planning/2026-09-09-otp-v0.6-contract.md",
+      "source_location": "L76",
+      "_origin": "ast",
+      "id": "planning_2026_09_09_otp_v0_6_contract_5_form_lane_a_assets_otp_src_otp_progress_form_html",
+      "community": 155,
+      "norm_label": "5. form (lane a) \u00b7 `assets/otp/src/otp-progress-form.html`"
+    },
+    {
+      "label": "6. Backend (lane B) \u00b7 `Assets/R3/apps-script/`",
+      "file_type": "document",
+      "source_file": ".planning/2026-09-09-otp-v0.6-contract.md",
+      "source_location": "L132",
+      "_origin": "ast",
+      "id": "planning_2026_09_09_otp_v0_6_contract_6_backend_lane_b_assets_r3_apps_script",
+      "community": 155,
+      "norm_label": "6. backend (lane b) \u00b7 `assets/r3/apps-script/`"
+    },
+    {
+      "label": "7. Tests (lane A) \u00b7 `Assets/OTP/tests/otp.spec.ts`",
+      "file_type": "document",
+      "source_file": ".planning/2026-09-09-otp-v0.6-contract.md",
+      "source_location": "L161",
+      "_origin": "ast",
+      "id": "planning_2026_09_09_otp_v0_6_contract_7_tests_lane_a_assets_otp_tests_otp_spec_ts",
+      "community": 155,
+      "norm_label": "7. tests (lane a) \u00b7 `assets/otp/tests/otp.spec.ts`"
+    },
+    {
+      "label": "8. Shared-worktree rule (both lanes, read twice)",
+      "file_type": "document",
+      "source_file": ".planning/2026-09-09-otp-v0.6-contract.md",
+      "source_location": "L177",
+      "_origin": "ast",
+      "id": "planning_2026_09_09_otp_v0_6_contract_8_shared_worktree_rule_both_lanes_read_twice",
+      "community": 155,
+      "norm_label": "8. shared-worktree rule (both lanes, read twice)"
+    },
+    {
       "label": "v0.10-r3-form-checklist.md",
       "file_type": "document",
       "source_file": ".planning/v0.10-r3-form-checklist.md",
@@ -15788,14 +16168,14 @@
       "norm_label": "readme.md"
     },
     {
-      "label": "Progress in Lessons OTP form \u00b7 otp-v0.5",
+      "label": "Progress in Lessons OTP form \u00b7 otp-v0.6",
       "file_type": "document",
       "source_file": "Assets/OTP/README.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "otp_readme_progress_in_lessons_otp_form_otp_v0_5",
+      "id": "otp_readme_progress_in_lessons_otp_form_otp_v0_6",
       "community": 118,
-      "norm_label": "progress in lessons otp form \u00b7 otp-v0.5"
+      "norm_label": "progress in lessons otp form \u00b7 otp-v0.6"
     },
     {
       "label": "What is on the page",
@@ -15811,7 +16191,7 @@
       "label": "Build",
       "file_type": "document",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L42",
+      "source_location": "L62",
       "_origin": "ast",
       "id": "otp_readme_build",
       "community": 118,
@@ -15821,7 +16201,7 @@
       "label": "Backend contract",
       "file_type": "document",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L59",
+      "source_location": "L79",
       "_origin": "ast",
       "id": "otp_readme_backend_contract",
       "community": 118,
@@ -15831,7 +16211,7 @@
       "label": "Tests",
       "file_type": "document",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L115",
+      "source_location": "L163",
       "_origin": "ast",
       "id": "otp_readme_tests",
       "community": 118,
@@ -15841,7 +16221,7 @@
       "label": "Changelog",
       "file_type": "document",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L126",
+      "source_location": "L175",
       "_origin": "ast",
       "id": "otp_readme_changelog",
       "community": 118,
@@ -16041,7 +16421,7 @@
       "label": "Full project context",
       "file_type": "document",
       "source_file": "Assets/R3/README.md",
-      "source_location": "L144",
+      "source_location": "L151",
       "_origin": "ast",
       "id": "r3_readme_full_project_context",
       "community": 25,
@@ -16101,7 +16481,7 @@
       "label": "How the pieces connect",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L121",
+      "source_location": "L122",
       "_origin": "ast",
       "id": "claude_how_the_pieces_connect",
       "community": 6,
@@ -16111,7 +16491,7 @@
       "label": "Hard rules \u00b7 do not break",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L156",
+      "source_location": "L157",
       "_origin": "ast",
       "id": "claude_hard_rules_do_not_break",
       "community": 6,
@@ -16121,7 +16501,7 @@
       "label": "Identity / auth (current state as of v0.10 \u00b7 2026-05-28)",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L178",
+      "source_location": "L179",
       "_origin": "ast",
       "id": "claude_identity_auth_current_state_as_of_v0_10_2026_05_28",
       "community": 6,
@@ -16131,7 +16511,7 @@
       "label": "Deploy chain",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L188",
+      "source_location": "L189",
       "_origin": "ast",
       "id": "claude_deploy_chain",
       "community": 6,
@@ -16141,7 +16521,7 @@
       "label": "HTML changes (`index.html` or either form)",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L190",
+      "source_location": "L191",
       "_origin": "ast",
       "id": "claude_html_changes_index_html_or_either_form",
       "community": 6,
@@ -16151,7 +16531,7 @@
       "label": "Apps Script changes (either `apps-script/*.gs` or `Assets/R3/apps-script/*.gs`)",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L199",
+      "source_location": "L200",
       "_origin": "ast",
       "id": "claude_apps_script_changes_either_apps_script_gs_or_assets_r3_apps_script_gs",
       "community": 6,
@@ -16161,7 +16541,7 @@
       "label": "Primary checkout note (standing, 2026-07-03)",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L206",
+      "source_location": "L207",
       "_origin": "ast",
       "id": "claude_primary_checkout_note_standing_2026_07_03",
       "community": 6,
@@ -16171,7 +16551,7 @@
       "label": "Cache invalidation (R3 only, since v0.33)",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L213",
+      "source_location": "L214",
       "_origin": "ast",
       "id": "claude_cache_invalidation_r3_only_since_v0_33",
       "community": 6,
@@ -16181,7 +16561,7 @@
       "label": "Coding discipline (Karpathy guidelines)",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L225",
+      "source_location": "L226",
       "_origin": "ast",
       "id": "claude_coding_discipline_karpathy_guidelines",
       "community": 6,
@@ -16191,7 +16571,7 @@
       "label": "When in doubt",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L236",
+      "source_location": "L237",
       "_origin": "ast",
       "id": "claude_when_in_doubt",
       "community": 6,
@@ -16201,7 +16581,7 @@
       "label": "Related",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L246",
+      "source_location": "L247",
       "_origin": "ast",
       "id": "claude_related",
       "community": 6,
@@ -16211,7 +16591,7 @@
       "label": "Self-learning",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L291",
+      "source_location": "L292",
       "_origin": "ast",
       "id": "claude_self_learning",
       "community": 6,
@@ -16221,7 +16601,7 @@
       "label": "Lessons",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L296",
+      "source_location": "L297",
       "_origin": "ast",
       "id": "claude_lessons",
       "community": 6,
@@ -17068,44 +17448,44 @@
       "norm_label": "heal / big photo drop"
     },
     {
-      "label": "24-25-Primary School OTP - v4_e258b9ec.md",
+      "label": "24-25-Primary School OTP - v4_c097c367.md",
       "file_type": "document",
-      "source_file": "graphify-out/converted/24-25-Primary School OTP - v4_e258b9ec.md",
+      "source_file": "graphify-out/converted/24-25-Primary School OTP - v4_c097c367.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "converted_24_25_primary_school_otp_v4_e258b9ec",
-      "community": 156,
-      "norm_label": "24-25-primary school otp - v4_e258b9ec.md"
-    },
-    {
-      "label": "Lesson Observation - Igor- 12_11_71b57a5b.md",
-      "file_type": "document",
-      "source_file": "graphify-out/converted/Lesson Observation - Igor- 12_11_71b57a5b.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "converted_lesson_observation_igor_12_11_71b57a5b",
+      "id": "converted_24_25_primary_school_otp_v4_c097c367",
       "community": 157,
-      "norm_label": "lesson observation - igor- 12_11_71b57a5b.md"
+      "norm_label": "24-25-primary school otp - v4_c097c367.md"
     },
     {
-      "label": "R3 Evidence Form Template_bd322893.md",
+      "label": "Lesson Observation - Igor- 12_11_aaa9c66e.md",
       "file_type": "document",
-      "source_file": "graphify-out/converted/R3 Evidence Form Template_bd322893.md",
+      "source_file": "graphify-out/converted/Lesson Observation - Igor- 12_11_aaa9c66e.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "converted_r3_evidence_form_template_bd322893",
+      "id": "converted_lesson_observation_igor_12_11_aaa9c66e",
       "community": 177,
-      "norm_label": "r3 evidence form template_bd322893.md"
+      "norm_label": "lesson observation - igor- 12_11_aaa9c66e.md"
     },
     {
-      "label": "Year 6 Lesson Plan_15aa4be1.md",
+      "label": "R3 Evidence Form Template_4839e027.md",
       "file_type": "document",
-      "source_file": "graphify-out/converted/Year 6 Lesson Plan_15aa4be1.md",
+      "source_file": "graphify-out/converted/R3 Evidence Form Template_4839e027.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "converted_year_6_lesson_plan_15aa4be1",
+      "id": "converted_r3_evidence_form_template_4839e027",
       "community": 178,
-      "norm_label": "year 6 lesson plan_15aa4be1.md"
+      "norm_label": "r3 evidence form template_4839e027.md"
+    },
+    {
+      "label": "Year 6 Lesson Plan_2942df7e.md",
+      "file_type": "document",
+      "source_file": "graphify-out/converted/Year 6 Lesson Plan_2942df7e.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "converted_year_6_lesson_plan_2942df7e",
+      "community": 179,
+      "norm_label": "year 6 lesson plan_2942df7e.md"
     },
     {
       "label": "handoff-2026-06-02-1151.md",
@@ -20822,6 +21202,66 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/rubric-sp1-v2.json",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "otp_rubric_sp1_v2",
+      "target": "otp_rubric_sp1_v2_aspect",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/rubric-sp1-v2.json",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "otp_rubric_sp1_v2",
+      "target": "otp_rubric_sp1_v2_levels",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/rubric-sp1-v2.json",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "otp_rubric_sp1_v2",
+      "target": "otp_rubric_sp1_v2_reference",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/rubric-sp1-v2.json",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "otp_rubric_sp1_v2",
+      "target": "otp_rubric_sp1_v2_reference_title",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/rubric-sp1-v2.json",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "otp_rubric_sp1_v2",
+      "target": "otp_rubric_sp1_v2_source",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/rubric-sp1-v2.json",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "otp_rubric_sp1_v2",
+      "target": "otp_rubric_sp1_v2_version",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/rubric-sp1.json",
       "source_location": "L4",
       "weight": 1.0,
@@ -20913,6 +21353,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
+      "source_location": "L471",
+      "weight": 1.0,
+      "source": "tests_gs_harness",
+      "target": "tests_gs_harness_extractpad",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/gs-harness.mjs",
       "source_location": "L42",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -20955,8 +21405,18 @@
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
       "source_location": "L437",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_gs_harness",
-      "target": "tests_gs_harness_mailrowvalue",
+      "target": "tests_gs_harness_mailrowvalue"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/gs-harness.mjs",
+      "source_location": "L517",
+      "weight": 1.0,
+      "source": "tests_gs_harness",
+      "target": "tests_gs_harness_mailsectionrows",
       "confidence_score": 1.0
     },
     {
@@ -21003,6 +21463,26 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
+      "source_location": "L71",
+      "weight": 1.0,
+      "source": "tests_gs_harness",
+      "target": "tests_gs_harness_otp_notes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/gs-harness.mjs",
+      "source_location": "L77",
+      "weight": 1.0,
+      "source": "tests_gs_harness",
+      "target": "tests_gs_harness_otp_notes_json",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/gs-harness.mjs",
       "source_location": "L56",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -21018,6 +21498,16 @@
       "confidence_score": 1.0,
       "source": "tests_gs_harness",
       "target": "tests_gs_harness_otprow"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/gs-harness.mjs",
+      "source_location": "L385",
+      "weight": 1.0,
+      "source": "tests_gs_harness",
+      "target": "tests_gs_harness_padrow",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -21239,8 +21729,38 @@
       "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L24",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_otp_spec",
-      "target": "tests_otp_spec_all_criteria",
+      "target": "tests_otp_spec_all_criteria"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "tests_otp_spec",
+      "target": "tests_otp_spec_all_criteria_v1",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L289",
+      "weight": 1.0,
+      "source": "tests_otp_spec",
+      "target": "tests_otp_spec_chipat",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L95",
+      "weight": 1.0,
+      "source": "tests_otp_spec",
+      "target": "tests_otp_spec_contract_doc",
       "confidence_score": 1.0
     },
     {
@@ -21252,6 +21772,36 @@
       "confidence_score": 1.0,
       "source": "tests_otp_spec",
       "target": "tests_otp_spec_contract_keys"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L100",
+      "weight": 1.0,
+      "source": "tests_otp_spec",
+      "target": "tests_otp_spec_contractkeysfromdoc",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L33",
+      "weight": 1.0,
+      "source": "tests_otp_spec",
+      "target": "tests_otp_spec_criteriaof",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L30",
+      "weight": 1.0,
+      "source": "tests_otp_spec",
+      "target": "tests_otp_spec_criterion",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -21269,9 +21819,9 @@
       "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L188",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_otp_spec",
-      "target": "tests_otp_spec_gradecontrol",
-      "confidence_score": 1.0
+      "target": "tests_otp_spec_gradecontrol"
     },
     {
       "relation": "contains",
@@ -21287,10 +21837,60 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L28",
+      "source_location": "L29",
       "weight": 1.0,
       "source": "tests_otp_spec",
-      "target": "tests_otp_spec_notseenwithout",
+      "target": "tests_otp_spec_level",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L291",
+      "weight": 1.0,
+      "source": "tests_otp_spec",
+      "target": "tests_otp_spec_notebtnat",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L293",
+      "weight": 1.0,
+      "source": "tests_otp_spec",
+      "target": "tests_otp_spec_notepanel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L294",
+      "weight": 1.0,
+      "source": "tests_otp_spec",
+      "target": "tests_otp_spec_notetext",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L28",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_otp_spec",
+      "target": "tests_otp_spec_notseenwithout"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L41",
+      "weight": 1.0,
+      "source": "tests_otp_spec",
+      "target": "tests_otp_spec_notseenwithoutv1",
       "confidence_score": 1.0
     },
     {
@@ -21307,16 +21907,6 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L258",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_openformafterreload"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L55",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -21327,11 +21917,21 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L192",
+      "source_location": "L256",
       "weight": 1.0,
       "source": "tests_otp_spec",
-      "target": "tests_otp_spec_pickgrade",
+      "target": "tests_otp_spec_passgate",
       "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L192",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_otp_spec",
+      "target": "tests_otp_spec_pickgrade"
     },
     {
       "relation": "contains",
@@ -21347,10 +21947,40 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L32",
+      "source_location": "L123",
       "weight": 1.0,
       "source": "tests_otp_spec",
-      "target": "tests_otp_spec_record_not_seen",
+      "target": "tests_otp_spec_record_header",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L32",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_otp_spec",
+      "target": "tests_otp_spec_record_not_seen"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L46",
+      "weight": 1.0,
+      "source": "tests_otp_spec",
+      "target": "tests_otp_spec_record_not_seen_v1",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L145",
+      "weight": 1.0,
+      "source": "tests_otp_spec",
+      "target": "tests_otp_spec_record_notes",
       "confidence_score": 1.0
     },
     {
@@ -21367,11 +21997,53 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L176",
+      "weight": 1.0,
+      "source": "tests_otp_spec",
+      "target": "tests_otp_spec_record_payload_legacy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L16",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "tests_otp_spec",
       "target": "tests_otp_spec_rubric"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L25",
+      "weight": 1.0,
+      "source": "tests_otp_spec",
+      "target": "tests_otp_spec_rubric_v1",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L30",
+      "weight": 1.0,
+      "source": "tests_otp_spec_criterion",
+      "target": "tests_otp_spec_level",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L253",
+      "weight": 1.0,
+      "source": "tests_otp_spec_openform",
+      "target": "tests_otp_spec_passgate",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -21391,9 +22063,9 @@
       "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L201",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_otp_spec_fillrequired",
-      "target": "tests_otp_spec_pickgrade",
-      "confidence_score": 1.0
+      "target": "tests_otp_spec_pickgrade"
     },
     {
       "relation": "contains",
@@ -49487,6 +50159,96 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": ".planning/2026-09-09-otp-v0.6-contract.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "planning_2026_09_09_otp_v0_6_contract",
+      "target": "planning_2026_09_09_otp_v0_6_contract_otp_v0_6_contract_sentence_chips_criterion_notes_wording",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".planning/2026-09-09-otp-v0.6-contract.md",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "planning_2026_09_09_otp_v0_6_contract_otp_v0_6_contract_sentence_chips_criterion_notes_wording",
+      "target": "planning_2026_09_09_otp_v0_6_contract_1_scope",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".planning/2026-09-09-otp-v0.6-contract.md",
+      "source_location": "L24",
+      "weight": 1.0,
+      "source": "planning_2026_09_09_otp_v0_6_contract_otp_v0_6_contract_sentence_chips_criterion_notes_wording",
+      "target": "planning_2026_09_09_otp_v0_6_contract_2_payload_post_json_form_otp_exactly_these_31_keys",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".planning/2026-09-09-otp-v0.6-contract.md",
+      "source_location": "L37",
+      "weight": 1.0,
+      "source": "planning_2026_09_09_otp_v0_6_contract_otp_v0_6_contract_sentence_chips_criterion_notes_wording",
+      "target": "planning_2026_09_09_otp_v0_6_contract_3_value_formats",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".planning/2026-09-09-otp-v0.6-contract.md",
+      "source_location": "L58",
+      "weight": 1.0,
+      "source": "planning_2026_09_09_otp_v0_6_contract_otp_v0_6_contract_sentence_chips_criterion_notes_wording",
+      "target": "planning_2026_09_09_otp_v0_6_contract_4_wording_exact_outward_facing_approved",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".planning/2026-09-09-otp-v0.6-contract.md",
+      "source_location": "L76",
+      "weight": 1.0,
+      "source": "planning_2026_09_09_otp_v0_6_contract_otp_v0_6_contract_sentence_chips_criterion_notes_wording",
+      "target": "planning_2026_09_09_otp_v0_6_contract_5_form_lane_a_assets_otp_src_otp_progress_form_html",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".planning/2026-09-09-otp-v0.6-contract.md",
+      "source_location": "L132",
+      "weight": 1.0,
+      "source": "planning_2026_09_09_otp_v0_6_contract_otp_v0_6_contract_sentence_chips_criterion_notes_wording",
+      "target": "planning_2026_09_09_otp_v0_6_contract_6_backend_lane_b_assets_r3_apps_script",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".planning/2026-09-09-otp-v0.6-contract.md",
+      "source_location": "L161",
+      "weight": 1.0,
+      "source": "planning_2026_09_09_otp_v0_6_contract_otp_v0_6_contract_sentence_chips_criterion_notes_wording",
+      "target": "planning_2026_09_09_otp_v0_6_contract_7_tests_lane_a_assets_otp_tests_otp_spec_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".planning/2026-09-09-otp-v0.6-contract.md",
+      "source_location": "L177",
+      "weight": 1.0,
+      "source": "planning_2026_09_09_otp_v0_6_contract_otp_v0_6_contract_sentence_chips_criterion_notes_wording",
+      "target": "planning_2026_09_09_otp_v0_6_contract_8_shared_worktree_rule_both_lanes_read_twice",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": ".planning/v0.10-r3-form-checklist.md",
       "source_location": "L1",
       "weight": 1.0,
@@ -49691,16 +50453,16 @@
       "source_location": "L1",
       "weight": 1.0,
       "source": "otp_readme",
-      "target": "otp_readme_progress_in_lessons_otp_form_otp_v0_5",
+      "target": "otp_readme_progress_in_lessons_otp_form_otp_v0_6",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L59",
+      "source_location": "L79",
       "weight": 1.0,
-      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_5",
+      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_6",
       "target": "otp_readme_backend_contract",
       "confidence_score": 1.0
     },
@@ -49708,9 +50470,9 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L42",
+      "source_location": "L62",
       "weight": 1.0,
-      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_5",
+      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_6",
       "target": "otp_readme_build",
       "confidence_score": 1.0
     },
@@ -49718,9 +50480,9 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L126",
+      "source_location": "L175",
       "weight": 1.0,
-      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_5",
+      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_6",
       "target": "otp_readme_changelog",
       "confidence_score": 1.0
     },
@@ -49728,9 +50490,9 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L115",
+      "source_location": "L163",
       "weight": 1.0,
-      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_5",
+      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_6",
       "target": "otp_readme_tests",
       "confidence_score": 1.0
     },
@@ -49740,7 +50502,7 @@
       "source_file": "Assets/OTP/README.md",
       "source_location": "L14",
       "weight": 1.0,
-      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_5",
+      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_6",
       "target": "otp_readme_what_is_on_the_page",
       "confidence_score": 1.0
     },
@@ -49760,9 +50522,9 @@
       "source_file": "Assets/R3/Google file links.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "r3_google_file_links",
-      "target": "r3_google_file_links_r3_evidence_google_file_links",
-      "confidence_score": 1.0
+      "target": "r3_google_file_links_r3_evidence_google_file_links"
     },
     {
       "relation": "contains",
@@ -49820,9 +50582,9 @@
       "source_file": "Assets/R3/README.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "r3_readme",
-      "target": "r3_readme_r3_evidence_form",
-      "confidence_score": 1.0
+      "target": "r3_readme_r3_evidence_form"
     },
     {
       "relation": "contains",
@@ -54466,5 +55228,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "c015999c66fe4bdecfe952d862d24acc6b1cb453"
+  "built_at_commit": "43285ec6d65fc30bf73db5336ab7fab299737a60"
 }

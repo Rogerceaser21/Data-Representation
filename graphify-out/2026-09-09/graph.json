@@ -655,7 +655,7 @@
       "label": "HERE",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L37",
+      "source_location": "L39",
       "_origin": "ast",
       "id": "tests_gs_harness_here",
       "community": 47,
@@ -665,7 +665,7 @@
       "label": "REPO",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L38",
+      "source_location": "L40",
       "_origin": "ast",
       "id": "tests_gs_harness_repo",
       "community": 47,
@@ -675,7 +675,7 @@
       "label": "GS_DIR",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L39",
+      "source_location": "L41",
       "_origin": "ast",
       "id": "tests_gs_harness_gs_dir",
       "community": 47,
@@ -685,7 +685,7 @@
       "label": "GS_FILES",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L40",
+      "source_location": "L42",
       "_origin": "ast",
       "id": "tests_gs_harness_gs_files",
       "community": 47,
@@ -695,7 +695,7 @@
       "label": "FIXED_MS",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L42",
+      "source_location": "L44",
       "_origin": "ast",
       "id": "tests_gs_harness_fixed_ms",
       "community": 47,
@@ -705,7 +705,7 @@
       "label": "EXPECTED_OTP_COLUMNS",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L47",
+      "source_location": "L49",
       "_origin": "ast",
       "id": "tests_gs_harness_expected_otp_columns",
       "community": 47,
@@ -715,7 +715,7 @@
       "label": "OTP_PAYLOAD",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L57",
+      "source_location": "L60",
       "_origin": "ast",
       "id": "tests_gs_harness_otp_payload",
       "community": 47,
@@ -725,7 +725,7 @@
       "label": "R3_PAYLOAD",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L87",
+      "source_location": "L92",
       "_origin": "ast",
       "id": "tests_gs_harness_r3_payload",
       "community": 47,
@@ -735,7 +735,7 @@
       "label": "makeRange()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L124",
+      "source_location": "L129",
       "_origin": "ast",
       "id": "tests_gs_harness_makerange",
       "community": 47,
@@ -745,7 +745,7 @@
       "label": "makeSheet()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L156",
+      "source_location": "L161",
       "_origin": "ast",
       "id": "tests_gs_harness_makesheet",
       "community": 47,
@@ -755,7 +755,7 @@
       "label": "makeResponse()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L173",
+      "source_location": "L178",
       "_origin": "ast",
       "id": "tests_gs_harness_makeresponse",
       "community": 47,
@@ -765,7 +765,7 @@
       "label": "buildEnv()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L184",
+      "source_location": "L189",
       "_origin": "ast",
       "id": "tests_gs_harness_buildenv",
       "community": 47,
@@ -775,7 +775,7 @@
       "label": "readSources()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L304",
+      "source_location": "L309",
       "_origin": "ast",
       "id": "tests_gs_harness_readsources",
       "community": 47,
@@ -785,7 +785,7 @@
       "label": "BASE_DIR",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L308",
+      "source_location": "L313",
       "_origin": "ast",
       "id": "tests_gs_harness_base_dir",
       "community": 47,
@@ -795,7 +795,7 @@
       "label": "SRC_NEW",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L314",
+      "source_location": "L319",
       "_origin": "ast",
       "id": "tests_gs_harness_src_new",
       "community": 47,
@@ -805,7 +805,7 @@
       "label": "SRC_BASE",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L315",
+      "source_location": "L320",
       "_origin": "ast",
       "id": "tests_gs_harness_src_base",
       "community": 47,
@@ -815,7 +815,7 @@
       "label": "R3_COLUMNS",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L318",
+      "source_location": "L323",
       "_origin": "ast",
       "id": "tests_gs_harness_r3_columns",
       "community": 47,
@@ -825,7 +825,7 @@
       "label": "r3Row()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L323",
+      "source_location": "L328",
       "_origin": "ast",
       "id": "tests_gs_harness_r3row",
       "community": 47,
@@ -835,7 +835,7 @@
       "label": "otpRow()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L334",
+      "source_location": "L339",
       "_origin": "ast",
       "id": "tests_gs_harness_otprow",
       "community": 47,
@@ -845,7 +845,7 @@
       "label": "R3_TEACHERS_ROWS",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L350",
+      "source_location": "L357",
       "_origin": "ast",
       "id": "tests_gs_harness_r3_teachers_rows",
       "community": 47,
@@ -855,7 +855,7 @@
       "label": "R3_INSPECTORS_ROWS",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L351",
+      "source_location": "L358",
       "_origin": "ast",
       "id": "tests_gs_harness_r3_inspectors_rows",
       "community": 47,
@@ -865,7 +865,7 @@
       "label": "ROSTER_R3",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L352",
+      "source_location": "L359",
       "_origin": "ast",
       "id": "tests_gs_harness_roster_r3",
       "community": 47,
@@ -875,7 +875,7 @@
       "label": "ROSTER_2627",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L364",
+      "source_location": "L371",
       "_origin": "ast",
       "id": "tests_gs_harness_roster_2627",
       "community": 47,
@@ -885,7 +885,7 @@
       "label": "seedFull()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L368",
+      "source_location": "L375",
       "_origin": "ast",
       "id": "tests_gs_harness_seedfull",
       "community": 47,
@@ -895,7 +895,7 @@
       "label": "seedR3Only()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L369",
+      "source_location": "L376",
       "_origin": "ast",
       "id": "tests_gs_harness_seedr3only",
       "community": 47,
@@ -905,7 +905,7 @@
       "label": "seedRecords()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L370",
+      "source_location": "L377",
       "_origin": "ast",
       "id": "tests_gs_harness_seedrecords",
       "community": 47,
@@ -915,7 +915,7 @@
       "label": "SCENARIOS",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L377",
+      "source_location": "L384",
       "_origin": "ast",
       "id": "tests_gs_harness_scenarios",
       "community": 47,
@@ -925,7 +925,7 @@
       "label": "runScenario()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L408",
+      "source_location": "L415",
       "_origin": "ast",
       "id": "tests_gs_harness_runscenario",
       "community": 47,
@@ -935,7 +935,7 @@
       "label": "ok()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L418",
+      "source_location": "L425",
       "_origin": "ast",
       "id": "tests_gs_harness_ok",
       "community": 47,
@@ -945,7 +945,7 @@
       "label": "eqJson()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L422",
+      "source_location": "L429",
       "_origin": "ast",
       "id": "tests_gs_harness_eqjson",
       "community": 47,
@@ -955,11 +955,21 @@
       "label": "section()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L427",
+      "source_location": "L434",
       "_origin": "ast",
       "id": "tests_gs_harness_section",
       "community": 47,
       "norm_label": "section()"
+    },
+    {
+      "label": "mailRowValue()",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/gs-harness.mjs",
+      "source_location": "L437",
+      "_origin": "ast",
+      "id": "tests_gs_harness_mailrowvalue",
+      "community": 47,
+      "norm_label": "mailrowvalue()"
     },
     {
       "label": "otp.spec.ts",
@@ -982,10 +992,40 @@
       "norm_label": "rubric"
     },
     {
-      "label": "CONTRACT_KEYS",
+      "label": "ALL_CRITERIA",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L24",
+      "_origin": "ast",
+      "id": "tests_otp_spec_all_criteria",
+      "community": 84,
+      "norm_label": "all_criteria"
+    },
+    {
+      "label": "notSeenWithout()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L28",
+      "_origin": "ast",
+      "id": "tests_otp_spec_notseenwithout",
+      "community": 84,
+      "norm_label": "notseenwithout()"
+    },
+    {
+      "label": "RECORD_NOT_SEEN",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L32",
+      "_origin": "ast",
+      "id": "tests_otp_spec_record_not_seen",
+      "community": 84,
+      "norm_label": "record_not_seen"
+    },
+    {
+      "label": "CONTRACT_KEYS",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L39",
       "_origin": "ast",
       "id": "tests_otp_spec_contract_keys",
       "community": 84,
@@ -995,7 +1035,7 @@
       "label": "OPTIONS_PAYLOAD",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L58",
+      "source_location": "L71",
       "_origin": "ast",
       "id": "tests_otp_spec_options_payload",
       "community": 84,
@@ -1005,7 +1045,7 @@
       "label": "RECORD_PAYLOAD",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L72",
+      "source_location": "L85",
       "_origin": "ast",
       "id": "tests_otp_spec_record_payload",
       "community": 84,
@@ -1015,7 +1055,7 @@
       "label": "Harness",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L104",
+      "source_location": "L119",
       "_origin": "ast",
       "id": "tests_otp_spec_harness",
       "community": 84,
@@ -1025,7 +1065,7 @@
       "label": "openForm()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L159",
+      "source_location": "L174",
       "_origin": "ast",
       "id": "tests_otp_spec_openform",
       "community": 84,
@@ -1035,17 +1075,37 @@
       "label": "pickTomSelect()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L167",
+      "source_location": "L182",
       "_origin": "ast",
       "id": "tests_otp_spec_picktomselect",
       "community": 84,
       "norm_label": "picktomselect()"
     },
     {
+      "label": "gradeControl()",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L188",
+      "_origin": "ast",
+      "id": "tests_otp_spec_gradecontrol",
+      "community": 84,
+      "norm_label": "gradecontrol()"
+    },
+    {
+      "label": "pickGrade()",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L192",
+      "_origin": "ast",
+      "id": "tests_otp_spec_pickgrade",
+      "community": 84,
+      "norm_label": "pickgrade()"
+    },
+    {
       "label": "fillRequired()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L172",
+      "source_location": "L197",
       "_origin": "ast",
       "id": "tests_otp_spec_fillrequired",
       "community": 84,
@@ -1055,7 +1115,7 @@
       "label": "openFormAfterReload()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L314",
+      "source_location": "L354",
       "_origin": "ast",
       "id": "tests_otp_spec_openformafterreload",
       "community": 84,
@@ -1376,7 +1436,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_s_point",
-      "community": 64,
+      "community": 51,
       "norm_label": ".point()"
     },
     {
@@ -1446,7 +1506,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_s_invert",
-      "community": 64,
+      "community": 51,
       "norm_label": ".invert()"
     },
     {
@@ -1686,7 +1746,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_getprojectiontosegment",
-      "community": 90,
+      "community": 45,
       "norm_label": "_getprojectiontosegment()"
     },
     {
@@ -1696,7 +1756,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_getprojectiontoline",
-      "community": 90,
+      "community": 45,
       "norm_label": "_getprojectiontoline()"
     },
     {
@@ -1706,7 +1766,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_preparearrayfortween",
-      "community": 90,
+      "community": 4,
       "norm_label": "_preparearrayfortween()"
     },
     {
@@ -1776,7 +1836,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_fillshape",
-      "community": 46,
+      "community": 58,
       "norm_label": ".fillshape()"
     },
     {
@@ -1856,7 +1916,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_reset",
-      "community": 50,
+      "community": 58,
       "norm_label": ".reset()"
     },
     {
@@ -1876,7 +1936,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_clear",
-      "community": 50,
+      "community": 55,
       "norm_label": ".clear()"
     },
     {
@@ -2016,7 +2076,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_createpattern",
-      "community": 53,
+      "community": 50,
       "norm_label": ".createpattern()"
     },
     {
@@ -2096,7 +2156,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_measuretext",
-      "community": 65,
+      "community": 53,
       "norm_label": ".measuretext()"
     },
     {
@@ -2186,7 +2246,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_rotate",
-      "community": 53,
+      "community": 50,
       "norm_label": ".rotate()"
     },
     {
@@ -2206,7 +2266,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_scale",
-      "community": 53,
+      "community": 55,
       "norm_label": ".scale()"
     },
     {
@@ -2216,7 +2276,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_setlinedash",
-      "community": 58,
+      "community": 108,
       "norm_label": ".setlinedash()"
     },
     {
@@ -2236,7 +2296,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_settransform",
-      "community": 50,
+      "community": 58,
       "norm_label": ".settransform()"
     },
     {
@@ -2266,7 +2326,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_translate",
-      "community": 53,
+      "community": 43,
       "norm_label": ".translate()"
     },
     {
@@ -2296,7 +2356,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_get",
-      "community": 53,
+      "community": 64,
       "norm_label": "get()"
     },
     {
@@ -2416,7 +2476,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_m",
-      "community": 41,
+      "community": 58,
       "norm_label": "m"
     },
     {
@@ -2426,7 +2486,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_m_constructor",
-      "community": 41,
+      "community": 58,
       "norm_label": ".constructor()"
     },
     {
@@ -2436,7 +2496,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_m_fill",
-      "community": 43,
+      "community": 58,
       "norm_label": "._fill()"
     },
     {
@@ -2446,7 +2506,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_m_strokeshape",
-      "community": 41,
+      "community": 46,
       "norm_label": ".strokeshape()"
     },
     {
@@ -2456,7 +2516,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_m_stroke",
-      "community": 41,
+      "community": 58,
       "norm_label": "._stroke()"
     },
     {
@@ -2466,7 +2526,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_y",
-      "community": 53,
+      "community": 55,
       "norm_label": "y"
     },
     {
@@ -2486,7 +2546,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_y_getcontext",
-      "community": 53,
+      "community": 55,
       "norm_label": ".getcontext()"
     },
     {
@@ -2496,7 +2556,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_y_getpixelratio",
-      "community": 50,
+      "community": 58,
       "norm_label": ".getpixelratio()"
     },
     {
@@ -2516,7 +2576,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_y_setwidth",
-      "community": 53,
+      "community": 55,
       "norm_label": ".setwidth()"
     },
     {
@@ -2526,7 +2586,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_y_setheight",
-      "community": 53,
+      "community": 55,
       "norm_label": ".setheight()"
     },
     {
@@ -2536,7 +2596,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_y_getwidth",
-      "community": 53,
+      "community": 55,
       "norm_label": ".getwidth()"
     },
     {
@@ -2546,7 +2606,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_y_getheight",
-      "community": 53,
+      "community": 55,
       "norm_label": ".getheight()"
     },
     {
@@ -2596,7 +2656,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_x",
-      "community": 53,
+      "community": 64,
       "norm_label": "x"
     },
     {
@@ -2646,7 +2706,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_enddragbefore",
-      "community": 113,
+      "community": 155,
       "norm_label": "_enddragbefore()"
     },
     {
@@ -2656,7 +2716,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_enddragafter",
-      "community": 113,
+      "community": 155,
       "norm_label": "_enddragafter()"
     },
     {
@@ -2756,7 +2816,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_addcomponentsgettersetter",
-      "community": 90,
+      "community": 56,
       "norm_label": "addcomponentsgettersetter()"
     },
     {
@@ -2846,7 +2906,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_getcache",
-      "community": 53,
+      "community": 64,
       "norm_label": "._getcache()"
     },
     {
@@ -2856,7 +2916,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_calculate",
-      "community": 53,
+      "community": 64,
       "norm_label": "._calculate()"
     },
     {
@@ -2896,7 +2956,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_iscached",
-      "community": 64,
+      "community": 113,
       "norm_label": ".iscached()"
     },
     {
@@ -2916,7 +2976,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_transformedrect",
-      "community": 64,
+      "community": 113,
       "norm_label": "._transformedrect()"
     },
     {
@@ -2956,7 +3016,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_on",
-      "community": 79,
+      "community": 51,
       "norm_label": ".on()"
     },
     {
@@ -2986,7 +3046,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_addeventlistener",
-      "community": 79,
+      "community": 51,
       "norm_label": ".addeventlistener()"
     },
     {
@@ -3016,7 +3076,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_remove",
-      "community": 113,
+      "community": 155,
       "norm_label": ".remove()"
     },
     {
@@ -3026,7 +3086,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_clearcaches",
-      "community": 113,
+      "community": 155,
       "norm_label": "._clearcaches()"
     },
     {
@@ -3046,7 +3106,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_getattr",
-      "community": 90,
+      "community": 56,
       "norm_label": ".getattr()"
     },
     {
@@ -3166,7 +3226,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_batchtransformchanges",
-      "community": 15,
+      "community": 64,
       "norm_label": "._batchtransformchanges()"
     },
     {
@@ -3176,7 +3236,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_setposition",
-      "community": 15,
+      "community": 64,
       "norm_label": ".setposition()"
     },
     {
@@ -3186,7 +3246,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_getposition",
-      "community": 53,
+      "community": 64,
       "norm_label": ".getposition()"
     },
     {
@@ -3196,7 +3256,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_getrelativepointerposition",
-      "community": 64,
+      "community": 51,
       "norm_label": ".getrelativepointerposition()"
     },
     {
@@ -3236,7 +3296,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_cleartransform",
-      "community": 53,
+      "community": 64,
       "norm_label": "._cleartransform()"
     },
     {
@@ -3246,7 +3306,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_move",
-      "community": 53,
+      "community": 64,
       "norm_label": ".move()"
     },
     {
@@ -3266,7 +3326,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_rotate",
-      "community": 53,
+      "community": 46,
       "norm_label": ".rotate()"
     },
     {
@@ -3446,7 +3506,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_getabsolutetransform",
-      "community": 53,
+      "community": 64,
       "norm_label": ".getabsolutetransform()"
     },
     {
@@ -3476,7 +3536,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_gettransform",
-      "community": 53,
+      "community": 64,
       "norm_label": ".gettransform()"
     },
     {
@@ -3596,7 +3656,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_firechangeevent",
-      "community": 90,
+      "community": 56,
       "norm_label": "._firechangeevent()"
     },
     {
@@ -3656,7 +3716,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_setcomponentattr",
-      "community": 90,
+      "community": 56,
       "norm_label": "._setcomponentattr()"
     },
     {
@@ -3686,7 +3746,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_draw",
-      "community": 43,
+      "community": 130,
       "norm_label": ".draw()"
     },
     {
@@ -3726,7 +3786,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_stopdrag",
-      "community": 113,
+      "community": 155,
       "norm_label": ".stopdrag()"
     },
     {
@@ -3786,7 +3846,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_isclientrectonscreen",
-      "community": 59,
+      "community": 15,
       "norm_label": ".isclientrectonscreen()"
     },
     {
@@ -3886,7 +3946,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_v_findone",
-      "community": 51,
+      "community": 57,
       "norm_label": ".findone()"
     },
     {
@@ -4026,7 +4086,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_z",
-      "community": 130,
+      "community": 2,
       "norm_label": "z()"
     },
     {
@@ -4116,7 +4176,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_tt_clear",
-      "community": 43,
+      "community": 130,
       "norm_label": ".clear()"
     },
     {
@@ -4256,7 +4316,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_tt_haspointercapture",
-      "community": 130,
+      "community": 2,
       "norm_label": ".haspointercapture()"
     },
     {
@@ -4526,7 +4586,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ft_getcanvas",
-      "community": 43,
+      "community": 41,
       "norm_label": ".getcanvas()"
     },
     {
@@ -4566,7 +4626,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ft_getfillpattern",
-      "community": 53,
+      "community": 58,
       "norm_label": "._getfillpattern()"
     },
     {
@@ -4636,7 +4696,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ft_intersects",
-      "community": 43,
+      "community": 130,
       "norm_label": ".intersects()"
     },
     {
@@ -4666,7 +4726,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ft_setstrokehitenabled",
-      "community": 56,
+      "community": 41,
       "norm_label": ".setstrokehitenabled()"
     },
     {
@@ -4696,7 +4756,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ft_getclientrect",
-      "community": 64,
+      "community": 113,
       "norm_label": ".getclientrect()"
     },
     {
@@ -4736,7 +4796,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ft_haspointercapture",
-      "community": 130,
+      "community": 2,
       "norm_label": ".haspointercapture()"
     },
     {
@@ -4796,7 +4856,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_getcanvas",
-      "community": 43,
+      "community": 59,
       "norm_label": ".getcanvas()"
     },
     {
@@ -4816,7 +4876,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_gethitcanvas",
-      "community": 43,
+      "community": 130,
       "norm_label": ".gethitcanvas()"
     },
     {
@@ -4836,7 +4896,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_clear",
-      "community": 43,
+      "community": 130,
       "norm_label": ".clear()"
     },
     {
@@ -5036,7 +5096,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_drawscene",
-      "community": 43,
+      "community": 130,
       "norm_label": ".drawscene()"
     },
     {
@@ -5046,7 +5106,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_drawhit",
-      "community": 43,
+      "community": 130,
       "norm_label": ".drawhit()"
     },
     {
@@ -5456,7 +5516,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_kt_constructor",
-      "community": 58,
+      "community": 4,
       "norm_label": ".constructor()"
     },
     {
@@ -5466,7 +5526,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_kt_addattr",
-      "community": 90,
+      "community": 4,
       "norm_label": "._addattr()"
     },
     {
@@ -5476,7 +5536,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_kt_tweenfunc",
-      "community": 58,
+      "community": 4,
       "norm_label": "._tweenfunc()"
     },
     {
@@ -5516,7 +5576,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_kt_reset",
-      "community": 53,
+      "community": 4,
       "norm_label": ".reset()"
     },
     {
@@ -5726,7 +5786,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ee_gettensionpoints",
-      "community": 108,
+      "community": 46,
       "norm_label": ".gettensionpoints()"
     },
     {
@@ -5966,7 +6026,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ce_scenefunc",
-      "community": 108,
+      "community": 46,
       "norm_label": "._scenefunc()"
     },
     {
@@ -6226,7 +6286,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_be",
-      "community": 79,
+      "community": 4,
       "norm_label": "be"
     },
     {
@@ -6236,7 +6296,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_be_constructor",
-      "community": 79,
+      "community": 4,
       "norm_label": ".constructor()"
     },
     {
@@ -6246,7 +6306,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_be_gettext",
-      "community": 79,
+      "community": 4,
       "norm_label": ".gettext()"
     },
     {
@@ -6256,7 +6316,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_be_gettag",
-      "community": 79,
+      "community": 4,
       "norm_label": ".gettag()"
     },
     {
@@ -6266,7 +6326,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_be_addlisteners",
-      "community": 79,
+      "community": 4,
       "norm_label": "._addlisteners()"
     },
     {
@@ -6276,7 +6336,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_be_getwidth",
-      "community": 79,
+      "community": 4,
       "norm_label": ".getwidth()"
     },
     {
@@ -6286,7 +6346,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_be_getheight",
-      "community": 79,
+      "community": 4,
       "norm_label": ".getheight()"
     },
     {
@@ -6296,7 +6356,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_be_sync",
-      "community": 79,
+      "community": 4,
       "norm_label": "._sync()"
     },
     {
@@ -6336,7 +6396,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we",
-      "community": 65,
+      "community": 44,
       "norm_label": "we"
     },
     {
@@ -6616,7 +6676,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_me",
-      "community": 65,
+      "community": 44,
       "norm_label": "me()"
     },
     {
@@ -6626,7 +6686,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ze",
-      "community": 65,
+      "community": 53,
       "norm_label": "ze()"
     },
     {
@@ -6656,7 +6716,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_settext",
-      "community": 65,
+      "community": 44,
       "norm_label": ".settext()"
     },
     {
@@ -6666,7 +6726,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_getwidth",
-      "community": 65,
+      "community": 44,
       "norm_label": ".getwidth()"
     },
     {
@@ -6676,7 +6736,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_getheight",
-      "community": 65,
+      "community": 44,
       "norm_label": ".getheight()"
     },
     {
@@ -6686,7 +6746,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_gettextwidth",
-      "community": 65,
+      "community": 53,
       "norm_label": ".gettextwidth()"
     },
     {
@@ -6696,7 +6756,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_gettextheight",
-      "community": 65,
+      "community": 44,
       "norm_label": ".gettextheight()"
     },
     {
@@ -6706,7 +6766,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_measuresize",
-      "community": 65,
+      "community": 53,
       "norm_label": ".measuresize()"
     },
     {
@@ -6716,7 +6776,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_getcontextfont",
-      "community": 65,
+      "community": 44,
       "norm_label": "._getcontextfont()"
     },
     {
@@ -6726,7 +6786,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_addtextline",
-      "community": 65,
+      "community": 44,
       "norm_label": "._addtextline()"
     },
     {
@@ -6736,7 +6796,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_settextdata",
-      "community": 65,
+      "community": 44,
       "norm_label": "._settextdata()"
     },
     {
@@ -6746,7 +6806,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_shouldhandleellipsis",
-      "community": 65,
+      "community": 44,
       "norm_label": "._shouldhandleellipsis()"
     },
     {
@@ -6756,7 +6816,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_trytoaddellipsistolastline",
-      "community": 65,
+      "community": 44,
       "norm_label": "._trytoaddellipsistolastline()"
     },
     {
@@ -6766,7 +6826,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_getstrokescaleenabled",
-      "community": 58,
+      "community": 44,
       "norm_label": ".getstrokescaleenabled()"
     },
     {
@@ -6876,7 +6936,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_qe_gettextwidth",
-      "community": 65,
+      "community": 44,
       "norm_label": ".gettextwidth()"
     },
     {
@@ -6906,7 +6966,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_qe_getcontextfont",
-      "community": 46,
+      "community": 53,
       "norm_label": "._getcontextfont()"
     },
     {
@@ -6916,7 +6976,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_qe_gettextsize",
-      "community": 43,
+      "community": 53,
       "norm_label": "._gettextsize()"
     },
     {
@@ -6956,7 +7016,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ti",
-      "community": 113,
+      "community": 45,
       "norm_label": "ti()"
     },
     {
@@ -6966,7 +7026,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ei",
-      "community": 113,
+      "community": 45,
       "norm_label": "ei()"
     },
     {
@@ -7196,7 +7256,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ni_handlemousemove",
-      "community": 51,
+      "community": 64,
       "norm_label": "._handlemousemove()"
     },
     {
@@ -7296,7 +7356,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ni_destroy",
-      "community": 51,
+      "community": 79,
       "norm_label": ".destroy()"
     },
     {
@@ -7446,7 +7506,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "lib_perfect_freehand_i",
-      "community": 52,
+      "community": 2,
       "norm_label": "i()"
     },
     {
@@ -7486,7 +7546,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "lib_perfect_freehand_l",
-      "community": 52,
+      "community": 2,
       "norm_label": "l()"
     },
     {
@@ -7506,7 +7566,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "lib_perfect_freehand_d",
-      "community": 52,
+      "community": 65,
       "norm_label": "d()"
     },
     {
@@ -7576,7 +7636,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "lib_perfect_freehand_v",
-      "community": 52,
+      "community": 90,
       "norm_label": "v()"
     },
     {
@@ -7596,7 +7656,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "lib_perfect_freehand_b",
-      "community": 52,
+      "community": 90,
       "norm_label": "b()"
     },
     {
@@ -7606,7 +7666,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "lib_perfect_freehand_x",
-      "community": 52,
+      "community": 2,
       "norm_label": "x()"
     },
     {
@@ -7706,7 +7766,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "lib_perfect_freehand_r",
-      "community": 67,
+      "community": 2,
       "norm_label": "r()"
     },
     {
@@ -7776,7 +7836,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_t_trigger",
-      "community": 3,
+      "community": 90,
       "norm_label": ".trigger()"
     },
     {
@@ -7786,7 +7846,7 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_c",
-      "community": 2,
+      "community": 154,
       "norm_label": "c"
     },
     {
@@ -7796,7 +7856,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_c_constructor",
-      "community": 2,
+      "community": 154,
       "norm_label": ".constructor()"
     },
     {
@@ -7806,7 +7866,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_c_add",
-      "community": 2,
+      "community": 154,
       "norm_label": ".add()"
     },
     {
@@ -7816,7 +7876,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_c_last",
-      "community": 2,
+      "community": 154,
       "norm_label": ".last()"
     },
     {
@@ -7826,7 +7886,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_c_length",
-      "community": 2,
+      "community": 154,
       "norm_label": ".length()"
     },
     {
@@ -7836,7 +7896,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_c_clone",
-      "community": 2,
+      "community": 154,
       "norm_label": ".clone()"
     },
     {
@@ -7926,7 +7986,7 @@
       "source_location": "L177",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_setup",
-      "community": 67,
+      "community": 87,
       "norm_label": ".setup()"
     },
     {
@@ -7936,7 +7996,7 @@
       "source_location": "L190",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_setupoptions",
-      "community": 52,
+      "community": 90,
       "norm_label": ".setupoptions()"
     },
     {
@@ -7966,7 +8026,7 @@
       "source_location": "L193",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_sync",
-      "community": 87,
+      "community": 3,
       "norm_label": ".sync()"
     },
     {
@@ -8016,7 +8076,7 @@
       "source_location": "L199",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_onkeypress",
-      "community": 67,
+      "community": 3,
       "norm_label": ".onkeypress()"
     },
     {
@@ -8026,7 +8086,7 @@
       "source_location": "L201",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_onkeydown",
-      "community": 67,
+      "community": 87,
       "norm_label": ".onkeydown()"
     },
     {
@@ -8076,7 +8136,7 @@
       "source_location": "L223",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_onoptionselect",
-      "community": 67,
+      "community": 87,
       "norm_label": ".onoptionselect()"
     },
     {
@@ -8086,7 +8146,7 @@
       "source_location": "L224",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_canselect",
-      "community": 67,
+      "community": 87,
       "norm_label": ".canselect()"
     },
     {
@@ -8136,7 +8196,7 @@
       "source_location": "L230",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_preload",
-      "community": 3,
+      "community": 154,
       "norm_label": ".preload()"
     },
     {
@@ -8146,7 +8206,7 @@
       "source_location": "L231",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_settextboxvalue",
-      "community": 67,
+      "community": 87,
       "norm_label": ".settextboxvalue()"
     },
     {
@@ -8156,7 +8216,7 @@
       "source_location": "L232",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_getvalue",
-      "community": 3,
+      "community": 65,
       "norm_label": ".getvalue()"
     },
     {
@@ -8166,7 +8226,7 @@
       "source_location": "L232",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_setvalue",
-      "community": 87,
+      "community": 3,
       "norm_label": ".setvalue()"
     },
     {
@@ -8176,7 +8236,7 @@
       "source_location": "L232",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_setmaxitems",
-      "community": 3,
+      "community": 65,
       "norm_label": ".setmaxitems()"
     },
     {
@@ -8266,7 +8326,7 @@
       "source_location": "L241",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_selectall",
-      "community": 67,
+      "community": 87,
       "norm_label": ".selectall()"
     },
     {
@@ -8276,7 +8336,7 @@
       "source_location": "L244",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_inputstate",
-      "community": 67,
+      "community": 87,
       "norm_label": ".inputstate()"
     },
     {
@@ -8316,7 +8376,7 @@
       "source_location": "L250",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_getscorefunction",
-      "community": 2,
+      "community": 3,
       "norm_label": ".getscorefunction()"
     },
     {
@@ -8326,7 +8386,7 @@
       "source_location": "L250",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_getsearchoptions",
-      "community": 2,
+      "community": 3,
       "norm_label": ".getsearchoptions()"
     },
     {
@@ -8336,7 +8396,7 @@
       "source_location": "L251",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_search",
-      "community": 2,
+      "community": 3,
       "norm_label": ".search()"
     },
     {
@@ -8366,7 +8426,7 @@
       "source_location": "L288",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_addoption",
-      "community": 3,
+      "community": 90,
       "norm_label": ".addoption()"
     },
     {
@@ -8376,7 +8436,7 @@
       "source_location": "L291",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_addoptions",
-      "community": 52,
+      "community": 90,
       "norm_label": ".addoptions()"
     },
     {
@@ -8386,7 +8446,7 @@
       "source_location": "L291",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_registeroption",
-      "community": 3,
+      "community": 90,
       "norm_label": ".registeroption()"
     },
     {
@@ -8416,7 +8476,7 @@
       "source_location": "L293",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_removeoptiongroup",
-      "community": 3,
+      "community": 90,
       "norm_label": ".removeoptiongroup()"
     },
     {
@@ -8426,7 +8486,7 @@
       "source_location": "L293",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_clearoptiongroups",
-      "community": 3,
+      "community": 90,
       "norm_label": ".clearoptiongroups()"
     },
     {
@@ -8436,7 +8496,7 @@
       "source_location": "L293",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_updateoption",
-      "community": 3,
+      "community": 65,
       "norm_label": ".updateoption()"
     },
     {
@@ -8446,7 +8506,7 @@
       "source_location": "L302",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_removeoption",
-      "community": 3,
+      "community": 65,
       "norm_label": ".removeoption()"
     },
     {
@@ -8456,7 +8516,7 @@
       "source_location": "L303",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_clearoptions",
-      "community": 3,
+      "community": 90,
       "norm_label": ".clearoptions()"
     },
     {
@@ -8476,7 +8536,7 @@
       "source_location": "L306",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_getoption",
-      "community": 3,
+      "community": 65,
       "norm_label": ".getoption()"
     },
     {
@@ -8486,7 +8546,7 @@
       "source_location": "L310",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_getadjacent",
-      "community": 67,
+      "community": 87,
       "norm_label": ".getadjacent()"
     },
     {
@@ -8496,7 +8556,7 @@
       "source_location": "L314",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_getitem",
-      "community": 3,
+      "community": 65,
       "norm_label": ".getitem()"
     },
     {
@@ -8506,7 +8566,7 @@
       "source_location": "L316",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_additems",
-      "community": 3,
+      "community": 65,
       "norm_label": ".additems()"
     },
     {
@@ -8516,7 +8576,7 @@
       "source_location": "L318",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_additem",
-      "community": 67,
+      "community": 3,
       "norm_label": ".additem()"
     },
     {
@@ -8526,7 +8586,7 @@
       "source_location": "L321",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_removeitem",
-      "community": 3,
+      "community": 65,
       "norm_label": ".removeitem()"
     },
     {
@@ -8536,7 +8596,7 @@
       "source_location": "L325",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_createitem",
-      "community": 67,
+      "community": 3,
       "norm_label": ".createitem()"
     },
     {
@@ -8546,7 +8606,7 @@
       "source_location": "L332",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_refreshitems",
-      "community": 3,
+      "community": 65,
       "norm_label": ".refreshitems()"
     },
     {
@@ -8556,7 +8616,7 @@
       "source_location": "L333",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_refreshstate",
-      "community": 3,
+      "community": 65,
       "norm_label": ".refreshstate()"
     },
     {
@@ -8566,7 +8626,7 @@
       "source_location": "L339",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_refreshvaliditystate",
-      "community": 3,
+      "community": 65,
       "norm_label": ".refreshvaliditystate()"
     },
     {
@@ -8576,7 +8636,7 @@
       "source_location": "L340",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_isfull",
-      "community": 3,
+      "community": 65,
       "norm_label": ".isfull()"
     },
     {
@@ -8586,7 +8646,7 @@
       "source_location": "L340",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_updateoriginalinput",
-      "community": 3,
+      "community": 65,
       "norm_label": ".updateoriginalinput()"
     },
     {
@@ -8596,7 +8656,7 @@
       "source_location": "L345",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_open",
-      "community": 3,
+      "community": 65,
       "norm_label": ".open()"
     },
     {
@@ -8606,7 +8666,7 @@
       "source_location": "L346",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_close",
-      "community": 67,
+      "community": 87,
       "norm_label": ".close()"
     },
     {
@@ -8616,7 +8676,7 @@
       "source_location": "L347",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_positiondropdown",
-      "community": 3,
+      "community": 65,
       "norm_label": ".positiondropdown()"
     },
     {
@@ -8626,7 +8686,7 @@
       "source_location": "L348",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_clear",
-      "community": 3,
+      "community": 87,
       "norm_label": ".clear()"
     },
     {
@@ -8636,7 +8696,7 @@
       "source_location": "L350",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_insertatcaret",
-      "community": 3,
+      "community": 65,
       "norm_label": ".insertatcaret()"
     },
     {
@@ -8646,7 +8706,7 @@
       "source_location": "L351",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_deleteselection",
-      "community": 3,
+      "community": 87,
       "norm_label": ".deleteselection()"
     },
     {
@@ -8656,7 +8716,7 @@
       "source_location": "L359",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_shoulddelete",
-      "community": 3,
+      "community": 87,
       "norm_label": ".shoulddelete()"
     },
     {
@@ -8696,7 +8756,7 @@
       "source_location": "L364",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_setcaret",
-      "community": 3,
+      "community": 65,
       "norm_label": ".setcaret()"
     },
     {
@@ -8706,7 +8766,7 @@
       "source_location": "L364",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_controlchildren",
-      "community": 3,
+      "community": 87,
       "norm_label": ".controlchildren()"
     },
     {
@@ -8716,7 +8776,7 @@
       "source_location": "L364",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_lock",
-      "community": 87,
+      "community": 3,
       "norm_label": ".lock()"
     },
     {
@@ -8726,7 +8786,7 @@
       "source_location": "L364",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_unlock",
-      "community": 87,
+      "community": 3,
       "norm_label": ".unlock()"
     },
     {
@@ -8736,7 +8796,7 @@
       "source_location": "L364",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_setlocked",
-      "community": 87,
+      "community": 3,
       "norm_label": ".setlocked()"
     },
     {
@@ -8746,7 +8806,7 @@
       "source_location": "L364",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_disable",
-      "community": 87,
+      "community": 3,
       "norm_label": ".disable()"
     },
     {
@@ -8756,7 +8816,7 @@
       "source_location": "L364",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_enable",
-      "community": 87,
+      "community": 3,
       "norm_label": ".enable()"
     },
     {
@@ -8766,7 +8826,7 @@
       "source_location": "L364",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_setdisabled",
-      "community": 87,
+      "community": 3,
       "norm_label": ".setdisabled()"
     },
     {
@@ -8776,7 +8836,7 @@
       "source_location": "L364",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_setreadonly",
-      "community": 87,
+      "community": 3,
       "norm_label": ".setreadonly()"
     },
     {
@@ -8796,7 +8856,7 @@
       "source_location": "L365",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_render",
-      "community": 3,
+      "community": 65,
       "norm_label": ".render()"
     },
     {
@@ -8806,7 +8866,7 @@
       "source_location": "L372",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_clearcache",
-      "community": 3,
+      "community": 90,
       "norm_label": ".clearcache()"
     },
     {
@@ -8816,7 +8876,7 @@
       "source_location": "L372",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_uncachevalue",
-      "community": 3,
+      "community": 65,
       "norm_label": ".uncachevalue()"
     },
     {
@@ -8826,7 +8886,7 @@
       "source_location": "L373",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_cancreate",
-      "community": 67,
+      "community": 3,
       "norm_label": ".cancreate()"
     },
     {
@@ -15728,14 +15788,14 @@
       "norm_label": "readme.md"
     },
     {
-      "label": "Progress in Lessons OTP form \u00b7 otp-v0.3",
+      "label": "Progress in Lessons OTP form \u00b7 otp-v0.5",
       "file_type": "document",
       "source_file": "Assets/OTP/README.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "otp_readme_progress_in_lessons_otp_form_otp_v0_3",
+      "id": "otp_readme_progress_in_lessons_otp_form_otp_v0_5",
       "community": 118,
-      "norm_label": "progress in lessons otp form \u00b7 otp-v0.3"
+      "norm_label": "progress in lessons otp form \u00b7 otp-v0.5"
     },
     {
       "label": "What is on the page",
@@ -15751,7 +15811,7 @@
       "label": "Build",
       "file_type": "document",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L33",
+      "source_location": "L42",
       "_origin": "ast",
       "id": "otp_readme_build",
       "community": 118,
@@ -15761,7 +15821,7 @@
       "label": "Backend contract",
       "file_type": "document",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L50",
+      "source_location": "L59",
       "_origin": "ast",
       "id": "otp_readme_backend_contract",
       "community": 118,
@@ -15771,7 +15831,7 @@
       "label": "Tests",
       "file_type": "document",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L91",
+      "source_location": "L115",
       "_origin": "ast",
       "id": "otp_readme_tests",
       "community": 118,
@@ -15781,7 +15841,7 @@
       "label": "Changelog",
       "file_type": "document",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L102",
+      "source_location": "L126",
       "_origin": "ast",
       "id": "otp_readme_changelog",
       "community": 118,
@@ -15813,7 +15873,7 @@
       "source_file": "Assets/R3/Google file links.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_assets_r3_google_file_links_md",
+      "id": "r3_google_file_links",
       "community": 28,
       "norm_label": "google file links.md"
     },
@@ -15871,7 +15931,7 @@
       "label": "Related",
       "file_type": "document",
       "source_file": "Assets/R3/Google file links.md",
-      "source_location": "L68",
+      "source_location": "L69",
       "_origin": "ast",
       "id": "r3_google_file_links_related",
       "community": 28,
@@ -15883,7 +15943,7 @@
       "source_file": "Assets/R3/README.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_assets_r3_readme_md",
+      "id": "r3_readme",
       "community": 25,
       "norm_label": "readme.md"
     },
@@ -15981,7 +16041,7 @@
       "label": "Full project context",
       "file_type": "document",
       "source_file": "Assets/R3/README.md",
-      "source_location": "L140",
+      "source_location": "L144",
       "_origin": "ast",
       "id": "r3_readme_full_project_context",
       "community": 25,
@@ -17008,44 +17068,44 @@
       "norm_label": "heal / big photo drop"
     },
     {
-      "label": "24-25-Primary School OTP - v4_ec47aea0.md",
+      "label": "24-25-Primary School OTP - v4_e258b9ec.md",
       "file_type": "document",
-      "source_file": "graphify-out/converted/24-25-Primary School OTP - v4_ec47aea0.md",
+      "source_file": "graphify-out/converted/24-25-Primary School OTP - v4_e258b9ec.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "converted_24_25_primary_school_otp_v4_ec47aea0",
-      "community": 154,
-      "norm_label": "24-25-primary school otp - v4_ec47aea0.md"
-    },
-    {
-      "label": "Lesson Observation - Igor- 12_11_dee7a628.md",
-      "file_type": "document",
-      "source_file": "graphify-out/converted/Lesson Observation - Igor- 12_11_dee7a628.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "converted_lesson_observation_igor_12_11_dee7a628",
-      "community": 155,
-      "norm_label": "lesson observation - igor- 12_11_dee7a628.md"
-    },
-    {
-      "label": "R3 Evidence Form Template_b1b82e39.md",
-      "file_type": "document",
-      "source_file": "graphify-out/converted/R3 Evidence Form Template_b1b82e39.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "converted_r3_evidence_form_template_b1b82e39",
+      "id": "converted_24_25_primary_school_otp_v4_e258b9ec",
       "community": 156,
-      "norm_label": "r3 evidence form template_b1b82e39.md"
+      "norm_label": "24-25-primary school otp - v4_e258b9ec.md"
     },
     {
-      "label": "Year 6 Lesson Plan_dfc2596c.md",
+      "label": "Lesson Observation - Igor- 12_11_71b57a5b.md",
       "file_type": "document",
-      "source_file": "graphify-out/converted/Year 6 Lesson Plan_dfc2596c.md",
+      "source_file": "graphify-out/converted/Lesson Observation - Igor- 12_11_71b57a5b.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "converted_year_6_lesson_plan_dfc2596c",
+      "id": "converted_lesson_observation_igor_12_11_71b57a5b",
       "community": 157,
-      "norm_label": "year 6 lesson plan_dfc2596c.md"
+      "norm_label": "lesson observation - igor- 12_11_71b57a5b.md"
+    },
+    {
+      "label": "R3 Evidence Form Template_bd322893.md",
+      "file_type": "document",
+      "source_file": "graphify-out/converted/R3 Evidence Form Template_bd322893.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "converted_r3_evidence_form_template_bd322893",
+      "community": 177,
+      "norm_label": "r3 evidence form template_bd322893.md"
+    },
+    {
+      "label": "Year 6 Lesson Plan_15aa4be1.md",
+      "file_type": "document",
+      "source_file": "graphify-out/converted/Year 6 Lesson Plan_15aa4be1.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "converted_year_6_lesson_plan_15aa4be1",
+      "community": 178,
+      "norm_label": "year 6 lesson plan_15aa4be1.md"
     },
     {
       "label": "handoff-2026-06-02-1151.md",
@@ -20125,9 +20185,9 @@
       "source_file": ".planning/next-round-ai-prompts.json",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_planning_next_round_ai_prompts_json",
-      "target": "planning_next_round_ai_prompts_certificate",
-      "confidence_score": 1.0
+      "target": "planning_next_round_ai_prompts_certificate"
     },
     {
       "relation": "contains",
@@ -20135,9 +20195,9 @@
       "source_file": ".planning/next-round-ai-prompts.json",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_planning_next_round_ai_prompts_json",
-      "target": "planning_next_round_ai_prompts_generated",
-      "confidence_score": 1.0
+      "target": "planning_next_round_ai_prompts_generated"
     },
     {
       "relation": "contains",
@@ -20145,9 +20205,9 @@
       "source_file": ".planning/next-round-ai-prompts.json",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_planning_next_round_ai_prompts_json",
-      "target": "planning_next_round_ai_prompts_prompts",
-      "confidence_score": 1.0
+      "target": "planning_next_round_ai_prompts_prompts"
     },
     {
       "relation": "contains",
@@ -20155,9 +20215,9 @@
       "source_file": ".planning/next-round-ai-prompts.json",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_planning_next_round_ai_prompts_json",
-      "target": "planning_next_round_ai_prompts_round_example",
-      "confidence_score": 1.0
+      "target": "planning_next_round_ai_prompts_round_example"
     },
     {
       "relation": "contains",
@@ -20645,9 +20705,9 @@
       "source_file": "Assets/OTP/.staticrypt.json",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_assets_otp_staticrypt_json",
-      "target": "otp_staticrypt_salt",
-      "confidence_score": 1.0
+      "target": "otp_staticrypt_salt"
     },
     {
       "relation": "contains",
@@ -20755,9 +20815,9 @@
       "source_file": "Assets/OTP/encrypt.sh",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_assets_otp_encrypt_sh",
-      "target": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_assets_otp_encrypt_sh__entry",
-      "confidence_score": 1.0
+      "target": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_assets_otp_encrypt_sh__entry"
     },
     {
       "relation": "contains",
@@ -20765,9 +20825,9 @@
       "source_file": "Assets/OTP/rubric-sp1.json",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_assets_otp_rubric_sp1_json",
-      "target": "otp_rubric_sp1_aspect",
-      "confidence_score": 1.0
+      "target": "otp_rubric_sp1_aspect"
     },
     {
       "relation": "contains",
@@ -20775,9 +20835,9 @@
       "source_file": "Assets/OTP/rubric-sp1.json",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_assets_otp_rubric_sp1_json",
-      "target": "otp_rubric_sp1_levels",
-      "confidence_score": 1.0
+      "target": "otp_rubric_sp1_levels"
     },
     {
       "relation": "contains",
@@ -20785,9 +20845,9 @@
       "source_file": "Assets/OTP/rubric-sp1.json",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_assets_otp_rubric_sp1_json",
-      "target": "otp_rubric_sp1_reference",
-      "confidence_score": 1.0
+      "target": "otp_rubric_sp1_reference"
     },
     {
       "relation": "contains",
@@ -20795,9 +20855,9 @@
       "source_file": "Assets/OTP/rubric-sp1.json",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_assets_otp_rubric_sp1_json",
-      "target": "otp_rubric_sp1_reference_title",
-      "confidence_score": 1.0
+      "target": "otp_rubric_sp1_reference_title"
     },
     {
       "relation": "contains",
@@ -20805,9 +20865,9 @@
       "source_file": "Assets/OTP/rubric-sp1.json",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_assets_otp_rubric_sp1_json",
-      "target": "otp_rubric_sp1_source",
-      "confidence_score": 1.0
+      "target": "otp_rubric_sp1_source"
     },
     {
       "relation": "contains",
@@ -20888,6 +20948,16 @@
       "confidence_score": 1.0,
       "source": "tests_gs_harness",
       "target": "tests_gs_harness_here"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/gs-harness.mjs",
+      "source_location": "L437",
+      "weight": 1.0,
+      "source": "tests_gs_harness",
+      "target": "tests_gs_harness_mailrowvalue",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -21167,6 +21237,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L24",
+      "weight": 1.0,
+      "source": "tests_otp_spec",
+      "target": "tests_otp_spec_all_criteria",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L28",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -21187,11 +21267,31 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L188",
+      "weight": 1.0,
+      "source": "tests_otp_spec",
+      "target": "tests_otp_spec_gradecontrol",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L100",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "tests_otp_spec",
       "target": "tests_otp_spec_harness"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L28",
+      "weight": 1.0,
+      "source": "tests_otp_spec",
+      "target": "tests_otp_spec_notseenwithout",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -21227,11 +21327,31 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L192",
+      "weight": 1.0,
+      "source": "tests_otp_spec",
+      "target": "tests_otp_spec_pickgrade",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L160",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "tests_otp_spec",
       "target": "tests_otp_spec_picktomselect"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L32",
+      "weight": 1.0,
+      "source": "tests_otp_spec",
+      "target": "tests_otp_spec_record_not_seen",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -21263,6 +21383,17 @@
       "confidence_score": 1.0,
       "source": "tests_otp_spec_fillrequired",
       "target": "tests_otp_spec_picktomselect"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L201",
+      "weight": 1.0,
+      "source": "tests_otp_spec_fillrequired",
+      "target": "tests_otp_spec_pickgrade",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -43445,9 +43576,9 @@
       "source_file": "dashboard/apps-script-photos/.clasp.json",
       "source_location": "L14",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_dashboard_apps_script_photos_clasp_json",
-      "target": "apps_script_photos_clasp_filepushorder",
-      "confidence_score": 1.0
+      "target": "apps_script_photos_clasp_filepushorder"
     },
     {
       "relation": "contains",
@@ -43455,9 +43586,9 @@
       "source_file": "dashboard/apps-script-photos/.clasp.json",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_dashboard_apps_script_photos_clasp_json",
-      "target": "apps_script_photos_clasp_htmlextensions",
-      "confidence_score": 1.0
+      "target": "apps_script_photos_clasp_htmlextensions"
     },
     {
       "relation": "contains",
@@ -43465,9 +43596,9 @@
       "source_file": "dashboard/apps-script-photos/.clasp.json",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_dashboard_apps_script_photos_clasp_json",
-      "target": "apps_script_photos_clasp_jsonextensions",
-      "confidence_score": 1.0
+      "target": "apps_script_photos_clasp_jsonextensions"
     },
     {
       "relation": "contains",
@@ -43475,9 +43606,9 @@
       "source_file": "dashboard/apps-script-photos/.clasp.json",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_dashboard_apps_script_photos_clasp_json",
-      "target": "apps_script_photos_clasp_rootdir",
-      "confidence_score": 1.0
+      "target": "apps_script_photos_clasp_rootdir"
     },
     {
       "relation": "contains",
@@ -43485,9 +43616,9 @@
       "source_file": "dashboard/apps-script-photos/.clasp.json",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_dashboard_apps_script_photos_clasp_json",
-      "target": "apps_script_photos_clasp_scriptextensions",
-      "confidence_score": 1.0
+      "target": "apps_script_photos_clasp_scriptextensions"
     },
     {
       "relation": "contains",
@@ -43495,9 +43626,9 @@
       "source_file": "dashboard/apps-script-photos/.clasp.json",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_dashboard_apps_script_photos_clasp_json",
-      "target": "apps_script_photos_clasp_scriptid",
-      "confidence_score": 1.0
+      "target": "apps_script_photos_clasp_scriptid"
     },
     {
       "relation": "contains",
@@ -43505,9 +43636,9 @@
       "source_file": "dashboard/apps-script-photos/.clasp.json",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_dashboard_apps_script_photos_clasp_json",
-      "target": "apps_script_photos_clasp_skipsubdirectories",
-      "confidence_score": 1.0
+      "target": "apps_script_photos_clasp_skipsubdirectories"
     },
     {
       "relation": "contains",
@@ -43515,9 +43646,9 @@
       "source_file": "dashboard/apps-script-photos/appsscript.json",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_dashboard_apps_script_photos_appsscript_json",
-      "target": "apps_script_photos_appsscript_dependencies",
-      "confidence_score": 1.0
+      "target": "apps_script_photos_appsscript_dependencies"
     },
     {
       "relation": "contains",
@@ -43525,9 +43656,9 @@
       "source_file": "dashboard/apps-script-photos/appsscript.json",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_dashboard_apps_script_photos_appsscript_json",
-      "target": "apps_script_photos_appsscript_exceptionlogging",
-      "confidence_score": 1.0
+      "target": "apps_script_photos_appsscript_exceptionlogging"
     },
     {
       "relation": "contains",
@@ -43535,9 +43666,9 @@
       "source_file": "dashboard/apps-script-photos/appsscript.json",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_dashboard_apps_script_photos_appsscript_json",
-      "target": "apps_script_photos_appsscript_oauthscopes",
-      "confidence_score": 1.0
+      "target": "apps_script_photos_appsscript_oauthscopes"
     },
     {
       "relation": "contains",
@@ -43545,9 +43676,9 @@
       "source_file": "dashboard/apps-script-photos/appsscript.json",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_dashboard_apps_script_photos_appsscript_json",
-      "target": "apps_script_photos_appsscript_runtimeversion",
-      "confidence_score": 1.0
+      "target": "apps_script_photos_appsscript_runtimeversion"
     },
     {
       "relation": "contains",
@@ -43555,9 +43686,9 @@
       "source_file": "dashboard/apps-script-photos/appsscript.json",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_dashboard_apps_script_photos_appsscript_json",
-      "target": "apps_script_photos_appsscript_timezone",
-      "confidence_score": 1.0
+      "target": "apps_script_photos_appsscript_timezone"
     },
     {
       "relation": "contains",
@@ -43585,9 +43716,9 @@
       "source_file": "package.json",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_package_json",
-      "target": "otp_build_package_description",
-      "confidence_score": 1.0
+      "target": "otp_build_package_description"
     },
     {
       "relation": "contains",
@@ -43595,9 +43726,9 @@
       "source_file": "package.json",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_package_json",
-      "target": "otp_build_package_devdependencies",
-      "confidence_score": 1.0
+      "target": "otp_build_package_devdependencies"
     },
     {
       "relation": "contains",
@@ -43605,9 +43736,9 @@
       "source_file": "package.json",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_package_json",
-      "target": "otp_build_package_name",
-      "confidence_score": 1.0
+      "target": "otp_build_package_name"
     },
     {
       "relation": "contains",
@@ -43615,9 +43746,9 @@
       "source_file": "package.json",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_package_json",
-      "target": "otp_build_package_private",
-      "confidence_score": 1.0
+      "target": "otp_build_package_private"
     },
     {
       "relation": "contains",
@@ -43625,9 +43756,9 @@
       "source_file": "package.json",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_package_json",
-      "target": "otp_build_package_scripts",
-      "confidence_score": 1.0
+      "target": "otp_build_package_scripts"
     },
     {
       "relation": "contains",
@@ -43635,9 +43766,9 @@
       "source_file": "package.json",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_package_json",
-      "target": "otp_build_package_version",
-      "confidence_score": 1.0
+      "target": "otp_build_package_version"
     },
     {
       "relation": "contains",
@@ -43645,9 +43776,9 @@
       "source_file": "package.json",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "otp_build_package_scripts",
-      "target": "otp_build_package_scripts_test",
-      "confidence_score": 1.0
+      "target": "otp_build_package_scripts_test"
     },
     {
       "relation": "contains",
@@ -43655,9 +43786,9 @@
       "source_file": "package.json",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "otp_build_package_devdependencies",
-      "target": "otp_build_package_devdependencies_playwright_test",
-      "confidence_score": 1.0
+      "target": "otp_build_package_devdependencies_playwright_test"
     },
     {
       "relation": "contains",
@@ -43665,9 +43796,9 @@
       "source_file": "video/observation-system-src/assets/data/video-data.json",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_assets_data_video_data_json",
-      "target": "data_video_data_computed_from",
-      "confidence_score": 1.0
+      "target": "data_video_data_computed_from"
     },
     {
       "relation": "contains",
@@ -43675,9 +43806,9 @@
       "source_file": "video/observation-system-src/assets/data/video-data.json",
       "source_location": "L47",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_assets_data_video_data_json",
-      "target": "data_video_data_coverage",
-      "confidence_score": 1.0
+      "target": "data_video_data_coverage"
     },
     {
       "relation": "contains",
@@ -43685,9 +43816,9 @@
       "source_file": "video/observation-system-src/assets/data/video-data.json",
       "source_location": "L69",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_assets_data_video_data_json",
-      "target": "data_video_data_movement",
-      "confidence_score": 1.0
+      "target": "data_video_data_movement"
     },
     {
       "relation": "contains",
@@ -43695,9 +43826,9 @@
       "source_file": "video/observation-system-src/assets/data/video-data.json",
       "source_location": "L472",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_assets_data_video_data_json",
-      "target": "data_video_data_pct_good_plus_feb",
-      "confidence_score": 1.0
+      "target": "data_video_data_pct_good_plus_feb"
     },
     {
       "relation": "contains",
@@ -43705,9 +43836,9 @@
       "source_file": "video/observation-system-src/assets/data/video-data.json",
       "source_location": "L471",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_assets_data_video_data_json",
-      "target": "data_video_data_pct_good_plus_june",
-      "confidence_score": 1.0
+      "target": "data_video_data_pct_good_plus_june"
     },
     {
       "relation": "contains",
@@ -43715,9 +43846,9 @@
       "source_file": "video/observation-system-src/assets/data/video-data.json",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_assets_data_video_data_json",
-      "target": "data_video_data_prior_round",
-      "confidence_score": 1.0
+      "target": "data_video_data_prior_round"
     },
     {
       "relation": "contains",
@@ -43725,9 +43856,9 @@
       "source_file": "video/observation-system-src/assets/data/video-data.json",
       "source_location": "L473",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_assets_data_video_data_json",
-      "target": "data_video_data_references_june",
-      "confidence_score": 1.0
+      "target": "data_video_data_references_june"
     },
     {
       "relation": "contains",
@@ -43735,9 +43866,9 @@
       "source_file": "video/observation-system-src/assets/data/video-data.json",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_assets_data_video_data_json",
-      "target": "data_video_data_round",
-      "confidence_score": 1.0
+      "target": "data_video_data_round"
     },
     {
       "relation": "contains",
@@ -43745,9 +43876,9 @@
       "source_file": "video/observation-system-src/assets/data/video-data.json",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_assets_data_video_data_json",
-      "target": "data_video_data_snap_all",
-      "confidence_score": 1.0
+      "target": "data_video_data_snap_all"
     },
     {
       "relation": "contains",
@@ -43755,9 +43886,9 @@
       "source_file": "video/observation-system-src/assets/data/video-data.json",
       "source_location": "L19",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_assets_data_video_data_json",
-      "target": "data_video_data_snap_primary_kindy",
-      "confidence_score": 1.0
+      "target": "data_video_data_snap_primary_kindy"
     },
     {
       "relation": "contains",
@@ -43765,9 +43896,9 @@
       "source_file": "video/observation-system-src/assets/data/video-data.json",
       "source_location": "L33",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_assets_data_video_data_json",
-      "target": "data_video_data_snap_secondary",
-      "confidence_score": 1.0
+      "target": "data_video_data_snap_secondary"
     },
     {
       "relation": "contains",
@@ -44345,9 +44476,9 @@
       "source_file": "video/observation-system-src/hyperframes.json",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_hyperframes_json",
-      "target": "observation_system_src_hyperframes_media",
-      "confidence_score": 1.0
+      "target": "observation_system_src_hyperframes_media"
     },
     {
       "relation": "contains",
@@ -44355,9 +44486,9 @@
       "source_file": "video/observation-system-src/hyperframes.json",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_hyperframes_json",
-      "target": "observation_system_src_hyperframes_paths",
-      "confidence_score": 1.0
+      "target": "observation_system_src_hyperframes_paths"
     },
     {
       "relation": "contains",
@@ -44365,9 +44496,9 @@
       "source_file": "video/observation-system-src/hyperframes.json",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_hyperframes_json",
-      "target": "observation_system_src_hyperframes_registry",
-      "confidence_score": 1.0
+      "target": "observation_system_src_hyperframes_registry"
     },
     {
       "relation": "contains",
@@ -44375,9 +44506,9 @@
       "source_file": "video/observation-system-src/hyperframes.json",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_hyperframes_json",
-      "target": "observation_system_src_hyperframes_schema",
-      "confidence_score": 1.0
+      "target": "observation_system_src_hyperframes_schema"
     },
     {
       "relation": "contains",
@@ -44425,9 +44556,9 @@
       "source_file": "video/observation-system-src/meta.json",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_meta_json",
-      "target": "observation_system_src_meta_createdat",
-      "confidence_score": 1.0
+      "target": "observation_system_src_meta_createdat"
     },
     {
       "relation": "contains",
@@ -44435,9 +44566,9 @@
       "source_file": "video/observation-system-src/meta.json",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_meta_json",
-      "target": "observation_system_src_meta_id",
-      "confidence_score": 1.0
+      "target": "observation_system_src_meta_id"
     },
     {
       "relation": "contains",
@@ -44445,9 +44576,9 @@
       "source_file": "video/observation-system-src/meta.json",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_meta_json",
-      "target": "observation_system_src_meta_name",
-      "confidence_score": 1.0
+      "target": "observation_system_src_meta_name"
     },
     {
       "relation": "contains",
@@ -44455,9 +44586,9 @@
       "source_file": "video/observation-system-src/package.json",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_package_json",
-      "target": "observation_system_src_package_name",
-      "confidence_score": 1.0
+      "target": "observation_system_src_package_name"
     },
     {
       "relation": "contains",
@@ -44465,9 +44596,9 @@
       "source_file": "video/observation-system-src/package.json",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_package_json",
-      "target": "observation_system_src_package_private",
-      "confidence_score": 1.0
+      "target": "observation_system_src_package_private"
     },
     {
       "relation": "contains",
@@ -44475,9 +44606,9 @@
       "source_file": "video/observation-system-src/package.json",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_package_json",
-      "target": "observation_system_src_package_scripts",
-      "confidence_score": 1.0
+      "target": "observation_system_src_package_scripts"
     },
     {
       "relation": "contains",
@@ -44485,9 +44616,9 @@
       "source_file": "video/observation-system-src/package.json",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_package_json",
-      "target": "observation_system_src_package_type",
-      "confidence_score": 1.0
+      "target": "observation_system_src_package_type"
     },
     {
       "relation": "contains",
@@ -44535,9 +44666,9 @@
       "source_file": "video/observation-system-src/scenes.json",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_scenes_json",
-      "target": "observation_system_src_scenes_approved",
-      "confidence_score": 1.0
+      "target": "observation_system_src_scenes_approved"
     },
     {
       "relation": "contains",
@@ -44545,9 +44676,9 @@
       "source_file": "video/observation-system-src/scenes.json",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_scenes_json",
-      "target": "observation_system_src_scenes_model",
-      "confidence_score": 1.0
+      "target": "observation_system_src_scenes_model"
     },
     {
       "relation": "contains",
@@ -44555,9 +44686,9 @@
       "source_file": "video/observation-system-src/scenes.json",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_scenes_json",
-      "target": "observation_system_src_scenes_note",
-      "confidence_score": 1.0
+      "target": "observation_system_src_scenes_note"
     },
     {
       "relation": "contains",
@@ -44565,9 +44696,9 @@
       "source_file": "video/observation-system-src/scenes.json",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_scenes_json",
-      "target": "observation_system_src_scenes_scenes",
-      "confidence_score": 1.0
+      "target": "observation_system_src_scenes_scenes"
     },
     {
       "relation": "contains",
@@ -44575,9 +44706,9 @@
       "source_file": "video/observation-system-src/scenes.json",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_scenes_json",
-      "target": "observation_system_src_scenes_voice",
-      "confidence_score": 1.0
+      "target": "observation_system_src_scenes_voice"
     },
     {
       "relation": "contains",
@@ -44705,9 +44836,9 @@
       "source_file": "video/observation-system-src/scripts/deflutter.py",
       "source_location": "L39",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_scripts_deflutter_py",
-      "target": "video_observation_system_src_scripts_deflutter_py_scripts_deflutter_band_levels",
-      "confidence_score": 1.0
+      "target": "video_observation_system_src_scripts_deflutter_py_scripts_deflutter_band_levels"
     },
     {
       "relation": "contains",
@@ -44715,9 +44846,9 @@
       "source_file": "video/observation-system-src/scripts/deflutter.py",
       "source_location": "L95",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_scripts_deflutter_py",
-      "target": "video_observation_system_src_scripts_deflutter_py_scripts_deflutter_gap_for",
-      "confidence_score": 1.0
+      "target": "video_observation_system_src_scripts_deflutter_py_scripts_deflutter_gap_for"
     },
     {
       "relation": "contains",
@@ -44725,9 +44856,9 @@
       "source_file": "video/observation-system-src/scripts/deflutter.py",
       "source_location": "L33",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_scripts_deflutter_py",
-      "target": "video_observation_system_src_scripts_deflutter_py_scripts_deflutter_read",
-      "confidence_score": 1.0
+      "target": "video_observation_system_src_scripts_deflutter_py_scripts_deflutter_read"
     },
     {
       "relation": "contains",
@@ -44735,9 +44866,9 @@
       "source_file": "video/observation-system-src/scripts/deflutter.py",
       "source_location": "L27",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_scripts_deflutter_py",
-      "target": "video_observation_system_src_scripts_deflutter_py_scripts_deflutter_sh",
-      "confidence_score": 1.0
+      "target": "video_observation_system_src_scripts_deflutter_py_scripts_deflutter_sh"
     },
     {
       "relation": "calls",
@@ -45568,9 +45699,9 @@
       "source_file": "video/observation-system-src/scripts/tighten.py",
       "source_location": "L123",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_scripts_tighten_py",
-      "target": "video_observation_system_src_scripts_tighten_py_scripts_tighten_fmt",
-      "confidence_score": 1.0
+      "target": "video_observation_system_src_scripts_tighten_py_scripts_tighten_fmt"
     },
     {
       "relation": "contains",
@@ -45578,9 +45709,9 @@
       "source_file": "video/observation-system-src/scripts/tighten.py",
       "source_location": "L35",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_scripts_tighten_py",
-      "target": "video_observation_system_src_scripts_tighten_py_scripts_tighten_read_wav",
-      "confidence_score": 1.0
+      "target": "video_observation_system_src_scripts_tighten_py_scripts_tighten_read_wav"
     },
     {
       "relation": "contains",
@@ -45588,9 +45719,9 @@
       "source_file": "video/observation-system-src/scripts/tighten.py",
       "source_location": "L29",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_scripts_tighten_py",
-      "target": "video_observation_system_src_scripts_tighten_py_scripts_tighten_sh",
-      "confidence_score": 1.0
+      "target": "video_observation_system_src_scripts_tighten_py_scripts_tighten_sh"
     },
     {
       "relation": "contains",
@@ -45598,9 +45729,9 @@
       "source_file": "video/observation-system-src/scripts/tighten.py",
       "source_location": "L46",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_scripts_tighten_py",
-      "target": "video_observation_system_src_scripts_tighten_py_scripts_tighten_silences",
-      "confidence_score": 1.0
+      "target": "video_observation_system_src_scripts_tighten_py_scripts_tighten_silences"
     },
     {
       "relation": "contains",
@@ -45608,9 +45739,9 @@
       "source_file": "video/observation-system-src/scripts/tighten.py",
       "source_location": "L41",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_scripts_tighten_py",
-      "target": "video_observation_system_src_scripts_tighten_py_scripts_tighten_write_wav",
-      "confidence_score": 1.0
+      "target": "video_observation_system_src_scripts_tighten_py_scripts_tighten_write_wav"
     },
     {
       "relation": "contains",
@@ -45779,9 +45910,9 @@
       "source_file": "video/observation-system-src/scripts/voiceconsist.py",
       "source_location": "L53",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_scripts_voiceconsist_py",
-      "target": "video_observation_system_src_scripts_voiceconsist_py_scripts_voiceconsist_analyse",
-      "confidence_score": 1.0
+      "target": "video_observation_system_src_scripts_voiceconsist_py_scripts_voiceconsist_analyse"
     },
     {
       "relation": "contains",
@@ -45789,9 +45920,9 @@
       "source_file": "video/observation-system-src/scripts/voiceconsist.py",
       "source_location": "L32",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_scripts_voiceconsist_py",
-      "target": "video_observation_system_src_scripts_voiceconsist_py_scripts_voiceconsist_ltas",
-      "confidence_score": 1.0
+      "target": "video_observation_system_src_scripts_voiceconsist_py_scripts_voiceconsist_ltas"
     },
     {
       "relation": "contains",
@@ -45799,9 +45930,9 @@
       "source_file": "video/observation-system-src/scripts/voiceconsist.py",
       "source_location": "L20",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_scripts_voiceconsist_py",
-      "target": "video_observation_system_src_scripts_voiceconsist_py_scripts_voiceconsist_read_wav",
-      "confidence_score": 1.0
+      "target": "video_observation_system_src_scripts_voiceconsist_py_scripts_voiceconsist_read_wav"
     },
     {
       "relation": "calls",
@@ -46123,9 +46254,9 @@
       "source_file": "video/observation-system-src/timings.json",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_timings_json",
-      "target": "observation_system_src_timings_gap",
-      "confidence_score": 1.0
+      "target": "observation_system_src_timings_gap"
     },
     {
       "relation": "contains",
@@ -46133,9 +46264,9 @@
       "source_file": "video/observation-system-src/timings.json",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_timings_json",
-      "target": "observation_system_src_timings_holds",
-      "confidence_score": 1.0
+      "target": "observation_system_src_timings_holds"
     },
     {
       "relation": "contains",
@@ -46143,9 +46274,9 @@
       "source_file": "video/observation-system-src/timings.json",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_timings_json",
-      "target": "observation_system_src_timings_lead",
-      "confidence_score": 1.0
+      "target": "observation_system_src_timings_lead"
     },
     {
       "relation": "contains",
@@ -46153,9 +46284,9 @@
       "source_file": "video/observation-system-src/timings.json",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_timings_json",
-      "target": "observation_system_src_timings_scenes",
-      "confidence_score": 1.0
+      "target": "observation_system_src_timings_scenes"
     },
     {
       "relation": "contains",
@@ -46163,9 +46294,9 @@
       "source_file": "video/observation-system-src/timings.json",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_timings_json",
-      "target": "observation_system_src_timings_source",
-      "confidence_score": 1.0
+      "target": "observation_system_src_timings_source"
     },
     {
       "relation": "contains",
@@ -46173,9 +46304,9 @@
       "source_file": "video/observation-system-src/timings.json",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_timings_json",
-      "target": "observation_system_src_timings_tempo",
-      "confidence_score": 1.0
+      "target": "observation_system_src_timings_tempo"
     },
     {
       "relation": "contains",
@@ -46183,9 +46314,9 @@
       "source_file": "video/observation-system-src/timings.json",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_timings_json",
-      "target": "observation_system_src_timings_total",
-      "confidence_score": 1.0
+      "target": "observation_system_src_timings_total"
     },
     {
       "relation": "contains",
@@ -46233,9 +46364,9 @@
       "source_file": "video/staff-voice-src/hyperframes.json",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_hyperframes_json",
-      "target": "staff_voice_src_hyperframes_media",
-      "confidence_score": 1.0
+      "target": "staff_voice_src_hyperframes_media"
     },
     {
       "relation": "contains",
@@ -46243,9 +46374,9 @@
       "source_file": "video/staff-voice-src/hyperframes.json",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_hyperframes_json",
-      "target": "staff_voice_src_hyperframes_paths",
-      "confidence_score": 1.0
+      "target": "staff_voice_src_hyperframes_paths"
     },
     {
       "relation": "contains",
@@ -46253,9 +46384,9 @@
       "source_file": "video/staff-voice-src/hyperframes.json",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_hyperframes_json",
-      "target": "staff_voice_src_hyperframes_registry",
-      "confidence_score": 1.0
+      "target": "staff_voice_src_hyperframes_registry"
     },
     {
       "relation": "contains",
@@ -46263,9 +46394,9 @@
       "source_file": "video/staff-voice-src/hyperframes.json",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_hyperframes_json",
-      "target": "staff_voice_src_hyperframes_schema",
-      "confidence_score": 1.0
+      "target": "staff_voice_src_hyperframes_schema"
     },
     {
       "relation": "contains",
@@ -46313,9 +46444,9 @@
       "source_file": "video/staff-voice-src/meta.json",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_meta_json",
-      "target": "staff_voice_src_meta_createdat",
-      "confidence_score": 1.0
+      "target": "staff_voice_src_meta_createdat"
     },
     {
       "relation": "contains",
@@ -46323,9 +46454,9 @@
       "source_file": "video/staff-voice-src/meta.json",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_meta_json",
-      "target": "staff_voice_src_meta_id",
-      "confidence_score": 1.0
+      "target": "staff_voice_src_meta_id"
     },
     {
       "relation": "contains",
@@ -46333,9 +46464,9 @@
       "source_file": "video/staff-voice-src/meta.json",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_meta_json",
-      "target": "staff_voice_src_meta_name",
-      "confidence_score": 1.0
+      "target": "staff_voice_src_meta_name"
     },
     {
       "relation": "contains",
@@ -46343,9 +46474,9 @@
       "source_file": "video/staff-voice-src/package.json",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_package_json",
-      "target": "staff_voice_src_package_name",
-      "confidence_score": 1.0
+      "target": "staff_voice_src_package_name"
     },
     {
       "relation": "contains",
@@ -46353,9 +46484,9 @@
       "source_file": "video/staff-voice-src/package.json",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_package_json",
-      "target": "staff_voice_src_package_private",
-      "confidence_score": 1.0
+      "target": "staff_voice_src_package_private"
     },
     {
       "relation": "contains",
@@ -46363,9 +46494,9 @@
       "source_file": "video/staff-voice-src/package.json",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_package_json",
-      "target": "staff_voice_src_package_scripts",
-      "confidence_score": 1.0
+      "target": "staff_voice_src_package_scripts"
     },
     {
       "relation": "contains",
@@ -46373,9 +46504,9 @@
       "source_file": "video/staff-voice-src/package.json",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_package_json",
-      "target": "staff_voice_src_package_type",
-      "confidence_score": 1.0
+      "target": "staff_voice_src_package_type"
     },
     {
       "relation": "contains",
@@ -46423,9 +46554,9 @@
       "source_file": "video/staff-voice-src/scenes.json",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_scenes_json",
-      "target": "staff_voice_src_scenes_model",
-      "confidence_score": 1.0
+      "target": "staff_voice_src_scenes_model"
     },
     {
       "relation": "contains",
@@ -46433,9 +46564,9 @@
       "source_file": "video/staff-voice-src/scenes.json",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_scenes_json",
-      "target": "staff_voice_src_scenes_note",
-      "confidence_score": 1.0
+      "target": "staff_voice_src_scenes_note"
     },
     {
       "relation": "contains",
@@ -46443,9 +46574,9 @@
       "source_file": "video/staff-voice-src/scenes.json",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_scenes_json",
-      "target": "staff_voice_src_scenes_scenes",
-      "confidence_score": 1.0
+      "target": "staff_voice_src_scenes_scenes"
     },
     {
       "relation": "contains",
@@ -46453,9 +46584,9 @@
       "source_file": "video/staff-voice-src/scenes.json",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_scenes_json",
-      "target": "staff_voice_src_scenes_voice",
-      "confidence_score": 1.0
+      "target": "staff_voice_src_scenes_voice"
     },
     {
       "relation": "contains",
@@ -46503,9 +46634,9 @@
       "source_file": "video/staff-voice-src/scripts/breathe.py",
       "source_location": "L27",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_scripts_breathe_py",
-      "target": "scripts_breathe_main",
-      "confidence_score": 1.0
+      "target": "scripts_breathe_main"
     },
     {
       "relation": "contains",
@@ -46593,9 +46724,9 @@
       "source_file": "video/staff-voice-src/scripts/deflutter.py",
       "source_location": "L39",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_scripts_deflutter_py",
-      "target": "video_staff_voice_src_scripts_deflutter_py_scripts_deflutter_band_levels",
-      "confidence_score": 1.0
+      "target": "video_staff_voice_src_scripts_deflutter_py_scripts_deflutter_band_levels"
     },
     {
       "relation": "contains",
@@ -46603,9 +46734,9 @@
       "source_file": "video/staff-voice-src/scripts/deflutter.py",
       "source_location": "L95",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_scripts_deflutter_py",
-      "target": "video_staff_voice_src_scripts_deflutter_py_scripts_deflutter_gap_for",
-      "confidence_score": 1.0
+      "target": "video_staff_voice_src_scripts_deflutter_py_scripts_deflutter_gap_for"
     },
     {
       "relation": "contains",
@@ -46613,9 +46744,9 @@
       "source_file": "video/staff-voice-src/scripts/deflutter.py",
       "source_location": "L33",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_scripts_deflutter_py",
-      "target": "video_staff_voice_src_scripts_deflutter_py_scripts_deflutter_read",
-      "confidence_score": 1.0
+      "target": "video_staff_voice_src_scripts_deflutter_py_scripts_deflutter_read"
     },
     {
       "relation": "contains",
@@ -46623,9 +46754,9 @@
       "source_file": "video/staff-voice-src/scripts/deflutter.py",
       "source_location": "L27",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_scripts_deflutter_py",
-      "target": "video_staff_voice_src_scripts_deflutter_py_scripts_deflutter_sh",
-      "confidence_score": 1.0
+      "target": "video_staff_voice_src_scripts_deflutter_py_scripts_deflutter_sh"
     },
     {
       "relation": "calls",
@@ -46814,9 +46945,9 @@
       "source_file": "video/staff-voice-src/scripts/measure-melody.py",
       "source_location": "L36",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_scripts_measure_melody_py",
-      "target": "scripts_measure_melody_f0_track",
-      "confidence_score": 1.0
+      "target": "scripts_measure_melody_f0_track"
     },
     {
       "relation": "contains",
@@ -46824,9 +46955,9 @@
       "source_file": "video/staff-voice-src/scripts/measure-melody.py",
       "source_location": "L28",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_scripts_measure_melody_py",
-      "target": "scripts_measure_melody_load",
-      "confidence_score": 1.0
+      "target": "scripts_measure_melody_load"
     },
     {
       "relation": "contains",
@@ -47526,9 +47657,9 @@
       "source_file": "video/staff-voice-src/scripts/tighten.py",
       "source_location": "L123",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_scripts_tighten_py",
-      "target": "video_staff_voice_src_scripts_tighten_py_scripts_tighten_fmt",
-      "confidence_score": 1.0
+      "target": "video_staff_voice_src_scripts_tighten_py_scripts_tighten_fmt"
     },
     {
       "relation": "contains",
@@ -47536,9 +47667,9 @@
       "source_file": "video/staff-voice-src/scripts/tighten.py",
       "source_location": "L35",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_scripts_tighten_py",
-      "target": "video_staff_voice_src_scripts_tighten_py_scripts_tighten_read_wav",
-      "confidence_score": 1.0
+      "target": "video_staff_voice_src_scripts_tighten_py_scripts_tighten_read_wav"
     },
     {
       "relation": "contains",
@@ -47546,9 +47677,9 @@
       "source_file": "video/staff-voice-src/scripts/tighten.py",
       "source_location": "L29",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_scripts_tighten_py",
-      "target": "video_staff_voice_src_scripts_tighten_py_scripts_tighten_sh",
-      "confidence_score": 1.0
+      "target": "video_staff_voice_src_scripts_tighten_py_scripts_tighten_sh"
     },
     {
       "relation": "contains",
@@ -47556,9 +47687,9 @@
       "source_file": "video/staff-voice-src/scripts/tighten.py",
       "source_location": "L46",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_scripts_tighten_py",
-      "target": "video_staff_voice_src_scripts_tighten_py_scripts_tighten_silences",
-      "confidence_score": 1.0
+      "target": "video_staff_voice_src_scripts_tighten_py_scripts_tighten_silences"
     },
     {
       "relation": "contains",
@@ -47566,9 +47697,9 @@
       "source_file": "video/staff-voice-src/scripts/tighten.py",
       "source_location": "L41",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_scripts_tighten_py",
-      "target": "video_staff_voice_src_scripts_tighten_py_scripts_tighten_write_wav",
-      "confidence_score": 1.0
+      "target": "video_staff_voice_src_scripts_tighten_py_scripts_tighten_write_wav"
     },
     {
       "relation": "contains",
@@ -47737,9 +47868,9 @@
       "source_file": "video/staff-voice-src/scripts/voiceconsist.py",
       "source_location": "L53",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_scripts_voiceconsist_py",
-      "target": "video_staff_voice_src_scripts_voiceconsist_py_scripts_voiceconsist_analyse",
-      "confidence_score": 1.0
+      "target": "video_staff_voice_src_scripts_voiceconsist_py_scripts_voiceconsist_analyse"
     },
     {
       "relation": "contains",
@@ -47747,9 +47878,9 @@
       "source_file": "video/staff-voice-src/scripts/voiceconsist.py",
       "source_location": "L32",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_scripts_voiceconsist_py",
-      "target": "video_staff_voice_src_scripts_voiceconsist_py_scripts_voiceconsist_ltas",
-      "confidence_score": 1.0
+      "target": "video_staff_voice_src_scripts_voiceconsist_py_scripts_voiceconsist_ltas"
     },
     {
       "relation": "contains",
@@ -47757,9 +47888,9 @@
       "source_file": "video/staff-voice-src/scripts/voiceconsist.py",
       "source_location": "L20",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_scripts_voiceconsist_py",
-      "target": "video_staff_voice_src_scripts_voiceconsist_py_scripts_voiceconsist_read_wav",
-      "confidence_score": 1.0
+      "target": "video_staff_voice_src_scripts_voiceconsist_py_scripts_voiceconsist_read_wav"
     },
     {
       "relation": "calls",
@@ -47809,9 +47940,9 @@
       "source_file": "video/staff-voice-src/timings.json",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_timings_json",
-      "target": "staff_voice_src_timings_gap",
-      "confidence_score": 1.0
+      "target": "staff_voice_src_timings_gap"
     },
     {
       "relation": "contains",
@@ -47819,9 +47950,9 @@
       "source_file": "video/staff-voice-src/timings.json",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_timings_json",
-      "target": "staff_voice_src_timings_holds",
-      "confidence_score": 1.0
+      "target": "staff_voice_src_timings_holds"
     },
     {
       "relation": "contains",
@@ -47829,9 +47960,9 @@
       "source_file": "video/staff-voice-src/timings.json",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_timings_json",
-      "target": "staff_voice_src_timings_lead",
-      "confidence_score": 1.0
+      "target": "staff_voice_src_timings_lead"
     },
     {
       "relation": "contains",
@@ -47839,9 +47970,9 @@
       "source_file": "video/staff-voice-src/timings.json",
       "source_location": "L17",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_timings_json",
-      "target": "staff_voice_src_timings_scenes",
-      "confidence_score": 1.0
+      "target": "staff_voice_src_timings_scenes"
     },
     {
       "relation": "contains",
@@ -47849,9 +47980,9 @@
       "source_file": "video/staff-voice-src/timings.json",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_timings_json",
-      "target": "staff_voice_src_timings_source",
-      "confidence_score": 1.0
+      "target": "staff_voice_src_timings_source"
     },
     {
       "relation": "contains",
@@ -47859,9 +47990,9 @@
       "source_file": "video/staff-voice-src/timings.json",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_timings_json",
-      "target": "staff_voice_src_timings_tempo",
-      "confidence_score": 1.0
+      "target": "staff_voice_src_timings_tempo"
     },
     {
       "relation": "contains",
@@ -47869,9 +48000,9 @@
       "source_file": "video/staff-voice-src/timings.json",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_timings_json",
-      "target": "staff_voice_src_timings_tightened",
-      "confidence_score": 1.0
+      "target": "staff_voice_src_timings_tightened"
     },
     {
       "relation": "contains",
@@ -47879,9 +48010,9 @@
       "source_file": "video/staff-voice-src/timings.json",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_timings_json",
-      "target": "staff_voice_src_timings_total",
-      "confidence_score": 1.0
+      "target": "staff_voice_src_timings_total"
     },
     {
       "relation": "contains",
@@ -48519,9 +48650,9 @@
       "source_file": ".planning/2026-06-28-next-round-rebuild-prompts.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_planning_2026_06_28_next_round_rebuild_prompts_md",
-      "target": "planning_2026_06_28_next_round_rebuild_prompts_next_round_ai_regeneration_prompts",
-      "confidence_score": 1.0
+      "target": "planning_2026_06_28_next_round_rebuild_prompts_next_round_ai_regeneration_prompts"
     },
     {
       "relation": "contains",
@@ -48599,9 +48730,9 @@
       "source_file": ".planning/2026-07-02-teacher-portal-DECISIONS.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_planning_2026_07_02_teacher_portal_decisions_md",
-      "target": "planning_2026_07_02_teacher_portal_decisions_teacher_portal_grill_record_locked_2026_07_02",
-      "confidence_score": 1.0
+      "target": "planning_2026_07_02_teacher_portal_decisions_teacher_portal_grill_record_locked_2026_07_02"
     },
     {
       "relation": "contains",
@@ -48639,9 +48770,9 @@
       "source_file": ".planning/2026-07-06-regen-consistency-certificate.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_planning_2026_07_06_regen_consistency_certificate_md",
-      "target": "planning_2026_07_06_regen_consistency_certificate_regeneration_consistency_certificate_r3_june_26_benchmark",
-      "confidence_score": 1.0
+      "target": "planning_2026_07_06_regen_consistency_certificate_regeneration_consistency_certificate_r3_june_26_benchmark"
     },
     {
       "relation": "contains",
@@ -48709,9 +48840,9 @@
       "source_file": ".planning/2026-07-09-ipad-chrome-research-findings.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_planning_2026_07_09_ipad_chrome_research_findings_md",
-      "target": "planning_2026_07_09_ipad_chrome_research_findings_ipad_chrome_research_findings_r3_form_v0_56_2026_07_09",
-      "confidence_score": 1.0
+      "target": "planning_2026_07_09_ipad_chrome_research_findings_ipad_chrome_research_findings_r3_form_v0_56_2026_07_09"
     },
     {
       "relation": "contains",
@@ -49099,9 +49230,9 @@
       "source_file": ".planning/2026-07-09-ipad-chrome-research-synthesis.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_planning_2026_07_09_ipad_chrome_research_synthesis_md",
-      "target": "planning_2026_07_09_ipad_chrome_research_synthesis_ipad_chrome_research_synthesis_root_causes_v0_57_fix_plan_2026_07_09",
-      "confidence_score": 1.0
+      "target": "planning_2026_07_09_ipad_chrome_research_synthesis_ipad_chrome_research_synthesis_root_causes_v0_57_fix_plan_2026_07_09"
     },
     {
       "relation": "contains",
@@ -49179,9 +49310,9 @@
       "source_file": ".planning/2026-07-09-ipad-chrome-symptom-map.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_planning_2026_07_09_ipad_chrome_symptom_map_md",
-      "target": "planning_2026_07_09_ipad_chrome_symptom_map_ipad_chrome_symptom_mechanism_map_r3_form_v0_56_2026_07_09",
-      "confidence_score": 1.0
+      "target": "planning_2026_07_09_ipad_chrome_symptom_map_ipad_chrome_symptom_mechanism_map_r3_form_v0_56_2026_07_09"
     },
     {
       "relation": "contains",
@@ -49269,9 +49400,9 @@
       "source_file": ".planning/2026-07-10-ipad-chrome-synthesis-v2.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_planning_2026_07_10_ipad_chrome_synthesis_v2_md",
-      "target": "planning_2026_07_10_ipad_chrome_synthesis_v2_synthesis_v2_v0_57_on_device_failures_f1_f2_f3_verdicts_v0_58_diagnostic_switch_plan_2026_07_10",
-      "confidence_score": 1.0
+      "target": "planning_2026_07_10_ipad_chrome_synthesis_v2_synthesis_v2_v0_57_on_device_failures_f1_f2_f3_verdicts_v0_58_diagnostic_switch_plan_2026_07_10"
     },
     {
       "relation": "contains",
@@ -49489,9 +49620,9 @@
       "source_file": "Assets/OTP/DEPLOY-v0.1.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_assets_otp_deploy_v0_1_md",
-      "target": "otp_deploy_v0_1_otp_v0_1_deploy_runbook_drafted_2026_09_03_executes_only_on_igor_s_word",
-      "confidence_score": 1.0
+      "target": "otp_deploy_v0_1_otp_v0_1_deploy_runbook_drafted_2026_09_03_executes_only_on_igor_s_word"
     },
     {
       "relation": "contains",
@@ -49560,16 +49691,16 @@
       "source_location": "L1",
       "weight": 1.0,
       "source": "otp_readme",
-      "target": "otp_readme_progress_in_lessons_otp_form_otp_v0_3",
+      "target": "otp_readme_progress_in_lessons_otp_form_otp_v0_5",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L50",
+      "source_location": "L59",
       "weight": 1.0,
-      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_3",
+      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_5",
       "target": "otp_readme_backend_contract",
       "confidence_score": 1.0
     },
@@ -49577,9 +49708,9 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L33",
+      "source_location": "L42",
       "weight": 1.0,
-      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_3",
+      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_5",
       "target": "otp_readme_build",
       "confidence_score": 1.0
     },
@@ -49587,9 +49718,9 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L102",
+      "source_location": "L126",
       "weight": 1.0,
-      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_3",
+      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_5",
       "target": "otp_readme_changelog",
       "confidence_score": 1.0
     },
@@ -49597,9 +49728,9 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L91",
+      "source_location": "L115",
       "weight": 1.0,
-      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_3",
+      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_5",
       "target": "otp_readme_tests",
       "confidence_score": 1.0
     },
@@ -49609,7 +49740,7 @@
       "source_file": "Assets/OTP/README.md",
       "source_location": "L14",
       "weight": 1.0,
-      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_3",
+      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_5",
       "target": "otp_readme_what_is_on_the_page",
       "confidence_score": 1.0
     },
@@ -49629,7 +49760,7 @@
       "source_file": "Assets/R3/Google file links.md",
       "source_location": "L1",
       "weight": 1.0,
-      "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_assets_r3_google_file_links_md",
+      "source": "r3_google_file_links",
       "target": "r3_google_file_links_r3_evidence_google_file_links",
       "confidence_score": 1.0
     },
@@ -49689,7 +49820,7 @@
       "source_file": "Assets/R3/README.md",
       "source_location": "L1",
       "weight": 1.0,
-      "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_assets_r3_readme_md",
+      "source": "r3_readme",
       "target": "r3_readme_r3_evidence_form",
       "confidence_score": 1.0
     },
@@ -50029,9 +50160,9 @@
       "source_file": "dashboard/CHANGELOG.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_dashboard_changelog_md",
-      "target": "dashboard_changelog_ais_observation_dashboard_changelog",
-      "confidence_score": 1.0
+      "target": "dashboard_changelog_ais_observation_dashboard_changelog"
     },
     {
       "relation": "contains",
@@ -50729,9 +50860,9 @@
       "source_file": "dashboard/apps-script-photos/README.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_dashboard_apps_script_photos_readme_md",
-      "target": "apps_script_photos_readme_ais_teacher_photo_mirror_apps_script",
-      "confidence_score": 1.0
+      "target": "apps_script_photos_readme_ais_teacher_photo_mirror_apps_script"
     },
     {
       "relation": "contains",
@@ -51649,9 +51780,9 @@
       "source_file": "video/observation-system-src/README.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_readme_md",
-      "target": "observation_system_src_readme_staff_voice_video_sfp_feedback",
-      "confidence_score": 1.0
+      "target": "observation_system_src_readme_staff_voice_video_sfp_feedback"
     },
     {
       "relation": "contains",
@@ -51709,9 +51840,9 @@
       "source_file": "video/observation-system-src/STORYBOARD.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_storyboard_md",
-      "target": "observation_system_src_storyboard_storyboard_ais_observation_system_explainer_4m28_finished",
-      "confidence_score": 1.0
+      "target": "observation_system_src_storyboard_storyboard_ais_observation_system_explainer_4m28_finished"
     },
     {
       "relation": "contains",
@@ -51819,9 +51950,9 @@
       "source_file": "video/observation-system-src/brand.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_observation_system_src_brand_md",
-      "target": "observation_system_src_brand_brand_config_ais_observation_system",
-      "confidence_score": 1.0
+      "target": "observation_system_src_brand_brand_config_ais_observation_system"
     },
     {
       "relation": "contains",
@@ -51909,9 +52040,9 @@
       "source_file": "video/staff-voice-src/README.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_readme_md",
-      "target": "staff_voice_src_readme_staff_voice_v1_9",
-      "confidence_score": 1.0
+      "target": "staff_voice_src_readme_staff_voice_v1_9"
     },
     {
       "relation": "contains",
@@ -51919,9 +52050,9 @@
       "source_file": "video/staff-voice-src/brand.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_video_staff_voice_src_brand_md",
-      "target": "staff_voice_src_brand_brand_config_ais_observation_system",
-      "confidence_score": 1.0
+      "target": "staff_voice_src_brand_brand_config_ais_observation_system"
     },
     {
       "relation": "contains",
@@ -54335,5 +54466,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "46e540ee32cd4c70a057f8b5be89a186f3c5e1d7"
+  "built_at_commit": "c015999c66fe4bdecfe952d862d24acc6b1cb453"
 }
