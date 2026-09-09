@@ -1,4 +1,4 @@
-# Progress in Lessons OTP form · otp-v0.4
+# Progress in Lessons OTP form · otp-v0.5
 
 Third AIS observation form: **Lesson Observation form WHOLE SCHOOL, Observation
 against the Outstanding Teacher Profile**. It is a COPY of the R3 Evidence form
@@ -14,8 +14,11 @@ practice through observational support and coaching.
 ## What is on the page
 
 1. Nine header fields: Teacher, Support Teachers / CAs, Time In, **Observer**
-   (the field is still named `inspector`), Curriculum, School, Date, Room
+   (the field is still named `inspector`), Curriculum, Grade, Date, Room
    Number, Subject. No class statistics, no Time Out, so no duration.
+   otp-v0.5: Grade (Pre-Kindy, Kindy, Prep, 1-12, a 5-column tap grid)
+   replaces the School pills; School is derived from Grade and no longer
+   shown (Pre-Kindy/Kindy -> Kindy, Prep/1-6 -> Primary, 7-12 -> Secondary).
 2. The static Who / What / Why strip from the doc.
 3. **OTP Reference: SP1 Student Progress** rendered as the doc's table, one
    tappable chip per rubric paragraph (26 of them, `rubric-sp1.json` inlined
@@ -29,6 +32,9 @@ practice through observational support and coaching.
    otp-v0.4: the Aspect of Practice caption is centred, the three legend
    items are spread evenly across the strip, and the tap hint sits on its
    own centred line as a quiet pale-blue pill so observers notice it.
+   otp-v0.5: the legend gains a first entry, "No colour: not seen in lesson
+   (does not count)", and the criteria left uncoloured are recorded (see
+   `sp1_not_seen` below); the tap cycle is unchanged.
 4. Five Observer Notes blocks, each with the Evidence Pad pencil button and the
    pad-pages paperclip: Observer Comments, Other Observations, and Next Steps /
    Support 1-3.
@@ -56,10 +62,11 @@ Submit POSTs JSON to the same `WEB_APP_URL` as R3 with exactly these keys:
 
 ```
 form ("otp"), teacher, curriculum, inspector, date, room_number, time_in,
-subject, school, support_teachers_cas, otp_ref ("SP1"),
+subject, school, grade, support_teachers_cas, otp_ref ("SP1"),
 otp_aspect ("Facilitating better than expected progress"),
 sp1_beginner, sp1_emerging, sp1_good, sp1_great, sp1_outstanding,
 sp1_selected_text, sp1_present, sp1_partially_present, sp1_not_present,
+sp1_not_seen,
 observer_comments, other_observations,
 next_step_1, next_step_2, next_step_3, evidence_pad_id
 ```
@@ -78,6 +85,20 @@ otp-v0.2 value formats. The three state words are exactly `present`,
   selection grouped by state: `"<Level> <n>"` items joined by `", "` in level
   order then ascending `n` (`"Good 1, Great 2"`), empty string when none. These
   three are **appended** Sheet columns (hard rule 1: append, never reorder).
+
+otp-v0.5 additions (columns 30 and 31, appended).
+
+- `sp1_not_seen` lists every criterion left uncoloured, `"<Level> <n>"` items
+  joined by `", "` in level order then ascending `n`; all 26 when nothing is
+  coloured, empty string when all 26 are coloured. The four by-state lists
+  always partition the 26 criteria, so "not seen" is its own bucket and never
+  counts as present or absent.
+- `grade` is one of `Pre-Kindy`, `Kindy`, `Prep`, `1` .. `12` (strings).
+  `school` is still posted (derived on the client for the Subject filter) but
+  the Apps Script re-derives it from `grade` and grade wins: Pre-Kindy/Kindy
+  -> `Kindy`, Prep/1-6 -> `Primary`, 7-12 -> `Secondary`; an empty grade keeps
+  the posted school (legacy rows). The Sheet row, the backup email and the
+  Supabase mirror all carry the derived value.
 
 - Options: `WEB_APP_URL + '?action=options&form=otp'` (same response shape as R3).
 - Record view: `otp-record.html?token=...` fetches
@@ -104,6 +125,13 @@ ungated viewer) with every `script.google.com` / `supabase.co` call mocked.
 
 ## Changelog
 
+- **otp-v0.5** · "Not seen" becomes recorded data: a first legend entry
+  "No colour: not seen in lesson (does not count)" and an appended
+  `sp1_not_seen` column listing the uncoloured criteria (the tap cycle is
+  unchanged). The School pills are replaced by a Grade picker (Pre-Kindy,
+  Kindy, Prep, 1-12); School is derived from Grade on the server and stored
+  as before, `grade` is appended as column 31. Backup email gains Grade and
+  Not seen rows. Apps Script redeployed in place.
 - **otp-v0.4** · Rubric head centring: the Aspect of Practice caption row is
   centred, the legend's three colour items are spread evenly and centred, and
   the tap hint moves to its own centred line styled as a quiet pale-blue pill
