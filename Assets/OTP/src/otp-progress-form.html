@@ -47,6 +47,15 @@
   --rate-unsuccess: #d68a1a;
   --rate-unsuccess-deep: #b06d10;
 
+  /* otp-v0.7: the SP1 chip states read as calm pastel tints with a coloured
+     left edge, not as full-saturation fills. */
+  --rub-present-bg: #E8F3EC;
+  --rub-present-edge: #2F7D4F;
+  --rub-partial-bg: #FBF3DC;
+  --rub-partial-edge: #C28E0E;
+  --rub-absent-bg: #FBE9EA;
+  --rub-absent-edge: #B23B3B;
+
   --rule: rgba(20, 54, 66, 0.14);
   --rule-soft: rgba(20, 54, 66, 0.07);
   --page-bg: #efece2;
@@ -91,6 +100,11 @@
   --rate-success-deep: #1e7a3f;
   --rate-unsuccess: #ff9a4d;
   --rate-unsuccess-deep: #c46810;
+  /* otp-v0.7: the same hues as translucent tints over the dark chip; the
+     edges are the light-theme ones, which already read on the dark surface. */
+  --rub-present-bg: rgba(47, 125, 79, 0.24);
+  --rub-partial-bg: rgba(194, 142, 14, 0.22);
+  --rub-absent-bg: rgba(178, 59, 59, 0.24);
   --shadow-card: 0 18px 48px -20px rgba(0, 0, 0, 0.55), 0 3px 8px -3px rgba(0, 0, 0, 0.4);
 }
 
@@ -1948,22 +1962,34 @@ body.is-viewer .cog-btn { display: none; }
   .www-col:last-child { border-bottom: none; }
 }
 
-/* SP1 rubric. Equal column widths; the table scrolls inside its own wrapper on
-   narrow screens so the page body never scrolls horizontally. */
+/* SP1 rubric. Equal column widths.
+   otp-v0.7: the wrapper does NOT scroll at tablet and desktop widths, so no
+   scrollbar can paint under or beside the rubric. The table already fits
+   there; only a phone still scrolls it sideways. The note button's tap pad is
+   inset far enough that the wrapper's scrollable overflow equals its client
+   box even when overflow is forced to auto.
+   The rubric section is the pop-up's containing block, and the table sits
+   above the scrim so both the chips and their "+" stay tappable while a note
+   card is open. */
+#rubric-section { position: relative; }
 .rub-wrap {
+  position: relative;
+  z-index: 1;
   margin: 0 calc(-1 * clamp(1.4rem, 3vw, 2.6rem) + 4px);
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+  overflow: visible;
   border: 1px solid var(--rule);
   border-radius: clamp(0.4rem, 0.7vw, 0.6rem);
   background: var(--card-bg);
 }
 .rub-table {
   width: 100%;
-  min-width: 700px;
   table-layout: fixed;
   border-collapse: separate;
   border-spacing: 0;
+}
+@media (max-width: 759px) {
+  .rub-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .rub-table { min-width: 700px; }
 }
 .rub-table th {
   width: 20%;
@@ -2014,7 +2040,7 @@ body.is-viewer .cog-btn { display: none; }
   border-top: 1px solid var(--rule-soft);
 }
 .rub-table td:last-child { border-right: none; }
-.rub-cell { display: flex; flex-direction: column; gap: 0.14rem; }
+.rub-cell { --rub-gap: 2px; display: flex; flex-direction: column; gap: var(--rub-gap); }
 .rub-chip {
   display: block;
   width: 100%;
@@ -2027,85 +2053,177 @@ body.is-viewer .cog-btn { display: none; }
   border: 1px solid var(--rule);
   border-radius: 0.25rem;
   /* otp-v0.6: the bottom strip is reserved for the "+" note button, which is a
-     sibling pulled up over this padding, so no word is ever covered. */
-  padding: 0.2rem 0.28rem 1.45rem;
+     sibling pulled up over this padding, so no word is ever covered.
+     otp-v0.7: the button is a 22px circle whose bottom edge sits 6px above the
+     chip's, so the strip it needs is 28px; 30px keeps a clear 2px gap between
+     the last line of text and the top of the circle. */
+  padding: 0.2rem 0.28rem 30px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition: background 0.16s ease, color 0.16s ease, border-color 0.16s ease;
 }
 .rub-chip:hover { background: var(--surface-mid); }
 /* otp-v0.2: the chip colour IS the recorded state, so these rules sit after
-   :hover and win over it. The legend swatches share them. */
+   :hover and win over it. The legend swatches share them.
+   otp-v0.7: a calm pastel tint plus a 3px coloured left edge. The chip keeps
+   its normal ink and its other three borders, and hover no longer darkens. */
 .rub-chip[data-state="present"], .rub-chip[data-state="present"]:hover, .rub-legend-sw[data-state="present"] {
-  background: var(--rate-success);
-  border-color: var(--rate-success);
-  color: #ffffff;
+  background: var(--rub-present-bg);
+  border-left: 3px solid var(--rub-present-edge);
 }
 .rub-chip[data-state="partial"], .rub-chip[data-state="partial"]:hover, .rub-legend-sw[data-state="partial"] {
-  background: var(--ais-yellow);
-  border-color: var(--ais-yellow);
-  color: #143642;
+  background: var(--rub-partial-bg);
+  border-left: 3px solid var(--rub-partial-edge);
 }
 .rub-chip[data-state="absent"], .rub-chip[data-state="absent"]:hover, .rub-legend-sw[data-state="absent"] {
-  background: var(--ais-red);
-  border-color: var(--ais-red);
-  color: #ffffff;
+  background: var(--rub-absent-bg);
+  border-left: 3px solid var(--rub-absent-edge);
 }
 .form-container.is-locked .rub-chip { cursor: default; }
 
 /* otp-v0.6: per-criterion note button. A SIBLING of the chip inside .rub-cell
    (never nested: a button inside a button is invalid HTML and would swallow
    the tap cycle), pulled up by a negative margin so it sits in the strip the
-   chip reserves at its bottom-right corner. */
+   chip reserves at its bottom-right corner.
+   otp-v0.7: a 22px circle inset exactly 6px from the chip's right and bottom
+   edges. The negative top margin is 22 + 6 + the flex gap, so the circle's
+   bottom edge lands 6px above the chip's; the 6px bottom margin gives the
+   cell back the height the pull-up took, so the button's tap pad can never
+   poke out of the rubric wrapper. */
 .rub-note-btn {
   appearance: none;
   align-self: flex-end;
   position: relative;
   z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.25rem;
-  height: 1.25rem;
-  margin: -1.44rem 0.25rem 0.1rem 0;
+  display: block;
+  width: 22px;
+  height: 22px;
+  margin: calc(-1 * (22px + 6px + var(--rub-gap))) 6px 6px 0;
   padding: 0;
   border-radius: 50%;
-  border: 1px solid var(--rule);
-  background: var(--card-bg);
-  color: var(--paper-mid);
-  font-family: var(--body-font);
-  font-size: 0.85rem;
-  font-weight: 700;
+  border: 1px solid rgba(20, 54, 66, 0.28);
+  background: transparent;
+  color: rgba(20, 54, 66, 0.55);
   line-height: 1;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
 }
-/* a 36x36 tap target without changing the layout */
-.rub-note-btn::before { content: ''; position: absolute; top: -8px; right: -8px; bottom: -8px; left: -8px; }
-.rub-note-btn:hover { border-color: var(--ais-blue); color: var(--ais-blue); }
+/* a 36x36 tap target without changing the 22px circle or the layout */
+.rub-note-btn::before { content: ''; position: absolute; top: -7px; right: -7px; bottom: -7px; left: -7px; border-radius: 50%; }
+/* the plus: two 1.5 x 10px bars, no text glyph, pixel-centred in the circle */
+.rub-note-btn::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  transform: translate(-50%, -50%);
+  background:
+    linear-gradient(currentColor, currentColor) center / 1.5px 10px no-repeat,
+    linear-gradient(currentColor, currentColor) center / 10px 1.5px no-repeat;
+}
+.rub-note-btn:hover, .rub-note-btn:focus-visible { border-color: rgba(20, 54, 66, 0.45); }
+.rub-note-btn:active { transform: scale(0.97); }
 .rub-note-btn.has-note {
-  background: #1257FF;
-  border-color: #1257FF;
+  background: var(--navy);
+  border-color: var(--navy);
   color: #ffffff;
 }
-
-/* otp-v0.6: the criterion-note panel is a NORMAL table row directly under the
-   chip row, one open at a time. Never a fixed overlay, never a scroll lock,
-   never a body reposition (iPad law), and it never steals focus on open. */
-.rub-note-row > td {
-  padding: 0.55rem 0.7rem 0.75rem;
-  background: var(--surface-soft);
-  border-top: 1px solid var(--rule);
+:root[data-theme="dark"] .rub-note-btn { border-color: rgba(242, 239, 230, 0.28); color: rgba(242, 239, 230, 0.55); }
+:root[data-theme="dark"] .rub-note-btn:hover,
+:root[data-theme="dark"] .rub-note-btn:focus-visible { border-color: rgba(242, 239, 230, 0.45); }
+:root[data-theme="dark"] .rub-note-btn.has-note {
+  background: var(--paper);
+  border-color: var(--paper);
+  color: var(--navy);
 }
-.rub-note { display: flex; flex-direction: column; gap: 0.45rem; }
+/* otp-v0.7: one-shot pop when a note becomes non-empty through user input */
+@keyframes rub-badge-pop {
+  0%   { transform: scale(1); }
+  45%  { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+.rub-note-btn.badge-pop { animation: rub-badge-pop 220ms ease-out; }
+
+/* otp-v0.7: the criterion note is a pop-up CARD anchored to the "+" it came
+   from. ONE card and ONE scrim, permanently mounted inside the rubric section
+   and driven by data-state alone: display, hidden and visibility are never
+   toggled on them (the iOS raster rule), the card is position:absolute and
+   never position:fixed (the keyboard engine owns fixed), there is no scroll
+   lock and no body reposition, and it never steals focus on open. */
+.rub-note-scrim {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 0;
+  background: rgba(20, 54, 66, 0.16);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms linear;
+}
+.rub-note-scrim[data-state="open"] { opacity: 1; pointer-events: auto; }
+.rub-note-pop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  width: 380px;
+  max-width: 92%;
+  padding: 0.7rem 0.8rem 0.8rem;
+  background: var(--card-bg);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(20, 54, 66, 0.18);
+  opacity: 0;
+  transform: scale(0.94) translateY(6px);
+  pointer-events: none;
+  /* close: the mirrored easing, shrinking back into the button it came from */
+  transition: transform 200ms cubic-bezier(0.64, 0, 0.78, 0), opacity 200ms linear;
+}
+.rub-note-pop[data-state="open"] {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  pointer-events: auto;
+  /* open: materialize and settle, no overshoot */
+  transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1), opacity 200ms linear;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rub-note-pop,
+  .rub-note-pop[data-state="open"] {
+    transform: none;
+    transition: opacity 150ms linear;
+  }
+  .rub-note-scrim,
+  .rub-note-scrim[data-state="open"] { transition: opacity 150ms linear; }
+  .rub-note-btn:active { transform: none; }
+  .rub-note-btn.badge-pop { animation: none; }
+}
+.rub-note-headrow { display: flex; align-items: center; gap: 0.4rem; }
+.rub-note-dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1px solid var(--rule);
+  background: var(--surface-mid);
+}
+.rub-note-dot[data-state="present"] { background: var(--rub-present-edge); border-color: var(--rub-present-edge); }
+.rub-note-dot[data-state="partial"] { background: var(--rub-partial-edge); border-color: var(--rub-partial-edge); }
+.rub-note-dot[data-state="absent"] { background: var(--rub-absent-edge); border-color: var(--rub-absent-edge); }
 .rub-note-head {
   font-family: var(--body-font);
   font-size: var(--tiny);
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--ais-blue);
+  color: var(--paper);
 }
 .rub-note-crit {
   margin: 0;
@@ -2115,7 +2233,9 @@ body.is-viewer .cog-btn { display: none; }
 }
 .rub-note-text {
   width: 100%;
-  min-height: 4.5rem;
+  /* three rows to start, eight at most; fitNoteText sets the height between */
+  min-height: 5.6rem;
+  max-height: 14rem;
   resize: vertical;
   font-family: var(--body-font);
   font-size: var(--body);
@@ -2126,12 +2246,13 @@ body.is-viewer .cog-btn { display: none; }
   border-radius: 0.4rem;
   padding: 0.5rem 0.6rem;
 }
-.rub-note-text:focus { outline: none; border-color: var(--ais-blue); }
+.rub-note-text:focus { outline: none; border-color: var(--paper-mid); }
 .rub-note-acts { display: flex; align-items: center; gap: 0.3rem; }
-/* .pad-attach sets display:inline-flex, which beats the browser's own
-   [hidden] rule, so the panel's paperclip needs this to stay hidden until the
-   record actually carries pad pages for the criterion. */
-.rub-note-acts .pad-attach[hidden] { display: none; }
+/* .pad-attach and .pad-field-btn set display:inline-flex / flex, which beat
+   the browser's own [hidden] rule, so the card's pencil and paperclip need
+   this to stay hidden until the criterion actually has a pad or pad pages. */
+.rub-note-acts .pad-attach[hidden],
+.rub-note-acts .pad-field-btn[hidden] { display: none; }
 .rub-note-done {
   appearance: none;
   margin-left: auto;
@@ -2147,7 +2268,7 @@ body.is-viewer .cog-btn { display: none; }
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
-.rub-note-done:hover { border-color: var(--ais-blue); color: var(--ais-blue); }
+.rub-note-done:hover { border-color: var(--paper-mid); }
 
 /* otp-v0.6: the notes as a printable list under the table (screen: hidden). */
 .rub-print-notes { display: none; }
@@ -2193,14 +2314,18 @@ body.is-viewer .cog-btn { display: none; }
 @media print {
   .rub-wrap { overflow: visible; }
   .rub-table { min-width: 0; }
-  .rub-chip[data-state="present"] { background: var(--rate-success) !important; border-color: var(--rate-success) !important; color: #ffffff !important; }
-  .rub-chip[data-state="partial"] { background: var(--ais-yellow) !important; border-color: var(--ais-yellow) !important; color: #143642 !important; }
-  .rub-chip[data-state="absent"] { background: var(--ais-red) !important; border-color: var(--ais-red) !important; color: #ffffff !important; }
-  /* otp-v0.6: the filled badge is data, so it prints; an empty "+" affordance
-     and an open panel are not, so they do not. The notes print as a list. */
-  .rub-note-btn.has-note { background: #1257FF !important; border-color: #1257FF !important; color: #ffffff !important; }
+  /* otp-v0.7: the calm tints and their 3px edges print as they paint. */
+  .rub-chip[data-state], .rub-legend-sw[data-state] { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .rub-chip[data-state="present"] { background: var(--rub-present-bg) !important; border-left: 3px solid var(--rub-present-edge) !important; }
+  .rub-chip[data-state="partial"] { background: var(--rub-partial-bg) !important; border-left: 3px solid var(--rub-partial-edge) !important; }
+  .rub-chip[data-state="absent"] { background: var(--rub-absent-bg) !important; border-left: 3px solid var(--rub-absent-edge) !important; }
+  /* otp-v0.6: the filled badge is data, so it prints as a solid dot; an empty
+     "+" affordance and an open card are not, so they do not. The notes print
+     as a list. The card is faded out rather than display-toggled (iPad law);
+     it is absolutely positioned, so it takes no space either way. */
+  .rub-note-btn.has-note { background: var(--navy) !important; border-color: var(--navy) !important; color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   .rub-note-btn:not(.has-note) { display: none !important; }
-  .rub-note-row { display: none !important; }
+  .rub-note-pop, .rub-note-scrim { opacity: 0 !important; }
   .rub-print-notes { display: block; margin-top: 0.6rem; }
   .rub-print-head { font-weight: 700; margin-bottom: 0.2rem; }
   .rub-print-item { margin: 0 0 0.2rem; font-size: var(--small); line-height: 1.4; break-inside: avoid; }
@@ -2507,7 +2632,7 @@ body.is-viewer .cog-btn { display: none; }
   <!-- ============================================
        OTP REFERENCE · SP1 rubric, tappable paragraph chips
        ============================================ -->
-  <section class="form-section">
+  <section class="form-section" id="rubric-section">
     <h2 class="section-title">OTP Reference: SP1 <em>Student Progress</em></h2>
     <div class="rub-wrap">
       <table class="rub-table">
@@ -2533,6 +2658,26 @@ body.is-viewer .cog-btn { display: none; }
     <input type="hidden" name="rubric_version" id="rubric_version" value="sp1-v2">
     <!-- otp-v0.6: print-only list of the criterion notes. -->
     <div class="rub-print-notes" id="rub-print-notes" aria-hidden="true"></div>
+    <!-- otp-v0.7: ONE permanent note card and ONE permanent scrim, anchored in
+         JS to the "+" that opened them. Always mounted: only data-state
+         changes, so no compositing layer is created or destroyed while the
+         card animates. The pencil and paperclip get their data-pad-target on
+         open and lose it on close, so the five standing pad launchers stay the
+         only ones the page carries while the card is shut. -->
+    <div class="rub-note-scrim" id="rub-note-scrim" data-state="closed" aria-hidden="true"></div>
+    <div class="rub-note-pop" id="rub-note-pop" data-state="closed" role="dialog" aria-hidden="true" aria-labelledby="rub-note-head">
+      <div class="rub-note-headrow">
+        <span class="rub-note-dot" id="rub-note-dot" data-state="" aria-hidden="true"></span>
+        <span class="rub-note-head" id="rub-note-head"></span>
+      </div>
+      <p class="rub-note-crit" id="rub-note-crit"></p>
+      <textarea class="rub-note-text" id="rub-note-text" rows="3" placeholder="What you saw for this criterion…"></textarea>
+      <div class="rub-note-acts">
+        <button type="button" class="pad-field-btn" hidden title="Open the Evidence Pad on this criterion's note page" aria-label="Open the Evidence Pad on this criterion's note page"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></button>
+        <button type="button" class="pad-attach" hidden title="View the handwritten pad pages for this note" aria-label="View the handwritten pad pages for this note"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
+        <button type="button" class="rub-note-done">Done</button>
+      </div>
+    </div>
   </section>
 
   <!-- ============================================
@@ -2580,7 +2725,7 @@ body.is-viewer .cog-btn { display: none; }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · Progress in Lessons OTP · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">otp-v0.6</a></span>
+    <span>Form · Progress in Lessons OTP · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">otp-v0.7</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -4795,6 +4940,7 @@ body.is-viewer .cog-btn { display: none; }
     const l = rubLevel(levelKey);
     if (!l) return;
     const map = readNoteMap();
+    const had = !!String(map[noteKey(l.label, n)] || '').trim();
     const v = String(text == null ? '' : text).trim();
     if (v) map[noteKey(l.label, n)] = v; else delete map[noteKey(l.label, n)];
     const el = document.getElementById('sp1_notes');
@@ -4802,10 +4948,24 @@ body.is-viewer .cog-btn { display: none; }
     el.value = serialiseNotes(map);
     writeSelectedText();
     syncNoteBadges();
+    // otp-v0.7: the badge pops ONLY on user input (typing or a pad
+    // extraction). Load, draft restore and record load go through
+    // syncNoteBadges, which sets .has-note silently.
+    if (!had && v) popNoteBadge(levelKey, n);
     refreshNotePanel(!keepTextarea);
     el.dispatchEvent(new Event('change', { bubbles: true }));
     const txt = document.getElementById('sp1_selected_text');
     if (txt) txt.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  /* otp-v0.7: a one-shot 220ms scale keyframe, restarted on each fill. */
+  function popNoteBadge(levelKey, n) {
+    const btn = noteBtnFor(levelKey, n);
+    if (!btn) return;
+    btn.classList.remove('badge-pop');
+    void btn.offsetWidth;                      // restart the keyframe
+    btn.classList.add('badge-pop');
+    btn.addEventListener('animationend', function () { btn.classList.remove('badge-pop'); }, { once: true });
   }
 
   function syncNoteBadges() {
@@ -4846,118 +5006,183 @@ body.is-viewer .cog-btn { display: none; }
     writePrintNotes(readRubSelection(), readNoteMap());
   }
 
-  /* ---------- the in-place note panel ----------
-     A NORMAL table row directly after the chip row, one <td colspan=5>, at most
-     one open at a time. Never a fixed overlay, never a scroll lock, never a
-     body reposition (the iPad rules), and never auto-focused: a Pencil user
-     must not get the keyboard thrown at them. */
-  let openNote = null;          // { level, n } of the open panel, or null
+  /* ---------- the anchored note pop-up (otp-v0.7) ----------
+     ONE permanent card and ONE permanent scrim, mounted in the rubric section
+     markup and driven by data-state, so no compositing layer is ever created
+     or destroyed while the card animates. The card is position:absolute inside
+     the rubric section (never fixed, the keyboard engine owns fixed), there is
+     no scroll lock and no body reposition (the iPad rules), and it never takes
+     focus on open: a Pencil user must not get the keyboard thrown at them. */
+  let openNote = null;          // { level, n } of the open criterion, or null
+
+  function notePop() { return document.getElementById('rub-note-pop'); }
+  function noteScrim() { return document.getElementById('rub-note-scrim'); }
+  function noteBtnFor(levelKey, n) {
+    return document.querySelector('.rub-note-btn[data-level="' + levelKey + '"][data-n="' + n + '"]');
+  }
 
   function criterionStateWord(levelKey, n) {
     const state = (readRubSelection()[levelKey] || {})[n];
     return state ? RUB_CAP[state] : RUB_NOT_ASSESSED;
   }
 
+  /* three rows to start, eight at most: the CSS min/max-height clamps this. */
+  function fitNoteText(ta) {
+    ta.style.height = 'auto';
+    ta.style.height = ta.scrollHeight + 'px';
+  }
+
   function closeNotePanel() {
-    const row = document.getElementById('rub-note-row');
-    if (row) row.remove();
+    const pop = notePop();
     openNote = null;
+    if (!pop) return;
+    pop.dataset.state = 'closed';
+    pop.setAttribute('aria-hidden', 'true');
+    const scrim = noteScrim();
+    if (scrim) { scrim.dataset.state = 'closed'; scrim.setAttribute('aria-hidden', 'true'); }
+    const ta = pop.querySelector('.rub-note-text');
+    if (ta) { ta.id = 'rub-note-text'; ta.style.height = ''; }
+    const pen = pop.querySelector('.pad-field-btn');
+    if (pen) { pen.removeAttribute('data-pad-target'); pen.hidden = true; }
+    const clip = pop.querySelector('.pad-attach');
+    if (clip) { clip.removeAttribute('data-pad-target'); clip.hidden = true; }
   }
 
   function refreshNotePanel(syncText) {
     if (!openNote) return;
     const l = rubLevel(openNote.level);
-    if (!l) return;
+    const pop = notePop();
+    if (!l || !pop) return;
     const head = document.getElementById('rub-note-head');
     if (head) {
-      head.textContent = 'Note · ' + l.label + ' ' + openNote.n + ' · ' +
+      head.textContent = l.label + ' ' + openNote.n + ' · ' +
                          criterionStateWord(openNote.level, openNote.n);
     }
+    const dot = document.getElementById('rub-note-dot');
+    if (dot) dot.dataset.state = (readRubSelection()[openNote.level] || {})[openNote.n] || '';
     if (!syncText) return;
-    const ta = document.getElementById('sp1_note_' + openNote.level + '_' + openNote.n);
+    const ta = pop.querySelector('.rub-note-text');
     const v = readCriterionNote(openNote.level, openNote.n);
-    if (ta && ta.value !== v) ta.value = v;
+    if (ta && ta.value !== v) { ta.value = v; fitNoteText(ta); }
+  }
+
+  /* Placement, measured from the "+" button and expressed in the rubric
+     section's own coordinates: right of the chip, else left of it, else below
+     it, always clamped 8px inside the section on both axes. transform-origin
+     is the button's centre, so the card grows out of the button it came from
+     and shrinks back into it. */
+  function positionNotePop(btn) {
+    const pop = notePop();
+    const sec = document.getElementById('rubric-section');
+    if (!pop || !sec || !btn) return;
+    const M = 8;
+    const cs = getComputedStyle(sec);
+    const sr = sec.getBoundingClientRect();
+    const padLeft = sr.left + (parseFloat(cs.borderLeftWidth) || 0);
+    const padTop = sr.top + (parseFloat(cs.borderTopWidth) || 0);
+    const boxW = sec.clientWidth, boxH = sec.clientHeight;
+    const br = btn.getBoundingClientRect();
+    const w = pop.offsetWidth, h = pop.offsetHeight;
+    let left = br.right - padLeft + M;
+    if (left + w > boxW - M) left = br.left - padLeft - w - M;
+    let top = br.top - padTop;
+    if (left < M) {
+      left = br.left - padLeft;
+      top = br.bottom - padTop + M;
+    }
+    left = Math.max(M, Math.min(left, boxW - w - M));
+    top = Math.max(M, Math.min(top, boxH - h - M));
+    pop.style.left = left + 'px';
+    pop.style.top = top + 'px';
+    pop.style.transformOrigin = (br.left + br.width / 2 - (padLeft + left)) + 'px ' +
+                                (br.top + br.height / 2 - (padTop + top)) + 'px';
   }
 
   function openNotePanel(levelKey, n) {
     const l = rubLevel(levelKey);
-    if (!l || !(n >= 1 && n <= l.paragraphs.length)) return;
-    // tapping the same "+" again closes the panel
+    const pop = notePop();
+    if (!l || !pop || !(n >= 1 && n <= l.paragraphs.length)) return;
+    const btn = noteBtnFor(levelKey, n);
+    if (!btn) return;
+    // tapping the same "+" again closes the card
     if (openNote && openNote.level === levelKey && openNote.n === n) { closeNotePanel(); return; }
-    closeNotePanel();
-    const chipRow = document.getElementById('rubric-row');
-    if (!chipRow) return;
+    // another chip's "+": the card shrinks back into its old button and
+    // materialises at the new one on the next frame (CSS re-targets a
+    // transition that is interrupted mid-flight)
+    if (openNote) {
+      closeNotePanel();
+      requestAnimationFrame(function () { openNotePanel(levelKey, n); });
+      return;
+    }
     const locked = FORM.classList.contains('is-locked');
     const target = 'sp1_' + levelKey + '_' + n + '_note';
+    openNote = { level: levelKey, n: n };
 
-    const tr = document.createElement('tr');
-    tr.className = 'rub-note-row';
-    tr.id = 'rub-note-row';
-    const td = document.createElement('td');
-    td.colSpan = RUB.levels.length;
-    const box = document.createElement('div');
-    box.className = 'rub-note';
+    const crit = document.getElementById('rub-note-crit');
+    if (crit) crit.textContent = l.paragraphs[n - 1];
 
-    const head = document.createElement('div');
-    head.className = 'rub-note-head';
-    head.id = 'rub-note-head';
-    head.textContent = 'Note · ' + l.label + ' ' + n + ' · ' + criterionStateWord(levelKey, n);
-    box.appendChild(head);
-
-    const crit = document.createElement('p');
-    crit.className = 'rub-note-crit';
-    crit.textContent = l.paragraphs[n - 1];
-    box.appendChild(crit);
-
-    // No name attribute: the note is never posted or drafted from here, only
-    // through the hidden sp1_notes input.
-    const ta = document.createElement('textarea');
-    ta.className = 'rub-note-text';
+    // No name attribute: the note is never posted or drafted from the
+    // textarea, only through the hidden sp1_notes input.
+    const ta = pop.querySelector('.rub-note-text');
     ta.id = 'sp1_note_' + levelKey + '_' + n;
-    ta.rows = 3;
-    ta.placeholder = 'What you saw for this criterion…';
     ta.value = readCriterionNote(levelKey, n);
-    if (locked) ta.readOnly = true;
-    else ta.addEventListener('input', () => writeCriterionNote(levelKey, n, ta.value, true));
-    box.appendChild(ta);
+    ta.readOnly = locked;
 
-    const acts = document.createElement('div');
-    acts.className = 'rub-note-acts';
-
-    const pen = document.createElement('button');
-    pen.type = 'button';
-    pen.className = 'pad-field-btn';
+    const pen = pop.querySelector('.pad-field-btn');
     pen.dataset.padTarget = target;
     pen.title = 'Open the Evidence Pad on the ' + l.label + ' ' + n + ' note page';
     pen.setAttribute('aria-label', pen.title);
-    pen.innerHTML = PAD_PEN_SVG;
-    if (locked || !EvidencePad.available) pen.hidden = true;
-    else pen.addEventListener('click', () => { EvidencePad.openAt(target); });
-    acts.appendChild(pen);
+    pen.hidden = locked || !EvidencePad.available;
 
-    const clip = document.createElement('button');
-    clip.type = 'button';
-    clip.className = 'pad-attach';
+    const clip = pop.querySelector('.pad-attach');
     clip.dataset.padTarget = target;
-    clip.title = 'View the handwritten pad pages for this note';
-    clip.setAttribute('aria-label', clip.title);
-    clip.innerHTML = PAD_CLIP_SVG;
     clip.hidden = !(padViewFiles[target] && padViewFiles[target].length);
-    clip.addEventListener('click', () => { openPadView(target); });
-    acts.appendChild(clip);
 
-    const done = document.createElement('button');
-    done.type = 'button';
-    done.className = 'rub-note-done';
-    done.textContent = 'Done';
-    done.addEventListener('click', closeNotePanel);
-    acts.appendChild(done);
+    refreshNotePanel(false);
+    fitNoteText(ta);
+    positionNotePop(btn);
+    pop.dataset.state = 'open';
+    pop.setAttribute('aria-hidden', 'false');
+    const scrim = noteScrim();
+    if (scrim) { scrim.dataset.state = 'open'; scrim.setAttribute('aria-hidden', 'false'); }
 
-    box.appendChild(acts);
-    td.appendChild(box);
-    tr.appendChild(td);
-    chipRow.parentNode.insertBefore(tr, chipRow.nextSibling);
-    openNote = { level: levelKey, n: n };
+    // an ordinary scroll, never a scroll lock: bring the card into view when
+    // it opened below the fold
+    const sec = document.getElementById('rubric-section');
+    const vh = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
+    const cardTop = sec.getBoundingClientRect().top + pop.offsetTop;
+    if (cardTop < 0 || cardTop + pop.offsetHeight > vh) {
+      pop.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+  }
+
+  /* Bound once: the card is permanent markup, so its own controls never have
+     to be rebound when the rubric table is rebuilt for a legacy record. */
+  function bindNotePop() {
+    const pop = notePop();
+    if (pop) {
+      const ta = pop.querySelector('.rub-note-text');
+      ta.addEventListener('input', function () {
+        if (!openNote || ta.readOnly) return;
+        fitNoteText(ta);
+        writeCriterionNote(openNote.level, openNote.n, ta.value, true);
+      });
+      pop.querySelector('.rub-note-done').addEventListener('click', closeNotePanel);
+    }
+    const scrim = noteScrim();
+    if (scrim) scrim.addEventListener('click', closeNotePanel);
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape' || !openNote) return;
+      // the pad and the pad viewer have their own Escape handler and open OVER
+      // the card, so theirs wins while either is up
+      if (document.querySelector('#pad-modal.open') || document.querySelector('#pad-view.open')) return;
+      closeNotePanel();
+    });
+    const reanchor = function () {
+      if (openNote) positionNotePop(noteBtnFor(openNote.level, openNote.n));
+    };
+    window.addEventListener('resize', reanchor);
+    window.addEventListener('orientationchange', reanchor);
   }
 
   let rubRowBound = false;
@@ -4995,7 +5220,8 @@ body.is-viewer .cog-btn { display: none; }
         /* otp-v0.6: the note button is a SIBLING of the chip, never a child: a
            button inside a button is invalid HTML and would swallow the tap
            cycle. CSS floats it over the strip the chip reserves at its
-           bottom-right corner. */
+           bottom-right corner; otp-v0.7 draws its plus in CSS, so the button
+           carries no text. */
         const nb = document.createElement('button');
         nb.type = 'button';
         nb.className = 'rub-note-btn';
@@ -5003,7 +5229,6 @@ body.is-viewer .cog-btn { display: none; }
         nb.dataset.n = String(i + 1);
         nb.setAttribute('aria-label', 'Add a note for ' + l.label + ' ' + (i + 1));
         nb.title = nb.getAttribute('aria-label');
-        nb.textContent = '+';
         box.appendChild(nb);
       });
       td.appendChild(box);
@@ -5037,6 +5262,7 @@ body.is-viewer .cog-btn { display: none; }
     // bound once: setActiveRubric re-fills the same row for a legacy record
     if (rubRowBound) return;
     rubRowBound = true;
+    bindNotePop();
     row.addEventListener('click', e => {
       /* otp-v0.6: the note button rides in the same cell. It must never cycle
          the colour, and the chip must never open the panel, so each path keys
