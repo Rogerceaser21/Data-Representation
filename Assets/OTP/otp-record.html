@@ -5193,14 +5193,17 @@ body.is-viewer .cog-btn { display: none; }
          regularly covers neighbouring "+" buttons, so a tap on the card's
          own dead space (header, criterion text, padding) would blur the
          textarea and drop the iPad keyboard for nothing. Preventing the
-         default on the press keeps the focus where it is; the card's own
-         controls (textarea, pencil, paperclip, Done) are left alone. */
+         default of the (compatibility) mousedown keeps the focus where it
+         is and still lets the click through; the card's own controls
+         (textarea, pencil, paperclip, Done) are left alone. NEVER cancel
+         pointerdown here: on WebKit a cancelled touch pointerdown suppresses
+         the synthesized mousedown AND click, which would kill every tap on
+         the card and the scrim on a real iPad (verifier, 2026-09-10). */
       const keepNoteFocus = function (e) {
         if (!openNote || e.target === ta) return;
         if (e.target.closest && e.target.closest('textarea, button, input, select, a, label')) return;
         e.preventDefault();
       };
-      pop.addEventListener('pointerdown', keepNoteFocus);
       pop.addEventListener('mousedown', keepNoteFocus);
       ta.addEventListener('input', function () {
         if (!openNote || ta.readOnly) return;
@@ -5219,11 +5222,12 @@ body.is-viewer .cog-btn { display: none; }
     /* otp-v0.8: the scrim is not focusable, so the press that lands on it
        would blur the focused note (and drop the iPad keyboard) before the
        click below decides whether to re-anchor or close. Keep the focus on
-       the press; closeNotePanel() blurs on a genuine close. */
+       the (compatibility) mousedown only; closeNotePanel() blurs on a
+       genuine close. Cancelling pointerdown instead would suppress WebKit's
+       synthesized click for touch and kill tap-to-dismiss / re-anchor on
+       the iPad (verifier, 2026-09-10). */
     if (scrim) {
-      const keepOnScrim = function (e) { if (openNote) e.preventDefault(); };
-      scrim.addEventListener('pointerdown', keepOnScrim);
-      scrim.addEventListener('mousedown', keepOnScrim);
+      scrim.addEventListener('mousedown', function (e) { if (openNote) e.preventDefault(); });
     }
     if (scrim) scrim.addEventListener('click', function (e) {
       const under = document.elementsFromPoint(e.clientX, e.clientY);
