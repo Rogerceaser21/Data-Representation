@@ -44,8 +44,8 @@ behaves exactly as the R3 calls above.
 |---|---|
 | `OTP Submissions` | All OTP submissions (33 columns, append-only; `record_token` is 25th, `evidence_pad_id` 26th) |
 | `Teachers 26-27` | The 26-27 staff roster BOTH forms read since 2026-09-10 (@23): 186 people from the Secondary + Primary timetable lists, 12 columns (name, Title, First Name, Family Name, Code, Email, Curriculum, Kindy, Primary, Secondary, Grade, Department), emails directory-verified. `Teachers 25-26` is history. |
-| `R3 Inspectors 26-27` | This year's R3 inspectors (A = name, B = email), read by the R3 form. `R3 Inspectors 25-26` is last year's list, read by nothing. |
-| `OTP Coaches 26-27` | The OTP observers (A = name, B = email): the HOD line managers, the paired observers and the R3 inspectors in one flat list, read by the OTP form only. |
+| `R3 Inspectors 26-27` | This year's R3 inspectors (A = name, B = email), read by the R3 form: everyone marked `Y` in the Observer column (H) of the Secondary + Primary timetable lists, plus the two outside consultants Dr Ahmed and Dr Peter (no email yet) and Igor; 38 rows on 2026-09-10. `R3 Inspectors 25-26` is last year's list, read by nothing. |
+| `OTP Coaches 26-27` | The OTP observers (A = name, B = email), read by the OTP form only: the same Observer = `Y` people plus the paired observer Ahmed Osman, the consultants and Igor; 39 rows on 2026-09-10. A row without an email simply gets no CC on the backup email. |
 | `Teachers · Workspace groups` | Created on demand by `buildTeacherSheet()`: the raw [email, name] pull from the 6 staff Workspace groups. Never read by a form. |
 
 OTP columns, in order:
