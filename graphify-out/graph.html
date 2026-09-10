@@ -329,9 +329,9 @@ network.on('afterDrawing', function(ctx) {
         setTimeout(function() { btn.textContent = old; }, 1500);
       };
       panel.appendChild(btn);
-        ctx.restore();
-    });
-});
+    } catch (e) {}
+  };
+})();
 </script>
 </body>
 </html>
