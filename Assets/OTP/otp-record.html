@@ -5040,7 +5040,7 @@ body.is-viewer .cog-btn { display: none; }
     ta.style.height = ta.scrollHeight + 'px';
   }
 
-  function closeNotePanel() {
+  function closeNotePanel(keepFocus) {
     const pop = notePop();
     openNote = null;
     if (!pop) return;
@@ -5052,8 +5052,10 @@ body.is-viewer .cog-btn { display: none; }
     if (ta) {
       /* otp-v0.8: the textarea is focused on open now, so closing must drop
          the focus too, or the iPad keyboard would stay up and keystrokes
-         would land in a faded-out card. */
-      if (document.activeElement === ta) ta.blur();
+         would land in a faded-out card. The re-anchor swap passes
+         keepFocus === true (never a click event) so the keyboard survives
+         the close-then-reopen. */
+      if (keepFocus !== true && document.activeElement === ta) ta.blur();
       ta.id = 'rub-note-text'; ta.style.height = '';
     }
     const pen = pop.querySelector('.pad-field-btn');
@@ -5129,7 +5131,7 @@ body.is-viewer .cog-btn { display: none; }
          textarea through the swap; the reopen below re-focuses it. */
       const taNow = pop.querySelector('.rub-note-text');
       if (!locked && taNow) { try { taNow.focus({ preventScroll: true }); } catch (e) { taNow.focus(); } }
-      closeNotePanel();
+      closeNotePanel(!locked);
       requestAnimationFrame(function () { openNotePanel(levelKey, n); });
       return;
     }
@@ -5187,6 +5189,19 @@ body.is-viewer .cog-btn { display: none; }
     const pop = notePop();
     if (pop) {
       const ta = pop.querySelector('.rub-note-text');
+      /* otp-v0.8: the note is focused while the card is open, and the card
+         regularly covers neighbouring "+" buttons, so a tap on the card's
+         own dead space (header, criterion text, padding) would blur the
+         textarea and drop the iPad keyboard for nothing. Preventing the
+         default on the press keeps the focus where it is; the card's own
+         controls (textarea, pencil, paperclip, Done) are left alone. */
+      const keepNoteFocus = function (e) {
+        if (!openNote || e.target === ta) return;
+        if (e.target.closest && e.target.closest('textarea, button, input, select, a, label')) return;
+        e.preventDefault();
+      };
+      pop.addEventListener('pointerdown', keepNoteFocus);
+      pop.addEventListener('mousedown', keepNoteFocus);
       ta.addEventListener('input', function () {
         if (!openNote || ta.readOnly) return;
         fitNoteText(ta);
@@ -5201,6 +5216,15 @@ body.is-viewer .cog-btn { display: none; }
        routed by hand instead: over another criterion's "+" it re-anchors the
        card there (openNotePanel closes it again when it is the open one's own
        "+"), anywhere else it just closes. */
+    /* otp-v0.8: the scrim is not focusable, so the press that lands on it
+       would blur the focused note (and drop the iPad keyboard) before the
+       click below decides whether to re-anchor or close. Keep the focus on
+       the press; closeNotePanel() blurs on a genuine close. */
+    if (scrim) {
+      const keepOnScrim = function (e) { if (openNote) e.preventDefault(); };
+      scrim.addEventListener('pointerdown', keepOnScrim);
+      scrim.addEventListener('mousedown', keepOnScrim);
+    }
     if (scrim) scrim.addEventListener('click', function (e) {
       const under = document.elementsFromPoint(e.clientX, e.clientY);
       let btn = null;

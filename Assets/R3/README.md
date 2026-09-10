@@ -115,7 +115,7 @@ without it takes the R3 path unchanged.
 
 | Thing | Value |
 |---|---|
-| Sheet tab | `OTP Submissions` (33 columns, append-only, hard rule 1) |
+| Sheet tab | `OTP Submissions` (34 columns since otp-v0.8, append-only, hard rule 1) |
 | Roster tabs | `Teachers 26-27` (the same reconciled 186-row tab R3 reads since @23, 2026-09-10) + `OTP Coaches 26-27` (OTP observers: HODs, paired observers and the R3 inspectors in one list; a missing tab gives an empty observer list, never the R3 `R3 Inspectors 26-27` list) |
 | Options endpoint | `WEB_APP_URL + '?action=options&form=otp'` (cached under its own key `OTP_OPTIONS_v1`, 5-min TTL; `clearOptionsCache` clears both forms) |
 | Record endpoint | `WEB_APP_URL + '?token=<32-hex>&form=otp'` (legacy `?id=...&token=...&form=otp` also accepted); the response adds `form: 'otp' \| 'r3'` |
@@ -134,7 +134,7 @@ record_token, evidence_pad_id, sp1_present, sp1_partially_present, sp1_not_prese
 sp1_not_seen, grade, sp1_notes, rubric_version, time_out
 ```
 
-`observer` is the form's `inspector` field; there is no `time_out`, so no `duration`.
+`observer` is the form's `inspector` field; `time_out` is column 34 (otp-v0.8, the required Time Out at the bottom of the form); there is still no `duration`.
 otp-v0.5: `school` is DERIVED server-side from `grade` and grade wins (Pre-Kindy /
 Kindy -> Kindy, Prep and 1-6 -> Primary, 7-12 -> Secondary); an empty or unknown
 grade keeps the school the form posted.

@@ -2128,18 +2128,35 @@ test('otp-v0.8: a "+" tap puts the cursor in the note, closing drops it, the rec
   await page.keyboard.type('typed straight away');
   await expect(page.locator('#sp1_notes')).toHaveValue('{"Good 1":"typed straight away"}');
 
-  // re-anchoring keeps the focus on the (persistent) textarea, now the new criterion's
+  // a tap on the card's own dead space (header, criterion text) must NOT steal
+  // the focus: the card regularly covers other "+" buttons and an observer
+  // tapping there would otherwise lose the iPad keyboard for nothing
+  await page.evaluate(() => {
+    (window as any).__blurs = 0;
+    document.querySelector('.rub-note-text')!.addEventListener('blur', () => { (window as any).__blurs++; });
+  });
+  await page.locator('#rub-note-crit').click();
+  await page.locator('#rub-note-head').click();
+  await page.waitForTimeout(100);
+  expect((await active())!.id).toBe('sp1_note_good_1');
+  await page.keyboard.type(' still here');
+  await expect(page.locator('#sp1_notes')).toHaveValue('{"Good 1":"typed straight away still here"}');
+  expect(await page.evaluate(() => (window as any).__blurs)).toBe(0);
+
+  // re-anchoring keeps the focus on the (persistent) textarea, now the new
+  // criterion's, WITHOUT a blur in between (a blur would drop the keyboard)
   await tapNoteBtn(page, 'great', 2);
   await expectPop(page, 'open');
   await page.waitForTimeout(100);   // the reopen runs on the next frame
   expect((await active())!.id).toBe('sp1_note_great_2');
+  expect(await page.evaluate(() => (window as any).__blurs)).toBe(0);
 
   // Done drops the focus, so a keyboard would go away and keystrokes cannot land in the faded card
   await page.locator('.rub-note-done').click();
   await expectPop(page, 'closed');
   expect((await active())!.cls).not.toContain('rub-note-text');
   await page.keyboard.type('stray');
-  await expect(page.locator('#sp1_notes')).toHaveValue('{"Good 1":"typed straight away"}');
+  await expect(page.locator('#sp1_notes')).toHaveValue('{"Good 1":"typed straight away still here"}');
 
   // Esc as well
   await tapNoteBtn(page, 'good', 1);
