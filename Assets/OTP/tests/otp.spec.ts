@@ -1683,7 +1683,7 @@ test('the colour legend is a permanent strip under the level headers; the Info b
   await expect(legend).toBeVisible();
   // otp-v0.6 wording (contract §4)
   expect(await legend.locator('.rub-legend-item').allTextContents()).toEqual([
-    'No colour: not assessed (does not count)',
+    'Not Applicable to this lesson',
     'Green: present in lesson',
     'Yellow: partially present in lesson',
     'Red: expected but not present in lesson',

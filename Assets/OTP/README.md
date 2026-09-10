@@ -43,7 +43,8 @@ practice through observational support and coaching.
    otp-v0.6: every chip also carries a small **`+` note button** at its
    bottom-right (a sibling of the chip, never nested, so it can never cycle the
    colour). The legend wording is now
-   `No colour: not assessed (does not count)`, `Green: present in lesson`,
+   `Not Applicable to this lesson` (otp-v0.7.1 follow-up wording; v0.6 said
+   `No colour: not assessed (does not count)`), `Green: present in lesson`,
    `Yellow: partially present in lesson`,
    `Red: expected but not present in lesson`.
    otp-v0.7: the note opens as a **pop-up card anchored to the chip it came
@@ -209,6 +210,10 @@ ungated viewer) with every `script.google.com` / `supabase.co` call mocked.
   removed from chips, legend swatches and print (tints unchanged). Two specs
   adapted (`+` geometry and plus symmetry measured from the SVG path rect;
   tint-only borders), the print spec's badge check follows the SVG.
+  Follow-up the same morning, same version: the first legend line reads
+  `Not Applicable to this lesson` (Igor's wording); the recorded data words
+  (`Not assessed` in `sp1_selected_text` and the print list), the note card
+  header and the backup email label are unchanged.
 - **otp-v0.7** · The note UI reworked to Igor's eye, form only; the data
   contract is untouched (same 31 POST keys, same `sp1_notes` /
   `sp1_selected_text` values, same 33 Sheet columns, no Apps Script change).
