@@ -785,7 +785,7 @@
       "label": "OTP_NOTES",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L71",
+      "source_location": "L72",
       "_origin": "ast",
       "id": "tests_gs_harness_otp_notes",
       "community": 47,
@@ -795,7 +795,7 @@
       "label": "OTP_NOTES_JSON",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L77",
+      "source_location": "L78",
       "_origin": "ast",
       "id": "tests_gs_harness_otp_notes_json",
       "community": 47,
@@ -805,7 +805,7 @@
       "label": "OTP_PAYLOAD",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L79",
+      "source_location": "L80",
       "_origin": "ast",
       "id": "tests_gs_harness_otp_payload",
       "community": 47,
@@ -815,7 +815,7 @@
       "label": "R3_PAYLOAD",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L113",
+      "source_location": "L115",
       "_origin": "ast",
       "id": "tests_gs_harness_r3_payload",
       "community": 47,
@@ -825,7 +825,7 @@
       "label": "makeRange()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L150",
+      "source_location": "L152",
       "_origin": "ast",
       "id": "tests_gs_harness_makerange",
       "community": 47,
@@ -835,7 +835,7 @@
       "label": "makeSheet()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L182",
+      "source_location": "L184",
       "_origin": "ast",
       "id": "tests_gs_harness_makesheet",
       "community": 47,
@@ -845,7 +845,7 @@
       "label": "makeResponse()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L199",
+      "source_location": "L201",
       "_origin": "ast",
       "id": "tests_gs_harness_makeresponse",
       "community": 47,
@@ -855,7 +855,7 @@
       "label": "buildEnv()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L210",
+      "source_location": "L212",
       "_origin": "ast",
       "id": "tests_gs_harness_buildenv",
       "community": 47,
@@ -865,7 +865,7 @@
       "label": "readSources()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L338",
+      "source_location": "L340",
       "_origin": "ast",
       "id": "tests_gs_harness_readsources",
       "community": 47,
@@ -875,7 +875,7 @@
       "label": "BASE_DIR",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L342",
+      "source_location": "L344",
       "_origin": "ast",
       "id": "tests_gs_harness_base_dir",
       "community": 47,
@@ -885,7 +885,7 @@
       "label": "SRC_NEW",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L348",
+      "source_location": "L350",
       "_origin": "ast",
       "id": "tests_gs_harness_src_new",
       "community": 47,
@@ -895,7 +895,7 @@
       "label": "SRC_BASE",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L349",
+      "source_location": "L351",
       "_origin": "ast",
       "id": "tests_gs_harness_src_base",
       "community": 47,
@@ -905,7 +905,7 @@
       "label": "R3_COLUMNS",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L352",
+      "source_location": "L354",
       "_origin": "ast",
       "id": "tests_gs_harness_r3_columns",
       "community": 47,
@@ -915,7 +915,7 @@
       "label": "r3Row()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L357",
+      "source_location": "L359",
       "_origin": "ast",
       "id": "tests_gs_harness_r3row",
       "community": 47,
@@ -925,7 +925,7 @@
       "label": "otpRow()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L368",
+      "source_location": "L370",
       "_origin": "ast",
       "id": "tests_gs_harness_otprow",
       "community": 47,
@@ -935,7 +935,7 @@
       "label": "padRow()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L385",
+      "source_location": "L387",
       "_origin": "ast",
       "id": "tests_gs_harness_padrow",
       "community": 47,
@@ -945,7 +945,7 @@
       "label": "R3_TEACHERS_ROWS",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L395",
+      "source_location": "L397",
       "_origin": "ast",
       "id": "tests_gs_harness_r3_teachers_rows",
       "community": 47,
@@ -955,7 +955,7 @@
       "label": "R3_INSPECTORS_ROWS",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L396",
+      "source_location": "L398",
       "_origin": "ast",
       "id": "tests_gs_harness_r3_inspectors_rows",
       "community": 47,
@@ -965,7 +965,7 @@
       "label": "ROSTER_R3",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L397",
+      "source_location": "L399",
       "_origin": "ast",
       "id": "tests_gs_harness_roster_r3",
       "community": 47,
@@ -975,7 +975,7 @@
       "label": "ROSTER_2627",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L409",
+      "source_location": "L413",
       "_origin": "ast",
       "id": "tests_gs_harness_roster_2627",
       "community": 47,
@@ -985,7 +985,7 @@
       "label": "seedFull()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L413",
+      "source_location": "L416",
       "_origin": "ast",
       "id": "tests_gs_harness_seedfull",
       "community": 47,
@@ -995,7 +995,7 @@
       "label": "seedR3Only()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L414",
+      "source_location": "L417",
       "_origin": "ast",
       "id": "tests_gs_harness_seedr3only",
       "community": 47,
@@ -1005,7 +1005,7 @@
       "label": "seedRecords()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L415",
+      "source_location": "L418",
       "_origin": "ast",
       "id": "tests_gs_harness_seedrecords",
       "community": 47,
@@ -1015,7 +1015,7 @@
       "label": "SCENARIOS",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L422",
+      "source_location": "L425",
       "_origin": "ast",
       "id": "tests_gs_harness_scenarios",
       "community": 47,
@@ -1025,7 +1025,7 @@
       "label": "extractPad()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L471",
+      "source_location": "L474",
       "_origin": "ast",
       "id": "tests_gs_harness_extractpad",
       "community": 47,
@@ -1035,7 +1035,7 @@
       "label": "runScenario()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L482",
+      "source_location": "L485",
       "_origin": "ast",
       "id": "tests_gs_harness_runscenario",
       "community": 47,
@@ -1045,7 +1045,7 @@
       "label": "ok()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L492",
+      "source_location": "L495",
       "_origin": "ast",
       "id": "tests_gs_harness_ok",
       "community": 47,
@@ -1055,7 +1055,7 @@
       "label": "eqJson()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L496",
+      "source_location": "L499",
       "_origin": "ast",
       "id": "tests_gs_harness_eqjson",
       "community": 47,
@@ -1065,7 +1065,7 @@
       "label": "section()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L501",
+      "source_location": "L504",
       "_origin": "ast",
       "id": "tests_gs_harness_section",
       "community": 47,
@@ -1075,7 +1075,7 @@
       "label": "mailRowValue()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L504",
+      "source_location": "L507",
       "_origin": "ast",
       "id": "tests_gs_harness_mailrowvalue",
       "community": 47,
@@ -1085,7 +1085,7 @@
       "label": "mailSectionRows()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L517",
+      "source_location": "L520",
       "_origin": "ast",
       "id": "tests_gs_harness_mailsectionrows",
       "community": 47,
@@ -1265,7 +1265,7 @@
       "label": "RECORD_NOTES",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L145",
+      "source_location": "L146",
       "_origin": "ast",
       "id": "tests_otp_spec_record_notes",
       "community": 84,
@@ -1275,7 +1275,7 @@
       "label": "RECORD_PAYLOAD",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L151",
+      "source_location": "L152",
       "_origin": "ast",
       "id": "tests_otp_spec_record_payload",
       "community": 84,
@@ -1285,7 +1285,7 @@
       "label": "RECORD_PAYLOAD_LEGACY",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L176",
+      "source_location": "L177",
       "_origin": "ast",
       "id": "tests_otp_spec_record_payload_legacy",
       "community": 84,
@@ -1295,7 +1295,7 @@
       "label": "Harness",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L191",
+      "source_location": "L192",
       "_origin": "ast",
       "id": "tests_otp_spec_harness",
       "community": 84,
@@ -1305,7 +1305,7 @@
       "label": "openForm()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L251",
+      "source_location": "L252",
       "_origin": "ast",
       "id": "tests_otp_spec_openform",
       "community": 84,
@@ -1315,7 +1315,7 @@
       "label": "passGate()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L256",
+      "source_location": "L257",
       "_origin": "ast",
       "id": "tests_otp_spec_passgate",
       "community": 84,
@@ -1325,7 +1325,7 @@
       "label": "pickTomSelect()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L263",
+      "source_location": "L264",
       "_origin": "ast",
       "id": "tests_otp_spec_picktomselect",
       "community": 84,
@@ -1335,7 +1335,7 @@
       "label": "gradeControl()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L269",
+      "source_location": "L270",
       "_origin": "ast",
       "id": "tests_otp_spec_gradecontrol",
       "community": 84,
@@ -1345,7 +1345,7 @@
       "label": "pickGrade()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L273",
+      "source_location": "L274",
       "_origin": "ast",
       "id": "tests_otp_spec_pickgrade",
       "community": 84,
@@ -1355,7 +1355,7 @@
       "label": "fillRequired()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L278",
+      "source_location": "L279",
       "_origin": "ast",
       "id": "tests_otp_spec_fillrequired",
       "community": 84,
@@ -1365,7 +1365,7 @@
       "label": "chipAt()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L289",
+      "source_location": "L291",
       "_origin": "ast",
       "id": "tests_otp_spec_chipat",
       "community": 84,
@@ -1375,7 +1375,7 @@
       "label": "noteBtnAt()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L291",
+      "source_location": "L293",
       "_origin": "ast",
       "id": "tests_otp_spec_notebtnat",
       "community": 84,
@@ -1385,7 +1385,7 @@
       "label": "notePop()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L294",
+      "source_location": "L296",
       "_origin": "ast",
       "id": "tests_otp_spec_notepop",
       "community": 84,
@@ -1395,7 +1395,7 @@
       "label": "noteScrim()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L295",
+      "source_location": "L297",
       "_origin": "ast",
       "id": "tests_otp_spec_notescrim",
       "community": 84,
@@ -1405,7 +1405,7 @@
       "label": "expectPop()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L296",
+      "source_location": "L298",
       "_origin": "ast",
       "id": "tests_otp_spec_expectpop",
       "community": 84,
@@ -1415,7 +1415,7 @@
       "label": "noteText()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L298",
+      "source_location": "L300",
       "_origin": "ast",
       "id": "tests_otp_spec_notetext",
       "community": 84,
@@ -1425,7 +1425,7 @@
       "label": "pointOf()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L304",
+      "source_location": "L306",
       "_origin": "ast",
       "id": "tests_otp_spec_pointof",
       "community": 84,
@@ -1435,7 +1435,7 @@
       "label": "tapAt()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L319",
+      "source_location": "L321",
       "_origin": "ast",
       "id": "tests_otp_spec_tapat",
       "community": 84,
@@ -1445,7 +1445,7 @@
       "label": "stackAt()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L325",
+      "source_location": "L327",
       "_origin": "ast",
       "id": "tests_otp_spec_stackat",
       "community": 84,
@@ -1455,7 +1455,7 @@
       "label": "chipSel()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L335",
+      "source_location": "L337",
       "_origin": "ast",
       "id": "tests_otp_spec_chipsel",
       "community": 84,
@@ -1465,7 +1465,7 @@
       "label": "tapChip()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L336",
+      "source_location": "L338",
       "_origin": "ast",
       "id": "tests_otp_spec_tapchip",
       "community": 84,
@@ -1475,7 +1475,7 @@
       "label": "tapNoteBtn()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L342",
+      "source_location": "L344",
       "_origin": "ast",
       "id": "tests_otp_spec_tapnotebtn",
       "community": 84,
@@ -1485,7 +1485,7 @@
       "label": "VIEWPORTS",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L351",
+      "source_location": "L353",
       "_origin": "ast",
       "id": "tests_otp_spec_viewports",
       "community": 84,
@@ -1495,7 +1495,7 @@
       "label": "viewerSrc()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L358",
+      "source_location": "L360",
       "_origin": "ast",
       "id": "tests_otp_spec_viewersrc",
       "community": 84,
@@ -1746,7 +1746,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_istransforming",
-      "community": 54,
+      "community": 45,
       "norm_label": "istransforming()"
     },
     {
@@ -1816,7 +1816,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_s_point",
-      "community": 130,
+      "community": 51,
       "norm_label": ".point()"
     },
     {
@@ -1876,7 +1876,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_s_multiply",
-      "community": 59,
+      "community": 130,
       "norm_label": ".multiply()"
     },
     {
@@ -1886,7 +1886,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_s_invert",
-      "community": 130,
+      "community": 51,
       "norm_label": ".invert()"
     },
     {
@@ -1916,7 +1916,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_isvalidselector",
-      "community": 15,
+      "community": 53,
       "norm_label": "isvalidselector()"
     },
     {
@@ -1936,7 +1936,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_createcanvaselement",
-      "community": 53,
+      "community": 59,
       "norm_label": "createcanvaselement()"
     },
     {
@@ -1956,7 +1956,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_urltoimage",
-      "community": 2,
+      "community": 45,
       "norm_label": "_urltoimage()"
     },
     {
@@ -2076,7 +2076,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_cloneobject",
-      "community": 15,
+      "community": 53,
       "norm_label": "cloneobject()"
     },
     {
@@ -2106,7 +2106,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_warn",
-      "community": 56,
+      "community": 57,
       "norm_label": "warn()"
     },
     {
@@ -2456,7 +2456,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_createpattern",
-      "community": 50,
+      "community": 59,
       "norm_label": ".createpattern()"
     },
     {
@@ -2466,7 +2466,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_createradialgradient",
-      "community": 53,
+      "community": 59,
       "norm_label": ".createradialgradient()"
     },
     {
@@ -2536,7 +2536,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_measuretext",
-      "community": 53,
+      "community": 43,
       "norm_label": ".measuretext()"
     },
     {
@@ -2626,7 +2626,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_rotate",
-      "community": 50,
+      "community": 59,
       "norm_label": ".rotate()"
     },
     {
@@ -2656,7 +2656,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_setlinedash",
-      "community": 108,
+      "community": 50,
       "norm_label": ".setlinedash()"
     },
     {
@@ -2916,7 +2916,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_y_constructor",
-      "community": 53,
+      "community": 59,
       "norm_label": ".constructor()"
     },
     {
@@ -3116,7 +3116,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_c",
-      "community": 56,
+      "community": 57,
       "norm_label": "c()"
     },
     {
@@ -3126,7 +3126,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_k",
-      "community": 56,
+      "community": 57,
       "norm_label": "k()"
     },
     {
@@ -3136,7 +3136,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_a",
-      "community": 56,
+      "community": 57,
       "norm_label": "a()"
     },
     {
@@ -3256,7 +3256,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_constructor",
-      "community": 64,
+      "community": 15,
       "norm_label": ".constructor()"
     },
     {
@@ -3276,7 +3276,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_clearcache",
-      "community": 64,
+      "community": 15,
       "norm_label": "._clearcache()"
     },
     {
@@ -3316,7 +3316,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_clearselfanddescendantcache",
-      "community": 64,
+      "community": 15,
       "norm_label": "._clearselfanddescendantcache()"
     },
     {
@@ -3336,7 +3336,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_iscached",
-      "community": 130,
+      "community": 15,
       "norm_label": ".iscached()"
     },
     {
@@ -3356,7 +3356,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_transformedrect",
-      "community": 130,
+      "community": 15,
       "norm_label": "._transformedrect()"
     },
     {
@@ -3396,7 +3396,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_on",
-      "community": 51,
+      "community": 79,
       "norm_label": ".on()"
     },
     {
@@ -3426,7 +3426,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_addeventlistener",
-      "community": 51,
+      "community": 79,
       "norm_label": ".addeventlistener()"
     },
     {
@@ -3436,7 +3436,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_removeeventlistener",
-      "community": 86,
+      "community": 15,
       "norm_label": ".removeeventlistener()"
     },
     {
@@ -3446,7 +3446,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_delegate",
-      "community": 15,
+      "community": 53,
       "norm_label": "._delegate()"
     },
     {
@@ -3516,7 +3516,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_setattrs",
-      "community": 64,
+      "community": 15,
       "norm_label": ".setattrs()"
     },
     {
@@ -3546,7 +3546,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_shoulddrawhit",
-      "community": 43,
+      "community": 54,
       "norm_label": ".shoulddrawhit()"
     },
     {
@@ -3606,7 +3606,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_batchtransformchanges",
-      "community": 64,
+      "community": 15,
       "norm_label": "._batchtransformchanges()"
     },
     {
@@ -3616,7 +3616,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_setposition",
-      "community": 64,
+      "community": 15,
       "norm_label": ".setposition()"
     },
     {
@@ -3636,7 +3636,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_getrelativepointerposition",
-      "community": 130,
+      "community": 51,
       "norm_label": ".getrelativepointerposition()"
     },
     {
@@ -3646,7 +3646,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_getabsoluteposition",
-      "community": 130,
+      "community": 43,
       "norm_label": ".getabsoluteposition()"
     },
     {
@@ -3666,7 +3666,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_settransform",
-      "community": 15,
+      "community": 130,
       "norm_label": "._settransform()"
     },
     {
@@ -3716,7 +3716,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_movetotop",
-      "community": 56,
+      "community": 57,
       "norm_label": ".movetotop()"
     },
     {
@@ -3726,7 +3726,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_moveup",
-      "community": 56,
+      "community": 57,
       "norm_label": ".moveup()"
     },
     {
@@ -3736,7 +3736,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_movedown",
-      "community": 56,
+      "community": 57,
       "norm_label": ".movedown()"
     },
     {
@@ -3746,7 +3746,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_movetobottom",
-      "community": 56,
+      "community": 57,
       "norm_label": ".movetobottom()"
     },
     {
@@ -3756,7 +3756,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_setzindex",
-      "community": 56,
+      "community": 57,
       "norm_label": ".setzindex()"
     },
     {
@@ -3816,7 +3816,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_findancestors",
-      "community": 15,
+      "community": 53,
       "norm_label": ".findancestors()"
     },
     {
@@ -3836,7 +3836,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_findancestor",
-      "community": 15,
+      "community": 53,
       "norm_label": ".findancestor()"
     },
     {
@@ -3846,7 +3846,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_ismatch",
-      "community": 15,
+      "community": 53,
       "norm_label": "._ismatch()"
     },
     {
@@ -3926,7 +3926,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_clone",
-      "community": 15,
+      "community": 53,
       "norm_label": ".clone()"
     },
     {
@@ -4046,7 +4046,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_addname",
-      "community": 15,
+      "community": 53,
       "norm_label": ".addname()"
     },
     {
@@ -4056,7 +4056,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_hasname",
-      "community": 15,
+      "community": 53,
       "norm_label": ".hasname()"
     },
     {
@@ -4226,7 +4226,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_isclientrectonscreen",
-      "community": 15,
+      "community": 54,
       "norm_label": ".isclientrectonscreen()"
     },
     {
@@ -4236,7 +4236,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_create",
-      "community": 15,
+      "community": 57,
       "norm_label": ".create()"
     },
     {
@@ -4246,7 +4246,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_createnode",
-      "community": 15,
+      "community": 57,
       "norm_label": "._createnode()"
     },
     {
@@ -4396,7 +4396,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_v_clearselfanddescendantcache",
-      "community": 64,
+      "community": 15,
       "norm_label": "._clearselfanddescendantcache()"
     },
     {
@@ -4406,7 +4406,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_v_setchildrenindices",
-      "community": 56,
+      "community": 57,
       "norm_label": "._setchildrenindices()"
     },
     {
@@ -4456,7 +4456,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_j",
-      "community": 54,
+      "community": 45,
       "norm_label": "j()"
     },
     {
@@ -4896,7 +4896,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_tt_cache",
-      "community": 56,
+      "community": 57,
       "norm_label": ".cache()"
     },
     {
@@ -4916,7 +4916,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_tt_batchdraw",
-      "community": 4,
+      "community": 57,
       "norm_label": ".batchdraw()"
     },
     {
@@ -4926,7 +4926,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ot",
-      "community": 53,
+      "community": 59,
       "norm_label": "ot()"
     },
     {
@@ -4956,7 +4956,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ft_getcontext",
-      "community": 43,
+      "community": 41,
       "norm_label": ".getcontext()"
     },
     {
@@ -4966,7 +4966,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ft_getcanvas",
-      "community": 43,
+      "community": 41,
       "norm_label": ".getcanvas()"
     },
     {
@@ -5026,7 +5026,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ft_getradialgradient",
-      "community": 53,
+      "community": 59,
       "norm_label": "._getradialgradient()"
     },
     {
@@ -5136,7 +5136,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ft_getclientrect",
-      "community": 130,
+      "community": 15,
       "norm_label": ".getclientrect()"
     },
     {
@@ -5256,7 +5256,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_gethitcanvas",
-      "community": 54,
+      "community": 55,
       "norm_label": ".gethitcanvas()"
     },
     {
@@ -5426,7 +5426,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_setwidth",
-      "community": 56,
+      "community": 54,
       "norm_label": ".setwidth()"
     },
     {
@@ -5446,7 +5446,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_setheight",
-      "community": 56,
+      "community": 57,
       "norm_label": ".setheight()"
     },
     {
@@ -5456,7 +5456,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_batchdraw",
-      "community": 4,
+      "community": 51,
       "norm_label": ".batchdraw()"
     },
     {
@@ -5516,7 +5516,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_sethitgraphenabled",
-      "community": 56,
+      "community": 57,
       "norm_label": ".sethitgraphenabled()"
     },
     {
@@ -5526,7 +5526,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_gethitgraphenabled",
-      "community": 56,
+      "community": 54,
       "norm_label": ".gethitgraphenabled()"
     },
     {
@@ -5786,7 +5786,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_vt_setposition",
-      "community": 59,
+      "community": 4,
       "norm_label": ".setposition()"
     },
     {
@@ -6416,7 +6416,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ce_fillstroke",
-      "community": 108,
+      "community": 46,
       "norm_label": ".__fillstroke()"
     },
     {
@@ -6556,7 +6556,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_fe",
-      "community": 86,
+      "community": 79,
       "norm_label": "fe"
     },
     {
@@ -6566,7 +6566,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_fe_constructor",
-      "community": 86,
+      "community": 79,
       "norm_label": ".constructor()"
     },
     {
@@ -6576,7 +6576,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_fe_setimageload",
-      "community": 86,
+      "community": 79,
       "norm_label": "._setimageload()"
     },
     {
@@ -6586,7 +6586,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_fe_removeimageload",
-      "community": 86,
+      "community": 79,
       "norm_label": "._removeimageload()"
     },
     {
@@ -6596,7 +6596,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_fe_destroy",
-      "community": 86,
+      "community": 79,
       "norm_label": ".destroy()"
     },
     {
@@ -6636,7 +6636,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_fe_getwidth",
-      "community": 86,
+      "community": 79,
       "norm_label": ".getwidth()"
     },
     {
@@ -6646,7 +6646,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_fe_getheight",
-      "community": 86,
+      "community": 79,
       "norm_label": ".getheight()"
     },
     {
@@ -6656,7 +6656,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_fe_fromurl",
-      "community": 2,
+      "community": 79,
       "norm_label": ".fromurl()"
     },
     {
@@ -7066,7 +7066,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ze",
-      "community": 53,
+      "community": 59,
       "norm_label": "ze()"
     },
     {
@@ -7126,7 +7126,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_gettextwidth",
-      "community": 53,
+      "community": 59,
       "norm_label": ".gettextwidth()"
     },
     {
@@ -7146,7 +7146,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_measuresize",
-      "community": 53,
+      "community": 43,
       "norm_label": ".measuresize()"
     },
     {
@@ -7346,7 +7346,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_qe_getcontextfont",
-      "community": 46,
+      "community": 43,
       "norm_label": "._getcontextfont()"
     },
     {
@@ -7396,7 +7396,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ti",
-      "community": 45,
+      "community": 130,
       "norm_label": "ti()"
     },
     {
@@ -7406,7 +7406,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ei",
-      "community": 45,
+      "community": 130,
       "norm_label": "ei()"
     },
     {
@@ -7526,7 +7526,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ni_resettransformcache",
-      "community": 64,
+      "community": 51,
       "norm_label": "._resettransformcache()"
     },
     {
@@ -7676,7 +7676,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ni_fitnodesinto",
-      "community": 59,
+      "community": 51,
       "norm_label": "._fitnodesinto()"
     },
     {
@@ -7686,7 +7686,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ni_forceupdate",
-      "community": 64,
+      "community": 51,
       "norm_label": ".forceupdate()"
     },
     {
@@ -7696,7 +7696,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ni_batchchangechild",
-      "community": 64,
+      "community": 51,
       "norm_label": "._batchchangechild()"
     },
     {
@@ -7706,7 +7706,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ni_update",
-      "community": 4,
+      "community": 51,
       "norm_label": ".update()"
     },
     {
@@ -7736,7 +7736,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ni_destroy",
-      "community": 51,
+      "community": 54,
       "norm_label": ".destroy()"
     },
     {
@@ -7886,7 +7886,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "lib_perfect_freehand_i",
-      "community": 2,
+      "community": 52,
       "norm_label": "i()"
     },
     {
@@ -7926,7 +7926,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "lib_perfect_freehand_l",
-      "community": 2,
+      "community": 52,
       "norm_label": "l()"
     },
     {
@@ -7946,7 +7946,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "lib_perfect_freehand_d",
-      "community": 65,
+      "community": 52,
       "norm_label": "d()"
     },
     {
@@ -7976,7 +7976,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "lib_perfect_freehand_m",
-      "community": 52,
+      "community": 90,
       "norm_label": "m()"
     },
     {
@@ -8046,7 +8046,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "lib_perfect_freehand_x",
-      "community": 2,
+      "community": 52,
       "norm_label": "x()"
     },
     {
@@ -8146,7 +8146,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "lib_perfect_freehand_r",
-      "community": 2,
+      "community": 52,
       "norm_label": "r()"
     },
     {
@@ -8366,7 +8366,7 @@
       "source_location": "L177",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_setup",
-      "community": 87,
+      "community": 90,
       "norm_label": ".setup()"
     },
     {
@@ -8406,7 +8406,7 @@
       "source_location": "L193",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_sync",
-      "community": 3,
+      "community": 56,
       "norm_label": ".sync()"
     },
     {
@@ -8436,7 +8436,7 @@
       "source_location": "L196",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_onchange",
-      "community": 3,
+      "community": 52,
       "norm_label": ".onchange()"
     },
     {
@@ -8466,7 +8466,7 @@
       "source_location": "L201",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_onkeydown",
-      "community": 87,
+      "community": 67,
       "norm_label": ".onkeydown()"
     },
     {
@@ -8516,7 +8516,7 @@
       "source_location": "L223",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_onoptionselect",
-      "community": 87,
+      "community": 3,
       "norm_label": ".onoptionselect()"
     },
     {
@@ -8526,7 +8526,7 @@
       "source_location": "L224",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_canselect",
-      "community": 87,
+      "community": 67,
       "norm_label": ".canselect()"
     },
     {
@@ -8586,7 +8586,7 @@
       "source_location": "L231",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_settextboxvalue",
-      "community": 87,
+      "community": 90,
       "norm_label": ".settextboxvalue()"
     },
     {
@@ -8606,7 +8606,7 @@
       "source_location": "L232",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_setvalue",
-      "community": 3,
+      "community": 56,
       "norm_label": ".setvalue()"
     },
     {
@@ -8706,7 +8706,7 @@
       "source_location": "L241",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_selectall",
-      "community": 87,
+      "community": 90,
       "norm_label": ".selectall()"
     },
     {
@@ -8716,7 +8716,7 @@
       "source_location": "L244",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_inputstate",
-      "community": 87,
+      "community": 90,
       "norm_label": ".inputstate()"
     },
     {
@@ -8876,7 +8876,7 @@
       "source_location": "L293",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_updateoption",
-      "community": 65,
+      "community": 3,
       "norm_label": ".updateoption()"
     },
     {
@@ -8886,7 +8886,7 @@
       "source_location": "L302",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_removeoption",
-      "community": 65,
+      "community": 3,
       "norm_label": ".removeoption()"
     },
     {
@@ -8916,7 +8916,7 @@
       "source_location": "L306",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_getoption",
-      "community": 65,
+      "community": 3,
       "norm_label": ".getoption()"
     },
     {
@@ -8926,7 +8926,7 @@
       "source_location": "L310",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_getadjacent",
-      "community": 87,
+      "community": 67,
       "norm_label": ".getadjacent()"
     },
     {
@@ -8936,7 +8936,7 @@
       "source_location": "L314",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_getitem",
-      "community": 65,
+      "community": 3,
       "norm_label": ".getitem()"
     },
     {
@@ -9046,7 +9046,7 @@
       "source_location": "L346",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_close",
-      "community": 87,
+      "community": 90,
       "norm_label": ".close()"
     },
     {
@@ -9066,7 +9066,7 @@
       "source_location": "L348",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_clear",
-      "community": 87,
+      "community": 90,
       "norm_label": ".clear()"
     },
     {
@@ -9086,7 +9086,7 @@
       "source_location": "L351",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_deleteselection",
-      "community": 87,
+      "community": 65,
       "norm_label": ".deleteselection()"
     },
     {
@@ -9096,7 +9096,7 @@
       "source_location": "L359",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_shoulddelete",
-      "community": 87,
+      "community": 65,
       "norm_label": ".shoulddelete()"
     },
     {
@@ -9146,7 +9146,7 @@
       "source_location": "L364",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_controlchildren",
-      "community": 87,
+      "community": 90,
       "norm_label": ".controlchildren()"
     },
     {
@@ -9156,7 +9156,7 @@
       "source_location": "L364",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_lock",
-      "community": 3,
+      "community": 56,
       "norm_label": ".lock()"
     },
     {
@@ -9166,7 +9166,7 @@
       "source_location": "L364",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_unlock",
-      "community": 3,
+      "community": 56,
       "norm_label": ".unlock()"
     },
     {
@@ -9176,7 +9176,7 @@
       "source_location": "L364",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_setlocked",
-      "community": 3,
+      "community": 56,
       "norm_label": ".setlocked()"
     },
     {
@@ -9186,7 +9186,7 @@
       "source_location": "L364",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_disable",
-      "community": 3,
+      "community": 56,
       "norm_label": ".disable()"
     },
     {
@@ -9196,7 +9196,7 @@
       "source_location": "L364",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_enable",
-      "community": 3,
+      "community": 56,
       "norm_label": ".enable()"
     },
     {
@@ -9206,7 +9206,7 @@
       "source_location": "L364",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_setdisabled",
-      "community": 3,
+      "community": 56,
       "norm_label": ".setdisabled()"
     },
     {
@@ -9216,7 +9216,7 @@
       "source_location": "L364",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_setreadonly",
-      "community": 3,
+      "community": 56,
       "norm_label": ".setreadonly()"
     },
     {
@@ -9236,7 +9236,7 @@
       "source_location": "L365",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_render",
-      "community": 65,
+      "community": 3,
       "norm_label": ".render()"
     },
     {
@@ -9256,7 +9256,7 @@
       "source_location": "L372",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_uncachevalue",
-      "community": 65,
+      "community": 3,
       "norm_label": ".uncachevalue()"
     },
     {
@@ -16128,6 +16128,86 @@
       "norm_label": "6. out of scope"
     },
     {
+      "label": "2026-09-10-otp-v0.8-contract.md",
+      "file_type": "document",
+      "source_file": ".planning/2026-09-10-otp-v0.8-contract.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "planning_2026_09_10_otp_v0_8_contract",
+      "community": 64,
+      "norm_label": "2026-09-10-otp-v0.8-contract.md"
+    },
+    {
+      "label": "otp-v0.8 contract \u00b7 focus-on-open, required Time Out, no floating pad launcher",
+      "file_type": "document",
+      "source_file": ".planning/2026-09-10-otp-v0.8-contract.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "planning_2026_09_10_otp_v0_8_contract_otp_v0_8_contract_focus_on_open_required_time_out_no_floating_pad_launcher",
+      "community": 64,
+      "norm_label": "otp-v0.8 contract \u00b7 focus-on-open, required time out, no floating pad launcher"
+    },
+    {
+      "label": "1. Scope",
+      "file_type": "document",
+      "source_file": ".planning/2026-09-10-otp-v0.8-contract.md",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "planning_2026_09_10_otp_v0_8_contract_1_scope",
+      "community": 64,
+      "norm_label": "1. scope"
+    },
+    {
+      "label": "2. Payload (POST JSON, `form:\"otp\"`) \u00b7 exactly these 32 keys",
+      "file_type": "document",
+      "source_file": ".planning/2026-09-10-otp-v0.8-contract.md",
+      "source_location": "L30",
+      "_origin": "ast",
+      "id": "planning_2026_09_10_otp_v0_8_contract_2_payload_post_json_form_otp_exactly_these_32_keys",
+      "community": 64,
+      "norm_label": "2. payload (post json, `form:\"otp\"`) \u00b7 exactly these 32 keys"
+    },
+    {
+      "label": "3. Sheet \u00b7 `OTP Submissions` is 34 columns",
+      "file_type": "document",
+      "source_file": ".planning/2026-09-10-otp-v0.8-contract.md",
+      "source_location": "L45",
+      "_origin": "ast",
+      "id": "planning_2026_09_10_otp_v0_8_contract_3_sheet_otp_submissions_is_34_columns",
+      "community": 64,
+      "norm_label": "3. sheet \u00b7 `otp submissions` is 34 columns"
+    },
+    {
+      "label": "4. Backend (`Assets/R3/apps-script`, shared with R3, redeploy in place @23)",
+      "file_type": "document",
+      "source_file": ".planning/2026-09-10-otp-v0.8-contract.md",
+      "source_location": "L51",
+      "_origin": "ast",
+      "id": "planning_2026_09_10_otp_v0_8_contract_4_backend_assets_r3_apps_script_shared_with_r3_redeploy_in_place_23",
+      "community": 64,
+      "norm_label": "4. backend (`assets/r3/apps-script`, shared with r3, redeploy in place @23)"
+    },
+    {
+      "label": "5. Form (`Assets/OTP/src/otp-progress-form.html`)",
+      "file_type": "document",
+      "source_file": ".planning/2026-09-10-otp-v0.8-contract.md",
+      "source_location": "L62",
+      "_origin": "ast",
+      "id": "planning_2026_09_10_otp_v0_8_contract_5_form_assets_otp_src_otp_progress_form_html",
+      "community": 64,
+      "norm_label": "5. form (`assets/otp/src/otp-progress-form.html`)"
+    },
+    {
+      "label": "6. Tests (`Assets/OTP/tests/otp.spec.ts`, build first with `bash Assets/OTP/encrypt.sh`)",
+      "file_type": "document",
+      "source_file": ".planning/2026-09-10-otp-v0.8-contract.md",
+      "source_location": "L77",
+      "_origin": "ast",
+      "id": "planning_2026_09_10_otp_v0_8_contract_6_tests_assets_otp_tests_otp_spec_ts_build_first_with_bash_assets_otp_encrypt_sh",
+      "community": 64,
+      "norm_label": "6. tests (`assets/otp/tests/otp.spec.ts`, build first with `bash assets/otp/encrypt.sh`)"
+    },
+    {
       "label": "v0.10-r3-form-checklist.md",
       "file_type": "document",
       "source_file": ".planning/v0.10-r3-form-checklist.md",
@@ -16358,14 +16438,14 @@
       "norm_label": "readme.md"
     },
     {
-      "label": "Progress in Lessons OTP form \u00b7 otp-v0.7.1",
+      "label": "Progress in Lessons OTP form \u00b7 otp-v0.8",
       "file_type": "document",
       "source_file": "Assets/OTP/README.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "otp_readme_progress_in_lessons_otp_form_otp_v0_7_1",
+      "id": "otp_readme_progress_in_lessons_otp_form_otp_v0_8",
       "community": 118,
-      "norm_label": "progress in lessons otp form \u00b7 otp-v0.7.1"
+      "norm_label": "progress in lessons otp form \u00b7 otp-v0.8"
     },
     {
       "label": "What is on the page",
@@ -16381,7 +16461,7 @@
       "label": "Build",
       "file_type": "document",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L87",
+      "source_location": "L97",
       "_origin": "ast",
       "id": "otp_readme_build",
       "community": 118,
@@ -16391,7 +16471,7 @@
       "label": "Backend contract",
       "file_type": "document",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L104",
+      "source_location": "L114",
       "_origin": "ast",
       "id": "otp_readme_backend_contract",
       "community": 118,
@@ -16401,7 +16481,7 @@
       "label": "Tests",
       "file_type": "document",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L188",
+      "source_location": "L209",
       "_origin": "ast",
       "id": "otp_readme_tests",
       "community": 118,
@@ -16411,7 +16491,7 @@
       "label": "Changelog",
       "file_type": "document",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L200",
+      "source_location": "L221",
       "_origin": "ast",
       "id": "otp_readme_changelog",
       "community": 118,
@@ -16443,7 +16523,7 @@
       "source_file": "Assets/R3/Google file links.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_574b3a_bb65e0de_f070_4dbd_80fa_0603e5efc441_scratchpad_otp_v06_assets_r3_google_file_links_md",
+      "id": "r3_google_file_links",
       "community": 28,
       "norm_label": "google file links.md"
     },
@@ -16501,7 +16581,7 @@
       "label": "Related",
       "file_type": "document",
       "source_file": "Assets/R3/Google file links.md",
-      "source_location": "L69",
+      "source_location": "L71",
       "_origin": "ast",
       "id": "r3_google_file_links_related",
       "community": 28,
@@ -16513,7 +16593,7 @@
       "source_file": "Assets/R3/README.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_574b3a_bb65e0de_f070_4dbd_80fa_0603e5efc441_scratchpad_otp_v06_assets_r3_readme_md",
+      "id": "r3_readme",
       "community": 25,
       "norm_label": "readme.md"
     },
@@ -21395,9 +21475,9 @@
       "source_file": "Assets/OTP/rubric-sp1-v2.json",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_574b3a_bb65e0de_f070_4dbd_80fa_0603e5efc441_scratchpad_otp_v06_assets_otp_rubric_sp1_v2_json",
-      "target": "otp_rubric_sp1_v2_aspect",
-      "confidence_score": 1.0
+      "target": "otp_rubric_sp1_v2_aspect"
     },
     {
       "relation": "contains",
@@ -21405,9 +21485,9 @@
       "source_file": "Assets/OTP/rubric-sp1-v2.json",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_574b3a_bb65e0de_f070_4dbd_80fa_0603e5efc441_scratchpad_otp_v06_assets_otp_rubric_sp1_v2_json",
-      "target": "otp_rubric_sp1_v2_levels",
-      "confidence_score": 1.0
+      "target": "otp_rubric_sp1_v2_levels"
     },
     {
       "relation": "contains",
@@ -21415,9 +21495,9 @@
       "source_file": "Assets/OTP/rubric-sp1-v2.json",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_574b3a_bb65e0de_f070_4dbd_80fa_0603e5efc441_scratchpad_otp_v06_assets_otp_rubric_sp1_v2_json",
-      "target": "otp_rubric_sp1_v2_reference",
-      "confidence_score": 1.0
+      "target": "otp_rubric_sp1_v2_reference"
     },
     {
       "relation": "contains",
@@ -21425,9 +21505,9 @@
       "source_file": "Assets/OTP/rubric-sp1-v2.json",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_574b3a_bb65e0de_f070_4dbd_80fa_0603e5efc441_scratchpad_otp_v06_assets_otp_rubric_sp1_v2_json",
-      "target": "otp_rubric_sp1_v2_reference_title",
-      "confidence_score": 1.0
+      "target": "otp_rubric_sp1_v2_reference_title"
     },
     {
       "relation": "contains",
@@ -21435,9 +21515,9 @@
       "source_file": "Assets/OTP/rubric-sp1-v2.json",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_574b3a_bb65e0de_f070_4dbd_80fa_0603e5efc441_scratchpad_otp_v06_assets_otp_rubric_sp1_v2_json",
-      "target": "otp_rubric_sp1_v2_source",
-      "confidence_score": 1.0
+      "target": "otp_rubric_sp1_v2_source"
     },
     {
       "relation": "contains",
@@ -21445,9 +21525,9 @@
       "source_file": "Assets/OTP/rubric-sp1-v2.json",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_574b3a_bb65e0de_f070_4dbd_80fa_0603e5efc441_scratchpad_otp_v06_assets_otp_rubric_sp1_v2_json",
-      "target": "otp_rubric_sp1_v2_version",
-      "confidence_score": 1.0
+      "target": "otp_rubric_sp1_v2_version"
     },
     {
       "relation": "contains",
@@ -50540,9 +50620,9 @@
       "source_file": ".planning/2026-09-09-otp-v0.6-contract.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_574b3a_bb65e0de_f070_4dbd_80fa_0603e5efc441_scratchpad_otp_v06_planning_2026_09_09_otp_v0_6_contract_md",
-      "target": "planning_2026_09_09_otp_v0_6_contract_otp_v0_6_contract_sentence_chips_criterion_notes_wording",
-      "confidence_score": 1.0
+      "target": "planning_2026_09_09_otp_v0_6_contract_otp_v0_6_contract_sentence_chips_criterion_notes_wording"
     },
     {
       "relation": "contains",
@@ -50630,9 +50710,9 @@
       "source_file": ".planning/2026-09-09-otp-v0.7-contract.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_574b3a_bb65e0de_f070_4dbd_80fa_0603e5efc441_scratchpad_otp_v06_planning_2026_09_09_otp_v0_7_contract_md",
-      "target": "planning_2026_09_09_otp_v0_7_contract_otp_v0_7_contract_anchored_note_pop_up_button_geometry_calm_palette_no_scrollbars",
-      "confidence_score": 1.0
+      "target": "planning_2026_09_09_otp_v0_7_contract_otp_v0_7_contract_anchored_note_pop_up_button_geometry_calm_palette_no_scrollbars"
     },
     {
       "relation": "contains",
@@ -50703,6 +50783,76 @@
       "confidence_score": 1.0,
       "source": "planning_2026_09_09_otp_v0_7_contract_otp_v0_7_contract_anchored_note_pop_up_button_geometry_calm_palette_no_scrollbars",
       "target": "planning_2026_09_09_otp_v0_7_contract_6_out_of_scope"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".planning/2026-09-10-otp-v0.8-contract.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "planning_2026_09_10_otp_v0_8_contract",
+      "target": "planning_2026_09_10_otp_v0_8_contract_otp_v0_8_contract_focus_on_open_required_time_out_no_floating_pad_launcher",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".planning/2026-09-10-otp-v0.8-contract.md",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "planning_2026_09_10_otp_v0_8_contract_otp_v0_8_contract_focus_on_open_required_time_out_no_floating_pad_launcher",
+      "target": "planning_2026_09_10_otp_v0_8_contract_1_scope",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".planning/2026-09-10-otp-v0.8-contract.md",
+      "source_location": "L30",
+      "weight": 1.0,
+      "source": "planning_2026_09_10_otp_v0_8_contract_otp_v0_8_contract_focus_on_open_required_time_out_no_floating_pad_launcher",
+      "target": "planning_2026_09_10_otp_v0_8_contract_2_payload_post_json_form_otp_exactly_these_32_keys",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".planning/2026-09-10-otp-v0.8-contract.md",
+      "source_location": "L45",
+      "weight": 1.0,
+      "source": "planning_2026_09_10_otp_v0_8_contract_otp_v0_8_contract_focus_on_open_required_time_out_no_floating_pad_launcher",
+      "target": "planning_2026_09_10_otp_v0_8_contract_3_sheet_otp_submissions_is_34_columns",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".planning/2026-09-10-otp-v0.8-contract.md",
+      "source_location": "L51",
+      "weight": 1.0,
+      "source": "planning_2026_09_10_otp_v0_8_contract_otp_v0_8_contract_focus_on_open_required_time_out_no_floating_pad_launcher",
+      "target": "planning_2026_09_10_otp_v0_8_contract_4_backend_assets_r3_apps_script_shared_with_r3_redeploy_in_place_23",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".planning/2026-09-10-otp-v0.8-contract.md",
+      "source_location": "L62",
+      "weight": 1.0,
+      "source": "planning_2026_09_10_otp_v0_8_contract_otp_v0_8_contract_focus_on_open_required_time_out_no_floating_pad_launcher",
+      "target": "planning_2026_09_10_otp_v0_8_contract_5_form_assets_otp_src_otp_progress_form_html",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".planning/2026-09-10-otp-v0.8-contract.md",
+      "source_location": "L77",
+      "weight": 1.0,
+      "source": "planning_2026_09_10_otp_v0_8_contract_otp_v0_8_contract_focus_on_open_required_time_out_no_floating_pad_launcher",
+      "target": "planning_2026_09_10_otp_v0_8_contract_6_tests_assets_otp_tests_otp_spec_ts_build_first_with_bash_assets_otp_encrypt_sh",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -50911,16 +51061,16 @@
       "source_location": "L1",
       "weight": 1.0,
       "source": "otp_readme",
-      "target": "otp_readme_progress_in_lessons_otp_form_otp_v0_7_1",
+      "target": "otp_readme_progress_in_lessons_otp_form_otp_v0_8",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L104",
+      "source_location": "L114",
       "weight": 1.0,
-      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_7_1",
+      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_8",
       "target": "otp_readme_backend_contract",
       "confidence_score": 1.0
     },
@@ -50928,9 +51078,9 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L87",
+      "source_location": "L97",
       "weight": 1.0,
-      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_7_1",
+      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_8",
       "target": "otp_readme_build",
       "confidence_score": 1.0
     },
@@ -50938,9 +51088,9 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L200",
+      "source_location": "L221",
       "weight": 1.0,
-      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_7_1",
+      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_8",
       "target": "otp_readme_changelog",
       "confidence_score": 1.0
     },
@@ -50948,9 +51098,9 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L188",
+      "source_location": "L209",
       "weight": 1.0,
-      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_7_1",
+      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_8",
       "target": "otp_readme_tests",
       "confidence_score": 1.0
     },
@@ -50960,7 +51110,7 @@
       "source_file": "Assets/OTP/README.md",
       "source_location": "L14",
       "weight": 1.0,
-      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_7_1",
+      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_8",
       "target": "otp_readme_what_is_on_the_page",
       "confidence_score": 1.0
     },
@@ -50980,7 +51130,7 @@
       "source_file": "Assets/R3/Google file links.md",
       "source_location": "L1",
       "weight": 1.0,
-      "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_574b3a_bb65e0de_f070_4dbd_80fa_0603e5efc441_scratchpad_otp_v06_assets_r3_google_file_links_md",
+      "source": "r3_google_file_links",
       "target": "r3_google_file_links_r3_evidence_google_file_links",
       "confidence_score": 1.0
     },
@@ -51040,7 +51190,7 @@
       "source_file": "Assets/R3/README.md",
       "source_location": "L1",
       "weight": 1.0,
-      "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_574b3a_bb65e0de_f070_4dbd_80fa_0603e5efc441_scratchpad_otp_v06_assets_r3_readme_md",
+      "source": "r3_readme",
       "target": "r3_readme_r3_evidence_form",
       "confidence_score": 1.0
     },
@@ -55686,5 +55836,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "65c820bce35f6b4f28e154404e60ff59dfc7ee4f"
+  "built_at_commit": "f2a796f12a965077d2907090ca148dc432ac0bbb"
 }

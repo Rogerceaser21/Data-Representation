@@ -50,13 +50,13 @@
     "semantic_hash": "2cdf2eb0df659de330b6a3f89763a183"
   },
   "Assets/R3/Google file links.md": {
-    "mtime": 1789013295.927395,
-    "ast_hash": "70823084e3d75d090c94aeeee872a35b",
+    "mtime": 1789031993.3984933,
+    "ast_hash": "32da0b32ed9f068fd058f1a011f281c0",
     "semantic_hash": ""
   },
   "Assets/R3/README.md": {
-    "mtime": 1789013295.9455225,
-    "ast_hash": "a39192b69db82e8042529ef4051126b1",
+    "mtime": 1789031993.3992326,
+    "ast_hash": "2fd40a958fbbdbb1b09c37704c3da5c2",
     "semantic_hash": ""
   },
   "Assets/R3/r3-evidence-form.html": {
@@ -70,8 +70,8 @@
     "semantic_hash": ""
   },
   "CLAUDE.md": {
-    "mtime": 1789014067.0185933,
-    "ast_hash": "ebef966ee32264b7d70bd98093746cd0",
+    "mtime": 1789031993.3607,
+    "ast_hash": "200468d9b7eb144e2130174662b73bd0",
     "semantic_hash": ""
   },
   "README.md": {
@@ -545,13 +545,13 @@
     "semantic_hash": ""
   },
   "Assets/OTP/tests/gs-harness.mjs": {
-    "mtime": 1789013295.9235616,
-    "ast_hash": "cf00a9131f03672de9515458c1e590bf",
+    "mtime": 1789031993.33964,
+    "ast_hash": "96d5b5e8fa2364595e015be73dc9460c",
     "semantic_hash": ""
   },
   "Assets/OTP/tests/otp.spec.ts": {
-    "mtime": 1789013875.015291,
-    "ast_hash": "85901327efd943adc18a100e60d3b8a3",
+    "mtime": 1789031993.3981285,
+    "ast_hash": "bc2e0a46e271ca4f779e1af1c4fc49e3",
     "semantic_hash": ""
   },
   "Assets/R3/lib/konva.min.js": {
@@ -920,23 +920,23 @@
     "semantic_hash": ""
   },
   "Assets/OTP/README.md": {
-    "mtime": 1789013557.6543348,
-    "ast_hash": "98384e02133383f7e0ee627aa787f262",
+    "mtime": 1789031993.3300898,
+    "ast_hash": "371118829c21a707e96d0828a4ac0948",
     "semantic_hash": ""
   },
   "Assets/OTP/otp-progress-form.html": {
-    "mtime": 1789014256.999907,
-    "ast_hash": "90bd555d0511f1bec7aefd8f408328ca",
+    "mtime": 1789031993.4209535,
+    "ast_hash": "a7c85d169e4cef4994151647f56dae58",
     "semantic_hash": ""
   },
   "Assets/OTP/otp-record.html": {
-    "mtime": 1789014217.992156,
-    "ast_hash": "a892a34f74e207f0e9a7fbb53c62c897",
+    "mtime": 1789031993.4226294,
+    "ast_hash": "8d6c44e382c787a224c208ab8c9f3f7d",
     "semantic_hash": ""
   },
   "Assets/OTP/src/otp-progress-form.html": {
-    "mtime": 1789013727.7386107,
-    "ast_hash": "7561f7742f0b991a34fef09d2a0024a9",
+    "mtime": 1789031993.4242146,
+    "ast_hash": "69735563d4826fc4ba76a5644b20c743",
     "semantic_hash": ""
   },
   "dashboard/apps-script-photos/README.md": {
@@ -1395,23 +1395,28 @@
     "semantic_hash": ""
   },
   "graphify-out/converted/24-25-Primary School OTP - v4_d5ff10fb.md": {
-    "mtime": 1789015805.6923313,
+    "mtime": 1789032329.7955325,
     "ast_hash": "29e9db9bc82395fe4a3857e7a969dc31",
     "semantic_hash": ""
   },
   "graphify-out/converted/Lesson Observation - Igor- 12_11_93f15415.md": {
-    "mtime": 1789015805.727591,
+    "mtime": 1789032329.828242,
     "ast_hash": "aef19a2faf53299a5b6c988416c1abc6",
     "semantic_hash": ""
   },
   "graphify-out/converted/R3 Evidence Form Template_c20ee067.md": {
-    "mtime": 1789015805.622229,
+    "mtime": 1789032329.7254837,
     "ast_hash": "6319e8fd83ccd51a82b75f6fee5d3196",
     "semantic_hash": ""
   },
   "graphify-out/converted/Year 6 Lesson Plan_8fbe6d61.md": {
-    "mtime": 1789015805.7474246,
+    "mtime": 1789032329.851149,
     "ast_hash": "7b799f7585159522ff68c298c29bb0d0",
+    "semantic_hash": ""
+  },
+  ".planning/2026-09-10-otp-v0.8-contract.md": {
+    "mtime": 1789031993.3295486,
+    "ast_hash": "9f26091a4e8fabecadf299a75d88b57b",
     "semantic_hash": ""
   }
 }

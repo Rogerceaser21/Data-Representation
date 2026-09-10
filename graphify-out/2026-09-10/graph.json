@@ -587,7 +587,7 @@
       "source_file": "Assets/OTP/rubric-sp1-v2.json",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "otp_rubric_sp1_v2",
+      "id": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_574b3a_bb65e0de_f070_4dbd_80fa_0603e5efc441_scratchpad_otp_v06_assets_otp_rubric_sp1_v2_json",
       "community": 156,
       "norm_label": "rubric-sp1-v2.json"
     },
@@ -1746,7 +1746,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_istransforming",
-      "community": 116,
+      "community": 54,
       "norm_label": "istransforming()"
     },
     {
@@ -1876,7 +1876,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_s_multiply",
-      "community": 130,
+      "community": 59,
       "norm_label": ".multiply()"
     },
     {
@@ -1946,7 +1946,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_isindocument",
-      "community": 64,
+      "community": 54,
       "norm_label": "_isindocument()"
     },
     {
@@ -2176,7 +2176,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_releasecanvas",
-      "community": 64,
+      "community": 54,
       "norm_label": "releasecanvas()"
     },
     {
@@ -2236,7 +2236,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_strokeshape",
-      "community": 41,
+      "community": 58,
       "norm_label": ".strokeshape()"
     },
     {
@@ -2646,7 +2646,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_scale",
-      "community": 130,
+      "community": 59,
       "norm_label": ".scale()"
     },
     {
@@ -2706,7 +2706,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_translate",
-      "community": 130,
+      "community": 59,
       "norm_label": ".translate()"
     },
     {
@@ -2736,7 +2736,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_get",
-      "community": 130,
+      "community": 59,
       "norm_label": "get()"
     },
     {
@@ -2766,7 +2766,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_p_constructor",
-      "community": 43,
+      "community": 58,
       "norm_label": ".constructor()"
     },
     {
@@ -2906,7 +2906,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_y",
-      "community": 55,
+      "community": 59,
       "norm_label": "y"
     },
     {
@@ -2926,7 +2926,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_y_getcontext",
-      "community": 55,
+      "community": 59,
       "norm_label": ".getcontext()"
     },
     {
@@ -2956,7 +2956,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_y_setwidth",
-      "community": 55,
+      "community": 59,
       "norm_label": ".setwidth()"
     },
     {
@@ -2966,7 +2966,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_y_setheight",
-      "community": 55,
+      "community": 59,
       "norm_label": ".setheight()"
     },
     {
@@ -2976,7 +2976,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_y_getwidth",
-      "community": 55,
+      "community": 59,
       "norm_label": ".getwidth()"
     },
     {
@@ -2986,7 +2986,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_y_getheight",
-      "community": 55,
+      "community": 59,
       "norm_label": ".getheight()"
     },
     {
@@ -3026,7 +3026,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_v_constructor",
-      "community": 57,
+      "community": 54,
       "norm_label": ".constructor()"
     },
     {
@@ -3036,7 +3036,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_x",
-      "community": 55,
+      "community": 59,
       "norm_label": "x"
     },
     {
@@ -3046,7 +3046,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_x_constructor",
-      "community": 57,
+      "community": 54,
       "norm_label": ".constructor()"
     },
     {
@@ -3086,7 +3086,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_enddragbefore",
-      "community": 116,
+      "community": 15,
       "norm_label": "_enddragbefore()"
     },
     {
@@ -3096,7 +3096,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_enddragafter",
-      "community": 116,
+      "community": 15,
       "norm_label": "_enddragafter()"
     },
     {
@@ -3196,7 +3196,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_addcomponentsgettersetter",
-      "community": 56,
+      "community": 113,
       "norm_label": "addcomponentsgettersetter()"
     },
     {
@@ -3286,7 +3286,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_getcache",
-      "community": 130,
+      "community": 59,
       "norm_label": "._getcache()"
     },
     {
@@ -3296,7 +3296,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_calculate",
-      "community": 130,
+      "community": 59,
       "norm_label": "._calculate()"
     },
     {
@@ -3326,7 +3326,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_cache",
-      "community": 43,
+      "community": 55,
       "norm_label": ".cache()"
     },
     {
@@ -3336,7 +3336,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_iscached",
-      "community": 41,
+      "community": 130,
       "norm_label": ".iscached()"
     },
     {
@@ -3406,7 +3406,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_off",
-      "community": 51,
+      "community": 15,
       "norm_label": ".off()"
     },
     {
@@ -3436,7 +3436,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_removeeventlistener",
-      "community": 51,
+      "community": 86,
       "norm_label": ".removeeventlistener()"
     },
     {
@@ -3456,7 +3456,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_remove",
-      "community": 116,
+      "community": 15,
       "norm_label": ".remove()"
     },
     {
@@ -3466,7 +3466,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_clearcaches",
-      "community": 64,
+      "community": 15,
       "norm_label": "._clearcaches()"
     },
     {
@@ -3476,7 +3476,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_destroy",
-      "community": 59,
+      "community": 54,
       "norm_label": ".destroy()"
     },
     {
@@ -3486,7 +3486,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_getattr",
-      "community": 56,
+      "community": 113,
       "norm_label": ".getattr()"
     },
     {
@@ -3626,7 +3626,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_getposition",
-      "community": 55,
+      "community": 59,
       "norm_label": ".getposition()"
     },
     {
@@ -3676,7 +3676,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_cleartransform",
-      "community": 55,
+      "community": 59,
       "norm_label": "._cleartransform()"
     },
     {
@@ -3686,7 +3686,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_move",
-      "community": 55,
+      "community": 59,
       "norm_label": ".move()"
     },
     {
@@ -3706,7 +3706,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_rotate",
-      "community": 130,
+      "community": 59,
       "norm_label": ".rotate()"
     },
     {
@@ -3886,7 +3886,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_getabsolutetransform",
-      "community": 130,
+      "community": 59,
       "norm_label": ".getabsolutetransform()"
     },
     {
@@ -3916,7 +3916,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_gettransform",
-      "community": 130,
+      "community": 59,
       "norm_label": ".gettransform()"
     },
     {
@@ -3936,7 +3936,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_tokonvacanvas",
-      "community": 43,
+      "community": 55,
       "norm_label": "._tokonvacanvas()"
     },
     {
@@ -4036,7 +4036,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_firechangeevent",
-      "community": 56,
+      "community": 113,
       "norm_label": "._firechangeevent()"
     },
     {
@@ -4096,7 +4096,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_setcomponentattr",
-      "community": 56,
+      "community": 113,
       "norm_label": "._setcomponentattr()"
     },
     {
@@ -4126,7 +4126,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_draw",
-      "community": 43,
+      "community": 55,
       "norm_label": ".draw()"
     },
     {
@@ -4166,7 +4166,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_stopdrag",
-      "community": 116,
+      "community": 15,
       "norm_label": ".stopdrag()"
     },
     {
@@ -4186,7 +4186,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_isdragging",
-      "community": 116,
+      "community": 54,
       "norm_label": ".isdragging()"
     },
     {
@@ -4576,7 +4576,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_tt_destroy",
-      "community": 64,
+      "community": 54,
       "norm_label": ".destroy()"
     },
     {
@@ -4766,7 +4766,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_tt_gettargetshape",
-      "community": 116,
+      "community": 54,
       "norm_label": "._gettargetshape()"
     },
     {
@@ -4776,7 +4776,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_tt_pointerleave",
-      "community": 116,
+      "community": 54,
       "norm_label": "._pointerleave()"
     },
     {
@@ -4796,7 +4796,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_tt_pointermove",
-      "community": 116,
+      "community": 54,
       "norm_label": "._pointermove()"
     },
     {
@@ -4906,7 +4906,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_tt_clearcache",
-      "community": 59,
+      "community": 54,
       "norm_label": ".clearcache()"
     },
     {
@@ -5006,7 +5006,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ft_getfillpattern",
-      "community": 130,
+      "community": 59,
       "norm_label": "._getfillpattern()"
     },
     {
@@ -5056,7 +5056,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ft_hasstroke",
-      "community": 41,
+      "community": 58,
       "norm_label": ".hasstroke()"
     },
     {
@@ -5076,7 +5076,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ft_intersects",
-      "community": 43,
+      "community": 55,
       "norm_label": ".intersects()"
     },
     {
@@ -5136,7 +5136,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ft_getclientrect",
-      "community": 41,
+      "community": 130,
       "norm_label": ".getclientrect()"
     },
     {
@@ -5206,7 +5206,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht",
-      "community": 59,
+      "community": 54,
       "norm_label": "ht"
     },
     {
@@ -5216,7 +5216,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_constructor",
-      "community": 59,
+      "community": 54,
       "norm_label": ".constructor()"
     },
     {
@@ -5226,7 +5226,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_createpngstream",
-      "community": 59,
+      "community": 54,
       "norm_label": ".createpngstream()"
     },
     {
@@ -5236,7 +5236,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_getcanvas",
-      "community": 59,
+      "community": 54,
       "norm_label": ".getcanvas()"
     },
     {
@@ -5246,7 +5246,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_getnativecanvaselement",
-      "community": 59,
+      "community": 54,
       "norm_label": ".getnativecanvaselement()"
     },
     {
@@ -5256,7 +5256,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_gethitcanvas",
-      "community": 59,
+      "community": 54,
       "norm_label": ".gethitcanvas()"
     },
     {
@@ -5266,7 +5266,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_getcontext",
-      "community": 43,
+      "community": 55,
       "norm_label": ".getcontext()"
     },
     {
@@ -5276,7 +5276,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_clear",
-      "community": 43,
+      "community": 55,
       "norm_label": ".clear()"
     },
     {
@@ -5286,7 +5286,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_setzindex",
-      "community": 59,
+      "community": 54,
       "norm_label": ".setzindex()"
     },
     {
@@ -5296,7 +5296,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_movetotop",
-      "community": 59,
+      "community": 54,
       "norm_label": ".movetotop()"
     },
     {
@@ -5306,7 +5306,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_moveup",
-      "community": 59,
+      "community": 54,
       "norm_label": ".moveup()"
     },
     {
@@ -5316,7 +5316,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_movedown",
-      "community": 59,
+      "community": 54,
       "norm_label": ".movedown()"
     },
     {
@@ -5326,7 +5326,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_movetobottom",
-      "community": 59,
+      "community": 54,
       "norm_label": ".movetobottom()"
     },
     {
@@ -5346,7 +5346,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_remove",
-      "community": 59,
+      "community": 54,
       "norm_label": ".remove()"
     },
     {
@@ -5356,7 +5356,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_getstage",
-      "community": 59,
+      "community": 54,
       "norm_label": ".getstage()"
     },
     {
@@ -5366,7 +5366,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_setsize",
-      "community": 57,
+      "community": 54,
       "norm_label": ".setsize()"
     },
     {
@@ -5396,7 +5396,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_checkvisibility",
-      "community": 59,
+      "community": 54,
       "norm_label": "._checkvisibility()"
     },
     {
@@ -5406,7 +5406,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_setsmoothenabled",
-      "community": 59,
+      "community": 54,
       "norm_label": "._setsmoothenabled()"
     },
     {
@@ -5416,7 +5416,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_getwidth",
-      "community": 59,
+      "community": 54,
       "norm_label": ".getwidth()"
     },
     {
@@ -5436,7 +5436,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_getheight",
-      "community": 59,
+      "community": 54,
       "norm_label": ".getheight()"
     },
     {
@@ -5476,7 +5476,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_drawscene",
-      "community": 43,
+      "community": 55,
       "norm_label": ".drawscene()"
     },
     {
@@ -5486,7 +5486,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_drawhit",
-      "community": 43,
+      "community": 55,
       "norm_label": ".drawhit()"
     },
     {
@@ -5496,7 +5496,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_enablehitgraph",
-      "community": 59,
+      "community": 54,
       "norm_label": ".enablehitgraph()"
     },
     {
@@ -5506,7 +5506,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_disablehitgraph",
-      "community": 59,
+      "community": 54,
       "norm_label": ".disablehitgraph()"
     },
     {
@@ -5536,7 +5536,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_togglehitcanvas",
-      "community": 59,
+      "community": 54,
       "norm_label": ".togglehitcanvas()"
     },
     {
@@ -5546,7 +5546,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_destroy",
-      "community": 59,
+      "community": 54,
       "norm_label": ".destroy()"
     },
     {
@@ -5786,7 +5786,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_vt_setposition",
-      "community": 55,
+      "community": 59,
       "norm_label": ".setposition()"
     },
     {
@@ -6556,7 +6556,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_fe",
-      "community": 51,
+      "community": 86,
       "norm_label": "fe"
     },
     {
@@ -6566,7 +6566,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_fe_constructor",
-      "community": 51,
+      "community": 86,
       "norm_label": ".constructor()"
     },
     {
@@ -6576,7 +6576,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_fe_setimageload",
-      "community": 51,
+      "community": 86,
       "norm_label": "._setimageload()"
     },
     {
@@ -6586,7 +6586,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_fe_removeimageload",
-      "community": 51,
+      "community": 86,
       "norm_label": "._removeimageload()"
     },
     {
@@ -6596,7 +6596,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_fe_destroy",
-      "community": 51,
+      "community": 86,
       "norm_label": ".destroy()"
     },
     {
@@ -6636,7 +6636,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_fe_getwidth",
-      "community": 51,
+      "community": 86,
       "norm_label": ".getwidth()"
     },
     {
@@ -6646,7 +6646,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_fe_getheight",
-      "community": 51,
+      "community": 86,
       "norm_label": ".getheight()"
     },
     {
@@ -6666,7 +6666,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_be",
-      "community": 51,
+      "community": 79,
       "norm_label": "be"
     },
     {
@@ -6676,7 +6676,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_be_constructor",
-      "community": 51,
+      "community": 79,
       "norm_label": ".constructor()"
     },
     {
@@ -6686,7 +6686,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_be_gettext",
-      "community": 51,
+      "community": 79,
       "norm_label": ".gettext()"
     },
     {
@@ -6696,7 +6696,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_be_gettag",
-      "community": 51,
+      "community": 79,
       "norm_label": ".gettag()"
     },
     {
@@ -6706,7 +6706,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_be_addlisteners",
-      "community": 51,
+      "community": 79,
       "norm_label": "._addlisteners()"
     },
     {
@@ -6716,7 +6716,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_be_getwidth",
-      "community": 51,
+      "community": 79,
       "norm_label": ".getwidth()"
     },
     {
@@ -6726,7 +6726,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_be_getheight",
-      "community": 51,
+      "community": 79,
       "norm_label": ".getheight()"
     },
     {
@@ -6736,7 +6736,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_be_sync",
-      "community": 51,
+      "community": 79,
       "norm_label": "._sync()"
     },
     {
@@ -7386,7 +7386,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_qe_destroy",
-      "community": 64,
+      "community": 54,
       "norm_label": ".destroy()"
     },
     {
@@ -7526,7 +7526,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ni_resettransformcache",
-      "community": 51,
+      "community": 64,
       "norm_label": "._resettransformcache()"
     },
     {
@@ -7656,7 +7656,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ni_getabsolutetransform",
-      "community": 130,
+      "community": 43,
       "norm_label": ".getabsolutetransform()"
     },
     {
@@ -7676,7 +7676,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ni_fitnodesinto",
-      "community": 130,
+      "community": 59,
       "norm_label": "._fitnodesinto()"
     },
     {
@@ -7686,7 +7686,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ni_forceupdate",
-      "community": 51,
+      "community": 64,
       "norm_label": ".forceupdate()"
     },
     {
@@ -7716,7 +7716,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ni_istransforming",
-      "community": 116,
+      "community": 54,
       "norm_label": ".istransforming()"
     },
     {
@@ -7766,7 +7766,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ni_getclientrect",
-      "community": 43,
+      "community": 55,
       "norm_label": ".getclientrect()"
     },
     {
@@ -15943,7 +15943,7 @@
       "source_file": ".planning/2026-09-09-otp-v0.6-contract.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "planning_2026_09_09_otp_v0_6_contract",
+      "id": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_574b3a_bb65e0de_f070_4dbd_80fa_0603e5efc441_scratchpad_otp_v06_planning_2026_09_09_otp_v0_6_contract_md",
       "community": 155,
       "norm_label": "2026-09-09-otp-v0.6-contract.md"
     },
@@ -16043,7 +16043,7 @@
       "source_file": ".planning/2026-09-09-otp-v0.7-contract.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "planning_2026_09_09_otp_v0_7_contract",
+      "id": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_574b3a_bb65e0de_f070_4dbd_80fa_0603e5efc441_scratchpad_otp_v06_planning_2026_09_09_otp_v0_7_contract_md",
       "community": 75,
       "norm_label": "2026-09-09-otp-v0.7-contract.md"
     },
@@ -16358,14 +16358,14 @@
       "norm_label": "readme.md"
     },
     {
-      "label": "Progress in Lessons OTP form \u00b7 otp-v0.7",
+      "label": "Progress in Lessons OTP form \u00b7 otp-v0.7.1",
       "file_type": "document",
       "source_file": "Assets/OTP/README.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "otp_readme_progress_in_lessons_otp_form_otp_v0_7",
+      "id": "otp_readme_progress_in_lessons_otp_form_otp_v0_7_1",
       "community": 118,
-      "norm_label": "progress in lessons otp form \u00b7 otp-v0.7"
+      "norm_label": "progress in lessons otp form \u00b7 otp-v0.7.1"
     },
     {
       "label": "What is on the page",
@@ -16381,7 +16381,7 @@
       "label": "Build",
       "file_type": "document",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L77",
+      "source_location": "L87",
       "_origin": "ast",
       "id": "otp_readme_build",
       "community": 118,
@@ -16391,7 +16391,7 @@
       "label": "Backend contract",
       "file_type": "document",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L94",
+      "source_location": "L104",
       "_origin": "ast",
       "id": "otp_readme_backend_contract",
       "community": 118,
@@ -16401,7 +16401,7 @@
       "label": "Tests",
       "file_type": "document",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L178",
+      "source_location": "L188",
       "_origin": "ast",
       "id": "otp_readme_tests",
       "community": 118,
@@ -16411,7 +16411,7 @@
       "label": "Changelog",
       "file_type": "document",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L190",
+      "source_location": "L200",
       "_origin": "ast",
       "id": "otp_readme_changelog",
       "community": 118,
@@ -16443,7 +16443,7 @@
       "source_file": "Assets/R3/Google file links.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "r3_google_file_links",
+      "id": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_574b3a_bb65e0de_f070_4dbd_80fa_0603e5efc441_scratchpad_otp_v06_assets_r3_google_file_links_md",
       "community": 28,
       "norm_label": "google file links.md"
     },
@@ -16513,7 +16513,7 @@
       "source_file": "Assets/R3/README.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "r3_readme",
+      "id": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_574b3a_bb65e0de_f070_4dbd_80fa_0603e5efc441_scratchpad_otp_v06_assets_r3_readme_md",
       "community": 25,
       "norm_label": "readme.md"
     },
@@ -17638,44 +17638,44 @@
       "norm_label": "heal / big photo drop"
     },
     {
-      "label": "24-25-Primary School OTP - v4_c097c367.md",
+      "label": "24-25-Primary School OTP - v4_d5ff10fb.md",
       "file_type": "document",
-      "source_file": "graphify-out/converted/24-25-Primary School OTP - v4_c097c367.md",
+      "source_file": "graphify-out/converted/24-25-Primary School OTP - v4_d5ff10fb.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "converted_24_25_primary_school_otp_v4_c097c367",
+      "id": "converted_24_25_primary_school_otp_v4_d5ff10fb",
+      "community": 114,
+      "norm_label": "24-25-primary school otp - v4_d5ff10fb.md"
+    },
+    {
+      "label": "Lesson Observation - Igor- 12_11_93f15415.md",
+      "file_type": "document",
+      "source_file": "graphify-out/converted/Lesson Observation - Igor- 12_11_93f15415.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "converted_lesson_observation_igor_12_11_93f15415",
+      "community": 116,
+      "norm_label": "lesson observation - igor- 12_11_93f15415.md"
+    },
+    {
+      "label": "R3 Evidence Form Template_c20ee067.md",
+      "file_type": "document",
+      "source_file": "graphify-out/converted/R3 Evidence Form Template_c20ee067.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "converted_r3_evidence_form_template_c20ee067",
       "community": 157,
-      "norm_label": "24-25-primary school otp - v4_c097c367.md"
+      "norm_label": "r3 evidence form template_c20ee067.md"
     },
     {
-      "label": "Lesson Observation - Igor- 12_11_aaa9c66e.md",
+      "label": "Year 6 Lesson Plan_8fbe6d61.md",
       "file_type": "document",
-      "source_file": "graphify-out/converted/Lesson Observation - Igor- 12_11_aaa9c66e.md",
+      "source_file": "graphify-out/converted/Year 6 Lesson Plan_8fbe6d61.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "converted_lesson_observation_igor_12_11_aaa9c66e",
+      "id": "converted_year_6_lesson_plan_8fbe6d61",
       "community": 177,
-      "norm_label": "lesson observation - igor- 12_11_aaa9c66e.md"
-    },
-    {
-      "label": "R3 Evidence Form Template_4839e027.md",
-      "file_type": "document",
-      "source_file": "graphify-out/converted/R3 Evidence Form Template_4839e027.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "converted_r3_evidence_form_template_4839e027",
-      "community": 178,
-      "norm_label": "r3 evidence form template_4839e027.md"
-    },
-    {
-      "label": "Year 6 Lesson Plan_2942df7e.md",
-      "file_type": "document",
-      "source_file": "graphify-out/converted/Year 6 Lesson Plan_2942df7e.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "converted_year_6_lesson_plan_2942df7e",
-      "community": 179,
-      "norm_label": "year 6 lesson plan_2942df7e.md"
+      "norm_label": "year 6 lesson plan_8fbe6d61.md"
     },
     {
       "label": "handoff-2026-06-02-1151.md",
@@ -21395,9 +21395,9 @@
       "source_file": "Assets/OTP/rubric-sp1-v2.json",
       "source_location": "L5",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "otp_rubric_sp1_v2",
-      "target": "otp_rubric_sp1_v2_aspect"
+      "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_574b3a_bb65e0de_f070_4dbd_80fa_0603e5efc441_scratchpad_otp_v06_assets_otp_rubric_sp1_v2_json",
+      "target": "otp_rubric_sp1_v2_aspect",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -21405,9 +21405,9 @@
       "source_file": "Assets/OTP/rubric-sp1-v2.json",
       "source_location": "L7",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "otp_rubric_sp1_v2",
-      "target": "otp_rubric_sp1_v2_levels"
+      "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_574b3a_bb65e0de_f070_4dbd_80fa_0603e5efc441_scratchpad_otp_v06_assets_otp_rubric_sp1_v2_json",
+      "target": "otp_rubric_sp1_v2_levels",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -21415,9 +21415,9 @@
       "source_file": "Assets/OTP/rubric-sp1-v2.json",
       "source_location": "L3",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "otp_rubric_sp1_v2",
-      "target": "otp_rubric_sp1_v2_reference"
+      "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_574b3a_bb65e0de_f070_4dbd_80fa_0603e5efc441_scratchpad_otp_v06_assets_otp_rubric_sp1_v2_json",
+      "target": "otp_rubric_sp1_v2_reference",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -21425,9 +21425,9 @@
       "source_file": "Assets/OTP/rubric-sp1-v2.json",
       "source_location": "L4",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "otp_rubric_sp1_v2",
-      "target": "otp_rubric_sp1_v2_reference_title"
+      "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_574b3a_bb65e0de_f070_4dbd_80fa_0603e5efc441_scratchpad_otp_v06_assets_otp_rubric_sp1_v2_json",
+      "target": "otp_rubric_sp1_v2_reference_title",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -21435,9 +21435,9 @@
       "source_file": "Assets/OTP/rubric-sp1-v2.json",
       "source_location": "L6",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "otp_rubric_sp1_v2",
-      "target": "otp_rubric_sp1_v2_source"
+      "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_574b3a_bb65e0de_f070_4dbd_80fa_0603e5efc441_scratchpad_otp_v06_assets_otp_rubric_sp1_v2_json",
+      "target": "otp_rubric_sp1_v2_source",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -21445,9 +21445,9 @@
       "source_file": "Assets/OTP/rubric-sp1-v2.json",
       "source_location": "L2",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "otp_rubric_sp1_v2",
-      "target": "otp_rubric_sp1_v2_version"
+      "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_574b3a_bb65e0de_f070_4dbd_80fa_0603e5efc441_scratchpad_otp_v06_assets_otp_rubric_sp1_v2_json",
+      "target": "otp_rubric_sp1_v2_version",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -21949,9 +21949,9 @@
       "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L335",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_otp_spec",
-      "target": "tests_otp_spec_chipsel",
-      "confidence_score": 1.0
+      "target": "tests_otp_spec_chipsel"
     },
     {
       "relation": "contains",
@@ -22009,9 +22009,9 @@
       "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L296",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_otp_spec",
-      "target": "tests_otp_spec_expectpop",
-      "confidence_score": 1.0
+      "target": "tests_otp_spec_expectpop"
     },
     {
       "relation": "contains",
@@ -22069,9 +22069,9 @@
       "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L294",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_otp_spec",
-      "target": "tests_otp_spec_notepop",
-      "confidence_score": 1.0
+      "target": "tests_otp_spec_notepop"
     },
     {
       "relation": "contains",
@@ -22079,9 +22079,9 @@
       "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L295",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_otp_spec",
-      "target": "tests_otp_spec_notescrim",
-      "confidence_score": 1.0
+      "target": "tests_otp_spec_notescrim"
     },
     {
       "relation": "contains",
@@ -22169,9 +22169,9 @@
       "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L304",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_otp_spec",
-      "target": "tests_otp_spec_pointof",
-      "confidence_score": 1.0
+      "target": "tests_otp_spec_pointof"
     },
     {
       "relation": "contains",
@@ -22259,9 +22259,9 @@
       "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L325",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_otp_spec",
-      "target": "tests_otp_spec_stackat",
-      "confidence_score": 1.0
+      "target": "tests_otp_spec_stackat"
     },
     {
       "relation": "contains",
@@ -22269,9 +22269,9 @@
       "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L319",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_otp_spec",
-      "target": "tests_otp_spec_tapat",
-      "confidence_score": 1.0
+      "target": "tests_otp_spec_tapat"
     },
     {
       "relation": "contains",
@@ -22279,9 +22279,9 @@
       "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L336",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_otp_spec",
-      "target": "tests_otp_spec_tapchip",
-      "confidence_score": 1.0
+      "target": "tests_otp_spec_tapchip"
     },
     {
       "relation": "contains",
@@ -22289,9 +22289,9 @@
       "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L342",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_otp_spec",
-      "target": "tests_otp_spec_tapnotebtn",
-      "confidence_score": 1.0
+      "target": "tests_otp_spec_tapnotebtn"
     },
     {
       "relation": "contains",
@@ -22299,9 +22299,9 @@
       "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L358",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_otp_spec",
-      "target": "tests_otp_spec_viewersrc",
-      "confidence_score": 1.0
+      "target": "tests_otp_spec_viewersrc"
     },
     {
       "relation": "contains",
@@ -22309,9 +22309,9 @@
       "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L351",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_otp_spec",
-      "target": "tests_otp_spec_viewports",
-      "confidence_score": 1.0
+      "target": "tests_otp_spec_viewports"
     },
     {
       "relation": "calls",
@@ -22364,9 +22364,9 @@
       "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L347",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_otp_spec_tapnotebtn",
-      "target": "tests_otp_spec_notebtnat",
-      "confidence_score": 1.0
+      "target": "tests_otp_spec_notebtnat"
     },
     {
       "relation": "calls",
@@ -22375,9 +22375,9 @@
       "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L297",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_otp_spec_expectpop",
-      "target": "tests_otp_spec_notepop",
-      "confidence_score": 1.0
+      "target": "tests_otp_spec_notepop"
     },
     {
       "relation": "calls",
@@ -22386,9 +22386,9 @@
       "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L343",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_otp_spec_tapnotebtn",
-      "target": "tests_otp_spec_notepop",
-      "confidence_score": 1.0
+      "target": "tests_otp_spec_notepop"
     },
     {
       "relation": "calls",
@@ -22397,9 +22397,9 @@
       "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L326",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_otp_spec_stackat",
-      "target": "tests_otp_spec_pointof",
-      "confidence_score": 1.0
+      "target": "tests_otp_spec_pointof"
     },
     {
       "relation": "calls",
@@ -22408,9 +22408,9 @@
       "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L320",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_otp_spec_tapat",
-      "target": "tests_otp_spec_pointof",
-      "confidence_score": 1.0
+      "target": "tests_otp_spec_pointof"
     },
     {
       "relation": "calls",
@@ -22419,9 +22419,9 @@
       "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L336",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_otp_spec_tapchip",
-      "target": "tests_otp_spec_tapat",
-      "confidence_score": 1.0
+      "target": "tests_otp_spec_tapat"
     },
     {
       "relation": "calls",
@@ -22430,9 +22430,9 @@
       "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L344",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_otp_spec_tapnotebtn",
-      "target": "tests_otp_spec_tapat",
-      "confidence_score": 1.0
+      "target": "tests_otp_spec_tapat"
     },
     {
       "relation": "calls",
@@ -22441,9 +22441,9 @@
       "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L336",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_otp_spec_tapchip",
-      "target": "tests_otp_spec_chipsel",
-      "confidence_score": 1.0
+      "target": "tests_otp_spec_chipsel"
     },
     {
       "relation": "contains",
@@ -50540,9 +50540,9 @@
       "source_file": ".planning/2026-09-09-otp-v0.6-contract.md",
       "source_location": "L1",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "planning_2026_09_09_otp_v0_6_contract",
-      "target": "planning_2026_09_09_otp_v0_6_contract_otp_v0_6_contract_sentence_chips_criterion_notes_wording"
+      "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_574b3a_bb65e0de_f070_4dbd_80fa_0603e5efc441_scratchpad_otp_v06_planning_2026_09_09_otp_v0_6_contract_md",
+      "target": "planning_2026_09_09_otp_v0_6_contract_otp_v0_6_contract_sentence_chips_criterion_notes_wording",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -50630,7 +50630,7 @@
       "source_file": ".planning/2026-09-09-otp-v0.7-contract.md",
       "source_location": "L1",
       "weight": 1.0,
-      "source": "planning_2026_09_09_otp_v0_7_contract",
+      "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_574b3a_bb65e0de_f070_4dbd_80fa_0603e5efc441_scratchpad_otp_v06_planning_2026_09_09_otp_v0_7_contract_md",
       "target": "planning_2026_09_09_otp_v0_7_contract_otp_v0_7_contract_anchored_note_pop_up_button_geometry_calm_palette_no_scrollbars",
       "confidence_score": 1.0
     },
@@ -50640,9 +50640,9 @@
       "source_file": ".planning/2026-09-09-otp-v0.7-contract.md",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "planning_2026_09_09_otp_v0_7_contract_otp_v0_7_contract_anchored_note_pop_up_button_geometry_calm_palette_no_scrollbars",
-      "target": "planning_2026_09_09_otp_v0_7_contract_0_what_igor_rejected_in_v0_6_measured_on_the_live_form_1280_1180x820_820x1180",
-      "confidence_score": 1.0
+      "target": "planning_2026_09_09_otp_v0_7_contract_0_what_igor_rejected_in_v0_6_measured_on_the_live_form_1280_1180x820_820x1180"
     },
     {
       "relation": "contains",
@@ -50650,9 +50650,9 @@
       "source_file": ".planning/2026-09-09-otp-v0.7-contract.md",
       "source_location": "L22",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "planning_2026_09_09_otp_v0_7_contract_otp_v0_7_contract_anchored_note_pop_up_button_geometry_calm_palette_no_scrollbars",
-      "target": "planning_2026_09_09_otp_v0_7_contract_1_rubric_wrapper_no_scrollbars",
-      "confidence_score": 1.0
+      "target": "planning_2026_09_09_otp_v0_7_contract_1_rubric_wrapper_no_scrollbars"
     },
     {
       "relation": "contains",
@@ -50660,9 +50660,9 @@
       "source_file": ".planning/2026-09-09-otp-v0.7-contract.md",
       "source_location": "L31",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "planning_2026_09_09_otp_v0_7_contract_otp_v0_7_contract_anchored_note_pop_up_button_geometry_calm_palette_no_scrollbars",
-      "target": "planning_2026_09_09_otp_v0_7_contract_2_the_note_button",
-      "confidence_score": 1.0
+      "target": "planning_2026_09_09_otp_v0_7_contract_2_the_note_button"
     },
     {
       "relation": "contains",
@@ -50670,9 +50670,9 @@
       "source_file": ".planning/2026-09-09-otp-v0.7-contract.md",
       "source_location": "L56",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "planning_2026_09_09_otp_v0_7_contract_otp_v0_7_contract_anchored_note_pop_up_button_geometry_calm_palette_no_scrollbars",
-      "target": "planning_2026_09_09_otp_v0_7_contract_3_the_pop_up_rub_note_pop_and_scrim_rub_note_scrim",
-      "confidence_score": 1.0
+      "target": "planning_2026_09_09_otp_v0_7_contract_3_the_pop_up_rub_note_pop_and_scrim_rub_note_scrim"
     },
     {
       "relation": "contains",
@@ -50680,9 +50680,9 @@
       "source_file": ".planning/2026-09-09-otp-v0.7-contract.md",
       "source_location": "L104",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "planning_2026_09_09_otp_v0_7_contract_otp_v0_7_contract_anchored_note_pop_up_button_geometry_calm_palette_no_scrollbars",
-      "target": "planning_2026_09_09_otp_v0_7_contract_4_calm_palette_chips_legend_record_view_print",
-      "confidence_score": 1.0
+      "target": "planning_2026_09_09_otp_v0_7_contract_4_calm_palette_chips_legend_record_view_print"
     },
     {
       "relation": "contains",
@@ -50690,9 +50690,9 @@
       "source_file": ".planning/2026-09-09-otp-v0.7-contract.md",
       "source_location": "L121",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "planning_2026_09_09_otp_v0_7_contract_otp_v0_7_contract_anchored_note_pop_up_button_geometry_calm_palette_no_scrollbars",
-      "target": "planning_2026_09_09_otp_v0_7_contract_5_tests_assets_otp_tests_otp_spec_ts_build_first_bash_assets_otp_encrypt_sh",
-      "confidence_score": 1.0
+      "target": "planning_2026_09_09_otp_v0_7_contract_5_tests_assets_otp_tests_otp_spec_ts_build_first_bash_assets_otp_encrypt_sh"
     },
     {
       "relation": "contains",
@@ -50700,9 +50700,9 @@
       "source_file": ".planning/2026-09-09-otp-v0.7-contract.md",
       "source_location": "L140",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "planning_2026_09_09_otp_v0_7_contract_otp_v0_7_contract_anchored_note_pop_up_button_geometry_calm_palette_no_scrollbars",
-      "target": "planning_2026_09_09_otp_v0_7_contract_6_out_of_scope",
-      "confidence_score": 1.0
+      "target": "planning_2026_09_09_otp_v0_7_contract_6_out_of_scope"
     },
     {
       "relation": "contains",
@@ -50911,16 +50911,16 @@
       "source_location": "L1",
       "weight": 1.0,
       "source": "otp_readme",
-      "target": "otp_readme_progress_in_lessons_otp_form_otp_v0_7",
+      "target": "otp_readme_progress_in_lessons_otp_form_otp_v0_7_1",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L94",
+      "source_location": "L104",
       "weight": 1.0,
-      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_7",
+      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_7_1",
       "target": "otp_readme_backend_contract",
       "confidence_score": 1.0
     },
@@ -50928,9 +50928,9 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L77",
+      "source_location": "L87",
       "weight": 1.0,
-      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_7",
+      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_7_1",
       "target": "otp_readme_build",
       "confidence_score": 1.0
     },
@@ -50938,9 +50938,9 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L190",
+      "source_location": "L200",
       "weight": 1.0,
-      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_7",
+      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_7_1",
       "target": "otp_readme_changelog",
       "confidence_score": 1.0
     },
@@ -50948,9 +50948,9 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L178",
+      "source_location": "L188",
       "weight": 1.0,
-      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_7",
+      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_7_1",
       "target": "otp_readme_tests",
       "confidence_score": 1.0
     },
@@ -50960,7 +50960,7 @@
       "source_file": "Assets/OTP/README.md",
       "source_location": "L14",
       "weight": 1.0,
-      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_7",
+      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_7_1",
       "target": "otp_readme_what_is_on_the_page",
       "confidence_score": 1.0
     },
@@ -50980,9 +50980,9 @@
       "source_file": "Assets/R3/Google file links.md",
       "source_location": "L1",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "r3_google_file_links",
-      "target": "r3_google_file_links_r3_evidence_google_file_links"
+      "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_574b3a_bb65e0de_f070_4dbd_80fa_0603e5efc441_scratchpad_otp_v06_assets_r3_google_file_links_md",
+      "target": "r3_google_file_links_r3_evidence_google_file_links",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -51040,9 +51040,9 @@
       "source_file": "Assets/R3/README.md",
       "source_location": "L1",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "r3_readme",
-      "target": "r3_readme_r3_evidence_form"
+      "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_574b3a_bb65e0de_f070_4dbd_80fa_0603e5efc441_scratchpad_otp_v06_assets_r3_readme_md",
+      "target": "r3_readme_r3_evidence_form",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -55686,5 +55686,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "5d188ea50720cdd5296590957c2d7672f550abca"
+  "built_at_commit": "65c820bce35f6b4f28e154404e60ff59dfc7ee4f"
 }
