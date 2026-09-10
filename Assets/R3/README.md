@@ -116,7 +116,7 @@ without it takes the R3 path unchanged.
 | Thing | Value |
 |---|---|
 | Sheet tab | `OTP Submissions` (33 columns, append-only, hard rule 1) |
-| Roster tabs | `Teachers 26-27` / `Inspectors 26-27`, silently falling back to `Teachers` / `Inspectors` until Igor creates them |
+| Roster tabs | `Teachers 26-27` (the same reconciled 186-row tab R3 reads since @23, 2026-09-10) + `OTP Coaches 26-27` (OTP observers: HODs, paired observers and the R3 inspectors in one list; a missing tab gives an empty observer list, never the R3 `R3 Inspectors 26-27` list) |
 | Options endpoint | `WEB_APP_URL + '?action=options&form=otp'` (cached under its own key `OTP_OPTIONS_v1`, 5-min TTL; `clearOptionsCache` clears both forms) |
 | Record endpoint | `WEB_APP_URL + '?token=<32-hex>&form=otp'` (legacy `?id=...&token=...&form=otp` also accepted); the response adds `form: 'otp' \| 'r3'` |
 | Pad image endpoint | `WEB_APP_URL + '?action=pad_image&token=...&name=...'` (unchanged shape; the scan falls through to the OTP tab) |

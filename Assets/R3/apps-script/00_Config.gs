@@ -11,8 +11,8 @@
  */
 
 const SHEET_NAME_SUBMISSIONS = 'Submissions';
-const SHEET_NAME_TEACHERS    = 'Teachers 25-26';   // otp-v0.1 deploy 2026-09-03: tab renamed; 26-27 copy is read by the OTP form
-const SHEET_NAME_INSPECTORS  = 'Inspectors 25-26'; // otp-v0.1 deploy 2026-09-03: tab renamed; 26-27 copy is read by the OTP form
+const SHEET_NAME_TEACHERS    = 'Teachers 26-27';      // 2026-09-10 (@23): the reconciled 26-27 roster; 'Teachers 25-26' kept as history
+const SHEET_NAME_INSPECTORS  = 'R3 Inspectors 26-27'; // 2026-09-10 (@23): this year's R3 inspectors; 'R3 Inspectors 25-26' kept as history
 const SHEET_NAME_CURRICULUM  = 'Curriculum';
 const SHEET_NAME_SUBJECTS    = 'Subjects';
 
@@ -32,6 +32,14 @@ const TEACHER_GROUPS = [
   'kindy@ais.ae',
   'ecc@ais.ae'
 ];
+
+/**
+ * Where buildTeacherSheet() (04_TeacherLoader.gs) writes its raw [email, name]
+ * Workspace-group pull. Its OWN tab since 2026-09-10: the curated roster tabs
+ * carry 12 hand-reconciled columns (Code, section flags, Department) that a
+ * group pull must never clear.
+ */
+const SHEET_NAME_TEACHER_LOADER_OUT = 'Teachers · Workspace groups';
 
 /**
  * Reads the SHEET_ID from PropertiesService. Throws a clear error if not set
@@ -154,12 +162,13 @@ function getAnthropicKey() {
 const SHEET_NAME_OTP_SUBMISSIONS = 'OTP Submissions';
 
 /**
- * 26-07 roster tabs. Igor creates these later; until they exist the OTP form
- * silently reads the R3 roster tabs instead (getTabWithFallback), so the form
- * never shows an empty dropdown or an error (hard rule 12).
+ * OTP roster tabs (2026-09-10). Teachers = the same reconciled 26-27 tab R3
+ * reads. Observers = a DIFFERENT list, `OTP Coaches 26-27` (the HODs, the
+ * paired observers and the R3 inspectors, one flat list), never the R3
+ * inspector tab: a missing coaches tab reads as an empty observer list.
  */
-const SHEET_NAME_TEACHERS_2627   = 'Teachers 26-27';
-const SHEET_NAME_INSPECTORS_2627 = 'Inspectors 26-27';
+const SHEET_NAME_TEACHERS_2627 = 'Teachers 26-27';
+const SHEET_NAME_OTP_COACHES   = 'OTP Coaches 26-27';
 
 /**
  * Returns the preferred tab, or the fallback tab when the preferred one does

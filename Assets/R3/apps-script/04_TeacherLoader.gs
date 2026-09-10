@@ -2,7 +2,8 @@
  * Pulls all members across the 6 AIS staff Workspace Groups (see
  * TEACHER_GROUPS in 00_Config.gs), looks up each one's first/last name
  * via the Admin SDK Directory API, and writes [email, name] rows to
- * the Teachers tab.
+ * its OWN tab (`Teachers · Workspace groups`, 2026-09-10), never to the
+ * curated roster tabs the forms read.
  *
  * Run from the script editor after bootstrap(). First run triggers
  * the admin.directory.* OAuth consent dialog.
@@ -17,8 +18,11 @@
  */
 function buildTeacherSheet() {
   const ss = SpreadsheetApp.openById(getSheetId());
-  const sheet = ss.getSheetByName(SHEET_NAME_TEACHERS);
-  if (!sheet) throw new Error('Teachers tab missing · run bootstrap() first');
+  let sheet = ss.getSheetByName(SHEET_NAME_TEACHER_LOADER_OUT);
+  if (!sheet) {
+    sheet = ss.insertSheet(SHEET_NAME_TEACHER_LOADER_OUT);
+    sheet.getRange(1, 1, 1, 2).setValues([['email', 'name']]);
+  }
 
   const emails = loadStaffEmails();
   Logger.log('Loaded ' + emails.size + ' unique emails across ' + TEACHER_GROUPS.length + ' groups');
@@ -44,7 +48,7 @@ function buildTeacherSheet() {
   if (rows.length) {
     sheet.getRange(2, 1, rows.length, 2).setValues(rows);
   }
-  Logger.log('Wrote ' + rows.length + ' teachers to ' + SHEET_NAME_TEACHERS + ' tab');
+  Logger.log('Wrote ' + rows.length + ' teachers to ' + SHEET_NAME_TEACHER_LOADER_OUT + ' tab');
   return rows.length;
 }
 

@@ -172,6 +172,10 @@ otp-v0.6 additions (columns 32 and 33, appended).
   `sp1_*` values, so a stale draft can never light the wrong criterion.
 
 - Options: `WEB_APP_URL + '?action=options&form=otp'` (same response shape as R3).
+  Since 2026-09-10 (Apps Script @23) the teachers come from the shared
+  `Teachers 26-27` tab and the observers from `OTP Coaches 26-27` (the HOD line
+  managers, paired observers and R3 inspectors in one list); a missing coaches
+  tab yields an empty observer list, never the R3 inspectors.
 - Record view: `otp-record.html?token=...` fetches
   `WEB_APP_URL + '?token=...&form=otp'`; the legacy `?id=...&token=...` shape is
   still accepted and forwarded.

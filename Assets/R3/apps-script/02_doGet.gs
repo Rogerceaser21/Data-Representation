@@ -310,8 +310,8 @@ function readTeachersTab(ss) {
 /* ─────────────────────────────────────────────────────────────────────────────
  * otp-v0.1 · GET side of the Progress in Lessons OTP form.
  *
- *   ?action=options&form=otp   → dropdowns, rosters from the 26-27 tabs
- *                                (falling back to the R3 tabs until they exist)
+ *   ?action=options&form=otp   → dropdowns: teachers from Teachers 26-27,
+ *                                observers from OTP Coaches 26-27
  *   ?action=pad_image&form=otp → one Evidence Pad page, token-gated
  *   ?token=...&form=otp        → one locked record (legacy ?id=&token= also ok)
  *
@@ -392,12 +392,12 @@ function readInspectorsFromSheet(sheet) {
 }
 
 function readOtpInspectors(ss) {
-  return readInspectorsFromSheet(getTabWithFallback(ss, SHEET_NAME_INSPECTORS_2627, SHEET_NAME_INSPECTORS));
+  return readInspectorsFromSheet(ss.getSheetByName(SHEET_NAME_OTP_COACHES));
 }
 
 /**
- * Observer email for the submission CC, resolved over the 26-27 Inspectors tab
- * (falling back to the R3 Inspectors tab). Same normalised match as
+ * Observer email for the submission CC, resolved over the OTP Coaches 26-27
+ * tab (never the R3 inspector tab). Same normalised match as
  * lookupInspectorEmail, so a curly apostrophe still matches a straight one.
  */
 function lookupOtpObserverEmail(ss, name) {

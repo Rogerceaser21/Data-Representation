@@ -43,8 +43,10 @@ behaves exactly as the R3 calls above.
 | Tab | Purpose |
 |---|---|
 | `OTP Submissions` | All OTP submissions (33 columns, append-only; `record_token` is 25th, `evidence_pad_id` 26th) |
-| `Teachers 26-27` | 26-27 staff roster for the OTP teacher dropdown. **Not created yet**; until it exists the form silently reads `Teachers`. |
-| `Inspectors 26-27` | 26-27 observer names + emails (A = name, B = email). **Not created yet**; until it exists the form silently reads `Inspectors`. |
+| `Teachers 26-27` | The 26-27 staff roster BOTH forms read since 2026-09-10 (@23): 186 people from the Secondary + Primary timetable lists, 12 columns (name, Title, First Name, Family Name, Code, Email, Curriculum, Kindy, Primary, Secondary, Grade, Department), emails directory-verified. `Teachers 25-26` is history. |
+| `R3 Inspectors 26-27` | This year's R3 inspectors (A = name, B = email), read by the R3 form. `R3 Inspectors 25-26` is last year's list, read by nothing. |
+| `OTP Coaches 26-27` | The OTP observers (A = name, B = email): the HOD line managers, the paired observers and the R3 inspectors in one flat list, read by the OTP form only. |
+| `Teachers · Workspace groups` | Created on demand by `buildTeacherSheet()`: the raw [email, name] pull from the 6 staff Workspace groups. Never read by a form. |
 
 OTP columns, in order:
 

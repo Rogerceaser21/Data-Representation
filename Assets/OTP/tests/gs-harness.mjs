@@ -14,8 +14,8 @@
  *       mirrors to /rest/v1/rpc/ingest_otp as { payload: {...33 keys...} };
  *   (b) the R3 paths (submit, options, token lookup, status) are byte-identical
  *       to the SAME scenarios run against the untouched files from origin/main;
- *   (c) ?action=options&form=otp reads the 26-27 roster tabs, falls back to the
- *       R3 roster tabs when they do not exist, and never collides with the R3
+ *   (c) ?action=options&form=otp reads Teachers 26-27 + OTP Coaches 26-27 (a
+ *       missing coaches tab = an empty observer list), and never collides with the R3
  *       options cache, while ?action=options (no form) is baseline-identical;
  *   (d) a ?token=&form=otp lookup resolves from the OTP tab and reports
  *       form:'otp', while the same token with no form parameter still resolves
@@ -388,10 +388,10 @@ function padRow(row, width) {
   return out;
 }
 
-// 2026-09-03 deploy: the live tabs were renamed 'Teachers 25-26' / 'Inspectors 25-26'
-// (the current code reads those); the un-suffixed names stay seeded so the
-// origin/main baseline (which still reads 'Teachers' / 'Inspectors') sees the
-// same rows and the byte-identity comparison stays meaningful.
+// 2026-09-10 (@23): the code reads 'Teachers 26-27' / 'R3 Inspectors 26-27'. The
+// 25-26 and un-suffixed names stay seeded with the SAME rows so an origin/main
+// baseline that still reads an older name sees identical data and the R3
+// byte-identity comparison stays meaningful.
 const R3_TEACHERS_ROWS = [['name'], ['R3 Teacher One'], ['R3 Teacher Two']];
 const R3_INSPECTORS_ROWS = [['Inspector', 'Email'], ['Dave Richards', 'dave.richards@ais.ae'], ['Hayden Ryan', 'hayden.ryan@ais.ae']];
 const ROSTER_R3 = {
@@ -399,6 +399,8 @@ const ROSTER_R3 = {
   Inspectors: R3_INSPECTORS_ROWS,
   'Teachers 25-26': R3_TEACHERS_ROWS,
   'Inspectors 25-26': R3_INSPECTORS_ROWS,
+  'Teachers 26-27': R3_TEACHERS_ROWS,
+  'R3 Inspectors 26-27': R3_INSPECTORS_ROWS,
   Curriculum: [['Curriculum'], ['Australian'], ['Ministry']],
   Subjects: [
     ['Subject', 'Yes/No', 'Kindy', 'Primary', 'Secondary'],
@@ -407,8 +409,7 @@ const ROSTER_R3 = {
   ]
 };
 const ROSTER_2627 = {
-  'Teachers 26-27': [['name'], ['New Year Teacher A'], ['New Year Teacher B']],
-  'Inspectors 26-27': [['Inspector', 'Email'], ['Dave Richards', 'dave.richards2627@ais.ae'], ['Brooke Pickett', 'brooke.pickett@ais.ae']]
+  'OTP Coaches 26-27': [['Inspector', 'Email'], ['Dave Richards', 'dave.richards2627@ais.ae'], ['Brooke Pickett', 'brooke.pickett@ais.ae']]
 };
 const seedFull = () => JSON.parse(JSON.stringify({ ...ROSTER_R3, ...ROSTER_2627 }));
 const seedR3Only = () => JSON.parse(JSON.stringify(ROSTER_R3));
@@ -566,7 +567,7 @@ section('(a) OTP submission · row + email + Supabase mirror');
   const mail = dump.mail[0] || {};
   ok(mail.subject === 'AIS OTP Progress · Jo Mare Kruger · 2026-09-02', 'email subject is the OTP subject', 'got: ' + mail.subject);
   ok(mail.to === 'admin.user@ais.ae', 'email goes to the backup mailbox', 'got: ' + mail.to);
-  ok(mail.cc === 'dave.richards2627@ais.ae', 'observer CC resolved over the Inspectors 26-27 tab', 'got: ' + mail.cc);
+  ok(mail.cc === 'dave.richards2627@ais.ae', 'observer CC resolved over the OTP Coaches 26-27 tab', 'got: ' + mail.cc);
   const viewerLink = 'https://rogerceaser21.github.io/Data-Representation/Assets/OTP/otp-record.html?token=' + row[idx('record_token')];
   ok(String(mail.htmlBody).indexOf(viewerLink) > -1, 'email body carries the OTP viewer link (token only)', 'looked for: ' + viewerLink);
   const labelsMissing = ['Observer Comments', 'Other Observations', 'Next Steps / Support 1', 'Selected criteria', 'Support teachers / CAs',
@@ -608,16 +609,16 @@ section('(c) ?action=options&form=otp roster tabs + cache isolation');
 {
   const withNew = buildEnv(SRC_NEW, seedFull());
   const o1 = JSON.parse(withNew.ctx.doGet({ parameter: { action: 'options', form: 'otp' } }).getContent());
-  eqJson(o1.options.teachers.map((t) => t.name), ['New Year Teacher A', 'New Year Teacher B'], 'teachers read from Teachers 26-27 when it exists');
-  eqJson(o1.options.inspectors, ['Dave Richards', 'Brooke Pickett'], 'inspectors read from Inspectors 26-27 when it exists');
+  eqJson(o1.options.teachers.map((t) => t.name), ['R3 Teacher One', 'R3 Teacher Two'], 'teachers read from Teachers 26-27 (the same tab R3 reads)');
+  eqJson(o1.options.inspectors, ['Dave Richards', 'Brooke Pickett'], 'observers read from OTP Coaches 26-27, not the R3 inspector tab');
   eqJson(o1.options.curricula, ['Australian', 'Ministry'], 'curricula unchanged');
   eqJson(o1.options.subjects.map((s) => s.name), ['Maths', 'English'], 'subjects unchanged');
   eqJson(o1.options.schools, ['Kindy', 'Primary', 'Secondary'], 'schools unchanged');
 
   const noNew = buildEnv(SRC_NEW, seedR3Only());
   const o2 = JSON.parse(noNew.ctx.doGet({ parameter: { action: 'options', form: 'otp' } }).getContent());
-  eqJson(o2.options.teachers.map((t) => t.name), ['R3 Teacher One', 'R3 Teacher Two'], 'teachers fall back to Teachers when 26-27 does not exist');
-  eqJson(o2.options.inspectors, ['Dave Richards', 'Hayden Ryan'], 'inspectors fall back to Inspectors when 26-27 does not exist');
+  eqJson(o2.options.teachers.map((t) => t.name), ['R3 Teacher One', 'R3 Teacher Two'], 'teachers still read from Teachers 26-27 when the coaches tab is missing');
+  eqJson(o2.options.inspectors, [], 'no OTP Coaches 26-27 tab -> empty observer list, NEVER the R3 inspectors');
 
   const both = buildEnv(SRC_NEW, seedFull());
   both.ctx.doGet({ parameter: { action: 'options', form: 'otp' } });
@@ -626,7 +627,7 @@ section('(c) ?action=options&form=otp roster tabs + cache isolation');
   eqJson(Object.keys(both.state.cache).sort(), ['OTP_OPTIONS_v1', 'R3_OPTIONS_v1'], 'both forms cache under separate keys, never colliding');
   const otpCached = JSON.parse(both.state.cache.OTP_OPTIONS_v1);
   const r3Cached = JSON.parse(both.state.cache.R3_OPTIONS_v1);
-  ok(JSON.stringify(otpCached.teachers) !== JSON.stringify(r3Cached.teachers), 'the two cached option sets really do differ (no cross-read)');
+  ok(JSON.stringify(otpCached.inspectors) !== JSON.stringify(r3Cached.inspectors), 'the two cached option sets really do differ (OTP coaches vs R3 inspectors, no cross-read)');
   both.ctx.clearOptionsCache();
   eqJson(Object.keys(both.state.cache), [], 'clearOptionsCache() clears BOTH keys');
 }
