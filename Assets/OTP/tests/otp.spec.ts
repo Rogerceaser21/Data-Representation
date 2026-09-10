@@ -450,7 +450,7 @@ test('otp-v0.6: every chip carries a sibling "+" note button, never a nested one
   expect(h.errors).toEqual([]);
 });
 
-test('otp-v0.7: the "+" is a 22px circle inset 6px, hit area 36px, clear of every word', async ({ page }) => {
+test('otp-v0.7.1: the "+" is a 20px circle inset 4px, hit area 36x32, clear of every word, plus dead-centre', async ({ page }) => {
   const h = await harness(page);
 
   for (const size of [VIEWPORTS[0], VIEWPORTS[2]]) {
@@ -464,10 +464,20 @@ test('otp-v0.7: the "+" is a 22px circle inset 6px, hit area 36px, clear of ever
         const cb = chip.getBoundingClientRect();
         const bb = btn.getBoundingClientRect();
         const before = getComputedStyle(btn, '::before');
-        const pad = Math.abs(parseFloat(before.top || '0'));
-        // every client rect of the chip's own text node, per the contract
+        const padLeft = Math.abs(parseFloat(before.left || '0'));
+        const padRight = Math.abs(parseFloat(before.right || '0'));
+        const padTop = Math.abs(parseFloat(before.top || '0'));
+        const padBottom = Math.abs(parseFloat(before.bottom || '0'));
+        // otp-v0.7.1: every client rect of the chip's TEXT span (the trailing
+        // float spacer is the corner the button owns, by design)
+        const text = chip.querySelector('.rub-chip-text') as HTMLElement;
         const range = document.createRange();
-        range.selectNodeContents(chip);
+        range.selectNodeContents(text);
+        const ccs = getComputedStyle(chip);
+        // otp-v0.7.1: the plus is an SVG path; its geometry box must sit on
+        // the exact centre of the circle
+        const path = btn.querySelector('svg path') as SVGPathElement | null;
+        const pr = path ? path.getBoundingClientRect() : null;
         const hits = Array.from(range.getClientRects()).filter(
           (r) => r.right > bb.left && r.left < bb.right && r.bottom > bb.top && r.top < bb.bottom,
         ).length;
@@ -475,36 +485,66 @@ test('otp-v0.7: the "+" is a 22px circle inset 6px, hit area 36px, clear of ever
           w: bb.width, h: bb.height,
           insetRight: cb.right - bb.right,
           insetBottom: cb.bottom - bb.bottom,
-          hitW: bb.width + 2 * pad, hitH: bb.height + 2 * pad,
+          hitW: bb.width + padLeft + padRight, hitH: bb.height + padTop + padBottom,
+          padBottomEndsAtChip: Math.abs((bb.bottom + padBottom) - cb.bottom),
+          padRightEndsAtChip: Math.abs((bb.right + padRight) - cb.right),
           text: (btn.textContent || '').trim(),
           textRects: range.getClientRects().length,
           hits,
+          gap: !!chip.querySelector('.rub-note-gap'),
+          chipPadTop: parseFloat(ccs.paddingTop), chipPadBottom: parseFloat(ccs.paddingBottom),
+          plusDx: pr ? ((pr.left + pr.right) / 2 - (bb.left + bb.right) / 2) : 99,
+          plusDy: pr ? ((pr.top + pr.bottom) / 2 - (bb.top + bb.bottom) / 2) : 99,
+          plusW: pr ? pr.width : 0, plusH: pr ? pr.height : 0,
         };
       }),
     );
     expect(geo, String(size.width)).toHaveLength(32);
     for (const g of geo) {
-      expect(g.w, String(size.width)).toBe(22);
-      expect(g.h, String(size.width)).toBe(22);
-      expect(Math.abs(g.insetRight - 6), String(size.width)).toBeLessThan(0.01);
-      expect(Math.abs(g.insetBottom - 6), String(size.width)).toBeLessThan(0.01);
+      expect(g.w, String(size.width)).toBe(20);
+      expect(g.h, String(size.width)).toBe(20);
+      expect(Math.abs(g.insetRight - 4), String(size.width)).toBeLessThan(0.01);
+      expect(Math.abs(g.insetBottom - 4), String(size.width)).toBeLessThan(0.01);
       expect(g.hitW, String(size.width)).toBeGreaterThanOrEqual(36);
-      expect(g.hitH, String(size.width)).toBeGreaterThanOrEqual(36);
+      expect(g.hitH, String(size.width)).toBeGreaterThanOrEqual(32);
+      // the tap pad ends exactly on the chip's right and bottom edges, never
+      // beyond them (beyond the last column it would widen the wrapper)
+      expect(g.padBottomEndsAtChip, String(size.width)).toBeLessThan(0.01);
+      expect(g.padRightEndsAtChip, String(size.width)).toBeLessThan(0.01);
       expect(g.text, String(size.width)).toBe('');
       expect(g.textRects, String(size.width)).toBeGreaterThan(0);
       expect(g.hits, String(size.width)).toBe(0);
+      // otp-v0.7.1: the chip hugs its text: no reserved strip, the float
+      // spacer does the corner
+      expect(g.gap, String(size.width)).toBe(true);
+      expect(Math.abs(g.chipPadBottom - g.chipPadTop), String(size.width)).toBeLessThan(0.01);
+      // the plus is dead-centre in the circle, 12px arms
+      expect(Math.abs(g.plusDx), String(size.width)).toBeLessThan(0.02);
+      expect(Math.abs(g.plusDy), String(size.width)).toBeLessThan(0.02);
+      expect(Math.abs(g.plusW - 12), String(size.width)).toBeLessThan(0.05);
+      expect(Math.abs(g.plusH - 12), String(size.width)).toBeLessThan(0.05);
     }
 
-    // the plus itself: two 1.5 x 10px bars on a pseudo-element, centred
+    // the plus itself: an inline SVG on integer coordinates, no pseudo-element
     const plus = await page.evaluate(() => {
       const btn = document.querySelector('.rub-note-btn') as HTMLElement;
-      const cs = getComputedStyle(btn, '::after');
-      return { content: cs.content, w: cs.width, h: cs.height, bg: cs.backgroundImage, size: cs.backgroundSize };
+      const path = btn.querySelector('svg path') as SVGPathElement;
+      const ps = getComputedStyle(path);
+      return {
+        after: getComputedStyle(btn, '::after').content,
+        viewBox: btn.querySelector('svg')!.getAttribute('viewBox'),
+        d: path.getAttribute('d'),
+        stroke: ps.strokeWidth, cap: ps.strokeLinecap, fill: ps.fill,
+        pe: getComputedStyle(btn.querySelector('svg')!).pointerEvents,
+      };
     });
-    expect(plus.content).toBe('""');
-    expect(plus.w).toBe('10px');
-    expect(plus.h).toBe('10px');
-    expect(plus.size).toBe('1.5px 10px, 10px 1.5px');
+    expect(plus.after).toBe('none');
+    expect(plus.viewBox).toBe('0 0 18 18');
+    expect(plus.d).toBe('M9 3v12M3 9h12');
+    expect(plus.stroke).toBe('2px');
+    expect(plus.cap).toBe('butt');
+    expect(plus.fill).toBe('none');
+    expect(plus.pe).toBe('none');
   }
 
   expect(h.errors).toEqual([]);
@@ -743,10 +783,35 @@ test('otp-v0.7: the scrim paints over the table, under the card, and its dim sho
   expect(open.bg).toBe('rgba(20, 54, 66, 0.16)');
   expect(open.pe).toBe('auto');
   expect(open.opacity).toBe('1');
-  // and that layering is what a tap sees, across the table
-  for (const [key, n] of [['beginner', 1], ['emerging', 3], ['outstanding', 8]] as const) {
-    expect((await stackAt(page, chipSel(key, n), 8))[0], `${key} ${n}`).toBe('rub-note-scrim');
-  }
+  // and that layering is what a tap sees, across the table: at every chip
+  // outside the card's own rect the scrim is on top; inside it, the card is
+  // (otp-v0.7.1: probed geometrically, since the compact chips moved the
+  // card's anchor and a fixed list of chips could sit under the card)
+  const probes = await page.evaluate(() => {
+    const y0 = window.scrollY;
+    const out = Array.from(document.querySelectorAll('.rub-chip')).map((el) => {
+      // each chip scrolled into view first: elementsFromPoint sees only the
+      // viewport, and the card (absolute in the section) scrolls with the page
+      el.scrollIntoView({ block: 'center' });
+      const card = document.getElementById('rub-note-pop')!.getBoundingClientRect();
+      const r = el.getBoundingClientRect();
+      // the chip's horizontal centre (as pointOf does): the wrapper bleeds
+      // past the section's padding by design, and the scrim covers the
+      // section box, so a probe at the outer edge of the first or last
+      // column would sample the bleed, not the layering
+      const x = (r.left + r.right) / 2, y = r.top + 8;
+      const inside = x >= card.left && x <= card.right && y >= card.top && y <= card.bottom;
+      const top = document.elementsFromPoint(x, y)[0] as HTMLElement | undefined;
+      const topId = !top ? 'nothing' : top.closest('#rub-note-pop') ? 'rub-note-pop' : (top.id || top.getAttribute('class') || top.tagName);
+      return { key: (el as HTMLElement).dataset.level, n: (el as HTMLElement).dataset.n, inside, topId };
+    });
+    window.scrollTo(0, y0);
+    return out;
+  });
+  const outside = probes.filter((q) => !q.inside);
+  expect(outside.length).toBeGreaterThanOrEqual(20);
+  for (const q of outside) expect(q.topId, `${q.key} ${q.n}`).toBe('rub-note-scrim');
+  for (const q of probes.filter((r) => r.inside)) expect(q.topId, `${q.key} ${q.n}`).toBe('rub-note-pop');
   // the card itself stays fully interactive above it
   await noteText(page, 'good', 3).fill('typed while the dim is up');
   await expect(page.locator('#sp1_notes')).toHaveValue('{"Good 3":"typed while the dim is up"}');
@@ -1346,7 +1411,7 @@ test('rubric layout v2: caption row above the levels, five even columns, edge-to
   expect(await page.evaluate(() => document.scrollingElement!.scrollWidth - document.scrollingElement!.clientWidth)).toBe(0);
 });
 
-test('otp-v0.7: the three recorded states paint calm tints with a 3px coloured left edge', async ({ page }) => {
+test('otp-v0.7.1: the three recorded states paint calm tints, no coloured edge, normal 1px border', async ({ page }) => {
   const h = await harness(page);
   await openForm(page);
   // pin the light palette: the runner's prefers-color-scheme must not decide it
@@ -1383,9 +1448,11 @@ test('otp-v0.7: the three recorded states paint calm tints with a 3px coloured l
       };
     });
     expect(css.bg, t.sel).toBe(t.tint);
-    expect(css.left, t.sel).toBe(t.edge);
-    expect(css.leftWidth, t.sel).toBe('3px');
-    // the other three borders keep the chip's usual edge colour
+    // otp-v0.7.1: no coloured left edge, the border is the chip's usual 1px
+    // rule on all four sides
+    expect(css.left, t.sel).toBe(plain.border);
+    expect(css.left, t.sel).not.toBe(t.edge);
+    expect(css.leftWidth, t.sel).toBe('1px');
     expect(css.top, t.sel).toBe(plain.border);
     expect(css.right, t.sel).toBe(plain.border);
     expect(css.bottom, t.sel).toBe(plain.border);
@@ -1402,28 +1469,30 @@ test('otp-v0.7: the three recorded states paint calm tints with a 3px coloured l
     ).toBe(t.tint);
     await page.mouse.move(0, 0);
 
-    // the legend swatch carries the same tint and the same 3px edge
+    // the legend swatch carries the same tint and its normal 1px border
     const sw = await page
       .locator(`.rub-legend-sw[data-state="${t.state}"]`)
       .evaluate((el) => {
         const s = getComputedStyle(el);
-        return { bg: s.backgroundColor, left: s.borderLeftColor, leftWidth: s.borderLeftWidth, w: s.width };
+        return { bg: s.backgroundColor, left: s.borderLeftColor, top: s.borderTopColor, leftWidth: s.borderLeftWidth, w: s.width };
       });
     expect(sw.bg, t.state).toBe(t.tint);
-    expect(sw.left, t.state).toBe(t.edge);
-    expect(sw.leftWidth, t.state).toBe('3px');
+    expect(sw.left, t.state).toBe(sw.top);
+    expect(sw.left, t.state).not.toBe(t.edge);
+    expect(sw.leftWidth, t.state).toBe('1px');
     expect(parseFloat(sw.w), t.state).toBeGreaterThanOrEqual(8);
   }
 
-  // the dark theme keeps the same hues as translucent tints, edges unchanged
+  // the dark theme keeps the same hues as translucent tints, no edge either
   await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'dark'));
   await page.waitForTimeout(400);
   const dark = await page.locator(targets[0].sel).evaluate((el) => {
     const s = getComputedStyle(el);
-    return { bg: s.backgroundColor, left: s.borderLeftColor, color: s.color };
+    return { bg: s.backgroundColor, left: s.borderLeftColor, top: s.borderTopColor, leftWidth: s.borderLeftWidth, color: s.color };
   });
   expect(dark.bg).toBe('rgba(47, 125, 79, 0.24)');
-  expect(dark.left).toBe('rgb(47, 125, 79)');
+  expect(dark.left).toBe(dark.top);
+  expect(dark.leftWidth).toBe('1px');
   expect(dark.color).toBe('rgb(242, 239, 230)');
   await page.evaluate(() => document.documentElement.removeAttribute('data-theme'));
 
@@ -1944,19 +2013,19 @@ test('otp-v0.6: the notes print as a Criterion notes list under the rubric table
     await noteBtnAt(page, 'good', 3).evaluate((el) => getComputedStyle(el).backgroundColor),
   ).toBe('rgb(20, 54, 66)');
   // otp-v0.7: on paper the filled badge is a marker, so it prints as a SOLID
-  // dot: the bars come off, the navy circle stays
+  // dot: the plus (an SVG since otp-v0.7.1) comes off, the navy circle stays
   expect(
     await noteBtnAt(page, 'good', 3).evaluate(
-      (el) => getComputedStyle(el, '::after').display,
+      (el) => getComputedStyle(el.querySelector('svg') as SVGElement).display,
     ),
   ).toBe('none');
-  // the calm tints and their 3px edges print as they paint
+  // the calm tints print as they paint; otp-v0.7.1: no coloured edge
   expect(
     await chipAt(page, 'good', 3).evaluate((el) => getComputedStyle(el).backgroundColor),
   ).toBe('rgb(232, 243, 236)');
   expect(
     await chipAt(page, 'good', 3).evaluate((el) => getComputedStyle(el).borderLeftWidth),
-  ).toBe('3px');
+  ).toBe('1px');
   await page.emulateMedia({ media: 'screen' });
 
   expect(h.errors).toEqual([]);

@@ -1,4 +1,4 @@
-# Progress in Lessons OTP form · otp-v0.7
+# Progress in Lessons OTP form · otp-v0.7.1
 
 Third AIS observation form: **Lesson Observation form WHOLE SCHOOL, Observation
 against the Outstanding Teacher Profile**. It is a COPY of the R3 Evidence form
@@ -58,14 +58,24 @@ practice through observational support and coaching.
    reduced-motion reader gets the fade alone), and closes on Done, the scrim,
    Esc or the same `+`; another chip's `+` re-anchors the same card. It holds
    the criterion text, a textarea, the Evidence Pad pencil and paperclip for
-   that criterion, and a Done button. otp-v0.7 also calms the colours: the
-   `+` is a 22 px circle inset 6 px from the chip's corner with its plus drawn
-   in CSS, a filled note turns it solid AIS navy `#143642` (not electric
-   blue), and a coloured chip is a pale tint with a 3 px coloured left edge
-   (`#E8F3EC`/`#2F7D4F`, `#FBF3DC`/`#C28E0E`, `#FBE9EA`/`#B23B3B`) keeping the
-   normal dark ink, so a marked-up rubric reads calm rather than as a
+   that criterion, and a Done button. otp-v0.7 also calms the colours: a
+   filled note turns the `+` solid AIS navy `#143642` (not electric blue), and
+   a coloured chip is a pale tint (`#E8F3EC`, `#FBF3DC`, `#FBE9EA`) keeping
+   the normal dark ink, so a marked-up rubric reads calm rather than as a
    Christmas tree. The rubric wrapper no longer scrolls at tablet or desktop
    widths, so no scrollbar paints beside or under the table.
+   otp-v0.7.1 (Igor's three complaints on the live v0.7): (a) the chip no
+   longer reserves a 30 px strip for the `+`: the text sits in
+   `.rub-chip-text` followed by an empty float spacer `.rub-note-gap`, so the
+   `+` shares the last line with the text and the chip only grows when that
+   line is full (a one-line chip went from 59 px to 28 px); (b) the `+` is a
+   20 px circle inset 4 px from the chip's corner (36 x 32 tap pad) whose plus
+   is an inline SVG of 2 px strokes on integer coordinates, so it rasterises
+   dead-centre at 1x, 2x and 3x (the v0.7 1.5 px CSS gradient bars landed on
+   half pixels and drifted 0.24 device px off-centre at 2x); (c) the 3 px
+   coloured left edge on chips, legend swatches and print is gone, the tint
+   alone is the state, the chip keeps its normal 1 px border; the edge hues
+   `#2F7D4F` / `#C28E0E` / `#B23B3B` survive only as the pop-up's state dot.
 4. Five Observer Notes blocks, each with the Evidence Pad pencil button and the
    pad-pages paperclip: Observer Comments, Other Observations, and Next Steps /
    Support 1-3. otp-v0.6 adds 32 more Evidence Pad targets, one per criterion
@@ -185,10 +195,20 @@ npx playwright test    # config at the repo root, spec at Assets/OTP/tests/otp.s
 
 The spec drives the BUILT artifacts (through the StatiCrypt gate, and the
 ungated viewer) with every `script.google.com` / `supabase.co` call mocked.
-28 specs as of otp-v0.7.
+30 specs as of otp-v0.7.1.
 
 ## Changelog
 
+- **otp-v0.7.1** · Igor's three fixes to the v0.7 note UI, form only, no
+  data change (same 31 POST keys, same values, same 33 Sheet columns, no
+  Apps Script change): the chip hugs its text (the 30 px reserved strip is
+  replaced by a trailing float spacer beside the last line), the `+` is a
+  20 px circle inset 4 px with an inline-SVG plus on integer coordinates that
+  measures 0.00 px off-centre at every device density (the v0.7 CSS gradient
+  bars drifted 0.24 device px at 2x), and the 3 px coloured left edge is
+  removed from chips, legend swatches and print (tints unchanged). Two specs
+  adapted (`+` geometry and plus symmetry measured from the SVG path rect;
+  tint-only borders), the print spec's badge check follows the SVG.
 - **otp-v0.7** · The note UI reworked to Igor's eye, form only; the data
   contract is untouched (same 31 POST keys, same `sp1_notes` /
   `sp1_selected_text` values, same 33 Sheet columns, no Apps Script change).

@@ -47,8 +47,10 @@
   --rate-unsuccess: #d68a1a;
   --rate-unsuccess-deep: #b06d10;
 
-  /* otp-v0.7: the SP1 chip states read as calm pastel tints with a coloured
-     left edge, not as full-saturation fills. */
+  /* otp-v0.7: the SP1 chip states read as calm pastel tints, not as
+     full-saturation fills. otp-v0.7.1: the 3px coloured left edge is gone
+     (Igor: it read as machine-made); the -edge hues survive only as the
+     pop-up card's state dot. */
   --rub-present-bg: #E8F3EC;
   --rub-present-edge: #2F7D4F;
   --rub-partial-bg: #FBF3DC;
@@ -100,8 +102,7 @@
   --rate-success-deep: #1e7a3f;
   --rate-unsuccess: #ff9a4d;
   --rate-unsuccess-deep: #c46810;
-  /* otp-v0.7: the same hues as translucent tints over the dark chip; the
-     edges are the light-theme ones, which already read on the dark surface. */
+  /* otp-v0.7: the same hues as translucent tints over the dark chip. */
   --rub-present-bg: rgba(47, 125, 79, 0.24);
   --rub-partial-bg: rgba(194, 142, 14, 0.22);
   --rub-absent-bg: rgba(178, 59, 59, 0.24);
@@ -2052,32 +2053,34 @@ body.is-viewer .cog-btn { display: none; }
   background: var(--surface-soft);
   border: 1px solid var(--rule);
   border-radius: 0.25rem;
-  /* otp-v0.6: the bottom strip is reserved for the "+" note button, which is a
-     sibling pulled up over this padding, so no word is ever covered.
-     otp-v0.7: the button is a 22px circle whose bottom edge sits 6px above the
-     chip's, so the strip it needs is 28px; 30px keeps a clear 2px gap between
-     the last line of text and the top of the circle. */
-  padding: 0.2rem 0.28rem 30px;
+  /* otp-v0.7.1: no reserved strip any more. The text sits in .rub-chip-text
+     and an empty float spacer (.rub-note-gap) trails it, so the "+" (a sibling
+     pulled up over the chip's bottom-right corner) shares the last line with
+     the text and the chip only grows when that line is full. */
+  padding: 0.2rem 0.28rem;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   transition: background 0.16s ease, color 0.16s ease, border-color 0.16s ease;
 }
 .rub-chip:hover { background: var(--surface-mid); }
+.rub-chip-text { display: inline; }
+/* otp-v0.7.1: the corner the "+" occupies. 22px wide so a word stops clear of
+   the 20px circle; 20px tall so the circle (inset 4px, the chip's 0.2rem
+   bottom padding under it) never meets the line above either. */
+.rub-note-gap { float: right; width: 22px; height: 20px; }
 /* otp-v0.2: the chip colour IS the recorded state, so these rules sit after
    :hover and win over it. The legend swatches share them.
-   otp-v0.7: a calm pastel tint plus a 3px coloured left edge. The chip keeps
-   its normal ink and its other three borders, and hover no longer darkens. */
+   otp-v0.7: a calm pastel tint; the chip keeps its normal ink and its normal
+   1px border on all four sides, and hover no longer darkens.
+   otp-v0.7.1: the 3px coloured left edge is gone. */
 .rub-chip[data-state="present"], .rub-chip[data-state="present"]:hover, .rub-legend-sw[data-state="present"] {
   background: var(--rub-present-bg);
-  border-left: 3px solid var(--rub-present-edge);
 }
 .rub-chip[data-state="partial"], .rub-chip[data-state="partial"]:hover, .rub-legend-sw[data-state="partial"] {
   background: var(--rub-partial-bg);
-  border-left: 3px solid var(--rub-partial-edge);
 }
 .rub-chip[data-state="absent"], .rub-chip[data-state="absent"]:hover, .rub-legend-sw[data-state="absent"] {
   background: var(--rub-absent-bg);
-  border-left: 3px solid var(--rub-absent-edge);
 }
 .form-container.is-locked .rub-chip { cursor: default; }
 
@@ -2085,20 +2088,20 @@ body.is-viewer .cog-btn { display: none; }
    (never nested: a button inside a button is invalid HTML and would swallow
    the tap cycle), pulled up by a negative margin so it sits in the strip the
    chip reserves at its bottom-right corner.
-   otp-v0.7: a 22px circle inset exactly 6px from the chip's right and bottom
-   edges. The negative top margin is 22 + 6 + the flex gap, so the circle's
-   bottom edge lands 6px above the chip's; the 6px bottom margin gives the
-   cell back the height the pull-up took, so the button's tap pad can never
-   poke out of the rubric wrapper. */
+   otp-v0.7.1: a 20px circle inset exactly 4px from the chip's right and
+   bottom edges. The negative top margin is 20 + 4 + the flex gap, so the
+   circle's bottom edge lands 4px above the chip's; the 4px bottom margin gives
+   the cell back the height the pull-up took. The chip's trailing float spacer
+   (.rub-note-gap) keeps every word out of this corner. */
 .rub-note-btn {
   appearance: none;
   align-self: flex-end;
   position: relative;
   z-index: 1;
   display: block;
-  width: 22px;
-  height: 22px;
-  margin: calc(-1 * (22px + 6px + var(--rub-gap))) 6px 6px 0;
+  width: 20px;
+  height: 20px;
+  margin: calc(-1 * (20px + 4px + var(--rub-gap))) 4px 4px 0;
   padding: 0;
   border-radius: 50%;
   border: 1px solid rgba(20, 54, 66, 0.28);
@@ -2109,20 +2112,28 @@ body.is-viewer .cog-btn { display: none; }
   -webkit-tap-highlight-color: transparent;
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
 }
-/* a 36x36 tap target without changing the 22px circle or the layout */
-.rub-note-btn::before { content: ''; position: absolute; top: -7px; right: -7px; bottom: -7px; left: -7px; border-radius: 50%; }
-/* the plus: two 1.5 x 10px bars, no text glyph, pixel-centred in the circle */
-.rub-note-btn::after {
-  content: '';
+/* a 36x32 tap target without changing the 20px circle or the layout, biased
+   into the chip: 12px on the left and 8px above (where a finger aiming at a
+   corner circle lands), 4px on the right and below so the pad ends exactly on
+   the chip's own edges and never pokes out of the rubric wrapper (an
+   absolutely positioned box beyond the last column widens scrollWidth by a
+   pixel and brings the phantom scrollbar back). */
+.rub-note-btn::before { content: ''; position: absolute; top: -8px; right: -4px; bottom: -4px; left: -12px; border-radius: 50%; }
+/* otp-v0.7.1: the plus is an inline SVG (built in buildRubricTable): 12px arms
+   of 2px stroke on integer coordinates of an 18px box, so it rasterises
+   dead-centre at 1x, 2x and 3x. The v0.7 1.5px CSS gradient bars landed on
+   half pixels and drifted off-centre at 2x (measured 0.24 device px). */
+.rub-note-btn svg {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 10px;
-  height: 10px;
-  transform: translate(-50%, -50%);
-  background:
-    linear-gradient(currentColor, currentColor) center / 1.5px 10px no-repeat,
-    linear-gradient(currentColor, currentColor) center / 10px 1.5px no-repeat;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: butt;
+  pointer-events: none;
 }
 .rub-note-btn:hover, .rub-note-btn:focus-visible { border-color: rgba(20, 54, 66, 0.45); }
 .rub-note-btn:active { transform: scale(0.97); }
@@ -2317,18 +2328,18 @@ body.is-viewer .cog-btn { display: none; }
 @media print {
   .rub-wrap { overflow: visible; }
   .rub-table { min-width: 0; }
-  /* otp-v0.7: the calm tints and their 3px edges print as they paint. */
+  /* otp-v0.7: the calm tints print as they paint (otp-v0.7.1: no edge). */
   .rub-chip[data-state], .rub-legend-sw[data-state] { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  .rub-chip[data-state="present"] { background: var(--rub-present-bg) !important; border-left: 3px solid var(--rub-present-edge) !important; }
-  .rub-chip[data-state="partial"] { background: var(--rub-partial-bg) !important; border-left: 3px solid var(--rub-partial-edge) !important; }
-  .rub-chip[data-state="absent"] { background: var(--rub-absent-bg) !important; border-left: 3px solid var(--rub-absent-edge) !important; }
+  .rub-chip[data-state="present"] { background: var(--rub-present-bg) !important; }
+  .rub-chip[data-state="partial"] { background: var(--rub-partial-bg) !important; }
+  .rub-chip[data-state="absent"] { background: var(--rub-absent-bg) !important; }
   /* otp-v0.6: the filled badge is data, so it prints as a solid dot; an empty
      "+" affordance and an open card are not, so they do not. The notes print
      as a list. The card is faded out rather than display-toggled (iPad law);
      it is absolutely positioned, so it takes no space either way. */
   .rub-note-btn.has-note { background: var(--navy) !important; border-color: var(--navy) !important; color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   /* on paper it is a marker, not an affordance, so it prints as a solid dot */
-  .rub-note-btn.has-note::after { display: none !important; }
+  .rub-note-btn.has-note svg { display: none !important; }
   .rub-note-btn:not(.has-note) { display: none !important; }
   .rub-note-pop, .rub-note-scrim { opacity: 0 !important; }
   .rub-print-notes { display: block; margin-top: 0.6rem; }
@@ -2730,7 +2741,7 @@ body.is-viewer .cog-btn { display: none; }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · Progress in Lessons OTP · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">otp-v0.7</a></span>
+    <span>Form · Progress in Lessons OTP · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">otp-v0.7.1</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -5235,13 +5246,23 @@ body.is-viewer .cog-btn { display: none; }
         b.dataset.n = String(i + 1);
         b.dataset.state = '';
         b.setAttribute('aria-pressed', 'false');
-        b.textContent = p;
+        /* otp-v0.7.1: the text sits in its own span, followed by an empty
+           float spacer that reserves the bottom-right corner for the "+"
+           (see .rub-note-gap), so the chip hugs its text. */
+        const bt = document.createElement('span');
+        bt.className = 'rub-chip-text';
+        bt.textContent = p;
+        b.appendChild(bt);
+        const gap = document.createElement('span');
+        gap.className = 'rub-note-gap';
+        gap.setAttribute('aria-hidden', 'true');
+        b.appendChild(gap);
         box.appendChild(b);
         /* otp-v0.6: the note button is a SIBLING of the chip, never a child: a
            button inside a button is invalid HTML and would swallow the tap
            cycle. CSS floats it over the strip the chip reserves at its
-           bottom-right corner; otp-v0.7 draws its plus in CSS, so the button
-           carries no text. */
+           bottom-right corner; the plus is an inline SVG on integer
+           coordinates (otp-v0.7.1), so the button still carries no text. */
         const nb = document.createElement('button');
         nb.type = 'button';
         nb.className = 'rub-note-btn';
@@ -5249,6 +5270,7 @@ body.is-viewer .cog-btn { display: none; }
         nb.dataset.n = String(i + 1);
         nb.setAttribute('aria-label', 'Add a note for ' + l.label + ' ' + (i + 1));
         nb.title = nb.getAttribute('aria-label');
+        nb.innerHTML = '<svg viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M9 3v12M3 9h12"/></svg>';
         box.appendChild(nb);
       });
       td.appendChild(box);
