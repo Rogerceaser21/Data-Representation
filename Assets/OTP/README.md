@@ -1,4 +1,4 @@
-# Progress in Lessons OTP form · otp-v0.7.1
+# Progress in Lessons OTP form · otp-v0.8
 
 Third AIS observation form: **Lesson Observation form WHOLE SCHOOL, Observation
 against the Outstanding Teacher Profile**. It is a COPY of the R3 Evidence form
@@ -15,7 +15,10 @@ practice through observational support and coaching.
 
 1. Nine header fields: Teacher, Support Teachers / CAs, Time In, **Observer**
    (the field is still named `inspector`), Curriculum, Grade, Date, Room
-   Number, Subject. No class statistics, no Time Out, so no duration.
+   Number, Subject. No class statistics. otp-v0.8: a required **Time Out**
+   sits at the BOTTOM of the form, beside Next Steps / Support 3 (the R3
+   form's `summary-with-timeout` layout), gates Save & Lock like the other
+   required fields and is recorded as Sheet column 34; still no duration.
    otp-v0.5: Grade (Pre-Kindy, Kindy, Prep, 1-12, a 5-column tap grid)
    replaces the School pills; School is derived from Grade and no longer
    shown (Pre-Kindy/Kindy -> Kindy, Prep/1-6 -> Primary, 7-12 -> Secondary).
@@ -77,9 +80,15 @@ practice through observational support and coaching.
    coloured left edge on chips, legend swatches and print is gone, the tint
    alone is the state, the chip keeps its normal 1 px border; the edge hues
    `#2F7D4F` / `#C28E0E` / `#B23B3B` survive only as the pop-up's state dot.
+   otp-v0.8: the card's textarea is FOCUSED the moment it opens (Igor: the
+   cursor is already in the box), inside the tap itself so iPadOS raises the
+   keyboard (a Pencil tap gets Scribble), and blurred again on close so the
+   keyboard goes; a locked record view never focuses.
 4. Five Observer Notes blocks, each with the Evidence Pad pencil button and the
    pad-pages paperclip: Observer Comments, Other Observations, and Next Steps /
-   Support 1-3. otp-v0.6 adds 32 more Evidence Pad targets, one per criterion
+   Support 1-3. otp-v0.8 removed the floating top-right "Evidence Pad"
+   launcher: the pencils are the only way into the pad.
+   otp-v0.6 adds 32 more Evidence Pad targets, one per criterion
    (`sp1_<level>_<n>_note`, page files `sp1-<level>-<n>-note[-k].jpg`),
    generated from the rubric rather than hand-listed. A criterion's pad page is
    created the first time its pencil is tapped, so the pad keeps its five
@@ -107,7 +116,7 @@ them from `../R3/lib/`. The AIS logos come from `../brand/`, same as R3.
 Submit POSTs JSON to the same `WEB_APP_URL` as R3 with exactly these keys:
 
 ```
-form ("otp"), teacher, curriculum, inspector, date, room_number, time_in,
+form ("otp"), teacher, curriculum, inspector, date, room_number, time_in, time_out,
 subject, school, grade, support_teachers_cas, otp_ref ("SP1"),
 otp_aspect ("Facilitating better than expected progress"),
 sp1_beginner, sp1_emerging, sp1_good, sp1_great, sp1_outstanding,
@@ -117,9 +126,9 @@ observer_comments, other_observations,
 next_step_1, next_step_2, next_step_3, evidence_pad_id
 ```
 
-31 keys (the 29 of otp-v0.5 plus the two new ones), asserted verbatim AND by
+32 keys (the 31 of otp-v0.6 plus `time_out`, otp-v0.8), asserted verbatim AND by
 count in `tests/otp.spec.ts`, which reads the key list straight out of the
-otp-v0.6 contract. otp-v0.6 appends the last two of the rubric block,
+otp-v0.8 contract (`.planning/2026-09-10-otp-v0.8-contract.md`). otp-v0.6 appends the last two of the rubric block,
 `sp1_notes` and `rubric_version`; nothing else changed name or position.
 
 otp-v0.2 value formats. The three state words are exactly `present`,
@@ -190,6 +199,13 @@ otp-v0.6 additions (columns 32 and 33, appended).
   shared key would bleed drafts between the two forms on the same Pages origin).
   The Evidence Pad draft DB is `ais-otp-pad-v1`.
 
+otp-v0.8 additions (column 34, appended).
+
+- `time_out` is the `HH:MM` the observer entered in the required Time Out
+  field at the bottom of the form, exactly as posted. Rows written before
+  otp-v0.8 stay 33 cells wide; the header self-heals to 34 on the first
+  otp-v0.8 submission.
+
 ## Tests
 
 ```bash
@@ -200,10 +216,20 @@ npx playwright test    # config at the repo root, spec at Assets/OTP/tests/otp.s
 
 The spec drives the BUILT artifacts (through the StatiCrypt gate, and the
 ungated viewer) with every `script.google.com` / `supabase.co` call mocked.
-30 specs as of otp-v0.7.1.
+34 specs as of otp-v0.8.
 
 ## Changelog
 
+- **otp-v0.8** · Igor's three asks of 2026-09-10. (1) The note card's
+  textarea is focused the moment a `+` opens it and blurred on close
+  (overrides the v0.7 no-auto-focus rule at his call: on iPad the keyboard
+  rises on open, a Pencil tap gets Scribble). (2) A required **Time Out** at
+  the bottom of the form (beside Next Steps / Support 3, the R3 layout) gates
+  Save & Lock; new POST key `time_out` (32 keys) and Sheet column 34
+  (`getOtpColumns()`, header self-heal, backup email row `Time out`, Apps
+  Script redeployed in place). (3) The floating top-right Evidence Pad
+  launcher is gone; every pencil and paperclip stays. Four specs added (34),
+  harness 34 columns with a v0.6-tab heal case.
 - **otp-v0.7.1** · Igor's three fixes to the v0.7 note UI, form only, no
   data change (same 31 POST keys, same values, same 33 Sheet columns, no
   Apps Script change): the chip hugs its text (the 30 px reserved strip is

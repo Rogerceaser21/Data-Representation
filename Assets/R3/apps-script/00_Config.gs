@@ -189,7 +189,7 @@ function getTabWithFallback(ss, preferred, fallback) {
  *
  * `observer` holds the person who observed: the form still posts that field as
  * `inspector` (it is a copy of the R3 master), the Sheet calls it observer.
- * There is no time_out, so no duration column.
+ * otp-v0.8 appended time_out as column 34; there is still no duration column.
  */
 function getOtpColumns() {
   return [
@@ -215,7 +215,10 @@ function getOtpColumns() {
     // records which rubric the numbering refers to ('sp1-v2' from otp-v0.6;
     // empty on older rows, which are read on the v1 rubric). Append-only, per
     // the rule above.
-    'sp1_notes', 'rubric_version'
+    'sp1_notes', 'rubric_version',
+    // otp-v0.8: time_out holds the HH:MM the observer entered at the bottom of
+    // the form (required there). Append-only, per the rule above.
+    'time_out'
   ];
 }
 

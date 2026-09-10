@@ -535,6 +535,7 @@ function buildOtpSubmissionHtml(recordId, lockedUrl, submittedAt, data) {
   html += row('Date',                   data.date || data.observation_date);
   html += row('Room number',            data.room_number);
   html += row('Time in',                data.time_in);
+  html += row('Time out',               data.time_out);   // otp-v0.8
   html += row('Subject',                data.subject);
   html += row('School',                 data.school);
   html += row('Grade',                  data.grade);

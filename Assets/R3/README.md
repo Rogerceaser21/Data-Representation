@@ -131,7 +131,7 @@ room_number, time_in, subject, school, support_teachers_cas, otp_ref, otp_aspect
 sp1_beginner, sp1_emerging, sp1_good, sp1_great, sp1_outstanding, sp1_selected_text,
 observer_comments, other_observations, next_step_1, next_step_2, next_step_3,
 record_token, evidence_pad_id, sp1_present, sp1_partially_present, sp1_not_present,
-sp1_not_seen, grade, sp1_notes, rubric_version
+sp1_not_seen, grade, sp1_notes, rubric_version, time_out
 ```
 
 `observer` is the form's `inspector` field; there is no `time_out`, so no `duration`.

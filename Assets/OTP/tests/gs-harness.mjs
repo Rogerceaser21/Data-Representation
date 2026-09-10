@@ -61,7 +61,8 @@ const EXPECTED_OTP_COLUMNS = [
   'sp1_selected_text', 'observer_comments', 'other_observations',
   'next_step_1', 'next_step_2', 'next_step_3', 'record_token', 'evidence_pad_id',
   'sp1_present', 'sp1_partially_present', 'sp1_not_present',
-  'sp1_not_seen', 'grade', 'sp1_notes', 'rubric_version'
+  'sp1_not_seen', 'grade', 'sp1_notes', 'rubric_version',
+  'time_out'   // otp-v0.8, column 34
 ];
 
 // otp-v0.6 · the note fixture is deliberately NOT in level order, carries a
@@ -102,6 +103,7 @@ const OTP_PAYLOAD = {
   sp1_not_seen: 'Beginner 1, Beginner 2, Emerging 1, Good 2, Great 1, Great 2, Great 5, Outstanding 1',
   sp1_notes: OTP_NOTES_JSON,
   rubric_version: 'sp1-v2',
+  time_out: '10:55',   // otp-v0.8
   observer_comments: 'Strong start, retrieval routine embedded.',
   other_observations: 'Display used as a working wall.',
   next_step_1: 'Plan a stretch task for the top table.',
@@ -544,11 +546,12 @@ section('(a) OTP submission · row + email + Supabase mirror');
   const row = tab[1] || [];
   const idx = (c) => EXPECTED_OTP_COLUMNS.indexOf(c);
 
-  eqJson(env.ctx.getOtpColumns(), EXPECTED_OTP_COLUMNS, 'getOtpColumns() is the 33-column contract, in order');
-  eqJson(EXPECTED_OTP_COLUMNS.slice(31), ['sp1_notes', 'rubric_version'], 'sp1_notes and rubric_version are columns 32 and 33 (appended, hard rule 1)');
+  eqJson(env.ctx.getOtpColumns(), EXPECTED_OTP_COLUMNS, 'getOtpColumns() is the 34-column contract, in order');
+  eqJson(EXPECTED_OTP_COLUMNS.slice(31), ['sp1_notes', 'rubric_version', 'time_out'], 'sp1_notes, rubric_version and time_out are columns 32-34 (appended, hard rule 1)');
+  ok(EXPECTED_OTP_COLUMNS.length === 34 && EXPECTED_OTP_COLUMNS[33] === 'time_out', 'time_out is column 34 (otp-v0.8)');
   ok(tab.length === 2, 'OTP Submissions holds exactly one header + ONE appended row', 'rows: ' + tab.length);
   eqJson(header, EXPECTED_OTP_COLUMNS, 'header row written in the load-bearing column order');
-  ok(row.length === 33, 'appended row has 33 cells', 'cells: ' + row.length);
+  ok(row.length === 34, 'appended row has 34 cells', 'cells: ' + row.length);
   ok(/^AIS-OTP-\d{8}-\d{6}$/.test(row[idx('record_id')]), 'record_id is a fresh AIS-OTP-YYYYMMDD-HHMMSS id', 'got: ' + row[idx('record_id')]);
   ok(/^[0-9a-f]{32}$/.test(row[idx('record_token')]), 'record_token is 32 hex chars', 'got: ' + row[idx('record_token')]);
   ok(row[idx('observer')] === OTP_PAYLOAD.inspector, 'observer column <- payload.inspector', 'got: ' + row[idx('observer')]);
@@ -558,7 +561,7 @@ section('(a) OTP submission · row + email + Supabase mirror');
     'otp_ref', 'otp_aspect', 'sp1_beginner', 'sp1_emerging', 'sp1_good', 'sp1_great', 'sp1_outstanding',
     'sp1_selected_text', 'observer_comments', 'other_observations', 'next_step_1', 'next_step_2', 'next_step_3',
     'evidence_pad_id', 'sp1_present', 'sp1_partially_present', 'sp1_not_present',
-    'sp1_not_seen', 'grade', 'sp1_notes', 'rubric_version'].filter((k) => row[idx(k)] !== OTP_PAYLOAD[k]);
+    'sp1_not_seen', 'grade', 'sp1_notes', 'rubric_version', 'time_out'].filter((k) => row[idx(k)] !== OTP_PAYLOAD[k]);
   eqJson(fieldsOk, [], 'every posted OTP field landed in its own column');
   ok(!dump.sheets['Submissions'], 'the R3 Submissions tab was never touched by an OTP post');
   eqJson(out, { success: true, id: row[idx('record_id')] }, 'response is { success:true, id } exactly like R3');
@@ -571,7 +574,7 @@ section('(a) OTP submission · row + email + Supabase mirror');
   const viewerLink = 'https://rogerceaser21.github.io/Data-Representation/Assets/OTP/otp-record.html?token=' + row[idx('record_token')];
   ok(String(mail.htmlBody).indexOf(viewerLink) > -1, 'email body carries the OTP viewer link (token only)', 'looked for: ' + viewerLink);
   const labelsMissing = ['Observer Comments', 'Other Observations', 'Next Steps / Support 1', 'Selected criteria', 'Support teachers / CAs',
-    'Present in lesson', 'Partially present', 'Not present', 'Not assessed (does not count)', 'Grade']
+    'Present in lesson', 'Partially present', 'Not present', 'Not assessed (does not count)', 'Grade', 'Time out']
     .filter((l) => String(mail.htmlBody).indexOf(l) < 0);
   eqJson(labelsMissing, [], 'email body lists the OTP columns with readable labels');
 
@@ -579,7 +582,7 @@ section('(a) OTP submission · row + email + Supabase mirror');
   ok(ingest.length === 1, 'exactly one Supabase mirror call, to /rest/v1/rpc/ingest_otp', 'urls: ' + JSON.stringify(dump.fetches.map((f) => f.url)));
   const body = JSON.parse((ingest[0] || {}).payload || '{}');
   eqJson(Object.keys(body), ['payload'], 'mirror body is { payload: ... }');
-  eqJson(Object.keys(body.payload || {}), EXPECTED_OTP_COLUMNS, 'mirror payload carries the 33 columns, in order');
+  eqJson(Object.keys(body.payload || {}), EXPECTED_OTP_COLUMNS, 'mirror payload carries the 34 columns, in order');
   eqJson(EXPECTED_OTP_COLUMNS.map((c) => body.payload[c]), row, 'mirror payload is a field-for-field copy of the Sheet row');
   ok((ingest[0] || {}).headers.apikey === SECRET, 'mirror authenticates with the service_role key from Script Properties');
   ok(dump.fetches.every((f) => f.url.indexOf('/rest/v1/rpc/ingest_r3') < 0), 'the R3 ingest RPC was never called for an OTP post');
@@ -703,33 +706,42 @@ section('(e) header heal · an older OTP tab gains exactly the new trailing colu
     return { OLD_OTP_ROW, tab: env.dump().sheets['OTP Submissions'] || [] };
   };
 
-  // a v0.1 tab is 26 columns wide, so it gains 7 cells
-  // (otp-v0.2's 3 + otp-v0.5's 2 + otp-v0.6's 2)
+  // a v0.1 tab is 26 columns wide, so it gains 8 cells
+  // (otp-v0.2's 3 + otp-v0.5's 2 + otp-v0.6's 2 + otp-v0.8's 1)
   const v1 = heal(26);
   ok(v1.tab.length === 3, 'v0.1 tab: header + the untouched old row + the new appended row', 'rows: ' + v1.tab.length);
-  eqJson(v1.tab[0], EXPECTED_OTP_COLUMNS, 'v0.1 header healed to the 33-column contract, in order');
+  eqJson(v1.tab[0], EXPECTED_OTP_COLUMNS, 'v0.1 header healed to the 34-column contract, in order');
   eqJson((v1.tab[0] || []).slice(26),
-    ['sp1_present', 'sp1_partially_present', 'sp1_not_present', 'sp1_not_seen', 'grade', 'sp1_notes', 'rubric_version'],
-    'the 7 new header cells land in positions 27-33');
+    ['sp1_present', 'sp1_partially_present', 'sp1_not_present', 'sp1_not_seen', 'grade', 'sp1_notes', 'rubric_version', 'time_out'],
+    'the 8 new header cells land in positions 27-34');
   eqJson(v1.tab[1], v1.OLD_OTP_ROW, 'the pre-existing v0.1 row keeps its original 26 cells untouched');
-  ok((v1.tab[2] || []).length === 33, 'the row appended to the healed v0.1 tab has 33 cells', 'cells: ' + (v1.tab[2] || []).length);
+  ok((v1.tab[2] || []).length === 34, 'the row appended to the healed v0.1 tab has 34 cells', 'cells: ' + (v1.tab[2] || []).length);
 
-  // a v0.2 tab is 29 columns wide, so it gains otp-v0.5's 2 + otp-v0.6's 2
+  // a v0.2 tab is 29 columns wide, so it gains otp-v0.5's 2 + otp-v0.6's 2 + otp-v0.8's 1
   const v2 = heal(29);
   ok(v2.tab.length === 3, 'v0.2 tab: header + the untouched old row + the new appended row', 'rows: ' + v2.tab.length);
-  eqJson(v2.tab[0], EXPECTED_OTP_COLUMNS, 'v0.2 header healed to the 33-column contract, in order');
-  eqJson((v2.tab[0] || []).slice(29), ['sp1_not_seen', 'grade', 'sp1_notes', 'rubric_version'],
-    'exactly the 4 new header cells land in positions 30-33');
+  eqJson(v2.tab[0], EXPECTED_OTP_COLUMNS, 'v0.2 header healed to the 34-column contract, in order');
+  eqJson((v2.tab[0] || []).slice(29), ['sp1_not_seen', 'grade', 'sp1_notes', 'rubric_version', 'time_out'],
+    'exactly the 5 new header cells land in positions 30-34');
   eqJson(v2.tab[1], v2.OLD_OTP_ROW, 'the pre-existing v0.2 row keeps its original 29 cells untouched');
-  ok((v2.tab[2] || []).length === 33, 'the row appended to the healed v0.2 tab has 33 cells', 'cells: ' + (v2.tab[2] || []).length);
+  ok((v2.tab[2] || []).length === 34, 'the row appended to the healed v0.2 tab has 34 cells', 'cells: ' + (v2.tab[2] || []).length);
 
-  // the live otp-v0.5 tab is 31 columns wide, so it gains EXACTLY the 2 new ones
+  // otp-v0.8: a v0.6/v0.7 tab is 33 columns wide, so it gains exactly time_out
+  const v6 = heal(33);
+  ok(v6.tab.length === 3, 'v0.6 tab: header + the untouched old row + the new appended row', 'rows: ' + v6.tab.length);
+  eqJson(v6.tab[0], EXPECTED_OTP_COLUMNS, 'v0.6 header healed to the 34-column contract, in order');
+  eqJson((v6.tab[0] || []).slice(33), ['time_out'], 'exactly the 1 new header cell, time_out, lands in position 34');
+  eqJson(v6.tab[1], v6.OLD_OTP_ROW, 'the pre-existing v0.6 row keeps its original 33 cells untouched');
+  ok((v6.tab[2] || []).length === 34, 'the row appended to the healed v0.6 tab has 34 cells', 'cells: ' + (v6.tab[2] || []).length);
+  ok(v6.tab[2] && v6.tab[2][33] === '10:55', 'the new row carries time_out in column 34', 'got: ' + (v6.tab[2] || [])[33]);
+
+  // a otp-v0.5 tab is 31 columns wide, so it gains otp-v0.6's 2 + otp-v0.8's 1
   const v5 = heal(31);
   ok(v5.tab.length === 3, 'v0.5 tab: header + the untouched old row + the new appended row', 'rows: ' + v5.tab.length);
-  eqJson(v5.tab[0], EXPECTED_OTP_COLUMNS, 'v0.5 header healed to the 33-column contract, in order');
-  eqJson((v5.tab[0] || []).slice(31), ['sp1_notes', 'rubric_version'], 'exactly the 2 new header cells land in positions 32-33');
+  eqJson(v5.tab[0], EXPECTED_OTP_COLUMNS, 'v0.5 header healed to the 34-column contract, in order');
+  eqJson((v5.tab[0] || []).slice(31), ['sp1_notes', 'rubric_version', 'time_out'], 'exactly the 3 new header cells land in positions 32-34');
   eqJson(v5.tab[1], v5.OLD_OTP_ROW, 'the pre-existing v0.5 row keeps its original 31 cells untouched');
-  ok((v5.tab[2] || []).length === 33, 'the row appended to the healed v0.5 tab has 33 cells', 'cells: ' + (v5.tab[2] || []).length);
+  ok((v5.tab[2] || []).length === 34, 'the row appended to the healed v0.5 tab has 34 cells', 'cells: ' + (v5.tab[2] || []).length);
 }
 
 /* (f) school derived from grade ------------------------------------------- */
@@ -787,7 +799,7 @@ section('(f) otp-v0.5 · school is DERIVED from grade, and grade wins');
   const staleDump = staleEnv.dump();
   const staleRow = (staleDump.sheets['OTP Submissions'] || [])[1] || [];
   const notSeenIdx = EXPECTED_OTP_COLUMNS.indexOf('sp1_not_seen');
-  ok(staleRow.length === 33, 'a stale otp-v0.4 payload (grade and sp1_not_seen keys absent) still appends a 33-cell row', 'cells: ' + staleRow.length);
+  ok(staleRow.length === 34, 'a stale otp-v0.4 payload (grade and sp1_not_seen keys absent) still appends a 34-cell row', 'cells: ' + staleRow.length);
   ok(staleRow[schoolIdx] === OTP_PAYLOAD.school, 'a stale payload keeps its posted school', 'got: ' + staleRow[schoolIdx]);
   ok(staleRow[gradeIdx] === '' && staleRow[notSeenIdx] === '', 'the two new cells are empty strings for a stale payload',
     'grade: ' + JSON.stringify(staleRow[gradeIdx]) + ' not_seen: ' + JSON.stringify(staleRow[notSeenIdx]));
@@ -850,7 +862,7 @@ section('(g) otp-v0.6 · sp1_notes + rubric_version, and the Criterion notes ema
   staleEnv6.ctx.doPost({ postData: { contents: JSON.stringify(stale6) } });
   const stale6Dump = staleEnv6.dump();
   const stale6Row = (stale6Dump.sheets['OTP Submissions'] || [])[1] || [];
-  ok(stale6Row.length === 33, 'a stale otp-v0.5 payload still appends a 33-cell row', 'cells: ' + stale6Row.length);
+  ok(stale6Row.length === 34, 'a stale otp-v0.5 payload still appends a 34-cell row', 'cells: ' + stale6Row.length);
   ok(stale6Row[notesIdx] === '' && stale6Row[versionIdx] === '', 'the two new cells are empty strings for a stale payload',
     JSON.stringify([stale6Row[notesIdx], stale6Row[versionIdx]]));
   ok(String((stale6Dump.mail[0] || {}).htmlBody).indexOf('Criterion notes') < 0, 'a stale payload sends the email with no Criterion notes section');

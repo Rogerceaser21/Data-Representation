@@ -59,6 +59,7 @@ const CONTRACT_KEYS = [
   'date',
   'room_number',
   'time_in',
+  'time_out',   // otp-v0.8
   'subject',
   'school',
   'grade',
@@ -87,13 +88,12 @@ const CONTRACT_KEYS = [
 
 /**
  * The contract document itself, so the list above is proved against the spec
- * rather than against a second hand typed copy of it. NB the heading of §2
- * reads "32 keys" while the list it governs names 31: the enumerated list is
- * the normative one (the 29 keys of otp-v0.5 plus the two new ones, sp1_notes
- * and rubric_version), and the form posts exactly those 31.
+ * rather than against a second hand typed copy of it. otp-v0.8: the §2 list
+ * of the v0.8 contract names 32 keys (the 31 of otp-v0.6 plus time_out), and
+ * the form posts exactly those 32.
  */
 const CONTRACT_DOC = path.join(
-  __dirname, '..', '..', '..', '.planning', '2026-09-09-otp-v0.6-contract.md',
+  __dirname, '..', '..', '..', '.planning', '2026-09-10-otp-v0.8-contract.md',
 );
 
 /** The §2 code block of the contract, read as a sorted key list. */
@@ -126,6 +126,7 @@ const RECORD_HEADER = {
   teacher: 'Test Teacher',
   support_teachers_cas: 'Ms Support CA',
   time_in: '09:15',
+  time_out: '10:05',   // otp-v0.8
   inspector: 'Test Observer',
   curriculum: 'Australian',
   school: 'Primary',
@@ -283,6 +284,7 @@ async function fillRequired(page: Page) {
   await pickTomSelect(page, 'subject', 'Mathematics');
   await page.fill('#date', '2026-09-03');
   await page.fill('#time_in', '09:15');
+  await page.fill('#time_out', '10:05');   // otp-v0.8: required, at the bottom
 }
 
 /** otp-v0.6/v0.7 helpers: the chip, its "+" note button and the note card. */
@@ -394,7 +396,7 @@ test('renders all 32 SP1 v2 rubric chips verbatim, in order, 4/5/7/8/8', async (
   await expect(page.locator('tr.rub-caption .rub-cap-k')).toHaveText('Aspect of Practice');
   await expect(page.locator('tr.rub-caption .rub-cap-v')).toHaveText(RUBRIC.aspect);
   // the footer renders uppercase through CSS, so match the text case-insensitively
-  await expect(page.locator('.form-footer')).toContainText(/otp-v0\.7/i);
+  await expect(page.locator('.form-footer')).toContainText(/otp-v0\.8/i);
   await expect(page.locator('#rubric_version')).toHaveValue('sp1-v2');
 
   expect(h.errors).toEqual([]);
@@ -611,7 +613,7 @@ test('otp-v0.7: "+" opens the one anchored card, in flow rules, with this criter
   expect(flow.bodyOverflow).not.toBe('hidden');
   expect(flow.bodyTop).toBe('');
   // and no auto-focus: a Pencil user must not get the keyboard
-  expect(flow.focusIsTextarea).toBe(false);
+  expect(flow.focusIsTextarea).toBe(true);   // otp-v0.8: the note IS focused on open (Igor)
   // the v0.6 table row is gone for good
   expect(flow.rows).toBe(0);
 
@@ -1159,10 +1161,10 @@ test('otp-v0.6: a draft without rubric_version restores its header fields but no
   expect(h.errors).toEqual([]);
 });
 
-test('the CONTRACT key list is the contract §2 list verbatim, 31 keys', async () => {
+test('the CONTRACT key list is the contract §2 list verbatim, 32 keys', async () => {
   const fromDoc = contractKeysFromDoc();
   expect(fromDoc).toEqual(CONTRACT_KEYS);
-  expect(fromDoc).toHaveLength(31);
+  expect(fromDoc).toHaveLength(32);   // otp-v0.8: + time_out
   expect(fromDoc).toContain('sp1_notes');
   expect(fromDoc).toContain('rubric_version');
 });
@@ -1196,7 +1198,7 @@ test('submit posts exactly the CONTRACT keys with form="otp" and rubric_version=
   expect(h.posts).toHaveLength(1);
   const body = h.posts[0];
   expect(Object.keys(body).sort()).toEqual(CONTRACT_KEYS);
-  expect(Object.keys(body)).toHaveLength(31);   // §2 list, counted not assumed
+  expect(Object.keys(body)).toHaveLength(32);   // §2 list, counted not assumed (otp-v0.8: + time_out)
   expect(body.form).toBe('otp');
   expect(body.otp_ref).toBe('SP1');
   expect(body.otp_aspect).toBe('Facilitating better than expected progress');
@@ -1241,6 +1243,7 @@ test('the record view repopulates header fields, chips, notes and the five secti
   await expect(page.locator('#date')).toHaveValue('2026-09-03');
   await expect(page.locator('#room_number')).toHaveValue('12B');
   await expect(page.locator('#time_in')).toHaveValue('09:15');
+  await expect(page.locator('#time_out')).toHaveValue('10:05');   // otp-v0.8
   await expect(page.locator('#support_teachers_cas')).toHaveValue('Ms Support CA');
   await expect(page.locator('#curriculum')).toHaveValue('Australian');
   await expect(page.locator('#school')).toHaveValue('Primary');
@@ -1357,7 +1360,6 @@ test('the removed R3 fields are absent from the DOM', async ({ page }) => {
     'summary_strengths',
     'summary_weakness',
     'grade_class',
-    'time_out',
     'num_sen',
   ]) {
     await expect(page.locator('#' + id), `#${id} should be gone`).toHaveCount(0);
@@ -1837,7 +1839,7 @@ test('otp-v0.5: Grade replaces School and derives it, Kindy through Secondary', 
   await expect(page.locator('#btn-submit')).toBeDisabled();
   await expect(page.locator('#btn-submit')).toHaveAttribute(
     'title',
-    'Fill Teacher / Time In / Observer / Curriculum / Grade / Date / Subject to enable saving',
+    'Fill Teacher / Time In / Observer / Curriculum / Grade / Date / Subject / Time Out to enable saving',
   );
 
   expect(h.errors).toEqual([]);
@@ -1894,7 +1896,7 @@ test('otp-v0.7: no console errors and no horizontal overflow at 1280, 1180x820 a
       await notePop(page).evaluate((el) => getComputedStyle(el).position),
     ).toBe('absolute');
 
-    await expect(page.locator('.form-footer')).toContainText(/otp-v0\.7/i);
+    await expect(page.locator('.form-footer')).toContainText(/otp-v0\.8/i);
     await page.evaluate((k) => localStorage.removeItem(k), DRAFT_KEY);
   }
 
@@ -2054,6 +2056,132 @@ test('otp-v0.6: Reset clears the notes and keeps rubric_version stamped', async 
   await expect(page.locator('.rub-note-btn.has-note')).toHaveCount(0);
   await expectPop(page, 'closed');
   await expect(page.locator('#rub-print-notes')).toBeEmpty();
+
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.8: Time Out sits at the bottom and gates Save & Lock like the other required fields', async ({ page }) => {
+  const h = await harness(page);
+  await openForm(page);
+
+  // structure: inside the last Next Steps section, beside Support 3, above the action bar
+  const place = await page.evaluate(() => {
+    const t = document.getElementById('time_out') as HTMLInputElement;
+    const ns3 = document.getElementById('next_step_3')!;
+    const bar = document.querySelector('.action-bar')!;
+    const label = document.querySelector('label[for="time_out"]')!;
+    return {
+      type: t.type, name: t.name, required: t.required,
+      afterNs3: !!(ns3.compareDocumentPosition(t) & Node.DOCUMENT_POSITION_FOLLOWING),
+      beforeBar: !!(t.compareDocumentPosition(bar) & Node.DOCUMENT_POSITION_FOLLOWING),
+      sameSection: t.closest('.form-section') === ns3.closest('.form-section'),
+      layout: !!t.closest('.summary-with-timeout'),
+      label: label.textContent!.trim(), labelRequired: label.classList.contains('required-field'),
+      timeInStillTop: document.getElementById('time_in')!.closest('.info-grid') !== null,
+    };
+  });
+  expect(place).toEqual({
+    type: 'time', name: 'time_out', required: true,
+    afterNs3: true, beforeBar: true, sameSection: true, layout: true,
+    label: 'Time Out', labelRequired: true, timeInStillTop: true,
+  });
+
+  // the gate: everything else filled, Save & Lock stays disabled until Time Out
+  await fillRequired(page);
+  await page.fill('#time_out', '');
+  await expect(page.locator('#btn-submit')).toBeDisabled();
+  expect(await page.locator('#btn-submit').getAttribute('title')).toContain('Time Out');
+  await page.fill('#time_out', '10:05');
+  await expect(page.locator('#btn-submit')).toBeEnabled();
+  await page.fill('#time_out', '');
+  await expect(page.locator('#btn-submit')).toBeDisabled();
+
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.8: time_out survives a reload via the ais-otp-form-v1 draft', async ({ page }) => {
+  const h = await harness(page);
+  await openForm(page);
+  await page.fill('#time_out', '11:40');
+  await page.waitForTimeout(600); // debounced autosave is 220ms
+  const draft = JSON.parse(await page.evaluate((k) => localStorage.getItem(k)!, DRAFT_KEY));
+  expect(draft.time_out).toBe('11:40');
+  await page.reload();
+  await passGate(page);
+  await expect(page.locator('#time_out')).toHaveValue('11:40');
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.8: a "+" tap puts the cursor in the note, closing drops it, the record view never focuses', async ({ page }) => {
+  const h = await harness(page);
+  await openForm(page);
+
+  const active = () => page.evaluate(() => {
+    const a = document.activeElement as HTMLElement | null;
+    return a ? { id: a.id, cls: a.className, tag: a.tagName } : null;
+  });
+
+  await tapNoteBtn(page, 'good', 1);
+  await expectPop(page, 'open');
+  expect((await active())!.id).toBe('sp1_note_good_1');
+  // typing straight away lands in the note's data
+  await page.keyboard.type('typed straight away');
+  await expect(page.locator('#sp1_notes')).toHaveValue('{"Good 1":"typed straight away"}');
+
+  // re-anchoring keeps the focus on the (persistent) textarea, now the new criterion's
+  await tapNoteBtn(page, 'great', 2);
+  await expectPop(page, 'open');
+  await page.waitForTimeout(100);   // the reopen runs on the next frame
+  expect((await active())!.id).toBe('sp1_note_great_2');
+
+  // Done drops the focus, so a keyboard would go away and keystrokes cannot land in the faded card
+  await page.locator('.rub-note-done').click();
+  await expectPop(page, 'closed');
+  expect((await active())!.cls).not.toContain('rub-note-text');
+  await page.keyboard.type('stray');
+  await expect(page.locator('#sp1_notes')).toHaveValue('{"Good 1":"typed straight away"}');
+
+  // Esc as well
+  await tapNoteBtn(page, 'good', 1);
+  expect((await active())!.id).toBe('sp1_note_good_1');
+  await page.keyboard.press('Escape');
+  await expectPop(page, 'closed');
+  expect((await active())!.cls).not.toContain('rub-note-text');
+  expect(h.errors).toEqual([]);
+
+  // the record view: read-only card, no focus, no keyboard
+  await page.goto(RECORD_URL + '?token=abc');
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 20_000 });
+  await tapNoteBtn(page, 'good', 3);   // the fixture's badge
+  await expectPop(page, 'open');
+  const rec = await active();
+  expect(rec === null || !rec.cls.includes('rub-note-text')).toBe(true);
+  expect(await noteText(page, 'good', 3).evaluate((el) => (el as HTMLTextAreaElement).readOnly)).toBe(true);
+});
+
+test('otp-v0.8: no floating Evidence Pad launcher; every in-form entry point stays', async ({ page }) => {
+  const h = await harness(page);
+  await openForm(page);
+
+  await expect(page.locator('#pad-open')).toHaveCount(0);
+  await expect(page.locator('.float-link.pad')).toHaveCount(0);
+  await expect(page.locator('#pad-modal')).toHaveCount(1);
+  // the five section pencils + the note card's own pencil
+  await expect(page.locator('.pad-field-btn[data-pad-target]')).toHaveCount(5);
+  await expect(page.locator('#rub-note-pop .pad-field-btn')).toHaveCount(1);
+  await expect(page.locator('.pad-attach')).toHaveCount(6);
+
+  // a section pencil still opens the pad, Done closes it
+  await page.locator('.pad-field-btn[data-pad-target="observer_comments"]').click();
+  await expect(page.locator('body')).toHaveClass(/pad-open/, { timeout: 10_000 });
+  await page.locator('#pad-done').click();
+  await expect(page.locator('body')).not.toHaveClass(/pad-open/, { timeout: 10_000 });
+
+  // and the criterion note card's pencil is wired to its criterion
+  await tapNoteBtn(page, 'good', 2);
+  await expectPop(page, 'open');
+  expect(await page.locator('#rub-note-pop .pad-field-btn').getAttribute('data-pad-target')).toBe('sp1_good_2_note');
+  expect(await page.locator('#rub-note-pop .pad-field-btn').isHidden()).toBe(false);
 
   expect(h.errors).toEqual([]);
 });

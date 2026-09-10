@@ -1400,12 +1400,6 @@ textarea.long-text:focus { border-color: var(--rate-success); }
    stays live in the form's text fields; on the pad canvas raw
    ink wins (touch-action none + touchmove preventDefault).
    =========================================================== */
-.float-link.pad {
-  right: clamp(0.7rem, 1.4vw, 1.2rem);
-  top: calc(clamp(0.7rem, 1.4vw, 1.2rem) + 2.7rem);
-  border-color: var(--ais-yellow);
-}
-.float-link.pad:hover { border-color: var(--ais-yellow); }
 
 .pad-modal {
   position: fixed;
@@ -1592,7 +1586,6 @@ body.is-viewer .pad-field-btn { display: none !important; }
 /* v0.53: "you have evidence here" state — green when the field's textarea has
    text OR its pad page has ink/photos. Same treatment on the floating launcher. */
 .pad-field-btn.has-evi,
-.float-link.pad.has-evi { border-color: var(--rate-success); color: var(--rate-success); }
 .pad-field-btn.has-evi:hover { color: var(--rate-success-deep); }
 
 /* v0.53: record-view attachment pill — shown ONLY when a locked record carries
@@ -2434,17 +2427,9 @@ body.is-viewer .cog-btn { display: none; }
   </div>
 </div>
 
-<!-- Evidence Pad (v0.50): floating launcher (mirrors the quick-links; hidden in
-     the viewer build via body.is-viewer .float-link) + the full-screen pad. -->
-<button class="float-link pad" id="pad-open" type="button" title="Open the Evidence Pad: photos + Apple Pencil notes">
-  <svg class="fl-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-    <path d="M12 19l7-7 3 3-7 7-3-3z"/>
-    <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
-    <path d="M2 2l7.586 7.586"/>
-    <circle cx="11" cy="11" r="2"/>
-  </svg>
-  <span>Evidence Pad</span>
-</button>
+<!-- Evidence Pad (v0.50): the full-screen pad. otp-v0.8 removed the floating
+     top-right launcher (Igor, 2026-09-10): the pad opens only from the pencils
+     on the five notes sections and in every criterion note card. -->
 
 <div class="pad-modal" id="pad-modal" role="dialog" aria-modal="true" aria-label="Evidence pad">
   <div class="pad-top">
@@ -2733,15 +2718,26 @@ body.is-viewer .cog-btn { display: none; }
        NEXT STEPS / SUPPORT 3
        ============================================ -->
   <section class="form-section">
-    <h2 class="section-title">Next Steps / <em>Support 3</em><button type="button" class="pad-field-btn" data-pad-target="next_step_3" title="Open the Evidence Pad on the Next Steps / Support 3 page" aria-label="Open the Evidence Pad on the Next Steps / Support 3 page"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></button><button type="button" class="pad-attach" data-pad-target="next_step_3" hidden title="View the handwritten pad pages for this section" aria-label="View the handwritten pad pages for this section"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button></h2>
-    <textarea name="next_step_3" id="next_step_3" class="long-text" rows="4" placeholder="Notes…"></textarea>
+    <!-- otp-v0.8: Time Out sits at the bottom of the form, beside the last Next Steps
+         block, in the same summary-with-timeout layout the R3 form uses (Igor,
+         2026-09-10). Required: Save & Lock stays disabled until it is filled. -->
+    <div class="summary-with-timeout">
+      <div class="summary-block">
+        <h2 class="section-title">Next Steps / <em>Support 3</em><button type="button" class="pad-field-btn" data-pad-target="next_step_3" title="Open the Evidence Pad on the Next Steps / Support 3 page" aria-label="Open the Evidence Pad on the Next Steps / Support 3 page"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></button><button type="button" class="pad-attach" data-pad-target="next_step_3" hidden title="View the handwritten pad pages for this section" aria-label="View the handwritten pad pages for this section"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button></h2>
+        <textarea name="next_step_3" id="next_step_3" class="long-text" rows="4" placeholder="Notes…"></textarea>
+      </div>
+      <div class="timeout-block">
+        <label for="time_out" class="required-field">Time Out</label>
+        <input id="time_out" name="time_out" type="time" required>
+      </div>
+    </div>
   </section>
 
     <!-- ============================================
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · Progress in Lessons OTP · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">otp-v0.7.1</a></span>
+    <span>Form · Progress in Lessons OTP · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">otp-v0.8</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -3562,11 +3558,9 @@ body.is-viewer .cog-btn { display: none; }
     }
 
     // v0.53: green "evidence here" state — a field's pen pill lights up when
-    // its textarea has text OR its pad pages carry ink/photos; the floating
-    // launcher lights up when the pad holds anything at all.
+    // its textarea has text OR its pad pages carry ink/photos. (otp-v0.8: the
+    // floating launcher that used to light up as well is gone.)
     function refreshEviState() {
-      const openBtn = document.getElementById('pad-open');
-      if (openBtn) openBtn.classList.toggle('has-evi', padHasContent());
       TARGETS.forEach(t => {
         const btn = document.querySelector('.pad-field-btn[data-pad-target="' + t + '"]');
         if (!btn) return;
@@ -4188,17 +4182,15 @@ body.is-viewer .cog-btn { display: none; }
 
     // ---------- wiring ----------
     function init() {
-      const openBtn = document.getElementById('pad-open');
-      if (!openBtn) return;
+      // otp-v0.8: no floating launcher any more; the field pencils are the
+      // only way in (plus the note card's, bound where the card is built).
       const fieldBtns = document.querySelectorAll('.pad-field-btn');
       // Record views never get a pad; silent-hide too if a lib failed to load.
       if (CLOSED_RECORD_VIEW || !libsOk) {
-        openBtn.hidden = true;
         fieldBtns.forEach(b => { b.hidden = true; });
         return;
       }
 
-      openBtn.addEventListener('click', openPad);
       fieldBtns.forEach(b => b.addEventListener('click', () => openPadAt(b.dataset.padTarget)));
       document.getElementById('pad-done').addEventListener('click', closePad);
       document.getElementById('pad-done-bottom').addEventListener('click', closePad);  // v0.58
@@ -4308,7 +4300,7 @@ body.is-viewer .cog-btn { display: none; }
 
   /* === Cloud submit + lock + closed-record viewer ================== */
   const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbx3efKiQzs2MSwESEuNBCceXr5FqBCXuk1IgSzPFbOVgLSc3fvXy40e8V9lhw_KH0z2nQ/exec';
-  const REQUIRED_FIELDS = ['teacher', 'inspector', 'curriculum', 'grade', 'subject', 'date', 'time_in'];
+  const REQUIRED_FIELDS = ['teacher', 'inspector', 'curriculum', 'grade', 'subject', 'date', 'time_in', 'time_out'];   // otp-v0.8: time_out
 
   function updateSubmitState() {
     const btn = document.getElementById('btn-submit');
@@ -4319,7 +4311,7 @@ body.is-viewer .cog-btn { display: none; }
     });
     btn.classList.toggle('disabled', !allFilled);
     btn.disabled = !allFilled;
-    btn.title = allFilled ? 'Save and lock this OTP observation form' : 'Fill Teacher / Time In / Observer / Curriculum / Grade / Date / Subject to enable saving';
+    btn.title = allFilled ? 'Save and lock this OTP observation form' : 'Fill Teacher / Time In / Observer / Curriculum / Grade / Date / Subject / Time Out to enable saving';
   }
   FORM.addEventListener('input', updateSubmitState);
   FORM.addEventListener('change', updateSubmitState);
@@ -5057,7 +5049,13 @@ body.is-viewer .cog-btn { display: none; }
     const scrim = noteScrim();
     if (scrim) { scrim.dataset.state = 'closed'; scrim.setAttribute('aria-hidden', 'true'); }
     const ta = pop.querySelector('.rub-note-text');
-    if (ta) { ta.id = 'rub-note-text'; ta.style.height = ''; }
+    if (ta) {
+      /* otp-v0.8: the textarea is focused on open now, so closing must drop
+         the focus too, or the iPad keyboard would stay up and keystrokes
+         would land in a faded-out card. */
+      if (document.activeElement === ta) ta.blur();
+      ta.id = 'rub-note-text'; ta.style.height = '';
+    }
     const pen = pop.querySelector('.pad-field-btn');
     if (pen) { pen.removeAttribute('data-pad-target'); pen.hidden = true; }
     const clip = pop.querySelector('.pad-attach');
@@ -5125,12 +5123,16 @@ body.is-viewer .cog-btn { display: none; }
     // another chip's "+": the card shrinks back into its old button and
     // materialises at the new one on the next frame (CSS re-targets a
     // transition that is interrupted mid-flight)
+    const locked = FORM.classList.contains('is-locked') || CLOSED_RECORD_VIEW;
     if (openNote) {
+      /* otp-v0.8: keep the focus (and the iPad keyboard) on the persistent
+         textarea through the swap; the reopen below re-focuses it. */
+      const taNow = pop.querySelector('.rub-note-text');
+      if (!locked && taNow) { try { taNow.focus({ preventScroll: true }); } catch (e) { taNow.focus(); } }
       closeNotePanel();
       requestAnimationFrame(function () { openNotePanel(levelKey, n); });
       return;
     }
-    const locked = FORM.classList.contains('is-locked');
     const target = 'sp1_' + levelKey + '_' + n + '_note';
     openNote = { level: levelKey, n: n };
 
@@ -5161,6 +5163,13 @@ body.is-viewer .cog-btn { display: none; }
     pop.setAttribute('aria-hidden', 'false');
     const scrim = noteScrim();
     if (scrim) { scrim.dataset.state = 'open'; scrim.setAttribute('aria-hidden', 'false'); }
+
+    /* otp-v0.8 (Igor): the cursor lands in the note the moment it opens, so
+       the observer types straight away. This runs inside the tap itself,
+       which is the only place iPadOS raises the keyboard for a script focus
+       (an Apple Pencil tap gets Scribble instead). preventScroll leaves the
+       scrolling to the check below. Never in a locked record view. */
+    if (!locked) { try { ta.focus({ preventScroll: true }); } catch (e) { ta.focus(); } }
 
     // an ordinary scroll, never a scroll lock: bring the card into view when
     // it opened below the fold
