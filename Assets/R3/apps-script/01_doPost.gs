@@ -611,8 +611,15 @@ function sendOtpTeacherEmail(ss, recordId, recordToken, submittedAt, data) {
   const obsDate = String(data.date || data.observation_date || '').trim();
   const subject = 'Your OTP Progress observation · Lap ' + data.lap + ' · ' + obsDate;
 
-  const body = observerName + ' observed your lesson on ' + obsDate + '. You can read the observation here: ' +
-               viewUrl + '. ' + observerName + ' will arrange a time to go through it with you and agree your next steps together.';
+  // The link is a real anchor with the URL as its text: a bare URL followed
+  // by a full stop can be auto-linked WITH the stop, which breaks the token.
+  const esc = function(s) {
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  };
+  const link = '<a href="' + esc(viewUrl) + '" style="color:#143642;font-weight:700;text-decoration:underline;">' + esc(viewUrl) + '</a>';
+  const body = '<p style="margin:0 0 12px;">' + esc(observerName) + ' observed your lesson on ' + esc(obsDate) + '.</p>' +
+               '<p style="margin:0 0 12px;">You can read the observation here:<br>' + link + '</p>' +
+               '<p style="margin:0;">' + esc(observerName) + ' will arrange a time to go through it with you and agree your next steps together.</p>';
 
   MailApp.sendEmail({
     to: teacherEmail,
@@ -642,8 +649,18 @@ function sendOtpCloseEmail(ss, record) {
   const s1 = String(record.next_step_1 || '').trim();
   const s2 = String(record.next_step_2 || '').trim();
   const s3 = String(record.next_step_3 || '').trim();
-  const body = 'Lap ' + record.lap + ' was closed on ' + closedDate + '. Next Steps agreed with ' + observerName + ': ' +
-               '1. ' + s1 + ' 2. ' + s2 + ' 3. ' + s3 + '. Full record: ' + viewUrl + '.';
+  // Real anchor, URL as its text (a bare URL + full stop can be auto-linked
+  // with the stop attached). The numbered lines stay literal text.
+  const esc = function(s) {
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  };
+  const link = '<a href="' + esc(viewUrl) + '" style="color:#143642;font-weight:700;text-decoration:underline;">' + esc(viewUrl) + '</a>';
+  const body = '<p style="margin:0 0 12px;">Lap ' + esc(record.lap) + ' was closed on ' + esc(closedDate) + '.</p>' +
+               '<p style="margin:0 0 6px;">Next Steps agreed with ' + esc(observerName) + ':</p>' +
+               '<div style="margin:0 0 4px 12px;">1. ' + esc(s1) + '</div>' +
+               '<div style="margin:0 0 4px 12px;">2. ' + esc(s2) + '</div>' +
+               '<div style="margin:0 0 12px 12px;">3. ' + esc(s3) + '</div>' +
+               '<p style="margin:0;">Full record:<br>' + link + '</p>';
 
   const opts = {
     to: teacherEmail,

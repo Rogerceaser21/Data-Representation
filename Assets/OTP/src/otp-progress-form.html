@@ -4820,9 +4820,14 @@ body.is-viewer .cog-btn { display: none; }
           return;
         }
 
-        // Sheet stores `observation_date`, form field is named `date`.
+        // Sheet stores `observation_date`, form field is named `date`; the OTP
+        // Sheet stores `observer`, the form field is still `inspector` (a copy of
+        // the R3 master). otp-v0.9: without the second mapping the Observer stayed
+        // blank on locked and edited records and the required-field gate kept
+        // Save changes disabled (caught by the live proof, 2026-09-11).
         const candidates = [key];
         if (key === 'observation_date') candidates.push('date');
+        if (key === 'observer') candidates.push('inspector');
 
         for (const cand of candidates) {
           const el = FORM.querySelector('[name="' + CSS.escape(cand) + '"]') || document.getElementById(cand);

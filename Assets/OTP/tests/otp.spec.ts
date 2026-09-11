@@ -127,7 +127,7 @@ const RECORD_HEADER = {
   support_teachers_cas: 'Ms Support CA',
   time_in: '09:15',
   time_out: '10:05',   // otp-v0.8
-  inspector: 'Test Observer',
+  observer: 'Test Observer',   // the OTP Sheet's header (the form field is `inspector`); otp-v0.9 proof caught the missing mapping
   curriculum: 'Australian',
   school: 'Primary',
   grade: '3',
