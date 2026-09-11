@@ -632,6 +632,23 @@ section('(a) OTP submission · row + email + Supabase mirror');
   ok(dump.fetches.some((f) => f.url.indexOf('/rest/v1/rpc/get_current_round_otp') > -1), 'submit fetched the current OTP round (otp-v0.9)');
 }
 
+/* (a2) otp-v0.9 · submit for a teacher with no email on file --------------- */
+section('(a2) otp-v0.9 · submit for a teacher with no email on file skips email B, still succeeds');
+{
+  const env = buildEnv(SRC_NEW, seedFull());
+  const payload = { ...OTP_PAYLOAD, teacher: 'R3 Teacher One' };
+  const out = JSON.parse(env.ctx.doPost({ postData: { contents: JSON.stringify(payload) } }).getContent());
+  const dump = env.dump();
+  const tab = dump.sheets['OTP Submissions'] || [];
+  const row = tab[1] || [];
+  const idx = (c) => EXPECTED_OTP_COLUMNS.indexOf(c);
+
+  ok(out.success === true, 'submit still returns success:true for a teacher with no email (otp-v0.9)', 'got: ' + JSON.stringify(out));
+  ok(row[idx('teacher')] === 'R3 Teacher One', 'row was written for the email-less teacher', 'got: ' + row[idx('teacher')]);
+  ok(dump.mail.length === 1, 'only the backup email (A) sends; email B is skipped when the teacher has no email (otp-v0.9)', 'count: ' + dump.mail.length);
+  ok(dump.mail[0].to === 'admin.user@ais.ae', 'the one email sent is still the backup email', 'got: ' + dump.mail[0].to);
+}
+
 /* (b) R3 parity ------------------------------------------------------------ */
 section('(b) R3 paths byte-identical to origin/main baseline');
 Object.keys(SCENARIOS).forEach((name) => {
