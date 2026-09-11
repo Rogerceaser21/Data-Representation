@@ -200,6 +200,11 @@ otp-v0.6 additions (columns 32 and 33, appended).
   The Evidence Pad draft DB is `ais-otp-pad-v1`.
 
 otp-v0.8 additions (column 34, appended).
+otp-v0.9 additions (backend, appended): columns 35 `status` (`observed` | `closed`), 36 `closed_at`,
+37 `lap` (1 + earlier rows for the same teacher), 38 `round` (the OTP round label at submit);
+POST `action:'update'` / `action:'close'` keyed on `record_token` (refused once closed), and
+`?action=prev_next_steps&form=otp&teacher=<name>` (latest closed lap of the current round,
+names and Next Steps only). Blank cells on older rows read as observed / lap 1 / current round.
 
 - `time_out` is the `HH:MM` the observer entered in the required Time Out
   field at the bottom of the form, exactly as posted. Rows written before
