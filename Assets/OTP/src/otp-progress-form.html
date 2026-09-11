@@ -4752,7 +4752,8 @@ body.is-viewer .cog-btn { display: none; }
       const when = formatDay(rec.observation_date);
       let line = 'Lap ' + EDIT_RECORD.lap + ' · open';
       if (when) line += ' · observed ' + when;
-      if (rec.inspector) line += ' by ' + rec.inspector;
+      const who = String(rec.observer || rec.inspector || '').trim();   // the OTP Sheet says `observer`
+      if (who) line += ' by ' + who;
       titleEl.textContent = line;
       metaEl.textContent = 'Record ID ' + EDIT_RECORD.record_id;
       banner.classList.add('is-active');
