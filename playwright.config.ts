@@ -17,7 +17,13 @@ export default defineConfig({
     baseURL: 'http://127.0.0.1:8123',
     ...devices['Desktop Chrome'],
   },
-  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+  // otp-v0.9: WebKit runs alongside Chromium. The iPad rules (hard rule 15)
+  // are WebKit rules, so every spec is proved on the engine the school's
+  // iPads actually use, not only on Chromium.
+  projects: [
+    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    { name: 'webkit', use: { ...devices['Desktop Safari'] } },
+  ],
   webServer: {
     command: 'python3 -m http.server 8123 --bind 127.0.0.1',
     url: 'http://127.0.0.1:8123/Assets/OTP/rubric-sp1.json',
