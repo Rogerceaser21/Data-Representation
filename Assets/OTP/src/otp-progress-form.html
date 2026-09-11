@@ -2003,6 +2003,14 @@ body.is-viewer .cog-btn { display: none; }
   0%, 100% { opacity: 0.35; transform: scale(0.85); }
   50%      { opacity: 1;    transform: scale(1.1); }
 }
+/* otp-v0.9.1: the one quiet line the viewer adds when a record link misses. */
+.form-loading-note {
+  max-width: 32ch;
+  text-align: center;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--paper-dim);
+}
 
 
 /* ===========================================
@@ -2848,7 +2856,7 @@ body.is-viewer .cog-btn { display: none; }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · Progress in Lessons OTP · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">otp-v0.9</a></span>
+    <span>Form · Progress in Lessons OTP · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">otp-v0.9.1</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -3131,9 +3139,15 @@ body.is-viewer .cog-btn { display: none; }
       const ts = tomSelects[name];
       if (!ts) return;
       const v = ts.getValue();
-      if (v && ts.options[v]) data[name] = ts.options[v].text;
-      else if (data[name] && ts.options[data[name]]) data[name] = ts.options[data[name]].text;
-      else data[name] = '';
+      if (v && ts.options[v]) { data[name] = ts.options[v].text; return; }
+      if (data[name] && ts.options[data[name]]) { data[name] = ts.options[data[name]].text; return; }
+      // otp-v0.9.1: nothing is selected yet. The staff and subject lists land
+      // seconds after the page does, and until they do a restored draft's text
+      // waits in dataset.pendingValue. Keep it. Blanking here is what wiped
+      // Teacher, Observer and Subject out of the draft on every reload, while
+      // every other field survived.
+      const el = document.getElementById(name);
+      data[name] = el ? (el.dataset.pendingValue || '') : '';
     });
   }
   function loadForm() {
@@ -3156,6 +3170,18 @@ body.is-viewer .cog-btn { display: none; }
       }
       const el = FORM.querySelector(`[name="${CSS.escape(key)}"]`) || document.getElementById(key);
       if (el) {
+        // otp-v0.9.1: teacher / inspector / subject are opaque-keyed Tom Selects
+        // (hard rule 11) whose options arrive seconds later. Writing the draft's
+        // TEXT into the bare <select> never took (no matching option exists yet)
+        // and the change event it fired scheduled a save that wrote the three
+        // fields back empty, so any reload lost them. Hand the text to
+        // dataset.pendingValue instead, the channel a record view already uses;
+        // populateTomSelect and refreshSubjectOptions apply it when the options
+        // land, and clear it once they have.
+        if (el.tagName === 'SELECT' && ['teacher', 'inspector', 'subject'].indexOf(key) > -1) {
+          if (value) el.dataset.pendingValue = String(value);
+          return;
+        }
         el.value = value;
         // Selects need a change event to refresh the button-trigger display (v0.15).
         if (el.tagName === 'SELECT') el.dispatchEvent(new Event('change', { bubbles: true }));
@@ -4620,7 +4646,7 @@ body.is-viewer .cog-btn { display: none; }
     const btn = document.getElementById('btn-submit');
     if (!btn || btn.disabled) return;
 
-    if (!confirm('Save and lock this Progress in Lessons OTP form? Cannot be edited after.')) return;
+    if (!confirm('Save and lock this Progress in Lessons OTP form? You can still change it from the link in your confirmation email until you close the lap.')) return;
 
     const prevText = btn.textContent;
 
@@ -4795,6 +4821,28 @@ body.is-viewer .cog-btn { display: none; }
     }
   }
 
+  /* otp-v0.9.1 · the ungated viewer's calm landing card (hard rule 12: no
+     error UI, ever). It shows when the teacher opens the viewer with no link
+     at all, and now also when the link they have misses: a wrong or expired
+     token is nothing they can act on, so the card says what to do next instead
+     of a red toast over a blank form. The gated form keeps its toast. */
+  const VIEWER_MISS_LINE = 'This link is not valid or has expired. Ask your observer for a new link.';
+
+  function showViewerLanding(note) {
+    const overlay = document.getElementById('form-loading');
+    if (overlay) {
+      overlay.dataset.landing = '1';   // the card owns the overlay from here
+      overlay.classList.remove('is-hidden');
+      const card = overlay.querySelector('.form-loading-card');
+      if (card) {
+        card.innerHTML = '<div class="form-loading-label">Please open your personal record link to view an observation record.</div>' +
+          (note ? '<div class="form-loading-note">' + note + '</div>' : '');
+      }
+    }
+    const toast = document.getElementById('toast');
+    if (toast) toast.classList.remove('show', 'error', 'success');
+  }
+
   async function loadClosedRecord(id, token) {
     showToast(id ? 'Loading record ' + id + '…' : 'Loading record…');
     // otp-v0.1: the token is the lookup key (hard rule 10). The legacy
@@ -4902,6 +4950,10 @@ body.is-viewer .cog-btn { display: none; }
       initPadAttachments(result.pad_files, token);   // v0.53: pad pages, if any
       showToast('Record loaded · ' + (rec.teacher || rec.record_id), 'success');
     } catch (err) {
+      // otp-v0.9.1: in the ungated viewer a missed record is not an error the
+      // teacher can do anything about, so it lands on the same calm card as a
+      // bare link, with one line telling them what to do (hard rule 12).
+      if (window.R3_VIEWER) { showViewerLanding(VIEWER_MISS_LINE); return; }
       showToast('Could not load record: ' + (err.message || err), 'error');
     }
   }
@@ -5042,8 +5094,7 @@ body.is-viewer .cog-btn { display: none; }
     !new URLSearchParams(window.location.search).get('token');
   (function checkClosedRecord() {
     if (VIEWER_LANDING) {
-      const card = document.querySelector('#form-loading .form-loading-card');
-      if (card) card.innerHTML = '<div class="form-loading-label">Please open your personal record link to view an observation record.</div>';
+      showViewerLanding();
       return;
     }
     // otp-v0.9: ?edit=<token> reads the record through the SAME token GET.
@@ -5963,7 +6014,12 @@ body.is-viewer .cog-btn { display: none; }
     ts.refreshOptions(false);
     if (pendingText) {
       const match = Object.values(ts.options).find(o => o.text === pendingText);
-      if (match) ts.setValue(match.value, true);
+      if (match) {
+        ts.setValue(match.value, true);
+        // otp-v0.9.1: the pending text is spent. Left in place it would
+        // resurrect itself the next time the observer cleared the field by hand.
+        if (selEl) delete selEl.dataset.pendingValue;
+      }
     }
   }
 
@@ -6066,7 +6122,12 @@ body.is-viewer .cog-btn { display: none; }
 
     if (priorText) {
       const match = Object.values(ts.options).find(o => o.text === priorText);
-      if (match) ts.setValue(match.value, true);
+      if (match) {
+        ts.setValue(match.value, true);
+        // otp-v0.9.1: spent, exactly as in populateTomSelect, so a later
+        // deliberate clear by the observer stands.
+        if (subjectSelect) delete subjectSelect.dataset.pendingValue;
+      }
       else ts.clear(true);
     }
     if (typeof ts.inputState === 'function') ts.inputState();
@@ -6135,6 +6196,12 @@ body.is-viewer .cog-btn { display: none; }
         const opts = await fetchOptionsOnce();
         applyDropdownOptions(opts);
         setSearchableLoadingState(false);
+        // otp-v0.9.1: setSearchableLoadingState enables all three searchables
+        // and resets their placeholders, which wiped the Subject guard
+        // applyDropdownOptions had just set. Re-apply it, so with no Grade
+        // picked Subject stays disabled and reads "Select Grade first" instead
+        // of opening on an empty list that answers "No results found".
+        refreshSubjectOptions();
         hideLoadingOverlay();
         return;
       } catch (err) {
@@ -6157,6 +6224,9 @@ body.is-viewer .cog-btn { display: none; }
 
   function hideLoadingOverlay() {
     const el = document.getElementById('form-loading');
+    // otp-v0.9.1: the viewer's landing card owns the overlay; the options
+    // fetch finishing must never pull it away and leave a blank form behind.
+    if (el && el.dataset.landing) return;
     if (el) el.classList.add('is-hidden');
   }
 

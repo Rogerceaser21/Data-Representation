@@ -361,6 +361,10 @@ async function pickTomSelect(page: Page, field: string, label: string) {
 const gradeControl = (page: Page) =>
   page.locator('#grade').locator('xpath=following-sibling::div[1]');
 
+/** The same, for any wrapped <select> (otp-v0.9.1). */
+const tsControl = (page: Page, field: string) =>
+  page.locator(`#${field}`).locator('xpath=following-sibling::div[1]');
+
 /** Grade is a number-picker grid: exact option text, no typing. */
 async function pickGrade(page: Page, label: string) {
   await page.locator('#grade').locator('xpath=following-sibling::div[1]').click();
@@ -2682,5 +2686,144 @@ test('otp-v0.9: a long teacher name never grows the focused control, so a REAL c
   expect(Math.abs(focusedH - blurredH)).toBeLessThan(2);
   await expect(toggle).toHaveAttribute('aria-expanded', 'true');
   await expect(page.locator('#prev-ns-body')).toBeVisible();
+  expect(h.errors).toEqual([]);
+});
+
+
+/* === otp-v0.9.1 · the four defects the observers hit on the live form ====== */
+
+test('otp-v0.9.1 D1 reload: a part-filled draft keeps teacher, observer and subject', async ({ page }) => {
+  // Live 2026-09-11: any reload or reopen wiped exactly these three out of the
+  // draft while every other field survived. The staff and subject lists land
+  // seconds after the page, so the delay below is the defect's whole window.
+  const h = await harness(page);
+  await page.route('**/script.google.com/**', async (r: Route) => {
+    if (r.request().url().includes('action=options')) {
+      await new Promise((done) => setTimeout(done, 1500));
+    }
+    await r.fallback();
+  });
+
+  const DRAFT = {
+    teacher: 'Test Teacher',
+    inspector: 'Test Observer',    // the form field for Observer
+    subject: 'Mathematics',
+    grade: '3',                    // derives school "Primary", which the Subject list needs
+    room_number: '12B',
+    next_step_3: 'Draft survives a reload',
+  };
+  await page.addInitScript(
+    ([k, v]) => localStorage.setItem(k as string, v as string),
+    [DRAFT_KEY, JSON.stringify(DRAFT)] as [string, string],
+  );
+
+  await page.goto(FORM_URL);
+  await passGate(page);   // waits for the overlay to go, i.e. the options landed
+
+  // the three texts are still in the draft, not blanked by the autosave that
+  // ran 220 ms in, long before any option existed to match them
+  const draft = JSON.parse(await page.evaluate((k) => localStorage.getItem(k)!, DRAFT_KEY));
+  expect(draft.teacher).toBe('Test Teacher');
+  expect(draft.inspector).toBe('Test Observer');
+  expect(draft.subject).toBe('Mathematics');
+  // the fields that never broke still restore
+  expect(draft.grade).toBe('3');
+  await expect(page.locator('#room_number')).toHaveValue('12B');
+  await expect(page.locator('#next_step_3')).toHaveValue('Draft survives a reload');
+
+  // and all three controls show the restored name once the options arrive
+  await expect(tsControl(page, 'teacher')).toContainText('Test Teacher');
+  await expect(tsControl(page, 'inspector')).toContainText('Test Observer');
+  await expect(page.locator('#school')).toHaveValue('Primary');
+  await expect(tsControl(page, 'subject')).toContainText('Mathematics');
+
+  // the restored pick is spent, so a deliberate clear by the observer stands
+  await tsControl(page, 'teacher').locator('.clear-button').click();
+  await page.waitForTimeout(600);   // debounced autosave is 220 ms
+  const after = JSON.parse(await page.evaluate((k) => localStorage.getItem(k)!, DRAFT_KEY));
+  expect(after.teacher).toBe('');
+  expect(after.inspector).toBe('Test Observer');
+
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.9.1 D3 subject guard: Subject is disabled and says "Select Grade first" until a Grade is picked', async ({ page }) => {
+  // Live 2026-09-11: the guard was set while the options landed and then wiped
+  // by the loading state being cleared, so Subject opened on an empty list and
+  // answered "No results found" before any Grade was picked.
+  const h = await harness(page);
+  await openForm(page);
+
+  const subject = tsControl(page, 'subject');
+  await expect(subject).toHaveClass(/disabled/);
+  const subjectInput = subject.locator('.ts-control input').first();
+  await expect(subjectInput).toHaveAttribute('placeholder', 'Select Grade first');
+  await expect(subjectInput).toBeDisabled();
+  await subject.click();
+  await expect(page.locator('.ts-dropdown .no-results')).toHaveCount(0);
+  await expect(page.locator('#subject')).toHaveValue('');
+
+  // Teacher and Observer are NOT guarded: they open as soon as the list lands
+  await expect(tsControl(page, 'teacher')).not.toHaveClass(/disabled/);
+  await expect(tsControl(page, 'inspector')).not.toHaveClass(/disabled/);
+
+  // a Grade opens Subject on its school's list
+  await pickGrade(page, '3');
+  await expect(subject).not.toHaveClass(/disabled/);
+  await expect(subjectInput).toHaveAttribute(
+    'placeholder', 'Tap to browse subjects, or type to search…',
+  );
+  await pickTomSelect(page, 'subject', 'Mathematics');
+  await expect(subject).toContainText('Mathematics');
+
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.9.1 D4 viewer miss: a wrong or expired link lands on the calm card, never a toast', async ({ page }) => {
+  // Hard rule 12. Live 2026-09-11: the ungated viewer answered a stale link
+  // with a red "Could not load record: Record not found" over a blank form
+  // carrying a dead SAVE & LOCK.
+  const h = await harness(page, { record: { success: false, error: 'Record not found' } });
+  await page.goto(RECORD_URL + '?token=00000000000000000000000000000000');
+
+  const card = page.locator('#form-loading .form-loading-card');
+  await expect(card).toContainText(
+    'This link is not valid or has expired. Ask your observer for a new link.',
+    { timeout: 15_000 },
+  );
+  await expect(card).toContainText('Please open your personal record link to view an observation record.');
+  await expect(page.locator('#form-loading')).not.toHaveClass(/is-hidden/);
+  await expect(page.locator('#toast')).not.toHaveClass(/error/);
+  await expect(page.locator('#toast')).not.toHaveClass(/show/);
+  // the options fetch finishing later must not pull the card away
+  await page.waitForTimeout(1000);
+  await expect(page.locator('#form-loading')).not.toHaveClass(/is-hidden/);
+  await expect(card).toContainText('This link is not valid or has expired.');
+
+  // the GATED form is unchanged: it still says so out loud
+  await page.goto(`${FORM_URL}?token=00000000000000000000000000000000`);
+  await passGate(page);
+  await expect(page.locator('#toast')).toHaveClass(/error/, { timeout: 15_000 });
+  await expect(page.locator('#toast')).toHaveText(/Could not load record/);
+
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.9.1 D6 confirm wording: Save & Lock no longer claims the record cannot be edited', async ({ page }) => {
+  const h = await harness(page);
+  const asked: string[] = [];
+  page.on('dialog', (d) => { asked.push(d.message()); d.dismiss(); });   // dismissed: nothing posts
+  await openForm(page);
+  await fillRequired(page);
+  await page.locator('#btn-submit').click();
+
+  await expect.poll(() => asked.length).toBe(1);
+  expect(asked[0]).toBe(
+    'Save and lock this Progress in Lessons OTP form? You can still change it from the link in your confirmation email until you close the lap.',
+  );
+  expect(asked[0]).toContain('until you close the lap');
+  expect(asked[0]).not.toContain('Cannot be edited after');
+  expect(h.posts).toEqual([]);
+
   expect(h.errors).toEqual([]);
 });

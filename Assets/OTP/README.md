@@ -1,4 +1,4 @@
-# Progress in Lessons OTP form · otp-v0.9
+# Progress in Lessons OTP form · otp-v0.9.1
 
 Third AIS observation form: **Lesson Observation form WHOLE SCHOOL, Observation
 against the Outstanding Teacher Profile**. It is a COPY of the R3 Evidence form
@@ -221,10 +221,30 @@ npx playwright test    # config at the repo root, spec at Assets/OTP/tests/otp.s
 
 The spec drives the BUILT artifacts (through the StatiCrypt gate, and the
 ungated viewer) with every `script.google.com` / `supabase.co` call mocked.
-46 specs as of otp-v0.9, run in BOTH Chromium and WebKit (the iPad rules are
-WebKit rules), so a full pass is 92 results.
+51 specs as of otp-v0.9.1, run in BOTH Chromium and WebKit (the iPad rules
+are WebKit rules), so a full pass is 102 results.
 
 ## Changelog
+
+- **otp-v0.9.1** · Four defects the observers hit on the live form, fixed with
+  no data change (same 32 POST keys, same Sheet columns, no Apps Script change):
+  - **D1** a reload or reopen of a part-filled form wiped Teacher, Observer and
+    Subject out of the `ais-otp-form-v1` draft while every other field survived;
+    the restored text now waits in `dataset.pendingValue` until the Tom Select
+    options land (the channel a record view already uses) and the autosave keeps
+    it instead of blanking it.
+  - **D3** Subject stays disabled, reading "Select Grade first", until a Grade is
+    picked; clearing the loading state used to wipe that guard and leave the
+    picker open on an empty list answering "No results found".
+  - **D4** in the ungated viewer a wrong or expired link lands on the calm
+    landing card with one quiet line, "This link is not valid or has expired.
+    Ask your observer for a new link.", instead of a red toast over a blank form
+    (hard rule 12); the gated form keeps its toast.
+  - **D6** the Save & Lock confirm no longer claims the record cannot be edited:
+    it says the observer can still change it from the link in the confirmation
+    email until the lap is closed.
+
+  Four specs added, one per defect (51 per engine).
 
 - **otp-v0.9** · The coaching lifecycle, form side. A record reopens on the
   gated form at `?edit=<token>`: it loads through the same token GET as a
