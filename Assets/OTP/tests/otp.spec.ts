@@ -9,7 +9,7 @@
  * Every call to script.google.com and supabase.co is mocked; nothing leaves
  * the machine.
  */
-import { test, expect, Page, Route } from '@playwright/test';
+import { test, expect, Browser, Page, Route } from '@playwright/test';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -173,6 +173,50 @@ const RECORD_PAYLOAD = {
   pad_files: ['sp1-great-5-note.jpg'],
 };
 
+/** otp-v0.9: the token GET now also carries status, closed_at and lap. */
+const EDIT_TOKEN_FIXTURE = 'a1b2c3d4e5f60718293a4b5c6d7e8f90';
+
+const RECORD_PAYLOAD_OPEN = {
+  ...RECORD_PAYLOAD,
+  data: {
+    ...RECORD_PAYLOAD.data,
+    status: 'observed',
+    closed_at: '',
+    lap: '1',
+    round: 'OTP Term 1 26-27',
+    evidence_pad_id: 'pad-abc123',
+  },
+};
+
+const RECORD_PAYLOAD_CLOSED = {
+  ...RECORD_PAYLOAD,
+  data: {
+    ...RECORD_PAYLOAD.data,
+    status: 'closed',
+    closed_at: '2026-09-08T07:20:00.000Z',
+    lap: '2',
+    round: 'OTP Term 1 26-27',
+    evidence_pad_id: 'pad-abc123',
+  },
+};
+
+/** otp-v0.9: the previous (closed) lap, as ?action=prev_next_steps returns it. */
+const PREV_NS_FOUND = {
+  success: true,
+  found: true,
+  lap: '1',
+  observation_date: '2026-06-12',
+  observer: 'Ms Prior Observer',
+  next_step_1: 'Plan a stretch task for the top table',
+  next_step_2: 'Give thinking time before taking answers',
+  next_step_3: 'Share the success criteria at the start',
+};
+const PREV_NS_STEPS = [
+  PREV_NS_FOUND.next_step_1,
+  PREV_NS_FOUND.next_step_2,
+  PREV_NS_FOUND.next_step_3,
+];
+
 /** otp-v0.5 record: no rubric_version, so it renders on the 26 v1 paragraphs. */
 const RECORD_PAYLOAD_LEGACY = {
   success: true,
@@ -192,7 +236,10 @@ const RECORD_PAYLOAD_LEGACY = {
 type Harness = { errors: string[]; posts: any[] };
 
 /** Route every outbound call and collect console/page errors. */
-async function harness(page: Page, opts: { record?: any; extract?: string } = {}): Promise<Harness> {
+async function harness(
+  page: Page,
+  opts: { record?: any; extract?: string; prev?: any | 'fail' } = {},
+): Promise<Harness> {
   const errors: string[] = [];
   const posts: any[] = [];
   const record = opts.record || RECORD_PAYLOAD;
@@ -233,11 +280,34 @@ async function harness(page: Page, opts: { record?: any; extract?: string } = {}
       if (parsed.action === 'extract_pad') {
         return json({ success: true, items: [{ text: opts.extract || 'transcribed pad text' }] });
       }
+      // otp-v0.9: the coaching lifecycle writes back to the same row
+      if (parsed.action === 'update') {
+        return json({ success: true, id: 'AIS-OTP-TEST', status: 'observed' });
+      }
+      if (parsed.action === 'close') {
+        return json({
+          success: true,
+          id: 'AIS-OTP-TEST',
+          status: 'closed',
+          closed_at: '2026-09-11T09:30:00.000Z',
+        });
+      }
       return json({ success: true, id: 'AIS-OTP-TEST' });
     }
     if (url.includes('action=options')) {
       expect(url).toContain('form=otp');
       return json(OPTIONS_PAYLOAD);
+    }
+    // otp-v0.9: the previous lap's Next Steps. 'fail' kills the call outright,
+    // so the form has to cope with a dead network, not just with "none found".
+    if (url.includes('action=prev_next_steps')) {
+      expect(url).toContain('form=otp');
+      expect(url).toContain('teacher=');
+      // a garbled answer: 200, but not JSON. The page must swallow it whole.
+      if (opts.prev === 'fail') {
+        return r.fulfill({ status: 200, contentType: 'text/plain', body: 'upstream is down' });
+      }
+      return json(opts.prev || { success: true, found: false });
     }
     if (url.includes('form=otp') && url.includes('token=')) {
       return json(record);
@@ -253,6 +323,27 @@ async function openForm(page: Page) {
   await page.goto(FORM_URL);
   await passGate(page);
 }
+
+/** otp-v0.9: the gated form, reopened on an existing record with ?edit=. */
+async function openEdit(page: Page, token: string = EDIT_TOKEN_FIXTURE) {
+  await page.goto(`${FORM_URL}?edit=${token}`);
+  await passGate(page);
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 20_000 });
+}
+
+/** The visible text of the whole submitted / lap banner. */
+const bannerText = (page: Page) => page.locator('#submitted-banner').innerText();
+
+/** The date as the form renders it in a lap banner or a card heading, as a
+ *  pattern: engines disagree on the short month (Chromium "Sept", WebKit
+ *  "Sep"), so the month is matched by its first three letters. */
+const dayPat = (iso: string) => {
+  const d = new Date(iso);
+  const dd = String(d.getDate()).padStart(2, '0');
+  const mon = d.toLocaleDateString('en-GB', { month: 'short' }).slice(0, 3);
+  return `${dd} ${mon}[a-z]* ${d.getFullYear()}`;
+};
+const dayRe = (prefix: string, iso: string) => new RegExp(prefix + dayPat(iso));
 
 async function passGate(page: Page) {
   await page.fill('#staticrypt-password', GATE_PASSWORD);
@@ -396,7 +487,7 @@ test('renders all 32 SP1 v2 rubric chips verbatim, in order, 4/5/7/8/8', async (
   await expect(page.locator('tr.rub-caption .rub-cap-k')).toHaveText('Aspect of Practice');
   await expect(page.locator('tr.rub-caption .rub-cap-v')).toHaveText(RUBRIC.aspect);
   // the footer renders uppercase through CSS, so match the text case-insensitively
-  await expect(page.locator('.form-footer')).toContainText(/otp-v0\.8/i);
+  await expect(page.locator('.form-footer')).toContainText(/otp-v0\.9/i);
   await expect(page.locator('#rubric_version')).toHaveValue('sp1-v2');
 
   expect(h.errors).toEqual([]);
@@ -1896,7 +1987,7 @@ test('otp-v0.7: no console errors and no horizontal overflow at 1280, 1180x820 a
       await notePop(page).evaluate((el) => getComputedStyle(el).position),
     ).toBe('absolute');
 
-    await expect(page.locator('.form-footer')).toContainText(/otp-v0\.8/i);
+    await expect(page.locator('.form-footer')).toContainText(/otp-v0\.9/i);
     await page.evaluate((k) => localStorage.removeItem(k), DRAFT_KEY);
   }
 
@@ -2005,7 +2096,7 @@ test('otp-v0.6: the notes print as a Criterion notes list under the rubric table
   ]);
   // the open card and the empty "+" affordances do not print; a filled one
   // does. The card is faded out, never display-toggled (the iPad law).
-  expect(await notePop(page).evaluate((el) => getComputedStyle(el).opacity)).toBe('0');
+  await expect(notePop(page)).toHaveCSS('opacity', '0');   // retries: WebKit is still fading
   expect(await notePop(page).evaluate((el) => getComputedStyle(el).display)).not.toBe('none');
   expect(
     await noteBtnAt(page, 'good', 1).evaluate((el) => getComputedStyle(el).display),
@@ -2201,4 +2292,369 @@ test('otp-v0.8: no floating Evidence Pad launcher; every in-form entry point sta
   expect(await page.locator('#rub-note-pop .pad-field-btn').isHidden()).toBe(false);
 
   expect(h.errors).toEqual([]);
+});
+
+/* ===================================================================
+   otp-v0.9 · the coaching lifecycle on the form
+   Edit mode by token (Save changes / Close Lap), the previous lap's
+   Next Steps in two places, and the lap banner.
+   =================================================================== */
+
+test('otp-v0.9: ?edit= loads the record with the fields enabled and the Tom Selects populated', async ({ page }) => {
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
+  await openEdit(page);
+
+  // the banner says exactly where the lap stands
+  const banner = await bannerText(page);
+  expect(banner).toContain('Lap 1 · open');
+  expect(banner).toMatch(dayRe('observed ', '2026-09-03'));
+  expect(banner).toContain('by Test Observer');
+  expect(banner).toContain('AIS-OTP-20260903-101500');
+
+  // populated exactly as a locked record view is (hard rule 11: opaque values)
+  await expect(page.locator('#teacher')).toHaveValue('t0');
+  await expect(page.locator('#inspector')).toHaveValue('i0');
+  await expect(page.locator('#subject')).toHaveValue('s0');
+  await expect(page.locator('#teacher').locator('xpath=following-sibling::div[1]')).toContainText('Test Teacher');
+  await expect(page.locator('#inspector').locator('xpath=following-sibling::div[1]')).toContainText('Test Observer');
+  await expect(page.locator('#date')).toHaveValue('2026-09-03');
+  await expect(page.locator('#time_out')).toHaveValue('10:05');
+  await expect(page.locator('#grade')).toHaveValue('3');
+  await expect(page.locator('#observer_comments')).toHaveValue('Record observer comments');
+  await expect(page.locator('#next_step_3')).toHaveValue('Record next step three');
+  await expect(chipAt(page, 'good', 3)).toHaveAttribute('data-state', 'partial');
+  await expect(chipAt(page, 'great', 2)).toHaveAttribute('data-state', 'present');
+  await expect(page.locator('.rub-note-btn.has-note')).toHaveCount(2);
+
+  // ...but nothing is locked: the lap is still open
+  await expect(page.locator('#otp-form')).not.toHaveClass(/is-locked/);
+  await expect(page.locator('#observer_comments')).toBeEnabled();
+  await expect(page.locator('#next_step_1')).toBeEnabled();
+  await expect(page.locator('#time_out')).toBeEnabled();
+  await page.fill('#next_step_1', 'Edited next step one');
+  await expect(page.locator('#next_step_1')).toHaveValue('Edited next step one');
+
+  // the action bar swaps: Save changes + Close Lap, no Save & Lock, no Reset
+  await expect(page.locator('#btn-save-changes')).toBeVisible();
+  await expect(page.locator('#btn-close-lap')).toBeVisible();
+  await expect(page.locator('#btn-save-changes')).toBeEnabled();
+  await expect(page.locator('#btn-close-lap')).toBeEnabled();
+  await expect(page.locator('#btn-submit')).toBeHidden();
+  await expect(page.locator('#btn-reset')).toBeHidden();
+
+  // no new Evidence Pad pages in edit mode, but the existing ones still open
+  for (const t of ['observer_comments', 'other_observations', 'next_step_1', 'next_step_2', 'next_step_3']) {
+    await expect(page.locator(`.pad-field-btn[data-pad-target="${t}"]`)).toBeHidden();
+  }
+  await tapNoteBtn(page, 'great', 5);
+  await expectPop(page, 'open');
+  await expect(notePop(page).locator('.pad-field-btn')).toBeHidden();
+  await expect(notePop(page).locator('.pad-attach[data-pad-target="sp1_great_5_note"]')).toBeVisible();
+  await page.locator('.rub-note-done').click();
+
+  expect(h.posts).toHaveLength(0);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.9: Save changes posts action "update" with the record_token and all 32 keys', async ({ page }) => {
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
+  await openEdit(page);
+
+  await page.fill('#next_step_1', 'Agreed in the meeting: model the worked example');
+  await page.fill('#observer_comments', 'Edited observer comments');
+  await page.locator('#btn-save-changes').click();
+  await expect(page.locator('#toast')).toHaveClass(/show/, { timeout: 10_000 });
+  await expect(page.locator('#toast')).toHaveText('Changes saved');
+
+  expect(h.posts).toHaveLength(1);
+  const body = h.posts[0];
+  expect(body.action).toBe('update');
+  expect(body.record_token).toBe(EDIT_TOKEN_FIXTURE);
+  // the submit contract, unchanged: the SAME 32 keys, plus action + record_token
+  const contract = Object.keys(body).filter((k) => k !== 'action' && k !== 'record_token');
+  expect(contract.sort()).toEqual(CONTRACT_KEYS);
+  expect(contract).toHaveLength(32);
+  expect(Object.keys(body)).toHaveLength(34);
+  expect(body.form).toBe('otp');
+  expect(body.teacher).toBe('Test Teacher');
+  expect(body.inspector).toBe('Test Observer');
+  expect(body.subject).toBe('Mathematics');
+  expect(body.grade).toBe('3');
+  expect(body.school).toBe('Primary');
+  expect(body.next_step_1).toBe('Agreed in the meeting: model the worked example');
+  expect(body.observer_comments).toBe('Edited observer comments');
+  // the record keeps the pad it already has: posted back exactly as it came
+  expect(body.evidence_pad_id).toBe('pad-abc123');
+  expect(body.sp1_present).toBe('Great 2');
+  expect(body.rubric_version).toBe('sp1-v2');
+
+  // still editable afterwards, and still not locked
+  await expect(page.locator('#otp-form')).not.toHaveClass(/is-locked/);
+  await expect(page.locator('#btn-save-changes')).toBeEnabled();
+  await expect(page.locator('#next_step_1')).toBeEnabled();
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.9: Close Lap, confirmed, posts "close", locks the form and the banner says closed', async ({ page }) => {
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
+  const asked: string[] = [];
+  page.on('dialog', (d) => { asked.push(d.message()); d.accept(); });
+  await openEdit(page);
+
+  await page.locator('#btn-close-lap').click();
+  await expect(page.locator('#otp-form')).toHaveClass(/is-locked/, { timeout: 10_000 });
+
+  expect(asked).toHaveLength(1);
+  expect(asked[0]).toBe(
+    'Close Lap 1 for Test Teacher? Next Steps become final and Test Teacher is notified.',
+  );
+
+  expect(h.posts).toHaveLength(1);
+  expect(h.posts[0].action).toBe('close');
+  expect(h.posts[0].record_token).toBe(EDIT_TOKEN_FIXTURE);
+  expect(Object.keys(h.posts[0])).toHaveLength(34);
+
+  const banner = await bannerText(page);
+  expect(banner).toMatch(dayRe('Lap 1 · closed ', '2026-09-11T09:30:00.000Z'));
+
+  await expect(page.locator('#observer_comments')).toBeDisabled();
+  await expect(page.locator('#next_step_1')).toBeDisabled();
+  await expect(page.locator('#btn-save-changes')).toBeHidden();
+  await expect(page.locator('#btn-close-lap')).toBeHidden();
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.9: Close Lap, dismissed, posts nothing and leaves the form editable', async ({ page }) => {
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
+  page.on('dialog', (d) => d.dismiss());
+  await openEdit(page);
+
+  await page.locator('#btn-close-lap').click();
+  await page.waitForTimeout(600);
+
+  expect(h.posts).toHaveLength(0);
+  await expect(page.locator('#otp-form')).not.toHaveClass(/is-locked/);
+  await expect(page.locator('#btn-close-lap')).toBeEnabled();
+  await expect(page.locator('#next_step_1')).toBeEnabled();
+  expect(await bannerText(page)).toContain('Lap 1 · open');
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.9: a record already closed opens read-only through ?edit=', async ({ page }) => {
+  const h = await harness(page, { record: RECORD_PAYLOAD_CLOSED });
+  await openEdit(page);
+
+  await expect(page.locator('#otp-form')).toHaveClass(/is-locked/);
+  await expect(page.locator('#observer_comments')).toBeDisabled();
+  await expect(page.locator('#next_step_1')).toBeDisabled();
+  await expect(page.locator('#time_out')).toBeDisabled();
+
+  const banner = await bannerText(page);
+  expect(banner).toMatch(dayRe('Lap 2 · closed ', '2026-09-08T07:20:00.000Z'));
+  expect(banner).toContain('Read-only view');
+
+  // no dead buttons: neither edit action is offered on a closed lap
+  await expect(page.locator('#btn-save-changes')).toBeHidden();
+  await expect(page.locator('#btn-close-lap')).toBeHidden();
+  await expect(page.locator('#btn-submit')).toBeHidden();
+
+  expect(h.posts).toHaveLength(0);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.9: edit mode never reads or writes the ais-otp-form-v1 draft', async ({ page }) => {
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
+  const draft = JSON.stringify({
+    teacher: 'Someone Else',
+    inspector: 'Another Observer',
+    room_number: 'DRAFT ROOM',
+    observer_comments: 'an unfinished observation on the same iPad',
+    rubric_version: 'sp1-v2',
+  });
+
+  await page.goto(FORM_URL);
+  await page.evaluate(([k, v]) => localStorage.setItem(k as string, v as string), [DRAFT_KEY, draft]);
+
+  await openEdit(page);
+
+  // the draft never bleeds into the record (hard rule 13)
+  await expect(page.locator('#room_number')).toHaveValue('12B');
+  await expect(page.locator('#observer_comments')).toHaveValue('Record observer comments');
+  await expect(page.locator('#teacher').locator('xpath=following-sibling::div[1]')).toContainText('Test Teacher');
+
+  // and the record never overwrites the draft, not even after typing
+  await page.fill('#next_step_2', 'typed while editing the record');
+  await page.fill('#observer_comments', 'edited while the draft sits underneath');
+  await page.waitForTimeout(700);   // longer than the 220ms autosave debounce
+  expect(await page.evaluate((k) => localStorage.getItem(k), DRAFT_KEY)).toBe(draft);
+
+  // the footer must not claim an autosave that is not happening
+  await expect(page.locator('#save-status')).toBeHidden();
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.9: the previous Next Steps card and echo render when a closed lap is found', async ({ page }) => {
+  const h = await harness(page, { prev: PREV_NS_FOUND });
+  await openForm(page);
+
+  // hidden until a teacher is picked
+  await expect(page.locator('#prev-ns-card')).toBeHidden();
+  await expect(page.locator('#prev-ns-echo')).toBeHidden();
+
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await expect(page.locator('#prev-ns-card')).toBeVisible({ timeout: 10_000 });
+  await expect(page.locator('#prev-ns-echo')).toBeVisible();
+
+  const head = new RegExp(
+    `^Lap 1 Next Steps · ${dayPat('2026-06-12')} · Ms Prior Observer$`,
+  );
+  await expect(page.locator('#prev-ns-card-head')).toHaveText(head);
+  await expect(page.locator('#prev-ns-echo-head')).toHaveText(head);
+  await expect(page.locator('#prev-ns-echo-list li')).toHaveText(PREV_NS_STEPS);
+
+  // the card is collapsed to that one line until it is tapped
+  await expect(page.locator('#prev-ns-body')).toBeHidden();
+  await expect(page.locator('#prev-ns-toggle')).toHaveAttribute('aria-expanded', 'false');
+
+  // it sits under the Teacher field, and the echo above Next Steps / Support 1
+  expect(await page.locator('#prev-ns-card').evaluate(
+    (el) => el.closest('.info-cell')!.querySelector('select')!.id)).toBe('teacher');
+  expect(await page.locator('#prev-ns-echo').evaluate(
+    (el) => el.parentElement!.querySelector('textarea')!.id)).toBe('next_step_1');
+
+  // nothing fixed-position (iPad rules, hard rule 15)
+  for (const sel of ['#prev-ns-card', '#prev-ns-echo']) {
+    expect(await page.locator(sel).evaluate((el) => getComputedStyle(el).position)).toBe('static');
+  }
+
+  // clearing the teacher hides both again
+  await page.locator('#teacher').locator('xpath=following-sibling::div[1]').locator('.clear-button').click();
+  await expect(page.locator('#prev-ns-card')).toBeHidden({ timeout: 10_000 });
+  await expect(page.locator('#prev-ns-echo')).toBeHidden();
+
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.9: no previous lap, a garbled answer, or the viewer build: card and echo stay hidden', async ({ page }) => {
+  // 1. the backend has no closed lap for this teacher
+  const h = await harness(page);            // default: { success: true, found: false }
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await page.waitForTimeout(700);
+  await expect(page.locator('#prev-ns-card')).toBeHidden();
+  await expect(page.locator('#prev-ns-echo')).toBeHidden();
+  expect(h.errors).toEqual([]);
+
+  // 2. the call comes back garbled: still nothing shown, still no error UI (hard rule 12)
+  const h2 = await harness(page, { prev: 'fail' });
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await page.waitForTimeout(900);
+  await expect(page.locator('#prev-ns-card')).toBeHidden();
+  await expect(page.locator('#prev-ns-echo')).toBeHidden();
+  await expect(page.locator('#toast')).not.toHaveClass(/show/);
+  expect(h2.errors).toEqual([]);
+
+  // 3. the ungated teacher viewer never shows another teacher's history
+  const src = viewerSrc();
+  expect(src).toContain('body.is-viewer .prev-ns { display: none !important; }');
+  const h3 = await harness(page, { prev: PREV_NS_FOUND, record: RECORD_PAYLOAD_OPEN });
+  await page.goto(RECORD_URL + '?token=abc');
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 20_000 });
+  await expect(page.locator('#prev-ns-card')).toBeHidden();
+  await expect(page.locator('#prev-ns-echo')).toBeHidden();
+  // ...and the viewer's banner carries the lap and its state
+  expect(await bannerText(page)).toContain('Lap 1 · open');
+  expect(h3.errors).toEqual([]);
+
+  // 4. a row written before otp-v0.9 has no lap at all, and reads as Lap 1
+  const h4 = await harness(page, { record: RECORD_PAYLOAD });
+  await page.goto(RECORD_URL + '?token=abc');
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 20_000 });
+  expect(await bannerText(page)).toContain('Lap 1 · open');
+  expect(h4.errors).toEqual([]);
+});
+
+test('otp-v0.9: the card toggle opens the three steps and closes them again', async ({ page }) => {
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN, prev: PREV_NS_FOUND });
+  // edit mode loads the teacher from the record, so the card renders with no tap
+  await openEdit(page);
+  await expect(page.locator('#prev-ns-card')).toBeVisible({ timeout: 10_000 });
+
+  await expect(page.locator('#prev-ns-body')).toBeHidden();
+  await page.locator('#prev-ns-toggle').click();
+  await expect(page.locator('#prev-ns-toggle')).toHaveAttribute('aria-expanded', 'true');
+  await expect(page.locator('#prev-ns-body')).toBeVisible();
+  await expect(page.locator('#prev-ns-card-list li')).toHaveText(PREV_NS_STEPS);
+
+  await page.locator('#prev-ns-toggle').click();
+  await expect(page.locator('#prev-ns-toggle')).toHaveAttribute('aria-expanded', 'false');
+  await expect(page.locator('#prev-ns-body')).toBeHidden();
+
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.9: the keep-focus guards are on mousedown only, never pointerdown', async () => {
+  const src = viewerSrc();
+  // a cancelled TOUCH pointerdown suppresses WebKit's synthesized mousedown AND
+  // click, so every tap on the element dies on a real iPad (the otp-v0.8 lesson)
+  expect(src).toContain("pop.addEventListener('mousedown', keepNoteFocus)");
+  expect(src).toContain("scrim.addEventListener('mousedown'");
+  expect(src).not.toContain("addEventListener('pointerdown', keepNoteFocus");
+  // the ONLY pointerdown in the whole form is the pad's own drawing surface
+  expect((src.match(/addEventListener\('pointerdown'/g) || [])).toHaveLength(1);
+  // and every otp-v0.9 control is wired on click
+  expect(src).toContain("document.getElementById('btn-save-changes').addEventListener('click', saveEditChanges);");
+  expect(src).toContain("document.getElementById('btn-close-lap').addEventListener('click', closeCurrentLap);");
+  expect(src).toContain("t.addEventListener('click', function () {");
+});
+
+test('otp-v0.9: WebKit taps drive Save changes, Close Lap and the card toggle', async ({ browser }: { browser: Browser }) => {
+  const ctx = await browser.newContext({
+    hasTouch: true,
+    viewport: { width: 820, height: 1180 },
+    baseURL: 'http://127.0.0.1:8123',
+  });
+  const page = await ctx.newPage();
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN, prev: PREV_NS_FOUND });
+  page.on('dialog', (d) => d.accept());
+  await openEdit(page);
+
+  // the collapsible card opens on a real tap
+  await expect(page.locator('#prev-ns-card')).toBeVisible({ timeout: 10_000 });
+  await page.locator('#prev-ns-toggle').tap();
+  await expect(page.locator('#prev-ns-body')).toBeVisible();
+
+  // Save changes on a real tap
+  await page.locator('#btn-save-changes').tap();
+  await expect(page.locator('#toast')).toHaveText('Changes saved', { timeout: 10_000 });
+  expect(h.posts).toHaveLength(1);
+  expect(h.posts[0].action).toBe('update');
+
+  // Close Lap on a real tap
+  await page.locator('#btn-close-lap').tap();
+  await expect(page.locator('#otp-form')).toHaveClass(/is-locked/, { timeout: 10_000 });
+  expect(h.posts).toHaveLength(2);
+  expect(h.posts[1].action).toBe('close');
+  expect(await bannerText(page)).toContain('Lap 1 · closed');
+
+  expect(h.errors).toEqual([]);
+  await ctx.close();
+});
+
+test('otp-v0.9: no console errors and no horizontal overflow in edit mode at 1280x800 and 820x1180', async ({ page }) => {
+  for (const vp of [{ width: 1280, height: 800 }, { width: 820, height: 1180 }]) {
+    await page.setViewportSize(vp);
+    const h = await harness(page, { record: RECORD_PAYLOAD_OPEN, prev: PREV_NS_FOUND });
+    await openEdit(page);
+    await expect(page.locator('#prev-ns-card')).toBeVisible({ timeout: 10_000 });
+    await page.locator('#prev-ns-toggle').click();
+    await expect(page.locator('#prev-ns-body')).toBeVisible();
+
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    );
+    expect(overflow, `horizontal overflow at ${vp.width}x${vp.height}`).toBeLessThanOrEqual(1);
+    expect(h.errors, `console errors at ${vp.width}x${vp.height}`).toEqual([]);
+  }
 });

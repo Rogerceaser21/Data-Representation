@@ -1,4 +1,4 @@
-# Progress in Lessons OTP form · otp-v0.8
+# Progress in Lessons OTP form · otp-v0.9
 
 Third AIS observation form: **Lesson Observation form WHOLE SCHOOL, Observation
 against the Outstanding Teacher Profile**. It is a COPY of the R3 Evidence form
@@ -216,9 +216,39 @@ npx playwright test    # config at the repo root, spec at Assets/OTP/tests/otp.s
 
 The spec drives the BUILT artifacts (through the StatiCrypt gate, and the
 ungated viewer) with every `script.google.com` / `supabase.co` call mocked.
-34 specs as of otp-v0.8.
+46 specs as of otp-v0.9, run in BOTH Chromium and WebKit (the iPad rules are
+WebKit rules), so a full pass is 92 results.
 
 ## Changelog
+
+- **otp-v0.9** · The coaching lifecycle, form side. A record reopens on the
+  gated form at `?edit=<token>`: it loads through the same token GET as a
+  locked record view and populates the same way (header fields, opaque-keyed
+  Tom Selects, rubric chips, per-criterion notes, the Evidence Pad page
+  viewer), but the fields stay LIVE while the lap is open. The action bar
+  swaps Reset and Save & Lock for **Save changes** (posts `action:'update'`
+  with `record_token` plus the same 32 contract keys, quiet confirmation, form
+  stays editable) and **Close Lap** (one native confirm naming the lap and the
+  teacher, then `action:'close'`, then the existing lock path). `evidence_pad_id`
+  goes back exactly as it came: edit mode adds no pad pages, existing ones stay
+  viewable through the paperclips, the pencils are hidden. A record that is
+  already closed opens read-only, with no dead buttons. Edit mode never reads
+  or writes the localStorage draft (hard rule 13 now reads
+  `CLOSED_RECORD_VIEW || EDIT_MODE`), so the observer's in-progress new
+  observation on the same iPad is untouched. Second feature: **previous Next
+  Steps**, one read-only component in two places, a card under Teacher
+  collapsed to `Lap 1 Next Steps · <date> · <observer>` and the same three
+  steps echoed above Next Steps / Support 1. It reads
+  `?action=prev_next_steps&form=otp&teacher=<name>` when a teacher is picked
+  (and in edit mode from the record's own teacher); not found, a stall or a
+  garbled answer leaves both hidden and says nothing (hard rule 12). Never in
+  the ungated viewer. The locked banner now carries the lap: `Lap 1 · open` or
+  `Lap 1 · closed <date>`. Nothing new is fixed-position, no scroll lock, the
+  keyboard engine is untouched, and every new control is wired on `click`
+  (never `pointerdown`, the otp-v0.8 WebKit lesson). One shared-default fix on
+  the way past: `.pad-attach[hidden]` / `.pad-field-btn[hidden]` now really do
+  hide, everywhere, not only inside the note card, so a pad button switched off
+  in code stops showing as a dead icon.
 
 - **otp-v0.8** · Igor's three asks of 2026-09-10. (1) The note card's
   textarea is focused the moment a `+` opens it and blurred on close
