@@ -218,7 +218,16 @@ function getOtpColumns() {
     'sp1_notes', 'rubric_version',
     // otp-v0.8: time_out holds the HH:MM the observer entered at the bottom of
     // the form (required there). Append-only, per the rule above.
-    'time_out'
+    'time_out',
+    // otp-v0.9: the coaching lifecycle. status is 'observed' (open) or
+    // 'closed'; closed_at is the ISO timestamp the lap was closed, empty
+    // while open; lap is 1 plus however many earlier OTP rows (any status)
+    // already belonged to this teacher, so a second observation is Lap 2;
+    // round is the current OTP round stamped at submit time (fetchCurrentOtpRound,
+    // 05_Supabase.gs). Set once at submit and never touched again by an
+    // update/close (handleOtpUpdateOrClose, 01_doPost.gs), except status and
+    // closed_at, which close sets. Append-only, per the rule above.
+    'status', 'closed_at', 'lap', 'round'
   ];
 }
 
@@ -236,3 +245,13 @@ const RECORD_VIEWER_URL_OTP = 'https://rogerceaser21.github.io/Data-Representati
  * Same project + same service_role secret as the R3 bridge; different RPC.
  */
 const INGEST_RPC_PATH_OTP = '/rest/v1/rpc/ingest_otp';
+
+/**
+ * otp-v0.9 · the Supabase PUBLISHABLE (anon) key, client-safe by design (it
+ * already ships inside the encrypted OTP form, see Assets/OTP/src/otp-progress-form.html
+ * SB_KEY). Used server-side ONLY to read the anon-granted get_current_round_otp
+ * RPC when stamping a new submission's round (05_Supabase.gs fetchCurrentOtpRound);
+ * never used to write. The service_role secret stays in Script Properties
+ * (getSupabaseSecret), never here.
+ */
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_shin2gZ5-pARRc-cLDd5lQ_YAOacR72';

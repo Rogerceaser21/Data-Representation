@@ -188,6 +188,7 @@ function getDropdownOptions() {
 function clearOptionsCache() {
   CacheService.getScriptCache().remove(OPTIONS_CACHE_KEY);
   CacheService.getScriptCache().remove(OPTIONS_CACHE_KEY_OTP);
+  CacheService.getScriptCache().remove(TEACHER_EMAIL_CACHE_KEY);
   return 'cleared';
 }
 
@@ -310,10 +311,12 @@ function readTeachersTab(ss) {
 /* ─────────────────────────────────────────────────────────────────────────────
  * otp-v0.1 · GET side of the Progress in Lessons OTP form.
  *
- *   ?action=options&form=otp   → dropdowns: teachers from Teachers 26-27,
- *                                observers from OTP Coaches 26-27
- *   ?action=pad_image&form=otp → one Evidence Pad page, token-gated
- *   ?token=...&form=otp        → one locked record (legacy ?id=&token= also ok)
+ *   ?action=options&form=otp         → dropdowns: teachers from Teachers 26-27,
+ *                                      observers from OTP Coaches 26-27
+ *   ?action=pad_image&form=otp       → one Evidence Pad page, token-gated
+ *   ?action=prev_next_steps&form=otp → otp-v0.9: a teacher's latest CLOSED lap
+ *                                      in the current round (Next Steps only)
+ *   ?token=...&form=otp              → one locked record (legacy ?id=&token= too)
  *
  * The R3 branches in doGet are untouched; this is reached only when the caller
  * sends form=otp.
@@ -325,6 +328,10 @@ function doGetOtp(params) {
 
   if (params.action === 'pad_image') {
     return jsonOut(getPadImageForToken(params.token, params.name));
+  }
+
+  if (params.action === 'prev_next_steps') {
+    return jsonOut(getOtpPrevNextSteps(params.teacher));
   }
 
   if (params.token || params.id) {
@@ -408,6 +415,140 @@ function lookupOtpObserverEmail(ss, name) {
     if (rows[i].name.toLowerCase() === want) return rows[i].email;
   }
   return '';
+}
+
+/**
+ * otp-v0.9 · the teacher's OWN email, read from the Teachers 26-27 tab
+ * (falling back to the R3 tab name like the roster read above) column F
+ * (index 5, the reconciled roster's Email column). Cached 5 minutes, its own
+ * key so it never collides with OPTIONS_CACHE_KEY_OTP / OPTIONS_CACHE_KEY;
+ * cleared by clearOptionsCache() like the others.
+ */
+const TEACHER_EMAIL_CACHE_KEY = 'OTP_TEACHER_EMAILS_v1';
+
+function readOtpTeacherEmails(ss) {
+  const cache = CacheService.getScriptCache();
+  const cached = cache.get(TEACHER_EMAIL_CACHE_KEY);
+  if (cached) {
+    try { return JSON.parse(cached); } catch (e) { /* fall through, refresh */ }
+  }
+
+  const sheet = getTabWithFallback(ss, SHEET_NAME_TEACHERS_2627, SHEET_NAME_TEACHERS);
+  const fresh = [];
+  if (sheet && sheet.getLastRow() >= 2) {
+    const values = sheet.getRange(2, 1, sheet.getLastRow() - 1, 6).getValues();
+    values.forEach(function(r) {
+      const name = safeForSelector(String(r[0] || '').trim());
+      if (name) fresh.push({ name: name, email: String(r[5] || '').trim() });
+    });
+  }
+
+  try { cache.put(TEACHER_EMAIL_CACHE_KEY, JSON.stringify(fresh), OPTIONS_CACHE_TTL); } catch (e) {}
+  return fresh;
+}
+
+/**
+ * Teacher's email by display name, matched the same normalised way as
+ * lookupOtpObserverEmail. Returns '' when the name isn't found or the row
+ * carries no email.
+ */
+function lookupOtpTeacherEmail(ss, name) {
+  const want = safeForSelector(String(name || '').trim()).toLowerCase();
+  if (!want) return '';
+  const rows = readOtpTeacherEmails(ss);
+  for (var i = 0; i < rows.length; i++) {
+    if (rows[i].name.toLowerCase() === want) return rows[i].email;
+  }
+  return '';
+}
+
+/**
+ * otp-v0.9 · a teacher's own coaching-continuity read: their latest CLOSED
+ * lap in the CURRENT OTP round (a blank round on the row counts as current,
+ * covering rows written before round-stamping existed), newest observation
+ * date then submitted_at wins. Never the rubric states, notes, or any other
+ * field: {success:true, found:true, lap, observation_date, observer,
+ * next_step_1, next_step_2, next_step_3} or {success:true, found:false}.
+ * Cached 60s per normalised teacher name; handleOtpUpdateOrClose
+ * (01_doPost.gs) clears this teacher's key on every update/close so a
+ * freshly closed lap is visible immediately.
+ */
+const PREV_STEPS_CACHE_PREFIX = 'OTP_PREV_STEPS_v1:';
+const PREV_STEPS_CACHE_TTL = 60;
+
+function prevStepsCacheKey(teacherName) {
+  return PREV_STEPS_CACHE_PREFIX + safeForSelector(String(teacherName || '').trim()).toLowerCase();
+}
+
+function clearPrevNextStepsCache(teacherName) {
+  CacheService.getScriptCache().remove(prevStepsCacheKey(teacherName));
+}
+
+function getOtpPrevNextSteps(teacherName) {
+  const want = String(teacherName || '').trim().toLowerCase();
+  const miss = { success: true, found: false };
+  if (!want) return miss;
+
+  const cache = CacheService.getScriptCache();
+  const key = prevStepsCacheKey(teacherName);
+  const cached = cache.get(key);
+  if (cached) {
+    try { return JSON.parse(cached); } catch (e) { /* fall through, refresh */ }
+  }
+
+  const ss = SpreadsheetApp.openById(getSheetId());
+  const sheet = ss.getSheetByName(SHEET_NAME_OTP_SUBMISSIONS);
+  if (!sheet || sheet.getLastRow() < 2) {
+    try { cache.put(key, JSON.stringify(miss), PREV_STEPS_CACHE_TTL); } catch (e) {}
+    return miss;
+  }
+
+  const values = sheet.getDataRange().getValues();
+  const headers = values[0];
+  const col = {};
+  ['teacher', 'status', 'round', 'observation_date', 'submitted_at', 'observer',
+   'lap', 'next_step_1', 'next_step_2', 'next_step_3'].forEach(function(h) {
+    col[h] = headers.indexOf(h);
+  });
+  if (col.teacher < 0 || col.status < 0) {
+    try { cache.put(key, JSON.stringify(miss), PREV_STEPS_CACHE_TTL); } catch (e) {}
+    return miss;
+  }
+
+  const tz = ss.getSpreadsheetTimeZone();
+  const cellText = function(v) {
+    if (!(v instanceof Date)) return v == null ? '' : v;
+    return v.getFullYear() < 1900
+      ? Utilities.formatDate(v, tz, 'HH:mm')
+      : Utilities.formatDate(v, tz, 'yyyy-MM-dd');
+  };
+
+  const currentRound = fetchCurrentOtpRound();
+  var best = null;
+  for (var r = 1; r < values.length; r++) {
+    const row = values[r];
+    if (String(row[col.teacher] || '').trim().toLowerCase() !== want) continue;
+    if (String(row[col.status] || '').trim() !== 'closed') continue;
+    const rowRound = col.round > -1 ? String(row[col.round] || '').trim() : '';
+    if (rowRound !== '' && rowRound !== currentRound) continue;   // a blank round counts as current
+    if (!best) { best = row; continue; }
+    const a = [cellText(row[col.observation_date]), cellText(row[col.submitted_at])];
+    const b = [cellText(best[col.observation_date]), cellText(best[col.submitted_at])];
+    if (a[0] > b[0] || (a[0] === b[0] && a[1] > b[1])) best = row;
+  }
+
+  const out = !best ? miss : {
+    success: true,
+    found: true,
+    lap: best[col.lap],
+    observation_date: cellText(best[col.observation_date]),
+    observer: best[col.observer],
+    next_step_1: best[col.next_step_1],
+    next_step_2: best[col.next_step_2],
+    next_step_3: best[col.next_step_3]
+  };
+  try { cache.put(key, JSON.stringify(out), PREV_STEPS_CACHE_TTL); } catch (e) {}
+  return out;
 }
 
 /**

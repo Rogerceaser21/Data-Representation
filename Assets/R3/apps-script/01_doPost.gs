@@ -334,11 +334,27 @@ function handleOtpPost(data) {
          .setFontColor('#ffffff');
   }
 
+  // otp-v0.9: update / close an existing lap by its record_token, in place of
+  // appending a new submission. Dispatched here, right after the header is
+  // healed above so the row it edits already carries the 38-column contract.
+  if (data && (data.action === 'update' || data.action === 'close') && data.record_token) {
+    return handleOtpUpdateOrClose(ss, sheet, data);
+  }
+
   const submittedAt = data.submitted_at || new Date().toISOString();
   const recordId = data.record_id || generateOtpRecordId(submittedAt);
   const recordToken = generateRecordToken();
 
   data.record_token = recordToken;
+  // otp-v0.9: every new submission opens a fresh lap. status starts
+  // 'observed'; lap is 1 plus however many earlier OTP rows (any status)
+  // already belonged to this teacher (computeOtpLap, matched trimmed +
+  // case-insensitive), so a second observation is Lap 2; round is the
+  // current OTP round, fetched live so a later close can be matched back to
+  // the round it was opened in.
+  data.status = 'observed';
+  data.lap = computeOtpLap(sheet, data.teacher);
+  data.round = fetchCurrentOtpRound();
 
   // One mapping builds BOTH the Sheet row and the Supabase mirror, so the
   // mirror is a field-for-field copy of the row (hard rule 14).
@@ -355,6 +371,15 @@ function handleOtpPost(data) {
     Logger.log('OTP email send failed for ' + recordId + ': ' + mailErr.message);
   }
 
+  // otp-v0.9: a plain-language copy to the teacher themselves (no edit link,
+  // no rating, no rubric state). Silent when their Teachers 26-27 row carries
+  // no email (hard rule 12).
+  try {
+    sendOtpTeacherEmail(ss, recordId, recordToken, submittedAt, data);
+  } catch (mailErr) {
+    Logger.log('OTP teacher email failed for ' + recordId + ': ' + mailErr.message);
+  }
+
   try {
     pushOtpToSupabase(columns, data, recordId, recordToken, submittedAt);
   } catch (sbErr) {
@@ -362,6 +387,123 @@ function handleOtpPost(data) {
   }
 
   return jsonOut({ success: true, id: recordId });
+}
+
+/**
+ * otp-v0.9 · 1 plus however many existing OTP rows (any status) already
+ * belong to `teacherName`, matched trimmed and case-insensitively against the
+ * sheet's own header row (so it works whether the tab was just healed or
+ * not). Called BEFORE the new row is appended, so it never counts itself.
+ */
+function computeOtpLap(sheet, teacherName) {
+  const want = String(teacherName || '').trim().toLowerCase();
+  if (!want || sheet.getLastRow() < 2) return 1;
+  const values = sheet.getDataRange().getValues();
+  const teacherCol = values[0].indexOf('teacher');
+  if (teacherCol < 0) return 1;
+  let count = 0;
+  for (var r = 1; r < values.length; r++) {
+    if (String(values[r][teacherCol] || '').trim().toLowerCase() === want) count++;
+  }
+  return count + 1;
+}
+
+/**
+ * otp-v0.9 · overwrites an existing lap's cells by record_token (action
+ * 'update'), or the same plus status:'closed' + closed_at (action 'close').
+ * Found by header NAME on the OTP tab only, never the R3 tab (hard rule 10).
+ * A row already closed refuses BOTH actions with the same generic miss used
+ * everywhere else (hard rule 12): a closed lap can never be reopened or
+ * overwritten from here. record_id, submitted_at, record_token, lap and
+ * round are never touched either way; a key absent from the payload leaves
+ * its cell exactly as it was (so evidence_pad_id survives an edit that never
+ * touches the pad). `school` is re-derived from a posted `grade`, the same
+ * rule buildOtpRecord applies at submit (see otpUpdatableValue below).
+ */
+function handleOtpUpdateOrClose(ss, sheet, data) {
+  const miss = { success: false, error: 'Record not found' };
+  if (sheet.getLastRow() < 2) return jsonOut(miss);
+
+  const values = sheet.getDataRange().getValues();
+  const headers = values[0];
+  const tokenCol = headers.indexOf('record_token');
+  const statusCol = headers.indexOf('status');
+  if (tokenCol < 0) return jsonOut(miss);
+
+  const wantToken = String(data.record_token || '').trim();
+  var rowIdx = -1;
+  for (var r = 1; r < values.length; r++) {
+    if (String(values[r][tokenCol] || '').trim() === wantToken) { rowIdx = r; break; }
+  }
+  if (rowIdx < 0) return jsonOut(miss);
+
+  const currentStatus = statusCol > -1 ? String(values[rowIdx][statusCol] || '').trim() : '';
+  if (currentStatus === 'closed') return jsonOut(miss);
+
+  // Real Sheets pads every row out to the header width when it is read back;
+  // guard the same way here in case this row predates a column appended
+  // since it was written.
+  while (values[rowIdx].length < headers.length) values[rowIdx].push('');
+
+  const isClose = data.action === 'close';
+  const LOCKED = { record_id: true, submitted_at: true, record_token: true, lap: true, round: true };
+
+  headers.forEach(function(h, c) {
+    if (LOCKED[h]) return;
+    if (h === 'status') { values[rowIdx][c] = isClose ? 'closed' : 'observed'; return; }
+    if (h === 'closed_at') { if (isClose) values[rowIdx][c] = new Date().toISOString(); return; }
+    const resolved = otpUpdatableValue(h, data);
+    if (resolved.present) values[rowIdx][c] = resolved.value;
+  });
+
+  sheet.getRange(rowIdx + 1, 1, 1, headers.length).setValues([values[rowIdx]]);
+
+  const record = {};
+  headers.forEach(function(h, c) { record[h] = values[rowIdx][c]; });
+
+  try {
+    pushOtpRowToSupabase(record);
+  } catch (sbErr) {
+    Logger.log('Supabase OTP re-push failed for ' + record.record_id + ': ' + sbErr.message);
+  }
+
+  if (isClose) {
+    try {
+      sendOtpCloseEmail(ss, record);
+    } catch (mailErr) {
+      Logger.log('OTP close email failed for ' + record.record_id + ': ' + mailErr.message);
+    }
+  }
+
+  // Next observation of this teacher should see the just-closed lap
+  // immediately, not after the 60s prev_next_steps cache TTL.
+  try { clearPrevNextStepsCache(record.teacher); } catch (e) {}
+
+  return jsonOut({ success: true, id: record.record_id, status: record.status });
+}
+
+/**
+ * Per-column resolution for handleOtpUpdateOrClose: mirrors buildOtpRecord's
+ * special cases (observer <- inspector/observer, observation_date <- date,
+ * school derived from grade) but only for a column whose source key was
+ * actually posted, so an update never wipes a cell the caller never sent.
+ */
+function otpUpdatableValue(col, data) {
+  if (col === 'observer') {
+    if (!('inspector' in data) && !('observer' in data)) return { present: false };
+    return { present: true, value: data.inspector || data.observer || '' };
+  }
+  if (col === 'observation_date') {
+    if (!('date' in data) && !('observation_date' in data)) return { present: false };
+    return { present: true, value: data.date || data.observation_date || '' };
+  }
+  if (col === 'school') {
+    if (!('grade' in data) && !('school' in data)) return { present: false };
+    const derived = schoolForGrade(data.grade);
+    return { present: true, value: derived || (data.school != null ? data.school : '') };
+  }
+  if (!(col in data)) return { present: false };
+  return { present: true, value: data[col] != null ? data[col] : '' };
 }
 
 /**
@@ -419,12 +561,16 @@ function schoolForGrade(grade) {
  */
 function sendOtpSubmissionEmail(ss, recordId, recordToken, submittedAt, data) {
   const lockedUrl = RECORD_VIEWER_URL_OTP + '?token=' + encodeURIComponent(recordToken);
+  // otp-v0.9: a form-side EDIT link (never sent to the teacher, see
+  // sendOtpTeacherEmail) so admin/observer can jump straight into editing
+  // this lap without hunting for the token.
+  const editUrl = FORM_PUBLIC_URL_OTP + '?edit=' + encodeURIComponent(recordToken);
 
   const teacherName = String(data.teacher || '(no teacher)').trim();
   const obsDate = String(data.date || data.observation_date || '').trim();
-  const subject = 'AIS OTP Progress · ' + teacherName + ' · ' + obsDate;
+  const subject = 'AIS OTP Progress · Lap ' + data.lap + ' · ' + teacherName + ' · ' + obsDate;
 
-  const htmlBody = buildOtpSubmissionHtml(recordId, lockedUrl, submittedAt, data);
+  const htmlBody = buildOtpSubmissionHtml(recordId, lockedUrl, editUrl, submittedAt, data);
 
   const observerEmail = lookupOtpObserverEmail(ss, data.inspector || data.observer);
   const opts = {
@@ -449,7 +595,72 @@ function sendOtpSubmissionEmail(ss, recordId, recordToken, submittedAt, data) {
   MailApp.sendEmail(opts);
 }
 
-function buildOtpSubmissionHtml(recordId, lockedUrl, submittedAt, data) {
+/**
+ * otp-v0.9 · sends the teacher their own copy at submit time: no edit link,
+ * no rating, no rubric state, just what was observed and that the observer
+ * will meet them to agree next steps. Silent when the teacher's Teachers
+ * 26-27 row (lookupOtpTeacherEmail, 02_doGet.gs) carries no email, or the
+ * value there isn't an email at all (hard rule 12).
+ */
+function sendOtpTeacherEmail(ss, recordId, recordToken, submittedAt, data) {
+  const teacherEmail = lookupOtpTeacherEmail(ss, data.teacher);
+  if (!teacherEmail || teacherEmail.indexOf('@') < 0) return;
+
+  const viewUrl = RECORD_VIEWER_URL_OTP + '?token=' + encodeURIComponent(recordToken);
+  const observerName = String(data.inspector || data.observer || 'Your observer').trim();
+  const obsDate = String(data.date || data.observation_date || '').trim();
+  const subject = 'Your OTP Progress observation · Lap ' + data.lap + ' · ' + obsDate;
+
+  const body = observerName + ' observed your lesson on ' + obsDate + '. You can read the observation here: ' +
+               viewUrl + '. ' + observerName + ' will arrange a time to go through it with you and agree your next steps together.';
+
+  MailApp.sendEmail({
+    to: teacherEmail,
+    subject: subject,
+    htmlBody: '<div style="font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;color:#143642;font-size:14px;line-height:1.5;">' + body + '</div>',
+    name: 'AIS OTP Progress'
+  });
+}
+
+/**
+ * otp-v0.9 · sent when a lap is closed: the agreed Next Steps, to the
+ * teacher, CC the observer + the backup mailbox. View link only, the record
+ * is locked now so no edit link. `record` is the full row (header -> value)
+ * exactly as it now stands on the Sheet.
+ */
+function sendOtpCloseEmail(ss, record) {
+  const teacherEmail = lookupOtpTeacherEmail(ss, record.teacher);
+  if (!teacherEmail || teacherEmail.indexOf('@') < 0) return;
+
+  const viewUrl = RECORD_VIEWER_URL_OTP + '?token=' + encodeURIComponent(record.record_token || '');
+  const observerName = String(record.observer || 'your observer').trim();
+  const teacherName = String(record.teacher || '(no teacher)').trim();
+  const obsDate = String(record.observation_date || '').trim();
+  const subject = 'OTP Progress · Lap ' + record.lap + ' closed · ' + teacherName + ' · ' + obsDate;
+
+  const closedDate = formatStampSafe(record.closed_at);
+  const s1 = String(record.next_step_1 || '').trim();
+  const s2 = String(record.next_step_2 || '').trim();
+  const s3 = String(record.next_step_3 || '').trim();
+  const body = 'Lap ' + record.lap + ' was closed on ' + closedDate + '. Next Steps agreed with ' + observerName + ': ' +
+               '1. ' + s1 + ' 2. ' + s2 + ' 3. ' + s3 + '. Full record: ' + viewUrl + '.';
+
+  const opts = {
+    to: teacherEmail,
+    subject: subject,
+    htmlBody: '<div style="font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;color:#143642;font-size:14px;line-height:1.5;">' + body + '</div>',
+    name: 'AIS OTP Progress'
+  };
+  const observerEmail = lookupOtpObserverEmail(ss, record.observer);
+  const cc = [];
+  if (observerEmail && observerEmail.indexOf('@') > -1) cc.push(observerEmail);
+  cc.push(BACKUP_EMAIL_TO);
+  opts.cc = cc.join(',');
+
+  MailApp.sendEmail(opts);
+}
+
+function buildOtpSubmissionHtml(recordId, lockedUrl, editUrl, submittedAt, data) {
   const esc = function(s) {
     return String(s == null ? '' : s)
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -525,6 +736,7 @@ function buildOtpSubmissionHtml(recordId, lockedUrl, submittedAt, data) {
   html += '      <div style="background:#fff8e1;border:1px solid #FFBA14;border-radius:8px;padding:16px;margin-bottom:20px;">';
   html += '        <div style="font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:#8a6d00;font-weight:700;margin-bottom:6px;">Locked record</div>';
   html += '        <div style="font-size:14px;color:#143642;">Open the locked record: <a href="' + esc(lockedUrl) + '" style="color:#143642;font-weight:700;text-decoration:underline;">Link</a></div>';
+  html += '        <div style="font-size:14px;color:#143642;margin-top:6px;">Edit this record: <a href="' + esc(editUrl) + '" style="color:#143642;font-weight:700;text-decoration:underline;">Link</a></div>';
   html += '      </div>';
   html += '      <table style="width:100%;border-collapse:collapse;">';
 

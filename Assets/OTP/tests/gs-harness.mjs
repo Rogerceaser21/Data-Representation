@@ -62,8 +62,14 @@ const EXPECTED_OTP_COLUMNS = [
   'next_step_1', 'next_step_2', 'next_step_3', 'record_token', 'evidence_pad_id',
   'sp1_present', 'sp1_partially_present', 'sp1_not_present',
   'sp1_not_seen', 'grade', 'sp1_notes', 'rubric_version',
-  'time_out'   // otp-v0.8, column 34
+  'time_out',   // otp-v0.8, column 34
+  'status', 'closed_at', 'lap', 'round'   // otp-v0.9, columns 35-38
 ];
+
+// otp-v0.9 · the coaching-lifecycle round, as fetch CurrentOtpRound (05_Supabase.gs)
+// resolves it via the stubbed get_current_round_otp RPC below.
+const OTP_CURRENT_ROUND = 'OTP Term 1 26-27';
+const OTP_OTHER_ROUND = 'OTP Term 3 25-26';
 
 // otp-v0.6 · the note fixture is deliberately NOT in level order, carries a
 // newline and an HTML-meaningful character, and includes one criterion nobody
@@ -269,6 +275,12 @@ function buildEnv(source, seed) {
           payload: o.payload || ''
         });
         if (url.indexOf('/storage/v1/object/list/') > -1) return makeResponse(200, '[]');
+        // otp-v0.9 · the round RPC PostgREST would return the bare scalar as a
+        // JSON string. state.forceRoundFailure lets a scenario prove the
+        // failure path (round stamped '', nothing else fails).
+        if (url.indexOf('/rest/v1/rpc/get_current_round_otp') > -1) {
+          return state.forceRoundFailure ? makeResponse(500, 'error') : makeResponse(200, JSON.stringify(OTP_CURRENT_ROUND));
+        }
         if (url.indexOf('/rest/v1/rpc/') > -1) return makeResponse(200, '{"ok":true}');
         if (url.indexOf('/rest/v1/app_config') > -1) return makeResponse(200, '[]');
         // otp-v0.6 · pad extraction. One transcribed item, no target: the
@@ -379,6 +391,9 @@ function otpRow(token) {
     if (c === 'sp1_not_seen') return 'Beginner 1, Great 2';
     if (c === 'sp1_notes') return '{"Good 1":"Seen on the working wall."}';
     if (c === 'rubric_version') return 'sp1-v2';
+    if (c === 'status') return 'observed';
+    if (c === 'lap') return 1;
+    if (c === 'round') return OTP_CURRENT_ROUND;
     return '';
   });
 }
@@ -394,7 +409,18 @@ function padRow(row, width) {
 // 25-26 and un-suffixed names stay seeded with the SAME rows so an origin/main
 // baseline that still reads an older name sees identical data and the R3
 // byte-identity comparison stays meaningful.
-const R3_TEACHERS_ROWS = [['name'], ['R3 Teacher One'], ['R3 Teacher Two']];
+// otp-v0.9: column F (index 5) carries the teacher's own email, read by
+// lookupOtpTeacherEmail for the new submit-time teacher email (email B) and
+// the close email (email C). 'Jo Mare Kruger' (OTP_PAYLOAD's teacher) is
+// seeded here WITH an email so the positive email-B/email-C paths have a
+// real match; the other two rows stay email-less for the "no email -> no
+// email" cases.
+const R3_TEACHERS_ROWS = [
+  ['name', 'title', 'first_name', 'family_name', 'code', 'email'],
+  ['R3 Teacher One', '', '', '', '', ''],
+  ['R3 Teacher Two', '', '', '', '', ''],
+  ['Jo Mare Kruger', '', '', '', '', 'jo.marekruger@ais.ae']
+];
 const R3_INSPECTORS_ROWS = [['Inspector', 'Email'], ['Dave Richards', 'dave.richards@ais.ae'], ['Hayden Ryan', 'hayden.ryan@ais.ae']];
 const ROSTER_R3 = {
   Teachers: R3_TEACHERS_ROWS,
@@ -546,17 +572,21 @@ section('(a) OTP submission · row + email + Supabase mirror');
   const row = tab[1] || [];
   const idx = (c) => EXPECTED_OTP_COLUMNS.indexOf(c);
 
-  eqJson(env.ctx.getOtpColumns(), EXPECTED_OTP_COLUMNS, 'getOtpColumns() is the 34-column contract, in order');
-  eqJson(EXPECTED_OTP_COLUMNS.slice(31), ['sp1_notes', 'rubric_version', 'time_out'], 'sp1_notes, rubric_version and time_out are columns 32-34 (appended, hard rule 1)');
-  ok(EXPECTED_OTP_COLUMNS.length === 34 && EXPECTED_OTP_COLUMNS[33] === 'time_out', 'time_out is column 34 (otp-v0.8)');
+  eqJson(env.ctx.getOtpColumns(), EXPECTED_OTP_COLUMNS, 'getOtpColumns() is the 38-column contract, in order');
+  eqJson(EXPECTED_OTP_COLUMNS.slice(33), ['time_out', 'status', 'closed_at', 'lap', 'round'], 'status, closed_at, lap and round are columns 35-38 (appended, hard rule 1)');
+  ok(EXPECTED_OTP_COLUMNS.length === 38 && EXPECTED_OTP_COLUMNS[37] === 'round', 'round is column 38 (otp-v0.9)');
   ok(tab.length === 2, 'OTP Submissions holds exactly one header + ONE appended row', 'rows: ' + tab.length);
   eqJson(header, EXPECTED_OTP_COLUMNS, 'header row written in the load-bearing column order');
-  ok(row.length === 34, 'appended row has 34 cells', 'cells: ' + row.length);
+  ok(row.length === 38, 'appended row has 38 cells', 'cells: ' + row.length);
   ok(/^AIS-OTP-\d{8}-\d{6}$/.test(row[idx('record_id')]), 'record_id is a fresh AIS-OTP-YYYYMMDD-HHMMSS id', 'got: ' + row[idx('record_id')]);
   ok(/^[0-9a-f]{32}$/.test(row[idx('record_token')]), 'record_token is 32 hex chars', 'got: ' + row[idx('record_token')]);
   ok(row[idx('observer')] === OTP_PAYLOAD.inspector, 'observer column <- payload.inspector', 'got: ' + row[idx('observer')]);
   ok(row[idx('observation_date')] === OTP_PAYLOAD.date, 'observation_date column <- payload.date', 'got: ' + row[idx('observation_date')]);
   ok(row[idx('submitted_at')] === new Date(FIXED_MS).toISOString(), 'submitted_at stamped server-side');
+  ok(row[idx('status')] === 'observed', 'a fresh submission stamps status "observed" (otp-v0.9)', 'got: ' + row[idx('status')]);
+  ok(row[idx('closed_at')] === '', 'a fresh submission leaves closed_at empty (otp-v0.9)', 'got: ' + JSON.stringify(row[idx('closed_at')]));
+  ok(row[idx('lap')] === 1, 'the first submission for a teacher is Lap 1 (otp-v0.9)', 'got: ' + row[idx('lap')]);
+  ok(row[idx('round')] === OTP_CURRENT_ROUND, 'round is stamped live from get_current_round_otp (otp-v0.9)', 'got: ' + row[idx('round')]);
   const fieldsOk = ['teacher', 'curriculum', 'room_number', 'time_in', 'subject', 'school', 'support_teachers_cas',
     'otp_ref', 'otp_aspect', 'sp1_beginner', 'sp1_emerging', 'sp1_good', 'sp1_great', 'sp1_outstanding',
     'sp1_selected_text', 'observer_comments', 'other_observations', 'next_step_1', 'next_step_2', 'next_step_3',
@@ -566,13 +596,26 @@ section('(a) OTP submission · row + email + Supabase mirror');
   ok(!dump.sheets['Submissions'], 'the R3 Submissions tab was never touched by an OTP post');
   eqJson(out, { success: true, id: row[idx('record_id')] }, 'response is { success:true, id } exactly like R3');
 
-  ok(dump.mail.length === 1, 'exactly one backup email', 'count: ' + dump.mail.length);
+  // otp-v0.9: submit now sends TWO emails — the backup (A, with Lap N and an
+  // edit link) and the teacher's own copy (B, view link only). 'Jo Mare
+  // Kruger' has an email seeded in Teachers 26-27, so both fire.
+  ok(dump.mail.length === 2, 'submit sends the backup email AND the teacher email (otp-v0.9)', 'count: ' + dump.mail.length);
   const mail = dump.mail[0] || {};
-  ok(mail.subject === 'AIS OTP Progress · Jo Mare Kruger · 2026-09-02', 'email subject is the OTP subject', 'got: ' + mail.subject);
-  ok(mail.to === 'admin.user@ais.ae', 'email goes to the backup mailbox', 'got: ' + mail.to);
+  ok(mail.subject === 'AIS OTP Progress · Lap 1 · Jo Mare Kruger · 2026-09-02', 'email A subject carries Lap 1 (otp-v0.9)', 'got: ' + mail.subject);
+  ok(mail.to === 'admin.user@ais.ae', 'email A goes to the backup mailbox', 'got: ' + mail.to);
   ok(mail.cc === 'dave.richards2627@ais.ae', 'observer CC resolved over the OTP Coaches 26-27 tab', 'got: ' + mail.cc);
   const viewerLink = 'https://rogerceaser21.github.io/Data-Representation/Assets/OTP/otp-record.html?token=' + row[idx('record_token')];
-  ok(String(mail.htmlBody).indexOf(viewerLink) > -1, 'email body carries the OTP viewer link (token only)', 'looked for: ' + viewerLink);
+  const editLink = 'https://rogerceaser21.github.io/Data-Representation/Assets/OTP/otp-progress-form.html?edit=' + row[idx('record_token')];
+  ok(String(mail.htmlBody).indexOf(viewerLink) > -1, 'email A body carries the OTP viewer link (token only)', 'looked for: ' + viewerLink);
+  ok(String(mail.htmlBody).indexOf(editLink) > -1, 'email A body carries the edit link (otp-v0.9)', 'looked for: ' + editLink);
+
+  const mailB = dump.mail[1] || {};
+  ok(mailB.to === 'jo.marekruger@ais.ae', 'email B goes to the teacher (otp-v0.9)', 'got: ' + mailB.to);
+  ok(mailB.subject === 'Your OTP Progress observation · Lap 1 · 2026-09-02', 'email B subject carries Lap 1 (otp-v0.9)', 'got: ' + mailB.subject);
+  ok(String(mailB.htmlBody).indexOf(viewerLink) > -1, 'email B carries the view link (otp-v0.9)', 'looked for: ' + viewerLink);
+  ok(String(mailB.htmlBody).indexOf('?edit=') < 0, 'email B never carries an edit link (otp-v0.9)');
+  ok(!mailB.cc, 'email B has no CC (teacher only)', 'got: ' + JSON.stringify(mailB.cc));
+
   const labelsMissing = ['Observer Comments', 'Other Observations', 'Next Steps / Support 1', 'Selected criteria', 'Support teachers / CAs',
     'Present in lesson', 'Partially present', 'Not present', 'Not assessed (does not count)', 'Grade', 'Time out']
     .filter((l) => String(mail.htmlBody).indexOf(l) < 0);
@@ -582,10 +625,11 @@ section('(a) OTP submission · row + email + Supabase mirror');
   ok(ingest.length === 1, 'exactly one Supabase mirror call, to /rest/v1/rpc/ingest_otp', 'urls: ' + JSON.stringify(dump.fetches.map((f) => f.url)));
   const body = JSON.parse((ingest[0] || {}).payload || '{}');
   eqJson(Object.keys(body), ['payload'], 'mirror body is { payload: ... }');
-  eqJson(Object.keys(body.payload || {}), EXPECTED_OTP_COLUMNS, 'mirror payload carries the 34 columns, in order');
-  eqJson(EXPECTED_OTP_COLUMNS.map((c) => body.payload[c]), row, 'mirror payload is a field-for-field copy of the Sheet row');
+  eqJson(Object.keys(body.payload || {}), EXPECTED_OTP_COLUMNS, 'mirror payload carries the 38 columns, in order');
+  eqJson(EXPECTED_OTP_COLUMNS.map((c) => body.payload[c]), row, 'mirror payload is a field-for-field copy of the Sheet row (status/lap/round included)');
   ok((ingest[0] || {}).headers.apikey === SECRET, 'mirror authenticates with the service_role key from Script Properties');
   ok(dump.fetches.every((f) => f.url.indexOf('/rest/v1/rpc/ingest_r3') < 0), 'the R3 ingest RPC was never called for an OTP post');
+  ok(dump.fetches.some((f) => f.url.indexOf('/rest/v1/rpc/get_current_round_otp') > -1), 'submit fetched the current OTP round (otp-v0.9)');
 }
 
 /* (b) R3 parity ------------------------------------------------------------ */
@@ -612,7 +656,7 @@ section('(c) ?action=options&form=otp roster tabs + cache isolation');
 {
   const withNew = buildEnv(SRC_NEW, seedFull());
   const o1 = JSON.parse(withNew.ctx.doGet({ parameter: { action: 'options', form: 'otp' } }).getContent());
-  eqJson(o1.options.teachers.map((t) => t.name), ['R3 Teacher One', 'R3 Teacher Two'], 'teachers read from Teachers 26-27 (the same tab R3 reads)');
+  eqJson(o1.options.teachers.map((t) => t.name), ['R3 Teacher One', 'R3 Teacher Two', 'Jo Mare Kruger'], 'teachers read from Teachers 26-27 (the same tab R3 reads)');
   eqJson(o1.options.inspectors, ['Dave Richards', 'Brooke Pickett'], 'observers read from OTP Coaches 26-27, not the R3 inspector tab');
   eqJson(o1.options.curricula, ['Australian', 'Ministry'], 'curricula unchanged');
   eqJson(o1.options.subjects.map((s) => s.name), ['Maths', 'English'], 'subjects unchanged');
@@ -620,7 +664,7 @@ section('(c) ?action=options&form=otp roster tabs + cache isolation');
 
   const noNew = buildEnv(SRC_NEW, seedR3Only());
   const o2 = JSON.parse(noNew.ctx.doGet({ parameter: { action: 'options', form: 'otp' } }).getContent());
-  eqJson(o2.options.teachers.map((t) => t.name), ['R3 Teacher One', 'R3 Teacher Two'], 'teachers still read from Teachers 26-27 when the coaches tab is missing');
+  eqJson(o2.options.teachers.map((t) => t.name), ['R3 Teacher One', 'R3 Teacher Two', 'Jo Mare Kruger'], 'teachers still read from Teachers 26-27 when the coaches tab is missing');
   eqJson(o2.options.inspectors, [], 'no OTP Coaches 26-27 tab -> empty observer list, NEVER the R3 inspectors');
 
   const both = buildEnv(SRC_NEW, seedFull());
@@ -706,42 +750,56 @@ section('(e) header heal · an older OTP tab gains exactly the new trailing colu
     return { OLD_OTP_ROW, tab: env.dump().sheets['OTP Submissions'] || [] };
   };
 
-  // a v0.1 tab is 26 columns wide, so it gains 8 cells
-  // (otp-v0.2's 3 + otp-v0.5's 2 + otp-v0.6's 2 + otp-v0.8's 1)
+  // a v0.1 tab is 26 columns wide, so it gains 12 cells
+  // (otp-v0.2's 3 + otp-v0.5's 2 + otp-v0.6's 2 + otp-v0.8's 1 + otp-v0.9's 4)
   const v1 = heal(26);
   ok(v1.tab.length === 3, 'v0.1 tab: header + the untouched old row + the new appended row', 'rows: ' + v1.tab.length);
-  eqJson(v1.tab[0], EXPECTED_OTP_COLUMNS, 'v0.1 header healed to the 34-column contract, in order');
+  eqJson(v1.tab[0], EXPECTED_OTP_COLUMNS, 'v0.1 header healed to the 38-column contract, in order');
   eqJson((v1.tab[0] || []).slice(26),
-    ['sp1_present', 'sp1_partially_present', 'sp1_not_present', 'sp1_not_seen', 'grade', 'sp1_notes', 'rubric_version', 'time_out'],
-    'the 8 new header cells land in positions 27-34');
+    ['sp1_present', 'sp1_partially_present', 'sp1_not_present', 'sp1_not_seen', 'grade', 'sp1_notes', 'rubric_version',
+     'time_out', 'status', 'closed_at', 'lap', 'round'],
+    'the 12 new header cells land in positions 27-38');
   eqJson(v1.tab[1], v1.OLD_OTP_ROW, 'the pre-existing v0.1 row keeps its original 26 cells untouched');
-  ok((v1.tab[2] || []).length === 34, 'the row appended to the healed v0.1 tab has 34 cells', 'cells: ' + (v1.tab[2] || []).length);
+  ok((v1.tab[2] || []).length === 38, 'the row appended to the healed v0.1 tab has 38 cells', 'cells: ' + (v1.tab[2] || []).length);
 
-  // a v0.2 tab is 29 columns wide, so it gains otp-v0.5's 2 + otp-v0.6's 2 + otp-v0.8's 1
+  // a v0.2 tab is 29 columns wide, so it gains otp-v0.5's 2 + otp-v0.6's 2 + otp-v0.8's 1 + otp-v0.9's 4
   const v2 = heal(29);
   ok(v2.tab.length === 3, 'v0.2 tab: header + the untouched old row + the new appended row', 'rows: ' + v2.tab.length);
-  eqJson(v2.tab[0], EXPECTED_OTP_COLUMNS, 'v0.2 header healed to the 34-column contract, in order');
-  eqJson((v2.tab[0] || []).slice(29), ['sp1_not_seen', 'grade', 'sp1_notes', 'rubric_version', 'time_out'],
-    'exactly the 5 new header cells land in positions 30-34');
+  eqJson(v2.tab[0], EXPECTED_OTP_COLUMNS, 'v0.2 header healed to the 38-column contract, in order');
+  eqJson((v2.tab[0] || []).slice(29), ['sp1_not_seen', 'grade', 'sp1_notes', 'rubric_version', 'time_out', 'status', 'closed_at', 'lap', 'round'],
+    'exactly the 9 new header cells land in positions 30-38');
   eqJson(v2.tab[1], v2.OLD_OTP_ROW, 'the pre-existing v0.2 row keeps its original 29 cells untouched');
-  ok((v2.tab[2] || []).length === 34, 'the row appended to the healed v0.2 tab has 34 cells', 'cells: ' + (v2.tab[2] || []).length);
+  ok((v2.tab[2] || []).length === 38, 'the row appended to the healed v0.2 tab has 38 cells', 'cells: ' + (v2.tab[2] || []).length);
 
-  // otp-v0.8: a v0.6/v0.7 tab is 33 columns wide, so it gains exactly time_out
+  // otp-v0.8: a v0.6/v0.7 tab is 33 columns wide, so it gains time_out + otp-v0.9's 4
   const v6 = heal(33);
   ok(v6.tab.length === 3, 'v0.6 tab: header + the untouched old row + the new appended row', 'rows: ' + v6.tab.length);
-  eqJson(v6.tab[0], EXPECTED_OTP_COLUMNS, 'v0.6 header healed to the 34-column contract, in order');
-  eqJson((v6.tab[0] || []).slice(33), ['time_out'], 'exactly the 1 new header cell, time_out, lands in position 34');
+  eqJson(v6.tab[0], EXPECTED_OTP_COLUMNS, 'v0.6 header healed to the 38-column contract, in order');
+  eqJson((v6.tab[0] || []).slice(33), ['time_out', 'status', 'closed_at', 'lap', 'round'], 'exactly the 5 new header cells land in positions 34-38');
   eqJson(v6.tab[1], v6.OLD_OTP_ROW, 'the pre-existing v0.6 row keeps its original 33 cells untouched');
-  ok((v6.tab[2] || []).length === 34, 'the row appended to the healed v0.6 tab has 34 cells', 'cells: ' + (v6.tab[2] || []).length);
+  ok((v6.tab[2] || []).length === 38, 'the row appended to the healed v0.6 tab has 38 cells', 'cells: ' + (v6.tab[2] || []).length);
   ok(v6.tab[2] && v6.tab[2][33] === '10:55', 'the new row carries time_out in column 34', 'got: ' + (v6.tab[2] || [])[33]);
 
-  // a otp-v0.5 tab is 31 columns wide, so it gains otp-v0.6's 2 + otp-v0.8's 1
+  // a otp-v0.5 tab is 31 columns wide, so it gains otp-v0.6's 2 + otp-v0.8's 1 + otp-v0.9's 4
   const v5 = heal(31);
   ok(v5.tab.length === 3, 'v0.5 tab: header + the untouched old row + the new appended row', 'rows: ' + v5.tab.length);
-  eqJson(v5.tab[0], EXPECTED_OTP_COLUMNS, 'v0.5 header healed to the 34-column contract, in order');
-  eqJson((v5.tab[0] || []).slice(31), ['sp1_notes', 'rubric_version', 'time_out'], 'exactly the 3 new header cells land in positions 32-34');
+  eqJson(v5.tab[0], EXPECTED_OTP_COLUMNS, 'v0.5 header healed to the 38-column contract, in order');
+  eqJson((v5.tab[0] || []).slice(31), ['sp1_notes', 'rubric_version', 'time_out', 'status', 'closed_at', 'lap', 'round'],
+    'exactly the 7 new header cells land in positions 32-38');
   eqJson(v5.tab[1], v5.OLD_OTP_ROW, 'the pre-existing v0.5 row keeps its original 31 cells untouched');
-  ok((v5.tab[2] || []).length === 34, 'the row appended to the healed v0.5 tab has 34 cells', 'cells: ' + (v5.tab[2] || []).length);
+  ok((v5.tab[2] || []).length === 38, 'the row appended to the healed v0.5 tab has 38 cells', 'cells: ' + (v5.tab[2] || []).length);
+
+  // otp-v0.9: a v0.8 tab is 34 columns wide, so it gains EXACTLY the four new
+  // lifecycle cells (status, closed_at, lap, round), and the new row carries
+  // them stamped (status observed, lap 1, round live).
+  const v8 = heal(34);
+  ok(v8.tab.length === 3, 'v0.8 tab: header + the untouched old row + the new appended row', 'rows: ' + v8.tab.length);
+  eqJson(v8.tab[0], EXPECTED_OTP_COLUMNS, 'v0.8 header healed to the 38-column contract, in order');
+  eqJson((v8.tab[0] || []).slice(34), ['status', 'closed_at', 'lap', 'round'], 'exactly the 4 new header cells land in positions 35-38 (otp-v0.9)');
+  eqJson(v8.tab[1], v8.OLD_OTP_ROW, 'the pre-existing v0.8 row keeps its original 34 cells untouched');
+  ok((v8.tab[2] || []).length === 38, 'the row appended to the healed v0.8 tab has 38 cells', 'cells: ' + (v8.tab[2] || []).length);
+  ok(v8.tab[2] && v8.tab[2][34] === 'observed' && v8.tab[2][36] === 1, 'the new row carries status "observed" and lap 1 in columns 35 and 37',
+    JSON.stringify([(v8.tab[2] || [])[34], (v8.tab[2] || [])[36]]));
 }
 
 /* (f) school derived from grade ------------------------------------------- */
@@ -799,11 +857,11 @@ section('(f) otp-v0.5 · school is DERIVED from grade, and grade wins');
   const staleDump = staleEnv.dump();
   const staleRow = (staleDump.sheets['OTP Submissions'] || [])[1] || [];
   const notSeenIdx = EXPECTED_OTP_COLUMNS.indexOf('sp1_not_seen');
-  ok(staleRow.length === 34, 'a stale otp-v0.4 payload (grade and sp1_not_seen keys absent) still appends a 34-cell row', 'cells: ' + staleRow.length);
+  ok(staleRow.length === 38, 'a stale otp-v0.4 payload (grade and sp1_not_seen keys absent) still appends a 38-cell row', 'cells: ' + staleRow.length);
   ok(staleRow[schoolIdx] === OTP_PAYLOAD.school, 'a stale payload keeps its posted school', 'got: ' + staleRow[schoolIdx]);
   ok(staleRow[gradeIdx] === '' && staleRow[notSeenIdx] === '', 'the two new cells are empty strings for a stale payload',
     'grade: ' + JSON.stringify(staleRow[gradeIdx]) + ' not_seen: ' + JSON.stringify(staleRow[notSeenIdx]));
-  ok((staleDump.mail || []).length === 1, 'a stale payload still sends the backup email', 'mails: ' + (staleDump.mail || []).length);
+  ok((staleDump.mail || []).length === 2, 'a stale payload still sends the backup email and the teacher email', 'mails: ' + (staleDump.mail || []).length);
   ok((staleDump.fetches || []).some((f) => f.url.endsWith('/rest/v1/rpc/ingest_otp')), 'a stale payload still calls the Supabase mirror');
 }
 
@@ -862,7 +920,7 @@ section('(g) otp-v0.6 · sp1_notes + rubric_version, and the Criterion notes ema
   staleEnv6.ctx.doPost({ postData: { contents: JSON.stringify(stale6) } });
   const stale6Dump = staleEnv6.dump();
   const stale6Row = (stale6Dump.sheets['OTP Submissions'] || [])[1] || [];
-  ok(stale6Row.length === 34, 'a stale otp-v0.5 payload still appends a 34-cell row', 'cells: ' + stale6Row.length);
+  ok(stale6Row.length === 38, 'a stale otp-v0.5 payload still appends a 38-cell row', 'cells: ' + stale6Row.length);
   ok(stale6Row[notesIdx] === '' && stale6Row[versionIdx] === '', 'the two new cells are empty strings for a stale payload',
     JSON.stringify([stale6Row[notesIdx], stale6Row[versionIdx]]));
   ok(String((stale6Dump.mail[0] || {}).htmlBody).indexOf('Criterion notes') < 0, 'a stale payload sends the email with no Criterion notes section');
@@ -966,6 +1024,282 @@ section('(h) otp-v0.6 · pad extraction accepts sp1_<level>_<n>_note targets');
   ok(samePrompt, 'padExtractTargetedPrompt returns main bytes for every non-note value');
   ok(newCtx.isPadExtractTarget('sp1_good_3_note') === true && PRE_V06.indexOf('sp1_good_3_note') < 0,
     'the ONLY values the predicate adds are the note targets');
+}
+
+/** Posts an OTP submission (OTP_PAYLOAD, overridden) and returns the newly
+ * appended row array. Used by the otp-v0.9 lifecycle sections below. */
+function submitOtpRow(env, over) {
+  env.ctx.doPost({ postData: { contents: JSON.stringify({ ...OTP_PAYLOAD, ...over }) } });
+  const tab = env.dump().sheets['OTP Submissions'] || [];
+  return tab[tab.length - 1];
+}
+
+/* (i) otp-v0.9 · lap increments per teacher; round-fetch failure ---------- */
+section('(i) otp-v0.9 · lap increments per teacher (case-insensitive); a round-fetch failure stamps round ""');
+{
+  const idx = (c) => EXPECTED_OTP_COLUMNS.indexOf(c);
+  const env = buildEnv(SRC_NEW, seedFull());
+  submitOtpRow(env, {});
+  const second = submitOtpRow(env, { teacher: 'JO MARE KRUGER' });   // same teacher, different case
+  const tab = env.dump().sheets['OTP Submissions'] || [];
+  ok(tab.length === 3, 'two submissions for the same teacher append two rows', 'rows: ' + tab.length);
+  ok(tab[1][idx('lap')] === 1, 'the first submission is Lap 1', 'got: ' + tab[1][idx('lap')]);
+  ok(second[idx('lap')] === 2, 'the second submission (different-case teacher name) is Lap 2', 'got: ' + second[idx('lap')]);
+
+  const otherEnv = buildEnv(SRC_NEW, seedFull());
+  const otherRow = submitOtpRow(otherEnv, { teacher: 'Someone Else' });
+  ok(otherRow[idx('lap')] === 1, 'a different teacher still starts at Lap 1', 'got: ' + otherRow[idx('lap')]);
+
+  const failEnv = buildEnv(SRC_NEW, seedFull());
+  failEnv.state.forceRoundFailure = true;
+  const failOut = JSON.parse(failEnv.ctx.doPost({ postData: { contents: JSON.stringify(OTP_PAYLOAD) } }).getContent());
+  const failRow = (failEnv.dump().sheets['OTP Submissions'] || [])[1] || [];
+  ok(failOut.success === true, 'submit still succeeds when the round RPC fails', JSON.stringify(failOut));
+  ok(failRow[idx('round')] === '', 'a failed round fetch stamps round as an empty string (hard rule 12)', 'got: ' + JSON.stringify(failRow[idx('round')]));
+  ok(failRow[idx('status')] === 'observed' && failRow[idx('lap')] === 1, 'status and lap are unaffected by a round-fetch failure',
+    JSON.stringify([failRow[idx('status')], failRow[idx('lap')]]));
+}
+
+/* (j) otp-v0.9 · update overwrites only posted keys ----------------------- */
+section('(j) otp-v0.9 · update overwrites only posted keys; status/lap/round/ids untouched');
+{
+  const idx = (c) => EXPECTED_OTP_COLUMNS.indexOf(c);
+  const env = buildEnv(SRC_NEW, seedFull());
+  const beforeRow = submitOtpRow(env, {});
+  const token = beforeRow[idx('record_token')];
+
+  const updateOut = JSON.parse(env.ctx.doPost({ postData: { contents: JSON.stringify({
+    form: 'otp', action: 'update', record_token: token,
+    observer_comments: 'Updated after the coaching chat.',
+    next_step_1: 'Try cold-call in the first ten minutes.',
+    grade: '3'   // OTP_PAYLOAD posted grade '9' (Secondary); '3' should re-derive school to Primary
+  }) } }).getContent());
+  const tab = env.dump().sheets['OTP Submissions'];
+  ok(tab.length === 2, 'update overwrites the existing row in place, no new row is appended', 'rows: ' + tab.length);
+  const afterRow = tab[1];
+
+  eqJson(updateOut, { success: true, id: beforeRow[idx('record_id')], status: 'observed' }, 'update response is {success:true, id, status:"observed"}');
+  ok(afterRow[idx('observer_comments')] === 'Updated after the coaching chat.', 'a posted key overwrites its cell', 'got: ' + afterRow[idx('observer_comments')]);
+  ok(afterRow[idx('next_step_1')] === 'Try cold-call in the first ten minutes.', 'a second posted key overwrites its own cell', 'got: ' + afterRow[idx('next_step_1')]);
+  ok(afterRow[idx('grade')] === '3', 'grade overwrites when posted', 'got: ' + afterRow[idx('grade')]);
+  ok(afterRow[idx('school')] === 'Primary', 'school is RE-DERIVED from the posted grade on update (grade 3 -> Primary)', 'got: ' + afterRow[idx('school')]);
+
+  ok(afterRow[idx('evidence_pad_id')] === OTP_PAYLOAD.evidence_pad_id, 'evidence_pad_id (absent from the update payload) survives untouched', 'got: ' + afterRow[idx('evidence_pad_id')]);
+  ok(afterRow[idx('sp1_beginner')] === beforeRow[idx('sp1_beginner')], 'an untouched rubric column keeps its original value', 'got: ' + afterRow[idx('sp1_beginner')]);
+  ok(afterRow[idx('teacher')] === beforeRow[idx('teacher')], 'teacher (absent from the update payload) is untouched', 'got: ' + afterRow[idx('teacher')]);
+
+  ok(afterRow[idx('record_id')] === beforeRow[idx('record_id')], 'record_id is never touched by an update', 'got: ' + afterRow[idx('record_id')]);
+  ok(afterRow[idx('submitted_at')] === beforeRow[idx('submitted_at')], 'submitted_at is never touched by an update');
+  ok(afterRow[idx('record_token')] === token, 'record_token is never touched by an update');
+  ok(afterRow[idx('lap')] === beforeRow[idx('lap')], 'lap is never touched by an update');
+  ok(afterRow[idx('round')] === beforeRow[idx('round')], 'round is never touched by an update');
+  ok(afterRow[idx('status')] === 'observed', 'status stays "observed" after an update', 'got: ' + afterRow[idx('status')]);
+  ok(afterRow[idx('closed_at')] === '', 'closed_at stays empty after an update', 'got: ' + JSON.stringify(afterRow[idx('closed_at')]));
+
+  const ingest = env.dump().fetches.filter((f) => f.url.endsWith('/rest/v1/rpc/ingest_otp'));
+  ok(ingest.length === 2, 'update triggers a second Supabase mirror call (submit + update)', 'count: ' + ingest.length);
+  const mirrorAfter = JSON.parse((ingest[1] || {}).payload || '{}').payload || {};
+  eqJson(EXPECTED_OTP_COLUMNS.map((c) => mirrorAfter[c]), afterRow, 'the update re-push mirrors the FULL row, field for field');
+
+  ok(env.dump().mail.length === 2, 'a plain update sends no extra email beyond the original submit A + B', 'count: ' + env.dump().mail.length);
+}
+
+/* (k) otp-v0.9 · close sets status closed + closed_at, sends email C ------ */
+section('(k) otp-v0.9 · close sets status closed + closed_at and sends email C with the three steps + view link');
+{
+  const idx = (c) => EXPECTED_OTP_COLUMNS.indexOf(c);
+  const env = buildEnv(SRC_NEW, seedFull());
+  const beforeRow = submitOtpRow(env, {});
+  const token = beforeRow[idx('record_token')];
+
+  const closePayload = {
+    form: 'otp', action: 'close', record_token: token,
+    next_step_1: 'Cold-call every ten minutes.',
+    next_step_2: 'Share success criteria up front.',
+    next_step_3: 'Revisit in three weeks'
+  };
+  const closeOut = JSON.parse(env.ctx.doPost({ postData: { contents: JSON.stringify(closePayload) } }).getContent());
+  const afterRow = env.dump().sheets['OTP Submissions'][1];
+
+  eqJson(closeOut, { success: true, id: beforeRow[idx('record_id')], status: 'closed' }, 'close response is {success:true, id, status:"closed"}');
+  ok(afterRow[idx('status')] === 'closed', 'status is "closed" after close', 'got: ' + afterRow[idx('status')]);
+  ok(afterRow[idx('closed_at')] === new Date(FIXED_MS).toISOString(), 'closed_at is stamped server-side', 'got: ' + afterRow[idx('closed_at')]);
+  ok(afterRow[idx('next_step_1')] === closePayload.next_step_1, 'a posted key (next_step_1) is applied on close too', 'got: ' + afterRow[idx('next_step_1')]);
+  ok(afterRow[idx('lap')] === beforeRow[idx('lap')] && afterRow[idx('round')] === beforeRow[idx('round')], 'lap/round are untouched by close');
+
+  const mail = env.dump().mail;
+  ok(mail.length === 3, 'close sends a third email (C), beyond the submit-time A + B', 'count: ' + mail.length);
+  const emailC = mail[2];
+  const viewUrl = 'https://rogerceaser21.github.io/Data-Representation/Assets/OTP/otp-record.html?token=' + token;
+  ok(emailC.to === 'jo.marekruger@ais.ae', 'email C goes to the teacher', 'got: ' + emailC.to);
+  ok(emailC.subject === 'OTP Progress · Lap 1 closed · Jo Mare Kruger · 2026-09-02', 'email C subject names the closed lap', 'got: ' + emailC.subject);
+  ok(String(emailC.htmlBody).indexOf('1. ' + closePayload.next_step_1) > -1 &&
+     String(emailC.htmlBody).indexOf('2. ' + closePayload.next_step_2) > -1 &&
+     String(emailC.htmlBody).indexOf('3. ' + closePayload.next_step_3) > -1,
+     'email C body carries all three Next Steps, numbered', emailC.htmlBody);
+  ok(String(emailC.htmlBody).indexOf(viewUrl) > -1, 'email C carries the view link', 'looked for: ' + viewUrl);
+  ok(String(emailC.htmlBody).indexOf('?edit=') < 0, 'email C never carries an edit link (record is locked)');
+  ok(emailC.cc.indexOf('dave.richards2627@ais.ae') > -1 && emailC.cc.indexOf('admin.user@ais.ae') > -1,
+    'email C CCs the observer and the backup mailbox', 'got: ' + emailC.cc);
+
+  const ingest = env.dump().fetches.filter((f) => f.url.endsWith('/rest/v1/rpc/ingest_otp'));
+  ok(ingest.length === 2, 'close triggers a second Supabase mirror call (submit + close)', 'count: ' + ingest.length);
+  const mirrorAfter = JSON.parse((ingest[1] || {}).payload || '{}').payload || {};
+  ok(mirrorAfter.status === 'closed' && mirrorAfter.closed_at === afterRow[idx('closed_at')], 'the close re-push mirror carries status closed + closed_at');
+}
+
+/* (l) otp-v0.9 · update/close on an already-closed row is refused --------- */
+section('(l) otp-v0.9 · update and close on an already-closed row are refused; the row is unchanged');
+{
+  const idx = (c) => EXPECTED_OTP_COLUMNS.indexOf(c);
+  const env = buildEnv(SRC_NEW, seedFull());
+  const beforeRow = submitOtpRow(env, {});
+  const token = beforeRow[idx('record_token')];
+
+  env.ctx.doPost({ postData: { contents: JSON.stringify({
+    form: 'otp', action: 'close', record_token: token,
+    next_step_1: 'A', next_step_2: 'B', next_step_3: 'C'
+  }) } });
+  const closedRow = env.dump().sheets['OTP Submissions'][1].slice();
+  const mailCountAfterClose = env.dump().mail.length;
+  const fetchCountAfterClose = env.dump().fetches.length;
+
+  const updateAttempt = JSON.parse(env.ctx.doPost({ postData: { contents: JSON.stringify({
+    form: 'otp', action: 'update', record_token: token, observer_comments: 'Should never land.'
+  }) } }).getContent());
+  eqJson(updateAttempt, { success: false, error: 'Record not found' }, 'an update on a closed row gets the generic miss (hard rule 12)');
+
+  const closeAttempt = JSON.parse(env.ctx.doPost({ postData: { contents: JSON.stringify({
+    form: 'otp', action: 'close', record_token: token, next_step_1: 'Z'
+  }) } }).getContent());
+  eqJson(closeAttempt, { success: false, error: 'Record not found' }, 'a second close on an already-closed row gets the generic miss');
+
+  const finalRow = env.dump().sheets['OTP Submissions'][1];
+  eqJson(finalRow, closedRow, 'the row is byte-for-byte unchanged after both refused attempts');
+  ok(env.dump().mail.length === mailCountAfterClose, 'no new email is sent on a refused update/close', 'got: ' + env.dump().mail.length);
+  ok(env.dump().fetches.length === fetchCountAfterClose, 'no new Supabase call is made on a refused update/close', 'got: ' + env.dump().fetches.length);
+
+  const wrongToken = JSON.parse(env.ctx.doPost({ postData: { contents: JSON.stringify({
+    form: 'otp', action: 'update', record_token: 'deadbeef' + '0'.repeat(24), observer_comments: 'x'
+  }) } }).getContent());
+  eqJson(wrongToken, { success: false, error: 'Record not found' }, 'update with an unknown record_token gets the same generic miss');
+}
+
+/* (m) otp-v0.9 · prev_next_steps ------------------------------------------ */
+section('(m) otp-v0.9 · prev_next_steps: not found / found / round filter / cache invalidation');
+{
+  const idx = (c) => EXPECTED_OTP_COLUMNS.indexOf(c);
+
+  const emptyEnv = buildEnv(SRC_NEW, seedFull());
+  const miss = JSON.parse(emptyEnv.ctx.doGet({ parameter: { action: 'prev_next_steps', teacher: 'Jo Mare Kruger', form: 'otp' } }).getContent());
+  eqJson(miss, { success: true, found: false }, 'no OTP rows at all -> found:false, no error');
+
+  const env = buildEnv(SRC_NEW, seedFull());
+  const row1 = submitOtpRow(env, { date: '2026-09-01' });
+  env.ctx.doPost({ postData: { contents: JSON.stringify({
+    form: 'otp', action: 'close', record_token: row1[idx('record_token')],
+    next_step_1: 'Lap 1 step one', next_step_2: 'Lap 1 step two', next_step_3: 'Lap 1 step three'
+  }) } });
+  const row2 = submitOtpRow(env, { date: '2026-09-08' });   // Lap 2, same teacher, later date
+  env.ctx.doPost({ postData: { contents: JSON.stringify({
+    form: 'otp', action: 'close', record_token: row2[idx('record_token')],
+    next_step_1: 'Lap 2 step one', next_step_2: 'Lap 2 step two', next_step_3: 'Lap 2 step three'
+  }) } });
+
+  const found = JSON.parse(env.ctx.doGet({ parameter: { action: 'prev_next_steps', teacher: 'jo mare kruger', form: 'otp' } }).getContent());
+  ok(found.success === true && found.found === true, 'a teacher with closed laps is found (case-insensitive)', JSON.stringify(found));
+  ok(found.lap === 2, 'the LATEST closed lap wins (Lap 2, later observation_date)', 'got: ' + found.lap);
+  eqJson([found.next_step_1, found.next_step_2, found.next_step_3],
+    ['Lap 2 step one', 'Lap 2 step two', 'Lap 2 step three'], 'the three Next Steps come from the winning lap');
+  ok(found.observer === OTP_PAYLOAD.inspector, 'observer is carried', 'got: ' + found.observer);
+  ok(found.observation_date === '2026-09-08', 'observation_date is carried', 'got: ' + found.observation_date);
+  const sp1Keys = Object.keys(found).filter((k) => k.indexOf('sp1_') === 0);
+  eqJson(sp1Keys, [], 'the response carries no sp1_* keys');
+
+  // round filter: a closed row from ANOTHER round is skipped even though newer;
+  // a BLANK round counts as current. Both seeded directly (never through
+  // submit, so they can carry a round an ordinary submit would never write),
+  // mirroring the direct-seed pattern used by section (e)'s header-heal tests.
+  const roundEnv = buildEnv(SRC_NEW, seedFull());
+  const currentRow = submitOtpRow(roundEnv, { date: '2026-09-01' });
+  roundEnv.ctx.doPost({ postData: { contents: JSON.stringify({
+    form: 'otp', action: 'close', record_token: currentRow[idx('record_token')],
+    next_step_1: 'Current round step', next_step_2: '', next_step_3: ''
+  }) } });
+  const rTab = roundEnv.dump().sheets['OTP Submissions'];
+
+  const otherRoundRow = otpRow('11112222333344445555666677778888');
+  otherRoundRow[idx('teacher')] = OTP_PAYLOAD.teacher;
+  otherRoundRow[idx('observation_date')] = '2026-09-09';   // newer than the current-round lap
+  otherRoundRow[idx('status')] = 'closed';
+  otherRoundRow[idx('round')] = OTP_OTHER_ROUND;
+  otherRoundRow[idx('next_step_1')] = 'Wrong round step';
+  rTab.push(otherRoundRow);
+  // seeded directly (not through close), so clear the 60s cache by hand,
+  // exactly what handleOtpUpdateOrClose would have done for a real close.
+  roundEnv.ctx.clearPrevNextStepsCache(OTP_PAYLOAD.teacher);
+
+  const roundFiltered = JSON.parse(roundEnv.ctx.doGet({ parameter: { action: 'prev_next_steps', teacher: OTP_PAYLOAD.teacher, form: 'otp' } }).getContent());
+  ok(roundFiltered.found === true && roundFiltered.next_step_1 === 'Current round step',
+    'a closed row from ANOTHER round is skipped even though it is newer', JSON.stringify(roundFiltered));
+
+  const blankRoundRow = otpRow('99998888777766665555444433332222');
+  blankRoundRow[idx('teacher')] = OTP_PAYLOAD.teacher;
+  blankRoundRow[idx('observation_date')] = '2026-09-10';   // newer than both above
+  blankRoundRow[idx('status')] = 'closed';
+  blankRoundRow[idx('round')] = '';
+  blankRoundRow[idx('next_step_1')] = 'Blank round step';
+  rTab.push(blankRoundRow);
+  roundEnv.ctx.clearPrevNextStepsCache(OTP_PAYLOAD.teacher);
+
+  const blankWins = JSON.parse(roundEnv.ctx.doGet({ parameter: { action: 'prev_next_steps', teacher: OTP_PAYLOAD.teacher, form: 'otp' } }).getContent());
+  ok(blankWins.found === true && blankWins.next_step_1 === 'Blank round step',
+    'a blank round counts as the current round and, being newest, wins', JSON.stringify(blankWins));
+
+  // cache: handleOtpUpdateOrClose clears the teacher's key on every close, so
+  // the very next lookup sees a freshly closed lap without waiting the 60s TTL.
+  const cacheEnv = buildEnv(SRC_NEW, seedFull());
+  const cRow = submitOtpRow(cacheEnv, {});
+  cacheEnv.ctx.doPost({ postData: { contents: JSON.stringify({
+    form: 'otp', action: 'close', record_token: cRow[idx('record_token')],
+    next_step_1: 'First close', next_step_2: '', next_step_3: ''
+  }) } });
+  const first = JSON.parse(cacheEnv.ctx.doGet({ parameter: { action: 'prev_next_steps', teacher: OTP_PAYLOAD.teacher, form: 'otp' } }).getContent());
+  ok(first.next_step_1 === 'First close', 'prev_next_steps reflects the just-closed lap');
+  ok(Object.keys(cacheEnv.state.cache).some((k) => k.indexOf('OTP_PREV_STEPS_v1:') === 0), 'the lookup is cached under its own key prefix');
+
+  const secondCloseRow = submitOtpRow(cacheEnv, { date: '2026-09-15' });
+  cacheEnv.ctx.doPost({ postData: { contents: JSON.stringify({
+    form: 'otp', action: 'close', record_token: secondCloseRow[idx('record_token')],
+    next_step_1: 'Second close', next_step_2: '', next_step_3: ''
+  }) } });
+  const afterSecond = JSON.parse(cacheEnv.ctx.doGet({ parameter: { action: 'prev_next_steps', teacher: OTP_PAYLOAD.teacher, form: 'otp' } }).getContent());
+  ok(afterSecond.next_step_1 === 'Second close', 'closing a new lap clears the cache, so the very next lookup sees it immediately (no 60s wait)');
+}
+
+/* (n) otp-v0.9 · a stale (pre-lifecycle) OTP row still reads through GET -- */
+section('(n) otp-v0.9 · a stale 34-cell OTP row still reads through the record GET, new fields blank');
+{
+  const idx = (c) => EXPECTED_OTP_COLUMNS.indexOf(c);
+  const STALE_TOKEN = '55446677889900112233445566778899';
+  const staleEnv = buildEnv(SRC_NEW, JSON.parse(JSON.stringify({
+    ...ROSTER_R3,
+    'OTP Submissions': [EXPECTED_OTP_COLUMNS, padRow(otpRow(STALE_TOKEN).slice(0, 34), EXPECTED_OTP_COLUMNS.length)]
+  })));
+  const stale = JSON.parse(staleEnv.ctx.doGet({ parameter: { token: STALE_TOKEN, form: 'otp' } }).getContent());
+  ok(stale.success === true && stale.data.teacher === 'Existing OTP Teacher',
+    'a pre-otp-v0.9 34-cell row still reads back under the 38-column header', JSON.stringify(stale).slice(0, 140));
+  ok(stale.data.status === '' && stale.data.closed_at === '' && stale.data.lap === '' && stale.data.round === '',
+    'the four new lifecycle fields read back as empty strings on a legacy row',
+    JSON.stringify([stale.data.status, stale.data.closed_at, stale.data.lap, stale.data.round]));
+
+  // a legacy row's blank status cell ('' !== 'closed') means update/close still
+  // treat it as open, not refuse it as "already closed".
+  const updated = JSON.parse(staleEnv.ctx.doPost({ postData: { contents: JSON.stringify({
+    form: 'otp', action: 'update', record_token: STALE_TOKEN, observer_comments: 'Now on the new schema.'
+  }) } }).getContent());
+  ok(updated.success === true && updated.status === 'observed', 'a legacy (blank-status) row can be updated; it is treated as open, not closed',
+    JSON.stringify(updated));
 }
 
 section('');
