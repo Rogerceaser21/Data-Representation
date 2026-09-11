@@ -1102,6 +1102,168 @@
       "norm_label": "submitotprow()"
     },
     {
+      "label": "evidence.mjs",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/ipad/evidence.mjs",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "ipad_evidence",
+      "community": 181,
+      "norm_label": "evidence.mjs"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/ipad/evidence.mjs",
+      "source_location": "L14",
+      "_origin": "ast",
+      "id": "ipad_evidence_main",
+      "community": 181,
+      "norm_label": "main()"
+    },
+    {
+      "label": "read.mjs",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/ipad/read.mjs",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "ipad_read",
+      "community": 116,
+      "norm_label": "read.mjs"
+    },
+    {
+      "label": "sleep()",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/ipad/read.mjs",
+      "source_location": "L31",
+      "_origin": "ast",
+      "id": "ipad_read_sleep",
+      "community": 116,
+      "norm_label": "sleep()"
+    },
+    {
+      "label": "driverReady()",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/ipad/read.mjs",
+      "source_location": "L33",
+      "_origin": "ast",
+      "id": "ipad_read_driverready",
+      "community": 116,
+      "norm_label": "driverready()"
+    },
+    {
+      "label": "ensureDriverUp()",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/ipad/read.mjs",
+      "source_location": "L44",
+      "_origin": "ast",
+      "id": "ipad_read_ensuredriverup",
+      "community": 116,
+      "norm_label": "ensuredriverup()"
+    },
+    {
+      "label": "newSession()",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/ipad/read.mjs",
+      "source_location": "L61",
+      "_origin": "ast",
+      "id": "ipad_read_newsession",
+      "community": 116,
+      "norm_label": "newsession()"
+    },
+    {
+      "label": "deleteSession()",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/ipad/read.mjs",
+      "source_location": "L83",
+      "_origin": "ast",
+      "id": "ipad_read_deletesession",
+      "community": 116,
+      "norm_label": "deletesession()"
+    },
+    {
+      "label": "navigate()",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/ipad/read.mjs",
+      "source_location": "L92",
+      "_origin": "ast",
+      "id": "ipad_read_navigate",
+      "community": 116,
+      "norm_label": "navigate()"
+    },
+    {
+      "label": "execSync()",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/ipad/read.mjs",
+      "source_location": "L100",
+      "_origin": "ast",
+      "id": "ipad_read_execsync",
+      "community": 116,
+      "norm_label": "execsync()"
+    },
+    {
+      "label": "passGate()",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/ipad/read.mjs",
+      "source_location": "L116",
+      "_origin": "ast",
+      "id": "ipad_read_passgate",
+      "community": 116,
+      "norm_label": "passgate()"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/ipad/read.mjs",
+      "source_location": "L139",
+      "_origin": "ast",
+      "id": "ipad_read_main",
+      "community": 116,
+      "norm_label": "main()"
+    },
+    {
+      "label": "rig.sh",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/ipad/rig.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "file"
+      },
+      "_origin": "ast",
+      "id": "ipad_rig",
+      "community": 178,
+      "norm_label": "rig.sh"
+    },
+    {
+      "label": "rig.sh script",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/ipad/rig.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_entrypoint"
+      },
+      "_origin": "ast",
+      "id": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_c82d79_dbb590c5_5d3d_4dfd_9feb_b9133a30ccc7_scratchpad_fix_otp_v0_9_1_assets_otp_tests_ipad_rig_sh__entry",
+      "community": 178,
+      "norm_label": "rig.sh script"
+    },
+    {
+      "label": "is_booted()",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/ipad/rig.sh",
+      "source_location": "L14",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "ipad_rig_is_booted",
+      "community": 178,
+      "norm_label": "is_booted()"
+    },
+    {
       "label": "otp.spec.ts",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
@@ -1138,7 +1300,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "tests_otp_spec_level",
-      "community": 84,
+      "community": 182,
       "norm_label": "level()"
     },
     {
@@ -1148,7 +1310,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "tests_otp_spec_criterion",
-      "community": 84,
+      "community": 182,
       "norm_label": "criterion()"
     },
     {
@@ -1358,7 +1520,7 @@
       "source_location": "L322",
       "_origin": "ast",
       "id": "tests_otp_spec_openform",
-      "community": 84,
+      "community": 180,
       "norm_label": "openform()"
     },
     {
@@ -1368,7 +1530,7 @@
       "source_location": "L328",
       "_origin": "ast",
       "id": "tests_otp_spec_openedit",
-      "community": 84,
+      "community": 180,
       "norm_label": "openedit()"
     },
     {
@@ -1388,7 +1550,7 @@
       "source_location": "L340",
       "_origin": "ast",
       "id": "tests_otp_spec_daypat",
-      "community": 84,
+      "community": 183,
       "norm_label": "daypat()"
     },
     {
@@ -1398,7 +1560,7 @@
       "source_location": "L346",
       "_origin": "ast",
       "id": "tests_otp_spec_dayre",
-      "community": 84,
+      "community": 183,
       "norm_label": "dayre()"
     },
     {
@@ -1408,7 +1570,7 @@
       "source_location": "L348",
       "_origin": "ast",
       "id": "tests_otp_spec_passgate",
-      "community": 84,
+      "community": 180,
       "norm_label": "passgate()"
     },
     {
@@ -1418,7 +1580,7 @@
       "source_location": "L355",
       "_origin": "ast",
       "id": "tests_otp_spec_picktomselect",
-      "community": 84,
+      "community": 179,
       "norm_label": "picktomselect()"
     },
     {
@@ -1432,30 +1594,40 @@
       "norm_label": "gradecontrol()"
     },
     {
-      "label": "pickGrade()",
+      "label": "tsControl()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L365",
       "_origin": "ast",
-      "id": "tests_otp_spec_pickgrade",
+      "id": "tests_otp_spec_tscontrol",
       "community": 84,
+      "norm_label": "tscontrol()"
+    },
+    {
+      "label": "pickGrade()",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L369",
+      "_origin": "ast",
+      "id": "tests_otp_spec_pickgrade",
+      "community": 179,
       "norm_label": "pickgrade()"
     },
     {
       "label": "fillRequired()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L370",
+      "source_location": "L374",
       "_origin": "ast",
       "id": "tests_otp_spec_fillrequired",
-      "community": 84,
+      "community": 179,
       "norm_label": "fillrequired()"
     },
     {
       "label": "chipAt()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L382",
+      "source_location": "L386",
       "_origin": "ast",
       "id": "tests_otp_spec_chipat",
       "community": 84,
@@ -1465,27 +1637,27 @@
       "label": "noteBtnAt()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L384",
+      "source_location": "L388",
       "_origin": "ast",
       "id": "tests_otp_spec_notebtnat",
-      "community": 84,
+      "community": 177,
       "norm_label": "notebtnat()"
     },
     {
       "label": "notePop()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L387",
+      "source_location": "L391",
       "_origin": "ast",
       "id": "tests_otp_spec_notepop",
-      "community": 84,
+      "community": 177,
       "norm_label": "notepop()"
     },
     {
       "label": "noteScrim()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L388",
+      "source_location": "L392",
       "_origin": "ast",
       "id": "tests_otp_spec_notescrim",
       "community": 84,
@@ -1495,17 +1667,17 @@
       "label": "expectPop()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L389",
+      "source_location": "L393",
       "_origin": "ast",
       "id": "tests_otp_spec_expectpop",
-      "community": 84,
+      "community": 177,
       "norm_label": "expectpop()"
     },
     {
       "label": "noteText()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L391",
+      "source_location": "L395",
       "_origin": "ast",
       "id": "tests_otp_spec_notetext",
       "community": 84,
@@ -1515,67 +1687,67 @@
       "label": "pointOf()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L397",
+      "source_location": "L401",
       "_origin": "ast",
       "id": "tests_otp_spec_pointof",
-      "community": 84,
+      "community": 157,
       "norm_label": "pointof()"
     },
     {
       "label": "tapAt()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L412",
+      "source_location": "L416",
       "_origin": "ast",
       "id": "tests_otp_spec_tapat",
-      "community": 84,
+      "community": 157,
       "norm_label": "tapat()"
     },
     {
       "label": "stackAt()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L418",
+      "source_location": "L422",
       "_origin": "ast",
       "id": "tests_otp_spec_stackat",
-      "community": 84,
+      "community": 157,
       "norm_label": "stackat()"
     },
     {
       "label": "chipSel()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L428",
+      "source_location": "L432",
       "_origin": "ast",
       "id": "tests_otp_spec_chipsel",
-      "community": 84,
+      "community": 157,
       "norm_label": "chipsel()"
     },
     {
       "label": "tapChip()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L429",
+      "source_location": "L433",
       "_origin": "ast",
       "id": "tests_otp_spec_tapchip",
-      "community": 84,
+      "community": 157,
       "norm_label": "tapchip()"
     },
     {
       "label": "tapNoteBtn()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L435",
+      "source_location": "L439",
       "_origin": "ast",
       "id": "tests_otp_spec_tapnotebtn",
-      "community": 84,
+      "community": 177,
       "norm_label": "tapnotebtn()"
     },
     {
       "label": "VIEWPORTS",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L444",
+      "source_location": "L448",
       "_origin": "ast",
       "id": "tests_otp_spec_viewports",
       "community": 84,
@@ -1585,11 +1757,41 @@
       "label": "viewerSrc()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L451",
+      "source_location": "L455",
       "_origin": "ast",
       "id": "tests_otp_spec_viewersrc",
       "community": 84,
       "norm_label": "viewersrc()"
+    },
+    {
+      "label": "fakeViewport()",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L2838",
+      "_origin": "ast",
+      "id": "tests_otp_spec_fakeviewport",
+      "community": 84,
+      "norm_label": "fakeviewport()"
+    },
+    {
+      "label": "vvSet()",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L2851",
+      "_origin": "ast",
+      "id": "tests_otp_spec_vvset",
+      "community": 84,
+      "norm_label": "vvset()"
+    },
+    {
+      "label": "kbOpen()",
+      "file_type": "code",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L2852",
+      "_origin": "ast",
+      "id": "tests_otp_spec_kbopen",
+      "community": 84,
+      "norm_label": "kbopen()"
     },
     {
       "label": ".staticrypt.json",
@@ -1836,7 +2038,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_istransforming",
-      "community": 178,
+      "community": 54,
       "norm_label": "istransforming()"
     },
     {
@@ -1906,7 +2108,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_s_point",
-      "community": 130,
+      "community": 51,
       "norm_label": ".point()"
     },
     {
@@ -1976,7 +2178,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_s_invert",
-      "community": 130,
+      "community": 51,
       "norm_label": ".invert()"
     },
     {
@@ -1996,7 +2198,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_s_decompose",
-      "community": 86,
+      "community": 130,
       "norm_label": ".decompose()"
     },
     {
@@ -2036,7 +2238,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_isindocument",
-      "community": 157,
+      "community": 53,
       "norm_label": "_isindocument()"
     },
     {
@@ -2236,7 +2438,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_preparearrayfortween",
-      "community": 4,
+      "community": 45,
       "norm_label": "_preparearrayfortween()"
     },
     {
@@ -2266,7 +2468,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_releasecanvas",
-      "community": 157,
+      "community": 53,
       "norm_label": "releasecanvas()"
     },
     {
@@ -2326,7 +2528,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_strokeshape",
-      "community": 58,
+      "community": 41,
       "norm_label": ".strokeshape()"
     },
     {
@@ -2386,7 +2588,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_reset",
-      "community": 50,
+      "community": 58,
       "norm_label": ".reset()"
     },
     {
@@ -2536,7 +2738,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_createlineargradient",
-      "community": 58,
+      "community": 41,
       "norm_label": ".createlineargradient()"
     },
     {
@@ -2546,7 +2748,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_createpattern",
-      "community": 50,
+      "community": 41,
       "norm_label": ".createpattern()"
     },
     {
@@ -2716,7 +2918,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_rotate",
-      "community": 50,
+      "community": 41,
       "norm_label": ".rotate()"
     },
     {
@@ -2736,7 +2938,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_scale",
-      "community": 59,
+      "community": 55,
       "norm_label": ".scale()"
     },
     {
@@ -2746,7 +2948,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_setlinedash",
-      "community": 58,
+      "community": 50,
       "norm_label": ".setlinedash()"
     },
     {
@@ -2766,7 +2968,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_settransform",
-      "community": 50,
+      "community": 58,
       "norm_label": ".settransform()"
     },
     {
@@ -2796,7 +2998,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_translate",
-      "community": 59,
+      "community": 41,
       "norm_label": ".translate()"
     },
     {
@@ -2826,7 +3028,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_get",
-      "community": 15,
+      "community": 41,
       "norm_label": "get()"
     },
     {
@@ -2856,7 +3058,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_p_constructor",
-      "community": 58,
+      "community": 55,
       "norm_label": ".constructor()"
     },
     {
@@ -2976,7 +3178,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_m_strokeshape",
-      "community": 58,
+      "community": 46,
       "norm_label": ".strokeshape()"
     },
     {
@@ -2996,7 +3198,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_y",
-      "community": 59,
+      "community": 55,
       "norm_label": "y"
     },
     {
@@ -3016,7 +3218,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_y_getcontext",
-      "community": 59,
+      "community": 55,
       "norm_label": ".getcontext()"
     },
     {
@@ -3026,7 +3228,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_y_getpixelratio",
-      "community": 50,
+      "community": 58,
       "norm_label": ".getpixelratio()"
     },
     {
@@ -3046,7 +3248,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_y_setwidth",
-      "community": 59,
+      "community": 55,
       "norm_label": ".setwidth()"
     },
     {
@@ -3056,7 +3258,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_y_setheight",
-      "community": 59,
+      "community": 55,
       "norm_label": ".setheight()"
     },
     {
@@ -3066,7 +3268,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_y_getwidth",
-      "community": 59,
+      "community": 55,
       "norm_label": ".getwidth()"
     },
     {
@@ -3076,7 +3278,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_y_getheight",
-      "community": 59,
+      "community": 55,
       "norm_label": ".getheight()"
     },
     {
@@ -3116,7 +3318,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_v_constructor",
-      "community": 116,
+      "community": 53,
       "norm_label": ".constructor()"
     },
     {
@@ -3136,7 +3338,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_x_constructor",
-      "community": 116,
+      "community": 53,
       "norm_label": ".constructor()"
     },
     {
@@ -3286,7 +3488,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_addcomponentsgettersetter",
-      "community": 113,
+      "community": 111,
       "norm_label": "addcomponentsgettersetter()"
     },
     {
@@ -3346,7 +3548,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_constructor",
-      "community": 79,
+      "community": 15,
       "norm_label": ".constructor()"
     },
     {
@@ -3366,7 +3568,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_clearcache",
-      "community": 130,
+      "community": 59,
       "norm_label": "._clearcache()"
     },
     {
@@ -3376,7 +3578,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_getcache",
-      "community": 59,
+      "community": 41,
       "norm_label": "._getcache()"
     },
     {
@@ -3386,7 +3588,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_calculate",
-      "community": 58,
+      "community": 41,
       "norm_label": "._calculate()"
     },
     {
@@ -3406,7 +3608,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_clearselfanddescendantcache",
-      "community": 130,
+      "community": 4,
       "norm_label": "._clearselfanddescendantcache()"
     },
     {
@@ -3416,7 +3618,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_cache",
-      "community": 56,
+      "community": 55,
       "norm_label": ".cache()"
     },
     {
@@ -3426,7 +3628,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_iscached",
-      "community": 130,
+      "community": 86,
       "norm_label": ".iscached()"
     },
     {
@@ -3446,7 +3648,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_transformedrect",
-      "community": 130,
+      "community": 86,
       "norm_label": "._transformedrect()"
     },
     {
@@ -3486,7 +3688,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_on",
-      "community": 79,
+      "community": 51,
       "norm_label": ".on()"
     },
     {
@@ -3496,7 +3698,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_off",
-      "community": 114,
+      "community": 15,
       "norm_label": ".off()"
     },
     {
@@ -3516,7 +3718,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_addeventlistener",
-      "community": 114,
+      "community": 51,
       "norm_label": ".addeventlistener()"
     },
     {
@@ -3566,7 +3768,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_destroy",
-      "community": 157,
+      "community": 53,
       "norm_label": ".destroy()"
     },
     {
@@ -3576,7 +3778,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_getattr",
-      "community": 113,
+      "community": 4,
       "norm_label": ".getattr()"
     },
     {
@@ -3606,7 +3808,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_setattrs",
-      "community": 79,
+      "community": 15,
       "norm_label": ".setattrs()"
     },
     {
@@ -3616,7 +3818,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_islistening",
-      "community": 177,
+      "community": 54,
       "norm_label": ".islistening()"
     },
     {
@@ -3696,7 +3898,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_batchtransformchanges",
-      "community": 130,
+      "community": 59,
       "norm_label": "._batchtransformchanges()"
     },
     {
@@ -3706,7 +3908,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_setposition",
-      "community": 130,
+      "community": 59,
       "norm_label": ".setposition()"
     },
     {
@@ -3726,7 +3928,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_getrelativepointerposition",
-      "community": 130,
+      "community": 51,
       "norm_label": ".getrelativepointerposition()"
     },
     {
@@ -3746,7 +3948,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_setabsoluteposition",
-      "community": 130,
+      "community": 59,
       "norm_label": ".setabsoluteposition()"
     },
     {
@@ -3756,7 +3958,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_settransform",
-      "community": 130,
+      "community": 59,
       "norm_label": "._settransform()"
     },
     {
@@ -3796,7 +3998,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_rotate",
-      "community": 59,
+      "community": 41,
       "norm_label": ".rotate()"
     },
     {
@@ -3886,7 +4088,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_tojson",
-      "community": 51,
+      "community": 15,
       "norm_label": ".tojson()"
     },
     {
@@ -3976,7 +4178,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_getabsolutetransform",
-      "community": 59,
+      "community": 41,
       "norm_label": ".getabsolutetransform()"
     },
     {
@@ -3986,7 +4188,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_getabsolutescale",
-      "community": 86,
+      "community": 130,
       "norm_label": ".getabsolutescale()"
     },
     {
@@ -3996,7 +4198,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_getabsoluterotation",
-      "community": 86,
+      "community": 130,
       "norm_label": ".getabsoluterotation()"
     },
     {
@@ -4006,7 +4208,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_gettransform",
-      "community": 59,
+      "community": 41,
       "norm_label": ".gettransform()"
     },
     {
@@ -4026,7 +4228,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_tokonvacanvas",
-      "community": 56,
+      "community": 55,
       "norm_label": "._tokonvacanvas()"
     },
     {
@@ -4126,7 +4328,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_firechangeevent",
-      "community": 113,
+      "community": 15,
       "norm_label": "._firechangeevent()"
     },
     {
@@ -4186,7 +4388,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_setcomponentattr",
-      "community": 113,
+      "community": 15,
       "norm_label": "._setcomponentattr()"
     },
     {
@@ -4196,7 +4398,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_fireandbubble",
-      "community": 177,
+      "community": 54,
       "norm_label": "._fireandbubble()"
     },
     {
@@ -4216,7 +4418,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_draw",
-      "community": 56,
+      "community": 55,
       "norm_label": ".draw()"
     },
     {
@@ -4246,7 +4448,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_setdragposition",
-      "community": 57,
+      "community": 15,
       "norm_label": "._setdragposition()"
     },
     {
@@ -4276,7 +4478,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_isdragging",
-      "community": 178,
+      "community": 15,
       "norm_label": ".isdragging()"
     },
     {
@@ -4316,7 +4518,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_isclientrectonscreen",
-      "community": 53,
+      "community": 130,
       "norm_label": ".isclientrectonscreen()"
     },
     {
@@ -4326,7 +4528,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_create",
-      "community": 113,
+      "community": 15,
       "norm_label": ".create()"
     },
     {
@@ -4336,7 +4538,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_createnode",
-      "community": 113,
+      "community": 15,
       "norm_label": "._createnode()"
     },
     {
@@ -4486,7 +4688,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_v_clearselfanddescendantcache",
-      "community": 130,
+      "community": 59,
       "norm_label": "._clearselfanddescendantcache()"
     },
     {
@@ -4546,7 +4748,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_j",
-      "community": 15,
+      "community": 54,
       "norm_label": "j()"
     },
     {
@@ -4596,7 +4798,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_tt_constructor",
-      "community": 116,
+      "community": 54,
       "norm_label": ".constructor()"
     },
     {
@@ -4666,7 +4868,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_tt_destroy",
-      "community": 157,
+      "community": 53,
       "norm_label": ".destroy()"
     },
     {
@@ -4676,7 +4878,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_tt_getpointerposition",
-      "community": 177,
+      "community": 54,
       "norm_label": ".getpointerposition()"
     },
     {
@@ -4686,7 +4888,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_tt_getpointerbyid",
-      "community": 57,
+      "community": 15,
       "norm_label": "._getpointerbyid()"
     },
     {
@@ -4736,7 +4938,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_tt_getintersection",
-      "community": 177,
+      "community": 54,
       "norm_label": ".getintersection()"
     },
     {
@@ -4746,7 +4948,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_tt_resizedom",
-      "community": 116,
+      "community": 54,
       "norm_label": "._resizedom()"
     },
     {
@@ -4826,7 +5028,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_tt_bindcontentevents",
-      "community": 116,
+      "community": 54,
       "norm_label": "._bindcontentevents()"
     },
     {
@@ -4856,7 +5058,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_tt_gettargetshape",
-      "community": 178,
+      "community": 54,
       "norm_label": "._gettargetshape()"
     },
     {
@@ -4866,7 +5068,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_tt_pointerleave",
-      "community": 178,
+      "community": 54,
       "norm_label": "._pointerleave()"
     },
     {
@@ -4886,7 +5088,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_tt_pointermove",
-      "community": 178,
+      "community": 54,
       "norm_label": "._pointermove()"
     },
     {
@@ -4906,7 +5108,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_tt_contextmenu",
-      "community": 177,
+      "community": 54,
       "norm_label": "._contextmenu()"
     },
     {
@@ -4916,7 +5118,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_tt_wheel",
-      "community": 177,
+      "community": 54,
       "norm_label": "._wheel()"
     },
     {
@@ -4926,7 +5128,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_tt_pointercancel",
-      "community": 177,
+      "community": 54,
       "norm_label": "._pointercancel()"
     },
     {
@@ -4976,7 +5178,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_tt_builddom",
-      "community": 116,
+      "community": 54,
       "norm_label": "._builddom()"
     },
     {
@@ -4986,7 +5188,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_tt_cache",
-      "community": 54,
+      "community": 113,
       "norm_label": ".cache()"
     },
     {
@@ -4996,7 +5198,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_tt_clearcache",
-      "community": 157,
+      "community": 53,
       "norm_label": ".clearcache()"
     },
     {
@@ -5016,7 +5218,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ot",
-      "community": 56,
+      "community": 41,
       "norm_label": "ot()"
     },
     {
@@ -5096,7 +5298,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ft_getfillpattern",
-      "community": 59,
+      "community": 41,
       "norm_label": "._getfillpattern()"
     },
     {
@@ -5106,7 +5308,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ft_getlineargradient",
-      "community": 58,
+      "community": 41,
       "norm_label": "._getlineargradient()"
     },
     {
@@ -5146,7 +5348,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ft_hasstroke",
-      "community": 58,
+      "community": 41,
       "norm_label": ".hasstroke()"
     },
     {
@@ -5156,7 +5358,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ft_hashitstroke",
-      "community": 58,
+      "community": 41,
       "norm_label": ".hashitstroke()"
     },
     {
@@ -5166,7 +5368,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ft_intersects",
-      "community": 56,
+      "community": 55,
       "norm_label": ".intersects()"
     },
     {
@@ -5196,7 +5398,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ft_setstrokehitenabled",
-      "community": 113,
+      "community": 41,
       "norm_label": ".setstrokehitenabled()"
     },
     {
@@ -5226,7 +5428,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ft_getclientrect",
-      "community": 130,
+      "community": 86,
       "norm_label": ".getclientrect()"
     },
     {
@@ -5276,7 +5478,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ft_setpointercapture",
-      "community": 54,
+      "community": 41,
       "norm_label": ".setpointercapture()"
     },
     {
@@ -5306,7 +5508,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_constructor",
-      "community": 116,
+      "community": 53,
       "norm_label": ".constructor()"
     },
     {
@@ -5346,7 +5548,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_gethitcanvas",
-      "community": 56,
+      "community": 55,
       "norm_label": ".gethitcanvas()"
     },
     {
@@ -5356,7 +5558,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_getcontext",
-      "community": 56,
+      "community": 55,
       "norm_label": ".getcontext()"
     },
     {
@@ -5366,7 +5568,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_clear",
-      "community": 56,
+      "community": 55,
       "norm_label": ".clear()"
     },
     {
@@ -5436,7 +5638,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_remove",
-      "community": 157,
+      "community": 53,
       "norm_label": ".remove()"
     },
     {
@@ -5456,7 +5658,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_setsize",
-      "community": 116,
+      "community": 53,
       "norm_label": ".setsize()"
     },
     {
@@ -5486,7 +5688,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_checkvisibility",
-      "community": 116,
+      "community": 53,
       "norm_label": "._checkvisibility()"
     },
     {
@@ -5496,7 +5698,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_setsmoothenabled",
-      "community": 116,
+      "community": 53,
       "norm_label": "._setsmoothenabled()"
     },
     {
@@ -5516,7 +5718,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_setwidth",
-      "community": 53,
+      "community": 113,
       "norm_label": ".setwidth()"
     },
     {
@@ -5536,7 +5738,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_setheight",
-      "community": 53,
+      "community": 113,
       "norm_label": ".setheight()"
     },
     {
@@ -5556,7 +5758,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_getintersection",
-      "community": 177,
+      "community": 54,
       "norm_label": ".getintersection()"
     },
     {
@@ -5566,7 +5768,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_drawscene",
-      "community": 56,
+      "community": 55,
       "norm_label": ".drawscene()"
     },
     {
@@ -5576,7 +5778,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_drawhit",
-      "community": 56,
+      "community": 55,
       "norm_label": ".drawhit()"
     },
     {
@@ -5606,7 +5808,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_sethitgraphenabled",
-      "community": 53,
+      "community": 113,
       "norm_label": ".sethitgraphenabled()"
     },
     {
@@ -5636,7 +5838,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_destroy",
-      "community": 157,
+      "community": 53,
       "norm_label": ".destroy()"
     },
     {
@@ -5876,7 +6078,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_vt_setposition",
-      "community": 4,
+      "community": 59,
       "norm_label": ".setposition()"
     },
     {
@@ -6226,7 +6428,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ee",
-      "community": 112,
+      "community": 108,
       "norm_label": "ee"
     },
     {
@@ -6236,7 +6438,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ee_constructor",
-      "community": 112,
+      "community": 108,
       "norm_label": ".constructor()"
     },
     {
@@ -6276,7 +6478,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ee_getwidth",
-      "community": 112,
+      "community": 108,
       "norm_label": ".getwidth()"
     },
     {
@@ -6286,7 +6488,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ee_getheight",
-      "community": 112,
+      "community": 108,
       "norm_label": ".getheight()"
     },
     {
@@ -6296,7 +6498,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ee_getselfrect",
-      "community": 112,
+      "community": 108,
       "norm_label": ".getselfrect()"
     },
     {
@@ -6326,7 +6528,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_de_constructor",
-      "community": 79,
+      "community": 44,
       "norm_label": ".constructor()"
     },
     {
@@ -6866,7 +7068,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we",
-      "community": 44,
+      "community": 56,
       "norm_label": "we"
     },
     {
@@ -7146,7 +7348,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_me",
-      "community": 44,
+      "community": 56,
       "norm_label": "me()"
     },
     {
@@ -7186,7 +7388,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_settext",
-      "community": 44,
+      "community": 56,
       "norm_label": ".settext()"
     },
     {
@@ -7196,7 +7398,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_getwidth",
-      "community": 44,
+      "community": 56,
       "norm_label": ".getwidth()"
     },
     {
@@ -7206,7 +7408,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_getheight",
-      "community": 44,
+      "community": 56,
       "norm_label": ".getheight()"
     },
     {
@@ -7226,7 +7428,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_gettextheight",
-      "community": 44,
+      "community": 56,
       "norm_label": ".gettextheight()"
     },
     {
@@ -7246,7 +7448,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_getcontextfont",
-      "community": 44,
+      "community": 56,
       "norm_label": "._getcontextfont()"
     },
     {
@@ -7256,7 +7458,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_addtextline",
-      "community": 44,
+      "community": 56,
       "norm_label": "._addtextline()"
     },
     {
@@ -7266,7 +7468,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_settextdata",
-      "community": 44,
+      "community": 56,
       "norm_label": "._settextdata()"
     },
     {
@@ -7276,7 +7478,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_shouldhandleellipsis",
-      "community": 44,
+      "community": 56,
       "norm_label": "._shouldhandleellipsis()"
     },
     {
@@ -7286,7 +7488,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_trytoaddellipsistolastline",
-      "community": 44,
+      "community": 56,
       "norm_label": "._trytoaddellipsistolastline()"
     },
     {
@@ -7336,7 +7538,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_qe",
-      "community": 44,
+      "community": 56,
       "norm_label": "qe"
     },
     {
@@ -7346,7 +7548,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_qe_constructor",
-      "community": 44,
+      "community": 56,
       "norm_label": ".constructor()"
     },
     {
@@ -7386,7 +7588,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_qe_scenefunc",
-      "community": 46,
+      "community": 56,
       "norm_label": "._scenefunc()"
     },
     {
@@ -7406,7 +7608,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_qe_gettextwidth",
-      "community": 44,
+      "community": 56,
       "norm_label": ".gettextwidth()"
     },
     {
@@ -7416,7 +7618,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_qe_gettextheight",
-      "community": 44,
+      "community": 113,
       "norm_label": ".gettextheight()"
     },
     {
@@ -7426,7 +7628,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_qe_settext",
-      "community": 44,
+      "community": 56,
       "norm_label": ".settext()"
     },
     {
@@ -7436,7 +7638,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_qe_getcontextfont",
-      "community": 46,
+      "community": 56,
       "norm_label": "._getcontextfont()"
     },
     {
@@ -7446,7 +7648,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_qe_gettextsize",
-      "community": 43,
+      "community": 56,
       "norm_label": "._gettextsize()"
     },
     {
@@ -7466,7 +7668,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_qe_getselfrect",
-      "community": 112,
+      "community": 108,
       "norm_label": ".getselfrect()"
     },
     {
@@ -7476,7 +7678,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_qe_destroy",
-      "community": 157,
+      "community": 53,
       "norm_label": ".destroy()"
     },
     {
@@ -7486,7 +7688,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ti",
-      "community": 86,
+      "community": 45,
       "norm_label": "ti()"
     },
     {
@@ -7496,7 +7698,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ei",
-      "community": 86,
+      "community": 45,
       "norm_label": "ei()"
     },
     {
@@ -7636,7 +7838,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ni_getnodeshape",
-      "community": 86,
+      "community": 130,
       "norm_label": ".__getnodeshape()"
     },
     {
@@ -7806,7 +8008,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ni_istransforming",
-      "community": 178,
+      "community": 54,
       "norm_label": ".istransforming()"
     },
     {
@@ -7826,7 +8028,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ni_destroy",
-      "community": 51,
+      "community": 53,
       "norm_label": ".destroy()"
     },
     {
@@ -7836,7 +8038,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ni_toobject",
-      "community": 51,
+      "community": 15,
       "norm_label": ".toobject()"
     },
     {
@@ -7856,7 +8058,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ni_getclientrect",
-      "community": 56,
+      "community": 130,
       "norm_label": ".getclientrect()"
     },
     {
@@ -8606,7 +8808,7 @@
       "source_location": "L223",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_onoptionselect",
-      "community": 3,
+      "community": 87,
       "norm_label": ".onoptionselect()"
     },
     {
@@ -8686,7 +8888,7 @@
       "source_location": "L232",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_getvalue",
-      "community": 90,
+      "community": 65,
       "norm_label": ".getvalue()"
     },
     {
@@ -9116,7 +9318,7 @@
       "source_location": "L340",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_updateoriginalinput",
-      "community": 90,
+      "community": 65,
       "norm_label": ".updateoriginalinput()"
     },
     {
@@ -9156,7 +9358,7 @@
       "source_location": "L348",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_clear",
-      "community": 90,
+      "community": 87,
       "norm_label": ".clear()"
     },
     {
@@ -16528,20 +16730,30 @@
       "norm_label": "readme.md"
     },
     {
-      "label": "Progress in Lessons OTP form \u00b7 otp-v0.9",
+      "label": "otp-v0.9.2 (2026-09-11, evening)",
       "file_type": "document",
       "source_file": "Assets/OTP/README.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "otp_readme_progress_in_lessons_otp_form_otp_v0_9",
+      "id": "otp_readme_otp_v0_9_2_2026_09_11_evening",
       "community": 118,
-      "norm_label": "progress in lessons otp form \u00b7 otp-v0.9"
+      "norm_label": "otp-v0.9.2 (2026-09-11, evening)"
+    },
+    {
+      "label": "Progress in Lessons OTP form \u00b7 otp-v0.9.1",
+      "file_type": "document",
+      "source_file": "Assets/OTP/README.md",
+      "source_location": "L5",
+      "_origin": "ast",
+      "id": "otp_readme_progress_in_lessons_otp_form_otp_v0_9_1",
+      "community": 118,
+      "norm_label": "progress in lessons otp form \u00b7 otp-v0.9.1"
     },
     {
       "label": "What is on the page",
       "file_type": "document",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L14",
+      "source_location": "L18",
       "_origin": "ast",
       "id": "otp_readme_what_is_on_the_page",
       "community": 118,
@@ -16551,7 +16763,7 @@
       "label": "Build",
       "file_type": "document",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L97",
+      "source_location": "L101",
       "_origin": "ast",
       "id": "otp_readme_build",
       "community": 118,
@@ -16561,7 +16773,7 @@
       "label": "Backend contract",
       "file_type": "document",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L114",
+      "source_location": "L118",
       "_origin": "ast",
       "id": "otp_readme_backend_contract",
       "community": 118,
@@ -16571,7 +16783,7 @@
       "label": "Tests",
       "file_type": "document",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L214",
+      "source_location": "L218",
       "_origin": "ast",
       "id": "otp_readme_tests",
       "community": 118,
@@ -16581,11 +16793,141 @@
       "label": "Changelog",
       "file_type": "document",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L227",
+      "source_location": "L231",
       "_origin": "ast",
       "id": "otp_readme_changelog",
       "community": 118,
       "norm_label": "changelog"
+    },
+    {
+      "label": "README.md",
+      "file_type": "document",
+      "source_file": "Assets/OTP/tests/ipad/README.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "ipad_readme",
+      "community": 112,
+      "norm_label": "readme.md"
+    },
+    {
+      "label": "iPad Simulator rig for the OTP form: iPadOS 26.3",
+      "file_type": "document",
+      "source_file": "Assets/OTP/tests/ipad/README.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "ipad_readme_ipad_simulator_rig_for_the_otp_form_ipados_26_3",
+      "community": 112,
+      "norm_label": "ipad simulator rig for the otp form: ipados 26.3"
+    },
+    {
+      "label": "Files",
+      "file_type": "document",
+      "source_file": "Assets/OTP/tests/ipad/README.md",
+      "source_location": "L17",
+      "_origin": "ast",
+      "id": "ipad_readme_files",
+      "community": 112,
+      "norm_label": "files"
+    },
+    {
+      "label": "Commands that worked (copy-pasteable)",
+      "file_type": "document",
+      "source_file": "Assets/OTP/tests/ipad/README.md",
+      "source_location": "L31",
+      "_origin": "ast",
+      "id": "ipad_readme_commands_that_worked_copy_pasteable",
+      "community": 112,
+      "norm_label": "commands that worked (copy-pasteable)"
+    },
+    {
+      "label": "The tap route: MCP tool unavailable here, idb is the working fallback",
+      "file_type": "document",
+      "source_file": "Assets/OTP/tests/ipad/README.md",
+      "source_location": "L53",
+      "_origin": "ast",
+      "id": "ipad_readme_the_tap_route_mcp_tool_unavailable_here_idb_is_the_working_fallback",
+      "community": 112,
+      "norm_label": "the tap route: mcp tool unavailable here, idb is the working fallback"
+    },
+    {
+      "label": "WebDriver (safaridriver): DOM truth, but confirmed NOT a write instrument",
+      "file_type": "document",
+      "source_file": "Assets/OTP/tests/ipad/README.md",
+      "source_location": "L105",
+      "_origin": "ast",
+      "id": "ipad_readme_webdriver_safaridriver_dom_truth_but_confirmed_not_a_write_instrument",
+      "community": 112,
+      "norm_label": "webdriver (safaridriver): dom truth, but confirmed not a write instrument"
+    },
+    {
+      "label": "Why each `read.mjs` call re-gates itself",
+      "file_type": "document",
+      "source_file": "Assets/OTP/tests/ipad/README.md",
+      "source_location": "L134",
+      "_origin": "ast",
+      "id": "ipad_readme_why_each_read_mjs_call_re_gates_itself",
+      "community": 112,
+      "norm_label": "why each `read.mjs` call re-gates itself"
+    },
+    {
+      "label": "Chip selector: `.rub-chip` is exact, `[class*=rub-chip]` over-matches",
+      "file_type": "document",
+      "source_file": "Assets/OTP/tests/ipad/README.md",
+      "source_location": "L150",
+      "_origin": "ast",
+      "id": "ipad_readme_chip_selector_rub_chip_is_exact_class_rub_chip_over_matches",
+      "community": 112,
+      "norm_label": "chip selector: `.rub-chip` is exact, `[class*=rub-chip]` over-matches"
+    },
+    {
+      "label": "`#time_in` / `#time_out` are native `<input type=\"time\">`, not text fields",
+      "file_type": "document",
+      "source_file": "Assets/OTP/tests/ipad/README.md",
+      "source_location": "L160",
+      "_origin": "ast",
+      "id": "ipad_readme_time_in_time_out_are_native_input_type_time_not_text_fields",
+      "community": 112,
+      "norm_label": "`#time_in` / `#time_out` are native `<input type=\"time\">`, not text fields"
+    },
+    {
+      "label": "Keyboard appearance is non-deterministic - always screenshot-confirm",
+      "file_type": "document",
+      "source_file": "Assets/OTP/tests/ipad/README.md",
+      "source_location": "L174",
+      "_origin": "ast",
+      "id": "ipad_readme_keyboard_appearance_is_non_deterministic_always_screenshot_confirm",
+      "community": 112,
+      "norm_label": "keyboard appearance is non-deterministic - always screenshot-confirm"
+    },
+    {
+      "label": "Save Password system dialog (new gotcha this session)",
+      "file_type": "document",
+      "source_file": "Assets/OTP/tests/ipad/README.md",
+      "source_location": "L186",
+      "_origin": "ast",
+      "id": "ipad_readme_save_password_system_dialog_new_gotcha_this_session",
+      "community": 112,
+      "norm_label": "save password system dialog (new gotcha this session)"
+    },
+    {
+      "label": "What this rig still cannot reproduce (carried over from 2026-09-03, unchanged)",
+      "file_type": "document",
+      "source_file": "Assets/OTP/tests/ipad/README.md",
+      "source_location": "L199",
+      "_origin": "ast",
+      "id": "ipad_readme_what_this_rig_still_cannot_reproduce_carried_over_from_2026_09_03_unchanged",
+      "community": 112,
+      "norm_label": "what this rig still cannot reproduce (carried over from 2026-09-03, unchanged)"
+    },
+    {
+      "label": "Guard rail",
+      "file_type": "document",
+      "source_file": "Assets/OTP/tests/ipad/README.md",
+      "source_location": "L208",
+      "_origin": "ast",
+      "id": "ipad_readme_guard_rail",
+      "community": 112,
+      "norm_label": "guard rail"
     },
     {
       "label": "2026-05-28_email_R3-Data_to-Dave_cc-Leon-Steve.md",
@@ -16613,7 +16955,7 @@
       "source_file": "Assets/R3/Google file links.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "r3_google_file_links",
+      "id": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_52c50e_de2f0fca_6e18_451f_9a04_47f308a95232_scratchpad_otp_v0_9_merge_assets_r3_google_file_links_md",
       "community": 28,
       "norm_label": "google file links.md"
     },
@@ -16683,7 +17025,7 @@
       "source_file": "Assets/R3/README.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "r3_readme",
+      "id": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_52c50e_de2f0fca_6e18_451f_9a04_47f308a95232_scratchpad_otp_v0_9_merge_assets_r3_readme_md",
       "community": 25,
       "norm_label": "readme.md"
     },
@@ -17808,44 +18150,44 @@
       "norm_label": "heal / big photo drop"
     },
     {
-      "label": "24-25-Primary School OTP - v4_63ab3de6.md",
+      "label": "24-25-Primary School OTP - v4_a963edc2.md",
       "file_type": "document",
-      "source_file": "graphify-out/converted/24-25-Primary School OTP - v4_63ab3de6.md",
+      "source_file": "graphify-out/converted/24-25-Primary School OTP - v4_a963edc2.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "converted_24_25_primary_school_otp_v4_63ab3de6",
-      "community": 179,
-      "norm_label": "24-25-primary school otp - v4_63ab3de6.md"
+      "id": "converted_24_25_primary_school_otp_v4_a963edc2",
+      "community": 184,
+      "norm_label": "24-25-primary school otp - v4_a963edc2.md"
     },
     {
-      "label": "Lesson Observation - Igor- 12_11_bd87254e.md",
+      "label": "Lesson Observation - Igor- 12_11_6cef1d32.md",
       "file_type": "document",
-      "source_file": "graphify-out/converted/Lesson Observation - Igor- 12_11_bd87254e.md",
+      "source_file": "graphify-out/converted/Lesson Observation - Igor- 12_11_6cef1d32.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "converted_lesson_observation_igor_12_11_bd87254e",
-      "community": 180,
-      "norm_label": "lesson observation - igor- 12_11_bd87254e.md"
+      "id": "converted_lesson_observation_igor_12_11_6cef1d32",
+      "community": 185,
+      "norm_label": "lesson observation - igor- 12_11_6cef1d32.md"
     },
     {
-      "label": "R3 Evidence Form Template_5e7c8f58.md",
+      "label": "R3 Evidence Form Template_c69bc466.md",
       "file_type": "document",
-      "source_file": "graphify-out/converted/R3 Evidence Form Template_5e7c8f58.md",
+      "source_file": "graphify-out/converted/R3 Evidence Form Template_c69bc466.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "converted_r3_evidence_form_template_5e7c8f58",
-      "community": 181,
-      "norm_label": "r3 evidence form template_5e7c8f58.md"
+      "id": "converted_r3_evidence_form_template_c69bc466",
+      "community": 186,
+      "norm_label": "r3 evidence form template_c69bc466.md"
     },
     {
-      "label": "Year 6 Lesson Plan_dca90bef.md",
+      "label": "Year 6 Lesson Plan_48ac3c6a.md",
       "file_type": "document",
-      "source_file": "graphify-out/converted/Year 6 Lesson Plan_dca90bef.md",
+      "source_file": "graphify-out/converted/Year 6 Lesson Plan_48ac3c6a.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "converted_year_6_lesson_plan_dca90bef",
-      "community": 182,
-      "norm_label": "year 6 lesson plan_dca90bef.md"
+      "id": "converted_year_6_lesson_plan_48ac3c6a",
+      "community": 187,
+      "norm_label": "year 6 lesson plan_48ac3c6a.md"
     },
     {
       "label": "handoff-2026-06-02-1151.md",
@@ -22045,9 +22387,9 @@
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
       "source_location": "L1048",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_gs_harness",
-      "target": "tests_gs_harness_submitotprow",
-      "confidence_score": 1.0
+      "target": "tests_gs_harness_submitotprow"
     },
     {
       "relation": "calls",
@@ -22096,6 +22438,269 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/ipad/evidence.mjs",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "ipad_evidence",
+      "target": "ipad_evidence_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/ipad/read.mjs",
+      "source_location": "L83",
+      "weight": 1.0,
+      "source": "ipad_read",
+      "target": "ipad_read_deletesession",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/ipad/read.mjs",
+      "source_location": "L33",
+      "weight": 1.0,
+      "source": "ipad_read",
+      "target": "ipad_read_driverready",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/ipad/read.mjs",
+      "source_location": "L44",
+      "weight": 1.0,
+      "source": "ipad_read",
+      "target": "ipad_read_ensuredriverup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/ipad/read.mjs",
+      "source_location": "L100",
+      "weight": 1.0,
+      "source": "ipad_read",
+      "target": "ipad_read_execsync",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/ipad/read.mjs",
+      "source_location": "L139",
+      "weight": 1.0,
+      "source": "ipad_read",
+      "target": "ipad_read_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/ipad/read.mjs",
+      "source_location": "L92",
+      "weight": 1.0,
+      "source": "ipad_read",
+      "target": "ipad_read_navigate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/ipad/read.mjs",
+      "source_location": "L61",
+      "weight": 1.0,
+      "source": "ipad_read",
+      "target": "ipad_read_newsession",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/ipad/read.mjs",
+      "source_location": "L116",
+      "weight": 1.0,
+      "source": "ipad_read",
+      "target": "ipad_read_passgate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/ipad/read.mjs",
+      "source_location": "L31",
+      "weight": 1.0,
+      "source": "ipad_read",
+      "target": "ipad_read_sleep",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/ipad/read.mjs",
+      "source_location": "L55",
+      "weight": 1.0,
+      "source": "ipad_read_ensuredriverup",
+      "target": "ipad_read_sleep",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/ipad/read.mjs",
+      "source_location": "L170",
+      "weight": 1.0,
+      "source": "ipad_read_main",
+      "target": "ipad_read_sleep",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/ipad/read.mjs",
+      "source_location": "L118",
+      "weight": 1.0,
+      "source": "ipad_read_passgate",
+      "target": "ipad_read_sleep",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/ipad/read.mjs",
+      "source_location": "L45",
+      "weight": 1.0,
+      "source": "ipad_read_ensuredriverup",
+      "target": "ipad_read_driverready",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/ipad/read.mjs",
+      "source_location": "L146",
+      "weight": 1.0,
+      "source": "ipad_read_main",
+      "target": "ipad_read_ensuredriverup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/ipad/read.mjs",
+      "source_location": "L147",
+      "weight": 1.0,
+      "source": "ipad_read_main",
+      "target": "ipad_read_newsession",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/ipad/read.mjs",
+      "source_location": "L176",
+      "weight": 1.0,
+      "source": "ipad_read_main",
+      "target": "ipad_read_deletesession",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/ipad/read.mjs",
+      "source_location": "L169",
+      "weight": 1.0,
+      "source": "ipad_read_main",
+      "target": "ipad_read_navigate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/ipad/read.mjs",
+      "source_location": "L117",
+      "weight": 1.0,
+      "source": "ipad_read_passgate",
+      "target": "ipad_read_navigate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/ipad/read.mjs",
+      "source_location": "L156",
+      "weight": 1.0,
+      "source": "ipad_read_main",
+      "target": "ipad_read_execsync",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/ipad/read.mjs",
+      "source_location": "L119",
+      "weight": 1.0,
+      "source": "ipad_read_passgate",
+      "target": "ipad_read_execsync",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/ipad/read.mjs",
+      "source_location": "L150",
+      "weight": 1.0,
+      "source": "ipad_read_main",
+      "target": "ipad_read_passgate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/ipad/rig.sh",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "ipad_rig",
+      "target": "ipad_rig_is_booted",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/ipad/rig.sh",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "ipad_rig",
+      "target": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_c82d79_dbb590c5_5d3d_4dfd_9feb_b9133a30ccc7_scratchpad_fix_otp_v0_9_1_assets_otp_tests_ipad_rig_sh__entry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/ipad/rig.sh",
+      "source_location": "L20",
+      "weight": 1.0,
+      "context": "call",
+      "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_c82d79_dbb590c5_5d3d_4dfd_9feb_b9133a30ccc7_scratchpad_fix_otp_v0_9_1_assets_otp_tests_ipad_rig_sh__entry",
+      "target": "ipad_rig_is_booted",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L24",
       "weight": 1.0,
@@ -22119,9 +22724,9 @@
       "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L335",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_otp_spec",
-      "target": "tests_otp_spec_bannertext",
-      "confidence_score": 1.0
+      "target": "tests_otp_spec_bannertext"
     },
     {
       "relation": "contains",
@@ -22199,9 +22804,9 @@
       "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L340",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_otp_spec",
-      "target": "tests_otp_spec_daypat",
-      "confidence_score": 1.0
+      "target": "tests_otp_spec_daypat"
     },
     {
       "relation": "contains",
@@ -22209,9 +22814,9 @@
       "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L346",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_otp_spec",
-      "target": "tests_otp_spec_dayre",
-      "confidence_score": 1.0
+      "target": "tests_otp_spec_dayre"
     },
     {
       "relation": "contains",
@@ -22222,6 +22827,16 @@
       "confidence_score": 1.0,
       "source": "tests_otp_spec",
       "target": "tests_otp_spec_expectpop"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L2838",
+      "weight": 1.0,
+      "source": "tests_otp_spec",
+      "target": "tests_otp_spec_fakeviewport",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -22252,6 +22867,16 @@
       "confidence_score": 1.0,
       "source": "tests_otp_spec",
       "target": "tests_otp_spec_harness"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L2852",
+      "weight": 1.0,
+      "source": "tests_otp_spec",
+      "target": "tests_otp_spec_kbopen",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -22329,9 +22954,9 @@
       "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L328",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_otp_spec",
-      "target": "tests_otp_spec_openedit",
-      "confidence_score": 1.0
+      "target": "tests_otp_spec_openedit"
     },
     {
       "relation": "contains",
@@ -22399,9 +23024,9 @@
       "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L204",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_otp_spec",
-      "target": "tests_otp_spec_prev_ns_found",
-      "confidence_score": 1.0
+      "target": "tests_otp_spec_prev_ns_found"
     },
     {
       "relation": "contains",
@@ -22409,9 +23034,9 @@
       "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L214",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_otp_spec",
-      "target": "tests_otp_spec_prev_ns_steps",
-      "confidence_score": 1.0
+      "target": "tests_otp_spec_prev_ns_steps"
     },
     {
       "relation": "contains",
@@ -22469,9 +23094,9 @@
       "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L191",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_otp_spec",
-      "target": "tests_otp_spec_record_payload_closed",
-      "confidence_score": 1.0
+      "target": "tests_otp_spec_record_payload_closed"
     },
     {
       "relation": "contains",
@@ -22489,9 +23114,9 @@
       "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L179",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_otp_spec",
-      "target": "tests_otp_spec_record_payload_open",
-      "confidence_score": 1.0
+      "target": "tests_otp_spec_record_payload_open"
     },
     {
       "relation": "contains",
@@ -22557,6 +23182,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L365",
+      "weight": 1.0,
+      "source": "tests_otp_spec",
+      "target": "tests_otp_spec_tscontrol",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L358",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -22572,6 +23207,16 @@
       "confidence_score": 1.0,
       "source": "tests_otp_spec",
       "target": "tests_otp_spec_viewports"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/otp.spec.ts",
+      "source_location": "L2851",
+      "weight": 1.0,
+      "source": "tests_otp_spec",
+      "target": "tests_otp_spec_vvset",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -22602,9 +23247,9 @@
       "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L330",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_otp_spec_openedit",
-      "target": "tests_otp_spec_passgate",
-      "confidence_score": 1.0
+      "target": "tests_otp_spec_passgate"
     },
     {
       "relation": "calls",
@@ -22613,9 +23258,9 @@
       "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L346",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tests_otp_spec_dayre",
-      "target": "tests_otp_spec_daypat",
-      "confidence_score": 1.0
+      "target": "tests_otp_spec_daypat"
     },
     {
       "relation": "calls",
@@ -50992,9 +51637,9 @@
       "source_file": ".planning/2026-09-10-otp-v0.8-contract.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_2026_09_09_5f529b_c9436b08_16a4_4681_9370_faee1437cd39_scratchpad_otp_v071_planning_2026_09_10_otp_v0_8_contract_md",
-      "target": "planning_2026_09_10_otp_v0_8_contract_otp_v0_8_contract_focus_on_open_required_time_out_no_floating_pad_launcher",
-      "confidence_score": 1.0
+      "target": "planning_2026_09_10_otp_v0_8_contract_otp_v0_8_contract_focus_on_open_required_time_out_no_floating_pad_launcher"
     },
     {
       "relation": "contains",
@@ -51263,16 +51908,26 @@
       "source_location": "L1",
       "weight": 1.0,
       "source": "otp_readme",
-      "target": "otp_readme_progress_in_lessons_otp_form_otp_v0_9",
+      "target": "otp_readme_otp_v0_9_2_2026_09_11_evening",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L114",
+      "source_location": "L5",
       "weight": 1.0,
-      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_9",
+      "source": "otp_readme",
+      "target": "otp_readme_progress_in_lessons_otp_form_otp_v0_9_1",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/README.md",
+      "source_location": "L118",
+      "weight": 1.0,
+      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_9_1",
       "target": "otp_readme_backend_contract",
       "confidence_score": 1.0
     },
@@ -51280,9 +51935,9 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L97",
+      "source_location": "L101",
       "weight": 1.0,
-      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_9",
+      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_9_1",
       "target": "otp_readme_build",
       "confidence_score": 1.0
     },
@@ -51290,9 +51945,9 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L227",
+      "source_location": "L231",
       "weight": 1.0,
-      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_9",
+      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_9_1",
       "target": "otp_readme_changelog",
       "confidence_score": 1.0
     },
@@ -51300,9 +51955,9 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L214",
+      "source_location": "L218",
       "weight": 1.0,
-      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_9",
+      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_9_1",
       "target": "otp_readme_tests",
       "confidence_score": 1.0
     },
@@ -51310,10 +51965,130 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L14",
+      "source_location": "L18",
       "weight": 1.0,
-      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_9",
+      "source": "otp_readme_progress_in_lessons_otp_form_otp_v0_9_1",
       "target": "otp_readme_what_is_on_the_page",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/ipad/README.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "ipad_readme",
+      "target": "ipad_readme_ipad_simulator_rig_for_the_otp_form_ipados_26_3",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/ipad/README.md",
+      "source_location": "L150",
+      "weight": 1.0,
+      "source": "ipad_readme_ipad_simulator_rig_for_the_otp_form_ipados_26_3",
+      "target": "ipad_readme_chip_selector_rub_chip_is_exact_class_rub_chip_over_matches",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/ipad/README.md",
+      "source_location": "L31",
+      "weight": 1.0,
+      "source": "ipad_readme_ipad_simulator_rig_for_the_otp_form_ipados_26_3",
+      "target": "ipad_readme_commands_that_worked_copy_pasteable",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/ipad/README.md",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "ipad_readme_ipad_simulator_rig_for_the_otp_form_ipados_26_3",
+      "target": "ipad_readme_files",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/ipad/README.md",
+      "source_location": "L208",
+      "weight": 1.0,
+      "source": "ipad_readme_ipad_simulator_rig_for_the_otp_form_ipados_26_3",
+      "target": "ipad_readme_guard_rail",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/ipad/README.md",
+      "source_location": "L174",
+      "weight": 1.0,
+      "source": "ipad_readme_ipad_simulator_rig_for_the_otp_form_ipados_26_3",
+      "target": "ipad_readme_keyboard_appearance_is_non_deterministic_always_screenshot_confirm",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/ipad/README.md",
+      "source_location": "L186",
+      "weight": 1.0,
+      "source": "ipad_readme_ipad_simulator_rig_for_the_otp_form_ipados_26_3",
+      "target": "ipad_readme_save_password_system_dialog_new_gotcha_this_session",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/ipad/README.md",
+      "source_location": "L53",
+      "weight": 1.0,
+      "source": "ipad_readme_ipad_simulator_rig_for_the_otp_form_ipados_26_3",
+      "target": "ipad_readme_the_tap_route_mcp_tool_unavailable_here_idb_is_the_working_fallback",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/ipad/README.md",
+      "source_location": "L160",
+      "weight": 1.0,
+      "source": "ipad_readme_ipad_simulator_rig_for_the_otp_form_ipados_26_3",
+      "target": "ipad_readme_time_in_time_out_are_native_input_type_time_not_text_fields",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/ipad/README.md",
+      "source_location": "L105",
+      "weight": 1.0,
+      "source": "ipad_readme_ipad_simulator_rig_for_the_otp_form_ipados_26_3",
+      "target": "ipad_readme_webdriver_safaridriver_dom_truth_but_confirmed_not_a_write_instrument",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/ipad/README.md",
+      "source_location": "L199",
+      "weight": 1.0,
+      "source": "ipad_readme_ipad_simulator_rig_for_the_otp_form_ipados_26_3",
+      "target": "ipad_readme_what_this_rig_still_cannot_reproduce_carried_over_from_2026_09_03_unchanged",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "Assets/OTP/tests/ipad/README.md",
+      "source_location": "L134",
+      "weight": 1.0,
+      "source": "ipad_readme_webdriver_safaridriver_dom_truth_but_confirmed_not_a_write_instrument",
+      "target": "ipad_readme_why_each_read_mjs_call_re_gates_itself",
       "confidence_score": 1.0
     },
     {
@@ -51332,9 +52107,9 @@
       "source_file": "Assets/R3/Google file links.md",
       "source_location": "L1",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "r3_google_file_links",
-      "target": "r3_google_file_links_r3_evidence_google_file_links"
+      "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_52c50e_de2f0fca_6e18_451f_9a04_47f308a95232_scratchpad_otp_v0_9_merge_assets_r3_google_file_links_md",
+      "target": "r3_google_file_links_r3_evidence_google_file_links",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -51392,9 +52167,9 @@
       "source_file": "Assets/R3/README.md",
       "source_location": "L1",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "r3_readme",
-      "target": "r3_readme_r3_evidence_form"
+      "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_52c50e_de2f0fca_6e18_451f_9a04_47f308a95232_scratchpad_otp_v0_9_merge_assets_r3_readme_md",
+      "target": "r3_readme_r3_evidence_form",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -56038,5 +56813,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "c0b757a91ff87c8325345c08d759d0aed40ea6b1"
+  "built_at_commit": "5f626a4db74863b7f8d8490c7143fb20aceccc98"
 }
