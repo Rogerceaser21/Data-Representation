@@ -530,7 +530,9 @@ function getOtpPrevNextSteps(teacherName) {
     if (String(row[col.teacher] || '').trim().toLowerCase() !== want) continue;
     if (String(row[col.status] || '').trim() !== 'closed') continue;
     const rowRound = col.round > -1 ? String(row[col.round] || '').trim() : '';
-    if (rowRound !== '' && rowRound !== currentRound) continue;   // a blank round counts as current
+    // A blank round on the row counts as current; an UNKNOWN current round
+    // (the Supabase read failed) never excludes a row.
+    if (rowRound !== '' && currentRound !== '' && rowRound !== currentRound) continue;
     if (!best) { best = row; continue; }
     const a = [cellText(row[col.observation_date]), cellText(row[col.submitted_at])];
     const b = [cellText(best[col.observation_date]), cellText(best[col.submitted_at])];
@@ -547,7 +549,10 @@ function getOtpPrevNextSteps(teacherName) {
     next_step_2: best[col.next_step_2],
     next_step_3: best[col.next_step_3]
   };
-  try { cache.put(key, JSON.stringify(out), PREV_STEPS_CACHE_TTL); } catch (e) {}
+  // Never cache a miss computed under an unknown round: the next call retries.
+  if (best || currentRound !== '') {
+    try { cache.put(key, JSON.stringify(out), PREV_STEPS_CACHE_TTL); } catch (e) {}
+  }
   return out;
 }
 

@@ -1292,6 +1292,41 @@ section('(m) otp-v0.9 · prev_next_steps: not found / found / round filter / cac
   }) } });
   const afterSecond = JSON.parse(cacheEnv.ctx.doGet({ parameter: { action: 'prev_next_steps', teacher: OTP_PAYLOAD.teacher, form: 'otp' } }).getContent());
   ok(afterSecond.next_step_1 === 'Second close', 'closing a new lap clears the cache, so the very next lookup sees it immediately (no 60s wait)');
+
+  // otp-v0.9 fix (live proof 2026-09-11): a close PRE-WARMS the cache, so the
+  // next form's lookup is a cache hit even when an uncached Sheet read is slow
+  // (8 to 83 s measured live, beyond any fetch window).
+  const warmEnv = buildEnv(SRC_NEW, seedFull());
+  const wRow = submitOtpRow(warmEnv, {});
+  warmEnv.ctx.doPost({ postData: { contents: JSON.stringify({
+    form: 'otp', action: 'close', record_token: wRow[idx('record_token')],
+    next_step_1: 'Warm step', next_step_2: '', next_step_3: ''
+  }) } });
+  const warmKey = Object.keys(warmEnv.state.cache).find((k) => k.indexOf('OTP_PREV_STEPS_v1:') === 0);
+  const warmRaw = warmKey ? warmEnv.state.cache[warmKey] : null;
+  const warmVal = warmRaw == null ? null : JSON.parse(typeof warmRaw === 'string' ? warmRaw : (warmRaw.value || warmRaw.v || 'null'));
+  ok(!!warmVal && warmVal.found === true && warmVal.next_step_1 === 'Warm step',
+    'close pre-warms the prev_next_steps cache with the closed lap, before any lookup', JSON.stringify(warmVal));
+
+  // an UNKNOWN current round (the Supabase read failed) never excludes a closed
+  // lap that carries a round label, and a miss computed that way is not cached.
+  const unkEnv = buildEnv(SRC_NEW, seedFull());
+  const uRow = submitOtpRow(unkEnv, {});
+  unkEnv.ctx.doPost({ postData: { contents: JSON.stringify({
+    form: 'otp', action: 'close', record_token: uRow[idx('record_token')],
+    next_step_1: 'Unknown round step', next_step_2: '', next_step_3: ''
+  }) } });
+  unkEnv.ctx.clearPrevNextStepsCache(OTP_PAYLOAD.teacher);   // drop the pre-warmed answer, force a real read
+  unkEnv.state.forceRoundFailure = true;
+  const unk = JSON.parse(unkEnv.ctx.doGet({ parameter: { action: 'prev_next_steps', teacher: OTP_PAYLOAD.teacher, form: 'otp' } }).getContent());
+  ok(unk.found === true && unk.next_step_1 === 'Unknown round step', 'an unknown current round never excludes a closed lap', JSON.stringify(unk));
+
+  const unkMissEnv = buildEnv(SRC_NEW, seedFull());
+  submitOtpRow(unkMissEnv, {});                 // rows exist, so the lookup really scans (an empty tab is a legitimate cached miss)
+  unkMissEnv.state.forceRoundFailure = true;
+  const unkMiss = JSON.parse(unkMissEnv.ctx.doGet({ parameter: { action: 'prev_next_steps', teacher: 'Nobody Closed', form: 'otp' } }).getContent());
+  ok(unkMiss.found === false && !Object.keys(unkMissEnv.state.cache).some((k) => k.indexOf('OTP_PREV_STEPS_v1:') === 0),
+    'a miss computed under an unknown round is not cached (the next call retries)');
 }
 
 /* (n) otp-v0.9 · a stale (pre-lifecycle) OTP row still reads through GET -- */

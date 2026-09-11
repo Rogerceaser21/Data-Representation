@@ -5742,7 +5742,7 @@ body.is-viewer .cog-btn { display: none; }
      (hard rule 12). Changing the teacher re-asks; clearing it hides.
      Never in the ungated teacher viewer: it carries another teacher's
      history and the viewer is a single record's read-only page. */
-  const PREV_NS_TIMEOUT_MS = 7000;
+  const PREV_NS_TIMEOUT_MS = 25000;   // non-blocking: an uncached Apps Script answer was measured at 8-83 s live (2026-09-11)
   let prevNsSeq = 0;
   let prevNsTeacher = '';
 
@@ -5800,18 +5800,21 @@ body.is-viewer .cog-btn { display: none; }
     const seq = ++prevNsSeq;
     prevNsHide();
     if (!name) return;
-    const ctrl = new AbortController();
-    const timer = setTimeout(function () { ctrl.abort(); }, PREV_NS_TIMEOUT_MS);
     let out = null;
-    try {
-      const resp = await fetch(
-        WEB_APP_URL + '?action=prev_next_steps&form=otp&teacher=' + encodeURIComponent(name),
-        { redirect: 'follow', signal: ctrl.signal });
-      out = await resp.json();
-    } catch (e) {
-      out = null;                              // stall, network, parse: stay hidden
-    } finally {
-      clearTimeout(timer);
+    for (let attempt = 1; attempt <= 2 && !out; attempt++) {   // one silent retry, like the options fetch
+      const ctrl = new AbortController();
+      const timer = setTimeout(function () { ctrl.abort(); }, PREV_NS_TIMEOUT_MS);
+      try {
+        const resp = await fetch(
+          WEB_APP_URL + '?action=prev_next_steps&form=otp&teacher=' + encodeURIComponent(name),
+          { redirect: 'follow', signal: ctrl.signal });
+        out = await resp.json();
+      } catch (e) {
+        out = null;                            // stall, network, parse: retry once, then stay hidden
+      } finally {
+        clearTimeout(timer);
+      }
+      if (seq !== prevNsSeq) return;           // a newer teacher pick won
     }
     if (seq !== prevNsSeq) return;             // a newer teacher pick won
     if (out && out.success && out.found) prevNsRender(out);

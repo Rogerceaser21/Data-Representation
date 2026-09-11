@@ -477,7 +477,13 @@ function handleOtpUpdateOrClose(ss, sheet, data) {
 
   // Next observation of this teacher should see the just-closed lap
   // immediately, not after the 60s prev_next_steps cache TTL.
-  try { clearPrevNextStepsCache(record.teacher); } catch (e) {}
+  try {
+    clearPrevNextStepsCache(record.teacher);
+    // Pre-warm: the live uncached read was measured at 8-83 s (2026-09-11), far
+    // beyond the form's fetch window, so compute the answer now while the
+    // Sheet is open and let the next form hit the 60 s cache.
+    if (isClose) getOtpPrevNextSteps(record.teacher);
+  } catch (e) {}
 
   return jsonOut({ success: true, id: record.record_id, status: record.status });
 }
