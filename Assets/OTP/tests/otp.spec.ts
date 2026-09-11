@@ -2827,3 +2827,70 @@ test('otp-v0.9.1 D6 confirm wording: Save & Lock no longer claims the record can
 
   expect(h.errors).toEqual([]);
 });
+
+/* otp-v0.9.2 · keyboard engine vs the iPadOS 26 accessory-strip inset.
+   Device-measured 2026-09-11 (iPad Air 13-inch M3 simulator, HUD build): the
+   keyboard's dismiss key restores visualViewport.height to the baseline (1309)
+   and 0.5 s later iPadOS re-insets it to 1137 for the docked accessory strip;
+   the old engine read that 172 pt inset as a keyboard and kept body.kb-open.
+   The test replaces visualViewport before the page scripts run and replays
+   the measured heights. */
+async function fakeViewport(page: Page) {
+  await page.addInitScript(() => {
+    const listeners: Record<string, Array<() => void>> = { resize: [], scroll: [] };
+    const fake: any = {
+      height: 1309, width: 1024, offsetTop: 0, offsetLeft: 0, pageTop: 0, pageLeft: 0, scale: 1,
+      addEventListener(t: string, fn: () => void) { (listeners[t] = listeners[t] || []).push(fn); },
+      removeEventListener() {},
+      set(h: number) { fake.height = h; (listeners.resize || []).forEach(fn => fn()); },
+    };
+    Object.defineProperty(window, 'visualViewport', { value: fake, configurable: true });
+    (window as any).__fakeVV = fake;
+  });
+}
+const vvSet = (page: Page, h: number) => page.evaluate(n => (window as any).__fakeVV.set(n), h);
+const kbOpen = (page: Page) => page.evaluate(() => document.body.classList.contains('kb-open'));
+
+test('otp-v0.9.2 D2 keyboard dismiss: the accessory-strip inset after the dismiss key does not keep the controls hidden', async ({ page }) => {
+  await fakeViewport(page);
+  const h = await harness(page);
+  await openForm(page);
+  await expect(page.locator('body')).not.toHaveClass(/kb-open/);
+
+  // full keyboard: 1309 -> 906 (403 pt) opens the state
+  await vvSet(page, 906);
+  await expect.poll(() => kbOpen(page)).toBe(true);
+
+  // dismiss key: back to the baseline, then the strip inset 0.5 s later
+  await vvSet(page, 1309);
+  await page.waitForTimeout(500);
+  await vvSet(page, 1137);
+  await page.waitForTimeout(600);
+  expect(await kbOpen(page)).toBe(false);          // old engine: true (stuck)
+
+  // strip still up, the real keyboard comes back: opens again
+  await vvSet(page, 906);
+  await expect.poll(() => kbOpen(page)).toBe(true);
+  // and a fast dismiss (strip inset before the settle timer fires) still closes
+  await vvSet(page, 1309);
+  await page.waitForTimeout(100);
+  await vvSet(page, 1137);
+  await page.waitForTimeout(600);
+  expect(await kbOpen(page)).toBe(false);
+  void h;
+});
+
+test('otp-v0.9.2 D2 keyboard engine: a strip-only focus never hides the controls, a full keyboard still does', async ({ page }) => {
+  await fakeViewport(page);
+  const h = await harness(page);
+  await openForm(page);
+  await vvSet(page, 1208);                          // accessory strip only (101 pt), below KB_DELTA
+  await page.waitForTimeout(500);
+  expect(await kbOpen(page)).toBe(false);
+  await vvSet(page, 906);                           // full keyboard
+  await expect.poll(() => kbOpen(page)).toBe(true);
+  await vvSet(page, 1309);                          // plain blur close
+  await page.waitForTimeout(600);
+  expect(await kbOpen(page)).toBe(false);
+  void h;
+});

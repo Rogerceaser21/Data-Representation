@@ -1,3 +1,7 @@
+## otp-v0.9.2 (2026-09-11, evening)
+
+- D2 · iPadOS 26 keyboard dismiss key: the keyboard engine now remembers the largest keyboard inset seen (`peak`) and, once the viewport has come back, treats the docked accessory strip's re-inset (172 pt on an iPad Air 13-inch, measured on the device) as "keyboard down" instead of a keyboard; RESET / SAVE & LOCK / the cog / the theme toggle return within a second of the dismiss key instead of staying hidden until the page is tapped. Two deterministic specs replay the device-measured viewport heights through a fake `visualViewport` (53 specs per engine).
+
 # Progress in Lessons OTP form · otp-v0.9.1
 
 Third AIS observation form: **Lesson Observation form WHOLE SCHOOL, Observation
