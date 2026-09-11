@@ -1092,6 +1092,20 @@ body.is-locked .action-btn.new { display: inline-flex; }
   padding: 0;
   border: none;
 }
+/* otp-v0.9 (live proof 2026-09-11): a focused single-select must not grow.
+   With a long selected name the search input (flex 1 1 0) squeezed the .item,
+   the name wrapped to a second line and the control went 50 -> 73 px; on blur
+   everything below jumped 23 px, so a tap on the previous-steps card right
+   after picking the teacher landed on the cell above. One row, always. */
+.ts-wrapper.single .ts-control { flex-wrap: nowrap; }
+.ts-wrapper.single .ts-control .item {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .ts-wrapper.single .ts-control:not(.rtl)::after {
   /* Tom Select's default caret arrow. Subtle, matching paper-mid tint. */
   border-top-color: var(--paper-mid);

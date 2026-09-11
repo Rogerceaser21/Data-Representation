@@ -238,7 +238,7 @@ type Harness = { errors: string[]; posts: any[] };
 /** Route every outbound call and collect console/page errors. */
 async function harness(
   page: Page,
-  opts: { record?: any; extract?: string; prev?: any | 'fail' } = {},
+  opts: { record?: any; extract?: string; prev?: any | 'fail'; options?: any } = {},
 ): Promise<Harness> {
   const errors: string[] = [];
   const posts: any[] = [];
@@ -296,7 +296,7 @@ async function harness(
     }
     if (url.includes('action=options')) {
       expect(url).toContain('form=otp');
-      return json(OPTIONS_PAYLOAD);
+      return json(opts.options || OPTIONS_PAYLOAD);
     }
     // otp-v0.9: the previous lap's Next Steps. 'fail' kills the call outright,
     // so the form has to cope with a dead network, not just with "none found".
@@ -2657,4 +2657,30 @@ test('otp-v0.9: no console errors and no horizontal overflow in edit mode at 128
     expect(overflow, `horizontal overflow at ${vp.width}x${vp.height}`).toBeLessThanOrEqual(1);
     expect(h.errors, `console errors at ${vp.width}x${vp.height}`).toEqual([]);
   }
+});
+
+test('otp-v0.9: a long teacher name never grows the focused control, so a REAL click on the card right after the pick lands (no layout jump on blur)', async ({ page }) => {
+  // Live proof 2026-09-11: with 'OTP Test Teacher (delete me)' the focused
+  // teacher control was 73 px and 50 px after blur; the card under it jumped
+  // 23 px at mousedown-blur and the mouseup landed on the cell above.
+  const LONG = 'OTP Test Teacher (delete me) with a deliberately very long display name';
+  const options = JSON.parse(JSON.stringify(OPTIONS_PAYLOAD));
+  const list = options.options ? options.options.teachers : options.teachers;
+  list.unshift({ name: LONG, email: 'long.name@ais.ae' });
+  const h = await harness(page, { prev: PREV_NS_FOUND, options });
+  await page.setViewportSize({ width: 820, height: 1180 });   // iPad portrait: the narrow column
+  await page.goto(FORM_URL);
+  await passGate(page);
+  await pickTomSelect(page, 'teacher', LONG);
+  await expect(page.locator('#prev-ns-card')).toBeVisible({ timeout: 10_000 });
+  const control = page.locator('#teacher').locator('xpath=following-sibling::div[1]').locator('.ts-control');
+  const focusedH = (await control.boundingBox())!.height;    // still focused after the pick
+  const toggle = page.locator('#prev-ns-toggle');
+  const box = (await toggle.boundingBox())!;
+  await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);   // a real click: the blur happens under it
+  const blurredH = (await control.boundingBox())!.height;
+  expect(Math.abs(focusedH - blurredH)).toBeLessThan(2);
+  await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+  await expect(page.locator('#prev-ns-body')).toBeVisible();
+  expect(h.errors).toEqual([]);
 });
