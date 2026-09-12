@@ -200,13 +200,15 @@ const RECORD_PAYLOAD_CLOSED = {
   },
 };
 
-/** otp-v0.9: the previous (closed) lap, as ?action=prev_next_steps returns it. */
+/** otp-v0.9: the previous (closed) lap, as ?action=prev_next_steps returns it.
+ *  otp-v0.9.3: lap/date/observer match the contract's own worked example
+ *  (Lap 8, 11 Sept 2026, Igor Sesar) so the card/echo text specs read verbatim. */
 const PREV_NS_FOUND = {
   success: true,
   found: true,
-  lap: '1',
-  observation_date: '2026-06-12',
-  observer: 'Ms Prior Observer',
+  lap: '8',
+  observation_date: '2026-09-11',
+  observer: 'Igor Sesar',
   next_step_1: 'Plan a stretch task for the top table',
   next_step_2: 'Give thinking time before taking answers',
   next_step_3: 'Share the success criteria at the start',
@@ -2181,6 +2183,24 @@ test('otp-v0.8: Time Out sits at the bottom and gates Save & Lock like the other
     label: 'Time Out', labelRequired: true, timeInStillTop: true,
   });
 
+  // otp-v0.9.3 (C5): below Support 3 and right-aligned to it, at every width
+  for (const vp of [{ width: 1280, height: 800 }, { width: 820, height: 1180 }]) {
+    await page.setViewportSize(vp);
+    const geo = await page.evaluate(() => {
+      const t = document.getElementById('time_out')!.getBoundingClientRect();
+      const ns3 = document.getElementById('next_step_3')!.getBoundingClientRect();
+      return { timeOutTop: t.top, ns3Bottom: ns3.bottom, timeOutRight: t.right, ns3Right: ns3.right };
+    });
+    expect(
+      geo.timeOutTop,
+      `#time_out sits beside Support 3 instead of below it at ${vp.width}x${vp.height} (otp-v0.9.3 C5)`,
+    ).toBeGreaterThanOrEqual(geo.ns3Bottom);
+    expect(
+      Math.abs(geo.timeOutRight - geo.ns3Right),
+      `#time_out is not right-aligned to Support 3 at ${vp.width}x${vp.height} (otp-v0.9.3 C5)`,
+    ).toBeLessThanOrEqual(2);
+  }
+
   // the gate: everything else filled, Save & Lock stays disabled until Time Out
   await fillRequired(page);
   await page.fill('#time_out', '');
@@ -2509,22 +2529,35 @@ test('otp-v0.9: the previous Next Steps card and echo render when a closed lap i
   await expect(page.locator('#prev-ns-card')).toBeVisible({ timeout: 10_000 });
   await expect(page.locator('#prev-ns-echo')).toBeVisible();
 
-  const head = new RegExp(
-    `^Lap 1 Next Steps · ${dayPat('2026-06-12')} · Ms Prior Observer$`,
+  // otp-v0.9.3 (C1): the card is one line, "Teacher observed <date> · Lap <n> · goals below"
+  const cardLine = new RegExp(
+    `^Teacher observed ${dayPat(PREV_NS_FOUND.observation_date)} · Lap ${PREV_NS_FOUND.lap} · goals below$`,
   );
-  await expect(page.locator('#prev-ns-card-head')).toHaveText(head);
-  await expect(page.locator('#prev-ns-echo-head')).toHaveText(head);
+  await expect(
+    page.locator('#prev-ns-card-head'),
+    'prev-ns-card-head is not the otp-v0.9.3 one-line "Teacher observed ... goals below" format (C1)',
+  ).toHaveText(cardLine);
+  await expect(
+    page.locator('#prev-ns-toggle'),
+    '#prev-ns-toggle should have been removed in otp-v0.9.3 (C1: the card has nothing to expand)',
+  ).toHaveCount(0);
+
+  // otp-v0.9.3 (C2): the echo is the FIRST child of #rubric-section, above its heading
+  expect(
+    await page.evaluate(() => document.getElementById('rubric-section')?.firstElementChild?.id),
+    'prev-ns-echo is not the first child of #rubric-section (otp-v0.9.3 C2: goals-above-rubric)',
+  ).toBe('prev-ns-echo');
+
+  const echoHead = new RegExp(
+    `^Lap ${PREV_NS_FOUND.lap} Next Steps · ${dayPat(PREV_NS_FOUND.observation_date)} · ${PREV_NS_FOUND.observer}$`,
+  );
+  await expect(page.locator('#prev-ns-echo-head')).toHaveText(echoHead);
   await expect(page.locator('#prev-ns-echo-list li')).toHaveText(PREV_NS_STEPS);
+  await expect(page.locator('#prev-ns-echo-list li')).toHaveCount(3);
 
-  // the card is collapsed to that one line until it is tapped
-  await expect(page.locator('#prev-ns-body')).toBeHidden();
-  await expect(page.locator('#prev-ns-toggle')).toHaveAttribute('aria-expanded', 'false');
-
-  // it sits under the Teacher field, and the echo above Next Steps / Support 1
+  // it sits under the Teacher field
   expect(await page.locator('#prev-ns-card').evaluate(
     (el) => el.closest('.info-cell')!.querySelector('select')!.id)).toBe('teacher');
-  expect(await page.locator('#prev-ns-echo').evaluate(
-    (el) => el.parentElement!.querySelector('textarea')!.id)).toBe('next_step_1');
 
   // nothing fixed-position (iPad rules, hard rule 15)
   for (const sel of ['#prev-ns-card', '#prev-ns-echo']) {
@@ -2579,21 +2612,27 @@ test('otp-v0.9: no previous lap, a garbled answer, or the viewer build: card and
   expect(h4.errors).toEqual([]);
 });
 
-test('otp-v0.9: the card toggle opens the three steps and closes them again', async ({ page }) => {
+test('otp-v0.9.3: the card is one line with no toggle and shows no steps', async ({ page }) => {
   const h = await harness(page, { record: RECORD_PAYLOAD_OPEN, prev: PREV_NS_FOUND });
   // edit mode loads the teacher from the record, so the card renders with no tap
   await openEdit(page);
   await expect(page.locator('#prev-ns-card')).toBeVisible({ timeout: 10_000 });
 
-  await expect(page.locator('#prev-ns-body')).toBeHidden();
-  await page.locator('#prev-ns-toggle').click();
-  await expect(page.locator('#prev-ns-toggle')).toHaveAttribute('aria-expanded', 'true');
-  await expect(page.locator('#prev-ns-body')).toBeVisible();
-  await expect(page.locator('#prev-ns-card-list li')).toHaveText(PREV_NS_STEPS);
+  await expect(
+    page.locator('#prev-ns-card button'),
+    'a button still lives inside #prev-ns-card (otp-v0.9.3 C1: nothing to expand)',
+  ).toHaveCount(0);
+  await expect(
+    page.locator('#prev-ns-card li'),
+    'a step list still lives inside #prev-ns-card (otp-v0.9.3 C1: goals moved to the echo, not shown here)',
+  ).toHaveCount(0);
 
-  await page.locator('#prev-ns-toggle').click();
-  await expect(page.locator('#prev-ns-toggle')).toHaveAttribute('aria-expanded', 'false');
-  await expect(page.locator('#prev-ns-body')).toBeHidden();
+  const box = await page.locator('#prev-ns-card').boundingBox();
+  expect(box, '#prev-ns-card has no bounding box').not.toBeNull();
+  expect(
+    box!.height,
+    `#prev-ns-card is ${box!.height}px tall, expected a single collapsed line under 48px (otp-v0.9.3 C1)`,
+  ).toBeLessThan(48);
 
   expect(h.errors).toEqual([]);
 });
@@ -2613,7 +2652,7 @@ test('otp-v0.9: the keep-focus guards are on mousedown only, never pointerdown',
   expect(src).toContain("t.addEventListener('click', function () {");
 });
 
-test('otp-v0.9: WebKit taps drive Save changes, Close Lap and the card toggle', async ({ browser }: { browser: Browser }) => {
+test('otp-v0.9.3: WebKit taps drive Save changes and Close Lap', async ({ browser }: { browser: Browser }) => {
   const ctx = await browser.newContext({
     hasTouch: true,
     viewport: { width: 820, height: 1180 },
@@ -2624,10 +2663,7 @@ test('otp-v0.9: WebKit taps drive Save changes, Close Lap and the card toggle', 
   page.on('dialog', (d) => d.accept());
   await openEdit(page);
 
-  // the collapsible card opens on a real tap
   await expect(page.locator('#prev-ns-card')).toBeVisible({ timeout: 10_000 });
-  await page.locator('#prev-ns-toggle').tap();
-  await expect(page.locator('#prev-ns-body')).toBeVisible();
 
   // Save changes on a real tap
   await page.locator('#btn-save-changes').tap();
@@ -2893,4 +2929,137 @@ test('otp-v0.9.2 D2 keyboard engine: a strip-only focus never hides the controls
   await page.waitForTimeout(600);
   expect(await kbOpen(page)).toBe(false);
   void h;
+});
+
+/* ===================================================================
+   otp-v0.9.3 · card-line goals-above-rubric, Close Lap pulse, the
+   sticky notice on an open-lap save, Time Out geometry (see above) and
+   the five long-text boxes auto-growing.
+   =================================================================== */
+
+test('otp-v0.9.3: Close Lap pulses (close-lap-pulse) in an open edit view, never when disabled, closed or in the plain form', async ({ page }) => {
+  const msg = 'Close Lap does not carry the close-lap-pulse animation (otp-v0.9.3 C3)';
+  const noneMsg = (why: string) => `Close Lap keeps pulsing ${why} (otp-v0.9.3 C3)`;
+
+  // 1. an open edit view: the button pulses
+  await harness(page, { record: RECORD_PAYLOAD_OPEN });
+  await openEdit(page);
+  const btn = page.locator('#btn-close-lap');
+  expect(await btn.evaluate((el) => getComputedStyle(el).animationName), msg).toBe('close-lap-pulse');
+
+  // 2. disabled (a required field cleared): no pulse
+  await page.fill('#time_out', '');
+  await expect(btn).toBeDisabled();
+  expect(await btn.evaluate((el) => getComputedStyle(el).animationName), noneMsg('while disabled')).toBe('none');
+
+  // 3. confirmed Close Lap, now closed: no pulse
+  await page.fill('#time_out', '10:05');
+  await expect(btn).toBeEnabled();
+  page.on('dialog', (d) => d.accept());
+  await btn.click();
+  await expect(page.locator('#otp-form')).toHaveClass(/is-locked/, { timeout: 10_000 });
+  expect(await btn.evaluate((el) => getComputedStyle(el).animationName), noneMsg('after the lap closed')).toBe('none');
+
+  // 4. the plain (non-edit) form: never pulses
+  await harness(page);
+  await openForm(page);
+  expect(
+    await page.locator('#btn-close-lap').evaluate((el) => getComputedStyle(el).animationName),
+    noneMsg('on the plain form'),
+  ).toBe('none');
+});
+
+test('otp-v0.9.3: Save changes on an open lap shows the sticky notice until dismissed or the lap closes', async ({ page }) => {
+  const RECORD_LAP7 = { ...RECORD_PAYLOAD_OPEN, data: { ...RECORD_PAYLOAD_OPEN.data, lap: '7' } };
+  const h = await harness(page, { record: RECORD_LAP7 });
+  await openEdit(page);
+
+  await page.locator('#btn-save-changes').click();
+  const notice = page.locator('#notice');
+  await expect(notice, '#notice never appears after Save changes on an open lap (otp-v0.9.3 C4)').toBeVisible({ timeout: 10_000 });
+  const text = await notice.innerText();
+  expect(text, '#notice text does not say the lap is still OPEN (otp-v0.9.3 C4)').toContain('still OPEN');
+  expect(text, `#notice text does not name Lap ${RECORD_LAP7.data.lap} (otp-v0.9.3 C4)`).toContain('Lap 7');
+
+  // sticky: no auto-hide timer
+  await page.waitForTimeout(6000);
+  await expect(notice, '#notice auto-hid instead of staying sticky (otp-v0.9.3 C4)').toBeVisible();
+
+  // dismissed by its own close button
+  await page.locator('#notice-close').click();
+  await expect(notice, '#notice-close does not dismiss #notice (otp-v0.9.3 C4)').toBeHidden();
+
+  // a second save shows it again
+  await page.locator('#btn-save-changes').click();
+  await expect(notice, '#notice does not reappear on a second Save changes (otp-v0.9.3 C4)').toBeVisible({ timeout: 10_000 });
+
+  // a confirmed Close Lap hides it
+  page.on('dialog', (d) => d.accept());
+  await page.locator('#btn-close-lap').click();
+  await expect(page.locator('#otp-form')).toHaveClass(/is-locked/, { timeout: 10_000 });
+  await expect(notice, '#notice stays visible after the lap closed (otp-v0.9.3 C4)').toBeHidden();
+  expect(h.errors).toEqual([]);
+
+  // the viewer build never shows the notice, the card or the echo
+  const h2 = await harness(page, { record: RECORD_LAP7, prev: PREV_NS_FOUND });
+  await page.goto(RECORD_URL + '?token=abc');
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 20_000 });
+  await expect(page.locator('#notice'), '#notice shows in the ungated viewer build (otp-v0.9.3 C4)').toBeHidden();
+  await expect(page.locator('#prev-ns-card')).toBeHidden();
+  await expect(page.locator('#prev-ns-echo')).toBeHidden();
+  expect(h2.errors).toEqual([]);
+});
+
+test('otp-v0.9.3: the five long-text boxes grow with their text and Reset restores the start height', async ({ page }) => {
+  await harness(page);
+  await openForm(page);
+
+  const ns3 = page.locator('#next_step_3');
+  const startH = await ns3.evaluate((el) => (el as HTMLElement).clientHeight);
+  const lines = Array.from({ length: 12 }, (_, i) => `Line ${i + 1}`).join('\n');
+  await page.fill('#next_step_3', lines);
+
+  const grown = await ns3.evaluate((el) => {
+    const e = el as HTMLTextAreaElement;
+    return { clientHeight: e.clientHeight, scrollHeight: e.scrollHeight };
+  });
+  expect(
+    grown.clientHeight,
+    `next_step_3 stayed at ${startH}px instead of growing with 12 lines of text (otp-v0.9.3 C6)`,
+  ).toBeGreaterThan(startH);
+  expect(
+    grown.scrollHeight,
+    'next_step_3 still scrolls internally instead of growing to fit its text (otp-v0.9.3 C6)',
+  ).toBeLessThanOrEqual(grown.clientHeight + 2);
+
+  page.on('dialog', (d) => d.accept());
+  await page.locator('#btn-reset').click();
+  const afterReset = await ns3.evaluate((el) => (el as HTMLElement).clientHeight);
+  expect(
+    afterReset,
+    `Reset left next_step_3 at ${afterReset}px instead of its ${startH}px start height (otp-v0.9.3 C6)`,
+  ).toBe(startH);
+
+  // a record whose other_observations has 12 lines renders tall on load, no inner scrollbar
+  const longObs = Array.from({ length: 12 }, (_, i) => `Obs line ${i + 1}`).join('\n');
+  const record = { ...RECORD_PAYLOAD_OPEN, data: { ...RECORD_PAYLOAD_OPEN.data, other_observations: longObs } };
+  await harness(page, { record });
+  await openEdit(page);
+  const loaded = await page.locator('#other_observations').evaluate((el) => {
+    const e = el as HTMLTextAreaElement;
+    return { clientHeight: e.clientHeight, scrollHeight: e.scrollHeight };
+  });
+  expect(
+    loaded.scrollHeight,
+    'other_observations does not auto-grow to fit a loaded 12-line record on open (otp-v0.9.3 C6)',
+  ).toBeLessThanOrEqual(loaded.clientHeight + 2);
+});
+
+test('otp-v0.9.3: the footer reads otp-v0.9.3', async ({ page }) => {
+  await harness(page);
+  await openForm(page);
+  await expect(
+    page.locator('.form-footer'),
+    'footer version was not bumped to otp-v0.9.3',
+  ).toContainText(/otp-v0\.9\.3/i);
 });
