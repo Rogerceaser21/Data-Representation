@@ -2665,11 +2665,17 @@ test('otp-v0.9.3: WebKit taps drive Save changes and Close Lap', async ({ browse
 
   await expect(page.locator('#prev-ns-card')).toBeVisible({ timeout: 10_000 });
 
-  // Save changes on a real tap
+  // Save changes on a real tap: an open lap shows the sticky #notice, not the
+  // toast (otp-v0.9.3 C4), and a real tap on its close button must dismiss it
+  // (iPad tap law: click-family events only, never pointerdown)
   await page.locator('#btn-save-changes').tap();
-  await expect(page.locator('#toast')).toHaveText('Changes saved', { timeout: 10_000 });
+  const notice = page.locator('#notice');
+  await expect(notice, '#notice never appears after a real tap on Save changes (otp-v0.9.3 C4)').toBeVisible({ timeout: 10_000 });
   expect(h.posts).toHaveLength(1);
   expect(h.posts[0].action).toBe('update');
+
+  await page.locator('#notice-close').tap();
+  await expect(notice, '#notice-close does not dismiss #notice on a real tap (otp-v0.9.3 C4)').toBeHidden();
 
   // Close Lap on a real tap
   await page.locator('#btn-close-lap').tap();
@@ -3014,34 +3020,47 @@ test('otp-v0.9.3: the five long-text boxes grow with their text and Reset restor
   await harness(page);
   await openForm(page);
 
-  const ns3 = page.locator('#next_step_3');
-  const startH = await ns3.evaluate((el) => (el as HTMLElement).clientHeight);
-  const lines = Array.from({ length: 12 }, (_, i) => `Line ${i + 1}`).join('\n');
-  await page.fill('#next_step_3', lines);
+  // the contract names exactly these five; a build that wires auto-grow on
+  // only some of them must not pass this spec (otp-v0.9.3 C6)
+  const LONG_TEXT_IDS = ['observer_comments', 'other_observations', 'next_step_1', 'next_step_2', 'next_step_3'];
+  await expect(
+    page.locator('textarea.long-text'),
+    `textarea.long-text does not match the five contract boxes (${LONG_TEXT_IDS.join(', ')}) (otp-v0.9.3 C6)`,
+  ).toHaveCount(LONG_TEXT_IDS.length);
 
-  const grown = await ns3.evaluate((el) => {
-    const e = el as HTMLTextAreaElement;
-    return { clientHeight: e.clientHeight, scrollHeight: e.scrollHeight };
-  });
-  expect(
-    grown.clientHeight,
-    `next_step_3 stayed at ${startH}px instead of growing with 12 lines of text (otp-v0.9.3 C6)`,
-  ).toBeGreaterThan(startH);
-  expect(
-    grown.scrollHeight,
-    'next_step_3 still scrolls internally instead of growing to fit its text (otp-v0.9.3 C6)',
-  ).toBeLessThanOrEqual(grown.clientHeight + 2);
+  const lines = (n: number) => Array.from({ length: n }, (_, i) => `Line ${i + 1}`).join('\n');
+  const startHeights: Record<string, number> = {};
+
+  for (const id of LONG_TEXT_IDS) {
+    const box = page.locator(`#${id}`);
+    startHeights[id] = await box.evaluate((el) => (el as HTMLElement).clientHeight);
+    await box.fill(lines(12));
+    const grown = await box.evaluate((el) => {
+      const e = el as HTMLTextAreaElement;
+      return { clientHeight: e.clientHeight, scrollHeight: e.scrollHeight };
+    });
+    expect(
+      grown.clientHeight,
+      `#${id} stayed at ${startHeights[id]}px instead of growing with 12 lines of text (otp-v0.9.3 C6)`,
+    ).toBeGreaterThan(startHeights[id]);
+    expect(
+      grown.scrollHeight,
+      `#${id} still scrolls internally instead of growing to fit its text (otp-v0.9.3 C6)`,
+    ).toBeLessThanOrEqual(grown.clientHeight + 2);
+  }
 
   page.on('dialog', (d) => d.accept());
   await page.locator('#btn-reset').click();
-  const afterReset = await ns3.evaluate((el) => (el as HTMLElement).clientHeight);
-  expect(
-    afterReset,
-    `Reset left next_step_3 at ${afterReset}px instead of its ${startH}px start height (otp-v0.9.3 C6)`,
-  ).toBe(startH);
+  for (const id of LONG_TEXT_IDS) {
+    const afterReset = await page.locator(`#${id}`).evaluate((el) => (el as HTMLElement).clientHeight);
+    expect(
+      afterReset,
+      `Reset left #${id} at ${afterReset}px instead of its ${startHeights[id]}px start height (otp-v0.9.3 C6)`,
+    ).toBe(startHeights[id]);
+  }
 
   // a record whose other_observations has 12 lines renders tall on load, no inner scrollbar
-  const longObs = Array.from({ length: 12 }, (_, i) => `Obs line ${i + 1}`).join('\n');
+  const longObs = lines(12);
   const record = { ...RECORD_PAYLOAD_OPEN, data: { ...RECORD_PAYLOAD_OPEN.data, other_observations: longObs } };
   await harness(page, { record });
   await openEdit(page);
