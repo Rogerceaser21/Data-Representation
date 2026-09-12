@@ -2387,8 +2387,9 @@ test('otp-v0.9: Save changes posts action "update" with the record_token and all
   await page.fill('#next_step_1', 'Agreed in the meeting: model the worked example');
   await page.fill('#observer_comments', 'Edited observer comments');
   await page.locator('#btn-save-changes').click();
-  await expect(page.locator('#toast')).toHaveClass(/show/, { timeout: 10_000 });
-  await expect(page.locator('#toast')).toHaveText('Changes saved');
+  // otp-v0.9.3: an open lap answers with the sticky notice, not the toast
+  await expect(page.locator('#notice')).toBeVisible({ timeout: 10_000 });
+  await expect(page.locator('#notice-text')).toContainText('still OPEN');
 
   expect(h.posts).toHaveLength(1);
   const body = h.posts[0];
@@ -2649,7 +2650,8 @@ test('otp-v0.9: the keep-focus guards are on mousedown only, never pointerdown',
   // and every otp-v0.9 control is wired on click
   expect(src).toContain("document.getElementById('btn-save-changes').addEventListener('click', saveEditChanges);");
   expect(src).toContain("document.getElementById('btn-close-lap').addEventListener('click', closeCurrentLap);");
-  expect(src).toContain("t.addEventListener('click', function () {");
+  // otp-v0.9.3: the card has no toggle any more; the notice close is the new control
+  expect(src).toContain("b.addEventListener('click', hideNotice)");
 });
 
 test('otp-v0.9.3: WebKit taps drive Save changes and Close Lap', async ({ browser }: { browser: Browser }) => {
@@ -2694,8 +2696,7 @@ test('otp-v0.9: no console errors and no horizontal overflow in edit mode at 128
     const h = await harness(page, { record: RECORD_PAYLOAD_OPEN, prev: PREV_NS_FOUND });
     await openEdit(page);
     await expect(page.locator('#prev-ns-card')).toBeVisible({ timeout: 10_000 });
-    await page.locator('#prev-ns-toggle').click();
-    await expect(page.locator('#prev-ns-body')).toBeVisible();
+    await expect(page.locator('#prev-ns-echo')).toBeVisible();
 
     const overflow = await page.evaluate(
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
@@ -2721,13 +2722,14 @@ test('otp-v0.9: a long teacher name never grows the focused control, so a REAL c
   await expect(page.locator('#prev-ns-card')).toBeVisible({ timeout: 10_000 });
   const control = page.locator('#teacher').locator('xpath=following-sibling::div[1]').locator('.ts-control');
   const focusedH = (await control.boundingBox())!.height;    // still focused after the pick
-  const toggle = page.locator('#prev-ns-toggle');
-  const box = (await toggle.boundingBox())!;
+  const card = page.locator('#prev-ns-card');
+  const box = (await card.boundingBox())!;
   await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);   // a real click: the blur happens under it
   const blurredH = (await control.boundingBox())!.height;
   expect(Math.abs(focusedH - blurredH)).toBeLessThan(2);
-  await expect(toggle).toHaveAttribute('aria-expanded', 'true');
-  await expect(page.locator('#prev-ns-body')).toBeVisible();
+  // otp-v0.9.3: the card is one line with nothing to open, so the proof is that
+  // it does not move under the click
+  expect(Math.abs(box.y - (await card.boundingBox())!.y)).toBeLessThan(2);
   expect(h.errors).toEqual([]);
 });
 
