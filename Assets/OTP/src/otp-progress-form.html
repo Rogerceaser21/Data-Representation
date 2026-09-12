@@ -617,14 +617,28 @@ body.is-editing.is-locked #btn-close-lap { display: none; }
    not claim it is auto-saving. */
 body.is-editing .form-footer .save-status { display: none; }
 
+/* otp-v0.9.3: an open lap is unfinished coaching, so Close Lap keeps a soft
+   red pulse the whole time the record is open. Colour only, nothing moves. */
+:root { --close-lap-ink: #9e2b2b; }
+:root[data-theme="dark"] { --close-lap-ink: #f2a3a3; }
+@keyframes close-lap-pulse {
+  0%, 100% { background: var(--card-bg); border-color: var(--rule); color: var(--paper-dim); }
+  50% { background: rgba(214,60,60,0.14); border-color: rgba(214,60,60,0.65); color: var(--close-lap-ink); }
+}
+body.is-editing:not(.is-locked) #btn-close-lap:not(:disabled) {
+  animation: close-lap-pulse 1.6s ease-in-out infinite;
+}
+/* Reduced motion holds the same tint without the pulse; the rule lives in the
+   form's shared prefers-reduced-motion block below. */
+
 .action-btn.close-lap::before {
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='11' width='18' height='11' rx='2'/%3E%3Cpath d='M7 11V7a5 5 0 0 1 10 0v4'/%3E%3C/svg%3E") center / contain no-repeat;
           mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='11' width='18' height='11' rx='2'/%3E%3Cpath d='M7 11V7a5 5 0 0 1 10 0v4'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 
-/* The previous lap's Next Steps, read-only, in two places: a card collapsed to
-   one line under Teacher, and the same three steps echoed above Next Steps /
-   Support 1. In flow, no overlay, no fixed position. */
+/* The previous lap's Next Steps, read-only, in two places: otp-v0.9.3 a
+   one-line card under Teacher that points at them, and the three steps
+   themselves above the rubric. In flow, no overlay, no fixed position. */
 .prev-ns {
   margin-top: 0.45rem;
   border: 1px solid var(--rule);
@@ -640,24 +654,20 @@ body.is-editing .form-footer .save-status { display: none; }
   letter-spacing: 0.06em;
   color: var(--paper);
 }
-.prev-ns-toggle {
-  width: 100%;
-  display: flex; align-items: center; gap: 0.45rem;
+/* otp-v0.9.3: the card is one line and nothing expands it, so it is text, not
+   a button. Same type as .prev-ns-head; an ellipsis rather than a second row. */
+.prev-ns-line {
+  display: block;
   padding: 0.42rem 0.6rem;
-  background: none; border: 0; cursor: pointer;
-  font: inherit; color: inherit; text-align: left;
-  border-radius: inherit;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: var(--body-font);
+  font-size: var(--tiny);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--paper);
 }
-.prev-ns-toggle:hover .prev-ns-head { color: var(--ais-blue); }
-.prev-ns-chev {
-  flex-shrink: 0;
-  color: var(--paper-mid);
-  font-size: 0.95em; line-height: 1;
-  transition: transform 0.18s ease;
-}
-.prev-ns-toggle[aria-expanded="true"] .prev-ns-chev { transform: rotate(90deg); }
-.prev-ns-body { padding: 0 0.6rem 0.5rem 1.55rem; }
-.prev-ns-body[hidden] { display: none !important; }
 .prev-ns-echo {
   padding: 0.5rem 0.75rem 0.6rem;
   margin: 0 0 clamp(0.6rem, 1vw, 0.9rem);
@@ -771,6 +781,44 @@ body.is-locked .action-btn.new { display: inline-flex; }
 .toast.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
 .toast.error { border-color: rgba(214,138,26,0.5); color: var(--rate-unsuccess-deep); }
 .toast.success { border-color: rgba(46,161,90,0.5); color: var(--rate-success-deep); }
+
+/* otp-v0.9.3 · Sticky notice. A saved change on an OPEN lap says the lap is
+   still open and waits to be dismissed. Sits above the toast so both can show;
+   no timer, no auto-hide. */
+.notice {
+  position: fixed;
+  bottom: calc(clamp(4rem, 8vw, 6rem) + 3.6rem);
+  right: clamp(0.7rem, 1.4vw, 1.2rem);
+  z-index: 111;
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  padding: 0.7em 1.05em;
+  border-radius: 8px;
+  background: #fdecec;
+  border: 1px solid rgba(214,60,60,0.5);
+  box-shadow: 0 12px 32px -12px rgba(20,54,66,0.32);
+  font-family: var(--body-font);
+  font-size: var(--small);
+  line-height: 1.45;
+  color: var(--paper);
+  max-width: 420px;
+  transform: translateY(var(--vv-shift, 0px));   /* v0.56: visible-bottom pin */
+}
+:root[data-theme="dark"] .notice { background: rgba(214,60,60,0.18); }
+.notice[hidden] { display: none !important; }
+.notice-close {
+  flex: none;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  color: var(--paper-mid);
+  font-family: var(--body-font);
+  font-size: 1.05rem;
+  line-height: 1;
+  padding: 0 0.1rem;
+}
+.notice-close:hover { color: var(--paper); }
 
 /* ===========================================
    THEME TOGGLE  (mirrors deck style)
@@ -948,20 +996,25 @@ body.is-locked .action-btn.new { display: inline-flex; }
 .info-grid-r3 .info-cell-full { grid-column: span 3; }
 .info-grid-r3 .info-cell-span-2 { grid-column: span 2; }
 
-/* Summary of Weakness + Time Out side-by-side at the bottom (v0.32).
-   Time Out keeps the same visual width as a normal info-cell (1/3 of the
-   info-grid). Collapses to stacked on narrow viewports. */
+/* Summary of Weakness + Time Out at the bottom (v0.32). otp-v0.9.3: one
+   column at every width, Time Out UNDER the box above it and right-aligned to
+   that box's edge, at about the visual width of a normal info-cell. */
 .summary-with-timeout {
   display: grid;
-  grid-template-columns: 5fr 1fr;
+  grid-template-columns: 1fr;
   gap: clamp(0.8rem, 1.6vw, 1.4rem);
   align-items: start;
 }
+/* otp-v0.9.3: Time Out sits BELOW the last Next Steps box, right-aligned to
+   its edge, at every width. */
 .summary-with-timeout .timeout-block {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  padding-top: calc(var(--section-title-height, 2.4rem));
+  padding-top: 0;
+  justify-self: end;
+  width: clamp(9rem, 16%, 12rem);
+  margin-top: 0.5rem;
 }
 .summary-with-timeout .timeout-block label {
   font-family: var(--body-font);
@@ -987,10 +1040,6 @@ body.is-locked .action-btn.new { display: inline-flex; }
 .summary-with-timeout .timeout-block input:focus {
   border-bottom-style: solid;
   border-bottom-color: var(--rate-success);
-}
-@media (max-width: 720px) {
-  .summary-with-timeout { grid-template-columns: 1fr; }
-  .summary-with-timeout .timeout-block { padding-top: 0; }
 }
 .info-grid-r3 .info-cell-spacer {
   background: transparent;
@@ -2308,7 +2357,13 @@ body.is-viewer .cog-btn { display: none; }
   .rub-note-scrim[data-state="open"] { transition: opacity 150ms linear; }
   .rub-note-btn:active { transform: none; }
   .rub-note-btn.badge-pop { animation: none; }
-  .prev-ns-chev { transition: none; }   /* otp-v0.9 */
+  /* otp-v0.9.3: the tint stays, the pulse does not. */
+  body.is-editing:not(.is-locked) #btn-close-lap:not(:disabled) {
+    animation: none;
+    background: rgba(214,60,60,0.14);
+    border-color: rgba(214,60,60,0.65);
+    color: var(--close-lap-ink);
+  }
 }
 .rub-note-headrow { display: flex; align-items: center; gap: 0.4rem; }
 .rub-note-dot {
@@ -2669,16 +2724,11 @@ body.is-viewer .cog-btn { display: none; }
       <div class="info-cell">
         <label for="teacher" class="required-field">Teacher</label>
         <select id="teacher" name="teacher" placeholder="Tap to browse staff…" required></select>
-        <!-- otp-v0.9: the teacher's previous lap, collapsed to one line until
-             tapped. Hidden until a teacher is picked and a closed lap is found. -->
+        <!-- otp-v0.9.3: the teacher's previous lap, one line, nothing to
+             expand; the goals themselves sit above the rubric. Hidden until a
+             teacher is picked and a closed lap is found. -->
         <div class="prev-ns prev-ns-card" id="prev-ns-card" hidden>
-          <button type="button" class="prev-ns-toggle" id="prev-ns-toggle" aria-expanded="false" aria-controls="prev-ns-body">
-            <span class="prev-ns-chev" aria-hidden="true">›</span>
-            <span class="prev-ns-head" id="prev-ns-card-head"></span>
-          </button>
-          <div class="prev-ns-body" id="prev-ns-body" hidden>
-            <ol class="prev-ns-list" id="prev-ns-card-list"></ol>
-          </div>
+          <span class="prev-ns-line" id="prev-ns-card-head"></span>
         </div>
       </div>
       <div class="info-cell">
@@ -2747,6 +2797,13 @@ body.is-viewer .cog-btn { display: none; }
        OTP REFERENCE · SP1 rubric, tappable paragraph chips
        ============================================ -->
   <section class="form-section" id="rubric-section">
+    <!-- otp-v0.9.3: the previous lap's Next Steps, read-only, above the rubric
+         the new observation is scored against. Same data as the card under
+         Teacher; it appears here and nowhere else. -->
+    <div class="prev-ns prev-ns-echo" id="prev-ns-echo" hidden>
+      <span class="prev-ns-head" id="prev-ns-echo-head"></span>
+      <ol class="prev-ns-list" id="prev-ns-echo-list"></ol>
+    </div>
     <h2 class="section-title">OTP Reference: SP1 <em>Student Progress</em></h2>
     <div class="rub-wrap">
       <table class="rub-table">
@@ -2815,12 +2872,6 @@ body.is-viewer .cog-btn { display: none; }
        NEXT STEPS / SUPPORT 1
        ============================================ -->
   <section class="form-section">
-    <!-- otp-v0.9: the previous lap's Next Steps again, read-only, where the new
-         ones get written. Same data as the card under Teacher. -->
-    <div class="prev-ns prev-ns-echo" id="prev-ns-echo" hidden>
-      <span class="prev-ns-head" id="prev-ns-echo-head"></span>
-      <ol class="prev-ns-list" id="prev-ns-echo-list"></ol>
-    </div>
     <h2 class="section-title">Next Steps / <em>Support 1</em><button type="button" class="pad-field-btn" data-pad-target="next_step_1" title="Open the Evidence Pad on the Next Steps / Support 1 page" aria-label="Open the Evidence Pad on the Next Steps / Support 1 page"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></button><button type="button" class="pad-attach" data-pad-target="next_step_1" hidden title="View the handwritten pad pages for this section" aria-label="View the handwritten pad pages for this section"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button></h2>
     <textarea name="next_step_1" id="next_step_1" class="long-text" rows="4" placeholder="Notes…"></textarea>
   </section>
@@ -2856,7 +2907,7 @@ body.is-viewer .cog-btn { display: none; }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · Progress in Lessons OTP · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">otp-v0.9.2</a></span>
+    <span>Form · Progress in Lessons OTP · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">otp-v0.9.3</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -2875,6 +2926,10 @@ body.is-viewer .cog-btn { display: none; }
 </div>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- otp-v0.9.3: a saved change on an open lap leaves this on screen until it is
+     dismissed, so the lap is never left open by accident. -->
+<div class="notice" id="notice" role="alert" hidden><span class="notice-text" id="notice-text"></span><button type="button" class="notice-close" id="notice-close" aria-label="Dismiss">×</button></div>
 
 <script>
   /* === Theme toggle ============================================= */
@@ -3216,12 +3271,37 @@ body.is-viewer .cog-btn { display: none; }
   FORM.addEventListener('input', scheduleSave);
   FORM.addEventListener('change', scheduleSave);
 
+  /* otp-v0.9.3: the five long-text boxes grow with what is written in them, so
+     a long Next Step is never read through a four-line slot. They never shrink
+     below their rows="4" start height and resize: vertical still works. */
+  const AUTOGROW_IDS = ['observer_comments', 'other_observations',
+                        'next_step_1', 'next_step_2', 'next_step_3'];
+
+  function autoGrow(el) {
+    if (!el || !el.offsetHeight) return;          // not laid out yet: nothing to measure
+    if (!el.dataset.baseH) el.dataset.baseH = String(el.offsetHeight);
+    const base = parseFloat(el.dataset.baseH) || 0;
+    el.style.height = 'auto';
+    el.style.height = Math.max(el.scrollHeight + (el.offsetHeight - el.clientHeight), base) + 'px';
+  }
+
+  function autoGrowAll() {
+    AUTOGROW_IDS.forEach(function (id) { autoGrow(document.getElementById(id)); });
+  }
+
+  // The Evidence Pad dispatches `input` on the field it writes, so extracted
+  // ink grows its box exactly the way typing does.
+  FORM.addEventListener('input', function (e) {
+    const t = e.target;
+    if (t && t.classList && t.classList.contains('long-text')) autoGrow(t);
+  });
+
   // v0.42: the teacher-viewer build (otp-record.html) must never restore a
   // local draft over the record it is about to show.
   // v0.45: broaden the guard to ANY record view (CLOSED_RECORD_VIEW also covers
   // the gated editable form opened with ?id), so a draft can never sit under a
   // loaded record. Normal editable-form use (no ?id) still restores the draft.
-  if (!CLOSED_RECORD_VIEW && !EDIT_MODE) loadForm();   // otp-v0.9: nor in edit mode
+  if (!CLOSED_RECORD_VIEW && !EDIT_MODE) { loadForm(); autoGrowAll(); }   // otp-v0.9: nor in edit mode
 
   /* === Action buttons ============================================ */
   document.getElementById('btn-reset').addEventListener('click', () => {
@@ -3243,6 +3323,11 @@ body.is-viewer .cog-btn { display: none; }
     if (typeof syncRubricChips === 'function') syncRubricChips();
     if (typeof syncRubricNotes === 'function') syncRubricNotes();
     EvidencePad.reset();   // v0.50: Reset wipes the Evidence Pad draft too
+    // otp-v0.9.3: the grown boxes go back to their four-line start height.
+    AUTOGROW_IDS.forEach(function (id) {
+      const el = document.getElementById(id);
+      if (el) el.style.height = '';
+    });
     showSaved();
     updateSubmitState();
   });
@@ -4516,6 +4601,30 @@ body.is-viewer .cog-btn { display: none; }
     showToast._t = setTimeout(() => toast.classList.remove('show'), 4500);
   }
 
+  /* otp-v0.9.3: the sticky notice. Unlike a toast it has no timer: an open lap
+     is a job still to finish, so the line stays until it is dismissed. Edit
+     mode only, and never in the ungated teacher viewer. */
+  function showNotice(text) {
+    if (window.R3_VIEWER) return;
+    const box = document.getElementById('notice');
+    const line = document.getElementById('notice-text');
+    if (!box || !line) return;
+    line.textContent = text;
+    box.hidden = false;
+  }
+
+  function hideNotice() {
+    const box = document.getElementById('notice');
+    if (box) box.hidden = true;
+  }
+
+  // click only: never pointerdown (a cancelled touch pointerdown kills the tap
+  // on WebKit, the otp-v0.8 lesson).
+  (function wireNoticeClose() {
+    const b = document.getElementById('notice-close');
+    if (b) b.addEventListener('click', hideNotice);
+  })();
+
   function formatStamp(iso) {
     if (!iso) return '';
     try {
@@ -4556,6 +4665,7 @@ body.is-viewer .cog-btn { display: none; }
   }
 
   function lockForm(recordId, submittedAt, mode, meta) {
+    hideNotice();   // otp-v0.9.3: nothing is open any more
     FORM.querySelectorAll('input, textarea, select').forEach(el => { el.disabled = true; });
     // Tom Select instances need to be disabled via the library API so the
     // chrome (control + dropdown) reflects the locked state (v0.19).
@@ -4764,7 +4874,16 @@ body.is-viewer .cog-btn { display: none; }
     btn.textContent = prev;
     btn.disabled = false;
     updateSubmitState();
-    if (out && out.success) { showToast('Changes saved', 'success'); return; }
+    if (out && out.success) {
+      // otp-v0.9.3: a saved change is not a closed lap, and a toast that fades
+      // was letting laps sit open. This line stays until it is dismissed.
+      const teacher = currentTeacherName() || 'this teacher';
+      showNotice('Saved, but Lap ' + EDIT_RECORD.lap + ' for ' + teacher +
+                 ' is still OPEN. If you have met the teacher, given feedback and ' +
+                 'agreed the Next Steps, tap Close Lap so a new lap starts the ' +
+                 'next time they are observed.');
+      return;
+    }
     showToast('Not saved yet · check the connection and tap Save changes again');
   }
 
@@ -4781,6 +4900,7 @@ body.is-viewer .cog-btn { display: none; }
     const out = await postEditRecord('close');
     if (out && out.success) {
       const closedAt = out.closed_at || new Date().toISOString();
+      hideNotice();
       lockForm(EDIT_RECORD.record_id, EDIT_RECORD.submitted_at, 'closed',
                { lap: lap, status: 'closed', closed_at: closedAt });
       showToast('Lap ' + lap + ' closed · ' + teacher + ' has been told', 'success');
@@ -4819,6 +4939,7 @@ body.is-viewer .cog-btn { display: none; }
       banner.classList.add('is-active');
     }
     refreshPrevNextSteps();   // the teacher came from the record, not a tap
+    autoGrowAll();            // otp-v0.9.3: the record's long answers show in full
     updateSubmitState();
   }
 
@@ -4945,6 +5066,7 @@ body.is-viewer .cog-btn { display: none; }
       syncSingleSelectVisuals();
       syncRubricChips();          // otp-v0.1: re-press the SP1 chips from sp1_*
       syncRubricNotes();          // otp-v0.6: badges from sp1_notes (read-only here)
+      autoGrowAll();              // otp-v0.9.3: a record's long answers show in full
       // otp-v0.5: a record carries both grade and school. Derive school from
       // the restored grade so the two can never disagree; a record with no
       // grade keeps the school it recorded.
@@ -5831,19 +5953,11 @@ body.is-viewer .cog-btn { display: none; }
   let prevNsSeq = 0;
   let prevNsTeacher = '';
 
-  function prevNsCollapse() {
-    const t = document.getElementById('prev-ns-toggle');
-    const b = document.getElementById('prev-ns-body');
-    if (t) t.setAttribute('aria-expanded', 'false');
-    if (b) b.hidden = true;
-  }
-
   function prevNsHide() {
     ['prev-ns-card', 'prev-ns-echo'].forEach(function (id) {
       const el = document.getElementById(id);
       if (el) el.hidden = true;
     });
-    prevNsCollapse();
   }
 
   function prevNsRender(d) {
@@ -5851,30 +5965,33 @@ body.is-viewer .cog-btn { display: none; }
       .map(function (v) { return String(v == null ? '' : v).trim(); })
       .filter(Boolean);
     if (!steps.length) { prevNsHide(); return; }
-    const bits = ['Lap ' + (String(d.lap || '').trim() || '1') + ' Next Steps'];
+    const lap = String(d.lap || '').trim() || '1';
     const when = formatDay(d.observation_date);
+    // otp-v0.9.3: the card is one line that points down at the goals; the goals
+    // themselves are the block above the rubric.
+    const cardHead = document.getElementById('prev-ns-card-head');
+    if (cardHead) {
+      cardHead.textContent = ['Teacher observed' + (when ? ' ' + when : ''),
+                              'Lap ' + lap, 'goals below'].join(' · ');
+    }
+    const bits = ['Lap ' + lap + ' Next Steps'];
     if (when) bits.push(when);
     if (d.observer) bits.push(String(d.observer));
-    const head = bits.join(' · ');
-    ['prev-ns-card-head', 'prev-ns-echo-head'].forEach(function (id) {
-      const el = document.getElementById(id);
-      if (el) el.textContent = head;
-    });
-    ['prev-ns-card-list', 'prev-ns-echo-list'].forEach(function (id) {
-      const el = document.getElementById(id);
-      if (!el) return;
-      el.innerHTML = '';
+    const echoHead = document.getElementById('prev-ns-echo-head');
+    if (echoHead) echoHead.textContent = bits.join(' · ');
+    const list = document.getElementById('prev-ns-echo-list');
+    if (list) {
+      list.innerHTML = '';
       steps.forEach(function (text) {
         const li = document.createElement('li');
         li.textContent = text;          // never parsed as markup
-        el.appendChild(li);
+        list.appendChild(li);
       });
-    });
+    }
     ['prev-ns-card', 'prev-ns-echo'].forEach(function (id) {
       const el = document.getElementById(id);
       if (el) el.hidden = false;
     });
-    prevNsCollapse();
   }
 
   async function refreshPrevNextSteps() {
@@ -5904,19 +6021,6 @@ body.is-viewer .cog-btn { display: none; }
     if (seq !== prevNsSeq) return;             // a newer teacher pick won
     if (out && out.success && out.found) prevNsRender(out);
   }
-
-  (function wirePrevNsToggle() {
-    const t = document.getElementById('prev-ns-toggle');
-    const b = document.getElementById('prev-ns-body');
-    if (!t || !b) return;
-    // click only: never pointerdown (a cancelled touch pointerdown kills the
-    // tap on WebKit, the otp-v0.8 lesson).
-    t.addEventListener('click', function () {
-      const open = t.getAttribute('aria-expanded') === 'true';
-      t.setAttribute('aria-expanded', open ? 'false' : 'true');
-      b.hidden = open;
-    });
-  })();
 
   // ===========================================
   // Searchable dropdowns via Tom Select · v0.19

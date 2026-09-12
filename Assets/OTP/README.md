@@ -1,3 +1,26 @@
+## otp-v0.9.3 (2026-09-12)
+
+Six front-end changes Igor approved for the observers' first week. Front-end
+only: no Apps Script, no Sheet columns, no POST keys, no Supabase.
+
+- **C1** the card under Teacher is ONE line and nothing expands it: "Teacher
+  observed 11 Sept 2026 · Lap 8 · goals below". The toggle, the chevron and the
+  card's own copy of the three steps are gone.
+- **C2** the goals themselves (the read-only echo of the previous lap's Next
+  Steps) move ABOVE the rubric heading, so they are read before the new
+  observation is scored. They appear in one place only.
+- **C3** Close Lap pulses a soft red the whole time an open record is being
+  edited, and stops the moment the lap closes. Colour only; reduced motion
+  holds the tint without the pulse.
+- **C4** Save changes on an open lap no longer fades a "Changes saved" toast:
+  a sticky notice says the lap is still OPEN and what to do about it, and stays
+  until it is dismissed, Close Lap succeeds, or the record locks.
+- **C5** Time Out sits BELOW Next Steps / Support 3, right-aligned to that
+  box's edge, at every width (it used to sit beside it in a second column).
+- **C6** the five long-text boxes (Observer Comments, Other Observations, Next
+  Steps / Support 1-3) grow with what is written in them, never shrink below
+  their four-line start height, and go back to it on Reset.
+
 ## otp-v0.9.2 (2026-09-11, evening)
 
 - D2 · iPadOS 26 keyboard dismiss key: the keyboard engine now remembers the largest keyboard inset seen (`peak`) and, once the viewport has come back, treats the docked accessory strip's re-inset (172 pt on an iPad Air 13-inch, measured on the device) as "keyboard down" instead of a keyboard; RESET / SAVE & LOCK / the cog / the theme toggle return within a second of the dismiss key instead of staying hidden until the page is tapped. Two deterministic specs replay the device-measured viewport heights through a fake `visualViewport` (53 specs per engine).
@@ -229,6 +252,16 @@ ungated viewer) with every `script.google.com` / `supabase.co` call mocked.
 are WebKit rules), so a full pass is 102 results.
 
 ## Changelog
+
+- **otp-v0.9.3** · Six approved front-end changes, no data change (same 32 POST
+  keys, same Sheet columns, no Apps Script change): the previous-lap card under
+  Teacher collapses to one unexpandable line pointing at the goals (C1); the
+  goals themselves move above the rubric heading and appear there only (C2);
+  Close Lap pulses soft red until the lap is closed (C3); Save changes on an
+  open lap raises a sticky notice saying the lap is still open instead of a
+  toast that fades (C4); Time Out sits below Next Steps / Support 3,
+  right-aligned to it, at every width (C5); and the five long-text boxes grow
+  with what is written in them (C6).
 
 - **otp-v0.9.1** · Four defects the observers hit on the live form, fixed with
   no data change (same 32 POST keys, same Sheet columns, no Apps Script change):
