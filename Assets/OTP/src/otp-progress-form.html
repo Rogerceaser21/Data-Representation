@@ -234,6 +234,7 @@ body {
   border-right: 1px solid var(--rule-soft);
   border-bottom: 1px solid var(--rule-soft);
   display: flex; flex-direction: column; gap: 0.3rem;
+  min-width: 0;   /* otp-v0.9.4: long content (the Teacher observed card) wraps inside the cell instead of widening its column */
   background: var(--card-bg);
 }
 .info-cell:nth-child(3n) { border-right: none; }
@@ -654,14 +655,12 @@ body.is-editing:not(.is-locked) #btn-close-lap:not(:disabled) {
   letter-spacing: 0.06em;
   color: var(--paper);
 }
-/* otp-v0.9.3: the card is one line and nothing expands it, so it is text, not
-   a button. Same type as .prev-ns-head; an ellipsis rather than a second row. */
+/* otp-v0.9.3: the card is text, not a button; nothing expands it. Same type as
+   .prev-ns-head. otp-v0.9.4: it wraps inside the Teacher box (the one-line
+   nowrap version widened the Teacher column and squeezed the other two). */
 .prev-ns-line {
   display: block;
   padding: 0.42rem 0.6rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   font-family: var(--body-font);
   font-size: var(--tiny);
   font-weight: 700;
@@ -1041,6 +1040,22 @@ body.is-locked .action-btn.new { display: inline-flex; }
   border-bottom-style: solid;
   border-bottom-color: var(--rate-success);
 }
+
+/* otp-v0.9.4 · Safari on Mac draws an EMPTY date or time field as today's date
+   or 12:30 PM, in the field's own text colour, so an empty field reads as filled
+   while the form holds nothing. An empty one (.dt-empty, kept in sync by
+   syncDateTimeEmpty) is drawn blank until it is focused; its parts come back
+   while typing. The opaque background lets Safari dim the parts still unset
+   (on a transparent one it darkens them). */
+.info-cell input[type="date"],
+.info-cell input[type="time"],
+.summary-with-timeout .timeout-block input[type="time"] { background-color: var(--card-bg); }
+.form-container input.dt-empty:not(:focus) { color: transparent; }
+
+/* otp-v0.9.4 · a tap on the grey Save & Lock outlines the required boxes that
+   are still empty and names them. Guidance, not an error (hard rule 12). */
+.info-cell.needs-value,
+.timeout-block.needs-value { outline: 2px dashed var(--ais-blue); outline-offset: -3px; }
 .info-grid-r3 .info-cell-spacer {
   background: transparent;
   border-right-color: transparent;
@@ -2737,7 +2752,7 @@ body.is-viewer .cog-btn { display: none; }
       </div>
       <div class="info-cell">
         <label for="time_in" class="required-field">Time In</label>
-        <input id="time_in" name="time_in" type="time" required>
+        <input id="time_in" name="time_in" type="time" class="dt-empty" required>
       </div>
 
       <div class="info-cell">
@@ -2759,7 +2774,7 @@ body.is-viewer .cog-btn { display: none; }
 
       <div class="info-cell">
         <label for="date" class="required-field">Date</label>
-        <input id="date" name="date" type="date">
+        <input id="date" name="date" type="date" class="dt-empty">
       </div>
       <div class="info-cell">
         <label for="room_number">Room Number</label>
@@ -2898,7 +2913,7 @@ body.is-viewer .cog-btn { display: none; }
       </div>
       <div class="timeout-block">
         <label for="time_out" class="required-field">Time Out</label>
-        <input id="time_out" name="time_out" type="time" required>
+        <input id="time_out" name="time_out" type="time" class="dt-empty" required>
       </div>
     </div>
   </section>
@@ -2907,7 +2922,7 @@ body.is-viewer .cog-btn { display: none; }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · Progress in Lessons OTP · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">otp-v0.9.3</a></span>
+    <span>Form · Progress in Lessons OTP · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">otp-v0.9.4</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -2922,7 +2937,7 @@ body.is-viewer .cog-btn { display: none; }
        and Save & Lock, while body carries .is-editing. -->
   <button type="button" class="action-btn secondary close-lap disabled" id="btn-close-lap" title="Close this lap and let the teacher know" disabled>Close Lap</button>
   <button type="button" class="action-btn submit disabled" id="btn-save-changes" title="Save your changes to this record" disabled>Save changes</button>
-  <button type="button" class="action-btn submit disabled" id="btn-submit" title="Fill all required fields to enable saving" disabled>Save &amp; Lock</button>
+  <button type="button" class="action-btn submit disabled" id="btn-submit" title="Fill all required fields to enable saving" aria-disabled="true">Save &amp; Lock</button>
 </div>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -3323,6 +3338,13 @@ body.is-viewer .cog-btn { display: none; }
     if (typeof syncRubricChips === 'function') syncRubricChips();
     if (typeof syncRubricNotes === 'function') syncRubricNotes();
     EvidencePad.reset();   // v0.50: Reset wipes the Evidence Pad draft too
+    // otp-v0.9.4: Reset also clears the previous-lap card and its echo, and a
+    // late answer for the teacher just wiped can no longer bring them back.
+    prevNsSeq++;
+    prevNsTeacher = '';
+    prevNsHide();
+    // otp-v0.9.4: and the outlines left by a tap on the grey Save & Lock.
+    document.querySelectorAll('.needs-value').forEach(function (c) { c.classList.remove('needs-value'); });
     // otp-v0.9.3: the grown boxes go back to their four-line start height.
     AUTOGROW_IDS.forEach(function (id) {
       const el = document.getElementById(id);
@@ -4565,15 +4587,55 @@ body.is-viewer .cog-btn { display: none; }
   const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbx3efKiQzs2MSwESEuNBCceXr5FqBCXuk1IgSzPFbOVgLSc3fvXy40e8V9lhw_KH0z2nQ/exec';
   const REQUIRED_FIELDS = ['teacher', 'inspector', 'curriculum', 'grade', 'subject', 'date', 'time_in', 'time_out'];   // otp-v0.8: time_out
 
-  function updateSubmitState() {
-    const allFilled = REQUIRED_FIELDS.every(name => {
+  // otp-v0.9.4: Safari on Mac paints an EMPTY date or time field as today's
+  // date or 12:30 PM; .dt-empty lets the CSS draw the empty ones blank.
+  function syncDateTimeEmpty() {
+    FORM.querySelectorAll('input[type="date"], input[type="time"]').forEach(function (el) {
+      el.classList.toggle('dt-empty', !el.value);
+    });
+  }
+
+  // otp-v0.9.4: the required fields still empty, and the box each one sits in.
+  function missingRequired() {
+    return REQUIRED_FIELDS.filter(function (name) {
       const el = FORM.querySelector('[name="' + name + '"]');
-      return el && el.value && el.value.trim();
+      return !(el && el.value && el.value.trim());
+    });
+  }
+  function requiredCell(name) {
+    const el = FORM.querySelector('[name="' + name + '"]');
+    return el && el.closest('.info-cell, .timeout-block');
+  }
+
+  // otp-v0.9.4: a tap on the grey Save & Lock outlines the empty required boxes
+  // and names them. Calm guidance, never an error (hard rule 12).
+  function showMissingRequired(missing) {
+    const names = missing.map(function (name) {
+      const cell = requiredCell(name);
+      const label = cell && cell.querySelector('label');
+      if (cell) cell.classList.add('needs-value');
+      return label ? label.textContent.trim() : name.replace('_', ' ');
+    });
+    const first = requiredCell(missing[0]);
+    if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    showToast('Still to fill: ' + names.join(', '));
+  }
+
+  function updateSubmitState() {
+    syncDateTimeEmpty();
+    const missing = missingRequired();
+    const allFilled = missing.length === 0;
+    REQUIRED_FIELDS.forEach(function (name) {   // otp-v0.9.4: a filled box loses its outline
+      const cell = missing.indexOf(name) < 0 && requiredCell(name);
+      if (cell) cell.classList.remove('needs-value');
     });
     const btn = document.getElementById('btn-submit');
     if (btn && btn.dataset.locked !== '1') {
       btn.classList.toggle('disabled', !allFilled);
-      btn.disabled = !allFilled;
+      // otp-v0.9.4: "not ready" is aria-disabled, not disabled, so a tap on the
+      // grey button still arrives and can say what is missing.
+      btn.setAttribute('aria-disabled', allFilled ? 'false' : 'true');
+      btn.disabled = false;
       btn.title = allFilled ? 'Save and lock this OTP observation form' : 'Fill Teacher / Time In / Observer / Curriculum / Grade / Date / Subject / Time Out to enable saving';
     }
     // otp-v0.9: Save changes and Close Lap ride the SAME required-field gate,
@@ -4774,7 +4836,12 @@ body.is-viewer .cog-btn { display: none; }
 
   async function submitForm() {
     const btn = document.getElementById('btn-submit');
-    if (!btn || btn.disabled) return;
+    if (!btn || btn.disabled || btn.dataset.locked === '1') return;
+    // otp-v0.9.4: the fields are re-read at the tap itself, so a stale grey state
+    // can never block a complete form, and whatever is still empty is named.
+    updateSubmitState();
+    const missing = missingRequired();
+    if (missing.length) { showMissingRequired(missing); return; }
 
     if (!confirm('Save and lock this Progress in Lessons OTP form? You can still change it from the link in your confirmation email until you close the lap.')) return;
 
@@ -5064,6 +5131,7 @@ body.is-viewer .cog-btn { display: none; }
       });
 
       syncSingleSelectVisuals();
+      syncDateTimeEmpty();        // otp-v0.9.4: an empty date/time reads empty
       syncRubricChips();          // otp-v0.1: re-press the SP1 chips from sp1_*
       syncRubricNotes();          // otp-v0.6: badges from sp1_notes (read-only here)
       autoGrowAll();              // otp-v0.9.3: a record's long answers show in full
@@ -5971,8 +6039,10 @@ body.is-viewer .cog-btn { display: none; }
     // themselves are the block above the rubric.
     const cardHead = document.getElementById('prev-ns-card-head');
     if (cardHead) {
+      // otp-v0.9.4: the card wraps now; non-breaking spaces keep each "·" at a
+      // line end and "Lap 1" in one piece, so a line never starts with a dot.
       cardHead.textContent = ['Teacher observed' + (when ? ' ' + when : ''),
-                              'Lap ' + lap, 'goals below'].join(' · ');
+                              'Lap ' + lap, 'goals below'].join(' · ');
     }
     const bits = ['Lap ' + lap + ' Next Steps'];
     if (when) bits.push(when);

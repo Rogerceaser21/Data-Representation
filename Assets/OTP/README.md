@@ -1,3 +1,29 @@
+## otp-v0.9.4 (2026-09-15)
+
+The Safari-on-Mac fix and the Teacher observed card, from Igor's Focus OS
+reports. Front-end only: no Apps Script, no Sheet columns, no POST keys, no
+Supabase.
+
+- **Empty date and time fields look empty.** Safari on Mac draws an EMPTY date
+  or time field as today's date or 12:30 PM, in the field's own text colour, so
+  an empty Date, Time In or Time Out looked filled while the form held nothing,
+  and Save & Lock stayed grey. An empty one (`.dt-empty`, kept in sync by
+  `syncDateTimeEmpty`) is now drawn blank until it is focused. Safari only
+  stores a date or a time once every part is set (day, month and year; hour,
+  minute and AM/PM), and it never moves to the next part by itself.
+- **A tap on the grey Save & Lock says what is missing.** "Not ready" is
+  `aria-disabled` plus the grey class instead of the `disabled` attribute, so
+  the tap arrives: the required boxes still empty get a dashed outline and a
+  toast names them ("Still to fill: Date, Time Out"). The tap re-reads the
+  fields first, so a stale grey state can never block a complete form.
+- **Reset** also clears the Teacher observed card and its echo; a late answer
+  for the teacher just wiped cannot bring them back.
+- **The Teacher observed card** wraps inside the Teacher box: `.info-cell`
+  gets `min-width: 0` (the one-line nowrap card made the Teacher column wider
+  and squeezed the other two). Non-breaking spaces keep each "·" at a line end.
+- **Proof in real Safari:** `tests/safari/safari_check.py` fails on
+  otp-v0.9.3 (empty fields painting a value) and passes on otp-v0.9.4.
+
 ## otp-v0.9.3 (2026-09-12)
 
 Six front-end changes Igor approved for the observers' first week. Front-end

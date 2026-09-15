@@ -2530,9 +2530,10 @@ test('otp-v0.9: the previous Next Steps card and echo render when a closed lap i
   await expect(page.locator('#prev-ns-card')).toBeVisible({ timeout: 10_000 });
   await expect(page.locator('#prev-ns-echo')).toBeVisible();
 
-  // otp-v0.9.3 (C1): the card is one line, "Teacher observed <date> · Lap <n> · goals below"
+  // otp-v0.9.3 (C1): "Teacher observed <date> · Lap <n> · goals below". otp-v0.9.4
+  // joins it with non-breaking spaces so a wrapped line never starts with a dot.
   const cardLine = new RegExp(
-    `^Teacher observed ${dayPat(PREV_NS_FOUND.observation_date)} · Lap ${PREV_NS_FOUND.lap} · goals below$`,
+    `^Teacher observed ${dayPat(PREV_NS_FOUND.observation_date)}[  ]· Lap[  ]${PREV_NS_FOUND.lap}[  ]· goals below$`,
   );
   await expect(
     page.locator('#prev-ns-card-head'),
@@ -3076,11 +3077,173 @@ test('otp-v0.9.3: the five long-text boxes grow with their text and Reset restor
   ).toBeLessThanOrEqual(loaded.clientHeight + 2);
 });
 
-test('otp-v0.9.3: the footer reads otp-v0.9.3', async ({ page }) => {
+test('otp-v0.9.4: the footer reads otp-v0.9.4', async ({ page }) => {
   await harness(page);
   await openForm(page);
   await expect(
     page.locator('.form-footer'),
-    'footer version was not bumped to otp-v0.9.3',
-  ).toContainText(/otp-v0\.9\.3/i);
+    'footer version was not bumped to otp-v0.9.4',
+  ).toContainText(/otp-v0\.9\.4/i);
+});
+
+/** otp-v0.9.4: Safari on Mac paints an EMPTY date or time field as today's date
+ *  or 12:30 PM in the field's own text colour, so an empty field looked filled.
+ *  An empty one must be drawn blank (transparent text) until it is focused. */
+const DATE_TIME_IDS = ['date', 'time_in', 'time_out'];
+const CLEAR = 'rgba(0, 0, 0, 0)';
+const textColour = (page: Page, id: string) =>
+  page.locator('#' + id).evaluate((el) => getComputedStyle(el).color);
+
+/** A real mouse click at the centre of a control, like a tap. */
+async function tapCentre(page: Page, sel: string) {
+  const b = (await page.locator(sel).boundingBox())!;
+  await page.mouse.click(b.x + b.width / 2, b.y + b.height / 2);
+}
+
+test('otp-v0.9.4: an empty date or time field is drawn blank, never as a fake value', async ({ page }) => {
+  const h = await harness(page);
+  page.on('dialog', (d) => d.accept());
+  await openForm(page);
+
+  // a fresh form: all three empty, all three drawn blank
+  for (const id of DATE_TIME_IDS) {
+    await expect(page.locator('#' + id)).toHaveValue('');
+    await expect(page.locator('#' + id)).toHaveClass(/\bdt-empty\b/);
+    expect(await textColour(page, id), `#${id} paints text while empty`).toBe(CLEAR);
+  }
+
+  // focused, its parts show so it can be typed into
+  await page.locator('#time_in').focus();
+  expect(await textColour(page, 'time_in')).not.toBe(CLEAR);
+
+  // filled, each shows its value
+  await page.fill('#date', '2026-09-03');
+  await page.fill('#time_in', '09:15');
+  await page.fill('#time_out', '10:05');
+  await page.locator('#room_number').focus();
+  for (const id of DATE_TIME_IDS) {
+    await expect(page.locator('#' + id)).not.toHaveClass(/\bdt-empty\b/);
+    expect(await textColour(page, id)).not.toBe(CLEAR);
+  }
+
+  // Reset empties them, and they are drawn blank again
+  await page.locator('#btn-reset').click();
+  for (const id of DATE_TIME_IDS) {
+    await expect(page.locator('#' + id)).toHaveValue('');
+    await expect(page.locator('#' + id)).toHaveClass(/\bdt-empty\b/);
+    expect(await textColour(page, id)).toBe(CLEAR);
+  }
+
+  // a restored draft shows its date and times (never drawn blank over a value)
+  await page.evaluate(([k, v]) => localStorage.setItem(k as string, v as string), [
+    DRAFT_KEY,
+    JSON.stringify({ date: '2026-09-03', time_in: '09:15', time_out: '10:05' }),
+  ] as [string, string]);
+  await openForm(page);
+  await expect(page.locator('#date')).toHaveValue('2026-09-03');
+  await expect(page.locator('#time_in')).toHaveValue('09:15');
+  await expect(page.locator('#time_out')).toHaveValue('10:05');
+  for (const id of DATE_TIME_IDS) {
+    await expect(page.locator('#' + id)).not.toHaveClass(/\bdt-empty\b/);
+    expect(await textColour(page, id)).not.toBe(CLEAR);
+  }
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.9.4: a tap on the grey Save & Lock names and outlines what is still empty, and never posts', async ({ page }) => {
+  const h = await harness(page);
+  let dialogs = 0;
+  page.on('dialog', (d) => { dialogs++; d.dismiss(); });
+  await openForm(page);
+
+  const submit = page.locator('#btn-submit');
+  await expect(submit).toHaveAttribute('aria-disabled', 'true');
+  expect(await submit.getAttribute('disabled'), 'a disabled button swallows the tap').toBeNull();
+  await expect(submit).toHaveClass(/\bdisabled\b/);
+
+  await tapCentre(page, '#btn-submit');
+  await expect(page.locator('#toast')).toHaveText(
+    'Still to fill: Teacher, Observer, Curriculum, Grade, Subject, Date, Time In, Time Out');
+  await expect(page.locator('.needs-value')).toHaveCount(8);
+
+  // each outline goes the moment its box is filled; an outline only comes back
+  // with the next tap, so everything but Time Out leaves none until then
+  await fillRequired(page);
+  await page.fill('#time_out', '');
+  await expect(page.locator('.needs-value')).toHaveCount(0);
+  await expect(page.locator('#toast')).not.toHaveClass(/\bshow\b/, { timeout: 8_000 });
+  await tapCentre(page, '#btn-submit');
+  await expect(page.locator('#toast')).toHaveText('Still to fill: Time Out');
+  await expect(page.locator('.needs-value')).toHaveCount(1);
+  await expect(page.locator('.timeout-block.needs-value')).toHaveCount(1);
+
+  // complete: no outline left, the button is ready
+  await page.fill('#time_out', '10:05');
+  await expect(page.locator('.needs-value')).toHaveCount(0);
+  await expect(submit).toHaveAttribute('aria-disabled', 'false');
+  await expect(submit).not.toHaveClass(/\bdisabled\b/);
+
+  expect(dialogs, 'a grey Save & Lock must never reach the confirm step').toBe(0);
+  expect(h.posts).toHaveLength(0);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.9.4: Reset hides the Teacher observed card, and a late answer cannot bring it back', async ({ page }) => {
+  const h = await harness(page, { prev: PREV_NS_FOUND });
+  page.on('dialog', (d) => d.accept());
+  await openForm(page);
+
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await expect(page.locator('#prev-ns-card')).toBeVisible({ timeout: 10_000 });
+  await page.locator('#btn-reset').click();
+  await expect(page.locator('#prev-ns-card')).toBeHidden();
+  await expect(page.locator('#prev-ns-echo')).toBeHidden();
+
+  // the same teacher picked again looks the lap up again
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await expect(page.locator('#prev-ns-card')).toBeVisible({ timeout: 10_000 });
+
+  // an answer still on its way when Reset is tapped stays unseen
+  await page.route('**/script.google.com/**', async (r: Route) => {
+    if (r.request().url().includes('prev_next_steps')) await new Promise((res) => setTimeout(res, 1500));
+    await r.fallback();
+  });
+  await page.locator('#btn-reset').click();
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await page.locator('#btn-reset').click();
+  await page.waitForTimeout(2500);
+  await expect(page.locator('#prev-ns-card')).toBeHidden();
+  await expect(page.locator('#prev-ns-echo')).toBeHidden();
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.9.4: the Teacher observed card wraps inside the Teacher box and the top row stays three equal columns', async ({ page }) => {
+  const h = await harness(page, { prev: PREV_NS_FOUND });
+  for (const vp of [{ width: 1024, height: 768 }, { width: 820, height: 1180 }]) {
+    await page.setViewportSize(vp);
+    await openForm(page);
+    await pickTomSelect(page, 'teacher', 'Test Teacher');
+    await expect(page.locator('#prev-ns-card')).toBeVisible({ timeout: 10_000 });
+    const m = await page.evaluate(() => {
+      const cell = document.getElementById('teacher')!.closest('.info-cell') as HTMLElement;
+      const top = cell.getBoundingClientRect().top;
+      const row = (Array.from(cell.parentElement!.children) as HTMLElement[])
+        .filter((c) => c.offsetWidth > 0 && Math.abs(c.getBoundingClientRect().top - top) < 2);
+      const card = document.getElementById('prev-ns-card')!.getBoundingClientRect();
+      const box = cell.getBoundingClientRect();
+      return {
+        widths: row.map((c) => Math.round(c.getBoundingClientRect().width * 10) / 10),
+        cardLeft: card.left, cardRight: card.right, boxLeft: box.left, boxRight: box.right,
+        whiteSpace: getComputedStyle(document.getElementById('prev-ns-card-head')!).whiteSpace,
+      };
+    });
+    expect(m.widths, `top row at ${vp.width}x${vp.height}`).toHaveLength(3);
+    expect(Math.max(...m.widths) - Math.min(...m.widths),
+      `the card widened the Teacher column at ${vp.width}x${vp.height}: ${m.widths.join(' / ')}`,
+    ).toBeLessThanOrEqual(1.5);
+    expect(m.cardLeft).toBeGreaterThanOrEqual(m.boxLeft - 0.5);
+    expect(m.cardRight).toBeLessThanOrEqual(m.boxRight + 0.5);
+    expect(m.whiteSpace).toBe('normal');
+  }
+  expect(h.errors).toEqual([]);
 });
