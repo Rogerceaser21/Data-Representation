@@ -1051,11 +1051,17 @@ body.is-locked .action-btn.new { display: inline-flex; }
 .info-cell input[type="time"],
 .summary-with-timeout .timeout-block input[type="time"] { background-color: var(--card-bg); }
 .form-container input.dt-empty:not(:focus) { color: transparent; }
+/* print forces input text dark with !important; an empty one must stay blank there too */
+@media print {
+  .form-container .info-cell input.dt-empty,
+  .form-container .timeout-block input.dt-empty { color: transparent !important; }
+}
 
 /* otp-v0.9.4 · a tap on the grey Save & Lock outlines the required boxes that
    are still empty and names them. Guidance, not an error (hard rule 12). */
-.info-cell.needs-value,
-.timeout-block.needs-value { outline: 2px dashed var(--ais-blue); outline-offset: -3px; }
+.info-cell.needs-value { outline: 2px dashed var(--ais-blue); outline-offset: -3px; }
+/* Time Out's box has no padding, so its outline sits outside, clear of the label */
+.timeout-block.needs-value { outline: 2px dashed var(--ais-blue); outline-offset: 4px; }
 .info-grid-r3 .info-cell-spacer {
   background: transparent;
   border-right-color: transparent;
@@ -3338,13 +3344,7 @@ body.is-viewer .cog-btn { display: none; }
     if (typeof syncRubricChips === 'function') syncRubricChips();
     if (typeof syncRubricNotes === 'function') syncRubricNotes();
     EvidencePad.reset();   // v0.50: Reset wipes the Evidence Pad draft too
-    // otp-v0.9.4: Reset also clears the previous-lap card and its echo, and a
-    // late answer for the teacher just wiped can no longer bring them back.
-    prevNsSeq++;
-    prevNsTeacher = '';
-    prevNsHide();
-    // otp-v0.9.4: and the outlines left by a tap on the grey Save & Lock.
-    document.querySelectorAll('.needs-value').forEach(function (c) { c.classList.remove('needs-value'); });
+    clearLapCardAndOutlines();   // otp-v0.9.4
     // otp-v0.9.3: the grown boxes go back to their four-line start height.
     AUTOGROW_IDS.forEach(function (id) {
       const el = document.getElementById(id);
@@ -4610,13 +4610,19 @@ body.is-viewer .cog-btn { display: none; }
   // otp-v0.9.4: a tap on the grey Save & Lock outlines the empty required boxes
   // and names them. Calm guidance, never an error (hard rule 12).
   function showMissingRequired(missing) {
-    const names = missing.map(function (name) {
+    // otp-v0.9.4: named and scrolled to in the order the boxes sit on the screen
+    const ordered = missing.slice().sort(function (a, b) {
+      const ca = requiredCell(a), cb = requiredCell(b);
+      if (!ca || !cb || ca === cb) return 0;
+      return (ca.compareDocumentPosition(cb) & Node.DOCUMENT_POSITION_FOLLOWING) ? -1 : 1;
+    });
+    const names = ordered.map(function (name) {
       const cell = requiredCell(name);
       const label = cell && cell.querySelector('label');
       if (cell) cell.classList.add('needs-value');
       return label ? label.textContent.trim() : name.replace('_', ' ');
     });
-    const first = requiredCell(missing[0]);
+    const first = requiredCell(ordered[0]);
     if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
     showToast('Still to fill: ' + names.join(', '));
   }
@@ -4630,12 +4636,13 @@ body.is-viewer .cog-btn { display: none; }
       if (cell) cell.classList.remove('needs-value');
     });
     const btn = document.getElementById('btn-submit');
-    if (btn && btn.dataset.locked !== '1') {
+    if (btn && btn.dataset.locked !== '1' && btn.dataset.busy !== '1') {   // otp-v0.9.4: never mid-save
       btn.classList.toggle('disabled', !allFilled);
       // otp-v0.9.4: "not ready" is aria-disabled, not disabled, so a tap on the
-      // grey button still arrives and can say what is missing.
+      // grey button still arrives and can say what is missing. A record view
+      // keeps the real disabled: nothing there is for saving.
       btn.setAttribute('aria-disabled', allFilled ? 'false' : 'true');
-      btn.disabled = false;
+      btn.disabled = CLOSED_RECORD_VIEW;
       btn.title = allFilled ? 'Save and lock this OTP observation form' : 'Fill Teacher / Time In / Observer / Curriculum / Grade / Date / Subject / Time Out to enable saving';
     }
     // otp-v0.9: Save changes and Close Lap ride the SAME required-field gate,
@@ -4728,6 +4735,7 @@ body.is-viewer .cog-btn { display: none; }
 
   function lockForm(recordId, submittedAt, mode, meta) {
     hideNotice();   // otp-v0.9.3: nothing is open any more
+    document.querySelectorAll('.needs-value').forEach(function (c) { c.classList.remove('needs-value'); });   // otp-v0.9.4
     FORM.querySelectorAll('input, textarea, select').forEach(el => { el.disabled = true; });
     // Tom Select instances need to be disabled via the library API so the
     // chrome (control + dropdown) reflects the locked state (v0.19).
@@ -4781,7 +4789,9 @@ body.is-viewer .cog-btn { display: none; }
     if (submitBtn) {
       submitBtn.textContent = 'Save & Lock';
       delete submitBtn.dataset.locked;
+      delete submitBtn.dataset.busy;   // otp-v0.9.4
     }
+    clearLapCardAndOutlines();         // otp-v0.9.4: the card goes with the finished observation
     try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
     EvidencePad.reset();   // v0.50: a finished observation clears its Evidence Pad too
     // v0.24: school just got cleared by the reset loop above; let Subject
@@ -4836,7 +4846,8 @@ body.is-viewer .cog-btn { display: none; }
 
   async function submitForm() {
     const btn = document.getElementById('btn-submit');
-    if (!btn || btn.disabled || btn.dataset.locked === '1') return;
+    if (CLOSED_RECORD_VIEW) return;              // otp-v0.9.4: a record view never saves
+    if (!btn || btn.disabled || btn.dataset.locked === '1' || btn.dataset.busy === '1') return;
     // otp-v0.9.4: the fields are re-read at the tap itself, so a stale grey state
     // can never block a complete form, and whatever is still empty is named.
     updateSubmitState();
@@ -4845,6 +4856,9 @@ body.is-viewer .cog-btn { display: none; }
 
     if (!confirm('Save and lock this Progress in Lessons OTP form? You can still change it from the link in your confirmation email until you close the lap.')) return;
 
+    // otp-v0.9.4: busy until the save ends, so an input or change event (the pad
+    // writing its text, a keystroke) can never wake the button for a second tap.
+    btn.dataset.busy = '1';
     const prevText = btn.textContent;
 
     // v0.55: BACKSTOP — any pad handwriting not yet in its text field is
@@ -4884,6 +4898,7 @@ body.is-viewer .cog-btn { display: none; }
       // Auto-reset for back-to-back observations (v0.17).
       setTimeout(softResetForm, 3000);
     } catch (err) {
+      delete btn.dataset.busy;
       btn.disabled = false;
       btn.textContent = prevText;
       showToast('Submit failed: ' + (err.message || err), 'error');
@@ -6026,6 +6041,16 @@ body.is-viewer .cog-btn { display: none; }
       const el = document.getElementById(id);
       if (el) el.hidden = true;
     });
+  }
+
+  // otp-v0.9.4: both resets (the Reset button, and the automatic one after a
+  // Save & Lock) clear the previous-lap card and its echo, drop a late answer
+  // for the teacher just wiped, and remove the outlines of a grey Save & Lock tap.
+  function clearLapCardAndOutlines() {
+    prevNsSeq++;
+    prevNsTeacher = '';
+    prevNsHide();
+    document.querySelectorAll('.needs-value').forEach(function (c) { c.classList.remove('needs-value'); });
   }
 
   function prevNsRender(d) {

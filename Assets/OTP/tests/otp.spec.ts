@@ -3134,8 +3134,10 @@ test('otp-v0.9.4: an empty date or time field is drawn blank, never as a fake va
     expect(await textColour(page, id)).toBe(CLEAR);
   }
 
-  // a restored draft shows its date and times (never drawn blank over a value)
-  await page.evaluate(([k, v]) => localStorage.setItem(k as string, v as string), [
+  // a restored draft shows its date and times (never drawn blank over a value).
+  // Set before any page script runs: Reset's own 220 ms autosave could otherwise
+  // land between an injection and the reload and wipe the draft.
+  await page.addInitScript(([k, v]) => localStorage.setItem(k, v), [
     DRAFT_KEY,
     JSON.stringify({ date: '2026-09-03', time_in: '09:15', time_out: '10:05' }),
   ] as [string, string]);
@@ -3163,7 +3165,7 @@ test('otp-v0.9.4: a tap on the grey Save & Lock names and outlines what is still
 
   await tapCentre(page, '#btn-submit');
   await expect(page.locator('#toast')).toHaveText(
-    'Still to fill: Teacher, Observer, Curriculum, Grade, Subject, Date, Time In, Time Out');
+    'Still to fill: Teacher, Time In, Observer, Curriculum, Grade, Date, Subject, Time Out');
   await expect(page.locator('.needs-value')).toHaveCount(8);
 
   // each outline goes the moment its box is filled; an outline only comes back
@@ -3245,5 +3247,50 @@ test('otp-v0.9.4: the Teacher observed card wraps inside the Teacher box and the
     expect(m.cardRight).toBeLessThanOrEqual(m.boxRight + 0.5);
     expect(m.whiteSpace).toBe('normal');
   }
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.9.4: Save & Lock stays shut while saving, and the automatic reset clears the Teacher observed card', async ({ page }) => {
+  const h = await harness(page, { prev: PREV_NS_FOUND });
+  page.on('dialog', (d) => d.accept());
+  await openForm(page);
+  await fillRequired(page);
+  await expect(page.locator('#prev-ns-card')).toBeVisible({ timeout: 10_000 });
+
+  // the save takes 2 s; a keystroke in the middle must not wake the button
+  await page.route('**/script.google.com/**', async (r: Route) => {
+    if (r.request().method() === 'POST') await new Promise((res) => setTimeout(res, 2000));
+    await r.fallback();
+  });
+  await tapCentre(page, '#btn-submit');
+  await expect(page.locator('#btn-submit')).toHaveText(/Saving/);
+  await page.locator('#room_number').fill('12B');
+  await expect(page.locator('#btn-submit')).toBeDisabled();
+  await tapCentre(page, '#btn-submit');
+
+  // one record only; the automatic reset then leaves a clean form with no card
+  await expect(page.locator('#prev-ns-card')).toBeHidden({ timeout: 10_000 });
+  await expect(page.locator('#prev-ns-echo')).toBeHidden();
+  expect(h.posts.filter((p) => !p.action), 'a second tap mid-save posted again').toHaveLength(1);
+  await expect(page.locator('#btn-submit')).toHaveAttribute('aria-disabled', 'true');
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.9.4: a record view never takes a tap on Save & Lock, even before the record has landed', async ({ page }) => {
+  const h = await harness(page);
+  await page.route('**/script.google.com/**', async (r: Route) => {
+    if (r.request().method() === 'GET' && /[?&]token=/.test(r.request().url())) {
+      await new Promise((res) => setTimeout(res, 3000));
+    }
+    await r.fallback();
+  });
+  await page.goto(RECORD_URL + '?token=abc');
+  const submit = page.locator('#btn-submit');
+  await expect(submit).toHaveAttribute('disabled', '', { timeout: 10_000 });
+  await submit.dispatchEvent('click');
+  await page.waitForTimeout(400);
+  // the viewer's own "Loading record…" toast may show; the tap adds nothing
+  await expect(page.locator('.needs-value')).toHaveCount(0);
+  await expect(page.locator('#toast')).not.toContainText('Still to fill');
   expect(h.errors).toEqual([]);
 });

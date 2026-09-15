@@ -7,11 +7,11 @@ cells, and FAILS (exit 1) when an EMPTY date or time field still paints text
 (the Safari-on-Mac fake "today" / "12:30 PM"). Never submits: every POST is
 blocked in the page, and nothing in the action bar is clicked.
 
-  python3 safari_check.py URL [--out DIR] [--port 4448] [--gate-env VAR]
+  python3 safari_check.py URL [--out DIR] [--port 4448]
 
---gate-env VAR  for a StatiCrypt-gated live form: the password is read from the
-                environment variable VAR and typed by this script. Run it yourself;
-                the research agent does not enter passwords.
+URL must be an UNGATED page: a copy of the master served at the live form's folder
+depth (for example Assets/OTP/<name>.html from a local server), so its relative
+../R3/lib/ and ../brand/ paths resolve. The check does not pass the StatiCrypt gate.
 Needs: macOS Safari with Develop > Allow Remote Automation on. stdlib only.
 Exit: 0 = every empty date/time looks empty, 1 = at least one fake value, 2 = setup problem.
 """
@@ -112,7 +112,6 @@ def main():
     ap.add_argument('url')
     ap.add_argument('--out', default='safari-check-shots')
     ap.add_argument('--port', type=int, default=4448)
-    ap.add_argument('--gate-env', default=None)
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     w = WD(a.port)
@@ -122,10 +121,8 @@ def main():
         w.req('POST', w.s('/url'), {'url': a.url})
         time.sleep(1.0)
         if w.js("return !!document.getElementById('staticrypt-password');"):
-            if not a.gate_env or not os.environ.get(a.gate_env):
-                print('This page is behind the StatiCrypt gate: pass --gate-env VAR with the password in $VAR.'); return 2
-            el = w.find('#staticrypt-password')
-            w.req('POST', w.s('/element/%s/value' % el), {'text': os.environ[a.gate_env] + ''})
+            print('This page is behind the StatiCrypt gate: point the check at an ungated copy of the master.')
+            return 2
         if not w.wait("document.getElementById('form-loading') && document.getElementById('form-loading').classList.contains('is-hidden')", 60):
             print('The form did not finish loading within 60 s.'); return 2
         time.sleep(1.0)
