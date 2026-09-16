@@ -20,3 +20,4 @@ dashboard/.staticrypt-out/
 test-results/
 playwright-report/
 Assets/OTP/.staticrypt-out/
+supabase/.temp/

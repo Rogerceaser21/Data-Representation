@@ -29,6 +29,12 @@ function doPost(e) {
     // otp-v0.1: the Progress in Lessons OTP form shares this endpoint. It is
     // dispatched BEFORE any R3 logic and writes its own tab; the R3 path below
     // is untouched (a request without form:'otp' behaves exactly as before).
+    // otp-v0.10: Supabase-first records. The edge function otp-submit hands
+    // the finished record here to be written to the Sheet AS GIVEN (08_OtpMirror.gs);
+    // 'heal' runs the same sweep the 5-minute trigger runs. Neither is ever sent
+    // by the form itself.
+    if (data && data.form === 'otp' && data.action === 'mirror') return handleOtpMirror(data);
+    if (data && data.form === 'otp' && data.action === 'heal') return jsonOut(healOtpMirror());
     if (data && data.form === 'otp') return handleOtpPost(data);
 
     const ss = SpreadsheetApp.openById(getSheetId());
@@ -309,30 +315,10 @@ function formatStampSafe(iso) {
  * ───────────────────────────────────────────────────────────────────────────── */
 function handleOtpPost(data) {
   const ss = SpreadsheetApp.openById(getSheetId());
-  let sheet = ss.getSheetByName(SHEET_NAME_OTP_SUBMISSIONS);
-  if (!sheet) sheet = ss.insertSheet(SHEET_NAME_OTP_SUBMISSIONS);
-
+  // otp-v0.10: header creation + heal moved verbatim to getOtpSheetWithHeader_
+  // (08_OtpMirror.gs) so the mirror path applies the same rule.
+  const sheet = getOtpSheetWithHeader_(ss);
   const columns = getOtpColumns();
-
-  if (sheet.getLastRow() === 0) {
-    sheet.getRange(1, 1, 1, columns.length).setValues([columns]);
-    sheet.setFrozenRows(1);
-    sheet.getRange(1, 1, 1, columns.length)
-         .setFontWeight('bold')
-         .setBackground('#143642')
-         .setFontColor('#ffffff');
-    sheet.setColumnWidths(1, columns.length, 140);
-  } else if (sheet.getLastColumn() < columns.length) {
-    // Heal the header when columns are appended to getOtpColumns() later.
-    // Existing rows keep their positions; only the new trailing header cells
-    // are written (same rule as the R3 tab).
-    const from = sheet.getLastColumn();
-    sheet.getRange(1, from + 1, 1, columns.length - from)
-         .setValues([columns.slice(from)])
-         .setFontWeight('bold')
-         .setBackground('#143642')
-         .setFontColor('#ffffff');
-  }
 
   // otp-v0.9: update / close an existing lap by its record_token, in place of
   // appending a new submission. Dispatched here, right after the header is
@@ -343,7 +329,20 @@ function handleOtpPost(data) {
 
   const submittedAt = data.submitted_at || new Date().toISOString();
   const recordId = data.record_id || generateOtpRecordId(submittedAt);
-  const recordToken = generateRecordToken();
+  // otp-v0.10: the form now makes its own 32-hex record_token and tries the
+  // Supabase edge function first; if it falls back here, the SAME token must be
+  // kept (Supabase may already hold it) and a token already on the Sheet is
+  // answered, never appended twice. A post without a valid token (the live
+  // otp-v0.9.4 form) keeps getting a fresh one exactly as before.
+  var recordToken = generateRecordToken();
+  if (otpTokenOk_(data.record_token)) {
+    recordToken = String(data.record_token).trim();
+    const dup = findOtpRowByToken_(sheet, recordToken);
+    if (dup.rowIdx > -1) {
+      const idCol = dup.headers.indexOf('record_id');
+      return jsonOut({ success: true, id: idCol > -1 ? dup.values[dup.rowIdx][idCol] : recordId, duplicate: true });
+    }
+  }
 
   data.record_token = recordToken;
   // otp-v0.9: every new submission opens a fresh lap. status starts
