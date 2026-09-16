@@ -337,6 +337,14 @@ function handleOtpPost(data) {
   var recordToken = generateRecordToken();
   if (otpTokenOk_(data.record_token)) {
     recordToken = String(data.record_token).trim();
+    // Supabase may already hold this token (the Supabase-first write landed
+    // but its answer was lost): then this call is a mirror of THAT record,
+    // same id, never a second one.
+    var already = null;
+    try { already = mirrorOtpTokenFromSupabase_(ss, sheet, recordToken, { prewarm: true }); } catch (e) {
+      Logger.log('OTP fallback: Supabase check failed for ' + recordToken + ': ' + e.message);
+    }
+    if (already) return jsonOut({ success: true, id: already.id, duplicate: true });
     const dup = findOtpRowByToken_(sheet, recordToken);
     if (dup.rowIdx > -1) {
       const idCol = dup.headers.indexOf('record_id');
@@ -362,7 +370,19 @@ function handleOtpPost(data) {
   // email and the Supabase mirror both read `data`, so hand them the same value
   // the Sheet row carries.
   data.school = record.school;
-  sheet.appendRow(columns.map(function(col) { return record[col]; }));
+  // otp-v0.10: one Sheet writer at a time (the mirror and the heal sweep take
+  // the same lock); the token is re-checked under the lock so a mirror that
+  // landed meanwhile is never appended a second time.
+  const lock = LockService.getScriptLock();
+  lock.waitLock(30000);
+  try {
+    if (otpTokenOk_(data.record_token) && findOtpRowByToken_(sheet, recordToken).rowIdx > -1) {
+      return jsonOut({ success: true, id: recordId, duplicate: true });
+    }
+    sheet.appendRow(columns.map(function(col) { return record[col]; }));
+  } finally {
+    lock.releaseLock();
+  }
 
   try {
     sendOtpSubmissionEmail(ss, recordId, recordToken, submittedAt, data);
@@ -420,6 +440,17 @@ function computeOtpLap(sheet, teacherName) {
  * rule buildOtpRecord applies at submit (see otpUpdatableValue below).
  */
 function handleOtpUpdateOrClose(ss, sheet, data) {
+  // otp-v0.10: same script lock as the mirror path (one Sheet writer at a time).
+  const lock = LockService.getScriptLock();
+  lock.waitLock(30000);
+  try {
+    return handleOtpUpdateOrCloseLocked_(ss, sheet, data);
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function handleOtpUpdateOrCloseLocked_(ss, sheet, data) {
   const miss = { success: false, error: 'Record not found' };
   if (sheet.getLastRow() < 2) return jsonOut(miss);
 

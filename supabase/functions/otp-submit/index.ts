@@ -53,18 +53,24 @@ async function rpc(fn: string, body: unknown): Promise<any> {
   return text ? JSON.parse(text) : null;
 }
 
-// Background: the Sheet + emails, via Apps Script. Apps Script answers a 302
-// to script.googleusercontent.com; fetch follows it. Only logged; the heal
-// sweep is the retry.
+// Background: the Sheet + emails, via Apps Script. Only the TOKEN is sent:
+// Apps Script reads the record's current state back from Supabase itself
+// (otp_record_for_mirror), so an out-of-order arrival can never write a stale
+// row. Apps Script answers a 302 to script.googleusercontent.com; fetch
+// follows it. Capped at 120 s; only logged; the heal sweep is the retry.
+const MIRROR_TIMEOUT_MS = 120_000;
 async function mirror(record: Record<string, unknown>, pendingSince: string): Promise<void> {
   const t0 = Date.now();
   const id = record.record_id;
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), MIRROR_TIMEOUT_MS);
   try {
     const r = await fetch(APPS_SCRIPT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({ form: 'otp', action: 'mirror', record, pending_since: pendingSince }),
+      body: JSON.stringify({ form: 'otp', action: 'mirror', record_token: record.record_token, pending_since: pendingSince }),
       redirect: 'follow',
+      signal: ctrl.signal,
     });
     const text = await r.text();
     let out: any = null;
@@ -76,6 +82,8 @@ async function mirror(record: Record<string, unknown>, pendingSince: string): Pr
     }));
   } catch (e) {
     console.log(JSON.stringify({ mirror: id, ms: Date.now() - t0, error: String(e) }));
+  } finally {
+    clearTimeout(timer);
   }
 }
 
@@ -108,7 +116,10 @@ Deno.serve(async (req: Request) => {
   }
 
   const { record, pending_since, ...rest } = out;
-  if (!out.duplicate && record) EdgeRuntime.waitUntil(mirror(record, pending_since));
+  // A duplicate answer with a record = the same token re-applied as an update
+  // (a retry with more typed in): it needs the mirror too. A duplicate without
+  // a record (a closed lap answered as it stands) does not.
+  if (record) EdgeRuntime.waitUntil(mirror(record, pending_since));
   console.log(JSON.stringify({ action, id: rest.id, ms: Date.now() - t0, duplicate: !!out.duplicate }));
   return json({ ...rest, source: 'supabase' });
 });

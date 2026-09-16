@@ -14,34 +14,58 @@ every row and Apps Script still sends every email.
   lap, round, derived school, observer <- inspector, date), calls the existing
   idempotent `ingest_otp`, and answers in about a second. A double tap or a
   timed-out first try can never make two rows: both backends key on the token.
-- **The Sheet is the mirror, written AS GIVEN.** After answering, the function
-  hands the finished record to Apps Script `action:'mirror'` (`08_OtpMirror.gs`,
-  @30): the row is appended (or overwritten in place by token), the same
-  submit / teacher / close emails go out as before, and `mark_otp_mirrored`
-  stamps `assessments.mirrored_at`. `healOtpMirror` (5-minute trigger,
-  `installOtpHealTrigger` once from the editor; also `doPost` action `'heal'`)
-  mirrors anything still unmirrored after 2 minutes. The Sheet may lag, never lose.
+- **The Sheet is the mirror of Supabase's CURRENT state.** After answering, the
+  function POSTs the record's token to Apps Script `action:'mirror'`
+  (`08_OtpMirror.gs`, @31). Apps Script reads that record back from Supabase
+  itself (`otp_record_for_mirror`, service key) and makes the Sheet row equal
+  to it (appended, or overwritten in place by token; only the `getOtpColumns()`
+  columns are ever written; a closed row is never reopened), sends the same
+  submit / teacher / close emails as before, and `mark_otp_mirrored` stamps
+  `assessments.mirrored_at` only if no newer write happened meanwhile. Because
+  the payload is never trusted, two mirrors arriving out of order both write
+  the latest state, and the anonymous route can only trigger a copy.
+  `handleOtpPost`, `handleOtpUpdateOrClose` and the mirror share one
+  `LockService` script lock (one Sheet writer at a time). `healOtpMirror`
+  (5-minute trigger, `installOtpHealTrigger` once from the editor; also
+  `doPost` action `'heal'`) mirrors up to 5 records per run that are still
+  unmirrored after 2 minutes, each under its own lock and without the slow
+  previous-lap pre-warm. The Sheet may lag, never lose.
 - **Google fallback, silent.** Any edge-function miss (stall, HTTP error, a
   `success:false` such as a lap Supabase does not hold) takes the old Apps
   Script POST with the SAME token; `handleOtpPost` honours a valid supplied
-  token and answers success without appending if that token is already on the
-  Sheet. No error UI ever (hard rule 12). `window.__otpWriteSource` records
+  token: if Supabase already holds that token (the first write landed, its
+  answer was lost) it mirrors THAT record and answers its id, so the Sheet,
+  the emails and Supabase never disagree on an id; otherwise the old full
+  submit runs. A stalled first Supabase try gets one shorter second try
+  before Google: `otp_write` re-applies a repeated submit of an OPEN lap as an
+  update (a retry with more typed in keeps the later text) and answers a
+  repeated close as a no-op success, so the observer sees the truth. No error
+  UI ever (hard rule 12). `window.__otpWriteSource` records
   which path took each write (`submit`, `edit`, `draftSave`, `draftLoad`).
 - **The draft follows the observer.** Every local save is pushed to Supabase
   2 s after the last keystroke (`save_draft`, keyed by `DRAFT_SCOPE` + observer
   name; the preview build uses scope `otp-preview`). Picking an observer pulls
   that draft (`load_draft`): applied when this device holds nothing beyond the
-  observer's name, or when the Supabase copy is newer than the local one
-  (`saved_at`); the teacher / grade / subject lists resolve immediately
-  (`applyPulledDraftToControls`). Save & Lock and Reset delete it
-  (`delete_draft`). Footer now reads "Auto saved". Record views and edit mode
+  observer's name, or when this device's draft is fully synced and the
+  Supabase copy carries a newer server stamp (server stamp against server
+  stamp, kept in `localStorage['ais-otp-form-v1:sync']`; no device clock is
+  compared; unsynced typing always stays); the teacher / grade / subject
+  lists resolve immediately (`applyPulledDraftToControls`). Content typed
+  under one observer's name never uploads under another's (a mis-tap on the
+  Observer field cannot overwrite that person's draft). Save & Lock and Reset
+  delete it (`delete_draft`, under the key it went up with). Footer now reads "Auto saved". Record views and edit mode
   never read or write it (hard rule 13).
 - **Measured live (2026-09-16):** submit 0.9-1.1 s, update 0.4 s, close 0.9 s;
   Sheet row + emails 4-5 s later; heal sweep healed a deliberately unmirrored
   record; draft typed on the Mac appeared on the iPad simulator (iPadOS 26,
   real Safari) in about 1 s and survived a reload. Specs: seven new
   `otp-v0.10` specs; the submit contract spec filters `record_token` (transport
-  identity, like `action` on the edit path).
+  identity, like `action` on the edit path). A cold-context review (Opus)
+  returned 13 findings; 11 fixed in `migrate_20_otp_writes_fixes.sql`, @31
+  and the form; two are trade-offs for Igor: the anon draft RPCs let anyone
+  holding the gate password read, overwrite or wipe any observer's draft by
+  name (closed by the @ais.ae sign-in), and the heal trigger exists only
+  once `installOtpHealTrigger` has been run in the editor.
 
 ## otp-v0.10 · Phase 1 (2026-09-16)
 

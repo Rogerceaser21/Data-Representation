@@ -3472,17 +3472,39 @@ body.is-viewer .cog-btn { display: none; }
       });
       if (!resp.ok) throw new Error('HTTP ' + resp.status);
       const out = await resp.json();
-      if (!out || out.success !== true) throw new Error((out && out.error) || 'not saved');
+      if (!out || out.success !== true) {
+        const err = new Error((out && out.error) || 'not saved');
+        err.definitive = true;                 // Supabase answered: no point retrying it
+        throw err;
+      }
       return out;
     } finally {
       clearTimeout(timer);
     }
   }
+  // A stalled first try (no answer in 8 s) gets one shorter second try: the
+  // first write usually DID land, and the second answers for the same token
+  // (a duplicate submit re-applies as an update, a repeated close is a no-op),
+  // so the observer sees the truth instead of a Google fallback that may
+  // disagree. A definitive success:false answer is not retried.
+  async function sbWriteRetry(data) {
+    try { return await sbWrite(data); }
+    catch (e) { if (e && e.definitive) throw e; }
+    return await sbWrite(data, 6000);
+  }
 
   let draftSyncTimer = null;
-  let draftLastUploadedFp = '';   // what Supabase last received from this page
-  let draftLastServerStamp = '';  // its updated_at, so our own upload is never re-applied
   let draftPullSeq = 0;
+  // What Supabase last received from this device: the observer key it went up
+  // under, the server's own updated_at, and the draft's fingerprint. Persisted
+  // beside the draft, so a reload still knows what is synced and what is not.
+  const DRAFT_SYNC_KEY = STORAGE_KEY + ':sync';
+  function getDraftSync() {
+    try { return JSON.parse(localStorage.getItem(DRAFT_SYNC_KEY) || '{}') || {}; } catch (e) { return {}; }
+  }
+  function setDraftSync(s) {
+    try { if (s) localStorage.setItem(DRAFT_SYNC_KEY, JSON.stringify(s)); else localStorage.removeItem(DRAFT_SYNC_KEY); } catch (e) {}
+  }
 
   function currentObserverName() {
     const ts = tomSelects.inspector;
@@ -3514,19 +3536,24 @@ body.is-viewer .cog-btn { display: none; }
     try { data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch (e) { return; }
     if (!data.saved_at) return;
     const fp = draftFingerprint(data);
-    if (fp === draftLastUploadedFp) return;      // Supabase already has this
+    const sync = getDraftSync();
+    if (sync.fp === fp && sync.observer === observer) return;   // Supabase already has this
+    // Content typed under one observer's name never goes up under another's
+    // (a mis-tap on the Observer field must not overwrite that person's draft).
+    if (sync.observer && sync.observer !== observer && draftHasContent(data)) return;
     try {
       const out = await sbRpcTimed('save_draft', { p_form: DRAFT_SCOPE, p_observer: observer, p_data: data }, SB_DRAFT_TIMEOUT_MS);
       if (out && out.success) {
-        draftLastUploadedFp = fp;
-        draftLastServerStamp = out.updated_at || '';
+        setDraftSync({ observer: observer, updated_at: out.updated_at || '', fp: fp });
         window.__otpWriteSource.draftSave = 'supabase';
       }
     } catch (e) { /* the local copy stands; the next keystroke retries */ }
   }
   // Picking an observer asks Supabase for that observer's draft. It is applied
-  // when this device holds nothing beyond the observer's name, or when the
-  // Supabase copy is newer than what was last saved here.
+  // when this device holds nothing beyond the observer's name, or when this
+  // device's draft is fully synced and the Supabase copy is newer (server
+  // stamp against server stamp: no device clock is ever compared). Content
+  // typed here and not yet synced always stays.
   async function pullDraftFromSupabase(observer) {
     if (CLOSED_RECORD_VIEW || EDIT_MODE || !SB_URL || !SB_KEY || !observer) return;
     const seq = ++draftPullSeq;
@@ -3536,22 +3563,23 @@ body.is-viewer .cog-btn { display: none; }
     } catch (e) { return; }
     if (seq !== draftPullSeq) return;            // a newer observer pick won
     if (!out || !out.success || !out.found || !out.data) { window.__otpWriteSource.draftLoad = 'none'; return; }
-    if (out.updated_at && out.updated_at === draftLastServerStamp) return;   // our own upload
     let local = {};
     try { local = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch (e) {}
     const serverFp = draftFingerprint(out.data);
-    if (draftFingerprint(local) === serverFp) {  // same draft already here
-      draftLastServerStamp = out.updated_at || '';
-      draftLastUploadedFp = serverFp;
+    const localFp = draftFingerprint(local);
+    const sync = getDraftSync();
+    if (localFp === serverFp) {                  // same draft already here
+      setDraftSync({ observer: observer, updated_at: out.updated_at || '', fp: serverFp });
       return;
     }
-    const serverMs = Date.parse(out.updated_at || '') || 0;
-    const localMs = Number(local.saved_at) || 0;
-    if (draftHasContent(local) && localMs >= serverMs) return;   // this device is ahead: keep it
+    if (draftHasContent(local)) {
+      const synced = sync.fp === localFp && sync.observer === observer;
+      if (!synced) return;                       // unsynced work on this device: keep it
+      if (!(Date.parse(out.updated_at || '') > Date.parse(sync.updated_at || ''))) return;   // ours is as new
+    }
     applyDraftData(out.data);
     applyPulledDraftToControls(out.data);
-    draftLastServerStamp = out.updated_at || '';
-    draftLastUploadedFp = serverFp;
+    setDraftSync({ observer: observer, updated_at: out.updated_at || '', fp: serverFp });
     window.__otpWriteSource.draftLoad = 'supabase';
   }
   // A draft pulled AFTER the lists have landed: applyDraftData parks the
@@ -3589,13 +3617,15 @@ body.is-viewer .cog-btn { display: none; }
     if (!observer || !SB_URL || !SB_KEY || CLOSED_RECORD_VIEW || EDIT_MODE) return;
     sbRpcTimed('delete_draft', { p_form: DRAFT_SCOPE, p_observer: observer }, SB_DRAFT_TIMEOUT_MS).catch(function () {});
   }
-  // The local draft AND the Supabase copy, after a save or a Reset.
+  // The local draft AND the Supabase copy, after a save or a Reset. The copy
+  // is deleted under the key it went up with (the synced observer), never
+  // under a name the field happens to show now.
   function clearDraftEverywhere(observer) {
-    const who = observer != null ? observer : currentObserverName();
+    const sync = getDraftSync();
+    const who = sync.observer || (observer != null ? observer : currentObserverName());
     clearTimeout(draftSyncTimer);
     try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
-    draftLastUploadedFp = '';
-    draftLastServerStamp = '';
+    setDraftSync(null);
     pendingSubmitToken = '';
     deleteDraftRemote(who);
   }
@@ -5015,7 +5045,7 @@ body.is-viewer .cog-btn { display: none; }
     clearLapCardAndOutlines();         // otp-v0.9.4: the card goes with the finished observation
     try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
     pendingSubmitToken = '';           // otp-v0.10: the next observation is a new record
-    draftLastUploadedFp = '';
+    setDraftSync(null);
     EvidencePad.reset();   // v0.50: a finished observation clears its Evidence Pad too
     // v0.24: school just got cleared by the reset loop above; let Subject
     // reflect that (back to disabled "Select Grade first" state).
@@ -5115,7 +5145,7 @@ body.is-viewer .cog-btn { display: none; }
     try {
       let result = null;
       try {
-        result = await sbWrite(data);
+        result = await sbWriteRetry(data);
         window.__otpWriteSource.submit = 'supabase';
       } catch (fastErr) {
         window.__otpWriteSource.submit = 'google';
@@ -5176,7 +5206,7 @@ body.is-viewer .cog-btn { display: none; }
     // otp-v0.10: Supabase first (about 1 s). Only a success answer is final;
     // a miss (a lap Supabase does not hold, a stall) takes the Google path below.
     try {
-      const fast = await sbWrite(data);
+      const fast = await sbWriteRetry(data);
       window.__otpWriteSource.edit = 'supabase';
       return fast;
     } catch (fastErr) {

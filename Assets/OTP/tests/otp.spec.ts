@@ -3413,7 +3413,9 @@ test('otp-v0.10: a failed edge function falls back to the Google POST with the S
   await fillRequired(page);
   await page.locator('#btn-submit').click();
   await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 15_000 });
-  expect(edgePosts).toHaveLength(1);
+  // a stalled or errored first try is retried once (same token), then Google
+  expect(edgePosts).toHaveLength(2);
+  expect(edgePosts[1].record_token).toBe(edgePosts[0].record_token);
   const google = h.posts.filter((b) => b.form === 'otp' && !b.action);
   expect(google).toHaveLength(1);
   expect(google[0].record_token).toBe(edgePosts[0].record_token);
