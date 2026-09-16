@@ -493,7 +493,7 @@ test('renders all 32 SP1 v2 rubric chips verbatim, in order, 4/5/7/8/8', async (
   await expect(page.locator('tr.rub-caption .rub-cap-k')).toHaveText('Aspect of Practice');
   await expect(page.locator('tr.rub-caption .rub-cap-v')).toHaveText(RUBRIC.aspect);
   // the footer renders uppercase through CSS, so match the text case-insensitively
-  await expect(page.locator('.form-footer')).toContainText(/otp-v0\.9/i);
+  await expect(page.locator('.form-footer')).toContainText(/otp-v0\.10/i);
   await expect(page.locator('#rubric_version')).toHaveValue('sp1-v2');
 
   expect(h.errors).toEqual([]);
@@ -1993,7 +1993,7 @@ test('otp-v0.7: no console errors and no horizontal overflow at 1280, 1180x820 a
       await notePop(page).evaluate((el) => getComputedStyle(el).position),
     ).toBe('absolute');
 
-    await expect(page.locator('.form-footer')).toContainText(/otp-v0\.9/i);
+    await expect(page.locator('.form-footer')).toContainText(/otp-v0\.10/i);
     await page.evaluate((k) => localStorage.removeItem(k), DRAFT_KEY);
   }
 
@@ -3077,13 +3077,80 @@ test('otp-v0.9.3: the five long-text boxes grow with their text and Reset restor
   ).toBeLessThanOrEqual(loaded.clientHeight + 2);
 });
 
-test('otp-v0.9.4: the footer reads otp-v0.9.4', async ({ page }) => {
+test('otp-v0.10: the footer reads otp-v0.10', async ({ page }) => {
   await harness(page);
   await openForm(page);
   await expect(
     page.locator('.form-footer'),
-    'footer version was not bumped to otp-v0.9.4',
-  ).toContainText(/otp-v0\.9\.4/i);
+    'footer version was not bumped to otp-v0.10',
+  ).toContainText(/otp-v0\.10/i);
+});
+
+/** otp-v0.10 Phase 1: the dropdown lists and the previous-lap card are read from
+ *  Supabase FIRST (anon RPCs get_form_options / get_prev_next_steps, 3 s cap);
+ *  the Apps Script path is the fallback. The harness's default *.supabase.co
+ *  route answers the JSON body `null`, which the form must read as a miss, so
+ *  every older spec keeps exercising the Google path unchanged. A route added
+ *  after harness() wins (Playwright matches the newest route first). */
+const SB_OPTIONS = {
+  ...OPTIONS_PAYLOAD.options,
+  teachers: [{ name: 'Test Teacher' }, { name: 'Supabase Teacher' }],
+  synced_at: '2026-09-16T02:30:00+00:00',
+};
+
+test('otp-v0.10: the lists come from Supabase when get_form_options answers, and Google is not asked', async ({ page }) => {
+  const h = await harness(page);
+  // The gate page itself prewarms ?action=options (password-template.html,
+  // fire-and-forget, before the form exists); only calls made by the FORM,
+  // after the gate is passed, count here.
+  let armed = false;
+  let googleOptionsCalls = 0;
+  await page.route('**/script.google.com/**', async (r: Route) => {
+    if (armed && r.request().url().includes('action=options')) googleOptionsCalls++;
+    await r.fallback();
+  });
+  await page.route('**/rest/v1/rpc/get_form_options', (r: Route) =>
+    r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(SB_OPTIONS) }),
+  );
+  await page.goto(FORM_URL);
+  await page.fill('#staticrypt-password', GATE_PASSWORD);
+  armed = true;
+  await page.click('#staticrypt-form .staticrypt-decrypt-button');
+  await page.waitForSelector('#otp-form', { state: 'attached' });
+  await expect(page.locator('#form-loading')).toHaveClass(/is-hidden/, { timeout: 15_000 });
+  expect(await page.evaluate(() => (window as any).__otpReadSource.options)).toBe('supabase');
+  const names = await page.evaluate(() =>
+    Object.values((document.getElementById('teacher') as any).tomselect.options).map((o: any) => o.text),
+  );
+  expect(names).toEqual(['Test Teacher', 'Supabase Teacher']);
+  expect(googleOptionsCalls, 'the Google options endpoint must not be called when Supabase answered').toBe(0);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.10: a null or failed Supabase answer falls back to the Google lists silently', async ({ page }) => {
+  const h = await harness(page);          // *.supabase.co -> null
+  await openForm(page);
+  expect(await page.evaluate(() => (window as any).__otpReadSource.options)).toBe('google');
+  const names = await page.evaluate(() =>
+    Object.values((document.getElementById('teacher') as any).tomselect.options).map((o: any) => o.text),
+  );
+  expect(names).toEqual(['Test Teacher']);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.10: the previous-lap card comes from Supabase even when the Google read is dead', async ({ page }) => {
+  const h = await harness(page, { prev: 'fail' });
+  await page.route('**/rest/v1/rpc/get_prev_next_steps', async (r: Route) => {
+    const body = r.request().postDataJSON();
+    expect(body.p_teacher).toBe('Test Teacher');
+    await r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(PREV_NS_FOUND) });
+  });
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await expect(page.locator('#prev-ns-card')).toBeVisible();
+  await expect(page.locator('#prev-ns-card')).toContainText('Lap 8');
+  expect(await page.evaluate(() => (window as any).__otpReadSource.prevSteps)).toBe('supabase');
+  expect(h.errors).toEqual([]);
 });
 
 /** otp-v0.9.4: Safari on Mac paints an EMPTY date or time field as today's date

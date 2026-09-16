@@ -2928,7 +2928,7 @@ body.is-viewer .cog-btn { display: none; }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · Progress in Lessons OTP · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">otp-v0.9.4</a></span>
+    <span>Form · Progress in Lessons OTP · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">otp-v0.10</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto-saved locally</span>
@@ -3378,6 +3378,40 @@ body.is-viewer .cog-btn { display: none; }
     if (!resp.ok) throw new Error('HTTP ' + resp.status);
     return resp.json();
   }
+
+  // otp-v0.10: the form READS from Supabase first (the dropdown lists via
+  // get_form_options, the previous-lap card via get_prev_next_steps), which
+  // answers in well under a second where Apps Script takes 3-5 s with spikes
+  // to 95 s. Every read is capped short and falls back to the Google path on
+  // any miss, so nothing is ever slower than before and no error is ever shown
+  // (hard rule 12). The ungated viewer build blanks SB_URL/SB_KEY, so there
+  // the Supabase step is skipped outright. AbortController, not
+  // AbortSignal.timeout (iOS 16+ only), like the other fetches.
+  const SB_READ_TIMEOUT_MS = 3000;
+  async function sbRpcTimed(fn, body, ms) {
+    if (!SB_URL || !SB_KEY) throw new Error('no supabase in this build');
+    const ctrl = new AbortController();
+    const timer = setTimeout(function () { ctrl.abort(); }, ms || SB_READ_TIMEOUT_MS);
+    try {
+      const resp = await fetch(SB_URL + '/rest/v1/rpc/' + fn, {
+        method: 'POST',
+        headers: {
+          'apikey': SB_KEY,
+          'Authorization': 'Bearer ' + SB_KEY,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body || {}),
+        signal: ctrl.signal
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      return await resp.json();
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+  // Which path answered the last lists / card read: 'supabase' or 'google'.
+  // Read by the proof scripts and the specs, never shown to the user.
+  window.__otpReadSource = { options: '', prevSteps: '' };
 
   (function setupAdmin() {
     const cog      = document.getElementById('admin-cog');
@@ -6097,6 +6131,24 @@ body.is-viewer .cog-btn { display: none; }
     const seq = ++prevNsSeq;
     prevNsHide();
     if (!name) return;
+    // otp-v0.10: Supabase first. get_prev_next_steps reads the mirrored OTP
+    // rows (every submit, update and close dual-writes them) with the same
+    // rule as the Apps Script read: latest CLOSED lap in the current round.
+    // A FOUND answer is final. A not-found answer still asks Google (non-
+    // blocking, the card simply stays hidden meanwhile): the mirror is fed by
+    // a dual-write that swallows its own failures, so until Phase 2 makes
+    // Supabase the first write, a drifted row must never hide a card for good.
+    try {
+      const fast = await sbRpcTimed('get_prev_next_steps', { p_teacher: name });
+      if (seq !== prevNsSeq) return;           // a newer teacher pick won
+      if (fast && fast.success && fast.found) {
+        window.__otpReadSource.prevSteps = 'supabase';
+        prevNsRender(fast);
+        return;
+      }
+    } catch (e) { /* Google path below */ }
+    if (seq !== prevNsSeq) return;
+    window.__otpReadSource.prevSteps = 'google';
     let out = null;
     for (let attempt = 1; attempt <= 2 && !out; attempt++) {   // one silent retry, like the options fetch
       const ctrl = new AbortController();
@@ -6363,7 +6415,23 @@ body.is-viewer .cog-btn { display: none; }
   const OPTIONS_FETCH_TIMEOUT_MS = 7000;
   const OPTIONS_RETRY_DELAY_MS = 600;
 
-  async function fetchOptionsOnce() {
+  async function fetchOptionsOnce(attempt) {
+    // otp-v0.10: Supabase first. get_form_options returns the SAME shape as
+    // the Apps Script options payload (a mirror of the Sheet tabs, synced
+    // daily by 07_ReferenceSync.gs); an empty or failed answer falls through
+    // to the Google path below. Only the first two attempts pay the 3 s cap,
+    // so a hanging Supabase adds at most 6 s before the old retry loop runs
+    // exactly as it did.
+    if (!attempt || attempt <= 2) {
+      try {
+        const fast = await sbRpcTimed('get_form_options', { p_form: 'otp' });
+        if (fast && Array.isArray(fast.teachers) && fast.teachers.length) {
+          window.__otpReadSource.options = 'supabase';
+          return fast;
+        }
+      } catch (e) { /* Google path below */ }
+    }
+    window.__otpReadSource.options = 'google';
     // AbortController + setTimeout aborts the fetch if it stalls past the cap,
     // turning a silent hang into a catchable rejection. Using AbortController
     // (iOS 12.2+) rather than AbortSignal.timeout (iOS 16+ only) so older
@@ -6412,7 +6480,7 @@ body.is-viewer .cog-btn { display: none; }
     // sees the loading state, then the populated form.
     for (var attempt = 1; ; attempt++) {
       try {
-        const opts = await fetchOptionsOnce();
+        const opts = await fetchOptionsOnce(attempt);
         applyDropdownOptions(opts);
         setSearchableLoadingState(false);
         // otp-v0.9.1: setSearchableLoadingState enables all three searchables

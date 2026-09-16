@@ -1,3 +1,34 @@
+## otp-v0.10 · Phase 1 (2026-09-16)
+
+Supabase-first, part one: the form's READS. Igor's goal is a form that loads,
+picks a teacher, saves and closes in about a second; today the Apps Script
+endpoints take 3-5 s with spikes to 95 s (lists) and 27-34 s (previous-lap
+card). Phase 1 moves the reads; Phase 2 moves the writes + adds auto-save;
+Phase 3 the record links. No Sheet column, POST key or email changes.
+
+- **Lists from Supabase.** `fetchOptionsOnce` calls the anon RPC
+  `get_form_options('otp')` first (3 s cap, `sbRpcTimed`), which returns the
+  SAME payload shape as `?action=options&form=otp`; an empty or failed answer
+  falls through to the unchanged Google path. The Sheet stays the MASTER for
+  the lists: `ref_lists` (migration `db/migrate_18_otp_reference.sql` in
+  `~/AIS-Data-Dashboard`) is a plain mirror of five tabs (Teachers 26-27, OTP
+  Coaches 26-27, R3 Inspectors 26-27, Curriculum, Subjects + its school
+  header), replaced wholesale per tab by `upsert_reference` (service key only).
+  Synced daily at 06:30 Dubai by Apps Script `07_ReferenceSync.gs`
+  (`installReferenceSyncTrigger` once from the editor; `syncReferenceNow` for
+  a same-day edit) and from the Mac by `db/sync_reference.mjs --write`
+  (`--diff` proves the RPC equals the live options payload name for name).
+- **Previous-lap card from Supabase.** `refreshPrevNextSteps` calls
+  `get_prev_next_steps(teacher)` first (same rule as the Apps Script read:
+  latest CLOSED lap in the current round read from the row's own mirrored
+  `round` cell, blank counts as current); a FOUND answer is final, a not-found
+  or failed answer still asks Google (non-blocking), because the mirror is fed
+  by a dual-write that swallows its failures until Phase 2 flips the order.
+- `window.__otpReadSource` records which path answered (`supabase` /
+  `google`) for the proof scripts and specs; never shown to the user.
+- The ungated viewer build blanks `SB_URL`/`SB_KEY` as before, so the viewer
+  skips the Supabase step and keeps the Google path (hard rule 14).
+
 ## otp-v0.9.4 (2026-09-15)
 
 The Safari-on-Mac fix and the Teacher observed card, from Igor's Focus OS
