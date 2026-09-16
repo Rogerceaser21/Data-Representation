@@ -1,3 +1,48 @@
+## otp-v0.10 · Phase 2 (2026-09-16)
+
+Supabase-first, part two: the form's WRITES and the draft. Preview only, same
+branch as Phase 1. No Sheet column, POST key or email change: the Sheet keeps
+every row and Apps Script still sends every email.
+
+- **Save & Lock, Save changes, Close Lap write to Supabase first.** The form
+  mints a 32-hex `record_token` (one per attempt chain) and POSTs to the edge
+  function `otp-submit` (`supabase/functions/otp-submit/index.ts`, 8 s cap,
+  `sbWrite`). The function calls `otp_write` (migration
+  `db/migrate_19_otp_writes.sql` in `~/AIS-Data-Dashboard`, service_role
+  only), which builds the 38-key record exactly as `buildOtpRecord` /
+  `handleOtpUpdateOrClose` would (id `AIS-OTP-YYYYMMDD-HHMMSS` in Asia/Dubai,
+  lap, round, derived school, observer <- inspector, date), calls the existing
+  idempotent `ingest_otp`, and answers in about a second. A double tap or a
+  timed-out first try can never make two rows: both backends key on the token.
+- **The Sheet is the mirror, written AS GIVEN.** After answering, the function
+  hands the finished record to Apps Script `action:'mirror'` (`08_OtpMirror.gs`,
+  @30): the row is appended (or overwritten in place by token), the same
+  submit / teacher / close emails go out as before, and `mark_otp_mirrored`
+  stamps `assessments.mirrored_at`. `healOtpMirror` (5-minute trigger,
+  `installOtpHealTrigger` once from the editor; also `doPost` action `'heal'`)
+  mirrors anything still unmirrored after 2 minutes. The Sheet may lag, never lose.
+- **Google fallback, silent.** Any edge-function miss (stall, HTTP error, a
+  `success:false` such as a lap Supabase does not hold) takes the old Apps
+  Script POST with the SAME token; `handleOtpPost` honours a valid supplied
+  token and answers success without appending if that token is already on the
+  Sheet. No error UI ever (hard rule 12). `window.__otpWriteSource` records
+  which path took each write (`submit`, `edit`, `draftSave`, `draftLoad`).
+- **The draft follows the observer.** Every local save is pushed to Supabase
+  2 s after the last keystroke (`save_draft`, keyed by `DRAFT_SCOPE` + observer
+  name; the preview build uses scope `otp-preview`). Picking an observer pulls
+  that draft (`load_draft`): applied when this device holds nothing beyond the
+  observer's name, or when the Supabase copy is newer than the local one
+  (`saved_at`); the teacher / grade / subject lists resolve immediately
+  (`applyPulledDraftToControls`). Save & Lock and Reset delete it
+  (`delete_draft`). Footer now reads "Auto saved". Record views and edit mode
+  never read or write it (hard rule 13).
+- **Measured live (2026-09-16):** submit 0.9-1.1 s, update 0.4 s, close 0.9 s;
+  Sheet row + emails 4-5 s later; heal sweep healed a deliberately unmirrored
+  record; draft typed on the Mac appeared on the iPad simulator (iPadOS 26,
+  real Safari) in about 1 s and survived a reload. Specs: seven new
+  `otp-v0.10` specs; the submit contract spec filters `record_token` (transport
+  identity, like `action` on the edit path).
+
 ## otp-v0.10 · Phase 1 (2026-09-16)
 
 Supabase-first, part one: the form's READS. Igor's goal is a form that loads,

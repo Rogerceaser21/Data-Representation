@@ -1294,8 +1294,12 @@ test('submit posts exactly the CONTRACT keys with form="otp" and rubric_version=
 
   expect(h.posts).toHaveLength(1);
   const body = h.posts[0];
-  expect(Object.keys(body).sort()).toEqual(CONTRACT_KEYS);
-  expect(Object.keys(body)).toHaveLength(32);   // §2 list, counted not assumed (otp-v0.8: + time_out)
+  // otp-v0.10: the form mints the record_token itself (transport identity, like
+  // `action` on the edit path); the §2 contract keys are unchanged around it.
+  expect(body.record_token).toMatch(/^[0-9a-f]{32}$/);
+  const contractKeys = Object.keys(body).filter((k) => k !== 'record_token');
+  expect(contractKeys.sort()).toEqual(CONTRACT_KEYS);
+  expect(contractKeys).toHaveLength(32);   // §2 list, counted not assumed (otp-v0.8: + time_out)
   expect(body.form).toBe('otp');
   expect(body.otp_ref).toBe('SP1');
   expect(body.otp_aspect).toBe('Facilitating better than expected progress');
@@ -3359,5 +3363,191 @@ test('otp-v0.9.4: a record view never takes a tap on Save & Lock, even before th
   // the viewer's own "Loading record…" toast may show; the tap adds nothing
   await expect(page.locator('.needs-value')).toHaveCount(0);
   await expect(page.locator('#toast')).not.toContainText('Still to fill');
+  expect(h.errors).toEqual([]);
+});
+
+/* ============================================================================
+ * otp-v0.10 Phase 2 · Supabase-first WRITES + the Supabase draft.
+ * The harness's default *.supabase.co route answers `null`, which the form
+ * must read as a miss, so every older spec keeps exercising the Google path.
+ * A route added after harness() wins (newest route first).
+ * ========================================================================== */
+const EDGE_FN = '**/functions/v1/otp-submit';
+
+test('otp-v0.10: Save & Lock writes through the edge function first, Google gets no submit POST, the footer says "Auto saved"', async ({ page }) => {
+  const h = await harness(page);
+  page.on('dialog', (d) => d.accept());
+  const edgePosts: any[] = [];
+  await page.route(EDGE_FN, async (r: Route) => {
+    edgePosts.push(r.request().postDataJSON());
+    await r.fulfill({ status: 200, contentType: 'application/json',
+      body: JSON.stringify({ success: true, id: 'AIS-OTP-20260916-120000', token: edgePosts[0].record_token, status: 'observed', closed_at: '', source: 'supabase' }) });
+  });
+  await openForm(page);
+  await expect(page.locator('#save-status .text')).toHaveText('Auto saved');
+  await fillRequired(page);
+  await page.fill('#next_step_1', 'Step one');
+  await page.locator('#btn-submit').click();
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 15_000 });
+  await expect(page.locator('#submitted-meta')).toContainText('AIS-OTP-20260916-120000');
+  expect(edgePosts).toHaveLength(1);
+  expect(edgePosts[0].form).toBe('otp');
+  expect(edgePosts[0].action).toBeUndefined();
+  expect(edgePosts[0].record_token).toMatch(/^[0-9a-f]{32}$/);
+  expect(edgePosts[0].teacher).toBe('Test Teacher');
+  expect(edgePosts[0].next_step_1).toBe('Step one');
+  expect(h.posts.filter((b) => b.form === 'otp' && !b.action), 'no submit POST may reach Google when Supabase answered').toHaveLength(0);
+  expect(await page.evaluate(() => (window as any).__otpWriteSource.submit)).toBe('supabase');
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.10: a failed edge function falls back to the Google POST with the SAME token, silently', async ({ page }) => {
+  const h = await harness(page);
+  page.on('dialog', (d) => d.accept());
+  const edgePosts: any[] = [];
+  await page.route(EDGE_FN, async (r: Route) => {
+    edgePosts.push(r.request().postDataJSON());
+    await r.fulfill({ status: 500, contentType: 'application/json', body: JSON.stringify({ success: false, error: 'write failed' }) });
+  });
+  await openForm(page);
+  await fillRequired(page);
+  await page.locator('#btn-submit').click();
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 15_000 });
+  expect(edgePosts).toHaveLength(1);
+  const google = h.posts.filter((b) => b.form === 'otp' && !b.action);
+  expect(google).toHaveLength(1);
+  expect(google[0].record_token).toBe(edgePosts[0].record_token);
+  expect(await page.evaluate(() => (window as any).__otpWriteSource.submit)).toBe('google');
+  await expect(page.locator('#toast')).not.toHaveClass(/error/);
+  // the browser's own network log for the mocked 500 is the only line allowed
+  expect(h.errors.filter((e) => !/status of 500/.test(e))).toEqual([]);
+});
+
+test('otp-v0.10: Save changes and Close Lap go through the edge function; a success:false answer takes the Google path', async ({ page }) => {
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
+  page.on('dialog', (d) => d.accept());
+  const edgePosts: any[] = [];
+  await page.route(EDGE_FN, async (r: Route) => {
+    const body = r.request().postDataJSON();
+    edgePosts.push(body);
+    if (body.action === 'update') {
+      return r.fulfill({ status: 200, contentType: 'application/json',
+        body: JSON.stringify({ success: true, id: 'AIS-OTP-TEST', token: body.record_token, status: 'observed', closed_at: '', source: 'supabase' }) });
+    }
+    // the close: Supabase does not hold this lap -> generic miss -> Google
+    return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ success: false, error: 'Record not found' }) });
+  });
+  await openEdit(page);
+  await page.fill('#next_step_1', 'edited on supabase');
+  await page.locator('#btn-save-changes').click();
+  await expect(page.locator('#notice')).toBeVisible();
+  expect(edgePosts.filter((b) => b.action === 'update')).toHaveLength(1);
+  expect(edgePosts[0].record_token).toBe(EDIT_TOKEN_FIXTURE);
+  expect(h.posts.filter((b) => b.action === 'update'), 'no update may reach Google when Supabase answered').toHaveLength(0);
+  expect(await page.evaluate(() => (window as any).__otpWriteSource.edit)).toBe('supabase');
+
+  await page.locator('#btn-close-lap').click();
+  await expect(page.locator('#submitted-banner')).toContainText(/closed/i, { timeout: 15_000 });
+  expect(edgePosts.filter((b) => b.action === 'close')).toHaveLength(1);
+  expect(h.posts.filter((b) => b.action === 'close'), 'the close fell back to Google').toHaveLength(1);
+  expect(await page.evaluate(() => (window as any).__otpWriteSource.edit)).toBe('google');
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.10: the draft is pushed to Supabase 2 s after typing, keyed by the observer; Save & Lock deletes it', async ({ page }) => {
+  const h = await harness(page);
+  page.on('dialog', (d) => d.accept());
+  const saves: any[] = [];
+  const deletes: any[] = [];
+  await page.route('**/rest/v1/rpc/save_draft', async (r: Route) => {
+    saves.push(r.request().postDataJSON());
+    await r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ success: true, updated_at: '2026-09-16T12:00:00.000+00:00' }) });
+  });
+  await page.route('**/rest/v1/rpc/delete_draft', async (r: Route) => {
+    deletes.push(r.request().postDataJSON());
+    await r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ success: true, deleted: 1 }) });
+  });
+  await page.route(EDGE_FN, async (r: Route) => {
+    const body = r.request().postDataJSON();
+    await r.fulfill({ status: 200, contentType: 'application/json',
+      body: JSON.stringify({ success: true, id: 'AIS-OTP-20260916-120001', token: body.record_token, status: 'observed', closed_at: '', source: 'supabase' }) });
+  });
+  await openForm(page);
+  await page.fill('#observer_comments', 'typed before the observer is known');
+  await page.waitForTimeout(2600);
+  expect(saves, 'nothing is keyed until an observer is picked').toHaveLength(0);
+  await fillRequired(page);            // picks Test Observer among the rest
+  await page.fill('#next_step_1', 'Step one');
+  await expect.poll(() => saves.length, { timeout: 6_000 }).toBeGreaterThan(0);
+  const last = saves[saves.length - 1];
+  expect(last.p_form).toBe('otp');
+  expect(last.p_observer).toBe('Test Observer');
+  expect(last.p_data.observer_comments).toBe('typed before the observer is known');
+  expect(last.p_data.teacher).toBe('Test Teacher');
+  expect(typeof last.p_data.saved_at).toBe('number');
+  expect(await page.evaluate(() => (window as any).__otpWriteSource.draftSave)).toBe('supabase');
+  // a further keystroke re-syncs; an unchanged draft does not
+  await page.waitForTimeout(2600);
+  const n = saves.length;
+  await page.fill('#next_step_1', 'Step one, longer');
+  await expect.poll(() => saves.length, { timeout: 6_000 }).toBeGreaterThan(n);
+  expect(saves[saves.length - 1].p_data.next_step_1).toBe('Step one, longer');
+
+  await page.locator('#btn-submit').click();
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 15_000 });
+  await expect.poll(() => deletes.length, { timeout: 6_000 }).toBe(1);
+  expect(deletes[0].p_observer).toBe('Test Observer');
+  expect(await page.evaluate(() => localStorage.getItem('ais-otp-form-v1'))).toBeNull();
+  expect(h.errors).toEqual([]);
+});
+
+const MAC_DRAFT = {
+  teacher: 'Test Teacher', inspector: 'Test Observer', curriculum: 'Australian', grade: '3', school: 'Primary',
+  subject: 'Mathematics', date: '2026-09-16', time_in: '09:15', time_out: '10:05',
+  observer_comments: 'typed on the Mac', next_step_1: 'From the Mac', rubric_version: 'sp1-v2',
+  sp1_outstanding: '1:present', sp1_present: 'Outstanding 1', saved_at: 1789560000000,
+};
+
+test('otp-v0.10: picking an observer pulls that observer\'s Supabase draft into an empty form, lists included', async ({ page }) => {
+  const h = await harness(page);
+  const loads: any[] = [];
+  await page.route('**/rest/v1/rpc/load_draft', async (r: Route) => {
+    loads.push(r.request().postDataJSON());
+    await r.fulfill({ status: 200, contentType: 'application/json',
+      body: JSON.stringify({ success: true, found: true, data: MAC_DRAFT, updated_at: '2026-09-16T12:00:00.000+00:00' }) });
+  });
+  await openForm(page);
+  await pickTomSelect(page, 'inspector', 'Test Observer');
+  await expect(page.locator('#next_step_1')).toHaveValue('From the Mac', { timeout: 6_000 });
+  expect(loads[0].p_form).toBe('otp');
+  expect(loads[0].p_observer).toBe('Test Observer');
+  await expect(page.locator('#observer_comments')).toHaveValue('typed on the Mac');
+  expect(await page.evaluate(() => (document.getElementById('teacher') as any).tomselect.getValue() !== '')).toBe(true);
+  await expect(tsControl(page, 'teacher')).toContainText('Test Teacher');
+  await expect(tsControl(page, 'subject')).toContainText('Mathematics');
+  await expect(tsControl(page, 'grade')).toContainText('3');
+  await expect(page.locator('#school')).toHaveValue('Primary');
+  await expect(chipAt(page, 'outstanding', 1)).toHaveAttribute('data-state', 'present');
+  await expect(page.locator('#btn-submit')).toBeEnabled();
+  expect(await page.evaluate(() => (window as any).__otpWriteSource.draftLoad)).toBe('supabase');
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.10: a local draft with content newer than the Supabase copy is kept', async ({ page }) => {
+  const h = await harness(page);
+  await page.route('**/rest/v1/rpc/load_draft', async (r: Route) => {
+    await r.fulfill({ status: 200, contentType: 'application/json',
+      body: JSON.stringify({ success: true, found: true, data: MAC_DRAFT, updated_at: '2026-09-16T12:00:00.000+00:00' }) });
+  });
+  await page.goto(FORM_URL);
+  await page.evaluate((k) => localStorage.setItem(k, JSON.stringify({
+    inspector: 'Test Observer', next_step_1: 'typed here, later', rubric_version: 'sp1-v2', saved_at: Date.now(),
+  })), DRAFT_KEY);
+  await passGate(page);
+  await expect(tsControl(page, 'inspector')).toContainText('Test Observer');
+  await page.waitForTimeout(1500);
+  await expect(page.locator('#next_step_1')).toHaveValue('typed here, later');
+  await expect(page.locator('#observer_comments')).toHaveValue('');
+  expect(await page.evaluate(() => (window as any).__otpWriteSource.draftLoad)).not.toBe('supabase');
   expect(h.errors).toEqual([]);
 });

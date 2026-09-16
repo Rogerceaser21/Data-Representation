@@ -2931,7 +2931,7 @@ body.is-viewer .cog-btn { display: none; }
     <span>Form · Progress in Lessons OTP · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">otp-v0.10</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
-      <span class="text">Auto-saved locally</span>
+      <span class="text">Auto saved</span>
     </span>
   </footer>
 </form>
@@ -3192,6 +3192,9 @@ body.is-viewer .cog-btn { display: none; }
   let EDIT_RECORD = null;
   const statusEl = document.getElementById('save-status');
   let saveTimer = null;
+  // otp-v0.10: one record_token per submit attempt chain (Supabase-first write
+  // and the Google fallback name the same record); cleared once a save lands.
+  let pendingSubmitToken = '';
 
   function showSaved() {
     if (!statusEl) return;
@@ -3218,10 +3221,12 @@ body.is-viewer .cog-btn { display: none; }
     // (t0, i0, s0…) as values. Persist the display TEXT so a future load can
     // restore by name even if option order has shifted.
     translateOpaqueTomSelectsToText(data);
+    data.saved_at = Date.now();   // otp-v0.10: newest draft wins across devices
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
       showSaved();
     } catch (e) {}
+    scheduleDraftSync();          // otp-v0.10: the Supabase copy, 2 s after the last keystroke
   }
 
   /**
@@ -3250,6 +3255,11 @@ body.is-viewer .cog-btn { display: none; }
     let data;
     try { data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
     catch (e) { data = {}; }
+    applyDraftData(data);
+  }
+  // otp-v0.10: the field-population half of loadForm, shared with the draft
+  // pulled from Supabase (pullDraftFromSupabase). Same rules as before.
+  function applyDraftData(data) {
     /* otp-v0.6: a draft written before the sentence split numbers its chips
        against the v1 paragraphs, so restoring them would light the wrong
        criteria. Drop ONLY the rubric values; every other field still restores. */
@@ -3326,7 +3336,8 @@ body.is-viewer .cog-btn { display: none; }
 
   /* === Action buttons ============================================ */
   document.getElementById('btn-reset').addEventListener('click', () => {
-    if (!confirm('Wipe all fields and clear the locally saved draft? This cannot be undone.')) return;
+    if (!confirm('Wipe all fields and clear the saved draft? This cannot be undone.')) return;
+    const resetObserver = currentObserverName();   // otp-v0.10: before the field is wiped
     FORM.querySelectorAll('input, textarea, select').forEach(el => {
       if (el.type === 'radio' || el.type === 'checkbox') el.checked = false;
       else el.value = '';
@@ -3336,7 +3347,7 @@ body.is-viewer .cog-btn { display: none; }
     document.querySelectorAll('.pill-group .pill.is-selected, .rate-row .rate.is-selected').forEach(b => b.classList.remove('is-selected'));
     // Reset Tom Select instances so the visible chrome matches the cleared values (v0.19).
     Object.values(tomSelects).forEach(ts => { ts.clear(true); });
-    try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    clearDraftEverywhere(resetObserver);   // otp-v0.10: local draft + its Supabase copy
     // v0.24: school just cleared; let Subject revert to disabled state.
     if (typeof refreshSubjectOptions === 'function') refreshSubjectOptions();
     if (typeof applyMandatoryDefaults === 'function') applyMandatoryDefaults();
@@ -3412,6 +3423,182 @@ body.is-viewer .cog-btn { display: none; }
   // Which path answered the last lists / card read: 'supabase' or 'google'.
   // Read by the proof scripts and the specs, never shown to the user.
   window.__otpReadSource = { options: '', prevSteps: '' };
+
+  /* === otp-v0.10 Phase 2 · Supabase-first WRITES + the Supabase draft ======
+     Save & Lock, Save changes and Close Lap post to the edge function
+     otp-submit first (8 s cap): it writes the record to Supabase, answers in
+     about a second, and only then hands the row to Apps Script for the Sheet
+     and the emails. Any miss (stall, HTTP error, a success:false answer such
+     as a lap Supabase does not hold) falls back to the Apps Script POST
+     exactly as before, so nothing is ever slower and no error is ever shown
+     (hard rule 12). Both backends are idempotent on record_token, which the
+     form now mints itself, so a timed-out first try can never make two rows.
+     The draft: every local save is also pushed to Supabase 2 s later, keyed by
+     the observer's name (save_draft); picking an observer pulls that draft
+     back (load_draft) and the newer copy wins; Save & Lock and Reset clear it
+     (delete_draft). The ungated viewer build blanks SB_URL/SB_KEY, so none of
+     this runs there. */
+  const SB_FN_SUBMIT = SB_URL ? SB_URL + '/functions/v1/otp-submit' : '';
+  const SB_WRITE_TIMEOUT_MS = 8000;
+  const SB_DRAFT_TIMEOUT_MS = 5000;
+  const DRAFT_SYNC_DEBOUNCE_MS = 2000;
+  const DRAFT_SCOPE = 'otp';
+  // Which path took the last write: 'supabase' or 'google'. Read by the proof
+  // scripts and the specs, never shown to the user.
+  window.__otpWriteSource = { submit: '', edit: '', draftSave: '', draftLoad: '' };
+
+  function newRecordToken() {
+    const b = new Uint8Array(16);
+    crypto.getRandomValues(b);
+    return Array.from(b, function (x) { return ('0' + x.toString(16)).slice(-2); }).join('');
+  }
+
+  // POST to the edge function. Resolves ONLY with a success:true answer;
+  // anything else throws so the caller falls back to Google.
+  async function sbWrite(data, ms) {
+    if (!SB_FN_SUBMIT || !SB_KEY) throw new Error('no supabase in this build');
+    const ctrl = new AbortController();
+    const timer = setTimeout(function () { ctrl.abort(); }, ms || SB_WRITE_TIMEOUT_MS);
+    try {
+      const resp = await fetch(SB_FN_SUBMIT, {
+        method: 'POST',
+        headers: {
+          'apikey': SB_KEY,
+          'Authorization': 'Bearer ' + SB_KEY,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data),
+        signal: ctrl.signal
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      const out = await resp.json();
+      if (!out || out.success !== true) throw new Error((out && out.error) || 'not saved');
+      return out;
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  let draftSyncTimer = null;
+  let draftLastUploadedFp = '';   // what Supabase last received from this page
+  let draftLastServerStamp = '';  // its updated_at, so our own upload is never re-applied
+  let draftPullSeq = 0;
+
+  function currentObserverName() {
+    const ts = tomSelects.inspector;
+    const v = ts && ts.getValue();
+    if (v && ts.options[v]) return ts.options[v].text;
+    const el = document.getElementById('inspector');
+    return el ? (el.dataset.pendingValue || '') : '';
+  }
+  function draftFingerprint(data) {
+    const c = Object.assign({}, data || {});
+    delete c.saved_at;
+    return JSON.stringify(c);
+  }
+  // Anything typed or picked beyond the observer's own name?
+  function draftHasContent(data) {
+    return Object.keys(data || {}).some(function (k) {
+      return k !== 'inspector' && k !== 'saved_at' && String(data[k] == null ? '' : data[k]).trim() !== '';
+    });
+  }
+  function scheduleDraftSync() {
+    clearTimeout(draftSyncTimer);
+    draftSyncTimer = setTimeout(syncDraftToSupabase, DRAFT_SYNC_DEBOUNCE_MS);
+  }
+  async function syncDraftToSupabase() {
+    if (CLOSED_RECORD_VIEW || EDIT_MODE || !SB_URL || !SB_KEY) return;
+    const observer = currentObserverName();
+    if (!observer) return;                       // nothing to key it by yet
+    let data;
+    try { data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch (e) { return; }
+    if (!data.saved_at) return;
+    const fp = draftFingerprint(data);
+    if (fp === draftLastUploadedFp) return;      // Supabase already has this
+    try {
+      const out = await sbRpcTimed('save_draft', { p_form: DRAFT_SCOPE, p_observer: observer, p_data: data }, SB_DRAFT_TIMEOUT_MS);
+      if (out && out.success) {
+        draftLastUploadedFp = fp;
+        draftLastServerStamp = out.updated_at || '';
+        window.__otpWriteSource.draftSave = 'supabase';
+      }
+    } catch (e) { /* the local copy stands; the next keystroke retries */ }
+  }
+  // Picking an observer asks Supabase for that observer's draft. It is applied
+  // when this device holds nothing beyond the observer's name, or when the
+  // Supabase copy is newer than what was last saved here.
+  async function pullDraftFromSupabase(observer) {
+    if (CLOSED_RECORD_VIEW || EDIT_MODE || !SB_URL || !SB_KEY || !observer) return;
+    const seq = ++draftPullSeq;
+    let out = null;
+    try {
+      out = await sbRpcTimed('load_draft', { p_form: DRAFT_SCOPE, p_observer: observer }, SB_DRAFT_TIMEOUT_MS);
+    } catch (e) { return; }
+    if (seq !== draftPullSeq) return;            // a newer observer pick won
+    if (!out || !out.success || !out.found || !out.data) { window.__otpWriteSource.draftLoad = 'none'; return; }
+    if (out.updated_at && out.updated_at === draftLastServerStamp) return;   // our own upload
+    let local = {};
+    try { local = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch (e) {}
+    const serverFp = draftFingerprint(out.data);
+    if (draftFingerprint(local) === serverFp) {  // same draft already here
+      draftLastServerStamp = out.updated_at || '';
+      draftLastUploadedFp = serverFp;
+      return;
+    }
+    const serverMs = Date.parse(out.updated_at || '') || 0;
+    const localMs = Number(local.saved_at) || 0;
+    if (draftHasContent(local) && localMs >= serverMs) return;   // this device is ahead: keep it
+    applyDraftData(out.data);
+    applyPulledDraftToControls(out.data);
+    draftLastServerStamp = out.updated_at || '';
+    draftLastUploadedFp = serverFp;
+    window.__otpWriteSource.draftLoad = 'supabase';
+  }
+  // A draft pulled AFTER the lists have landed: applyDraftData parks the
+  // teacher/subject names in dataset.pendingValue (the channel the option
+  // loaders read), so resolve them now, and re-derive everything a fresh load
+  // derives once the options are in.
+  function resolvePendingTomSelect(name) {
+    const ts = tomSelects[name];
+    const el = document.getElementById(name);
+    if (!ts || !el) return;
+    const want = el.dataset.pendingValue || '';
+    if (!want) return;
+    const match = Object.values(ts.options).find(function (o) { return o.text === want; });
+    if (!match) return;
+    ts.setValue(match.value, true);
+    delete el.dataset.pendingValue;
+  }
+  function applyPulledDraftToControls(data) {
+    if (tomSelects.grade) {
+      tomSelects.grade.setValue(String(data.grade || ''), true);   // silent: no onChange
+      syncSchoolFromGrade();
+    }
+    resolvePendingTomSelect('teacher');
+    if (typeof refreshSubjectOptions === 'function') refreshSubjectOptions();
+    resolvePendingTomSelect('subject');
+    if (typeof syncSingleSelectVisuals === 'function') syncSingleSelectVisuals();
+    if (typeof syncDateTimeEmpty === 'function') syncDateTimeEmpty();
+    if (typeof syncRubricChips === 'function') syncRubricChips();
+    if (typeof syncRubricNotes === 'function') syncRubricNotes();
+    if (typeof autoGrowAll === 'function') autoGrowAll();
+    if (typeof refreshPrevNextSteps === 'function') refreshPrevNextSteps();
+    updateSubmitState();
+  }
+  function deleteDraftRemote(observer) {
+    if (!observer || !SB_URL || !SB_KEY || CLOSED_RECORD_VIEW || EDIT_MODE) return;
+    sbRpcTimed('delete_draft', { p_form: DRAFT_SCOPE, p_observer: observer }, SB_DRAFT_TIMEOUT_MS).catch(function () {});
+  }
+  // The local draft AND the Supabase copy, after a save or a Reset.
+  function clearDraftEverywhere(observer) {
+    const who = observer != null ? observer : currentObserverName();
+    clearTimeout(draftSyncTimer);
+    try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    draftLastUploadedFp = '';
+    draftLastServerStamp = '';
+    pendingSubmitToken = '';
+    deleteDraftRemote(who);
+  }
 
   (function setupAdmin() {
     const cog      = document.getElementById('admin-cog');
@@ -4827,6 +5014,8 @@ body.is-viewer .cog-btn { display: none; }
     }
     clearLapCardAndOutlines();         // otp-v0.9.4: the card goes with the finished observation
     try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    pendingSubmitToken = '';           // otp-v0.10: the next observation is a new record
+    draftLastUploadedFp = '';
     EvidencePad.reset();   // v0.50: a finished observation clears its Evidence Pad too
     // v0.24: school just got cleared by the reset loop above; let Subject
     // reflect that (back to disabled "Select Grade first" state).
@@ -4916,17 +5105,31 @@ body.is-viewer .cog-btn { display: none; }
     // a failed upload still submits, with the id marking that a pad existed.
     data.evidence_pad_id = await EvidencePad.commitForSubmit();
 
-    try {
-      const resp = await fetch(WEB_APP_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(data),
-        redirect: 'follow'
-      });
-      const result = await resp.json();
-      if (!result.success) throw new Error(result.error || 'Submit failed');
+    // otp-v0.10: the record's token is minted here, once per attempt chain, so
+    // the Supabase-first write, the Google fallback and any retry all name the
+    // SAME record. Both backends are idempotent on it: a double tap or a
+    // timed-out first try can never make two rows.
+    if (!pendingSubmitToken) pendingSubmitToken = newRecordToken();
+    data.record_token = pendingSubmitToken;
 
-      try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    try {
+      let result = null;
+      try {
+        result = await sbWrite(data);
+        window.__otpWriteSource.submit = 'supabase';
+      } catch (fastErr) {
+        window.__otpWriteSource.submit = 'google';
+        const resp = await fetch(WEB_APP_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(data),
+          redirect: 'follow'
+        });
+        result = await resp.json();
+      }
+      if (!result || !result.success) throw new Error((result && result.error) || 'Submit failed');
+
+      clearDraftEverywhere();   // the local draft and its Supabase copy
       lockForm(result.id, new Date().toISOString(), 'submit');
       showToast('Submitted · Record ID ' + result.id + ' · resetting…', 'success');
       // Auto-reset for back-to-back observations (v0.17).
@@ -4970,6 +5173,15 @@ body.is-viewer .cog-btn { display: none; }
     data.action = action;
     data.record_token = EDIT_RECORD.token;
     data.evidence_pad_id = EDIT_RECORD.evidence_pad_id;   // posted back unchanged
+    // otp-v0.10: Supabase first (about 1 s). Only a success answer is final;
+    // a miss (a lap Supabase does not hold, a stall) takes the Google path below.
+    try {
+      const fast = await sbWrite(data);
+      window.__otpWriteSource.edit = 'supabase';
+      return fast;
+    } catch (fastErr) {
+      window.__otpWriteSource.edit = 'google';
+    }
     for (var attempt = 1; attempt <= 6; attempt++) {
       try { return await postEditOnce(data); }            // parsed JSON is definitive
       catch (e) {
@@ -6205,6 +6417,8 @@ body.is-viewer .cog-btn { display: none; }
     }));
     tomSelects.inspector = new TomSelect('#inspector', Object.assign({}, baseOpts, {
       placeholder: LOADING_PLACEHOLDERS.inspector,
+      // otp-v0.10: picking an observer pulls that observer's Supabase draft.
+      onChange: () => { updateSubmitState(); pullDraftFromSupabase(currentObserverName()); },
     }));
     tomSelects.subject = new TomSelect('#subject', Object.assign({}, baseOpts, {
       placeholder: LOADING_PLACEHOLDERS.subject,
@@ -6290,6 +6504,7 @@ body.is-viewer .cog-btn { display: none; }
         // otp-v0.9.1: the pending text is spent. Left in place it would
         // resurrect itself the next time the observer cleared the field by hand.
         if (selEl) delete selEl.dataset.pendingValue;
+        if (name === 'inspector') pullDraftFromSupabase(match.text);   // otp-v0.10
       }
     }
   }
