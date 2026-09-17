@@ -3420,9 +3420,9 @@ body.is-viewer .cog-btn { display: none; }
       clearTimeout(timer);
     }
   }
-  // Which path answered the last lists / card read: 'supabase' or 'google'.
-  // Read by the proof scripts and the specs, never shown to the user.
-  window.__otpReadSource = { options: '', prevSteps: '' };
+  // Which path answered the last lists / card / record read: 'supabase' or
+  // 'google'. Read by the proof scripts and the specs, never shown to the user.
+  window.__otpReadSource = { options: '', prevSteps: '', record: '' };
 
   /* === otp-v0.10 Phase 2 · Supabase-first WRITES + the Supabase draft ======
      Save & Lock, Save changes and Close Lap post to the edge function
@@ -3439,6 +3439,12 @@ body.is-viewer .cog-btn { display: none; }
      (delete_draft). The ungated viewer build blanks SB_URL/SB_KEY, so none of
      this runs there. */
   const SB_FN_SUBMIT = SB_URL ? SB_URL + '/functions/v1/otp-submit' : '';
+  // otp-v0.10 Phase 3: the record READ endpoint. Written out in full rather
+  // than derived from SB_URL, because the ungated viewer build blanks SB_URL
+  // and this URL must survive there: it carries no key (the token in the
+  // record link is the only credential) and the viewer is where the 3-45 s
+  // Apps Script record GET hurts most.
+  const SB_FN_RECORD = 'https://rfbetrcevtmisknndpgg.supabase.co/functions/v1/otp-record';
   const SB_WRITE_TIMEOUT_MS = 8000;
   const SB_DRAFT_TIMEOUT_MS = 5000;
   const DRAFT_SYNC_DEBOUNCE_MS = 2000;
@@ -5320,6 +5326,33 @@ body.is-viewer .cog-btn { display: none; }
     }
   }
 
+  /* otp-v0.10 Phase 3 · the record from Supabase, in about a second.
+     ONE plain GET to the otp-record edge function, capped at 3 s with an
+     AbortController (NOT AbortSignal.timeout, iOS 16+ only) and carrying no
+     apikey or Authorization header, so it stays a simple CORS request with no
+     preflight and the key-free viewer build can make it too. The answer has the
+     same shape as the Apps Script record GET. Anything other than success:true
+     (a miss, a stall, an HTTP error, unparseable JSON) throws, and the caller
+     falls back to the Google loop unchanged. */
+  const SB_RECORD_TIMEOUT_MS = 3000;
+  const CANONICAL_TOKEN = /^[0-9a-f]{32}$/;
+
+  async function fetchRecordFromSupabase(token) {
+    const controller = new AbortController();
+    const timer = setTimeout(function () { controller.abort(); }, SB_RECORD_TIMEOUT_MS);
+    try {
+      const resp = await fetch(SB_FN_RECORD + '?token=' + encodeURIComponent(token), {
+        signal: controller.signal
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      const out = await resp.json();
+      if (!out || out.success !== true) throw new Error('not found');
+      return out;
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
   /* otp-v0.9.1 · the ungated viewer's calm landing card (hard rule 12: no
      error UI, ever). It shows when the teacher opens the viewer with no link
      at all, and now also when the link they have misses: a wrong or expired
@@ -5344,6 +5377,12 @@ body.is-viewer .cog-btn { display: none; }
 
   async function loadClosedRecord(id, token) {
     showToast(id ? 'Loading record ' + id + '…' : 'Loading record…');
+    // otp-v0.10 Phase 3: trimmed ONCE here, and this one value feeds every
+    // consumer below (the Supabase read, the Google URL, the pad viewer, the
+    // edit state). Never lowercased: hard rule 10 is an exact match, and
+    // Apps Script compares the same way, so a differently-cased spelling is a
+    // miss on both backends, exactly as before.
+    token = String(token == null ? '' : token).trim();
     // otp-v0.1: the token is the lookup key (hard rule 10). The legacy
     // ?id=&token= shape is still accepted and forwarded unchanged.
     const url = WEB_APP_URL + '?' +
@@ -5351,15 +5390,33 @@ body.is-viewer .cog-btn { display: none; }
                 (token ? 'token=' + encodeURIComponent(token) + '&' : '') +
                 'form=otp';
     let result = null;
-    for (var attempt = 1; attempt <= 6; attempt++) {
-      try { result = await fetchRecordOnce(url); break; }          // definitive JSON → stop
-      catch (e) {                                                   // stall/timeout/parse → retry quietly
-        if (attempt >= 6) break;
-        await new Promise(function (r) { setTimeout(r, 800); });
+    // otp-v0.10 Phase 3: Supabase first. A success:true answer IS the record,
+    // in view and in edit mode alike, and Google is not asked. Anything else
+    // falls through to the loop below UNCHANGED, because a Supabase miss is
+    // not final: the Sheet can still hold a row Supabase lacks, and the same
+    // Apps Script endpoint also resolves R3 tokens.
+    if (SB_FN_RECORD && CANONICAL_TOKEN.test(token)) {
+      try {
+        result = await fetchRecordFromSupabase(token);
+        window.__otpReadSource.record = 'supabase';
+      } catch (e) { result = null; }
+    }
+    if (!result) {
+      window.__otpReadSource.record = 'google';
+      for (var attempt = 1; attempt <= 6; attempt++) {
+        try { result = await fetchRecordOnce(url); break; }          // definitive JSON → stop
+        catch (e) {                                                   // stall/timeout/parse → retry quietly
+          if (attempt >= 6) break;
+          await new Promise(function (r) { setTimeout(r, 800); });
+        }
       }
     }
     try {
-      if (!result) { showToast('Still loading record… please check your connection', 'error'); return; }
+      if (!result) {
+        showToast('Still loading record… please check your connection', 'error');
+        hideLoadingOverlay();   // otp-v0.10 Phase 3: the viewer has no options fetch to lift it
+        return;
+      }
       if (!result.success) throw new Error(result.error || 'Record not found');
 
       const rec = result.data;
@@ -5443,12 +5500,16 @@ body.is-viewer .cog-btn { display: none; }
         const sel = document.getElementById(name);
         if (ts && sel && sel.value) ts.setValue(sel.value, true);
       });
+      // otp-v0.10 Phase 3: the key-free viewer never loads the option lists,
+      // so Teacher / Observer / Subject / Curriculum come from the record.
+      if (window.R3_VIEWER) seedViewerControlsFromRecord(rec);
       // otp-v0.9: ?edit=<token> keeps an OPEN lap live; a closed lap opens
       // read-only down the existing lock path, with no dead buttons.
       const stillOpen = EDIT_MODE && String(rec.status || '').toLowerCase() !== 'closed';
       if (stillOpen) enterEditMode(rec, token);
       else lockForm(rec.record_id, rec.submitted_at, 'closed', rec);
       initPadAttachments(result.pad_files, token);   // v0.53: pad pages, if any
+      hideLoadingOverlay();   // otp-v0.10 Phase 3: the record is what the page waited for
       showToast('Record loaded · ' + (rec.teacher || rec.record_id), 'success');
     } catch (err) {
       // otp-v0.9.1: in the ungated viewer a missed record is not an error the
@@ -5456,7 +5517,38 @@ body.is-viewer .cog-btn { display: none; }
       // bare link, with one line telling them what to do (hard rule 12).
       if (window.R3_VIEWER) { showViewerLanding(VIEWER_MISS_LINE); return; }
       showToast('Could not load record: ' + (err.message || err), 'error');
+      hideLoadingOverlay();   // otp-v0.10 Phase 3: never leave the overlay over a toast
     }
+  }
+
+  /* otp-v0.10 Phase 3 · the ungated viewer's three searchables and its
+     Curriculum pills, built from the record itself.
+     The viewer holds no Supabase key, so its only source for the option lists
+     is Apps Script (1.9-8.5 s, spikes to 95 s) and a 1 s record would still sit
+     behind the 'Preparing form' overlay. It does not need the lists: a record
+     view shows exactly one teacher, one observer, one subject and one
+     curriculum, all of which the record carries. Each searchable gets that one
+     value as a single option under an OPAQUE key (hard rule 11: never a user
+     string as a Tom Select value), and Curriculum is rendered through the same
+     renderPillGroup escaping path the loaded lists use. Runs before lockForm,
+     which then disables all of them. */
+  function seedViewerControlsFromRecord(rec) {
+    ['teacher', 'inspector', 'subject'].forEach(function (name) {
+      const ts = tomSelects[name];
+      const el = document.getElementById(name);
+      if (!ts || !el) return;
+      const text = el.dataset.pendingValue || '';
+      if (!text) return;
+      ts.clearOptions();
+      ts.addOptions([{ value: 'r0', text: text }]);
+      ts.refreshOptions(false);
+      ts.setValue('r0', true);       // silent: no onChange
+      delete el.dataset.pendingValue;
+    });
+    const curriculum = String(rec.curriculum || '').trim();
+    // renderPillGroup ends in syncSingleSelectVisuals, which presses the pill
+    // that matches the hidden #curriculum input the record already filled.
+    if (curriculum) renderPillGroup('curriculum-pills', [curriculum]);
   }
 
   /* v0.53: Evidence-Pad pages on a locked record.
@@ -6566,7 +6658,10 @@ body.is-viewer .cog-btn { display: none; }
       const ts = tomSelects[name];
       if (!ts) return;
       const text = loading ? LOADING_PLACEHOLDERS[name] : PLACEHOLDERS[name];
-      if (loading) ts.disable(); else ts.enable();
+      // otp-v0.10 Phase 3: locked stays locked. The lists can land AFTER the
+      // record on a locked ?token= view or an ?edit= of a closed lap, and
+      // re-enabling here would hand a read-only record three live pickers.
+      if (loading || FORM.classList.contains('is-locked')) ts.disable(); else ts.enable();
       ts.settings.placeholder = text;
       // Tom Select keeps its placeholder on the internal <input>; refresh it
       // directly so the text swap is visible right away.
@@ -6632,7 +6727,9 @@ body.is-viewer .cog-btn { display: none; }
     ts.clearOptions();
     ts.addOptions(filtered.map((s, i) => ({ value: 's' + i, text: s.name })));
     ts.refreshOptions(false);
-    ts.enable();
+    // otp-v0.10 Phase 3: locked stays locked (same race as
+    // setSearchableLoadingState: subjects can land after lockForm).
+    if (!FORM.classList.contains('is-locked')) ts.enable();
     ts.settings.placeholder = PLACEHOLDERS.subject;
     if (ts.control_input) ts.control_input.setAttribute('placeholder', PLACEHOLDERS.subject);
 
@@ -6783,7 +6880,15 @@ body.is-viewer .cog-btn { display: none; }
     if (schoolInput) schoolInput.addEventListener('change', refreshSubjectOptions);
   })();
   applyMandatoryDefaults();
-  if (!VIEWER_LANDING) loadDropdownOptions();
+  // otp-v0.10 Phase 3: the key-free viewer build never asks for the option
+  // lists. It cannot reach Supabase (no key) and the Google lists take
+  // 1.9-8.5 s with spikes to 95 s, which the ~1 s record would then wait
+  // behind; a record view needs no list anyway, so loadClosedRecord seeds the
+  // three searchables and the Curriculum pills from the record itself and
+  // hides the overlay when it lands. The gated form is unchanged: it has the
+  // key, Phase 1 serves its lists from Supabase, and applyDropdownOptions
+  // there also drives updateSubmitState / refreshPrevNextSteps.
+  if (!VIEWER_LANDING && !window.R3_VIEWER) loadDropdownOptions();
 
   // Keyboard convenience: Cmd/Ctrl + P → uses print path (browser default already does this, no override needed)
 </script>

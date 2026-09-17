@@ -1,3 +1,66 @@
+## otp-v0.10 · Phase 3 (2026-09-17)
+
+Supabase-first, part three: the record links. Preview only, same branch as
+Phases 1 and 2. No Sheet column, POST key, email or Apps Script change (still
+@31): this phase only changes where a saved record is READ from.
+
+- **The record comes from Supabase first.** `loadClosedRecord` now makes ONE
+  plain GET to the edge function `otp-record`
+  (`supabase/functions/otp-record/index.ts`, 3 s `AbortController` cap, no
+  `apikey` and no `Authorization` header, so it stays a simple CORS request
+  with no preflight) before the Apps Script token GET. The function calls
+  `otp_record_by_token` (migration `db/migrate_21_otp_record.sql` in
+  `~/AIS-Data-Dashboard`, service_role only), which answers one OTP record's
+  `content` minus `record_token`, and adds `pad_files` by listing the private
+  `evidence-pads` bucket exactly as `06_PadExtract.gs listPadFiles` does. The
+  answer has the same shape the Apps Script read has, so nothing downstream
+  changed: field population, the rubric version, the pad paperclips and the
+  edit-mode unlock are untouched. About 1 s instead of 3-45 s, in all three
+  places that open a record: the teacher viewer, `?edit=<token>` and the gated
+  form's locked `?token=` view. `window.__otpReadSource.record` records which
+  path answered (`supabase` or `google`).
+- **A Supabase answer IS the record; a Supabase miss is not final.** A
+  `success:true` answer renders and Google is not asked, in view or edit mode
+  (owner ruling: Supabase is the main road, Google the backup). Anything else
+  (a miss, a stall, an HTTP error, unparseable JSON) falls to the existing
+  six-attempt Apps Script loop UNCHANGED, because the Sheet can still hold a
+  row Supabase lacks and that same endpoint also resolves R3 tokens. Only
+  Google's answer can produce the viewer's calm landing card or the gated
+  form's toast, exactly as before. No error UI ever (hard rule 12).
+- **One token, trimmed once.** `loadClosedRecord` trims the token at the top
+  and that one value feeds the edge call, the Google URL, the pad viewer and
+  the edit state. Nothing lowercases it: hard rule 10 is an exact match and
+  Apps Script compares the same way, so only the canonical `^[0-9a-f]{32}$`
+  form reaches Supabase and any other spelling goes straight to Google
+  unchanged, as today. Every miss, wrong token, short token, missing token,
+  database or storage failure answers the SAME generic
+  `{success:false, error:'Record not found'}` at HTTP 200; a token is never
+  logged and `record_token` never leaves in `data`.
+- **The key-free viewer no longer waits on the option lists.** The ungated
+  build (`window.R3_VIEWER`) holds no Supabase key (hard rule 14), so its only
+  source for the lists was Apps Script (1.9-8.5 s, spikes to 95 s) and a 1 s
+  record would still have sat behind the 'Preparing form' overlay. It no
+  longer calls `loadDropdownOptions()` at all: Teacher / Observer / Subject
+  each get ONE option built from the record's own text under an opaque key
+  (`r0`, hard rule 11), Curriculum is drawn by `renderPillGroup` from the
+  record's own value, and `loadClosedRecord` hides the overlay itself when the
+  record lands and on its terminal failure path (the landing card still owns
+  the overlay). The gated form is unchanged: it has the key, Phase 1 serves its
+  lists from Supabase in about 0.5 s, and `applyDropdownOptions` there also
+  drives `updateSubmitState()` / `refreshPrevNextSteps()`.
+- **Locked stays locked.** On a locked `?token=` view, and on `?edit=` of a
+  closed lap, the lists can now land AFTER the record. Neither
+  `setSearchableLoadingState(false)` nor `refreshSubjectOptions()` will
+  `enable()` a Tom Select while the form carries `is-locked`; only the
+  edit-mode path (an open lap, which never locks) leaves them live.
+- **Out of scope:** pad page IMAGES stay on Apps Script (`?action=pad_image`,
+  token-gated and lazy), R3 records stay on Apps Script, and nothing is built
+  for a Supabase outage (owner ruling: the Google fallback is the precaution;
+  `db/verify_mirror.mjs` runs once before the Phase 4 release).
+- **Specs:** ten new `otp-v0.10` Phase 3 specs (Chromium + WebKit). One
+  pre-existing spec changed with the behaviour: the viewer's searchables now
+  read `r0` where the list-fed gated form gives `t0` / `i0` / `s0`.
+
 ## otp-v0.10 · Phase 2 (2026-09-16)
 
 Supabase-first, part two: the form's WRITES and the draft. Preview only, same

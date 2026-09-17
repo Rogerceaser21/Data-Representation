@@ -1350,9 +1350,13 @@ test('the record view repopulates header fields, chips, notes and the five secti
   await expect(page.locator('#school')).toHaveValue('Primary');
   await expect(page.locator('#grade')).toHaveValue('3');
   await expect(gradeControl(page)).toContainText('3');
-  await expect(page.locator('#teacher')).toHaveValue('t0');
-  await expect(page.locator('#inspector')).toHaveValue('i0');
-  await expect(page.locator('#subject')).toHaveValue('s0');
+  // otp-v0.10 Phase 3: the key-free viewer no longer loads the option lists;
+  // each searchable gets ONE opaque-keyed option built from the record's own
+  // text (hard rule 11), so the value is 'r0' where the list-fed gated form
+  // gives t0 / i0 / s0.
+  await expect(page.locator('#teacher')).toHaveValue('r0');
+  await expect(page.locator('#inspector')).toHaveValue('r0');
+  await expect(page.locator('#subject')).toHaveValue('r0');
   await expect(page.locator('#teacher').locator('xpath=following-sibling::div[1]')).toContainText(
     'Test Teacher'
   );
@@ -3551,5 +3555,439 @@ test('otp-v0.10: a local draft with content newer than the Supabase copy is kept
   await expect(page.locator('#next_step_1')).toHaveValue('typed here, later');
   await expect(page.locator('#observer_comments')).toHaveValue('');
   expect(await page.evaluate(() => (window as any).__otpWriteSource.draftLoad)).not.toBe('supabase');
+  expect(h.errors).toEqual([]);
+});
+
+/* ============================================================================
+ * otp-v0.10 Phase 3 · record links read through the Supabase edge function.
+ * loadClosedRecord asks otp-record first (one GET, 3 s cap, no key) and only
+ * falls back to the Apps Script token GET; the key-free viewer build no longer
+ * loads the option lists at all, so the record itself is what lifts the
+ * 'Preparing form' overlay. The harness's default *.supabase.co route answers
+ * `null`, which is not success:true, so every older spec keeps exercising the
+ * Google path. A route added after harness() wins (newest route first).
+ * ========================================================================== */
+const EDGE_RECORD_FN = /\/functions\/v1\/otp-record/;
+
+/** What the otp-record edge function answers for a fixture record. */
+const edgeRecord = (payload: any = RECORD_PAYLOAD) => ({
+  success: true,
+  data: payload.data,
+  ...(payload.pad_files && payload.pad_files.length ? { pad_files: payload.pad_files } : {}),
+  form: 'otp',
+  source: 'supabase',
+});
+
+/** The ONE answer every miss gets, from either backend (hard rule 10). */
+const EDGE_MISS = { success: false, error: 'Record not found' };
+
+/** Route otp-record; the returned array collects every URL it was called with. */
+async function routeEdgeRecord(page: Page, handler: (r: Route) => Promise<void> | void) {
+  const urls: string[] = [];
+  await page.route(EDGE_RECORD_FN, async (r: Route) => {
+    urls.push(r.request().url());
+    await handler(r);
+  });
+  return urls;
+}
+
+/** Count every Apps Script request while the harness still serves them. */
+async function countGoogle(page: Page) {
+  const urls: string[] = [];
+  await page.route('**/script.google.com/**', async (r: Route) => {
+    urls.push(r.request().url());
+    await r.fallback();
+  });
+  return urls;
+}
+
+const recordSource = (page: Page) =>
+  page.evaluate(() => (window as any).__otpReadSource.record);
+
+/** Tom Select's own disabled state for the three searchables. */
+const searchablesDisabled = (page: Page) =>
+  page.evaluate(() =>
+    ['teacher', 'inspector', 'subject'].map(
+      (id) => !!(document.getElementById(id) as any).tomselect.isDisabled,
+    ),
+  );
+
+/** Every option key each searchable holds. Empty until applyDropdownOptions
+ *  has run; the opaque t0 / i0 / s0 keys are its fingerprint (hard rule 11). */
+const optionKeys = (page: Page) =>
+  page.evaluate(() =>
+    ['teacher', 'inspector', 'subject'].map((id) =>
+      Object.keys((document.getElementById(id) as any).tomselect.options).sort(),
+    ),
+  );
+
+/** An observer's half-written observation, already on this device when a
+ *  record link is opened. Nothing about it may show, and nothing may rewrite
+ *  it (hard rule 13). Deliberately different from RECORD_HEADER in every field. */
+const DRAFT_SYNC_KEY = `${DRAFT_KEY}:sync`;
+const SEEDED_DRAFT_JSON = JSON.stringify({
+  teacher: 'Draft Teacher', inspector: 'Draft Observer', subject: 'Science',
+  curriculum: 'MoE', grade: '9', school: 'Secondary',
+  date: '2026-01-31', time_in: '08:00', time_out: '08:45', room_number: 'DRAFT-ROOM',
+  observer_comments: 'DRAFT observer comments, must never show on a record',
+  next_step_1: 'DRAFT next step one',
+  rubric_version: 'sp1-v2', sp1_outstanding: '1:present', saved_at: 1789560000000,
+});
+const SEEDED_SYNC_JSON = JSON.stringify({
+  observer: 'Draft Observer', updated_at: '2026-09-17T06:00:00.000+00:00', fp: 'seeded',
+});
+
+/** A real 1x1 JPEG, so a pad page opens without a broken image. */
+const ONE_PX_JPEG =
+  '/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0a' +
+  'HBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/wAALCAABAAEBAREA/8QAFAABAAAAAAAA' +
+  'AAAAAAAAAAAACf/EABQQAQAAAAAAAAAAAAAAAAAAAAD/2gAIAQEAAD8AKp//2Q==';
+
+test('otp-v0.10 Phase 3: the viewer renders a Supabase record with every Apps Script call dead, and asks Google for nothing', async ({ page }) => {
+  const h = await harness(page);
+  // every Apps Script request, options included, hangs for ever: the viewer
+  // must never need one. Nothing pends, because nothing is ever issued.
+  const google: string[] = [];
+  await page.route('**/script.google.com/**', (r: Route) => {
+    google.push(r.request().url());
+  });
+  const edge = await routeEdgeRecord(page, (r) =>
+    r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(edgeRecord()) }),
+  );
+
+  await page.goto(`${RECORD_URL}?token=${EDIT_TOKEN_FIXTURE}`);
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 10_000 });
+  await expect(page.locator('#form-loading')).toHaveClass(/is-hidden/);
+  expect(edge).toHaveLength(1);
+  expect(edge[0]).toContain(`token=${EDIT_TOKEN_FIXTURE}`);
+  expect(await recordSource(page)).toBe('supabase');
+
+  // the three searchables carry the record's own text, under an opaque key
+  await expect(tsControl(page, 'teacher')).toContainText('Test Teacher');
+  await expect(tsControl(page, 'inspector')).toContainText('Test Observer');
+  await expect(tsControl(page, 'subject')).toContainText('Mathematics');
+  await expect(page.locator('#teacher')).toHaveValue('r0');
+  await expect(page.locator('#inspector')).toHaveValue('r0');
+  await expect(page.locator('#subject')).toHaveValue('r0');
+  await expect(gradeControl(page)).toContainText('3');
+  await expect(page.locator('#grade')).toHaveValue('3');
+  // the Curriculum pill is drawn from the record, and pressed
+  await expect(page.locator('#curriculum-pills .pill')).toHaveCount(1);
+  await expect(page.locator('#curriculum-pills .pill')).toHaveText('Australian');
+  await expect(page.locator('#curriculum-pills .pill')).toHaveClass(/is-selected/);
+  await expect(page.locator('#curriculum')).toHaveValue('Australian');
+  // and the record's own text
+  await expect(page.locator('#date')).toHaveValue('2026-09-03');
+  await expect(page.locator('#time_in')).toHaveValue('09:15');
+  await expect(page.locator('#time_out')).toHaveValue('10:05');
+  await expect(page.locator('#observer_comments')).toHaveValue('Record observer comments');
+  await expect(page.locator('#next_step_3')).toHaveValue('Record next step three');
+  await expect(chipAt(page, 'good', 3)).toHaveAttribute('data-state', 'partial');
+  expect(await searchablesDisabled(page)).toEqual([true, true, true]);
+  expect(google, 'the viewer asked Apps Script for something').toEqual([]);
+
+  // an OPEN record reads the same way in the viewer: still no Apps Script call
+  const edgeOpen = await routeEdgeRecord(page, (r) =>
+    r.fulfill({ status: 200, contentType: 'application/json',
+      body: JSON.stringify(edgeRecord(RECORD_PAYLOAD_OPEN)) }),
+  );
+  await page.goto(`${RECORD_URL}?token=${EDIT_TOKEN_FIXTURE}`);
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 10_000 });
+  expect(await bannerText(page)).toContain('Lap 1 · open');
+  expect(edgeOpen).toHaveLength(1);
+  expect(await recordSource(page)).toBe('supabase');
+  expect(google, 'an open record made the viewer ask Apps Script').toEqual([]);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.10 Phase 3: a Supabase miss is not final, and a Google miss still lands on the calm card', async ({ page }) => {
+  const h = await harness(page, { record: { success: false, error: 'Record not found' } });
+  const google = await countGoogle(page);
+  const edge = await routeEdgeRecord(page, (r) =>
+    r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(EDGE_MISS) }),
+  );
+
+  await page.goto(`${RECORD_URL}?token=${EDIT_TOKEN_FIXTURE}`);
+  const card = page.locator('#form-loading .form-loading-card');
+  await expect(card).toContainText(
+    'This link is not valid or has expired. Ask your observer for a new link.',
+    { timeout: 15_000 },
+  );
+  expect(edge).toHaveLength(1);
+  // the Sheet can still hold a row Supabase lacks, so Google IS asked
+  expect(google.filter((u) => /[?&]token=/.test(u))).toHaveLength(1);
+  expect(await recordSource(page)).toBe('google');
+  await expect(page.locator('#form-loading')).not.toHaveClass(/is-hidden/);
+  await expect(page.locator('#toast')).not.toHaveClass(/show/);
+  await expect(page.locator('#toast')).not.toHaveClass(/error/);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.10 Phase 3: a stalled edge function, and an HTTP 500, both fall to the Google record with no error UI', async ({ page }) => {
+  // 1. the stall: no answer inside the 3 s cap
+  const h = await harness(page);
+  const google = await countGoogle(page);
+  const edge = await routeEdgeRecord(page, async (r) => {
+    await new Promise((res) => setTimeout(res, 4500));
+    try { await r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(edgeRecord()) }); }
+    catch { /* the page gave up on it at 3 s, as it must */ }
+  });
+  await page.goto(`${RECORD_URL}?token=${EDIT_TOKEN_FIXTURE}`);
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 15_000 });
+  await expect(page.locator('#form-loading')).toHaveClass(/is-hidden/);
+  await expect(page.locator('#observer_comments')).toHaveValue('Record observer comments');
+  expect(edge).toHaveLength(1);
+  expect(google.filter((u) => /[?&]token=/.test(u))).toHaveLength(1);
+  expect(await recordSource(page)).toBe('google');
+  await expect(page.locator('#toast')).not.toHaveClass(/error/);
+
+  // 2. the HTTP 500
+  const h2 = await harness(page);
+  const google2 = await countGoogle(page);
+  const edge2 = await routeEdgeRecord(page, (r) =>
+    r.fulfill({ status: 500, contentType: 'application/json', body: JSON.stringify({ success: false, error: 'boom' }) }),
+  );
+  await page.goto(`${RECORD_URL}?token=${EDIT_TOKEN_FIXTURE}`);
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 15_000 });
+  await expect(page.locator('#observer_comments')).toHaveValue('Record observer comments');
+  expect(edge2).toHaveLength(1);
+  expect(google2.filter((u) => /[?&]token=/.test(u))).toHaveLength(1);
+  expect(await recordSource(page)).toBe('google');
+  await expect(page.locator('#toast')).not.toHaveClass(/error/);
+  // the browser's own network log for the mocked 500 is the only line allowed
+  // (the 3 s abort itself logs nothing); both harnesses listen to the one page,
+  // so both see it.
+  expect(h.errors.filter((e) => !/status of 500/.test(e))).toEqual([]);
+  expect(h2.errors.filter((e) => !/status of 500/.test(e))).toEqual([]);
+});
+
+test('otp-v0.10 Phase 3: ?edit= served by the edge function unlocks exactly as the Google read does', async ({ page }) => {
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
+  const google = await countGoogle(page);
+  const edge = await routeEdgeRecord(page, (r) =>
+    r.fulfill({ status: 200, contentType: 'application/json',
+      body: JSON.stringify(edgeRecord(RECORD_PAYLOAD_OPEN)) }),
+  );
+
+  await openEdit(page);
+  expect(edge).toHaveLength(1);
+  expect(edge[0]).toContain(`token=${EDIT_TOKEN_FIXTURE}`);
+  expect(await recordSource(page)).toBe('supabase');
+  expect(google.filter((u) => /[?&]token=/.test(u)),
+    'no record GET may reach Apps Script when Supabase answered').toHaveLength(0);
+
+  expect(await bannerText(page)).toContain('Lap 1 · open');
+  await expect(page.locator('#otp-form')).not.toHaveClass(/is-locked/);
+  await expect(page.locator('#next_step_1')).toBeEnabled();
+  await expect(page.locator('#teacher')).toHaveValue('t0');   // the gated form still loads its lists
+  await expect(tsControl(page, 'inspector')).toContainText('Test Observer');
+  await expect(page.locator('#btn-save-changes')).toBeEnabled();
+  await expect(page.locator('#btn-close-lap')).toBeEnabled();
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.10 Phase 3: pad_files from the edge function raise the paperclips', async ({ page }) => {
+  const withPads = {
+    ...RECORD_PAYLOAD,
+    pad_files: ['observer-comments-1.jpg', 'sp1-great-5-note.jpg'],
+  };
+  const h = await harness(page);
+  await routeEdgeRecord(page, (r) =>
+    r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(edgeRecord(withPads)) }),
+  );
+
+  await page.goto(`${RECORD_URL}?token=${EDIT_TOKEN_FIXTURE}`);
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 10_000 });
+  await expect(page.locator('.pad-attach[data-pad-target="observer_comments"]')).toBeVisible();
+  await tapNoteBtn(page, 'great', 5);
+  await expectPop(page, 'open');
+  await expect(notePop(page).locator('.pad-attach[data-pad-target="sp1_great_5_note"]')).toBeVisible();
+  await page.locator('.rub-note-done').click();
+  // nothing else grew a paperclip
+  await expect(page.locator('.pad-attach[data-pad-target="next_step_1"]')).toBeHidden();
+  expect(await recordSource(page)).toBe('supabase');
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.10 Phase 3: the built viewer carries the otp-record URL and no Supabase key', async () => {
+  const src = viewerSrc();
+  // hard rule 14: the publishable key can read every teacher name and rating
+  expect(src).not.toContain('sb_publishable');
+  expect(src).toContain("const SB_KEY = '';");
+  expect(src).toContain("const SB_URL = '';");
+  // ...but the keyless record endpoint must survive encrypt.sh's blanking
+  expect(src).toContain("const SB_FN_RECORD = 'https://rfbetrcevtmisknndpgg.supabase.co/functions/v1/otp-record';");
+});
+
+test('otp-v0.10 Phase 3: a record view pulls no draft, pushes no draft and leaves a REAL draft byte-identical', async ({ page }) => {
+  // hard rule 13, both directions: an observer's half-written observation is
+  // sitting on this device (the viewer and the gated form share one origin),
+  // and opening a record link must neither overwrite it nor show any of it.
+  const h = await harness(page);
+  const drafts: string[] = [];
+  await page.route('**/rest/v1/rpc/save_draft', (r: Route) => { drafts.push('save'); return r.abort(); });
+  await page.route('**/rest/v1/rpc/load_draft', (r: Route) => { drafts.push('load'); return r.abort(); });
+  await page.route('**/rest/v1/rpc/delete_draft', (r: Route) => { drafts.push('delete'); return r.abort(); });
+  await routeEdgeRecord(page, (r) =>
+    r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(edgeRecord()) }),
+  );
+  // seeded BEFORE any page script runs, on every navigation in this test
+  await page.addInitScript(
+    ([k, s, draft, sync]) => {
+      try {
+        localStorage.setItem(k as string, draft as string);
+        localStorage.setItem(s as string, sync as string);
+      } catch { /* opaque origin (about:blank): nothing to seed */ }
+    },
+    [DRAFT_KEY, DRAFT_SYNC_KEY, SEEDED_DRAFT_JSON, SEEDED_SYNC_JSON] as [string, string, string, string],
+  );
+
+  const storedDraft = () =>
+    page.evaluate(([k, s]) => [localStorage.getItem(k), localStorage.getItem(s)], [DRAFT_KEY, DRAFT_SYNC_KEY] as [string, string]);
+
+  for (const [what, open] of [
+    ['the ungated viewer', async () => { await page.goto(`${RECORD_URL}?token=${EDIT_TOKEN_FIXTURE}`); }],
+    ['the gated locked ?token= view', async () => { await page.goto(`${FORM_URL}?token=${EDIT_TOKEN_FIXTURE}`); await passGate(page); }],
+  ] as [string, () => Promise<void>][]) {
+    await open();
+    await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 15_000 });
+    await page.waitForTimeout(2600);   // past the 2 s draft-sync debounce
+
+    // 1. the record is what shows, never the draft underneath it
+    await expect(page.locator('#room_number'), what).toHaveValue('12B');
+    await expect(page.locator('#date'), what).toHaveValue('2026-09-03');
+    await expect(page.locator('#time_in'), what).toHaveValue('09:15');
+    await expect(page.locator('#observer_comments'), what).toHaveValue('Record observer comments');
+    await expect(page.locator('#next_step_1'), what).toHaveValue('Record next step one');
+    await expect(page.locator('#school'), what).toHaveValue('Primary');
+    await expect(tsControl(page, 'teacher'), what).toContainText('Test Teacher');
+    await expect(tsControl(page, 'teacher'), what).not.toContainText('Draft Teacher');
+    await expect(tsControl(page, 'inspector'), what).toContainText('Test Observer');
+    await expect(gradeControl(page), what).toContainText('3');
+    // the draft's own chip must not light up on the record's rubric
+    await expect(chipAt(page, 'outstanding', 1), what).toHaveAttribute('data-state', '');
+
+    // 2. nothing was written back, to either key, not one byte
+    expect(await storedDraft(), `${what} rewrote the local draft`).toEqual([SEEDED_DRAFT_JSON, SEEDED_SYNC_JSON]);
+    // 3. and the Supabase draft was never touched either
+    expect(drafts, `${what} called a draft RPC`).toEqual([]);
+  }
+  expect(h.errors).toEqual([]);
+});
+
+/** Hold the Apps Script option lists until the TEST releases them, so the
+ *  "lists arrive after lockForm" race is identical on every machine instead of
+ *  a sleep a slow gate could outrun. `landed` resolves with the real options
+ *  response, so a test waits for the landing rather than guessing at it. */
+async function holdOptions(page: Page, seen?: string[]) {
+  let release = () => {};
+  const gate = new Promise<void>((res) => { release = res; });
+  await page.route('**/script.google.com/**', async (r: Route) => {
+    const url = r.request().url();
+    if (seen) seen.push(url);
+    if (url.includes('action=options')) await gate;
+    try { await r.fallback(); } catch { /* the page gave up on it first */ }
+  });
+  return { landed: page.waitForResponse((r) => r.url().includes('action=options'), { timeout: 20_000 }), release: () => release() };
+}
+
+/** applyDropdownOptions has demonstrably run: its curriculum pills are drawn
+ *  and the three searchables hold the opaque keys it builds. */
+async function expectListsApplied(page: Page) {
+  await expect(page.locator('#curriculum-pills .pill')).toHaveCount(2, { timeout: 15_000 });
+  expect(await optionKeys(page), 'the option lists never reached the searchables')
+    .toEqual([['t0'], ['i0'], ['s0', 's1']]);
+}
+
+test('otp-v0.10 Phase 3: on a locked ?token= view the lists may land after the record, and nothing unlocks', async ({ page }) => {
+  const h = await harness(page);
+  const google: string[] = [];
+  const options = await holdOptions(page, google);
+  await routeEdgeRecord(page, (r) =>
+    r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(edgeRecord()) }),
+  );
+
+  await page.goto(`${FORM_URL}?token=${EDIT_TOKEN_FIXTURE}`);
+  await passGate(page);
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 15_000 });
+  await expect(page.locator('#otp-form')).toHaveClass(/is-locked/);
+  await expect(page.locator('#observer_comments')).toHaveValue('Record observer comments');
+  // the record rendered on its own: the lists are still held at this point
+  expect(await optionKeys(page), 'the lists landed before the record, so the race is untested')
+    .toEqual([[], [], []]);
+
+  // now let them land, and prove they were actually applied
+  options.release();
+  await options.landed;
+  await expectListsApplied(page);
+  await expect(tsControl(page, 'teacher')).toContainText('Test Teacher');
+  await expect(tsControl(page, 'subject')).toContainText('Mathematics');
+  // ...and a locked record is still locked
+  expect(await searchablesDisabled(page)).toEqual([true, true, true]);
+  await expect(page.locator('#otp-form')).toHaveClass(/is-locked/);
+  expect(await recordSource(page)).toBe('supabase');
+  expect(google.filter((u) => /[?&]token=/.test(u)),
+    'no record GET may reach Apps Script when Supabase answered').toHaveLength(0);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.10 Phase 3: ?edit= of a CLOSED lap stays locked when the lists land after the record', async ({ page }) => {
+  const h = await harness(page, { record: RECORD_PAYLOAD_CLOSED });
+  const options = await holdOptions(page);
+  await routeEdgeRecord(page, (r) =>
+    r.fulfill({ status: 200, contentType: 'application/json',
+      body: JSON.stringify(edgeRecord(RECORD_PAYLOAD_CLOSED)) }),
+  );
+
+  await page.goto(`${FORM_URL}?edit=${EDIT_TOKEN_FIXTURE}`);
+  await passGate(page);
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 15_000 });
+  await expect(page.locator('#otp-form')).toHaveClass(/is-locked/);
+  // the closed lap locked on its own, before any list arrived
+  expect(await optionKeys(page), 'the lists landed before the record, so the race is untested')
+    .toEqual([[], [], []]);
+
+  options.release();
+  await options.landed;
+  await expectListsApplied(page);
+  expect(await searchablesDisabled(page)).toEqual([true, true, true]);
+  await expect(page.locator('#btn-save-changes')).toBeDisabled();
+  await expect(page.locator('#btn-close-lap')).toBeDisabled();
+  expect(await recordSource(page)).toBe('supabase');
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.10 Phase 3: an uppercase token skips Supabase and reaches Google unchanged, pad image included', async ({ page }) => {
+  const UPPER = EDIT_TOKEN_FIXTURE.toUpperCase();
+  const h = await harness(page, { record: { ...RECORD_PAYLOAD, pad_files: ['observer-comments-1.jpg'] } });
+  const padImages: string[] = [];
+  await page.route('**/script.google.com/**', async (r: Route) => {
+    const url = r.request().url();
+    if (url.includes('action=pad_image')) {
+      padImages.push(url);
+      return r.fulfill({ status: 200, contentType: 'application/json',
+        body: JSON.stringify({ success: true, mime: 'image/jpeg', data: ONE_PX_JPEG }) });
+    }
+    await r.fallback();
+  });
+  const google = await countGoogle(page);
+  const edge = await routeEdgeRecord(page, (r) =>
+    r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(edgeRecord()) }),
+  );
+
+  await page.goto(`${RECORD_URL}?token=${UPPER}`);
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 15_000 });
+  // only the canonical lowercase 32-hex form is a token (hard rule 10)
+  expect(edge, 'an uppercase token must never reach the edge function').toEqual([]);
+  expect(await recordSource(page)).toBe('google');
+  const recordGets = google.filter((u) => /[?&]token=/.test(u) && !u.includes('action=pad_image'));
+  expect(recordGets).toHaveLength(1);
+  expect(recordGets[0]).toContain(`token=${UPPER}`);
+
+  // the pad image rides the SAME unchanged token
+  await page.locator('.pad-attach[data-pad-target="observer_comments"]').click();
+  await expect.poll(() => padImages.length, { timeout: 15_000 }).toBeGreaterThan(0);
+  expect(padImages[0]).toContain(`token=${UPPER}`);
+  expect(padImages[0]).toContain('name=observer-comments-1.jpg');
   expect(h.errors).toEqual([]);
 });
