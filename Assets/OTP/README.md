@@ -1,3 +1,60 @@
+## otp-v0.11 · status strip + Next Steps rework (2026-09-18, task 5, preview build)
+
+Part of the otp-v0.11 "lap tracker" plan (`graph/strip` branch, wave 2).
+Adds the always-present six-card status strip above the top cards and
+reworks the Next Steps echo. Continue / Close without a reload (task 7) and
+the email naming sweep (task 8) are separate, later nodes.
+
+- **Status strip** (`#status-strip-section`, plan 2.1). One read of the new
+  Supabase RPC `get_teacher_lap_state` per teacher pick (`sbRpcTimed`, 3 s
+  cap) drives the line above the cards and each card's Current / Completed
+  / Pending / Coming soon / grey state. No answer, a timeout or
+  `success:false`: the strip shows the grey "Select a teacher" look, no
+  error text (hard rule 12). Never rendered in the ungated teacher viewer
+  (`window.R3_VIEWER`). Card 3 (emails) reads `open.emails_legacy` or both
+  email stamps; card 1's title uses the ordinal word for the observation
+  number. The Continue button (`#strip-continue`, an `<a>`) carries
+  `?edit=<token>` as its only copy of the token; wiring it to switch the
+  form without a reload is task 7's job.
+- **The blue "Teacher observed" card is gone.** `#prev-ns-card` (markup,
+  CSS, and the card-only parts of `prevNsRender` / `prevNsHide`) is
+  removed; the strip does that job now.
+- **Next Steps echo** (`#prev-ns-echo`, plan 2.3), still driven by the same
+  `get_teacher_lap_state` read: nothing for a genuinely first observation;
+  an open observation's own Next Steps, falling back to the predecessor's
+  (labelled "Observation N-1", R8) while its own are empty; the last closed
+  observation's when nothing is open. When the new read gives no answer at
+  all, the old Supabase-then-Google `get_prev_next_steps` path still fills
+  the last-closed case, unchanged.
+- **Naming (owner ruling R6).** Every on-screen "Lap N" / "lap" wording that
+  names the numbered thing is now "Observation N" / "observation" (the
+  locked banner, the Close Lap confirm dialog, the closed toast, the sticky
+  open-observation notice, the Close Lap button's tooltip). The button
+  itself stays "Close Lap"; stored field names, payload keys, Sheet
+  columns, function names and email text are untouched.
+- **Specs:** 13 new otp-v0.11 specs (Chromium + WebKit) cover the four
+  worked examples, above-Tenth card 1 wording, the grey state, a dead
+  `get_teacher_lap_state` (Save & Lock still works), a late answer for a
+  dropped teacher, the three Next Steps states (including the predecessor
+  and no-predecessor cases), the strip's absence in the viewer, the
+  Continue link's `href` and token placement, reduced motion, the three
+  widths, and (fix round 1) three sequence-guard races (F1-F3 below).
+  Several existing `#prev-ns-card` specs were updated or removed.
+- **Fix round 1 (2026-09-18), an independent review found four defects:**
+  (F1) a distinct teacher change now invalidates any Next Steps fallback
+  still in flight for the PREVIOUS teacher (`prevNsSeq`/`prevNsTeacher`
+  reset, echo hidden) before the new teacher's own read starts, so a late
+  `refreshPrevNextSteps()` answer can never land on the wrong echo; (F2)
+  `closeCurrentLap()` now bumps `lapStateSeq` before its direct "just
+  closed" render, so a `get_teacher_lap_state` read still in flight from
+  `enterEditMode()` can never redraw the strip back to "open" afterwards;
+  (F3) an `?edit=` link to an ALREADY-CLOSED record now calls
+  `refreshTeacherStatus()` itself (`loadClosedRecord`'s `lockForm` branch),
+  not only `enterEditMode()`, so the strip still reads the teacher's
+  history even when the option lists landed first; (F4) the Save & Lock
+  confirm's "until you close the lap." was missed by the first naming
+  sweep, now "until you close the observation."
+
 ## otp-v0.10 · Phase 3 (2026-09-17)
 
 Supabase-first, part three: the record links. Preview only, same branch as

@@ -200,9 +200,10 @@ const RECORD_PAYLOAD_CLOSED = {
   },
 };
 
-/** otp-v0.9: the previous (closed) lap, as ?action=prev_next_steps returns it.
- *  otp-v0.9.3: lap/date/observer match the contract's own worked example
- *  (Lap 8, 11 Sept 2026, Igor Sesar) so the card/echo text specs read verbatim. */
+/** otp-v0.9: the previous (closed) lap, as ?action=prev_next_steps returns it
+ *  (the get_teacher_lap_state fallback path, otp-v0.11). otp-v0.9.3:
+ *  lap/date/observer match the contract's own worked example (Lap 8, 11 Sept
+ *  2026, Igor Sesar) so the echo text specs read verbatim. */
 const PREV_NS_FOUND = {
   success: true,
   found: true,
@@ -2338,7 +2339,7 @@ test('otp-v0.9: ?edit= loads the record with the fields enabled and the Tom Sele
 
   // the banner says exactly where the lap stands
   const banner = await bannerText(page);
-  expect(banner).toContain('Lap 1 · open');
+  expect(banner).toContain('Observation 1 · open');
   expect(banner).toMatch(dayRe('observed ', '2026-09-03'));
   expect(banner).toContain('by Test Observer');
   expect(banner).toContain('AIS-OTP-20260903-101500');
@@ -2439,7 +2440,7 @@ test('otp-v0.9: Close Lap, confirmed, posts "close", locks the form and the bann
 
   expect(asked).toHaveLength(1);
   expect(asked[0]).toBe(
-    'Close Lap 1 for Test Teacher? Next Steps become final and Test Teacher is notified.',
+    'Close Observation 1 for Test Teacher? Next Steps become final and Test Teacher is notified.',
   );
 
   expect(h.posts).toHaveLength(1);
@@ -2448,7 +2449,7 @@ test('otp-v0.9: Close Lap, confirmed, posts "close", locks the form and the bann
   expect(Object.keys(h.posts[0])).toHaveLength(34);
 
   const banner = await bannerText(page);
-  expect(banner).toMatch(dayRe('Lap 1 · closed ', '2026-09-11T09:30:00.000Z'));
+  expect(banner).toMatch(dayRe('Observation 1 · closed ', '2026-09-11T09:30:00.000Z'));
 
   await expect(page.locator('#observer_comments')).toBeDisabled();
   await expect(page.locator('#next_step_1')).toBeDisabled();
@@ -2469,7 +2470,7 @@ test('otp-v0.9: Close Lap, dismissed, posts nothing and leaves the form editable
   await expect(page.locator('#otp-form')).not.toHaveClass(/is-locked/);
   await expect(page.locator('#btn-close-lap')).toBeEnabled();
   await expect(page.locator('#next_step_1')).toBeEnabled();
-  expect(await bannerText(page)).toContain('Lap 1 · open');
+  expect(await bannerText(page)).toContain('Observation 1 · open');
   expect(h.errors).toEqual([]);
 });
 
@@ -2483,7 +2484,7 @@ test('otp-v0.9: a record already closed opens read-only through ?edit=', async (
   await expect(page.locator('#time_out')).toBeDisabled();
 
   const banner = await bannerText(page);
-  expect(banner).toMatch(dayRe('Lap 2 · closed ', '2026-09-08T07:20:00.000Z'));
+  expect(banner).toMatch(dayRe('Observation 2 · closed ', '2026-09-08T07:20:00.000Z'));
   expect(banner).toContain('Read-only view');
 
   // no dead buttons: neither edit action is offered on a closed lap
@@ -2526,31 +2527,15 @@ test('otp-v0.9: edit mode never reads or writes the ais-otp-form-v1 draft', asyn
   expect(h.errors).toEqual([]);
 });
 
-test('otp-v0.9: the previous Next Steps card and echo render when a closed lap is found', async ({ page }) => {
+test('otp-v0.9/v0.11: the Next Steps echo renders when a closed lap is found (get_teacher_lap_state dead, Google prev_next_steps fallback)', async ({ page }) => {
   const h = await harness(page, { prev: PREV_NS_FOUND });
   await openForm(page);
 
   // hidden until a teacher is picked
-  await expect(page.locator('#prev-ns-card')).toBeHidden();
   await expect(page.locator('#prev-ns-echo')).toBeHidden();
 
   await pickTomSelect(page, 'teacher', 'Test Teacher');
-  await expect(page.locator('#prev-ns-card')).toBeVisible({ timeout: 10_000 });
-  await expect(page.locator('#prev-ns-echo')).toBeVisible();
-
-  // otp-v0.9.3 (C1): "Teacher observed <date> · Lap <n> · goals below". otp-v0.9.4
-  // joins it with non-breaking spaces so a wrapped line never starts with a dot.
-  const cardLine = new RegExp(
-    `^Teacher observed ${dayPat(PREV_NS_FOUND.observation_date)}[  ]· Lap[  ]${PREV_NS_FOUND.lap}[  ]· goals below$`,
-  );
-  await expect(
-    page.locator('#prev-ns-card-head'),
-    'prev-ns-card-head is not the otp-v0.9.3 one-line "Teacher observed ... goals below" format (C1)',
-  ).toHaveText(cardLine);
-  await expect(
-    page.locator('#prev-ns-toggle'),
-    '#prev-ns-toggle should have been removed in otp-v0.9.3 (C1: the card has nothing to expand)',
-  ).toHaveCount(0);
+  await expect(page.locator('#prev-ns-echo')).toBeVisible({ timeout: 10_000 });
 
   // otp-v0.9.3 (C2): the echo is the FIRST child of #rubric-section, above its heading
   expect(
@@ -2558,37 +2543,30 @@ test('otp-v0.9: the previous Next Steps card and echo render when a closed lap i
     'prev-ns-echo is not the first child of #rubric-section (otp-v0.9.3 C2: goals-above-rubric)',
   ).toBe('prev-ns-echo');
 
+  // otp-v0.11 R6: "Observation N Next Steps", never "Lap N"
   const echoHead = new RegExp(
-    `^Lap ${PREV_NS_FOUND.lap} Next Steps · ${dayPat(PREV_NS_FOUND.observation_date)} · ${PREV_NS_FOUND.observer}$`,
+    `^Observation ${PREV_NS_FOUND.lap} Next Steps · ${dayPat(PREV_NS_FOUND.observation_date)} · ${PREV_NS_FOUND.observer}$`,
   );
   await expect(page.locator('#prev-ns-echo-head')).toHaveText(echoHead);
   await expect(page.locator('#prev-ns-echo-list li')).toHaveText(PREV_NS_STEPS);
   await expect(page.locator('#prev-ns-echo-list li')).toHaveCount(3);
 
-  // it sits under the Teacher field
-  expect(await page.locator('#prev-ns-card').evaluate(
-    (el) => el.closest('.info-cell')!.querySelector('select')!.id)).toBe('teacher');
-
   // nothing fixed-position (iPad rules, hard rule 15)
-  for (const sel of ['#prev-ns-card', '#prev-ns-echo']) {
-    expect(await page.locator(sel).evaluate((el) => getComputedStyle(el).position)).toBe('static');
-  }
+  expect(await page.locator('#prev-ns-echo').evaluate((el) => getComputedStyle(el).position)).toBe('static');
 
-  // clearing the teacher hides both again
+  // clearing the teacher hides it again
   await page.locator('#teacher').locator('xpath=following-sibling::div[1]').locator('.clear-button').click();
-  await expect(page.locator('#prev-ns-card')).toBeHidden({ timeout: 10_000 });
-  await expect(page.locator('#prev-ns-echo')).toBeHidden();
+  await expect(page.locator('#prev-ns-echo')).toBeHidden({ timeout: 10_000 });
 
   expect(h.errors).toEqual([]);
 });
 
-test('otp-v0.9: no previous lap, a garbled answer, or the viewer build: card and echo stay hidden', async ({ page }) => {
+test('otp-v0.9/v0.11: no previous lap, a garbled answer, or the viewer build: the echo stays hidden', async ({ page }) => {
   // 1. the backend has no closed lap for this teacher
   const h = await harness(page);            // default: { success: true, found: false }
   await openForm(page);
   await pickTomSelect(page, 'teacher', 'Test Teacher');
   await page.waitForTimeout(700);
-  await expect(page.locator('#prev-ns-card')).toBeHidden();
   await expect(page.locator('#prev-ns-echo')).toBeHidden();
   expect(h.errors).toEqual([]);
 
@@ -2597,7 +2575,6 @@ test('otp-v0.9: no previous lap, a garbled answer, or the viewer build: card and
   await openForm(page);
   await pickTomSelect(page, 'teacher', 'Test Teacher');
   await page.waitForTimeout(900);
-  await expect(page.locator('#prev-ns-card')).toBeHidden();
   await expect(page.locator('#prev-ns-echo')).toBeHidden();
   await expect(page.locator('#toast')).not.toHaveClass(/show/);
   expect(h2.errors).toEqual([]);
@@ -2608,43 +2585,17 @@ test('otp-v0.9: no previous lap, a garbled answer, or the viewer build: card and
   const h3 = await harness(page, { prev: PREV_NS_FOUND, record: RECORD_PAYLOAD_OPEN });
   await page.goto(RECORD_URL + '?token=abc');
   await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 20_000 });
-  await expect(page.locator('#prev-ns-card')).toBeHidden();
   await expect(page.locator('#prev-ns-echo')).toBeHidden();
   // ...and the viewer's banner carries the lap and its state
-  expect(await bannerText(page)).toContain('Lap 1 · open');
+  expect(await bannerText(page)).toContain('Observation 1 · open');
   expect(h3.errors).toEqual([]);
 
-  // 4. a row written before otp-v0.9 has no lap at all, and reads as Lap 1
+  // 4. a row written before otp-v0.9 has no lap at all, and reads as Observation 1
   const h4 = await harness(page, { record: RECORD_PAYLOAD });
   await page.goto(RECORD_URL + '?token=abc');
   await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 20_000 });
-  expect(await bannerText(page)).toContain('Lap 1 · open');
+  expect(await bannerText(page)).toContain('Observation 1 · open');
   expect(h4.errors).toEqual([]);
-});
-
-test('otp-v0.9.3: the card is one line with no toggle and shows no steps', async ({ page }) => {
-  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN, prev: PREV_NS_FOUND });
-  // edit mode loads the teacher from the record, so the card renders with no tap
-  await openEdit(page);
-  await expect(page.locator('#prev-ns-card')).toBeVisible({ timeout: 10_000 });
-
-  await expect(
-    page.locator('#prev-ns-card button'),
-    'a button still lives inside #prev-ns-card (otp-v0.9.3 C1: nothing to expand)',
-  ).toHaveCount(0);
-  await expect(
-    page.locator('#prev-ns-card li'),
-    'a step list still lives inside #prev-ns-card (otp-v0.9.3 C1: goals moved to the echo, not shown here)',
-  ).toHaveCount(0);
-
-  const box = await page.locator('#prev-ns-card').boundingBox();
-  expect(box, '#prev-ns-card has no bounding box').not.toBeNull();
-  expect(
-    box!.height,
-    `#prev-ns-card is ${box!.height}px tall, expected a single collapsed line under 48px (otp-v0.9.3 C1)`,
-  ).toBeLessThan(48);
-
-  expect(h.errors).toEqual([]);
 });
 
 test('otp-v0.9: the keep-focus guards are on mousedown only, never pointerdown', async () => {
@@ -2674,7 +2625,7 @@ test('otp-v0.9.3: WebKit taps drive Save changes and Close Lap', async ({ browse
   page.on('dialog', (d) => d.accept());
   await openEdit(page);
 
-  await expect(page.locator('#prev-ns-card')).toBeVisible({ timeout: 10_000 });
+  await expect(page.locator('#prev-ns-echo')).toBeVisible({ timeout: 10_000 });
 
   // Save changes on a real tap: an open lap shows the sticky #notice, not the
   // toast (otp-v0.9.3 C4), and a real tap on its close button must dismiss it
@@ -2693,7 +2644,7 @@ test('otp-v0.9.3: WebKit taps drive Save changes and Close Lap', async ({ browse
   await expect(page.locator('#otp-form')).toHaveClass(/is-locked/, { timeout: 10_000 });
   expect(h.posts).toHaveLength(2);
   expect(h.posts[1].action).toBe('close');
-  expect(await bannerText(page)).toContain('Lap 1 · closed');
+  expect(await bannerText(page)).toContain('Observation 1 · closed');
 
   expect(h.errors).toEqual([]);
   await ctx.close();
@@ -2704,8 +2655,7 @@ test('otp-v0.9: no console errors and no horizontal overflow in edit mode at 128
     await page.setViewportSize(vp);
     const h = await harness(page, { record: RECORD_PAYLOAD_OPEN, prev: PREV_NS_FOUND });
     await openEdit(page);
-    await expect(page.locator('#prev-ns-card')).toBeVisible({ timeout: 10_000 });
-    await expect(page.locator('#prev-ns-echo')).toBeVisible();
+    await expect(page.locator('#prev-ns-echo')).toBeVisible({ timeout: 10_000 });
 
     const overflow = await page.evaluate(
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
@@ -2715,10 +2665,13 @@ test('otp-v0.9: no console errors and no horizontal overflow in edit mode at 128
   }
 });
 
-test('otp-v0.9: a long teacher name never grows the focused control, so a REAL click on the card right after the pick lands (no layout jump on blur)', async ({ page }) => {
+test('otp-v0.9/v0.11: a long teacher name never grows the focused control (no layout jump on blur)', async ({ page }) => {
   // Live proof 2026-09-11: with 'OTP Test Teacher (delete me)' the focused
-  // teacher control was 73 px and 50 px after blur; the card under it jumped
-  // 23 px at mousedown-blur and the mouseup landed on the cell above.
+  // teacher control was 73 px and 50 px after blur, shifting whatever sat
+  // below it. otp-v0.11 removed the blue card that used to sit there
+  // (#prev-ns-card); the regression this guards (the control itself must
+  // not grow while focused) is unchanged, so the blur is now taken on the
+  // status strip's line, which sits in a fixed position above Teacher.
   const LONG = 'OTP Test Teacher (delete me) with a deliberately very long display name';
   const options = JSON.parse(JSON.stringify(OPTIONS_PAYLOAD));
   const list = options.options ? options.options.teachers : options.teachers;
@@ -2728,17 +2681,13 @@ test('otp-v0.9: a long teacher name never grows the focused control, so a REAL c
   await page.goto(FORM_URL);
   await passGate(page);
   await pickTomSelect(page, 'teacher', LONG);
-  await expect(page.locator('#prev-ns-card')).toBeVisible({ timeout: 10_000 });
   const control = page.locator('#teacher').locator('xpath=following-sibling::div[1]').locator('.ts-control');
   const focusedH = (await control.boundingBox())!.height;    // still focused after the pick
-  const card = page.locator('#prev-ns-card');
-  const box = (await card.boundingBox())!;
+  const line = page.locator('#status-strip-line');
+  const box = (await line.boundingBox())!;
   await page.mouse.click(box.x + box.width / 2, box.y + box.height / 2);   // a real click: the blur happens under it
   const blurredH = (await control.boundingBox())!.height;
   expect(Math.abs(focusedH - blurredH)).toBeLessThan(2);
-  // otp-v0.9.3: the card is one line with nothing to open, so the proof is that
-  // it does not move under the click
-  expect(Math.abs(box.y - (await card.boundingBox())!.y)).toBeLessThan(2);
   expect(h.errors).toEqual([]);
 });
 
@@ -2872,9 +2821,9 @@ test('otp-v0.9.1 D6 confirm wording: Save & Lock no longer claims the record can
 
   await expect.poll(() => asked.length).toBe(1);
   expect(asked[0]).toBe(
-    'Save and lock this Progress in Lessons OTP form? You can still change it from the link in your confirmation email until you close the lap.',
+    'Save and lock this Progress in Lessons OTP form? You can still change it from the link in your confirmation email until you close the observation.',
   );
-  expect(asked[0]).toContain('until you close the lap');
+  expect(asked[0]).toContain('until you close the observation');
   expect(asked[0]).not.toContain('Cannot be edited after');
   expect(h.posts).toEqual([]);
 
@@ -2996,7 +2945,7 @@ test('otp-v0.9.3: Save changes on an open lap shows the sticky notice until dism
   await expect(notice, '#notice never appears after Save changes on an open lap (otp-v0.9.3 C4)').toBeVisible({ timeout: 10_000 });
   const text = await notice.innerText();
   expect(text, '#notice text does not say the lap is still OPEN (otp-v0.9.3 C4)').toContain('still OPEN');
-  expect(text, `#notice text does not name Lap ${RECORD_LAP7.data.lap} (otp-v0.9.3 C4)`).toContain('Lap 7');
+  expect(text, `#notice text does not name Observation ${RECORD_LAP7.data.lap} (otp-v0.9.3 C4)`).toContain('Observation 7');
 
   // sticky: no auto-hide timer
   await page.waitForTimeout(6000);
@@ -3017,12 +2966,11 @@ test('otp-v0.9.3: Save changes on an open lap shows the sticky notice until dism
   await expect(notice, '#notice stays visible after the lap closed (otp-v0.9.3 C4)').toBeHidden();
   expect(h.errors).toEqual([]);
 
-  // the viewer build never shows the notice, the card or the echo
+  // the viewer build never shows the notice or the echo
   const h2 = await harness(page, { record: RECORD_LAP7, prev: PREV_NS_FOUND });
   await page.goto(RECORD_URL + '?token=abc');
   await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 20_000 });
   await expect(page.locator('#notice'), '#notice shows in the ungated viewer build (otp-v0.9.3 C4)').toBeHidden();
-  await expect(page.locator('#prev-ns-card')).toBeHidden();
   await expect(page.locator('#prev-ns-echo')).toBeHidden();
   expect(h2.errors).toEqual([]);
 });
@@ -3083,6 +3031,398 @@ test('otp-v0.9.3: the five long-text boxes grow with their text and Reset restor
     loaded.scrollHeight,
     'other_observations does not auto-grow to fit a loaded 12-line record on open (otp-v0.9.3 C6)',
   ).toBeLessThanOrEqual(loaded.clientHeight + 2);
+});
+
+/* ===================================================================
+   otp-v0.11 · the status strip + Next Steps echo (plan 2.1 / 2.3),
+   driven by the new Supabase RPC get_teacher_lap_state.
+   =================================================================== */
+
+/** The AIS school year runs August to July; computed the same way the form
+ *  computes it, so the "never observed" example reads correctly whenever
+ *  this spec is run, not only on the day it was written. */
+const schoolYearLabel = () => {
+  const now = new Date();
+  const y = now.getFullYear();
+  const startYear = now.getMonth() >= 7 ? y : y - 1;
+  return `${startYear}/${startYear + 1}`;
+};
+
+/** get_teacher_lap_state answer shapes (plan §3.2). Dates/names match the
+ *  plan's own worked examples (2.1) so the on-screen text specs read
+ *  verbatim where the plan gives one. */
+const LAP_STATE_NEVER = {
+  success: true, observation_count: 0, next_lap: 1, open_count: 0,
+  open: null, predecessor: null, last_closed: null,
+};
+
+const LAP_STATE_OPEN_WITH_OWN_STEPS = {
+  success: true, observation_count: 2, next_lap: 3, open_count: 1,
+  open: {
+    record_token: 'b2c3d4e5f60718293a4b5c6d7e8f9012',
+    record_id: 'AIS-OTP-20260916-084514',
+    lap: '2', observation_date: '2026-09-16', observer: 'Igor Sesar',
+    submitted_at: '2026-09-16T08:45:14.000Z',
+    next_step_1: 'Own step one', next_step_2: 'Own step two', next_step_3: 'Own step three',
+    coach_emailed_at: '2026-09-16T08:50:00.000Z',
+    teacher_emailed_at: '2026-09-16T08:51:00.000Z',
+    emails_legacy: false,
+  },
+  predecessor: {
+    lap: '1', observation_date: '2026-09-01', observer: 'Igor Sesar',
+    closed_at: '2026-09-14T10:00:00.000Z',
+    next_step_1: 'Predecessor step one',
+    next_step_2: 'Predecessor step two',
+    next_step_3: 'Predecessor step three',
+  },
+  last_closed: null,
+};
+
+/** Same open observation, but its own Next Steps are still blank: the echo
+ *  must fall back to the predecessor's (R8). */
+const LAP_STATE_OPEN_NO_OWN_STEPS = {
+  ...LAP_STATE_OPEN_WITH_OWN_STEPS,
+  open: {
+    ...LAP_STATE_OPEN_WITH_OWN_STEPS.open,
+    next_step_1: '', next_step_2: '', next_step_3: '',
+  },
+};
+
+/** An open observation with blank own steps AND no predecessor: nothing at
+ *  all for the echo (plan 2.3(a), reachable mid-lifecycle too). */
+const LAP_STATE_OPEN_NO_PREDECESSOR = {
+  ...LAP_STATE_OPEN_NO_OWN_STEPS,
+  observation_count: 1, next_lap: 2, open_count: 1,
+  open: { ...LAP_STATE_OPEN_NO_OWN_STEPS.open, lap: '1' },
+  predecessor: null,
+};
+
+const LAP_STATE_STARTING_NEXT = {
+  success: true, observation_count: 1, next_lap: 2, open_count: 0,
+  open: null, predecessor: null,
+  last_closed: {
+    lap: '1', observation_date: '2026-09-14', observer: 'Igor Sesar',
+    closed_at: '2026-09-14T10:00:00.000Z',
+    next_step_1: 'Closed step one', next_step_2: 'Closed step two', next_step_3: 'Closed step three',
+  },
+};
+
+async function mockLapState(page: Page, answer: any) {
+  await page.route('**/rest/v1/rpc/get_teacher_lap_state', (r: Route) =>
+    r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(answer) }),
+  );
+}
+
+const stripLine = (page: Page) => page.locator('#status-strip-line');
+const stripStatuses = async (page: Page) => {
+  const words: string[] = [];
+  for (let i = 1; i <= 6; i++) {
+    words.push((await page.locator(`#strip-card-${i} .strip-status`).textContent()) || '');
+  }
+  return words;
+};
+
+test('otp-v0.11: the status strip renders the four worked examples of plan 2.1', async ({ page }) => {
+  // 1. never observed this year
+  let h = await harness(page);
+  await mockLapState(page, LAP_STATE_NEVER);
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await expect(stripLine(page)).toHaveText(`Teacher not observed yet · ${schoolYearLabel()}`, { timeout: 10_000 });
+  expect(await stripStatuses(page)).toEqual(
+    ['Current', 'Coming soon', 'Pending', 'Pending', 'Coming soon', 'Pending']);
+  await expect(page.locator('#strip-continue')).toBeHidden();
+  expect(h.errors).toEqual([]);
+
+  // 2. open observation (Igor Sesar today)
+  h = await harness(page);
+  await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await expect(stripLine(page)).toHaveText(
+    new RegExp(`^Observation 2 · open since ${dayPat('2026-09-16')} · coach Igor Sesar$`),
+    { timeout: 10_000 });
+  expect(await stripStatuses(page)).toEqual(
+    ['Completed', 'Coming soon', 'Completed', 'Current', 'Coming soon', 'Pending']);
+  await expect(page.locator('#strip-continue')).toBeVisible();
+  await expect(page.locator('#strip-continue')).toHaveText('Continue Observation 2');
+  expect(await page.evaluate(() => (window as any).__otpReadSource.lapState)).toBe('supabase');
+  expect(h.errors).toEqual([]);
+
+  // 3. last one closed, coach starts the next
+  h = await harness(page);
+  await mockLapState(page, LAP_STATE_STARTING_NEXT);
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await expect(stripLine(page)).toHaveText(
+    new RegExp(`^Observation 1 completed ${dayPat('2026-09-14')} · now starting Observation 2$`),
+    { timeout: 10_000 });
+  expect(await stripStatuses(page)).toEqual(
+    ['Current', 'Coming soon', 'Pending', 'Pending', 'Coming soon', 'Pending']);
+  await expect(page.locator('#strip-continue')).toBeHidden();
+  expect(h.errors).toEqual([]);
+
+  // 4. straight after a successful Close Lap in this page: a direct, local
+  // render (no re-fetch of get_teacher_lap_state; the mocked "open" answer
+  // above never named lap 1, proving this render did not come from the RPC).
+  h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
+  await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
+  page.on('dialog', (d) => d.accept());
+  await openEdit(page);
+  await expect(stripLine(page)).toContainText('open since', { timeout: 10_000 });
+  await page.locator('#btn-close-lap').click();
+  await expect(page.locator('#otp-form')).toHaveClass(/is-locked/, { timeout: 10_000 });
+  const line4 = await stripLine(page).textContent();
+  expect(line4).toMatch(dayRe('Observation 1 completed ', '2026-09-11T09:30:00.000Z'));
+  expect(await stripStatuses(page)).toEqual(
+    ['Completed', 'Coming soon', 'Completed', 'Completed', 'Coming soon', 'Completed']);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.11: above Tenth, card 1 shows "Observation N" alone, no ordinal word', async ({ page }) => {
+  const h = await harness(page);
+  await mockLapState(page, {
+    ...LAP_STATE_OPEN_WITH_OWN_STEPS,
+    open: { ...LAP_STATE_OPEN_WITH_OWN_STEPS.open, lap: '11' },
+  });
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await expect(page.locator('#strip-title-1')).toHaveText('Observation 11', { timeout: 10_000 });
+  await expect(page.locator('#strip-title-6')).toHaveText('Observation 11');
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.11: before a teacher is picked, the strip shows six grey cards and "Select a teacher"', async ({ page }) => {
+  const h = await harness(page);
+  await openForm(page);
+  await expect(stripLine(page)).toHaveText('Select a teacher');
+  expect(await stripStatuses(page)).toEqual(['', '', '', '', '', '']);
+  for (let i = 1; i <= 6; i++) {
+    await expect(page.locator(`#strip-card-${i}`)).toHaveClass(/\bis-grey\b/);
+  }
+  await expect(page.locator('#strip-continue')).toBeHidden();
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.11: get_teacher_lap_state down (500) shows the grey strip, no error UI, and Save & Lock still works', async ({ page }) => {
+  const h = await harness(page);
+  await page.route('**/rest/v1/rpc/get_teacher_lap_state', (r: Route) =>
+    r.fulfill({ status: 500, contentType: 'text/plain', body: 'upstream error' }));
+  page.on('dialog', (d) => d.accept());
+  await openForm(page);
+  await fillRequired(page);
+  await expect(stripLine(page)).toHaveText('Select a teacher', { timeout: 10_000 });
+  expect(await stripStatuses(page)).toEqual(['', '', '', '', '', '']);
+  expect(await page.evaluate(() => (window as any).__otpReadSource.lapState)).toBe('none');
+  await expect(page.locator('#toast')).not.toHaveClass(/show/);
+  await expect(page.locator('#btn-submit')).toHaveAttribute('aria-disabled', 'false');
+  await page.locator('#btn-submit').click();
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 10_000 });
+  // the browser's own network log for the mocked 500 is the only line allowed
+  // (same convention as the otp-v0.10 Phase 3 HTTP 500 spec).
+  expect(h.errors.filter((e) => !/status of 500/.test(e))).toEqual([]);
+});
+
+test('otp-v0.11: a late get_teacher_lap_state answer for a previous teacher is dropped', async ({ page }) => {
+  const options = JSON.parse(JSON.stringify(OPTIONS_PAYLOAD));
+  const list = options.options ? options.options.teachers : options.teachers;
+  list.push({ name: 'Second Teacher' });
+  const h = await harness(page, { options });
+  let resolveFirst: () => void = () => {};
+  await page.route('**/rest/v1/rpc/get_teacher_lap_state', async (r: Route) => {
+    const body = r.request().postDataJSON();
+    if (body.p_teacher === 'Test Teacher') {
+      await new Promise<void>((res) => { resolveFirst = res; });
+      await r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(LAP_STATE_NEVER) });
+    } else {
+      await r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(LAP_STATE_STARTING_NEXT) });
+    }
+  });
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');     // its answer stalls, released below
+  await pickTomSelect(page, 'teacher', 'Second Teacher');   // resolves first
+  const startingNextRe = new RegExp(
+    `^Observation 1 completed ${dayPat('2026-09-14')} · now starting Observation 2$`);
+  await expect(stripLine(page)).toHaveText(startingNextRe, { timeout: 10_000 });
+  resolveFirst();
+  await page.waitForTimeout(500);
+  // the late answer for Test Teacher must not have overwritten Second Teacher's strip
+  await expect(stripLine(page)).toHaveText(startingNextRe);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.11: the Next Steps echo follows plan 2.3 (own steps, predecessor fallback, no predecessor, last closed)', async ({ page }) => {
+  // (b) an open observation with its OWN Next Steps already saved
+  let h = await harness(page);
+  await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await expect(page.locator('#prev-ns-echo-head')).toHaveText('Observation 2 Next Steps', { timeout: 10_000 });
+  await expect(page.locator('#prev-ns-echo-list li')).toHaveText(
+    ['Own step one', 'Own step two', 'Own step three']);
+  expect(h.errors).toEqual([]);
+
+  // (b) an open observation whose own steps are all empty: the predecessor's,
+  // labelled Observation N-1 (R8)
+  h = await harness(page);
+  await mockLapState(page, LAP_STATE_OPEN_NO_OWN_STEPS);
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  const predecessorHead = new RegExp(`^Observation 1 Next Steps · ${dayPat('2026-09-01')} · Igor Sesar$`);
+  await expect(page.locator('#prev-ns-echo-head')).toHaveText(predecessorHead, { timeout: 10_000 });
+  await expect(page.locator('#prev-ns-echo-list li')).toHaveText(
+    ['Predecessor step one', 'Predecessor step two', 'Predecessor step three']);
+  expect(h.errors).toEqual([]);
+
+  // (a) open, own steps empty, no predecessor: nothing at all
+  h = await harness(page);
+  await mockLapState(page, LAP_STATE_OPEN_NO_PREDECESSOR);
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await page.waitForTimeout(700);
+  await expect(page.locator('#prev-ns-echo')).toBeHidden();
+  expect(h.errors).toEqual([]);
+
+  // (c) nothing open, a completed observation exists
+  h = await harness(page);
+  await mockLapState(page, LAP_STATE_STARTING_NEXT);
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  const lastClosedHead = new RegExp(`^Observation 1 Next Steps · ${dayPat('2026-09-14')} · Igor Sesar$`);
+  await expect(page.locator('#prev-ns-echo-head')).toHaveText(lastClosedHead, { timeout: 10_000 });
+  await expect(page.locator('#prev-ns-echo-list li')).toHaveText(
+    ['Closed step one', 'Closed step two', 'Closed step three']);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.11: the status strip is absent in the ungated teacher viewer', async ({ page }) => {
+  const src = viewerSrc();
+  expect(src).toContain('body.is-viewer .status-strip-section { display: none !important; }');
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
+  await page.goto(RECORD_URL + '?token=abc');
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 20_000 });
+  await expect(page.locator('#status-strip-section')).toBeHidden();
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.11: the Continue button carries ?edit= and its token appears nowhere else in the DOM', async ({ page }) => {
+  const h = await harness(page);
+  await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  const btn = page.locator('#strip-continue');
+  await expect(btn).toBeVisible({ timeout: 10_000 });
+  await expect(btn).toHaveText('Continue Observation 2');
+  const token = LAP_STATE_OPEN_WITH_OWN_STEPS.open.record_token;
+  await expect(btn).toHaveAttribute('href', `?edit=${token}`);
+  const tokenCount = await page.evaluate(
+    (t) => document.documentElement.outerHTML.split(t).length - 1, token,
+  );
+  expect(tokenCount, 'the token appears more than once in the DOM').toBe(1);
+
+  await btn.click();
+  await expect(page).toHaveURL(new RegExp(`\\?edit=${token}$`));
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.11: the strip is fully visible with reduced motion and animations forced off', async ({ page }) => {
+  const h = await harness(page);
+  await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await openForm(page);
+  await page.addStyleTag({
+    content: '*, *::before, *::after { animation: none !important; transition: none !important; }',
+  });
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await expect(stripLine(page)).toHaveText(
+    new RegExp(`^Observation 2 · open since ${dayPat('2026-09-16')} · coach Igor Sesar$`),
+    { timeout: 10_000 });
+  for (let i = 1; i <= 6; i++) {
+    await expect(page.locator(`#strip-card-${i}`)).toBeVisible();
+  }
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.11: the strip causes no horizontal overflow at 1440, 1024 and 820, and wraps to 3 columns under 900px', async ({ page }) => {
+  const h = await harness(page);
+  await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
+  for (const width of [1440, 1024, 820]) {
+    await page.setViewportSize({ width, height: 900 });
+    await openForm(page);
+    await pickTomSelect(page, 'teacher', 'Test Teacher');
+    await expect(page.locator('#status-strip')).toBeVisible({ timeout: 10_000 });
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    );
+    expect(overflow, `horizontal overflow at ${width}`).toBeLessThanOrEqual(1);
+    const cols = await page.evaluate(
+      () => getComputedStyle(document.getElementById('status-strip')!).gridTemplateColumns.split(' ').length,
+    );
+    expect(cols, `column count at ${width}`).toBe(width <= 900 ? 3 : 6);
+  }
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.11 F1: a late Next Steps fallback answer for a previous teacher never overwrites the next teacher\'s echo', async ({ page }) => {
+  // B's own get_teacher_lap_state fails, so B falls into the old
+  // Supabase-then-Google get_prev_next_steps path; that Supabase call is
+  // held here. C is then picked and answers cleanly via the primary read.
+  // Releasing B's held answer must not repaint C's echo with B's history.
+  const options = JSON.parse(JSON.stringify(OPTIONS_PAYLOAD));
+  const list = options.options ? options.options.teachers : options.teachers;
+  list.push({ name: 'Second Teacher' });
+  const h = await harness(page, { options });
+  await page.route('**/rest/v1/rpc/get_teacher_lap_state', async (r: Route) => {
+    const body = r.request().postDataJSON();
+    if (body.p_teacher === 'Test Teacher') {
+      await r.fulfill({ status: 500, contentType: 'text/plain', body: 'upstream error' });
+    } else {
+      await r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(LAP_STATE_OPEN_WITH_OWN_STEPS) });
+    }
+  });
+  let releaseB: () => void = () => {};
+  await page.route('**/rest/v1/rpc/get_prev_next_steps', async (r: Route) => {
+    const body = r.request().postDataJSON();
+    expect(body.p_teacher).toBe('Test Teacher');   // only Test Teacher ever falls back here
+    await new Promise<void>((res) => { releaseB = res; });
+    await r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(PREV_NS_FOUND) });
+  });
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');     // B: lap-state fails, fallback held
+  await pickTomSelect(page, 'teacher', 'Second Teacher');   // C: lap-state answers directly
+  await expect(page.locator('#prev-ns-echo-head')).toHaveText('Observation 2 Next Steps', { timeout: 10_000 });
+  releaseB();
+  await page.waitForTimeout(500);
+  // B's late fallback answer must not have overwritten C's echo
+  await expect(page.locator('#prev-ns-echo-head')).toHaveText('Observation 2 Next Steps');
+  await expect(page.locator('#prev-ns-echo-list li')).toHaveText(
+    ['Own step one', 'Own step two', 'Own step three']);
+  expect(h.errors.filter((e) => !/status of 500/.test(e))).toEqual([]);
+});
+
+test('otp-v0.11 F2: a late get_teacher_lap_state answer never redraws over a just-closed observation', async ({ page }) => {
+  // enterEditMode's own refreshTeacherStatus() read is held here; Close Lap
+  // is confirmed and succeeds (via the Google fallback, as the default
+  // harness already does) before that held read is released, so example 4's
+  // direct render must survive the late "open" answer that follows it.
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
+  let releaseLapState: () => void = () => {};
+  await page.route('**/rest/v1/rpc/get_teacher_lap_state', async (r: Route) => {
+    await new Promise<void>((res) => { releaseLapState = res; });
+    await r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(LAP_STATE_OPEN_WITH_OWN_STEPS) });
+  });
+  page.on('dialog', (d) => d.accept());
+  await openEdit(page);
+  await page.locator('#btn-close-lap').click();
+  await expect(page.locator('#otp-form')).toHaveClass(/is-locked/, { timeout: 10_000 });
+  const justClosedRe = dayRe('Observation 1 completed ', '2026-09-11T09:30:00.000Z');
+  await expect(stripLine(page)).toHaveText(justClosedRe, { timeout: 10_000 });
+  releaseLapState();
+  await page.waitForTimeout(500);
+  // the held (stale) "open" answer must not have redrawn the strip
+  await expect(stripLine(page)).toHaveText(justClosedRe);
+  await expect(page.locator('#strip-continue')).toBeHidden();
+  expect(h.errors).toEqual([]);
 });
 
 test('otp-v0.10: the footer reads otp-v0.10', async ({ page }) => {
@@ -3146,7 +3486,7 @@ test('otp-v0.10: a null or failed Supabase answer falls back to the Google lists
   expect(h.errors).toEqual([]);
 });
 
-test('otp-v0.10: the previous-lap card comes from Supabase even when the Google read is dead', async ({ page }) => {
+test('otp-v0.10/v0.11: the Next Steps echo comes from Supabase even when the Google read is dead (get_teacher_lap_state also dead)', async ({ page }) => {
   const h = await harness(page, { prev: 'fail' });
   await page.route('**/rest/v1/rpc/get_prev_next_steps', async (r: Route) => {
     const body = r.request().postDataJSON();
@@ -3155,9 +3495,10 @@ test('otp-v0.10: the previous-lap card comes from Supabase even when the Google 
   });
   await openForm(page);
   await pickTomSelect(page, 'teacher', 'Test Teacher');
-  await expect(page.locator('#prev-ns-card')).toBeVisible();
-  await expect(page.locator('#prev-ns-card')).toContainText('Lap 8');
+  await expect(page.locator('#prev-ns-echo')).toBeVisible({ timeout: 10_000 });
+  await expect(page.locator('#prev-ns-echo')).toContainText('Observation 8');
   expect(await page.evaluate(() => (window as any).__otpReadSource.prevSteps)).toBe('supabase');
+  expect(await page.evaluate(() => (window as any).__otpReadSource.lapState)).toBe('none');
   expect(h.errors).toEqual([]);
 });
 
@@ -3265,20 +3606,19 @@ test('otp-v0.9.4: a tap on the grey Save & Lock names and outlines what is still
   expect(h.errors).toEqual([]);
 });
 
-test('otp-v0.9.4: Reset hides the Teacher observed card, and a late answer cannot bring it back', async ({ page }) => {
+test('otp-v0.9.4/v0.11: Reset hides the Next Steps echo, and a late answer cannot bring it back', async ({ page }) => {
   const h = await harness(page, { prev: PREV_NS_FOUND });
   page.on('dialog', (d) => d.accept());
   await openForm(page);
 
   await pickTomSelect(page, 'teacher', 'Test Teacher');
-  await expect(page.locator('#prev-ns-card')).toBeVisible({ timeout: 10_000 });
+  await expect(page.locator('#prev-ns-echo')).toBeVisible({ timeout: 10_000 });
   await page.locator('#btn-reset').click();
-  await expect(page.locator('#prev-ns-card')).toBeHidden();
   await expect(page.locator('#prev-ns-echo')).toBeHidden();
 
   // the same teacher picked again looks the lap up again
   await pickTomSelect(page, 'teacher', 'Test Teacher');
-  await expect(page.locator('#prev-ns-card')).toBeVisible({ timeout: 10_000 });
+  await expect(page.locator('#prev-ns-echo')).toBeVisible({ timeout: 10_000 });
 
   // an answer still on its way when Reset is tapped stays unseen
   await page.route('**/script.google.com/**', async (r: Route) => {
@@ -3289,48 +3629,16 @@ test('otp-v0.9.4: Reset hides the Teacher observed card, and a late answer canno
   await pickTomSelect(page, 'teacher', 'Test Teacher');
   await page.locator('#btn-reset').click();
   await page.waitForTimeout(2500);
-  await expect(page.locator('#prev-ns-card')).toBeHidden();
   await expect(page.locator('#prev-ns-echo')).toBeHidden();
   expect(h.errors).toEqual([]);
 });
 
-test('otp-v0.9.4: the Teacher observed card wraps inside the Teacher box and the top row stays three equal columns', async ({ page }) => {
-  const h = await harness(page, { prev: PREV_NS_FOUND });
-  for (const vp of [{ width: 1024, height: 768 }, { width: 820, height: 1180 }]) {
-    await page.setViewportSize(vp);
-    await openForm(page);
-    await pickTomSelect(page, 'teacher', 'Test Teacher');
-    await expect(page.locator('#prev-ns-card')).toBeVisible({ timeout: 10_000 });
-    const m = await page.evaluate(() => {
-      const cell = document.getElementById('teacher')!.closest('.info-cell') as HTMLElement;
-      const top = cell.getBoundingClientRect().top;
-      const row = (Array.from(cell.parentElement!.children) as HTMLElement[])
-        .filter((c) => c.offsetWidth > 0 && Math.abs(c.getBoundingClientRect().top - top) < 2);
-      const card = document.getElementById('prev-ns-card')!.getBoundingClientRect();
-      const box = cell.getBoundingClientRect();
-      return {
-        widths: row.map((c) => Math.round(c.getBoundingClientRect().width * 10) / 10),
-        cardLeft: card.left, cardRight: card.right, boxLeft: box.left, boxRight: box.right,
-        whiteSpace: getComputedStyle(document.getElementById('prev-ns-card-head')!).whiteSpace,
-      };
-    });
-    expect(m.widths, `top row at ${vp.width}x${vp.height}`).toHaveLength(3);
-    expect(Math.max(...m.widths) - Math.min(...m.widths),
-      `the card widened the Teacher column at ${vp.width}x${vp.height}: ${m.widths.join(' / ')}`,
-    ).toBeLessThanOrEqual(1.5);
-    expect(m.cardLeft).toBeGreaterThanOrEqual(m.boxLeft - 0.5);
-    expect(m.cardRight).toBeLessThanOrEqual(m.boxRight + 0.5);
-    expect(m.whiteSpace).toBe('normal');
-  }
-  expect(h.errors).toEqual([]);
-});
-
-test('otp-v0.9.4: Save & Lock stays shut while saving, and the automatic reset clears the Teacher observed card', async ({ page }) => {
+test('otp-v0.9.4/v0.11: Save & Lock stays shut while saving, and the automatic reset clears the Next Steps echo', async ({ page }) => {
   const h = await harness(page, { prev: PREV_NS_FOUND });
   page.on('dialog', (d) => d.accept());
   await openForm(page);
   await fillRequired(page);
-  await expect(page.locator('#prev-ns-card')).toBeVisible({ timeout: 10_000 });
+  await expect(page.locator('#prev-ns-echo')).toBeVisible({ timeout: 10_000 });
 
   // the save takes 2 s; a keystroke in the middle must not wake the button
   await page.route('**/script.google.com/**', async (r: Route) => {
@@ -3343,9 +3651,8 @@ test('otp-v0.9.4: Save & Lock stays shut while saving, and the automatic reset c
   await expect(page.locator('#btn-submit')).toBeDisabled();
   await tapCentre(page, '#btn-submit');
 
-  // one record only; the automatic reset then leaves a clean form with no card
-  await expect(page.locator('#prev-ns-card')).toBeHidden({ timeout: 10_000 });
-  await expect(page.locator('#prev-ns-echo')).toBeHidden();
+  // one record only; the automatic reset then leaves a clean form with no echo
+  await expect(page.locator('#prev-ns-echo')).toBeHidden({ timeout: 10_000 });
   expect(h.posts.filter((p) => !p.action), 'a second tap mid-save posted again').toHaveLength(1);
   await expect(page.locator('#btn-submit')).toHaveAttribute('aria-disabled', 'true');
   expect(h.errors).toEqual([]);
@@ -3693,7 +4000,7 @@ test('otp-v0.10 Phase 3: the viewer renders a Supabase record with every Apps Sc
   );
   await page.goto(`${RECORD_URL}?token=${EDIT_TOKEN_FIXTURE}`);
   await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 10_000 });
-  expect(await bannerText(page)).toContain('Lap 1 · open');
+  expect(await bannerText(page)).toContain('Observation 1 · open');
   expect(edgeOpen).toHaveLength(1);
   expect(await recordSource(page)).toBe('supabase');
   expect(google, 'an open record made the viewer ask Apps Script').toEqual([]);
@@ -3776,7 +4083,7 @@ test('otp-v0.10 Phase 3: ?edit= served by the edge function unlocks exactly as t
   expect(google.filter((u) => /[?&]token=/.test(u)),
     'no record GET may reach Apps Script when Supabase answered').toHaveLength(0);
 
-  expect(await bannerText(page)).toContain('Lap 1 · open');
+  expect(await bannerText(page)).toContain('Observation 1 · open');
   await expect(page.locator('#otp-form')).not.toHaveClass(/is-locked/);
   await expect(page.locator('#next_step_1')).toBeEnabled();
   await expect(page.locator('#teacher')).toHaveValue('t0');   // the gated form still loads its lists
@@ -3954,6 +4261,39 @@ test('otp-v0.10 Phase 3: ?edit= of a CLOSED lap stays locked when the lists land
   await expect(page.locator('#btn-save-changes')).toBeDisabled();
   await expect(page.locator('#btn-close-lap')).toBeDisabled();
   expect(await recordSource(page)).toBe('supabase');
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.11 F3: the option lists landing BEFORE an ?edit= of an ALREADY-CLOSED record still reads the strip', async ({ page }) => {
+  // Reverse of the race just above: here the LISTS win, and the record (the
+  // only thing that ever names the teacher) is held back. Before the fix,
+  // the lists' own refreshTeacherStatus() call saw no teacher yet and gave
+  // up silently, and lockForm()'s branch never called it again, so the strip
+  // stayed grey and get_teacher_lap_state was never asked.
+  const h = await harness(page, { record: RECORD_PAYLOAD_CLOSED });
+  let releaseRecord: () => void = () => {};
+  const edge = await routeEdgeRecord(page, async (r) => {
+    await new Promise<void>((res) => { releaseRecord = res; });
+    await r.fulfill({ status: 200, contentType: 'application/json',
+      body: JSON.stringify(edgeRecord(RECORD_PAYLOAD_CLOSED)) });
+  });
+  await mockLapState(page, LAP_STATE_STARTING_NEXT);
+
+  await page.goto(`${FORM_URL}?edit=${EDIT_TOKEN_FIXTURE}`);
+  await passGate(page);              // resolves once the option lists land
+  // proves the lists really did land first (Subject stays school-guarded:
+  // no grade is known yet, since the record itself is still held, so
+  // expectListsApplied's grade-derived subject list does not apply here).
+  await expect(page.locator('#curriculum-pills .pill')).toHaveCount(2, { timeout: 15_000 });
+  expect((await optionKeys(page)).slice(0, 2)).toEqual([['t0'], ['i0']]);
+  await expect(page.locator('#submitted-banner')).not.toHaveClass(/is-active/);
+
+  releaseRecord();
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 15_000 });
+  const stripLineRe = new RegExp(
+    `^Observation 1 completed ${dayPat('2026-09-14')} · now starting Observation 2$`);
+  await expect(page.locator('#status-strip-line')).toHaveText(stripLineRe, { timeout: 10_000 });
+  expect(edge).toHaveLength(1);
   expect(h.errors).toEqual([]);
 });
 

@@ -637,9 +637,9 @@ body.is-editing:not(.is-locked) #btn-close-lap:not(:disabled) {
           mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='11' width='18' height='11' rx='2'/%3E%3Cpath d='M7 11V7a5 5 0 0 1 10 0v4'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 
-/* The previous lap's Next Steps, read-only, in two places: otp-v0.9.3 a
-   one-line card under Teacher that points at them, and the three steps
-   themselves above the rubric. In flow, no overlay, no fixed position. */
+/* otp-v0.11: the Next Steps echo, read-only, above the rubric. The one-line
+   card that used to sit under Teacher (#prev-ns-card) is gone: the status
+   strip above does that job now. In flow, no overlay, no fixed position. */
 .prev-ns {
   margin-top: 0.45rem;
   border: 1px solid var(--rule);
@@ -649,18 +649,6 @@ body.is-editing:not(.is-locked) #btn-close-lap:not(:disabled) {
 }
 .prev-ns[hidden] { display: none !important; }
 .prev-ns-head {
-  font-family: var(--body-font);
-  font-size: var(--tiny);
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  color: var(--paper);
-}
-/* otp-v0.9.3: the card is text, not a button; nothing expands it. Same type as
-   .prev-ns-head. otp-v0.9.4: it wraps inside the Teacher box (the one-line
-   nowrap version widened the Teacher column and squeezed the other two). */
-.prev-ns-line {
-  display: block;
-  padding: 0.42rem 0.6rem;
   font-family: var(--body-font);
   font-size: var(--tiny);
   font-weight: 700;
@@ -680,6 +668,96 @@ body.is-editing:not(.is-locked) #btn-close-lap:not(:disabled) {
 .prev-ns-list li { line-height: 1.45; }
 /* Never in the ungated teacher viewer: it carries another teacher's history. */
 body.is-viewer .prev-ns { display: none !important; }
+
+/* ===========================================
+   otp-v0.11 · STATUS STRIP (plan 2.1)
+   Six cards above the top info grid, always present in the gated form.
+   Look ported verbatim from the approved mock (graph/stripmock).
+   =========================================== */
+.status-strip-section { margin-bottom: clamp(1.2rem, 2vw, 1.8rem); }
+.status-strip-line {
+  font-family: var(--body-font);
+  font-style: italic;
+  font-weight: 600;
+  font-size: var(--small);
+  color: var(--paper-mid);
+  margin: 0 0 clamp(0.5rem, 0.9vw, 0.7rem) 0;
+}
+.status-strip {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: clamp(0.5rem, 1vw, 0.7rem);
+}
+@media (max-width: 900px) {
+  .status-strip { grid-template-columns: repeat(3, 1fr); }
+}
+.strip-card {
+  position: relative;
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center;
+  gap: 0.3rem;
+  background: var(--navy-card);
+  border: 2px solid var(--paper-faint);
+  border-radius: 10px;
+  padding: 1.15rem 0.45rem 0.65rem;
+  min-width: 0;
+}
+.strip-num {
+  position: absolute; top: 0.4rem; left: 0.55rem;
+  font-family: var(--body-font);
+  font-style: italic;
+  font-weight: 800;
+  font-size: 0.65rem;
+  color: var(--paper-mid);
+}
+.strip-icon {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: var(--navy);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.strip-icon svg { display: block; }
+.strip-title {
+  font-family: var(--display-font);
+  font-weight: 700;
+  font-size: 0.74rem;
+  line-height: 1.2;
+  color: var(--paper);
+}
+.strip-status {
+  margin-top: auto;
+  padding-top: 0.2rem;
+  font-family: var(--body-font);
+  font-weight: 800;
+  font-size: 0.62rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--paper-mid);
+}
+.strip-card.is-current   { border-color: var(--ais-blue); border-style: solid; }
+.strip-card.is-current   .strip-status { color: var(--ais-blue); }
+.strip-card.is-completed { border-color: var(--rate-success); border-style: solid; }
+.strip-card.is-completed .strip-status { color: var(--rate-success); }
+.strip-card.is-pending   { border-color: var(--paper-faint); border-style: solid; }
+.strip-card.is-coming    { border-color: var(--paper-faint); border-style: dashed; }
+.strip-card.is-grey      { border-color: var(--paper-faint); border-style: solid; opacity: 0.6; }
+
+.strip-continue-btn {
+  display: block;
+  margin: clamp(0.7rem, 1.2vw, 0.9rem) auto 0;
+  padding: 0.55rem 1.3rem;
+  border: none; border-radius: 999px;
+  background: var(--ais-blue);
+  color: #fff;
+  font-family: var(--body-font);
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+.strip-continue-btn[hidden] { display: none; }
+/* Never in the ungated teacher viewer (R5: teachers only ever view). */
+body.is-viewer .status-strip-section { display: none !important; }
 
 /* ===========================================
    SUBMITTED BANNER + LOCK STATE
@@ -2737,6 +2815,57 @@ body.is-viewer .cog-btn { display: none; }
   </header>
 
   <!-- ============================================
+       STATUS STRIP · otp-v0.11 (plan 2.1) · always present in the gated
+       form, never in the ungated teacher viewer (body.is-viewer above).
+       One get_teacher_lap_state read per teacher pick drives the line and
+       every card; see refreshTeacherStatus() below. Resting-visible base:
+       the grey "Select a teacher" look is the markup default, so a frozen
+       tab or a dead read never leaves the strip blank.
+       ============================================ -->
+  <section class="status-strip-section" id="status-strip-section">
+    <p class="status-strip-line" id="status-strip-line">Select a teacher</p>
+    <div class="status-strip" id="status-strip">
+      <div class="strip-card is-grey" id="strip-card-1">
+        <span class="strip-num">1</span>
+        <span class="strip-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span>
+        <span class="strip-title" id="strip-title-1">Teacher Observation</span>
+        <span class="strip-status"></span>
+      </div>
+      <div class="strip-card is-grey" id="strip-card-2">
+        <span class="strip-num">2</span>
+        <span class="strip-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></span>
+        <span class="strip-title">Teacher Reflection Form</span>
+        <span class="strip-status"></span>
+      </div>
+      <div class="strip-card is-grey" id="strip-card-3">
+        <span class="strip-num">3</span>
+        <span class="strip-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="m3 6.5 9 6.5 9-6.5"/></svg></span>
+        <span class="strip-title">Observation details emailed to Teacher and Coach</span>
+        <span class="strip-status"></span>
+      </div>
+      <div class="strip-card is-grey" id="strip-card-4">
+        <span class="strip-num">4</span>
+        <span class="strip-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><circle cx="8.5" cy="8" r="3"/><path d="M2.5 20c0-3.3 2.8-6 6-6s6 2.7 6 6"/><circle cx="16.5" cy="8.5" r="2.3"/><path d="M14.7 14.3c.5-.2 1.1-.3 1.8-.3 3 0 5.5 2.5 5.5 5.6"/></svg></span>
+        <span class="strip-title">Observation Feedback Meeting</span>
+        <span class="strip-status"></span>
+      </div>
+      <div class="strip-card is-grey" id="strip-card-5">
+        <span class="strip-num">5</span>
+        <span class="strip-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><rect x="5" y="4" width="14" height="17" rx="2"/><rect x="9" y="2" width="6" height="4" rx="1"/><path d="M9 11h6M9 15h6"/></svg></span>
+        <span class="strip-title">Teacher Plan Form</span>
+        <span class="strip-status"></span>
+      </div>
+      <div class="strip-card is-grey" id="strip-card-6">
+        <span class="strip-num">6</span>
+        <span class="strip-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><circle cx="12" cy="12" r="9"/><path d="m8 12.5 2.5 2.5 5-6"/></svg></span>
+        <span class="strip-title" id="strip-title-6">Observation</span>
+        <span class="strip-status"></span>
+      </div>
+    </div>
+    <a class="strip-continue-btn" id="strip-continue" hidden></a>
+  </section>
+
+  <!-- ============================================
        TOP INFO · R3 header fields
        ============================================ -->
   <section class="form-section">
@@ -2745,12 +2874,6 @@ body.is-viewer .cog-btn { display: none; }
       <div class="info-cell">
         <label for="teacher" class="required-field">Teacher</label>
         <select id="teacher" name="teacher" placeholder="Tap to browse staff…" required></select>
-        <!-- otp-v0.9.3: the teacher's previous lap, one line, nothing to
-             expand; the goals themselves sit above the rubric. Hidden until a
-             teacher is picked and a closed lap is found. -->
-        <div class="prev-ns prev-ns-card" id="prev-ns-card" hidden>
-          <span class="prev-ns-line" id="prev-ns-card-head"></span>
-        </div>
       </div>
       <div class="info-cell">
         <label for="support_teachers_cas">Support Teachers / CAs</label>
@@ -2941,7 +3064,7 @@ body.is-viewer .cog-btn { display: none; }
   <button type="button" class="action-btn new" id="btn-new" title="Start a new Progress in Lessons OTP form">New observation</button>
   <!-- otp-v0.9: edit mode only (?edit=<token>); CSS shows them, and hides Reset
        and Save & Lock, while body carries .is-editing. -->
-  <button type="button" class="action-btn secondary close-lap disabled" id="btn-close-lap" title="Close this lap and let the teacher know" disabled>Close Lap</button>
+  <button type="button" class="action-btn secondary close-lap disabled" id="btn-close-lap" title="Close this observation and let the teacher know" disabled>Close Lap</button>
   <button type="button" class="action-btn submit disabled" id="btn-save-changes" title="Save your changes to this record" disabled>Save changes</button>
   <button type="button" class="action-btn submit disabled" id="btn-submit" title="Fill all required fields to enable saving" aria-disabled="true">Save &amp; Lock</button>
 </div>
@@ -3422,7 +3545,7 @@ body.is-viewer .cog-btn { display: none; }
   }
   // Which path answered the last lists / card / record read: 'supabase' or
   // 'google'. Read by the proof scripts and the specs, never shown to the user.
-  window.__otpReadSource = { options: '', prevSteps: '', record: '' };
+  window.__otpReadSource = { options: '', prevSteps: '', record: '', lapState: '' };
 
   /* === otp-v0.10 Phase 2 · Supabase-first WRITES + the Supabase draft ======
      Save & Lock, Save changes and Close Lap post to the edge function
@@ -3616,7 +3739,7 @@ body.is-viewer .cog-btn { display: none; }
     if (typeof syncRubricChips === 'function') syncRubricChips();
     if (typeof syncRubricNotes === 'function') syncRubricNotes();
     if (typeof autoGrowAll === 'function') autoGrowAll();
-    if (typeof refreshPrevNextSteps === 'function') refreshPrevNextSteps();
+    if (typeof refreshTeacherStatus === 'function') refreshTeacherStatus();
     updateSubmitState();
   }
   function deleteDraftRemote(observer) {
@@ -4977,12 +5100,12 @@ body.is-viewer .cog-btn { display: none; }
   }
 
   /* otp-v0.9: the locked banner now says where the lap stands.
-     "Lap 1 · open" until the observer closes it, "Lap 1 · closed <date>" after,
-     on the teacher viewer and on the gated form alike. A plain Save & Lock
-     keeps its own wording. */
+     "Observation 1 · open" until the observer closes it, "Observation 1 ·
+     closed <date>" after (R6), on the teacher viewer and on the gated form
+     alike. A plain Save & Lock keeps its own wording. */
   function bannerTitleFor(mode, meta) {
     if (mode !== 'closed') return 'Submitted · Cannot be edited';
-    const lap = 'Lap ' + lapOf(meta);
+    const lap = 'Observation ' + lapOf(meta);
     if (meta && String(meta.status || '').toLowerCase() === 'closed') {
       const when = formatDay(meta.closed_at);
       return when ? lap + ' · closed ' + when : lap + ' · closed';
@@ -5113,7 +5236,7 @@ body.is-viewer .cog-btn { display: none; }
     const missing = missingRequired();
     if (missing.length) { showMissingRequired(missing); return; }
 
-    if (!confirm('Save and lock this Progress in Lessons OTP form? You can still change it from the link in your confirmation email until you close the lap.')) return;
+    if (!confirm('Save and lock this Progress in Lessons OTP form? You can still change it from the link in your confirmation email until you close the observation.')) return;
 
     // otp-v0.9.4: busy until the save ends, so an input or change event (the pad
     // writing its text, a keystroke) can never wake the button for a second tap.
@@ -5242,10 +5365,10 @@ body.is-viewer .cog-btn { display: none; }
       // otp-v0.9.3: a saved change is not a closed lap, and a toast that fades
       // was letting laps sit open. This line stays until it is dismissed.
       const teacher = currentTeacherName() || 'this teacher';
-      showNotice('Saved, but Lap ' + EDIT_RECORD.lap + ' for ' + teacher +
+      showNotice('Saved, but Observation ' + EDIT_RECORD.lap + ' for ' + teacher +
                  ' is still OPEN. If you have met the teacher, given feedback and ' +
-                 'agreed the Next Steps, tap Close Lap so a new lap starts the ' +
-                 'next time they are observed.');
+                 'agreed the Next Steps, tap Close Lap so a new observation starts ' +
+                 'the next time they are observed.');
       return;
     }
     showToast('Not saved yet · check the connection and tap Save changes again');
@@ -5256,7 +5379,7 @@ body.is-viewer .cog-btn { display: none; }
     if (!btn || btn.disabled || !EDIT_RECORD) return;
     const teacher = currentTeacherName() || 'this teacher';
     const lap = EDIT_RECORD.lap;
-    if (!confirm('Close Lap ' + lap + ' for ' + teacher +
+    if (!confirm('Close Observation ' + lap + ' for ' + teacher +
                  '? Next Steps become final and ' + teacher + ' is notified.')) return;
     const prev = btn.textContent;
     btn.disabled = true;
@@ -5267,7 +5390,13 @@ body.is-viewer .cog-btn { display: none; }
       hideNotice();
       lockForm(EDIT_RECORD.record_id, EDIT_RECORD.submitted_at, 'closed',
                { lap: lap, status: 'closed', closed_at: closedAt });
-      showToast('Lap ' + lap + ' closed · ' + teacher + ' has been told', 'success');
+      // F2 fix (otp-v0.11 round 1): invalidate any get_teacher_lap_state read
+      // still in flight (started by enterEditMode's own refreshTeacherStatus)
+      // BEFORE the direct render below, so a late "open" answer can never
+      // pass seq === lapStateSeq and redraw over the just-closed state.
+      lapStateSeq++;
+      renderStripJustClosed(lap, closedAt);   // otp-v0.11 plan 2.1 example 4: no re-fetch
+      showToast('Observation ' + lap + ' closed · ' + teacher + ' has been told', 'success');
       return;
     }
     btn.textContent = prev;
@@ -5294,7 +5423,7 @@ body.is-viewer .cog-btn { display: none; }
     const metaEl = document.getElementById('submitted-meta');
     if (banner && titleEl && metaEl) {
       const when = formatDay(rec.observation_date);
-      let line = 'Lap ' + EDIT_RECORD.lap + ' · open';
+      let line = 'Observation ' + EDIT_RECORD.lap + ' · open';
       if (when) line += ' · observed ' + when;
       const who = String(rec.observer || rec.inspector || '').trim();   // the OTP Sheet says `observer`
       if (who) line += ' by ' + who;
@@ -5302,7 +5431,7 @@ body.is-viewer .cog-btn { display: none; }
       metaEl.textContent = 'Record ID ' + EDIT_RECORD.record_id;
       banner.classList.add('is-active');
     }
-    refreshPrevNextSteps();   // the teacher came from the record, not a tap
+    refreshTeacherStatus();   // the teacher came from the record, not a tap
     autoGrowAll();            // otp-v0.9.3: the record's long answers show in full
     updateSubmitState();
   }
@@ -5506,8 +5635,19 @@ body.is-viewer .cog-btn { display: none; }
       // otp-v0.9: ?edit=<token> keeps an OPEN lap live; a closed lap opens
       // read-only down the existing lock path, with no dead buttons.
       const stillOpen = EDIT_MODE && String(rec.status || '').toLowerCase() !== 'closed';
-      if (stillOpen) enterEditMode(rec, token);
-      else lockForm(rec.record_id, rec.submitted_at, 'closed', rec);
+      if (stillOpen) {
+        enterEditMode(rec, token);
+      } else {
+        lockForm(rec.record_id, rec.submitted_at, 'closed', rec);
+        // F3 fix (otp-v0.11 round 1): an ?edit= link to an ALREADY-CLOSED
+        // record takes this branch, never enterEditMode's own
+        // refreshTeacherStatus() call. The Teacher field is filled above, so
+        // the strip must still read this teacher's coaching history, even
+        // when the option lists landed first and their own trigger saw no
+        // teacher yet. A plain (non-edit) closed record view stays silent,
+        // as it always has.
+        if (EDIT_MODE) refreshTeacherStatus();
+      }
       initPadAttachments(result.pad_files, token);   // v0.53: pad pages, if any
       hideLoadingOverlay();   // otp-v0.10 Phase 3: the record is what the page waited for
       showToast('Record loaded · ' + (rec.teacher || rec.record_id), 'success');
@@ -6388,58 +6528,58 @@ body.is-viewer .cog-btn { display: none; }
     });
   }
 
-  /* === Previous Next Steps (otp-v0.9) ==============================
-     ONE read-only component rendered in TWO places: a card under the Teacher
-     field, collapsed to a single line until it is tapped, and the same three
-     steps echoed above Next Steps / Support 1, so the observer reads them
-     before the lesson and again where the new ones get written.
-
-     It asks the backend for the teacher's most recent CLOSED lap of the
-     current round. Found: both render. Not found, a stall, a timeout, a
-     parse failure, anything at all: both stay hidden and nothing is said
-     (hard rule 12). Changing the teacher re-asks; clearing it hides.
-     Never in the ungated teacher viewer: it carries another teacher's
-     history and the viewer is a single record's read-only page. */
+  /* === Next Steps echo (otp-v0.9, reworked otp-v0.11) ================
+     A read-only echo above the rubric, plan 2.3: nothing for a first
+     observation; an open observation's own Next Steps (falling back to the
+     predecessor's while its own are empty, R8); the last closed one's when
+     nothing is open. Driven by the SAME get_teacher_lap_state answer as the
+     status strip below (see renderNextStepsFromLapState). Not found, a
+     stall, a timeout, a parse failure, anything at all: it stays hidden and
+     nothing is said (hard rule 12). Never in the ungated teacher viewer: it
+     carries another teacher's history and the viewer is a single record's
+     read-only page. */
   const PREV_NS_TIMEOUT_MS = 25000;   // non-blocking: an uncached Apps Script answer was measured at 8-83 s live (2026-09-11)
   let prevNsSeq = 0;
   let prevNsTeacher = '';
 
   function prevNsHide() {
-    ['prev-ns-card', 'prev-ns-echo'].forEach(function (id) {
-      const el = document.getElementById(id);
-      if (el) el.hidden = true;
-    });
+    const el = document.getElementById('prev-ns-echo');
+    if (el) el.hidden = true;
   }
 
   // otp-v0.9.4: both resets (the Reset button, and the automatic one after a
-  // Save & Lock) clear the previous-lap card and its echo, drop a late answer
-  // for the teacher just wiped, and remove the outlines of a grey Save & Lock tap.
+  // Save & Lock) clear the Next Steps echo and the status strip, drop a late
+  // answer for the teacher just wiped, and remove the outlines of a grey
+  // Save & Lock tap.
   function clearLapCardAndOutlines() {
     prevNsSeq++;
     prevNsTeacher = '';
+    lapStateSeq++;
+    lapStateTeacher = '';
     prevNsHide();
+    renderStripView(STRIP_GREY_VIEW);
     document.querySelectorAll('.needs-value').forEach(function (c) { c.classList.remove('needs-value'); });
   }
 
-  function prevNsRender(d) {
+  // otp-v0.11: `d` is any of the get_teacher_lap_state `open` / `predecessor`
+  // / `last_closed` shapes (each carries lap, next_step_1/2/3, and predecessor
+  // / last_closed also carry observation_date + observer), or the old
+  // get_prev_next_steps fallback answer (same lap/observation_date/observer/
+  // next_step_* shape). `opts.ownOnly` skips the date/observer suffix for an
+  // open observation's OWN Next Steps (plan 2.3(b): heading alone, no date).
+  function prevNsRender(d, opts) {
     const steps = [d.next_step_1, d.next_step_2, d.next_step_3]
       .map(function (v) { return String(v == null ? '' : v).trim(); })
       .filter(Boolean);
-    if (!steps.length) { prevNsHide(); return; }
+    if (!steps.length) { prevNsHide(); return false; }
     const lap = String(d.lap || '').trim() || '1';
-    const when = formatDay(d.observation_date);
-    // otp-v0.9.3: the card is one line that points down at the goals; the goals
-    // themselves are the block above the rubric.
-    const cardHead = document.getElementById('prev-ns-card-head');
-    if (cardHead) {
-      // otp-v0.9.4: the card wraps now; non-breaking spaces keep each "·" at a
-      // line end and "Lap 1" in one piece, so a line never starts with a dot.
-      cardHead.textContent = ['Teacher observed' + (when ? ' ' + when : ''),
-                              'Lap ' + lap, 'goals below'].join(' · ');
+    // R6: the numbered thing is "Observation N" on screen, never "Lap N".
+    const bits = ['Observation ' + lap + ' Next Steps'];
+    if (!(opts && opts.ownOnly)) {
+      const when = formatDay(d.observation_date);
+      if (when) bits.push(when);
+      if (d.observer) bits.push(String(d.observer));
     }
-    const bits = ['Lap ' + lap + ' Next Steps'];
-    if (when) bits.push(when);
-    if (d.observer) bits.push(String(d.observer));
     const echoHead = document.getElementById('prev-ns-echo-head');
     if (echoHead) echoHead.textContent = bits.join(' · ');
     const list = document.getElementById('prev-ns-echo-list');
@@ -6451,12 +6591,30 @@ body.is-viewer .cog-btn { display: none; }
         list.appendChild(li);
       });
     }
-    ['prev-ns-card', 'prev-ns-echo'].forEach(function (id) {
-      const el = document.getElementById(id);
-      if (el) el.hidden = false;
-    });
+    const el = document.getElementById('prev-ns-echo');
+    if (el) el.hidden = false;
+    return true;
   }
 
+  // otp-v0.11 plan 2.3: (a) nothing for a first observation; (b) an open
+  // observation's own Next Steps, falling back to the predecessor's while its
+  // own are empty (R8), nothing when there is no predecessor; (c) the last
+  // closed observation's when nothing is open.
+  function renderNextStepsFromLapState(d) {
+    if (d.open) {
+      if (prevNsRender(d.open, { ownOnly: true })) return;
+      if (d.predecessor && prevNsRender(d.predecessor)) return;
+      prevNsHide();
+      return;
+    }
+    if (d.last_closed && prevNsRender(d.last_closed)) return;
+    prevNsHide();
+  }
+
+  // Fallback only (otp-v0.11): used when get_teacher_lap_state gives no
+  // usable answer at all. Keeps today's Supabase-then-Google
+  // get_prev_next_steps path so state (c) can still be filled; it has no
+  // concept of an open lap, so it is never tried while the primary read works.
   async function refreshPrevNextSteps() {
     if (window.R3_VIEWER) return;
     const name = currentTeacherName();
@@ -6469,9 +6627,9 @@ body.is-viewer .cog-btn { display: none; }
     // rows (every submit, update and close dual-writes them) with the same
     // rule as the Apps Script read: latest CLOSED lap in the current round.
     // A FOUND answer is final. A not-found answer still asks Google (non-
-    // blocking, the card simply stays hidden meanwhile): the mirror is fed by
+    // blocking, the echo simply stays hidden meanwhile): the mirror is fed by
     // a dual-write that swallows its own failures, so until Phase 2 makes
-    // Supabase the first write, a drifted row must never hide a card for good.
+    // Supabase the first write, a drifted row must never hide the echo for good.
     try {
       const fast = await sbRpcTimed('get_prev_next_steps', { p_teacher: name });
       if (seq !== prevNsSeq) return;           // a newer teacher pick won
@@ -6501,6 +6659,159 @@ body.is-viewer .cog-btn { display: none; }
     }
     if (seq !== prevNsSeq) return;             // a newer teacher pick won
     if (out && out.success && out.found) prevNsRender(out);
+  }
+
+  /* === Status strip (otp-v0.11, plan 2.1) =============================
+     The six-card strip above the top cards. One get_teacher_lap_state read
+     per teacher pick drives both this and the Next Steps echo above. Never
+     in the ungated teacher viewer (hard rule per R5); no answer, a timeout
+     or a business failure: the strip goes to the grey "Select a teacher"
+     look, no error text, the form works as it does today (hard rule 12). */
+  const ORDINAL_WORDS = ['Zeroth', 'First', 'Second', 'Third', 'Fourth', 'Fifth',
+                          'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth'];
+  function ordinalWord(n) {
+    const i = Number(n) || 0;
+    return ORDINAL_WORDS[i] || (i + 'th');
+  }
+  // The AIS school year runs August to July; today's date names it.
+  function currentSchoolYearLabel() {
+    const now = new Date();
+    const y = now.getFullYear();
+    const startYear = now.getMonth() >= 7 ? y : y - 1;
+    return startYear + '/' + (startYear + 1);
+  }
+  const STRIP_STATUS_WORD = { current: 'Current', completed: 'Completed', pending: 'Pending', coming: 'Coming soon', grey: '' };
+  const STRIP_GREY_VIEW = {
+    n: null, line: 'Select a teacher',
+    status: ['grey', 'grey', 'grey', 'grey', 'grey', 'grey'], button: null,
+  };
+
+  function renderStripView(view) {
+    const lineEl = document.getElementById('status-strip-line');
+    if (lineEl) lineEl.textContent = view.line;
+    // Card 1's title: the ordinal word plus "Observation N" up to Tenth;
+    // above ten (no ordinal word to reach for), "Observation N" alone.
+    const t1El = document.getElementById('strip-title-1');
+    if (t1El) {
+      const n = Number(view.n) || 0;
+      if (!n) t1El.innerHTML = 'Teacher Observation';
+      else if (n > 10) t1El.innerHTML = 'Observation ' + n;
+      else t1El.innerHTML = ordinalWord(n) + ' Teacher Observation<br>Observation ' + n;
+    }
+    const t6El = document.getElementById('strip-title-6');
+    if (t6El) t6El.textContent = view.n ? ('Observation ' + view.n) : 'Observation';
+    for (let i = 0; i < 6; i++) {
+      const card = document.getElementById('strip-card-' + (i + 1));
+      if (!card) continue;
+      card.className = 'strip-card is-' + view.status[i];
+      const statusEl = card.querySelector('.strip-status');
+      if (!statusEl) continue;
+      const word = STRIP_STATUS_WORD[view.status[i]] || '';
+      statusEl.textContent = word;
+      statusEl.style.visibility = word ? 'visible' : 'hidden';
+    }
+    const btn = document.getElementById('strip-continue');
+    if (btn) {
+      if (view.button) {
+        btn.textContent = view.button.label;
+        // The token lives ONLY in this href, the existing ?edit= link path.
+        btn.setAttribute('href', '?edit=' + encodeURIComponent(view.button.token));
+        btn.hidden = false;
+      } else {
+        btn.textContent = '';
+        btn.removeAttribute('href');
+        btn.hidden = true;
+      }
+    }
+  }
+
+  // plan 2.1 worked examples 1-3, from a get_teacher_lap_state success answer.
+  function stripViewFromLapState(d) {
+    if (d.open) {
+      const n = String(d.open.lap || '').trim() || '1';
+      const emailsDone = !!d.open.emails_legacy ||
+        (!!d.open.coach_emailed_at && !!d.open.teacher_emailed_at);
+      return {
+        n: n,
+        line: 'Observation ' + n + ' · open since ' + formatDay(d.open.observation_date) +
+              ' · coach ' + (d.open.observer || ''),
+        status: ['completed', 'coming', emailsDone ? 'completed' : 'pending', 'current', 'coming', 'pending'],
+        button: { label: 'Continue Observation ' + n, token: d.open.record_token },
+      };
+    }
+    if (d.last_closed) {
+      const prevN = String(d.last_closed.lap || '').trim() || '1';
+      const n = String(d.next_lap || '').trim() || '1';
+      return {
+        n: n,
+        line: 'Observation ' + prevN + ' completed ' + formatDay(d.last_closed.closed_at) +
+              ' · now starting Observation ' + n,
+        status: ['current', 'coming', 'pending', 'pending', 'coming', 'pending'],
+        button: null,
+      };
+    }
+    const n = String(d.next_lap || '').trim() || '1';
+    return {
+      n: n,
+      line: 'Teacher not observed yet · ' + currentSchoolYearLabel(),
+      status: ['current', 'coming', 'pending', 'pending', 'coming', 'pending'],
+      button: null,
+    };
+  }
+
+  // plan 2.1 worked example 4: straight after a successful Close Lap in this
+  // page. A direct, local render (the record that just closed IS the
+  // answer): no re-fetch, so this never races a fresh get_teacher_lap_state.
+  function renderStripJustClosed(lap, closedAtIso) {
+    const n = String(lap || '').trim() || '1';
+    renderStripView({
+      n: n,
+      line: 'Observation ' + n + ' completed ' + formatDay(closedAtIso),
+      status: ['completed', 'coming', 'completed', 'completed', 'coming', 'completed'],
+      button: null,
+    });
+  }
+
+  let lapStateSeq = 0;
+  let lapStateTeacher = '';
+
+  // The ONE trigger for both the strip and the Next Steps echo: teacher pick,
+  // change, clear, draft restore, ?edit= record load, and (via
+  // clearLapCardAndOutlines) Reset and the soft reset after Save & Lock.
+  async function refreshTeacherStatus() {
+    if (window.R3_VIEWER) return;
+    const name = currentTeacherName();
+    if (name === lapStateTeacher) return;      // same teacher, keep what shows
+    lapStateTeacher = name;
+    const seq = ++lapStateSeq;
+    // F1 fix (otp-v0.11 round 1): a distinct teacher change invalidates any
+    // Next Steps fallback still in flight for the PREVIOUS teacher and hides
+    // the echo now, so a late refreshPrevNextSteps() answer for that teacher
+    // can never land on the new teacher's echo (it never passed its own
+    // "same teacher" guard because prevNsTeacher is cleared here too).
+    prevNsSeq++;
+    prevNsTeacher = '';
+    prevNsHide();
+    if (!name) {
+      window.__otpReadSource.lapState = 'none';
+      renderStripView(STRIP_GREY_VIEW);
+      return;
+    }
+    let d = null;
+    try {
+      d = await sbRpcTimed('get_teacher_lap_state', { p_teacher: name });
+    } catch (e) { d = null; }
+    if (seq !== lapStateSeq) return;           // a newer teacher pick won
+    if (d && d.success) {
+      window.__otpReadSource.lapState = 'supabase';
+      renderStripView(stripViewFromLapState(d));
+      renderNextStepsFromLapState(d);
+    } else {
+      window.__otpReadSource.lapState = 'none';
+      renderStripView(STRIP_GREY_VIEW);
+      prevNsHide();
+      refreshPrevNextSteps();   // old fallback: may still fill Next Steps state (c)
+    }
   }
 
   // ===========================================
@@ -6534,8 +6845,8 @@ body.is-viewer .cog-btn { display: none; }
     tomSelects.teacher = new TomSelect('#teacher', Object.assign({}, baseOpts, {
       placeholder: LOADING_PLACEHOLDERS.teacher,  // shown until options load
       searchField: ['text', 'value'], // search by name and email
-      // otp-v0.9: picking a teacher asks for their previous lap's Next Steps.
-      onChange: () => { updateSubmitState(); refreshPrevNextSteps(); },
+      // otp-v0.11: picking a teacher reads their coaching status (strip + Next Steps).
+      onChange: () => { updateSubmitState(); refreshTeacherStatus(); },
     }));
     tomSelects.inspector = new TomSelect('#inspector', Object.assign({}, baseOpts, {
       placeholder: LOADING_PLACEHOLDERS.inspector,
@@ -6808,12 +7119,12 @@ body.is-viewer .cog-btn { display: none; }
     SUBJECTS_RAW = opts.subjects || [];
     refreshSubjectOptions();
     // otp-v0.9: populateTomSelect restores a pending teacher silently (no
-    // onChange), so the required-field gate and the previous Next Steps are
-    // both re-read here, once the staff list has landed. Without this an
-    // edited record whose options arrive AFTER the record leaves Save changes
-    // and Close Lap dead.
+    // onChange), so the required-field gate and the teacher status (strip +
+    // Next Steps) are both re-read here, once the staff list has landed.
+    // Without this an edited record whose options arrive AFTER the record
+    // leaves Save changes and Close Lap dead.
     updateSubmitState();
-    refreshPrevNextSteps();
+    refreshTeacherStatus();
   }
 
   async function loadDropdownOptions() {
