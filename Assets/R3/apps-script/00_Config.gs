@@ -182,7 +182,7 @@ function getTabWithFallback(ss, preferred, fallback) {
 }
 
 /**
- * Column layout for the OTP Submissions tab (33 columns).
+ * Column layout for the OTP Submissions tab (40 columns).
  *
  * Order is load-bearing once the header row is written (hard rule 1). To add
  * columns, append at the end. Never reorder or insert in the middle.
@@ -227,7 +227,10 @@ function getOtpColumns() {
     // 05_Supabase.gs). Set once at submit and never touched again by an
     // update/close (handleOtpUpdateOrClose, 01_doPost.gs), except status and
     // closed_at, which close sets. Append-only, per the rule above.
-    'status', 'closed_at', 'lap', 'round'
+    'status', 'closed_at', 'lap', 'round',
+    // otp-v0.11: successful submission recipients are stamped separately.
+    // These server-owned fields are append-only and never copied from a post.
+    'coach_emailed_at', 'teacher_emailed_at'
   ];
 }
 

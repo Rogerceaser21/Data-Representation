@@ -26,6 +26,7 @@
 
 const OTP_MIRROR_RPC_UNMIRRORED = '/rest/v1/rpc/otp_unmirrored';
 const OTP_MIRROR_RPC_MARK       = '/rest/v1/rpc/mark_otp_mirrored';
+const OTP_MIRROR_RPC_STAMP      = '/rest/v1/rpc/stamp_otp_emailed';
 const OTP_MIRROR_RPC_RECORD     = '/rest/v1/rpc/otp_record_for_mirror';
 const OTP_HEAL_TRIGGER_HANDLER  = 'healOtpMirror';
 const OTP_HEAL_OLDER_THAN_S     = 120;
@@ -109,15 +110,37 @@ function mirrorOtpRecord_(ss, sheet, record, opts) {
   if (found.rowIdx < 0) {
     sheet.appendRow(rowValues);
     out.appended = true;
+    var submissionMail = { sent: false, coachIncluded: false };
+    var coachStamp = '';
     try {
-      sendOtpSubmissionEmail(ss, record.record_id, token, record.submitted_at, record);
+      submissionMail = sendOtpSubmissionEmail(ss, record.record_id, token, record.submitted_at, record);
+      if (submissionMail && submissionMail.sent && submissionMail.coachIncluded) coachStamp = new Date().toISOString();
     } catch (mailErr) {
       Logger.log('OTP mirror: submission email failed for ' + record.record_id + ': ' + mailErr.message);
     }
+    var teacherMail = false;
+    var teacherStamp = '';
     try {
-      sendOtpTeacherEmail(ss, record.record_id, token, record.submitted_at, record);
+      teacherMail = sendOtpTeacherEmail(ss, record.record_id, token, record.submitted_at, record);
+      if (teacherMail) teacherStamp = new Date().toISOString();
     } catch (mailErr) {
       Logger.log('OTP mirror: teacher email failed for ' + record.record_id + ': ' + mailErr.message);
+    }
+    try {
+      const stampStart = headers.indexOf('coach_emailed_at') + 1;
+      if (stampStart > 0) {
+        sheet.getRange(sheet.getLastRow(), stampStart, 1, 2).setValues([[
+          coachStamp || otpCellValue_(record, 'coach_emailed_at'),
+          teacherStamp || otpCellValue_(record, 'teacher_emailed_at')
+        ]]);
+      }
+    } catch (stampErr) {
+      Logger.log('OTP mirror: Sheet email stamp failed for ' + record.record_id + ': ' + stampErr.message);
+    }
+    try {
+      stampOtpEmailed_(token, coachStamp, teacherStamp);
+    } catch (stampErr) {
+      Logger.log('OTP mirror: Supabase email stamp failed for ' + record.record_id + ': ' + stampErr.message);
     }
     if (isClosed) out.closedNow = true;   // submitted and closed before its first mirror landed
   } else {
@@ -131,6 +154,13 @@ function mirrorOtpRecord_(ss, sheet, record, opts) {
       out.skipped = true;
       return out;
     }
+    ['coach_emailed_at', 'teacher_emailed_at'].forEach(function(stamp) {
+      const col = headers.indexOf(stamp);
+      const liveCol = found.headers.indexOf(stamp);
+      if (col > -1 && liveCol > -1 && String(found.values[found.rowIdx][liveCol] || '').trim() && !String(rowValues[col] || '').trim()) {
+        rowValues[col] = found.values[found.rowIdx][liveCol];
+      }
+    });
     sheet.getRange(found.rowIdx + 1, 1, 1, headers.length).setValues([rowValues]);
     out.updated = true;
     if (!wasClosed && isClosed) out.closedNow = true;
@@ -221,6 +251,34 @@ function markOtpMirrored_(token, pendingSince) {
   var out = {};
   try { out = JSON.parse(resp.getContentText()); } catch (e) {}
   return !!(out && out.success && out.marked > 0);
+}
+
+/** Stamp successful OTP email recipients without changing mirror state. */
+function stampOtpEmailed_(token, coachAt, teacherAt) {
+  const secret = getSupabaseSecret();
+  if (!secret) { Logger.log('OTP mirror: SUPABASE_SECRET_KEY not set, cannot stamp email'); return false; }
+  try {
+    const resp = UrlFetchApp.fetch(SUPABASE_URL + OTP_MIRROR_RPC_STAMP, {
+      method: 'post',
+      contentType: 'application/json',
+      headers: { 'apikey': secret, 'Authorization': 'Bearer ' + secret },
+      payload: JSON.stringify({ p_token: token, p_coach_at: coachAt || null, p_teacher_at: teacherAt || null }),
+      muteHttpExceptions: true
+    });
+    if (resp.getResponseCode() !== 200) {
+      Logger.log('OTP mirror: stamp_otp_emailed HTTP ' + resp.getResponseCode() + ': ' + resp.getContentText());
+      return false;
+    }
+    const out = JSON.parse(resp.getContentText());
+    if (!out || Number(out.stamped) === 0) {
+      Logger.log('OTP mirror: stamp_otp_emailed miss for ' + token);
+      return false;
+    }
+    return true;
+  } catch (e) {
+    Logger.log('OTP mirror: stamp_otp_emailed failed for ' + token + ': ' + e.message);
+    return false;
+  }
 }
 
 /** doPost route for { form:'otp', action:'mirror', record, pending_since }. */

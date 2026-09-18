@@ -374,18 +374,30 @@ function handleOtpPost(data) {
   // the same lock); the token is re-checked under the lock so a mirror that
   // landed meanwhile is never appended a second time.
   const lock = LockService.getScriptLock();
+  var appendedRow;
   lock.waitLock(30000);
   try {
+    // The release switch closes the stale-tab fallback bypass. Keep this
+    // check and the append under one lock so a concurrent writer cannot add a
+    // second open observation in between.
+    if (PropertiesService.getScriptProperties().getProperty('OTP_BLOCK_OPEN_REQUIRED') === 'true') {
+      const open = findOpenOtpObservation_(sheet, data.teacher, data.round, recordToken);
+      if (open) return jsonOut({ success: false, error: 'open_observation', lap: open.lap, id: open.id });
+    }
     if (otpTokenOk_(data.record_token) && findOtpRowByToken_(sheet, recordToken).rowIdx > -1) {
       return jsonOut({ success: true, id: recordId, duplicate: true });
     }
     sheet.appendRow(columns.map(function(col) { return record[col]; }));
+    appendedRow = sheet.getLastRow();
   } finally {
     lock.releaseLock();
   }
 
+  var submissionMail = { sent: false, coachIncluded: false };
+  var coachStamp = '';
   try {
-    sendOtpSubmissionEmail(ss, recordId, recordToken, submittedAt, data);
+    submissionMail = sendOtpSubmissionEmail(ss, recordId, recordToken, submittedAt, data);
+    if (submissionMail && submissionMail.sent && submissionMail.coachIncluded) coachStamp = new Date().toISOString();
   } catch (mailErr) {
     Logger.log('OTP email send failed for ' + recordId + ': ' + mailErr.message);
   }
@@ -393,16 +405,37 @@ function handleOtpPost(data) {
   // otp-v0.9: a plain-language copy to the teacher themselves (no edit link,
   // no rating, no rubric state). Silent when their Teachers 26-27 row carries
   // no email (hard rule 12).
+  var teacherMail = false;
+  var teacherStamp = '';
   try {
-    sendOtpTeacherEmail(ss, recordId, recordToken, submittedAt, data);
+    teacherMail = sendOtpTeacherEmail(ss, recordId, recordToken, submittedAt, data);
+    if (teacherMail) teacherStamp = new Date().toISOString();
   } catch (mailErr) {
     Logger.log('OTP teacher email failed for ' + recordId + ': ' + mailErr.message);
   }
 
   try {
-    pushOtpToSupabase(columns, data, recordId, recordToken, submittedAt);
+    const stampStart = columns.indexOf('coach_emailed_at') + 1;
+    if (stampStart > 0 && appendedRow) {
+      sheet.getRange(appendedRow, stampStart, 1, 2).setValues([[coachStamp, teacherStamp]]);
+    }
+  } catch (stampErr) {
+    Logger.log('OTP Sheet email stamp failed for ' + recordId + ': ' + stampErr.message);
+  }
+
+  var pushed = false;
+  try {
+    pushed = pushOtpToSupabase(columns, data, recordId, recordToken, submittedAt);
   } catch (sbErr) {
     Logger.log('Supabase OTP dual-write failed for ' + recordId + ': ' + sbErr.message);
+  }
+
+  if (pushed) {
+    try {
+      stampOtpEmailed_(recordToken, coachStamp, teacherStamp);
+    } catch (stampErr) {
+      Logger.log('Supabase OTP email stamp failed for ' + recordId + ': ' + stampErr.message);
+    }
   }
 
   return jsonOut({ success: true, id: recordId });
@@ -425,6 +458,43 @@ function computeOtpLap(sheet, teacherName) {
     if (String(values[r][teacherCol] || '').trim().toLowerCase() === want) count++;
   }
   return count + 1;
+}
+
+/**
+ * Finds another open OTP row for the same teacher in the current round. When
+ * the current-round lookup is unavailable, the newest non-blank Sheet round
+ * is the local fallback; rows with a blank round still count as current.
+ */
+function findOpenOtpObservation_(sheet, teacherName, currentRound, recordToken) {
+  const want = String(teacherName || '').trim().toLowerCase();
+  if (!want || sheet.getLastRow() < 2) return null;
+  const values = sheet.getDataRange().getValues();
+  const headers = values[0];
+  const teacherCol = headers.indexOf('teacher');
+  const statusCol = headers.indexOf('status');
+  const tokenCol = headers.indexOf('record_token');
+  const roundCol = headers.indexOf('round');
+  const lapCol = headers.indexOf('lap');
+  const idCol = headers.indexOf('record_id');
+  let round = String(currentRound || '').trim();
+  if (!round && roundCol > -1) {
+    for (var newest = values.length - 1; newest > 0; newest--) {
+      const candidate = String(values[newest][roundCol] || '').trim();
+      if (candidate) { round = candidate; break; }
+    }
+  }
+  if (teacherCol < 0 || tokenCol < 0) return null;
+  var other = null;
+  for (var r = 1; r < values.length; r++) {
+    const row = values[r];
+    if (String(row[teacherCol] || '').trim().toLowerCase() !== want) continue;
+    if (String(row[tokenCol] || '').trim() === String(recordToken || '').trim()) return null;
+    if (statusCol > -1 && String(row[statusCol] || '').trim() === 'closed') continue;
+    const rowRound = roundCol > -1 ? String(row[roundCol] || '').trim() : '';
+    if (round && rowRound && rowRound !== round) continue;
+    if (!other) other = { lap: lapCol > -1 ? row[lapCol] : '', id: idCol > -1 ? row[idCol] : '' };
+  }
+  return other;
 }
 
 /**
@@ -476,7 +546,7 @@ function handleOtpUpdateOrCloseLocked_(ss, sheet, data) {
   while (values[rowIdx].length < headers.length) values[rowIdx].push('');
 
   const isClose = data.action === 'close';
-  const LOCKED = { record_id: true, submitted_at: true, record_token: true, lap: true, round: true };
+  const LOCKED = { record_id: true, submitted_at: true, record_token: true, lap: true, round: true, coach_emailed_at: true, teacher_emailed_at: true };
 
   headers.forEach(function(h, c) {
     if (LOCKED[h]) return;
@@ -566,6 +636,7 @@ function buildOtpRecord(columns, data, recordId, recordToken, submittedAt) {
     else if (col === 'observer') record[col] = data.inspector || data.observer || '';
     else if (col === 'observation_date') record[col] = data.date || data.observation_date || '';
     else if (col === 'record_token') record[col] = recordToken;
+    else if (col === 'coach_emailed_at' || col === 'teacher_emailed_at') record[col] = '';
     else if (col === 'school') record[col] = schoolForGrade(data.grade) || (data[col] != null ? data[col] : '');
     else record[col] = data[col] != null ? data[col] : '';
   });
@@ -629,6 +700,7 @@ function sendOtpSubmissionEmail(ss, recordId, recordToken, submittedAt, data) {
   }
 
   MailApp.sendEmail(opts);
+  return { sent: true, coachIncluded: !!opts.cc };
 }
 
 /**
@@ -640,7 +712,7 @@ function sendOtpSubmissionEmail(ss, recordId, recordToken, submittedAt, data) {
  */
 function sendOtpTeacherEmail(ss, recordId, recordToken, submittedAt, data) {
   const teacherEmail = lookupOtpTeacherEmail(ss, data.teacher);
-  if (!teacherEmail || teacherEmail.indexOf('@') < 0) return;
+  if (!teacherEmail || teacherEmail.indexOf('@') < 0) return false;
 
   const viewUrl = RECORD_VIEWER_URL_OTP + '?token=' + encodeURIComponent(recordToken);
   const observerName = String(data.inspector || data.observer || 'Your observer').trim();
@@ -663,6 +735,7 @@ function sendOtpTeacherEmail(ss, recordId, recordToken, submittedAt, data) {
     htmlBody: '<div style="font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;color:#143642;font-size:14px;line-height:1.5;">' + body + '</div>',
     name: 'AIS OTP Progress'
   });
+  return true;
 }
 
 /**

@@ -63,7 +63,7 @@ function pushToSupabase(columns, data, recordId, recordToken, submittedAt) {
  */
 function pushOtpToSupabase(columns, data, recordId, recordToken, submittedAt) {
   const record = buildOtpRecord(columns, data, recordId, recordToken, submittedAt);
-  postOtpRecordToSupabase(record);
+  return postOtpRecordToSupabase(record);
 }
 
 /**
@@ -75,7 +75,7 @@ function pushOtpToSupabase(columns, data, recordId, recordToken, submittedAt) {
  * unchanged, still used only by the submit path.
  */
 function pushOtpRowToSupabase(record) {
-  postOtpRecordToSupabase(record);
+  return postOtpRecordToSupabase(record);
 }
 
 /**
@@ -87,7 +87,7 @@ function postOtpRecordToSupabase(record) {
   const secret = getSupabaseSecret();
   if (!secret) {
     Logger.log('Supabase OTP dual-write skipped: SUPABASE_SECRET_KEY not set in Script Properties');
-    return;
+    return false;
   }
 
   const resp = UrlFetchApp.fetch(SUPABASE_URL + INGEST_RPC_PATH_OTP, {
@@ -104,9 +104,17 @@ function postOtpRecordToSupabase(record) {
   const code = resp.getResponseCode();
   if (code < 200 || code >= 300) {
     Logger.log('Supabase ingest_otp HTTP ' + code + ' for ' + record.record_id + ': ' + resp.getContentText());
-    return;
+    return false;
   }
+  try {
+    const out = JSON.parse(resp.getContentText());
+    if (out && out.success === false) {
+      Logger.log('Supabase ingest_otp rejected ' + record.record_id + ': ' + resp.getContentText());
+      return false;
+    }
+  } catch (e) {}
   Logger.log('Supabase ingest_otp ok for ' + record.record_id + ': ' + resp.getContentText());
+  return true;
 }
 
 /**
