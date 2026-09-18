@@ -124,7 +124,8 @@ the email naming sweep (task 8) are separate, later nodes.
   locked banner, the Close Lap confirm dialog, the closed toast, the sticky
   open-observation notice, the Close Lap button's tooltip). The button
   itself stays "Close Lap"; stored field names, payload keys, Sheet
-  columns, function names and email text are untouched.
+  columns and function names are untouched, while email labels use
+  "Observation N".
 - **Specs:** 13 new otp-v0.11 specs (Chromium + WebKit) cover the four
   worked examples, above-Tenth card 1 wording, the grey state, a dead
   `get_teacher_lap_state` (Save & Lock still works), a late answer for a

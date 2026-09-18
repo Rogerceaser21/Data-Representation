@@ -596,12 +596,12 @@ section('(a) OTP submission · row + email + Supabase mirror');
   ok(!dump.sheets['Submissions'], 'the R3 Submissions tab was never touched by an OTP post');
   eqJson(out, { success: true, id: row[idx('record_id')] }, 'response is { success:true, id } exactly like R3');
 
-  // otp-v0.9: submit now sends TWO emails — the backup (A, with Lap N and an
+  // otp-v0.9: submit now sends TWO emails — the backup (A, with Observation N and an
   // edit link) and the teacher's own copy (B, view link only). 'Jo Mare
   // Kruger' has an email seeded in Teachers 26-27, so both fire.
   ok(dump.mail.length === 2, 'submit sends the backup email AND the teacher email (otp-v0.9)', 'count: ' + dump.mail.length);
   const mail = dump.mail[0] || {};
-  ok(mail.subject === 'AIS OTP Progress · Lap 1 · Jo Mare Kruger · 2026-09-02', 'email A subject carries Lap 1 (otp-v0.9)', 'got: ' + mail.subject);
+  ok(mail.subject === 'AIS OTP Progress · Observation 1 · Jo Mare Kruger · 2026-09-02', 'email A subject carries Observation 1 (otp-v0.9)', 'got: ' + mail.subject);
   ok(mail.to === 'admin.user@ais.ae', 'email A goes to the backup mailbox', 'got: ' + mail.to);
   ok(mail.cc === 'dave.richards2627@ais.ae', 'observer CC resolved over the OTP Coaches 26-27 tab', 'got: ' + mail.cc);
   const viewerLink = 'https://rogerceaser21.github.io/Data-Representation/Assets/OTP/otp-record.html?token=' + row[idx('record_token')];
@@ -611,7 +611,7 @@ section('(a) OTP submission · row + email + Supabase mirror');
 
   const mailB = dump.mail[1] || {};
   ok(mailB.to === 'jo.marekruger@ais.ae', 'email B goes to the teacher (otp-v0.9)', 'got: ' + mailB.to);
-  ok(mailB.subject === 'Your OTP Progress observation · Lap 1 · 2026-09-02', 'email B subject carries Lap 1 (otp-v0.9)', 'got: ' + mailB.subject);
+  ok(mailB.subject === 'Your OTP Progress observation · Observation 1 · 2026-09-02', 'email B subject carries Observation 1 (otp-v0.9)', 'got: ' + mailB.subject);
   ok(String(mailB.htmlBody).indexOf(viewerLink) > -1, 'email B carries the view link (otp-v0.9)', 'looked for: ' + viewerLink);
   ok(String(mailB.htmlBody).indexOf('?edit=') < 0, 'email B never carries an edit link (otp-v0.9)');
   ok(!mailB.cc, 'email B has no CC (teacher only)', 'got: ' + JSON.stringify(mailB.cc));
@@ -1149,7 +1149,7 @@ section('(k) otp-v0.9 · close sets status closed + closed_at and sends email C 
   const emailC = mail[2];
   const viewUrl = 'https://rogerceaser21.github.io/Data-Representation/Assets/OTP/otp-record.html?token=' + token;
   ok(emailC.to === 'jo.marekruger@ais.ae', 'email C goes to the teacher', 'got: ' + emailC.to);
-  ok(emailC.subject === 'OTP Progress · Lap 1 closed · Jo Mare Kruger · 2026-09-02', 'email C subject names the closed lap', 'got: ' + emailC.subject);
+  ok(emailC.subject === 'OTP Progress · Observation 1 closed · Jo Mare Kruger · 2026-09-02', 'email C subject names the closed observation', 'got: ' + emailC.subject);
   ok(String(emailC.htmlBody).indexOf('1. ' + closePayload.next_step_1) > -1 &&
      String(emailC.htmlBody).indexOf('2. ' + closePayload.next_step_2) > -1 &&
      String(emailC.htmlBody).indexOf('3. ' + closePayload.next_step_3) > -1,

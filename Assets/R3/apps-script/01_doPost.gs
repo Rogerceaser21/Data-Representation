@@ -675,7 +675,7 @@ function sendOtpSubmissionEmail(ss, recordId, recordToken, submittedAt, data) {
 
   const teacherName = String(data.teacher || '(no teacher)').trim();
   const obsDate = String(data.date || data.observation_date || '').trim();
-  const subject = 'AIS OTP Progress · Lap ' + data.lap + ' · ' + teacherName + ' · ' + obsDate;
+  const subject = 'AIS OTP Progress · Observation ' + data.lap + ' · ' + teacherName + ' · ' + obsDate;
 
   const htmlBody = buildOtpSubmissionHtml(recordId, lockedUrl, editUrl, submittedAt, data);
 
@@ -717,7 +717,7 @@ function sendOtpTeacherEmail(ss, recordId, recordToken, submittedAt, data) {
   const viewUrl = RECORD_VIEWER_URL_OTP + '?token=' + encodeURIComponent(recordToken);
   const observerName = String(data.inspector || data.observer || 'Your observer').trim();
   const obsDate = String(data.date || data.observation_date || '').trim();
-  const subject = 'Your OTP Progress observation · Lap ' + data.lap + ' · ' + obsDate;
+  const subject = 'Your OTP Progress observation · Observation ' + data.lap + ' · ' + obsDate;
 
   // The link is a real anchor with the URL as its text: a bare URL followed
   // by a full stop can be auto-linked WITH the stop, which breaks the token.
@@ -752,7 +752,7 @@ function sendOtpCloseEmail(ss, record) {
   const observerName = String(record.observer || 'your observer').trim();
   const teacherName = String(record.teacher || '(no teacher)').trim();
   const obsDate = String(record.observation_date || '').trim();
-  const subject = 'OTP Progress · Lap ' + record.lap + ' closed · ' + teacherName + ' · ' + obsDate;
+  const subject = 'OTP Progress · Observation ' + record.lap + ' closed · ' + teacherName + ' · ' + obsDate;
 
   const closedDate = formatStampSafe(record.closed_at);
   const s1 = String(record.next_step_1 || '').trim();
@@ -764,7 +764,7 @@ function sendOtpCloseEmail(ss, record) {
     return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   };
   const link = '<a href="' + esc(viewUrl) + '" style="color:#143642;font-weight:700;text-decoration:underline;">' + esc(viewUrl) + '</a>';
-  const body = '<p style="margin:0 0 12px;">Lap ' + esc(record.lap) + ' was closed on ' + esc(closedDate) + '.</p>' +
+  const body = '<p style="margin:0 0 12px;">Observation ' + esc(record.lap) + ' was closed on ' + esc(closedDate) + '.</p>' +
                '<p style="margin:0 0 6px;">Next Steps agreed with ' + esc(observerName) + ':</p>' +
                '<div style="margin:0 0 4px 12px;">1. ' + esc(s1) + '</div>' +
                '<div style="margin:0 0 4px 12px;">2. ' + esc(s2) + '</div>' +
