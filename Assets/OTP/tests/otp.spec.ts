@@ -1298,7 +1298,11 @@ test('submit posts exactly the CONTRACT keys with form="otp" and rubric_version=
   // otp-v0.10: the form mints the record_token itself (transport identity, like
   // `action` on the edit path); the §2 contract keys are unchanged around it.
   expect(body.record_token).toMatch(/^[0-9a-f]{32}$/);
-  const contractKeys = Object.keys(body).filter((k) => k !== 'record_token');
+  // otp-v0.11 Part C.1: enforce_open_block is a transport flag like
+  // record_token/action, never stored in content (the server strips it), so
+  // it sits outside the §2 contract the same way.
+  expect(body.enforce_open_block).toBe('true');
+  const contractKeys = Object.keys(body).filter((k) => k !== 'record_token' && k !== 'enforce_open_block');
   expect(contractKeys.sort()).toEqual(CONTRACT_KEYS);
   expect(contractKeys).toHaveLength(32);   // §2 list, counted not assumed (otp-v0.8: + time_out)
   expect(body.form).toBe('otp');
@@ -2404,11 +2408,14 @@ test('otp-v0.9: Save changes posts action "update" with the record_token and all
   const body = h.posts[0];
   expect(body.action).toBe('update');
   expect(body.record_token).toBe(EDIT_TOKEN_FIXTURE);
-  // the submit contract, unchanged: the SAME 32 keys, plus action + record_token
-  const contract = Object.keys(body).filter((k) => k !== 'action' && k !== 'record_token');
+  // CNL-001 (otp-v0.11 fix round 1): every write, including update, now
+  // carries this transport flag too (plan 3.6), same treatment as action/record_token.
+  expect(body.enforce_open_block).toBe('true');
+  // the submit contract, unchanged: the SAME 32 keys, plus action + record_token + enforce_open_block
+  const contract = Object.keys(body).filter((k) => k !== 'action' && k !== 'record_token' && k !== 'enforce_open_block');
   expect(contract.sort()).toEqual(CONTRACT_KEYS);
   expect(contract).toHaveLength(32);
-  expect(Object.keys(body)).toHaveLength(34);
+  expect(Object.keys(body)).toHaveLength(35);
   expect(body.form).toBe('otp');
   expect(body.teacher).toBe('Test Teacher');
   expect(body.inspector).toBe('Test Observer');
@@ -2446,7 +2453,9 @@ test('otp-v0.9: Close Lap, confirmed, posts "close", locks the form and the bann
   expect(h.posts).toHaveLength(1);
   expect(h.posts[0].action).toBe('close');
   expect(h.posts[0].record_token).toBe(EDIT_TOKEN_FIXTURE);
-  expect(Object.keys(h.posts[0])).toHaveLength(34);
+  // CNL-001 (otp-v0.11 fix round 1): close also carries enforce_open_block now.
+  expect(h.posts[0].enforce_open_block).toBe('true');
+  expect(Object.keys(h.posts[0])).toHaveLength(35);
 
   const banner = await bannerText(page);
   expect(banner).toMatch(dayRe('Observation 1 · closed ', '2026-09-11T09:30:00.000Z'));
@@ -3305,24 +3314,56 @@ test('otp-v0.11: the status strip is absent in the ungated teacher viewer', asyn
   expect(h.errors).toEqual([]);
 });
 
-test('otp-v0.11: the Continue button carries ?edit= and its token appears nowhere else in the DOM', async ({ page }) => {
-  const h = await harness(page);
+test('otp-v0.11 task 7: Continue is a button (never a link), and its token never appears in the DOM', async ({ page }) => {
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
   await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
   await openForm(page);
   await pickTomSelect(page, 'teacher', 'Test Teacher');
   const btn = page.locator('#strip-continue');
   await expect(btn).toBeVisible({ timeout: 10_000 });
   await expect(btn).toHaveText('Continue Observation 2');
+  expect(await btn.evaluate((el) => el.tagName)).toBe('BUTTON');
+  expect(await btn.evaluate((el) => el.hasAttribute('href'))).toBe(false);
   const token = LAP_STATE_OPEN_WITH_OWN_STEPS.open.record_token;
-  await expect(btn).toHaveAttribute('href', `?edit=${token}`);
-  const tokenCount = await page.evaluate(
+  const tokenCount = () => page.evaluate(
     (t) => document.documentElement.outerHTML.split(t).length - 1, token,
   );
-  expect(tokenCount, 'the token appears more than once in the DOM').toBe(1);
+  expect(await tokenCount(), 'the token must never appear in the DOM').toBe(0);
 
   await btn.click();
-  await expect(page).toHaveURL(new RegExp(`\\?edit=${token}$`));
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 15_000 });
+  expect(await tokenCount(), 'the token must never appear in the DOM, even mid-edit').toBe(0);
   expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.11 task 7 (2.2.2 / 2.2.7): Continue loads the SAME state a matching ?edit= link would, with no page navigation', async ({ page }) => {
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
+  await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
+  await openForm(page);
+  const startUrl = page.url();
+  await page.evaluate(() => { (window as any).__navMarker = 'still here'; });
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await page.locator('#strip-continue').click();
+
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 15_000 });
+  expect(page.url(), 'Continue must never navigate').toBe(startUrl);
+  expect(await page.evaluate(() => (window as any).__navMarker)).toBe('still here');
+  await expect(page.locator('#btn-save-changes')).toBeVisible();
+  await expect(page.locator('#btn-close-lap')).toBeVisible();
+  await expect(page.locator('#btn-submit')).toBeHidden();
+  await expect(page.locator('#btn-reset')).toBeHidden();
+  await expect(page.locator('#observer_comments')).toHaveValue('Record observer comments');
+  expect(await bannerText(page)).toContain('Observation 1 · open');
+
+  // an ?edit= link to the same record lands on the same state
+  const h2 = await harness(page, { record: RECORD_PAYLOAD_OPEN });
+  await openEdit(page);
+  await expect(page.locator('#btn-save-changes')).toBeVisible();
+  await expect(page.locator('#btn-close-lap')).toBeVisible();
+  await expect(page.locator('#observer_comments')).toHaveValue('Record observer comments');
+  expect(await bannerText(page)).toContain('Observation 1 · open');
+  expect(h.errors).toEqual([]);
+  expect(h2.errors).toEqual([]);
 });
 
 test('otp-v0.11: the strip is fully visible with reduced motion and animations forced off', async ({ page }) => {
@@ -3911,6 +3952,24 @@ async function countGoogle(page: Page) {
 const recordSource = (page: Page) =>
   page.evaluate(() => (window as any).__otpReadSource.record);
 
+/** otp-v0.11 fix round 3, Part 2C: after any superseded or failed transition
+ *  the page must be in exactly one of two consistent states, never a mix:
+ *  blank form (EDIT_MODE false, no is-editing, normal buttons) or record
+ *  loaded (EDIT_MODE true, EDIT_RECORD set, edit buttons). Call at the end
+ *  of every race spec (CNL-006, 007, 009, 011, 013 and the sweep specs). */
+async function expectConsistentFormState(page: Page) {
+  const mode = await page.evaluate(() => (window as any).__otpFormMode());
+  expect(mode.editMode).toBe(mode.isEditingClass);
+  expect(mode.editMode).toBe(mode.hasEditRecord);
+  if (mode.editMode) {
+    await expect(page.locator('#btn-save-changes')).toBeVisible();
+    await expect(page.locator('#btn-close-lap')).toBeVisible();
+  } else {
+    await expect(page.locator('#btn-save-changes')).toBeHidden();
+    await expect(page.locator('#btn-close-lap')).toBeHidden();
+  }
+}
+
 /** Tom Select's own disabled state for the three searchables. */
 const searchablesDisabled = (page: Page) =>
   page.evaluate(() =>
@@ -4330,4 +4389,1102 @@ test('otp-v0.10 Phase 3: an uppercase token skips Supabase and reaches Google un
   expect(padImages[0]).toContain(`token=${UPPER}`);
   expect(padImages[0]).toContain('name=observer-comments-1.jpg');
   expect(h.errors).toEqual([]);
+});
+
+/* ============================================================================
+ * otp-v0.11 task 7 · Part A (STRIP-001..003, the three open findings of task 5)
+ * ========================================================================== */
+
+test('otp-v0.11 STRIP-001: switching teacher while a fetch is pending shows no stale line, cards or Continue token', async ({ page }) => {
+  const options = JSON.parse(JSON.stringify(OPTIONS_PAYLOAD));
+  const list = options.options ? options.options.teachers : options.teachers;
+  list.push({ name: 'Second Teacher' });
+  const h = await harness(page, { options });
+  let resolveB: () => void = () => {};
+  await page.route('**/rest/v1/rpc/get_teacher_lap_state', async (r: Route) => {
+    const body = r.request().postDataJSON();
+    if (body.p_teacher === 'Test Teacher') {
+      return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(LAP_STATE_OPEN_WITH_OWN_STEPS) });
+    }
+    await new Promise<void>((res) => { resolveB = res; });
+    await r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(LAP_STATE_NEVER) });
+  });
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await expect(page.locator('#strip-continue')).toBeVisible({ timeout: 10_000 });
+  const token = LAP_STATE_OPEN_WITH_OWN_STEPS.open.record_token;
+
+  await pickTomSelect(page, 'teacher', 'Second Teacher');   // B's answer stalls, released below
+  // during the pending request: no previous line, no previous statuses, no
+  // Continue control, the token nowhere in the DOM
+  await expect(stripLine(page)).toHaveText('Select a teacher');
+  expect(await stripStatuses(page)).toEqual(['', '', '', '', '', '']);
+  await expect(page.locator('#strip-continue')).toBeHidden();
+  const tokenCount = await page.evaluate(
+    (t) => document.documentElement.outerHTML.split(t).length - 1, token,
+  );
+  expect(tokenCount, 'A\'s token must not be in the DOM while B is pending').toBe(0);
+
+  resolveB();
+  await page.waitForTimeout(300);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.11 STRIP-002: right after Save & Lock, the strip shows the observation now open (cards 1 and 4) for the whole locked interval', async ({ page }) => {
+  const h = await harness(page);
+  page.on('dialog', (d) => d.accept());
+  await mockLapState(page, LAP_STATE_STARTING_NEXT);   // this teacher's next_lap is 2
+  await openForm(page);
+  await fillRequired(page);
+  await expect(stripLine(page)).toContainText('now starting Observation 2', { timeout: 10_000 });
+  // the Google fallback answers with no lap at all; STRIP-002 must still name
+  // the right one from the cached get_teacher_lap_state read above.
+  await page.route(EDGE_FN, (r: Route) =>
+    r.fulfill({ status: 500, contentType: 'application/json', body: JSON.stringify({ success: false, error: 'write failed' }) }));
+  await page.locator('#btn-submit').click();
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 15_000 });
+  const statuses = await stripStatuses(page);
+  expect(statuses[0], 'card 1 Completed').toBe('Completed');
+  expect(statuses[3], 'card 4 Current').toBe('Current');
+  await expect(stripLine(page)).toContainText('Observation 2 · open since');
+  await page.waitForTimeout(1500);   // still well inside the 3 s locked interval
+  const statusesLater = await stripStatuses(page);
+  expect(statusesLater[0]).toBe('Completed');
+  expect(statusesLater[3]).toBe('Current');
+  expect(h.errors.filter((e) => !/status of 500/.test(e))).toEqual([]);
+});
+
+test.describe('otp-v0.11 STRIP-003: date-only values read as their own calendar day, never the day before', () => {
+  test.use({ timezoneId: 'America/Los_Angeles' });
+
+  test('a west-of-UTC browser shows the correct day, spelled "Sep" not "Sept"', async ({ page }) => {
+    const h = await harness(page);
+    await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);   // open.observation_date = '2026-09-16'
+    await openForm(page);
+    await pickTomSelect(page, 'teacher', 'Test Teacher');
+    await expect(stripLine(page)).toContainText('16 Sep 2026', { timeout: 10_000 });
+    expect(h.errors).toEqual([]);
+  });
+});
+
+/* ============================================================================
+ * otp-v0.11 task 7 · Part B (plan 2.2, continue and close with no reload) and
+ * Part C (plan 3.6, definitive answers)
+ * ========================================================================== */
+
+test('otp-v0.11 plan 2.2 point 1: a teacher with an open observation shows worked example 2 with a Continue button', async ({ page }) => {
+  const h = await harness(page);
+  await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await expect(page.locator('#strip-continue')).toHaveText('Continue Observation 2', { timeout: 10_000 });
+  await expect(stripLine(page)).toContainText('Observation 2 · open since');
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.11 plan 2.2 point 2: Continue fills the form exactly as ?edit= does and swaps the bottom buttons', async ({ page }) => {
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
+  await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
+  await openForm(page);
+  await expect(page.locator('#btn-reset')).toBeVisible();
+  await expect(page.locator('#btn-submit')).toBeVisible();
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await page.locator('#strip-continue').click();
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 15_000 });
+  await expect(page.locator('#btn-reset')).toBeHidden();
+  await expect(page.locator('#btn-submit')).toBeHidden();
+  await expect(page.locator('#btn-save-changes')).toBeVisible();
+  await expect(page.locator('#btn-close-lap')).toBeVisible();
+  await expect(page.locator('#next_step_3')).toHaveValue('Record next step three');
+  await expect(page.locator('#room_number')).toHaveValue('12B');
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.11 plan 2.2 point 3: Close Lap after Continue locks the record and shows worked example 4', async ({ page }) => {
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
+  await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
+  page.on('dialog', (d) => d.accept());
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await page.locator('#strip-continue').click();
+  await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
+  await page.locator('#btn-close-lap').click();
+  await expect(page.locator('#otp-form')).toHaveClass(/is-locked/, { timeout: 15_000 });
+  expect(await stripStatuses(page)).toEqual(
+    ['Completed', 'Coming soon', 'Completed', 'Completed', 'Coming soon', 'Completed']);
+  await expect(stripLine(page)).toContainText('completed');
+  expect(h.posts.filter((p) => p.action === 'close')).toHaveLength(1);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.11 plan 2.2 point 4 / R7: Save & Lock stays grey while the teacher has an open observation, and names it exactly on tap', async ({ page }) => {
+  const h = await harness(page);
+  page.on('dialog', (d) => d.accept());
+  await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);   // lap 2 open
+  await openForm(page);
+  await fillRequired(page);
+  await expect(page.locator('#btn-submit')).toHaveClass(/disabled/, { timeout: 10_000 });
+  await expect(page.locator('#btn-submit')).toHaveAttribute('aria-disabled', 'true');
+  await tapCentre(page, '#btn-submit');
+  await expect(page.locator('#toast')).toHaveText('Observation 2 is still open. Continue it, or close it first.');
+  expect(h.posts, 'no override: nothing was ever posted').toHaveLength(0);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.11 plan 2.2 point 5: typed content on the blank form is asked about before Continue, and stays saved as the draft', async ({ page }) => {
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
+  await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await page.fill('#observer_comments', 'typed before continuing');
+  await page.waitForTimeout(400);   // past the 220 ms autosave debounce
+
+  // decline: Continue is aborted, nothing changes
+  let lastDialogMsg = '';
+  page.once('dialog', (d) => { lastDialogMsg = d.message(); d.dismiss(); });
+  await page.locator('#strip-continue').click();
+  await page.waitForTimeout(300);
+  expect(lastDialogMsg).toBe('Save what you have typed as your draft and continue this observation?');
+  await expect(page.locator('#btn-close-lap')).toBeHidden();
+  await expect(page.locator('#observer_comments')).toHaveValue('typed before continuing');
+
+  // accept: Continue proceeds, and the typed text stays saved as the draft
+  page.once('dialog', (d) => d.accept());
+  await page.locator('#strip-continue').click();
+  await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
+  const saved = await page.evaluate((k) => JSON.parse(localStorage.getItem(k) || '{}'), DRAFT_KEY);
+  expect(saved.observer_comments).toBe('typed before continuing');
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.11 plan 2.2 point 6: the Teacher-box x, while continuing, returns to the blank new-observation form (draft comes back, plan 3.5.7)', async ({ page }) => {
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
+  await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await page.waitForTimeout(400);   // past the 220 ms autosave: the pick itself is now the draft
+  await page.locator('#strip-continue').click();
+  await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
+
+  await tsControl(page, 'teacher').locator('.clear-button').click();
+  await expect(page.locator('#btn-save-changes')).toBeHidden();
+  await expect(page.locator('#btn-close-lap')).toBeHidden();
+  await expect(page.locator('#btn-reset')).toBeVisible();
+  await expect(page.locator('#btn-submit')).toBeVisible();
+  await expect(page.locator('#submitted-banner')).not.toHaveClass(/is-active/);
+  await expect(page.locator('#observer_comments')).toHaveValue('');
+  await expect(page.locator('#otp-form')).not.toHaveClass(/is-locked/);
+  // plan 3.5.7: the draft comes back, and it already named this teacher (the
+  // pick that revealed Continue in the first place), so the strip correctly
+  // re-reads their live status rather than sitting on a stale grey picture.
+  await expect(tsControl(page, 'teacher')).toContainText('Test Teacher', { timeout: 10_000 });
+  await expect(stripLine(page)).toContainText('Observation 2 · open since', { timeout: 10_000 });
+  await expect(page.locator('#strip-continue')).toBeVisible();
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.11 plan 2.2 point 6 / 3.5.7: with no draft at all, x returns to a genuinely empty grey strip', async ({ page }) => {
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
+  await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await page.locator('#strip-continue').click();
+  await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
+  // wipe the draft that the earlier pick left behind, so this exit has
+  // nothing at all to restore
+  await page.evaluate((k) => localStorage.removeItem(k), DRAFT_KEY);
+
+  await tsControl(page, 'teacher').locator('.clear-button').click();
+  await expect(page.locator('#btn-reset')).toBeVisible();
+  await expect(page.locator('#otp-form')).not.toHaveClass(/is-locked/);
+  await expect(stripLine(page)).toHaveText('Select a teacher');
+  await expect(page.locator('#strip-continue')).toBeHidden();
+  await expect(page.locator('#teacher')).toHaveValue('');
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.11 hard rule 13: a record loaded via Continue or ?edit= never writes the localStorage or Supabase draft', async ({ page }) => {
+  for (const [what, useContinue] of [['Continue', true], ['?edit=', false]] as [string, boolean][]) {
+    const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
+    await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
+    const drafts: string[] = [];
+    await page.route('**/rest/v1/rpc/save_draft', (r: Route) => {
+      drafts.push('save');
+      return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ success: true }) });
+    });
+    await page.route('**/rest/v1/rpc/load_draft', (r: Route) => {
+      drafts.push('load');
+      return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ success: false }) });
+    });
+    if (useContinue) {
+      await openForm(page);
+      await pickTomSelect(page, 'teacher', 'Test Teacher');
+      await page.locator('#strip-continue').click();
+    } else {
+      await openEdit(page);
+    }
+    await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
+    const draftBefore = await page.evaluate((k) => localStorage.getItem(k), DRAFT_KEY);
+    drafts.length = 0;
+    await page.fill('#next_step_1', `edited via ${what}`);
+    await page.waitForTimeout(2600);   // past both the local and the Supabase draft debounce
+    expect(drafts, `${what}: an edited OPEN record must never touch the draft RPCs`).toEqual([]);
+    expect(await page.evaluate((k) => localStorage.getItem(k), DRAFT_KEY), what).toBe(draftBefore);
+    expect(h.errors).toEqual([]);
+  }
+});
+
+test('otp-v0.11 plan 3.5 point 5: Next Steps typed into the blank form do not survive into a continued record whose Next Steps are empty', async ({ page }) => {
+  const openNoSteps = {
+    ...RECORD_PAYLOAD_OPEN,
+    data: { ...RECORD_PAYLOAD_OPEN.data, next_step_1: '', next_step_2: '', next_step_3: '' },
+  };
+  const h = await harness(page, { record: openNoSteps });
+  await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
+  page.on('dialog', (d) => d.accept());
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await page.fill('#next_step_1', 'typed on the blank form, must not survive');
+  await page.locator('#strip-continue').click();
+  await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator('#next_step_1')).toHaveValue('');
+  await expect(page.locator('#next_step_2')).toHaveValue('');
+  await expect(page.locator('#next_step_3')).toHaveValue('');
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.11 plan 3.5 point 2: a draft pull that resolves AFTER Continue changes nothing in the loaded record', async ({ page }) => {
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
+  await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
+  page.on('dialog', (d) => d.accept());
+  let releaseDraftLoad: () => void = () => {};
+  await page.route('**/rest/v1/rpc/load_draft', async (r: Route) => {
+    await new Promise<void>((res) => { releaseDraftLoad = res; });
+    await r.fulfill({ status: 200, contentType: 'application/json',
+      body: JSON.stringify({ success: true, found: true, data: MAC_DRAFT, updated_at: '2026-09-16T12:00:00.000+00:00' }) });
+  });
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await pickTomSelect(page, 'inspector', 'Test Observer');   // triggers pullDraftFromSupabase, held above
+  await page.locator('#strip-continue').click();
+  await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator('#observer_comments')).toHaveValue('Record observer comments');
+
+  releaseDraftLoad();
+  await page.waitForTimeout(500);
+  // the late draft pull must not have overwritten the loaded record
+  await expect(page.locator('#observer_comments')).toHaveValue('Record observer comments');
+  await expect(page.locator('#next_step_1')).toHaveValue('Record next step one');
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.11 plan 3.5 point 2: a pad extraction that resolves AFTER Continue changes nothing in the loaded record', async ({ page }) => {
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
+  await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
+  page.on('dialog', (d) => d.accept());
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+
+  let releaseExtract: () => void = () => {};
+  await page.route('**/script.google.com/**', async (r: Route) => {
+    const req = r.request();
+    if (req.method() === 'POST') {
+      let parsed: any = {};
+      try { parsed = JSON.parse(req.postData() || '{}'); } catch { /* keep empty */ }
+      if (parsed.action === 'extract_pad') {
+        await new Promise<void>((res) => { releaseExtract = res; });
+        return r.fulfill({ status: 200, contentType: 'application/json',
+          body: JSON.stringify({ success: true, items: [{ text: 'late pad transcription' }] }) });
+      }
+    }
+    await r.fallback();
+  });
+
+  await page.locator('.pad-field-btn[data-pad-target="observer_comments"]').click();
+  await expect(page.locator('#pad-modal')).toHaveClass(/open/, { timeout: 10_000 });
+  const stage = await page.locator('#pad-stage').boundingBox();
+  await page.mouse.move(stage!.x + 60, stage!.y + 60);
+  await page.mouse.down();
+  await page.mouse.move(stage!.x + 160, stage!.y + 110, { steps: 8 });
+  await page.mouse.up();
+  await page.locator('#pad-done').click();     // fires the (held) background extraction
+  await expect(page.locator('#pad-modal')).not.toHaveClass(/open/);
+
+  await page.locator('#strip-continue').click();   // Continue before the extraction answers
+  await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator('#observer_comments')).toHaveValue('Record observer comments');
+
+  releaseExtract();
+  await page.waitForTimeout(500);
+  // the late transcription must never land on the loaded record...
+  await expect(page.locator('#observer_comments')).toHaveValue('Record observer comments');
+  // ...it stays with the draft it belongs to instead
+  const draft = await page.evaluate((k) => JSON.parse(localStorage.getItem(k) || '{}'), DRAFT_KEY);
+  expect(draft.observer_comments).toBe('late pad transcription');
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.11 plan 3.5 point 6: teacher A\'s pad image is never shown for teacher B\'s same-named file', async ({ page }) => {
+  const TOKEN_A = LAP_STATE_OPEN_WITH_OWN_STEPS.open.record_token;
+  const TOKEN_B = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+  const recA = { ...RECORD_PAYLOAD_OPEN, pad_files: ['observer-comments-1.jpg'] };
+  const recB = {
+    ...RECORD_PAYLOAD_OPEN,
+    data: { ...RECORD_PAYLOAD_OPEN.data, teacher: 'Second Teacher', observer_comments: 'Second teacher comments' },
+    pad_files: ['observer-comments-1.jpg'],
+  };
+  const options = JSON.parse(JSON.stringify(OPTIONS_PAYLOAD));
+  const list = options.options ? options.options.teachers : options.teachers;
+  list.push({ name: 'Second Teacher' });
+  const h = await harness(page, { options });
+  page.on('dialog', (d) => d.accept());
+
+  const padImageCalls: string[] = [];
+  await page.route('**/script.google.com/**', async (r: Route) => {
+    const req = r.request();
+    const url = req.url();
+    if (req.method() === 'GET' && url.includes('form=otp') && url.includes('token=')) {
+      const isB = url.includes(`token=${TOKEN_B}`);
+      return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(isB ? recB : recA) });
+    }
+    if (url.includes('action=pad_image')) {
+      padImageCalls.push(url);
+      return r.fulfill({ status: 200, contentType: 'application/json',
+        body: JSON.stringify({ success: true, mime: 'image/jpeg', data: ONE_PX_JPEG }) });
+    }
+    await r.fallback();
+  });
+  await page.route('**/rest/v1/rpc/get_teacher_lap_state', async (r: Route) => {
+    const body = r.request().postDataJSON();
+    const answer = body.p_teacher === 'Second Teacher'
+      ? { ...LAP_STATE_OPEN_WITH_OWN_STEPS, open: { ...LAP_STATE_OPEN_WITH_OWN_STEPS.open, record_token: TOKEN_B } }
+      : LAP_STATE_OPEN_WITH_OWN_STEPS;
+    await r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(answer) });
+  });
+
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await page.locator('#strip-continue').click();
+  await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
+  await page.locator('.pad-attach[data-pad-target="observer_comments"]').click();
+  await expect.poll(() => padImageCalls.filter((u) => u.includes(`token=${TOKEN_A}`)).length, { timeout: 15_000 }).toBe(1);
+  await page.locator('#pad-view-close').click();
+
+  // back to blank, then continue teacher B's open record (same pad filename)
+  await tsControl(page, 'teacher').locator('.clear-button').click();
+  await pickTomSelect(page, 'teacher', 'Second Teacher');
+  await page.locator('#strip-continue').click();
+  await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
+  await page.locator('.pad-attach[data-pad-target="observer_comments"]').click();
+  await expect.poll(() => padImageCalls.filter((u) => u.includes(`token=${TOKEN_B}`)).length, { timeout: 15_000 }).toBe(1);
+
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.11 plan 3.5 point 2 (reference-data exemption): a record that arrives before its option lists still ends with Teacher, Observer and Subject filled and the edit buttons enabled', async ({ page }) => {
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
+  const options = await holdOptions(page);
+  await routeEdgeRecord(page, (r) =>
+    r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(edgeRecord(RECORD_PAYLOAD_OPEN)) }),
+  );
+
+  await page.goto(`${FORM_URL}?edit=${EDIT_TOKEN_FIXTURE}`);
+  await passGate(page);
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 15_000 });
+  // the record rendered on its own: the lists are still held at this point
+  expect(await optionKeys(page), 'the lists landed before the record, so the race is untested').toEqual([[], [], []]);
+  await expect(page.locator('#btn-save-changes')).toBeDisabled();
+
+  options.release();
+  await options.landed;
+  await expectListsApplied(page);
+  await expect(tsControl(page, 'teacher')).toContainText('Test Teacher');
+  await expect(tsControl(page, 'inspector')).toContainText('Test Observer');
+  await expect(tsControl(page, 'subject')).toContainText('Mathematics');
+  await expect(page.locator('#btn-save-changes')).toBeEnabled();
+  await expect(page.locator('#btn-close-lap')).toBeEnabled();
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.11 plan 3.6: open_observation on a submit makes no Google request, and the message names the lap from the answer', async ({ page }) => {
+  const h = await harness(page);
+  page.on('dialog', (d) => d.accept());
+  await mockLapState(page, LAP_STATE_STARTING_NEXT);   // the strip's own cache would say lap 2; the answer says 5
+  await openForm(page);
+  await fillRequired(page);
+  let submitPosts = 0;
+  await page.route(EDGE_FN, async (r: Route) => {
+    submitPosts++;
+    await r.fulfill({ status: 200, contentType: 'application/json',
+      body: JSON.stringify({ success: false, error: 'open_observation', lap: 5, id: 'AIS-OTP-OTHER' }) });
+  });
+  let googleSubmit = 0;
+  await page.route('**/script.google.com/**', async (r: Route) => {
+    if (r.request().method() === 'POST') {
+      const parsed = JSON.parse(r.request().postData() || '{}');
+      if (parsed.form === 'otp' && !parsed.action) googleSubmit++;
+    }
+    await r.fallback();
+  });
+  await page.locator('#btn-submit').click();
+  await expect(page.locator('#toast')).toHaveText('Observation 5 is still open. Continue it, or close it first.', { timeout: 10_000 });
+  expect(googleSubmit, 'a business answer must never fall back to Google').toBe(0);
+  expect(submitPosts, 'a definitive business error is not retried').toBe(1);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.11 plan 3.6: already_closed on Save changes makes no Google request, and the message is calm', async ({ page }) => {
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
+  page.on('dialog', (d) => d.accept());
+  await page.route(EDGE_FN, async (r: Route) => {
+    const body = r.request().postDataJSON();
+    if (body.action === 'update') {
+      return r.fulfill({ status: 200, contentType: 'application/json',
+        body: JSON.stringify({ success: false, error: 'already_closed', id: 'AIS-OTP-TEST', status: 'closed', closed_at: '2026-09-11T09:30:00.000Z' }) });
+    }
+    return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ success: true }) });
+  });
+  let googleUpdate = 0;
+  await page.route('**/script.google.com/**', async (r: Route) => {
+    if (r.request().method() === 'POST') {
+      const parsed = JSON.parse(r.request().postData() || '{}');
+      if (parsed.action === 'update') googleUpdate++;
+    }
+    await r.fallback();
+  });
+  await openEdit(page);
+  await page.locator('#btn-save-changes').click();
+  await expect(page.locator('#toast')).toHaveText('This observation was already closed.', { timeout: 10_000 });
+  expect(googleUpdate, 'a business answer must never fall back to Google').toBe(0);
+  expect(h.errors).toEqual([]);
+});
+
+/* ============================================================================
+ * otp-v0.11 task 7 · fix round 1 (GPT-5.6 Terra review, 5 findings)
+ * ========================================================================== */
+
+test('CNL-001: Save changes on a teacher-changing update sends enforce_open_block, and a resulting open_observation answer is calm with no Google fallback', async ({ page }) => {
+  const options = JSON.parse(JSON.stringify(OPTIONS_PAYLOAD));
+  const list = options.options ? options.options.teachers : options.teachers;
+  list.push({ name: 'Second Teacher' });
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN, options });
+  page.on('dialog', (d) => d.accept());
+  const edgePosts: any[] = [];
+  await page.route(EDGE_FN, async (r: Route) => {
+    const body = r.request().postDataJSON();
+    edgePosts.push(body);
+    if (body.action === 'update') {
+      return r.fulfill({ status: 200, contentType: 'application/json',
+        body: JSON.stringify({ success: false, error: 'open_observation', lap: 4, id: 'AIS-OTP-OTHER' }) });
+    }
+    return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ success: true }) });
+  });
+  let googleUpdate = 0;
+  await page.route('**/script.google.com/**', async (r: Route) => {
+    if (r.request().method() === 'POST') {
+      const parsed = JSON.parse(r.request().postData() || '{}');
+      if (parsed.action === 'update') googleUpdate++;
+    }
+    await r.fallback();
+  });
+  await openEdit(page);
+  await pickTomSelect(page, 'teacher', 'Second Teacher');
+  await page.locator('#btn-save-changes').click();
+  await expect(page.locator('#toast')).toHaveText('Observation 4 is still open. Continue it, or close it first.', { timeout: 10_000 });
+  expect(edgePosts.filter((b) => b.action === 'update')).toHaveLength(1);
+  expect(edgePosts[0].enforce_open_block).toBe('true');
+  expect(googleUpdate, 'a business answer must never fall back to Google').toBe(0);
+  expect(h.errors).toEqual([]);
+});
+
+test('CNL-002: typing then clicking Continue at once (no wait) still asks, and the draft holds the typed text', async ({ page }) => {
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
+  await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await page.fill('#observer_comments', 'typed right before continuing, no wait');
+  // no waitForTimeout here: click immediately, inside the 220 ms autosave debounce
+  let dialogMsg = '';
+  page.once('dialog', (d) => { dialogMsg = d.message(); d.accept(); });
+  await page.locator('#strip-continue').click();
+  await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
+  expect(dialogMsg).toBe('Save what you have typed as your draft and continue this observation?');
+  const draft = await page.evaluate((k) => JSON.parse(localStorage.getItem(k) || '{}'), DRAFT_KEY);
+  expect(draft.observer_comments).toBe('typed right before continuing, no wait');
+  expect(h.errors).toEqual([]);
+});
+
+test('CNL-003: after the Teacher-box x from an ?edit= load, a field pencil opens the pad', async ({ page }) => {
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
+  await openEdit(page);
+  await tsControl(page, 'teacher').locator('.clear-button').click();
+  await expect(page.locator('#btn-reset')).toBeVisible();
+  await expect(page.locator('.pad-field-btn[data-pad-target="observer_comments"]')).toBeVisible();
+  await page.locator('.pad-field-btn[data-pad-target="observer_comments"]').click();
+  await expect(page.locator('#pad-modal')).toHaveClass(/open/, { timeout: 10_000 });
+  expect(h.errors).toEqual([]);
+});
+
+test('CNL-004 (i): a late extraction for an ordinary field merges into the draft alongside its existing typed text', async ({ page }) => {
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
+  await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
+  page.on('dialog', (d) => d.accept());
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await page.fill('#observer_comments', 'typed by hand first');
+  await page.waitForTimeout(400);   // past the 220 ms autosave, so the draft already holds it
+
+  let releaseExtract: () => void = () => {};
+  await page.route('**/script.google.com/**', async (r: Route) => {
+    const req = r.request();
+    if (req.method() === 'POST') {
+      let parsed: any = {};
+      try { parsed = JSON.parse(req.postData() || '{}'); } catch { /* keep empty */ }
+      if (parsed.action === 'extract_pad') {
+        await new Promise<void>((res) => { releaseExtract = res; });
+        return r.fulfill({ status: 200, contentType: 'application/json',
+          body: JSON.stringify({ success: true, items: [{ text: 'late pad transcription' }] }) });
+      }
+    }
+    await r.fallback();
+  });
+
+  await page.locator('.pad-field-btn[data-pad-target="observer_comments"]').click();
+  await expect(page.locator('#pad-modal')).toHaveClass(/open/, { timeout: 10_000 });
+  const stage = await page.locator('#pad-stage').boundingBox();
+  await page.mouse.move(stage!.x + 60, stage!.y + 60);
+  await page.mouse.down();
+  await page.mouse.move(stage!.x + 160, stage!.y + 110, { steps: 8 });
+  await page.mouse.up();
+  await page.locator('#pad-done').click();
+  await expect(page.locator('#pad-modal')).not.toHaveClass(/open/);
+
+  await page.locator('#strip-continue').click();
+  await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator('#observer_comments')).toHaveValue('Record observer comments');
+
+  releaseExtract();
+  await page.waitForTimeout(500);
+  await expect(page.locator('#observer_comments')).toHaveValue('Record observer comments');
+  const draft = await page.evaluate((k) => JSON.parse(localStorage.getItem(k) || '{}'), DRAFT_KEY);
+  expect(draft.observer_comments).toBe('typed by hand first\n\nlate pad transcription');
+  expect(h.errors).toEqual([]);
+});
+
+test("CNL-004 (ii): a late criterion-note extraction lands in the draft's sp1_notes, not the loaded record", async ({ page }) => {
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
+  await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
+  page.on('dialog', (d) => d.accept());
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+
+  let releaseExtract: () => void = () => {};
+  await page.route('**/script.google.com/**', async (r: Route) => {
+    const req = r.request();
+    if (req.method() === 'POST') {
+      let parsed: any = {};
+      try { parsed = JSON.parse(req.postData() || '{}'); } catch { /* keep empty */ }
+      if (parsed.action === 'extract_pad') {
+        await new Promise<void>((res) => { releaseExtract = res; });
+        return r.fulfill({ status: 200, contentType: 'application/json',
+          body: JSON.stringify({ success: true, items: [{ text: 'a criterion note from the pad' }] }) });
+      }
+    }
+    await r.fallback();
+  });
+
+  await tapNoteBtn(page, 'good', 3);
+  await expectPop(page, 'open');
+  await notePop(page).locator('.pad-field-btn[data-pad-target="sp1_good_3_note"]').click();
+  await expect(page.locator('#pad-modal')).toHaveClass(/open/, { timeout: 10_000 });
+  const stage = await page.locator('#pad-stage').boundingBox();
+  await page.mouse.move(stage!.x + 60, stage!.y + 60);
+  await page.mouse.down();
+  await page.mouse.move(stage!.x + 160, stage!.y + 110, { steps: 8 });
+  await page.mouse.up();
+  await page.locator('#pad-done').click();
+  await expect(page.locator('#pad-modal')).not.toHaveClass(/open/);
+
+  await page.locator('#strip-continue').click();
+  await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
+  // the loaded record's own notes (Good 3, Great 5) show, untouched
+  await expect(page.locator('#sp1_notes')).toHaveValue(JSON.stringify(RECORD_NOTES));
+
+  releaseExtract();
+  await page.waitForTimeout(500);
+  await expect(page.locator('#sp1_notes')).toHaveValue(JSON.stringify(RECORD_NOTES));
+  const draft = await page.evaluate((k) => JSON.parse(localStorage.getItem(k) || '{}'), DRAFT_KEY);
+  const notes = JSON.parse(draft.sp1_notes || '{}');
+  expect(notes['Good 3']).toBe('a criterion note from the pad');
+  expect(h.errors).toEqual([]);
+});
+
+test('CNL-005: a programmatic click on the hidden #btn-reset, mid-edit, exits to blank with the draft intact (never wipes or deletes it)', async ({ page }) => {
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
+  await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
+  page.on('dialog', (d) => d.accept());
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await page.waitForTimeout(400);   // let the teacher pick land in the draft
+  await page.locator('#strip-continue').click();
+  await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator('#btn-reset')).toBeHidden();   // still hidden, unchanged (no new control)
+
+  await page.locator('#btn-reset').dispatchEvent('click');
+
+  await expect(page.locator('#btn-close-lap')).toBeHidden();
+  await expect(page.locator('#btn-reset')).toBeVisible();
+  await expect(page.locator('#btn-submit')).toBeVisible();
+  await expect(page.locator('#otp-form')).not.toHaveClass(/is-locked/);
+  await expect(tsControl(page, 'teacher')).toContainText('Test Teacher', { timeout: 10_000 });
+  await expect(stripLine(page)).toContainText('Observation 2 · open since', { timeout: 10_000 });
+  const draftKey = await page.evaluate((k) => localStorage.getItem(k), DRAFT_KEY);
+  expect(draftKey, 'the draft must still be present, never deleted').not.toBeNull();
+  expect(h.errors).toEqual([]);
+});
+
+/* ============================================================================
+ * otp-v0.11 task 7 · fix round 2 (GPT-5.6 Terra second review, 4 NEW findings)
+ * All four are the same class: an await inside a mode transition applied
+ * without rechecking the context that started it.
+ * ========================================================================== */
+
+test('CNL-006 (a): Reset during a held-back Continue stops it; the form never enters edit mode and the record is never requested', async ({ page }) => {
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
+  await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
+  page.on('dialog', (d) => d.accept());
+  let releaseSync: () => void = () => {};
+  await page.route('**/rest/v1/rpc/save_draft', async (r: Route) => {
+    await new Promise<void>((res) => { releaseSync = res; });
+    await r.fulfill({ status: 200, contentType: 'application/json',
+      body: JSON.stringify({ success: true, updated_at: '2026-09-18T00:00:00.000+00:00' }) });
+  });
+  const recordGets = await routeEdgeRecord(page, (r) =>
+    r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(edgeRecord(RECORD_PAYLOAD_OPEN)) }));
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await pickTomSelect(page, 'inspector', 'Test Observer');   // so the draft sync actually fires
+  await page.locator('#strip-continue').click();             // held back inside syncDraftToSupabase
+  await page.waitForTimeout(200);
+  await expect(page.locator('body')).not.toHaveClass(/is-editing/);
+
+  await page.locator('#btn-reset').click();                  // confirm auto-accepted above
+  releaseSync();
+  await page.waitForTimeout(500);
+
+  await expect(page.locator('body')).not.toHaveClass(/is-editing/);
+  await expect(page.locator('#btn-save-changes')).toBeHidden();
+  await expect(page.locator('#btn-close-lap')).toBeHidden();
+  await expect(page.locator('#btn-reset')).toBeVisible();
+  expect(recordGets, 'the record must never be requested once Reset stopped Continue').toHaveLength(0);
+  expect(h.errors).toEqual([]);
+  await expectConsistentFormState(page);
+});
+
+test('CNL-006 (b): switching from A to B during a held-back Continue stops it; B is shown and A\'s record is never requested', async ({ page }) => {
+  const options = JSON.parse(JSON.stringify(OPTIONS_PAYLOAD));
+  const list = options.options ? options.options.teachers : options.teachers;
+  list.push({ name: 'Second Teacher' });
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN, options });
+  page.on('dialog', (d) => d.accept());
+  let releaseSync: () => void = () => {};
+  await page.route('**/rest/v1/rpc/save_draft', async (r: Route) => {
+    await new Promise<void>((res) => { releaseSync = res; });
+    await r.fulfill({ status: 200, contentType: 'application/json',
+      body: JSON.stringify({ success: true, updated_at: '2026-09-18T00:00:00.000+00:00' }) });
+  });
+  await page.route('**/rest/v1/rpc/get_teacher_lap_state', async (r: Route) => {
+    const body = r.request().postDataJSON();
+    const answer = body.p_teacher === 'Second Teacher' ? LAP_STATE_NEVER : LAP_STATE_OPEN_WITH_OWN_STEPS;
+    await r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(answer) });
+  });
+  const recordGets = await routeEdgeRecord(page, (r) =>
+    r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(edgeRecord(RECORD_PAYLOAD_OPEN)) }));
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await pickTomSelect(page, 'inspector', 'Test Observer');
+  await page.locator('#strip-continue').click();
+  await page.waitForTimeout(200);
+
+  await pickTomSelect(page, 'teacher', 'Second Teacher');
+  releaseSync();
+  await page.waitForTimeout(500);
+
+  await expect(page.locator('body')).not.toHaveClass(/is-editing/);
+  await expect(stripLine(page)).toContainText('Teacher not observed yet', { timeout: 10_000 });
+  expect(recordGets, 'A\'s record must never be requested once B was picked').toHaveLength(0);
+  expect(h.errors).toEqual([]);
+  await expectConsistentFormState(page);
+});
+
+test('CNL-007 (update): the Teacher-box x during a held-back Save changes causes no exception, and the write\'s UI effects are dropped', async ({ page }) => {
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
+  await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
+  let releaseUpdate: () => void = () => {};
+  await page.route(EDGE_FN, async (r: Route) => {
+    const body = r.request().postDataJSON();
+    if (body.action === 'update') {
+      await new Promise<void>((res) => { releaseUpdate = res; });
+      return r.fulfill({ status: 200, contentType: 'application/json',
+        body: JSON.stringify({ success: true, id: 'AIS-OTP-TEST', token: body.record_token, status: 'observed', closed_at: '', source: 'supabase' }) });
+    }
+    return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ success: true }) });
+  });
+  await openEdit(page);
+  await page.fill('#next_step_1', 'edited before x');
+  await page.locator('#btn-save-changes').click();
+  await page.waitForTimeout(200);
+
+  await tsControl(page, 'teacher').locator('.clear-button').click();
+  await expect(page.locator('#btn-reset')).toBeVisible({ timeout: 10_000 });
+
+  let pageError = '';
+  page.on('pageerror', (e) => { pageError = e.message; });
+  releaseUpdate();
+  await page.waitForTimeout(500);
+
+  expect(pageError, 'a late success must never throw dereferencing EDIT_RECORD').toBe('');
+  await expect(page.locator('#otp-form')).not.toHaveClass(/is-locked/);
+  await expect(page.locator('#btn-save-changes')).toBeHidden();
+  await expect(page.locator('#notice')).toBeHidden();
+  await expect(page.locator('body')).not.toHaveClass(/is-editing/);
+  expect(h.errors).toEqual([]);
+  await expectConsistentFormState(page);
+});
+
+test('CNL-007 (close): the Teacher-box x during a held-back Close Lap causes no exception, and never locks the blank form', async ({ page }) => {
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
+  await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
+  page.on('dialog', (d) => d.accept());
+  let releaseClose: () => void = () => {};
+  await page.route(EDGE_FN, async (r: Route) => {
+    const body = r.request().postDataJSON();
+    if (body.action === 'close') {
+      await new Promise<void>((res) => { releaseClose = res; });
+      return r.fulfill({ status: 200, contentType: 'application/json',
+        body: JSON.stringify({ success: true, id: 'AIS-OTP-TEST', token: body.record_token, status: 'closed', closed_at: '2026-09-18T09:00:00.000Z', source: 'supabase' }) });
+    }
+    return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ success: true }) });
+  });
+  await openEdit(page);
+  await page.locator('#btn-close-lap').click();
+  await page.waitForTimeout(200);
+
+  await tsControl(page, 'teacher').locator('.clear-button').click();
+  await expect(page.locator('#btn-reset')).toBeVisible({ timeout: 10_000 });
+
+  let pageError = '';
+  page.on('pageerror', (e) => { pageError = e.message; });
+  releaseClose();
+  await page.waitForTimeout(500);
+
+  expect(pageError, 'a late success must never lockForm() a restored blank draft').toBe('');
+  await expect(page.locator('#otp-form')).not.toHaveClass(/is-locked/);
+  await expect(page.locator('#btn-reset')).toBeVisible();
+  await expect(page.locator('#btn-submit')).toBeVisible();
+  await expect(page.locator('body')).not.toHaveClass(/is-editing/);
+  expect(h.errors).toEqual([]);
+  await expectConsistentFormState(page);
+});
+
+test('CNL-008: teacher A (open), switch to B, back to A whose refetch fails - Save & Lock ends enabled with no message', async ({ page }) => {
+  const options = JSON.parse(JSON.stringify(OPTIONS_PAYLOAD));
+  const list = options.options ? options.options.teachers : options.teachers;
+  list.push({ name: 'Second Teacher' });
+  const h = await harness(page, { options });
+  page.on('dialog', (d) => d.accept());
+  let aCalls = 0;
+  await page.route('**/rest/v1/rpc/get_teacher_lap_state', async (r: Route) => {
+    const body = r.request().postDataJSON();
+    if (body.p_teacher === 'Test Teacher') {
+      aCalls++;
+      if (aCalls === 1) {
+        return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(LAP_STATE_OPEN_WITH_OWN_STEPS) });
+      }
+      return r.fulfill({ status: 500, contentType: 'text/plain', body: 'upstream timeout' });
+    }
+    // Second Teacher's own answer never lands, so it can never incidentally
+    // clear the block itself: this isolates the fix (clearing on a new
+    // lookup / on a failed refetch) from B's own success path.
+    await new Promise(() => {});
+  });
+  await openForm(page);
+  await fillRequired(page);
+  await expect(page.locator('#btn-submit')).toHaveClass(/disabled/, { timeout: 10_000 });
+
+  await pickTomSelect(page, 'teacher', 'Second Teacher');
+  await page.waitForTimeout(200);   // B's own fetch is stuck; never resolves
+
+  await pickTomSelect(page, 'teacher', 'Test Teacher');   // back to A; this refetch fails
+  await page.waitForTimeout(500);
+
+  await expect(page.locator('#btn-submit')).not.toHaveClass(/disabled/);
+  await expect(page.locator('#btn-submit')).toHaveAttribute('aria-disabled', 'false');
+  await expect(page.locator('#toast')).not.toHaveClass(/show/);
+  expect(h.errors.filter((e) => !/status of 500/.test(e))).toEqual([]);
+});
+
+test('CNL-009: Continue rolls back silently when both record sources fail, with the draft and buttons restored', async ({ page }) => {
+  const h = await harness(page, { record: { success: false, error: 'Record not found' } });
+  await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
+  await routeEdgeRecord(page, (r) =>
+    r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(EDGE_MISS) }));
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await page.waitForTimeout(400);
+  await page.locator('#strip-continue').click();
+
+  await expect(page.locator('#btn-reset')).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator('#btn-submit')).toBeVisible();
+  await expect(page.locator('#btn-save-changes')).toBeHidden();
+  await expect(page.locator('#btn-close-lap')).toBeHidden();
+  await expect(page.locator('#otp-form')).not.toHaveClass(/is-locked/);
+  await expect(page.locator('body')).not.toHaveClass(/is-editing/);
+  await expect(tsControl(page, 'teacher')).toContainText('Test Teacher', { timeout: 10_000 });
+  await expect(page.locator('#toast')).not.toHaveClass(/error/);
+  await expect(page.locator('#toast')).not.toContainText('Could not load');
+  await expect(page.locator('#toast')).not.toContainText('Still loading');
+  const draft = await page.evaluate((k) => localStorage.getItem(k), DRAFT_KEY);
+  expect(draft, 'the draft must be intact').not.toBeNull();
+  expect(h.errors).toEqual([]);
+  await expectConsistentFormState(page);
+});
+
+test('sweep fix: submitForm never shows the just-opened strip for a teacher no longer picked', async ({ page }) => {
+  const options = JSON.parse(JSON.stringify(OPTIONS_PAYLOAD));
+  const list = options.options ? options.options.teachers : options.teachers;
+  list.push({ name: 'Second Teacher' });
+  const h = await harness(page, { options });
+  page.on('dialog', (d) => d.accept());
+  await page.route('**/rest/v1/rpc/get_teacher_lap_state', async (r: Route) => {
+    const body = r.request().postDataJSON();
+    const answer = body.p_teacher === 'Second Teacher' ? LAP_STATE_NEVER : LAP_STATE_STARTING_NEXT;
+    await r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(answer) });
+  });
+  await openForm(page);
+  await fillRequired(page);
+  await expect(stripLine(page)).toContainText('now starting Observation 2', { timeout: 10_000 });
+
+  let releaseSubmit: () => void = () => {};
+  await page.route(EDGE_FN, async (r: Route) => {
+    const body = r.request().postDataJSON();
+    await new Promise<void>((res) => { releaseSubmit = res; });
+    await r.fulfill({ status: 200, contentType: 'application/json',
+      body: JSON.stringify({ success: true, id: 'AIS-OTP-20260918-999999', token: body.record_token, status: 'observed', closed_at: '', lap: 2, source: 'supabase' }) });
+  });
+  await page.locator('#btn-submit').click();
+  await page.waitForTimeout(200);
+
+  await pickTomSelect(page, 'teacher', 'Second Teacher');
+  await expect(stripLine(page)).toContainText('Teacher not observed yet', { timeout: 10_000 });
+
+  releaseSubmit();
+  await page.waitForTimeout(500);
+
+  // the strip must still show Second Teacher's own status, never Test
+  // Teacher's "just opened" line; the submission itself still completed.
+  await expect(stripLine(page)).toContainText('Teacher not observed yet');
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/);
+  expect(h.errors).toEqual([]);
+  await expectConsistentFormState(page);
+});
+
+/* ============================================================================
+ * otp-v0.11 fix round 3 (the LAST one). Three reviews in a row found a fresh
+ * batch of the same family: a stale async continuation acting on a form
+ * context that has moved on. This round closes it at the root (newFormContext,
+ * a whole-script sweep, the invariant helper above) and adds specs for the
+ * four newly-found instances plus one more the sweep itself turned up.
+ * ========================================================================== */
+
+test('CNL-010: a held-back load_draft spanning Save & Lock and the automatic reset changes nothing in the fresh form', async ({ page }) => {
+  const h = await harness(page);
+  await mockLapState(page, LAP_STATE_NEVER);
+  page.on('dialog', (d) => d.accept());
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+
+  let releaseDraft: () => void = () => {};
+  await page.route('**/rest/v1/rpc/load_draft', async (r: Route) => {
+    await new Promise<void>((res) => { releaseDraft = res; });
+    await r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({
+      success: true, found: true, updated_at: '2026-09-18T00:00:00.000+00:00',
+      data: { next_step_1: 'STALE DRAFT LOADED LATE' },
+    }) });
+  });
+  await pickTomSelect(page, 'inspector', 'Test Observer');   // fires the held pull
+  await page.locator('#curriculum-pills .pill', { hasText: 'Australian' }).click();
+  await pickGrade(page, '3');
+  await pickTomSelect(page, 'subject', 'Mathematics');
+  await page.fill('#date', '2026-09-03');
+  await page.fill('#time_in', '09:15');
+  await page.fill('#time_out', '10:05');
+
+  await page.route(EDGE_FN, (r: Route) => r.fulfill({ status: 200, contentType: 'application/json',
+    body: JSON.stringify({ success: true, id: 'AIS-OTP-TEST', token: 'x', status: 'observed', closed_at: '', lap: 1, source: 'supabase' }) }));
+  await page.locator('#btn-submit').click();
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 10_000 });
+
+  await page.waitForTimeout(3300);   // the automatic reset (setTimeout(softResetForm, 3000))
+  await expect(page.locator('#otp-form')).not.toHaveClass(/is-locked/);
+  await expect(page.locator('#btn-reset')).toBeVisible();
+
+  releaseDraft();
+  await page.waitForTimeout(400);
+
+  await expect(page.locator('#next_step_1')).toHaveValue('');
+  await expect(tsControl(page, 'teacher')).not.toContainText('Test Teacher');
+  expect(h.errors).toEqual([]);
+  await expectConsistentFormState(page);
+});
+
+test('CNL-011: changing A to B after Continue enters edit mode and before the record answers never strands the page in edit mode', async ({ page }) => {
+  const options = JSON.parse(JSON.stringify(OPTIONS_PAYLOAD));
+  const list = options.options ? options.options.teachers : options.teachers;
+  list.push({ name: 'Second Teacher' });
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN, options });
+  await page.route('**/rest/v1/rpc/get_teacher_lap_state', async (r: Route) => {
+    const body = r.request().postDataJSON();
+    const answer = body.p_teacher === 'Second Teacher' ? LAP_STATE_NEVER : LAP_STATE_OPEN_WITH_OWN_STEPS;
+    await r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(answer) });
+  });
+  let releaseRecord: () => void = () => {};
+  const recordGets = await routeEdgeRecord(page, async (r) => {
+    await new Promise<void>((res) => { releaseRecord = res; });
+    await r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(edgeRecord(RECORD_PAYLOAD_OPEN)) });
+  });
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await page.locator('#strip-continue').click();
+  await expect(page.locator('body')).toHaveClass(/is-editing/, { timeout: 10_000 });   // Continue set EDIT_MODE synchronously
+
+  await pickTomSelect(page, 'teacher', 'Second Teacher');   // bumps the context; does not itself leave edit mode
+  releaseRecord();
+  await page.waitForTimeout(500);
+
+  expect(recordGets.length, 'the record was requested once, by Continue, before B was picked').toBe(1);
+  await expect(page.locator('body')).not.toHaveClass(/is-editing/);
+  await expect(page.locator('#btn-reset')).toBeVisible();
+  await expect(page.locator('#btn-submit')).toBeVisible();
+  await expect(page.locator('#btn-save-changes')).toBeHidden();
+  await expect(page.locator('#btn-close-lap')).toBeHidden();
+  // exitEditToBlank restores the draft (hard rule 13: nothing typed in edit
+  // mode is ever persisted, so B's mid-flight pick was never saved); Test
+  // Teacher (A, the draft's own last-saved value) comes back with its own
+  // accurate, freshly re-fetched strip, never the stale "just opened" one.
+  await expect(tsControl(page, 'teacher')).toContainText('Test Teacher');
+  await expect(stripLine(page)).toContainText('Observation 2', { timeout: 10_000 });
+  await expect(page.locator('#toast')).not.toHaveClass(/error/);
+  expect(h.errors).toEqual([]);
+  await expectConsistentFormState(page);
+});
+
+test('CNL-012: submit answered already_closed shows the calm message and makes no Google request', async ({ page }) => {
+  const h = await harness(page);
+  await mockLapState(page, LAP_STATE_NEVER);
+  page.on('dialog', (d) => d.accept());
+  await openForm(page);
+  await fillRequired(page);
+  await page.route(EDGE_FN, (r: Route) => r.fulfill({ status: 200, contentType: 'application/json',
+    body: JSON.stringify({ success: false, error: 'already_closed', id: 'AIS-OTP-TEST', status: 'closed', closed_at: '2026-09-18T09:00:00.000Z' }) }));
+
+  await page.locator('#btn-submit').click();
+  await expect(page.locator('#toast')).toContainText('This observation was already closed.', { timeout: 10_000 });
+
+  expect(h.posts.length, 'a business answer (already_closed) must never fall back to Google').toBe(0);
+  await expect(page.locator('#submitted-banner')).not.toHaveClass(/is-active/);
+  await expect(page.locator('#btn-submit')).toBeVisible();
+  await expect(page.locator('#btn-submit')).not.toBeDisabled();
+  expect(h.errors).toEqual([]);
+  await expectConsistentFormState(page);
+});
+
+test('CNL-013: the Teacher-box x during a held-back pad-viewer open leaves no lightbox on the blank form', async ({ page }) => {
+  const record = { ...RECORD_PAYLOAD_OPEN, pad_files: ['observer-comments-1.jpg'] };
+  const h = await harness(page, { record });
+  await routeEdgeRecord(page, (r) =>
+    r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(edgeRecord(record)) }));
+  await page.route('**/script.google.com/**', async (r: Route) => {
+    const url = r.request().url();
+    if (url.includes('action=pad_image')) {
+      return r.fulfill({ status: 200, contentType: 'application/json',
+        body: JSON.stringify({ success: true, mime: 'image/jpeg', data: ONE_PX_JPEG }) });
+    }
+    await r.fallback();
+  });
+  await openEdit(page);
+  await expect(page.locator('.pad-attach[data-pad-target="observer_comments"]')).toBeVisible();
+
+  // Both dispatched from one synchronous script turn, so the Teacher-box x's
+  // exitEditToBlank() runs for certain while openPadView's blurAndSettle()
+  // is still pending (a real await, unlike this synchronous click handler) -
+  // deterministic, unlike racing two separate Playwright actions against a
+  // ~120 ms window.
+  await page.evaluate(() => {
+    (document.querySelector('.pad-attach[data-pad-target="observer_comments"]') as HTMLElement).click();
+    (document.getElementById('teacher')!.nextElementSibling!.querySelector('.clear-button') as HTMLElement).click();
+  });
+  await page.waitForTimeout(400);
+
+  await expect(page.locator('#pad-view')).not.toHaveClass(/open/);
+  await expect(page.locator('body')).not.toHaveClass(/is-editing/);
+  await expect(page.locator('#btn-reset')).toBeVisible();
+  expect(h.errors).toEqual([]);
+  await expectConsistentFormState(page);
+});
+
+test('sweep fix (round 3): Reset during "Reading pad..." on Save & Lock aborts the submit; no payload is built from wiped fields', async ({ page }) => {
+  const h = await harness(page);
+  await mockLapState(page, LAP_STATE_NEVER);
+  page.on('dialog', (d) => d.accept());
+  await openForm(page);
+  await fillRequired(page);
+
+  await page.locator('.pad-field-btn[data-pad-target="observer_comments"]').click();
+  await expect(page.locator('#pad-modal')).toHaveClass(/open/, { timeout: 10_000 });
+  const stage = await page.locator('#pad-stage').boundingBox();
+  await page.mouse.move(stage!.x + 60, stage!.y + 60);
+  await page.mouse.down();
+  await page.mouse.move(stage!.x + 160, stage!.y + 110, { steps: 8 });
+  await page.mouse.up();
+
+  let releaseExtract: () => void = () => {};
+  await page.route('**/script.google.com/**', async (r: Route) => {
+    const req = r.request();
+    if (req.method() === 'POST') {
+      let parsed: any = {};
+      try { parsed = JSON.parse(req.postData() || '{}'); } catch { /* keep empty */ }
+      if (parsed.action === 'extract_pad') {
+        await new Promise<void>((res) => { releaseExtract = res; });
+        return r.fulfill({ status: 200, contentType: 'application/json',
+          body: JSON.stringify({ success: true, items: [{ text: 'late pad text' }] }) });
+      }
+    }
+    await r.fallback();
+  });
+  await page.locator('#pad-done').click();   // fires the (held) background extraction
+  await expect(page.locator('#pad-modal')).not.toHaveClass(/open/);
+
+  const writeCalls: string[] = [];
+  await page.route(EDGE_FN, async (r: Route) => {
+    writeCalls.push(r.request().url());
+    await r.fulfill({ status: 200, contentType: 'application/json',
+      body: JSON.stringify({ success: true, id: 'AIS-OTP-TEST', token: 'x', status: 'observed', closed_at: '', source: 'supabase' }) });
+  });
+
+  await page.locator('#btn-submit').click();
+  await expect(page.locator('#btn-submit')).toHaveText('Reading pad…', { timeout: 10_000 });
+
+  await page.locator('#btn-reset').click();   // confirm auto-accepted above; wipes teacher + all fields
+  await expect(tsControl(page, 'teacher')).not.toContainText('Test Teacher');
+
+  releaseExtract();
+  await page.waitForTimeout(500);
+
+  expect(writeCalls, 'a superseded submit must never write a payload built from wiped fields').toHaveLength(0);
+  await expect(page.locator('#btn-submit')).toBeVisible();
+  await expect(page.locator('#btn-submit')).not.toHaveText('Reading pad…');
+  await expect(page.locator('#submitted-banner')).not.toHaveClass(/is-active/);
+  expect(h.errors).toEqual([]);
+  await expectConsistentFormState(page);
 });

@@ -112,7 +112,19 @@ Deno.serve(async (req: Request) => {
   if (!out || out.success !== true) {
     // e.g. 'Record not found' for an update/close of a closed or unknown lap:
     // the same generic miss Apps Script answers, so the form treats it alike.
-    return json({ success: false, error: (out && out.error) || 'write failed' });
+    const errCode = (out && out.error) || 'write failed';
+    // otp-v0.11 task 7 (plan 3.6): open_observation / already_closed are
+    // business answers, not failures. Pass through an allowlist of their
+    // metadata so the form can name the right Observation N even when its
+    // own strip read was stale or its refresh times out. Nothing else changes.
+    if (out && (errCode === 'open_observation' || errCode === 'already_closed')) {
+      const extra: Record<string, unknown> = {};
+      for (const k of ['lap', 'id', 'status', 'closed_at']) {
+        if (out[k] !== undefined) extra[k] = out[k];
+      }
+      return json({ success: false, error: errCode, ...extra });
+    }
+    return json({ success: false, error: errCode });
   }
 
   const { record, pending_since, ...rest } = out;

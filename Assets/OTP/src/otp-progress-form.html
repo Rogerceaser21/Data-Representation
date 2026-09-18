@@ -2862,7 +2862,7 @@ body.is-viewer .cog-btn { display: none; }
         <span class="strip-status"></span>
       </div>
     </div>
-    <a class="strip-continue-btn" id="strip-continue" hidden></a>
+    <button type="button" class="strip-continue-btn" id="strip-continue" hidden></button>
   </section>
 
   <!-- ============================================
@@ -3305,9 +3305,14 @@ body.is-viewer .cog-btn { display: none; }
   // teacher viewer never edits, so the flag is off there by construction.
   // Hard rule 13 now reads CLOSED_RECORD_VIEW || EDIT_MODE: an edited record
   // must never read or write the observer's in-progress draft on the same iPad.
-  const EDIT_TOKEN = window.R3_VIEWER ? '' :
+  // otp-v0.11: EDIT_TOKEN/EDIT_MODE are now switchable state (plan 3.5), not a
+  // read-once-at-load constant. "Continue Observation N" on the status strip
+  // flips them in place, with no page reload (a reload can show the gate
+  // again; the wrapped iOS app needs this); the ?edit= URL still works and
+  // sets the SAME two variables at bootstrap, unchanged.
+  let EDIT_TOKEN = window.R3_VIEWER ? '' :
     (new URLSearchParams(window.location.search).get('edit') || '');
-  const EDIT_MODE = !!EDIT_TOKEN;
+  let EDIT_MODE = !!EDIT_TOKEN;
   if (EDIT_MODE) document.body.classList.add('is-editing');
   // The loaded record's own facts, set once it lands. Until then the edit
   // buttons stay disabled, so a failed fetch can never post an empty form
@@ -3318,6 +3323,34 @@ body.is-viewer .cog-btn { display: none; }
   // otp-v0.10: one record_token per submit attempt chain (Supabase-first write
   // and the Google fallback name the same record); cleared once a save lands.
   let pendingSubmitToken = '';
+  // otp-v0.11 plan 3.5: bumped every time the page switches to a different
+  // form context (Continue, Reset, the Teacher-box x, and once a ?edit=
+  // record finishes loading). Every async callback that can touch the form
+  // (a Supabase draft pull, the debounced draft save, a pad extraction, the
+  // record fetch itself, a pad image load) captures this when it starts and
+  // does nothing if it has changed by the time it resolves.
+  let formContextGen = 0;
+  // otp-v0.11 fix round 3 (Part 2A): the ONE place a form context starts or
+  // ends. Every such transition in the script (Continue, exit to blank,
+  // Reset, the Teacher-box x, every teacher change, a record finishing
+  // loading, the automatic soft reset after Save & Lock, the initial draft
+  // restore) calls this instead of bumping formContextGen by hand, so a
+  // future transition can never be added without it. `reason` is for
+  // readability only.
+  function newFormContext(reason) {
+    formContextGen++;
+  }
+  // otp-v0.11 STRIP-002 / plan 2.2 point 4: the last successful
+  // get_teacher_lap_state read for the picked teacher (next_lap always; an
+  // open lap's own number too), read by submitForm and updateSubmitState so
+  // neither has to wait on a fresh fetch.
+  let nextLapCache = null;
+  let openBlockInfo = null;
+  // otp-v0.19: declared here (moved from just above initTomSelects, otp-v0.11)
+  // so updateSubmitState's teacherOpenBlocked check (via currentTeacherName)
+  // can read it safely from its own bootstrap call, well before
+  // initTomSelects() populates it.
+  const tomSelects = {};
 
   function showSaved() {
     if (!statusEl) return;
@@ -3379,6 +3412,42 @@ body.is-viewer .cog-btn { display: none; }
     try { data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
     catch (e) { data = {}; }
     applyDraftData(data);
+  }
+  // otp-v0.11 plan 3.5.2: a late pad extraction (resolves after Continue,
+  // Reset or the Teacher-box x) belongs to the draft it started against,
+  // never to whatever the screen now shows. Patches the STORED draft
+  // directly, bypassing the DOM entirely, so it is there again once the page
+  // returns to blank; saveForm() already refuses to touch this key while a
+  // record is showing (hard rule 13), so nothing else can clobber it
+  // meanwhile. CNL-004 (fix round 1): merges with the SAME replace-its-own-
+  // block-or-append semantics applyTextToField uses on the live DOM, against
+  // the draft's OWN previous value, so an existing typed comment already in
+  // the draft is never overwritten wholesale; a criterion-note target merges
+  // into the draft's own sp1_notes JSON instead of a plain field.
+  function mergeLateExtractionIntoDraft(page, text, prevApplied) {
+    if (!text) return;
+    let data;
+    try { data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch (e) { data = {}; }
+    const nt = NOTE_TARGET_BY_NAME[page.target];
+    if (nt) {
+      let notes;
+      try { notes = JSON.parse(data.sp1_notes || '{}'); } catch (e) { notes = {}; }
+      if (!notes || typeof notes !== 'object' || Array.isArray(notes)) notes = {};
+      const lvl = SP1.levels.find(function (l) { return l.key === nt.level; });
+      const key = (lvl ? lvl.label : nt.level) + ' ' + nt.n;
+      const prevNote = String(notes[key] || '');
+      notes[key] = (prevApplied && prevNote.indexOf(prevApplied) > -1)
+        ? prevNote.replace(prevApplied, text)
+        : (prevNote.trim() ? prevNote.trim() + '\n\n' + text : text);
+      data.sp1_notes = JSON.stringify(notes);
+    } else {
+      const prevField = String(data[page.target] || '');
+      data[page.target] = (prevApplied && prevField.indexOf(prevApplied) > -1)
+        ? prevField.replace(prevApplied, text)
+        : (prevField.trim() ? prevField.trim() + '\n\n' + text : text);
+    }
+    data.saved_at = Date.now();
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (e) {}
   }
   // otp-v0.10: the field-population half of loadForm, shared with the draft
   // pulled from Supabase (pullDraftFromSupabase). Same rules as before.
@@ -3455,11 +3524,19 @@ body.is-viewer .cog-btn { display: none; }
   // v0.45: broaden the guard to ANY record view (CLOSED_RECORD_VIEW also covers
   // the gated editable form opened with ?id), so a draft can never sit under a
   // loaded record. Normal editable-form use (no ?id) still restores the draft.
-  if (!CLOSED_RECORD_VIEW && !EDIT_MODE) { loadForm(); autoGrowAll(); }   // otp-v0.9: nor in edit mode
+  // otp-v0.11 fix round 3 (Part 2A): the initial draft restore is itself a
+  // context start, routed through the same helper as every later one, even
+  // though nothing can have started before it at this point in the boot.
+  if (!CLOSED_RECORD_VIEW && !EDIT_MODE) { newFormContext('initial-load'); loadForm(); autoGrowAll(); }   // otp-v0.9: nor in edit mode
 
   /* === Action buttons ============================================ */
   document.getElementById('btn-reset').addEventListener('click', () => {
+    // CNL-005 (otp-v0.11 fix round 1, orchestrator's ruling): #btn-reset
+    // stays hidden while continuing (plan 2.2 point 2), but a click that
+    // still reaches it must never wipe fields or delete the draft mid-edit.
+    if (EDIT_MODE) { exitEditToBlank(); return; }
     if (!confirm('Wipe all fields and clear the saved draft? This cannot be undone.')) return;
+    newFormContext('reset');
     const resetObserver = currentObserverName();   // otp-v0.10: before the field is wiped
     FORM.querySelectorAll('input, textarea, select').forEach(el => {
       if (el.type === 'radio' || el.type === 'checkbox') el.checked = false;
@@ -3575,6 +3652,16 @@ body.is-viewer .cog-btn { display: none; }
   // Which path took the last write: 'supabase' or 'google'. Read by the proof
   // scripts and the specs, never shown to the user.
   window.__otpWriteSource = { submit: '', edit: '', draftSave: '', draftLoad: '' };
+  // otp-v0.11 fix round 3 (Part 2C): a read-only snapshot of the form's
+  // context, for the specs' stranded-state check only. Never shown to the
+  // user; mirrors the __otpReadSource/__otpWriteSource pattern above.
+  window.__otpFormMode = function () {
+    return {
+      editMode: EDIT_MODE,
+      hasEditRecord: !!EDIT_RECORD,
+      isEditingClass: document.body.classList.contains('is-editing')
+    };
+  };
 
   function newRecordToken() {
     const b = new Uint8Array(16);
@@ -3604,6 +3691,7 @@ body.is-viewer .cog-btn { display: none; }
       if (!out || out.success !== true) {
         const err = new Error((out && out.error) || 'not saved');
         err.definitive = true;                 // Supabase answered: no point retrying it
+        err.answer = out || null;               // otp-v0.11 3.6: the parsed answer, for business errors
         throw err;
       }
       return out;
@@ -3659,6 +3747,7 @@ body.is-viewer .cog-btn { display: none; }
   }
   async function syncDraftToSupabase() {
     if (CLOSED_RECORD_VIEW || EDIT_MODE || !SB_URL || !SB_KEY) return;
+    const gen = formContextGen;   // otp-v0.11 plan 3.5.2
     const observer = currentObserverName();
     if (!observer) return;                       // nothing to key it by yet
     let data;
@@ -3672,6 +3761,7 @@ body.is-viewer .cog-btn { display: none; }
     if (sync.observer && sync.observer !== observer && draftHasContent(data)) return;
     try {
       const out = await sbRpcTimed('save_draft', { p_form: DRAFT_SCOPE, p_observer: observer, p_data: data }, SB_DRAFT_TIMEOUT_MS);
+      if (gen !== formContextGen) return;         // the page moved on while this was in flight
       if (out && out.success) {
         setDraftSync({ observer: observer, updated_at: out.updated_at || '', fp: fp });
         window.__otpWriteSource.draftSave = 'supabase';
@@ -3685,12 +3775,14 @@ body.is-viewer .cog-btn { display: none; }
   // typed here and not yet synced always stays.
   async function pullDraftFromSupabase(observer) {
     if (CLOSED_RECORD_VIEW || EDIT_MODE || !SB_URL || !SB_KEY || !observer) return;
+    const gen = formContextGen;   // otp-v0.11 plan 3.5.2
     const seq = ++draftPullSeq;
     let out = null;
     try {
       out = await sbRpcTimed('load_draft', { p_form: DRAFT_SCOPE, p_observer: observer }, SB_DRAFT_TIMEOUT_MS);
     } catch (e) { return; }
     if (seq !== draftPullSeq) return;            // a newer observer pick won
+    if (gen !== formContextGen) return;          // Continue / Reset / the Teacher-box x won
     if (!out || !out.success || !out.found || !out.data) { window.__otpWriteSource.draftLoad = 'none'; return; }
     let local = {};
     try { local = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch (e) {}
@@ -4663,22 +4755,33 @@ body.is-viewer .cog-btn { display: none; }
       ).join(',');
     }
 
-    function applyTextToField(page, hash, text, quiet) {
+    function applyTextToField(page, hash, text, quiet, gen) {
+      const prevApplied = String(page.at || '');    // captured BEFORE page.at is overwritten below
+      page.ah = hash;                              // blank/unreadable pages count as done
+      page.at = text;
+      scheduleDraftSave();
+      // otp-v0.11 plan 3.5.2: the page switched to a different context (or
+      // back to blank) while this extraction was in flight. The text stays
+      // with the draft it belongs to and never lands on whatever the screen
+      // now shows: never in a loaded record, and never in a fresh blank one.
+      // CNL-004 (fix round 1): criterion-note targets merge into the draft's
+      // own sp1_notes too, with the same replace-or-append rule as the field
+      // path below, instead of being dropped.
+      if (gen !== undefined && gen !== formContextGen) {
+        mergeLateExtractionIntoDraft(page, text, prevApplied);
+        return;
+      }
       const field = padField(page.target);
       if (!field) return;
       if (text) {
-        const prev = String(page.at || '');
-        if (prev && field.value.indexOf(prev) > -1) {
-          field.value = field.value.replace(prev, text);   // update, don't duplicate
+        if (prevApplied && field.value.indexOf(prevApplied) > -1) {
+          field.value = field.value.replace(prevApplied, text);   // update, don't duplicate
         } else {
           field.value = field.value.trim() ? field.value.trim() + '\n\n' + text : text;
         }
         field.dispatchEvent(new Event('input', { bubbles: true }));
         if (!quiet) showToast('Pad notes added to ' + TARGET_LABELS[page.target] + '.', 'success');
       }
-      page.ah = hash;                              // blank/unreadable pages count as done
-      page.at = text;
-      scheduleDraftSave();
     }
 
     // Extract one page (if its content changed) and put the text in its field.
@@ -4688,6 +4791,7 @@ body.is-viewer .cog-btn { display: none; }
       const h = pageHash(page);
       if (page.ah === h) return Promise.resolve();           // already in the form
       if (inflight.has(page)) return inflight.get(page);
+      const gen = formContextGen;   // otp-v0.11 plan 3.5.2: the context this page belongs to
       const job = (async () => {
         let text;
         if (page.xh === h && typeof page.xt === 'string') {
@@ -4703,7 +4807,7 @@ body.is-viewer .cog-btn { display: none; }
           scheduleDraftSave();
         }
         if (state.pages.indexOf(page) < 0) return;           // pad was reset mid-flight
-        applyTextToField(page, h, text, quiet);
+        applyTextToField(page, h, text, quiet, gen);
       })();
       inflight.set(page, job.finally(() => inflight.delete(page)));
       return inflight.get(page);
@@ -4767,7 +4871,10 @@ body.is-viewer .cog-btn { display: none; }
       window.__padRect = { top: Math.round(r.top), h: Math.round(r.height), at: new Date().toTimeString().slice(0, 8) };
     }
     async function openPad() {
-      if (!libsOk || opening) return;
+      // CNL-003 (otp-v0.11 fix round 1): the actual gate on opening, kept
+      // here regardless of whether a caller's button happens to be visible,
+      // since init() now wires every .pad-field-btn unconditionally.
+      if (!libsOk || opening || CLOSED_RECORD_VIEW || EDIT_MODE) return;
       // v0.57: park the keyboard first (WKWebView inset corruption, see helper),
       // save the spot, then swap the form OUT of the layout (body.pad-open) so
       // the document has no scrollable extent while the pad is up. closePad
@@ -4779,6 +4886,10 @@ body.is-viewer .cog-btn { display: none; }
       try {
         await blurAndSettle();
         if (openCancelled) return;               // Done landed during the settle window
+        // Sweep fix (fix round 2): a Continue tapped during the settle can
+        // enter edit mode before this resolves; re-check the same gate this
+        // function started with before opening the drawing surface.
+        if (CLOSED_RECORD_VIEW || EDIT_MODE) return;
         padScrollY = window.scrollY || document.documentElement.scrollTop || 0;
         document.getElementById('pad-modal').classList.add('open');
         if (SWAP) {
@@ -4843,19 +4954,28 @@ body.is-viewer .cog-btn { display: none; }
       if (opened) await showPage(); else refreshPageIndicator();
     }
 
+    // otp-v0.11 plan 3.5.6: pad availability responds to a mode change instead
+    // of being computed once at load (Continue / exiting back to blank can now
+    // flip CLOSED_RECORD_VIEW... EDIT_MODE without a reload). Record views
+    // never get a pad; silent-hide too if a lib failed to load. Existing pad
+    // pages stay viewable through the paperclips; new pages while editing an
+    // open record are a later release (contract, Non-goals).
+    function refreshAvailability() {
+      const avail = !CLOSED_RECORD_VIEW && !EDIT_MODE && libsOk;
+      document.querySelectorAll('.pad-field-btn').forEach(function (b) { b.hidden = !avail; });
+    }
+
     // ---------- wiring ----------
     function init() {
-      // otp-v0.8: no floating launcher any more; the field pencils are the
-      // only way in (plus the note card's, bound where the card is built).
-      const fieldBtns = document.querySelectorAll('.pad-field-btn');
-      // Record views never get a pad; silent-hide too if a lib failed to load.
-      // otp-v0.9: nor edit mode. Existing pad pages stay viewable through the
-      // paperclips; new pages are a later release (contract, Non-goals).
-      if (CLOSED_RECORD_VIEW || EDIT_MODE || !libsOk) {
-        fieldBtns.forEach(b => { b.hidden = true; });
-        return;
-      }
+      refreshAvailability();
+      // CNL-003 (otp-v0.11 fix round 1): handlers install regardless of the
+      // MODE at load (a page that boots into ?edit= can leave it later, via
+      // the Teacher-box x, with no reload); only a genuinely failed library
+      // leaves nothing safe to wire. openPad() itself still refuses to open
+      // while CLOSED_RECORD_VIEW or EDIT_MODE is true.
+      if (!libsOk) return;
 
+      const fieldBtns = document.querySelectorAll('.pad-field-btn');
       fieldBtns.forEach(b => b.addEventListener('click', () => openPadAt(b.dataset.padTarget)));
       document.getElementById('pad-done').addEventListener('click', closePad);
       document.getElementById('pad-done-bottom').addEventListener('click', closePad);  // v0.58
@@ -4959,8 +5079,11 @@ body.is-viewer .cog-btn { display: none; }
     init();
 
     // otp-v0.6: openAt/available let a note panel built after init open the pad.
+    // otp-v0.11: `available` is a live getter (plan 3.5.6), not a value frozen
+    // at construction, since EDIT_MODE can now flip without a reload.
     return { commitForSubmit, applyPendingToForm, reset, hasContent: padHasContent,
-             openAt: openPadAt, available: !CLOSED_RECORD_VIEW && !EDIT_MODE && libsOk };
+             openAt: openPadAt, refreshAvailability: refreshAvailability,
+             get available() { return !CLOSED_RECORD_VIEW && !EDIT_MODE && libsOk; } };
   })();
 
   /* === Cloud submit + lock + closed-record viewer ================== */
@@ -5015,15 +5138,23 @@ body.is-viewer .cog-btn { display: none; }
       const cell = missing.indexOf(name) < 0 && requiredCell(name);
       if (cell) cell.classList.remove('needs-value');
     });
+    // otp-v0.11 plan 2.2 point 4 / R7: the picked teacher already has an open
+    // observation. Save & Lock stays grey regardless of what is filled; no
+    // override (submitForm names the exact message).
+    const teacherOpenBlocked = !!(openBlockInfo && openBlockInfo.teacher &&
+      openBlockInfo.teacher === currentTeacherName());
     const btn = document.getElementById('btn-submit');
     if (btn && btn.dataset.locked !== '1' && btn.dataset.busy !== '1') {   // otp-v0.9.4: never mid-save
-      btn.classList.toggle('disabled', !allFilled);
+      const ready = allFilled && !teacherOpenBlocked;
+      btn.classList.toggle('disabled', !ready);
       // otp-v0.9.4: "not ready" is aria-disabled, not disabled, so a tap on the
       // grey button still arrives and can say what is missing. A record view
       // keeps the real disabled: nothing there is for saving.
-      btn.setAttribute('aria-disabled', allFilled ? 'false' : 'true');
+      btn.setAttribute('aria-disabled', ready ? 'false' : 'true');
       btn.disabled = CLOSED_RECORD_VIEW;
-      btn.title = allFilled ? 'Save and lock this OTP observation form' : 'Fill Teacher / Time In / Observer / Curriculum / Grade / Date / Subject / Time Out to enable saving';
+      btn.title = teacherOpenBlocked
+        ? openObservationMessage(openBlockInfo.lap)
+        : (allFilled ? 'Save and lock this OTP observation form' : 'Fill Teacher / Time In / Observer / Curriculum / Grade / Date / Subject / Time Out to enable saving');
     }
     // otp-v0.9: Save changes and Close Lap ride the SAME required-field gate,
     // and stay dead until the record itself has landed.
@@ -5083,14 +5214,29 @@ body.is-viewer .cog-btn { display: none; }
     } catch (e) { return iso; }
   }
 
-  // otp-v0.9: a date on its own, for the lap banners ("03 Sep 2026").
+  // otp-v0.9: a date on its own, for the lap banners ("16 Sep 2026").
+  // STRIP-003 (otp-v0.11 round 1): a date-only value ("2026-09-16") is a
+  // calendar date, not an instant, so it must read as that same day in every
+  // timezone; `new Date('2026-09-16')` parses it as UTC midnight, which a
+  // browser west of UTC then renders as the day before. Parsed by hand as a
+  // local calendar date instead. A full timestamp (closed_at etc.) keeps its
+  // real instant, unchanged. The month comes from a fixed table because
+  // en-GB's Intl abbreviates September as "Sept", not the "Sep" of the
+  // approved mock.
+  const FORMAT_DAY_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                             'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   function formatDay(v) {
     if (!v) return '';
+    const s = String(v);
+    const dateOnly = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s);
     try {
-      const d = new Date(v);
-      if (isNaN(d)) return String(v);
-      return d.toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: '2-digit' });
-    } catch (e) { return String(v); }
+      const d = dateOnly
+        ? new Date(Number(dateOnly[1]), Number(dateOnly[2]) - 1, Number(dateOnly[3]))
+        : new Date(v);
+      if (isNaN(d)) return s;
+      const day = String(d.getDate()).padStart(2, '0');
+      return day + ' ' + FORMAT_DAY_MONTHS[d.getMonth()] + ' ' + d.getFullYear();
+    } catch (e) { return s; }
   }
 
   // otp-v0.9: every record carries a lap; a row written before otp-v0.9 has
@@ -5150,6 +5296,11 @@ body.is-viewer .cog-btn { display: none; }
   // observation immediately. Called automatically 3s after a successful
   // submit (v0.17); no confirm dialog (unlike the manual Reset button).
   function softResetForm() {
+    // CNL-010 (fix round 3): the automatic reset 3 s after Save & Lock starts
+    // a brand new blank-observation context; bumped BEFORE any control is
+    // touched, so a load_draft pull that started just before Save & Lock can
+    // never resolve after this and write an older draft into the fresh form.
+    newFormContext('soft-reset');
     FORM.querySelectorAll('input, textarea, select').forEach(el => {
       if (el.type === 'radio' || el.type === 'checkbox') el.checked = false;
       else el.value = '';
@@ -5233,10 +5384,24 @@ body.is-viewer .cog-btn { display: none; }
     // otp-v0.9.4: the fields are re-read at the tap itself, so a stale grey state
     // can never block a complete form, and whatever is still empty is named.
     updateSubmitState();
+    // otp-v0.11 plan 2.2 point 4 / R7: an open observation for this teacher
+    // hard-blocks a second one; no override, checked before the missing-field
+    // message so the calm message always wins over "still to fill".
+    if (openBlockInfo && openBlockInfo.teacher === currentTeacherName()) {
+      showOpenObservationBlocked(openBlockInfo.lap);
+      return;
+    }
     const missing = missingRequired();
     if (missing.length) { showMissingRequired(missing); return; }
 
     if (!confirm('Save and lock this Progress in Lessons OTP form? You can still change it from the link in your confirmation email until you close the observation.')) return;
+
+    // Sweep fix (fix round 3, Part 2B): captured BEFORE any await, so a Reset
+    // that fires while the pad is still flushing can never let this
+    // continuation build (and post) a payload from fields Reset already
+    // wiped. Aborts silently below; the write itself never happens with
+    // wrong data (hard rule 12: no error UI either way).
+    const gen = formContextGen;
 
     // otp-v0.9.4: busy until the save ends, so an input or change event (the pad
     // writing its text, a keystroke) can never wake the button for a second tap.
@@ -5254,7 +5419,20 @@ body.is-viewer .cog-btn { display: none; }
       await EvidencePad.applyPendingToForm(20000);
     }
 
+    if (gen !== formContextGen) {
+      // the page moved on (Reset) while the pad was flushing: abort, restore
+      // the button, and never build a payload from fields that no longer
+      // belong to this attempt.
+      delete btn.dataset.busy;
+      btn.disabled = false;
+      btn.textContent = prevText;
+      return;
+    }
+
     const data = buildSubmitPayload();
+    // Part C.1 (otp-v0.11 plan 3.6): the v0.11 form always asks the server to
+    // enforce R7 on a submit. Never stored in content (the server strips it).
+    data.enforce_open_block = 'true';
 
     btn.disabled = true;
     btn.textContent = 'Saving…';
@@ -5277,6 +5455,21 @@ body.is-viewer .cog-btn { display: none; }
         result = await sbWriteRetry(data);
         window.__otpWriteSource.submit = 'supabase';
       } catch (fastErr) {
+        // Part C.2 (otp-v0.11 plan 3.6): a parsed open_observation or
+        // already_closed answer is a business answer, final: show its calm
+        // message, refresh the strip, and never ask Google. CNL-012 (fix
+        // round 3): already_closed is not expected on a fresh submit token,
+        // but is handled the same way as open_observation for symmetry, in
+        // case a retried/duplicate token ever answers this way.
+        const biz = fastErr && fastErr.answer;
+        if (biz && (biz.error === 'open_observation' || biz.error === 'already_closed')) {
+          delete btn.dataset.busy;
+          btn.disabled = false;
+          btn.textContent = prevText;
+          if (biz.error === 'open_observation') showOpenObservationBlocked(biz.lap);
+          else showAlreadyClosedBlocked();
+          return;
+        }
         window.__otpWriteSource.submit = 'google';
         const resp = await fetch(WEB_APP_URL, {
           method: 'POST',
@@ -5289,6 +5482,23 @@ body.is-viewer .cog-btn { display: none; }
       if (!result || !result.success) throw new Error((result && result.error) || 'Submit failed');
 
       clearDraftEverywhere();   // the local draft and its Supabase copy
+      // STRIP-002 (otp-v0.11 round 1): show the observation now open for the
+      // whole 3 s locked interval, not the stale pre-submit picture. Prefer
+      // the definitive lap from the write result (Supabase path); the Google
+      // fallback answers with no lap, so fall back to the lap this same
+      // teacher was already going to get, cached from the last
+      // get_teacher_lap_state read on picking them.
+      // Sweep fix (fix round 2/3, same class as CNL-006..013): the submit's
+      // own writes can take a few seconds, during which the Teacher field
+      // stays interactive; if the context moved on or it now names someone
+      // else, this strip render is not theirs to show, so it is skipped
+      // (lockForm/banner/toast still apply below: the record itself really
+      // was just created).
+      if (gen === formContextGen && currentTeacherName() === data.teacher) {
+        const openedLap = (result && result.lap) ? result.lap :
+          (nextLapCache && nextLapCache.teacher === data.teacher ? nextLapCache.next_lap : '');
+        renderStripJustOpened(openedLap, data.date, data.inspector);
+      }
       lockForm(result.id, new Date().toISOString(), 'submit');
       showToast('Submitted · Record ID ' + result.id + ' · resetting…', 'success');
       // Auto-reset for back-to-back observations (v0.17).
@@ -5332,6 +5542,10 @@ body.is-viewer .cog-btn { display: none; }
     data.action = action;
     data.record_token = EDIT_RECORD.token;
     data.evidence_pad_id = EDIT_RECORD.evidence_pad_id;   // posted back unchanged
+    // CNL-001 (otp-v0.11 fix round 1): plan 3.6, the v0.11 form always sends
+    // this, on every write action; an update that moves the teacher to one
+    // with another open lap is refused the same way as a submit.
+    data.enforce_open_block = 'true';
     // otp-v0.10: Supabase first (about 1 s). Only a success answer is final;
     // a miss (a lap Supabase does not hold, a stall) takes the Google path below.
     try {
@@ -5339,6 +5553,13 @@ body.is-viewer .cog-btn { display: none; }
       window.__otpWriteSource.edit = 'supabase';
       return fast;
     } catch (fastErr) {
+      // Part C.2 (otp-v0.11 plan 3.6): open_observation / already_closed are
+      // business answers, final: hand them back as-is, never ask Google.
+      const biz = fastErr && fastErr.answer;
+      if (biz && (biz.error === 'open_observation' || biz.error === 'already_closed')) {
+        window.__otpWriteSource.edit = 'supabase';
+        return biz;
+      }
       window.__otpWriteSource.edit = 'google';
     }
     for (var attempt = 1; attempt <= 6; attempt++) {
@@ -5354,13 +5575,21 @@ body.is-viewer .cog-btn { display: none; }
   async function saveEditChanges() {
     const btn = document.getElementById('btn-save-changes');
     if (!btn || btn.disabled) return;
+    // CNL-007: capture the context and the record before the await, so a
+    // Teacher-box x (or a fresh Continue) mid-flight can never apply this
+    // write's UI effects to whatever the page now shows. The write itself
+    // is never cancelled; only its UI effects are dropped.
+    const gen = formContextGen;
+    const recordToken = EDIT_RECORD ? EDIT_RECORD.token : '';
     const prev = btn.textContent;
     btn.disabled = true;
     btn.textContent = 'Saving…';
     const out = await postEditRecord('update');
+    const stillCurrent = gen === formContextGen && !!EDIT_RECORD && EDIT_RECORD.token === recordToken;
     btn.textContent = prev;
     btn.disabled = false;
     updateSubmitState();
+    if (!stillCurrent) return;
     if (out && out.success) {
       // otp-v0.9.3: a saved change is not a closed lap, and a toast that fades
       // was letting laps sit open. This line stays until it is dismissed.
@@ -5371,6 +5600,8 @@ body.is-viewer .cog-btn { display: none; }
                  'the next time they are observed.');
       return;
     }
+    if (out && out.error === 'open_observation') { showOpenObservationBlocked(out.lap); return; }
+    if (out && out.error === 'already_closed') { showAlreadyClosedBlocked(); return; }
     showToast('Not saved yet · check the connection and tap Save changes again');
   }
 
@@ -5381,11 +5612,18 @@ body.is-viewer .cog-btn { display: none; }
     const lap = EDIT_RECORD.lap;
     if (!confirm('Close Observation ' + lap + ' for ' + teacher +
                  '? Next Steps become final and ' + teacher + ' is notified.')) return;
+    // CNL-007: capture the context and the record before the await; the
+    // close is never cancelled or retried differently, only its UI effects
+    // are dropped if the Teacher-box x (or a fresh Continue) moved the page
+    // on while it was in flight.
+    const gen = formContextGen;
+    const recordToken = EDIT_RECORD.token;
     const prev = btn.textContent;
     btn.disabled = true;
     btn.textContent = 'Closing…';
     const out = await postEditRecord('close');
-    if (out && out.success) {
+    const stillCurrent = gen === formContextGen && !!EDIT_RECORD && EDIT_RECORD.token === recordToken;
+    if (out && out.success && stillCurrent) {
       const closedAt = out.closed_at || new Date().toISOString();
       hideNotice();
       lockForm(EDIT_RECORD.record_id, EDIT_RECORD.submitted_at, 'closed',
@@ -5402,6 +5640,9 @@ body.is-viewer .cog-btn { display: none; }
     btn.textContent = prev;
     btn.disabled = false;
     updateSubmitState();
+    if (!stillCurrent) return;
+    if (out && out.error === 'open_observation') { showOpenObservationBlocked(out.lap); return; }
+    if (out && out.error === 'already_closed') { showAlreadyClosedBlocked(); return; }
     showToast('Not closed yet · check the connection and tap Close Lap again');
   }
 
@@ -5434,7 +5675,115 @@ body.is-viewer .cog-btn { display: none; }
     refreshTeacherStatus();   // the teacher came from the record, not a tap
     autoGrowAll();            // otp-v0.9.3: the record's long answers show in full
     updateSubmitState();
+    // otp-v0.11 plan 3.5.2: an open record has finished loading (the ?edit=
+    // link straight from bootstrap, or Continue mid-session); a new context
+    // begins so nothing that started before this can land on it afterwards.
+    newFormContext('enter-edit-mode');
   }
+
+  // otp-v0.11 plan 2.2 + 3.5: "Continue Observation N" on the status strip.
+  // Switches the page into edit mode for the picked teacher's open record,
+  // through the SAME load path the ?edit= email link uses, with NO page
+  // reload (a reload can show the gate again; the wrapped iOS app needs
+  // this). The token stays in memory only: never the DOM, never a log, never
+  // the URL.
+  // Picking the teacher (and usually the observer) is how the Continue button
+  // appears at all, so those two names alone never count as "typed" for the
+  // point 5 question below; only free content beyond them does. sp1_not_seen
+  // is the rubric's own complement list, derived and non-empty (every
+  // criterion, comma separated) from the very first autosave of a genuinely
+  // blank form, never something the observer typed or picked.
+  function draftHasTypedContent(data) {
+    const skip = { teacher: 1, inspector: 1, saved_at: 1, rubric_version: 1, sp1_not_seen: 1 };
+    return Object.keys(data || {}).some(function (k) {
+      return !skip[k] && String(data[k] == null ? '' : data[k]).trim() !== '';
+    });
+  }
+
+  async function continueOpenObservation(token) {
+    if (!token || EDIT_MODE) return;
+    const btn = document.getElementById('strip-continue');
+    if (btn && btn.dataset.busy === '1') return;   // CNL-006: no double tap
+    if (btn) btn.dataset.busy = '1';
+    try {
+      // plan 3.5 point 1: flush the blank form's draft first, SYNCHRONOUSLY,
+      // before deciding whether to ask. CNL-002 (fix round 1): the question
+      // used to read localStorage before this flush, so typing and tapping
+      // Continue inside the 220 ms autosave debounce skipped the question and
+      // could lose the typing; saveForm() takes a fresh DOM snapshot right now.
+      clearTimeout(saveTimer);
+      saveForm();
+      let draft;
+      try { draft = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch (e) { draft = {}; }
+      if (draftHasTypedContent(draft) &&
+          !confirm('Save what you have typed as your draft and continue this observation?')) {
+        return;
+      }
+      // CNL-006: capture the context and the picked teacher before the first
+      // await; a Reset or a teacher change during it must stop Continue, not
+      // let it resume and load A's record under B (or after a Reset).
+      const gen = formContextGen;
+      const teacher = currentTeacherName();
+      clearTimeout(draftSyncTimer);
+      await syncDraftToSupabase();   // the Supabase copy, before anything else touches the form
+      if (gen !== formContextGen || EDIT_MODE || currentTeacherName() !== teacher) return;
+      // plan 3.5 point 2: a new context begins.
+      newFormContext('continue');
+      EDIT_TOKEN = token;
+      EDIT_MODE = true;
+      document.body.classList.add('is-editing');
+      EvidencePad.refreshAvailability();
+      // CNL-009: a failed load rolls back silently (R10); only the ?edit=
+      // bootstrap keeps today's error toast.
+      await loadClosedRecord('', token, exitEditToBlank);
+    } finally {
+      if (btn) delete btn.dataset.busy;
+    }
+  }
+
+  // otp-v0.11 plan 2.2 point 6 + 3.5 point 7: the Teacher-box x, or Reset,
+  // while continuing an open record. Same steps as entering, in reverse: the
+  // draft comes back, and the strip + Next Steps echo re-read for whatever
+  // teacher the draft names.
+  function exitEditToBlank() {
+    if (!EDIT_MODE) return;
+    newFormContext('exit-to-blank');   // invalidates every async op tied to the record just left
+    EDIT_MODE = false;
+    EDIT_TOKEN = '';
+    EDIT_RECORD = null;
+    document.body.classList.remove('is-editing');
+    hideNotice();
+    clearRecordDisplay();
+    FORM.querySelectorAll('input, textarea, select').forEach(function (el) { el.disabled = false; });
+    Object.values(tomSelects).forEach(function (ts) { ts.enable(); });
+    const banner = document.getElementById('submitted-banner');
+    if (banner) banner.classList.remove('is-active');
+    FORM.classList.remove('is-locked');
+    document.body.classList.remove('is-locked');
+    const submitBtn = document.getElementById('btn-submit');
+    if (submitBtn) { submitBtn.textContent = 'Save & Lock'; delete submitBtn.dataset.locked; delete submitBtn.dataset.busy; }
+    ['btn-save-changes', 'btn-close-lap'].forEach(function (id) {
+      const b = document.getElementById(id);
+      if (b) delete b.dataset.locked;
+    });
+    EvidencePad.refreshAvailability();
+    // otp-v0.11: the strip goes grey at once (the same reset Reset itself
+    // uses), so a draft that names no teacher, or the SAME teacher the
+    // record just left, never leaves the just-exited "open" picture
+    // standing (refreshTeacherStatus alone would skip a same-name re-fetch).
+    clearLapCardAndOutlines();
+    // the draft comes back (plan 3.5 point 7)
+    let data;
+    try { data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch (e) { data = {}; }
+    applyDraftData(data);
+    resolvePendingTomSelect('inspector');   // applyPulledDraftToControls has no need to (its own caller just picked one)
+    applyPulledDraftToControls(data);       // resolves teacher/subject/grade, syncs visuals, re-reads the strip
+    updateSubmitState();
+  }
+
+  document.getElementById('strip-continue').addEventListener('click', () => {
+    continueOpenObservation(stripContinueToken);
+  });
 
   // === Closed-record viewer ============================================
   // v0.45: resilient record fetch, mirroring loadDropdownOptions. The old single
@@ -5504,7 +5853,41 @@ body.is-viewer .cog-btn { display: none; }
     if (toast) toast.classList.remove('show', 'error', 'success');
   }
 
-  async function loadClosedRecord(id, token) {
+  // otp-v0.11 plan 3.5.4: everything a loaded record owns, cleared BEFORE it
+  // is filled. Before Continue, this page only ever populated a record ONCE
+  // (a fresh page has nothing already on it); now the same page can show a
+  // second record (or return to blank), so a field the new record leaves
+  // blank, or a paperclip/pad page belonging to the last one, must not go on
+  // standing. Never touches the saved draft.
+  function clearRecordDisplay() {
+    FORM.querySelectorAll('input, textarea, select').forEach(function (el) {
+      if (el.type === 'radio' || el.type === 'checkbox') el.checked = false;
+      else el.value = '';
+    });
+    document.querySelectorAll('.pill-group .pill.is-selected, .rate-row .rate.is-selected')
+      .forEach(function (b) { b.classList.remove('is-selected'); });
+    Object.values(tomSelects).forEach(function (ts) { ts.clear(true); });
+    ['teacher', 'inspector', 'subject'].forEach(function (name) {
+      const el = document.getElementById(name);
+      if (el) delete el.dataset.pendingValue;
+    });
+    if (typeof closeNotePanel === 'function') closeNotePanel();
+    if (typeof syncRubricChips === 'function') syncRubricChips();
+    if (typeof syncRubricNotes === 'function') syncRubricNotes();
+    // the record's own pad paperclips / lightbox (plan 3.5.4 and 3.5.6)
+    document.querySelectorAll('.pad-attach').forEach(function (b) { b.hidden = true; });
+    closePadView();          // also bumps padViewSeq, dropping any pending pad image load
+    padViewToken = '';
+    padViewFiles = {};
+    padViewCache.clear();
+  }
+
+  // CNL-009 (otp-v0.11 fix round 2): `onFail`, given only by Continue, rolls
+  // the page back silently (no toast, no error text) when the record cannot
+  // be loaded; the ?edit=/?id=/?token= bootstrap omits it and keeps today's
+  // toast (R10 already treats that path as an existing, unchanged behaviour).
+  async function loadClosedRecord(id, token, onFail) {
+    const gen = formContextGen;   // otp-v0.11 plan 3.5.2: the context live when this fetch started
     showToast(id ? 'Loading record ' + id + '…' : 'Loading record…');
     // otp-v0.10 Phase 3: trimmed ONCE here, and this one value feeds every
     // consumer below (the Supabase read, the Google URL, the pad viewer, the
@@ -5540,8 +5923,29 @@ body.is-viewer .cog-btn { display: none; }
         }
       }
     }
+    // otp-v0.11 plan 3.5.2: the page moved on (Continue, Reset, the Teacher-
+    // box x) while this fetch was in flight; whatever it found belongs to a
+    // context that is no longer showing, so it is dropped, silently.
+    if (gen !== formContextGen) {
+      // CNL-011 (fix round 3): a non-empty teacher change bumps the context
+      // but does not itself leave edit mode (only the Teacher-box x/clear
+      // does), so a Continue-owned load superseded this way would otherwise
+      // strand the page: is-editing on, EDIT_RECORD null, the NEW teacher
+      // showing under the OLD (disabled) edit buttons. Roll back through the
+      // same silent exit a failed load uses, but only if this is STILL the
+      // pending edit token (a later, different Continue must never be undone
+      // by an earlier, already-superseded one resolving late). exitEditToBlank
+      // restores whatever the draft last said (saveForm() itself refuses to
+      // run while EDIT_MODE, hard rule 13), so a teacher picked mid-flight,
+      // still inside the 220 ms autosave debounce, reverts with it; the page
+      // still ends fully consistent (that teacher's own accurate strip, no
+      // stranded edit buttons), never a mix of the two.
+      if (onFail && EDIT_MODE && EDIT_TOKEN === token) onFail();
+      return;
+    }
     try {
       if (!result) {
+        if (onFail) { onFail(); return; }
         showToast('Still loading record… please check your connection', 'error');
         hideLoadingOverlay();   // otp-v0.10 Phase 3: the viewer has no options fetch to lift it
         return;
@@ -5549,11 +5953,15 @@ body.is-viewer .cog-btn { display: none; }
       if (!result.success) throw new Error(result.error || 'Record not found');
 
       const rec = result.data;
+      clearRecordDisplay();   // otp-v0.11 plan 3.5.4: blank the page before this record fills it
       // otp-v0.6: render the record on the rubric its numbering refers to,
       // BEFORE populating, so a pre-v0.6 record lights the right paragraphs.
       setActiveRubric(rec.rubric_version === 'sp1-v2' ? SP1 : SP1_V1);
       Object.entries(rec).forEach(([key, value]) => {
-        if (value === null || value === undefined || value === '') return;
+        // otp-v0.11 plan 3.5.5: a blank value still gets applied (the current
+        // form was just cleared above, but a field this record deliberately
+        // left blank must never show a stray value on a REUSED page either).
+        if (value === null || value === undefined) return;
 
         // Apps Script sheets sometimes return dates as ISO strings — normalise for <input type=date>
         const toDateInput = (v) => {
@@ -5656,6 +6064,7 @@ body.is-viewer .cog-btn { display: none; }
       // teacher can do anything about, so it lands on the same calm card as a
       // bare link, with one line telling them what to do (hard rule 12).
       if (window.R3_VIEWER) { showViewerLanding(VIEWER_MISS_LINE); return; }
+      if (onFail) { onFail(); return; }
       showToast('Could not load record: ' + (err.message || err), 'error');
       hideLoadingOverlay();   // otp-v0.10 Phase 3: never leave the overlay over a toast
     }
@@ -5745,7 +6154,13 @@ body.is-viewer .cog-btn { display: none; }
   async function openPadView(target) {
     const files = padViewFiles[target] || [];
     if (!files.length) return;
+    // CNL-013 (fix round 3): capture everything this view depends on BEFORE
+    // the first await, so a stale continuation (exitEditToBlank ran during
+    // blurAndSettle, e.g. from the Teacher-box x) can never reopen an empty
+    // or wrong-record lightbox on top of whatever the page now shows.
+    const gen = formContextGen;
     const seq = ++padViewSeq;
+    const token = padViewToken;
     const scroll = document.getElementById('pad-view-scroll');
     document.getElementById('pad-view-title').innerHTML =
       'Evidence <em>Pad</em> · ' + (PAD_VIEW_LABELS[target] || 'Pages');
@@ -5753,6 +6168,7 @@ body.is-viewer .cog-btn { display: none; }
     // v0.56/v0.57: same swap as openPad — park the keyboard, save the spot,
     // then take the page out of the layout so nothing can scroll behind.
     await blurAndSettle();
+    if (gen !== formContextGen || seq !== padViewSeq || token !== padViewToken) return;
     padViewScrollY = window.scrollY || document.documentElement.scrollTop || 0;
     document.getElementById('pad-view').classList.add('open');
     if (!DIAG.has('noswap')) {                         // v0.58 A/B, same as the pad
@@ -5760,8 +6176,8 @@ body.is-viewer .cog-btn { display: none; }
       window.scrollTo(0, 0);
     }
     try {
-      const uris = await Promise.all(files.map(fetchPadImage));
-      if (seq !== padViewSeq) return;                    // superseded / closed
+      const uris = await Promise.all(files.map(function (name) { return fetchPadImage(name, token); }));
+      if (gen !== formContextGen || seq !== padViewSeq) return;   // superseded / closed
       scroll.innerHTML = '';
       uris.forEach(function(uri) {
         const img = document.createElement('img');
@@ -5770,15 +6186,23 @@ body.is-viewer .cog-btn { display: none; }
         scroll.appendChild(img);
       });
     } catch (e) {
-      if (seq !== padViewSeq) return;
+      if (gen !== formContextGen || seq !== padViewSeq) return;
       closePadView();
       showToast('Could not load the pad pages — check the connection and try again.', 'error');
     }
   }
 
-  async function fetchPadImage(name) {
-    if (padViewCache.has(name)) return padViewCache.get(name);
-    const url = WEB_APP_URL + '?action=pad_image&token=' + encodeURIComponent(padViewToken) +
+  async function fetchPadImage(name, token) {
+    // otp-v0.11 plan 3.5.6: keyed by record token + filename, not filename
+    // alone. Two records can hand the pad the same generated filename (e.g.
+    // "observer-comments-1.jpg"); a filename-only cache would show teacher
+    // A's photo under teacher B's identically-named file once both had been
+    // viewed once in this page. CNL-013 (fix round 3): the token is now the
+    // CALLER's captured value, never the live padViewToken global (which can
+    // change mid-flight).
+    const cacheKey = token + '::' + name;
+    if (padViewCache.has(cacheKey)) return padViewCache.get(cacheKey);
+    const url = WEB_APP_URL + '?action=pad_image&token=' + encodeURIComponent(token) +
                 '&name=' + encodeURIComponent(name);
     const attempt = async () => {
       const ctrl = new AbortController();
@@ -5793,7 +6217,7 @@ body.is-viewer .cog-btn { display: none; }
     let uri;
     try { uri = await attempt(); }
     catch (e) { uri = await attempt(); }               // one silent retry
-    padViewCache.set(name, uri);
+    padViewCache.set(cacheKey, uri);
     return uri;
   }
 
@@ -6685,6 +7109,9 @@ body.is-viewer .cog-btn { display: none; }
     n: null, line: 'Select a teacher',
     status: ['grey', 'grey', 'grey', 'grey', 'grey', 'grey'], button: null,
   };
+  // otp-v0.11 task 7: the open observation's token for #strip-continue, kept
+  // ONLY here (never the DOM, never the URL) and read by its click handler.
+  let stripContinueToken = '';
 
   function renderStripView(view) {
     const lineEl = document.getElementById('status-strip-line');
@@ -6714,12 +7141,14 @@ body.is-viewer .cog-btn { display: none; }
     if (btn) {
       if (view.button) {
         btn.textContent = view.button.label;
-        // The token lives ONLY in this href, the existing ?edit= link path.
-        btn.setAttribute('href', '?edit=' + encodeURIComponent(view.button.token));
+        // otp-v0.11 task 7: Continue no longer navigates (the token must never
+        // reach the URL, a log, or anywhere else in the DOM), so it lives ONLY
+        // in this closure variable, read by the button's own click handler.
+        stripContinueToken = view.button.token || '';
         btn.hidden = false;
       } else {
         btn.textContent = '';
-        btn.removeAttribute('href');
+        stripContinueToken = '';
         btn.hidden = true;
       }
     }
@@ -6772,6 +7201,43 @@ body.is-viewer .cog-btn { display: none; }
     });
   }
 
+  // STRIP-002 (otp-v0.11 round 1): straight after a successful Save & Lock in
+  // this page. A direct, local render (the record that just opened IS the
+  // answer): no re-fetch, so the strip shows the observation now open (card 1
+  // Completed, card 4 Current) for the whole 3 s locked interval, instead of
+  // the stale pre-submit picture, without racing a fresh get_teacher_lap_state.
+  // Emails are still going out server-side, so card 3 stays Pending.
+  function renderStripJustOpened(lap, observationDateVal, observerName) {
+    const n = String(lap || '').trim() || '1';
+    renderStripView({
+      n: n,
+      line: 'Observation ' + n + ' · open since ' + formatDay(observationDateVal) +
+            ' · coach ' + (observerName || ''),
+      status: ['completed', 'coming', 'pending', 'current', 'coming', 'pending'],
+      button: null,
+    });
+  }
+
+  // Shared by the grey Save & Lock tooltip (updateSubmitState) and the toast
+  // below, so there is exactly one wording for this message.
+  function openObservationMessage(lap) {
+    return 'Observation ' + (String(lap || '').trim() || '1') + ' is still open. Continue it, or close it first.';
+  }
+
+  // otp-v0.11 plan 3.6: a business answer (open_observation / already_closed)
+  // is final; the caller never asks Google. N comes from the answer itself,
+  // so the message is right even when the strip's own cache was stale.
+  function showOpenObservationBlocked(lap) {
+    showToast(openObservationMessage(lap));
+    lapStateTeacher = '';   // force a fresh strip read for this teacher
+    refreshTeacherStatus();
+  }
+  function showAlreadyClosedBlocked() {
+    showToast('This observation was already closed.');
+    lapStateTeacher = '';
+    refreshTeacherStatus();
+  }
+
   let lapStateSeq = 0;
   let lapStateTeacher = '';
 
@@ -6792,9 +7258,20 @@ body.is-viewer .cog-btn { display: none; }
     prevNsSeq++;
     prevNsTeacher = '';
     prevNsHide();
+    // STRIP-001 fix (otp-v0.11 round 1): render the grey pending state AT ONCE,
+    // before awaiting the RPC. Without this, changing from Teacher A (whose
+    // open observation was already drawn) to Teacher B left A's line, card
+    // states and #strip-continue (with A's token) on screen until B's answer
+    // returned, so a coach could tap A's Continue with B selected.
+    renderStripView(STRIP_GREY_VIEW);
+    // CNL-008: a lookup for a different teacher begins; the previous
+    // teacher's block/cache must never survive onto this one, even before
+    // this fetch answers (or never does).
+    openBlockInfo = null;
+    nextLapCache = null;
+    updateSubmitState();
     if (!name) {
       window.__otpReadSource.lapState = 'none';
-      renderStripView(STRIP_GREY_VIEW);
       return;
     }
     let d = null;
@@ -6804,12 +7281,21 @@ body.is-viewer .cog-btn { display: none; }
     if (seq !== lapStateSeq) return;           // a newer teacher pick won
     if (d && d.success) {
       window.__otpReadSource.lapState = 'supabase';
+      nextLapCache = { teacher: name, next_lap: d.next_lap };
+      openBlockInfo = d.open ? { teacher: name, lap: lapOf(d.open) } : null;
       renderStripView(stripViewFromLapState(d));
       renderNextStepsFromLapState(d);
+      updateSubmitState();   // reflect the open-block grey state right away
     } else {
+      // CNL-008: no usable answer; R10 says the strip goes grey and the form
+      // works as today, so a stale block from an earlier answer for this
+      // very teacher must not survive a failed refetch either.
       window.__otpReadSource.lapState = 'none';
+      openBlockInfo = null;
+      nextLapCache = null;
       renderStripView(STRIP_GREY_VIEW);
       prevNsHide();
+      updateSubmitState();
       refreshPrevNextSteps();   // old fallback: may still fill Next Steps state (c)
     }
   }
@@ -6822,7 +7308,6 @@ body.is-viewer .cog-btn { display: none; }
   // free-text leaking into the Sheet, scroll discoverability. The library
   // is vendored locally in lib/ so the form works on any network.
   const HTML_ESCAPE = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-  const tomSelects = {};
 
   function initTomSelects() {
     if (typeof TomSelect !== 'function') {
@@ -6845,8 +7330,19 @@ body.is-viewer .cog-btn { display: none; }
     tomSelects.teacher = new TomSelect('#teacher', Object.assign({}, baseOpts, {
       placeholder: LOADING_PLACEHOLDERS.teacher,  // shown until options load
       searchField: ['text', 'value'], // search by name and email
-      // otp-v0.11: picking a teacher reads their coaching status (strip + Next Steps).
-      onChange: () => { updateSubmitState(); refreshTeacherStatus(); },
+      // otp-v0.11: picking a teacher reads their coaching status (strip + Next
+      // Steps). Clearing the Teacher box (the x) while continuing an open
+      // record (plan 2.2 point 6) returns to the blank new-observation form
+      // instead of just clearing the field on top of a loaded record.
+      onChange: (value) => {
+        // CNL-006: every teacher change (pick, change, clear) begins a new
+        // context, so a Continue (or any other transition) already in
+        // flight for the PREVIOUS teacher can never resume onto this one.
+        newFormContext('teacher-change');
+        updateSubmitState();
+        if (!value && EDIT_MODE) { exitEditToBlank(); return; }
+        refreshTeacherStatus();
+      },
     }));
     tomSelects.inspector = new TomSelect('#inspector', Object.assign({}, baseOpts, {
       placeholder: LOADING_PLACEHOLDERS.inspector,

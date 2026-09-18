@@ -1,3 +1,96 @@
+## otp-v0.11 · continue and close, no reload (2026-09-18, task 7, preview build)
+
+Part of the otp-v0.11 "lap tracker" plan (`graph/continue` branch, wave 3),
+built on task 5 (the strip) and task 6 (email stamps). Fixes the three
+findings an independent review left open on task 5, then builds plan 2.2
+(continue and close an open observation from the normal form, no page
+reload) and plan 3.6 (definitive Supabase answers never fall back to
+Google). Live writes untouched; the edge function change is additive.
+
+- **STRIP-001 (`refreshTeacherStatus`).** A teacher change now renders the
+  grey pending state (`STRIP_GREY_VIEW`) at once, before awaiting
+  `get_teacher_lap_state`. Before this fix, changing from Teacher A (open
+  observation drawn) to Teacher B left A's line, card states and
+  `#strip-continue` (with A's token) on screen until B's answer returned.
+- **STRIP-002 (`submitForm`).** Right after a successful Save & Lock the
+  strip now shows the observation just opened (card 1 Completed, card 4
+  Current) for the whole 3 s locked interval, via a direct local render
+  (`renderStripJustOpened`) instead of the stale pre-submit picture. Prefers
+  the lap from the write result (Supabase path); the Google fallback answers
+  with no lap, so it falls back to `nextLapCache`, the `next_lap` cached from
+  the last `get_teacher_lap_state` read for the picked teacher.
+- **STRIP-003 (`formatDay`).** A date-only value (`"2026-09-16"`) is now
+  parsed as a local calendar date (`new Date(y, m-1, d)`), not
+  `new Date("2026-09-16")` (UTC midnight, which a browser west of UTC showed
+  as the day before). The month is spelled from a fixed table
+  (`FORMAT_DAY_MONTHS`) because en-GB's `Intl` abbreviates September as
+  "Sept", not the "Sep" of the approved mock. A full timestamp (`closed_at`
+  etc.) is unaffected, unchanged.
+- **`EDIT_MODE` is switchable state, not a load-once constant.** `EDIT_TOKEN`
+  / `EDIT_MODE` are now `let`, flipped in place by `continueOpenObservation()`
+  and `exitEditToBlank()`, with no page reload (a reload can show the gate
+  again; the wrapped iOS app needs this). `#strip-continue` is now a
+  `<button>` (was an `<a>`): its token lives only in the closure variable
+  `stripContinueToken`, read by one click handler, never the DOM, a log, or
+  the URL.
+- **Continue** (`continueOpenObservation`, plan 2.2 + 3.5): flushes the blank
+  form's draft (local, then its Supabase copy) first (if anything besides
+  the teacher/observer names was typed, a confirm asks first, and it stays
+  saved as the draft either way), then bumps `formContextGen` and loads the
+  picked teacher's open record through the exact path `?edit=` already uses
+  (`loadClosedRecord` in edit mode, Supabase `otp-record` first).
+- **`formContextGen`** (plan 3.5.2): bumped on Continue, on Reset, on the
+  Teacher-box × (`exitEditToBlank`), and once a record finishes loading
+  (`enterEditMode`). `loadClosedRecord`, `pullDraftFromSupabase`,
+  `syncDraftToSupabase` and the Evidence Pad's `extractAndApply` /
+  `applyTextToField` all capture it when they start and do nothing (or, for a
+  pad extraction, write into the STORED draft instead of the screen, via
+  `writeIntoStoredDraft`) if it has changed by the time they resolve. The
+  dropdown options fetch stays page-wide and exempt, unchanged.
+- **`clearRecordDisplay`** (plan 3.5.4/3.5.5): every record control, pending
+  Tom Select value, rubric chip/note, pad paperclip and the pad lightbox
+  state are cleared before a record fills the page (never the saved draft);
+  the fill loop no longer skips a field the record deliberately left blank
+  (`loadClosedRecord` dropped its `value === ''` guard). Pad images now cache
+  by record token + filename, not filename alone (`fetchPadImage`), so a
+  late image for another record, or the same filename from a different
+  teacher, is never shown. `EvidencePad.refreshAvailability()` re-hides/shows
+  the field pencils on a mode change; `EvidencePad.available` is a live
+  getter, not a value frozen at construction.
+- **Exit to blank** (`exitEditToBlank`, plan 2.2.6 + 3.5.7): the Teacher-box
+  × while continuing (its Tom Select `onChange` now checks `!value &&
+  EDIT_MODE`) runs the same steps in reverse: the draft comes back, and the
+  strip + Next Steps echo re-read for whatever teacher the draft names.
+- **R7 on the blank form** (plan 2.2.4): while the picked teacher has an open
+  observation, Save & Lock stays grey regardless of what is filled
+  (`updateSubmitState`'s `teacherOpenBlocked`, from `openBlockInfo`, set by
+  `refreshTeacherStatus`); a tap says exactly "Observation N is still open.
+  Continue it, or close it first." (`showOpenObservationBlocked`), no
+  override.
+- **Definitive answers (plan 3.6).** The v0.11 form always sends
+  `enforce_open_block: 'true'` on a submit (never stored in `content`, the
+  server strips it). A parsed Supabase answer whose `error` is
+  `open_observation` or `already_closed` is final: `sbWrite` attaches the
+  parsed answer as `err.answer`; `submitForm` and `postEditRecord` show the
+  calm message and refresh the strip without ever asking Google. The Google
+  fallback stays for everything else (no answer, a timeout, unusable JSON,
+  any other `success:false`). `supabase/functions/otp-submit/index.ts` now
+  passes through an allowlist (`lap`, `id`, `status`, `closed_at`) on those
+  two error codes only; nothing else about its answer shape changed.
+- **Specs:** the three Part A fixes (STRIP-001/002/003, the last in its own
+  `timezoneId: 'America/Los_Angeles'` describe block), one per point of plan
+  2.2, plus: a record load via Continue or `?edit=` never touches the draft
+  (hard rule 13); typed Next Steps never survive into a continued record
+  whose own are empty; a draft pull and a pad extraction that resolve AFTER
+  Continue change nothing in the loaded record; teacher A's pad image is
+  never shown for teacher B's same-named file; a record that arrives before
+  its option lists still ends with Teacher/Observer/Subject filled and the
+  edit buttons enabled; `open_observation` / `already_closed` never fall
+  back to Google and name the lap from the answer. The existing Continue spec
+  was rewritten: the button no longer navigates, so the token-placement
+  assertion now expects it nowhere in the DOM at all (was: exactly once, in
+  `href`).
+
 ## otp-v0.11 · status strip + Next Steps rework (2026-09-18, task 5, preview build)
 
 Part of the otp-v0.11 "lap tracker" plan (`graph/strip` branch, wave 2).
