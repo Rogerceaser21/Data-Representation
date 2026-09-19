@@ -5632,3 +5632,81 @@ test('REV-005: a Google submit answer of open_observation shows the calm message
   await expect(page.locator('#btn-submit')).not.toBeDisabled();
   expect(h.errors.filter((e) => !/status of 500/.test(e))).toEqual([]);
 });
+
+/* ============================================================================
+ * otp-v0.11 final inspection round 2 (GPT-6 Astra, 19 Sep 2026) · REV-008
+ * ========================================================================== */
+
+test('REV-008: a closed ?edit= record loaded BEFORE its option lists keeps its own strip once the lists resolve the teacher', async ({ page }) => {
+  // The realistic common order on a live network (record ~1s, lists 2-4s):
+  // the record renders its own closed strip first, while the Teacher Tom
+  // Select still has no options (only dataset.pendingValue) - so
+  // currentTeacherName() reads '' at that exact moment. Round 1's REV-003 fix
+  // stamped lapStateTeacher from that empty read, which did not hold: once
+  // the lists landed and resolved the teacher, applyDropdownOptions's own
+  // refreshTeacherStatus() call saw a "new" name and overwrote the closed
+  // strip with this teacher's general coaching history (LAP_STATE_STARTING_NEXT
+  // below, a stand-in for "some other/no open observation").
+  const h = await harness(page, { record: RECORD_PAYLOAD_CLOSED });
+  let lapStateCalls = 0;
+  await page.route('**/rest/v1/rpc/get_teacher_lap_state', async (r: Route) => {
+    lapStateCalls++;
+    await r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(LAP_STATE_STARTING_NEXT) });
+  });
+  const options = await holdOptions(page);
+  await routeEdgeRecord(page, (r) =>
+    r.fulfill({ status: 200, contentType: 'application/json',
+      body: JSON.stringify(edgeRecord(RECORD_PAYLOAD_CLOSED)) }),
+  );
+
+  await page.goto(`${FORM_URL}?edit=${EDIT_TOKEN_FIXTURE}`);
+  await passGate(page);
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 15_000 });
+  const stripLineRe = dayRe('Observation 2 completed ', RECORD_PAYLOAD_CLOSED.data.closed_at);
+  await expect(page.locator('#status-strip-line')).toHaveText(stripLineRe, { timeout: 10_000 });
+  // the record really did render before any list arrived
+  expect(await optionKeys(page), 'the record landed before the lists, so the race is untested')
+    .toEqual([[], [], []]);
+
+  // now let the lists land and resolve the pending teacher
+  options.release();
+  await options.landed;
+  await expectListsApplied(page);
+  await expect(tsControl(page, 'teacher')).toContainText('Test Teacher');
+
+  // REV-008: the closed record's own strip must still stand
+  await expect(page.locator('#status-strip-line')).toHaveText(stripLineRe);
+  expect(await stripStatuses(page)).toEqual(
+    ['Completed', 'Coming soon', 'Completed', 'Completed', 'Coming soon', 'Completed']);
+  expect(lapStateCalls,
+    'a closed-record view must never ask get_teacher_lap_state, even once the lists resolve the teacher').toBe(0);
+  expect(h.errors).toEqual([]);
+});
+
+test('REV-008: a closed ?edit= record stands even if get_teacher_lap_state would answer 500 once the lists land', async ({ page }) => {
+  const h = await harness(page, { record: RECORD_PAYLOAD_CLOSED });
+  await page.route('**/rest/v1/rpc/get_teacher_lap_state', (r: Route) =>
+    r.fulfill({ status: 500, contentType: 'text/plain', body: 'upstream error' }));
+  const options = await holdOptions(page);
+  await routeEdgeRecord(page, (r) =>
+    r.fulfill({ status: 200, contentType: 'application/json',
+      body: JSON.stringify(edgeRecord(RECORD_PAYLOAD_CLOSED)) }),
+  );
+
+  await page.goto(`${FORM_URL}?edit=${EDIT_TOKEN_FIXTURE}`);
+  await passGate(page);
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 15_000 });
+  const stripLineRe = dayRe('Observation 2 completed ', RECORD_PAYLOAD_CLOSED.data.closed_at);
+  await expect(page.locator('#status-strip-line')).toHaveText(stripLineRe, { timeout: 10_000 });
+
+  options.release();
+  await options.landed;
+  await expectListsApplied(page);
+
+  // no grey strip, no error UI: the closed record's own state stands
+  await expect(page.locator('#status-strip-line')).toHaveText(stripLineRe);
+  expect(await stripStatuses(page)).toEqual(
+    ['Completed', 'Coming soon', 'Completed', 'Completed', 'Coming soon', 'Completed']);
+  await expect(page.locator('#toast')).not.toHaveClass(/error/);
+  expect(h.errors.filter((e) => !/status of 500/.test(e))).toEqual([]);
+});
