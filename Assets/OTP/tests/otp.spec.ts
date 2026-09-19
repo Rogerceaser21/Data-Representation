@@ -4323,12 +4323,18 @@ test('otp-v0.10 Phase 3: ?edit= of a CLOSED lap stays locked when the lists land
   expect(h.errors).toEqual([]);
 });
 
-test('otp-v0.11 F3: the option lists landing BEFORE an ?edit= of an ALREADY-CLOSED record still reads the strip', async ({ page }) => {
+test('otp-v0.11 F3/REV-003: an ?edit= of an ALREADY-CLOSED record renders ITS OWN closed state, never the teacher-history lookup', async ({ page }) => {
   // Reverse of the race just above: here the LISTS win, and the record (the
-  // only thing that ever names the teacher) is held back. Before the fix,
-  // the lists' own refreshTeacherStatus() call saw no teacher yet and gave
-  // up silently, and lockForm()'s branch never called it again, so the strip
-  // stayed grey and get_teacher_lap_state was never asked.
+  // only thing that ever names the teacher) is held back.
+  // REV-003 (otp-v0.11 final inspection round 1): before this fix, the
+  // lockForm() branch fell back to refreshTeacherStatus(), which reads the
+  // TEACHER's current coaching state via get_teacher_lap_state - mocked below
+  // to a DIFFERENT, unrelated answer ("last one closed, now starting
+  // Observation 2") that contradicted the actual closed record on screen.
+  // Plan 2.1: "a closed observation always shows cards 1, 3, 4, 6 Completed"
+  // for ITS OWN lap. The fix renders the loaded record's own state directly
+  // (the same helper Close Lap uses) and never asks get_teacher_lap_state for
+  // a closed-record view at all.
   const h = await harness(page, { record: RECORD_PAYLOAD_CLOSED });
   let releaseRecord: () => void = () => {};
   const edge = await routeEdgeRecord(page, async (r) => {
@@ -4336,7 +4342,11 @@ test('otp-v0.11 F3: the option lists landing BEFORE an ?edit= of an ALREADY-CLOS
     await r.fulfill({ status: 200, contentType: 'application/json',
       body: JSON.stringify(edgeRecord(RECORD_PAYLOAD_CLOSED)) });
   });
-  await mockLapState(page, LAP_STATE_STARTING_NEXT);
+  let lapStateCalls = 0;
+  await page.route('**/rest/v1/rpc/get_teacher_lap_state', async (r: Route) => {
+    lapStateCalls++;
+    await r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(LAP_STATE_STARTING_NEXT) });
+  });
 
   await page.goto(`${FORM_URL}?edit=${EDIT_TOKEN_FIXTURE}`);
   await passGate(page);              // resolves once the option lists land
@@ -4349,9 +4359,13 @@ test('otp-v0.11 F3: the option lists landing BEFORE an ?edit= of an ALREADY-CLOS
 
   releaseRecord();
   await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 15_000 });
-  const stripLineRe = new RegExp(
-    `^Observation 1 completed ${dayPat('2026-09-14')} · now starting Observation 2$`);
+  // the closed-record contract (plan 2.1): THIS record's own lap and date...
+  const stripLineRe = dayRe('Observation 2 completed ', RECORD_PAYLOAD_CLOSED.data.closed_at);
   await expect(page.locator('#status-strip-line')).toHaveText(stripLineRe, { timeout: 10_000 });
+  expect(await stripStatuses(page)).toEqual(
+    ['Completed', 'Coming soon', 'Completed', 'Completed', 'Coming soon', 'Completed']);
+  // ...never the teacher-history lookup's contradictory "now starting" picture
+  expect(lapStateCalls, 'a closed-record view must never ask get_teacher_lap_state').toBe(0);
   expect(edge).toHaveLength(1);
   expect(h.errors).toEqual([]);
 });
@@ -5487,4 +5501,134 @@ test('sweep fix (round 3): Reset during "Reading pad..." on Save & Lock aborts t
   await expect(page.locator('#submitted-banner')).not.toHaveClass(/is-active/);
   expect(h.errors).toEqual([]);
   await expectConsistentFormState(page);
+});
+
+/* ============================================================================
+ * otp-v0.11 final inspection round 1 (GPT-6 Astra, 19 Sep 2026)
+ * REV-001, REV-004, REV-005. REV-003 is folded into the existing F3 spec above.
+ * ========================================================================== */
+
+test('REV-001: continuing a legacy (v1) record then exiting through the Teacher-box x restores the live v2 rubric, not v1', async ({ page }) => {
+  const legacyOpen = {
+    ...RECORD_PAYLOAD_LEGACY,
+    data: { ...RECORD_PAYLOAD_LEGACY.data, status: 'observed', closed_at: '', lap: '2', round: 'OTP Term 1 26-27' },
+  };
+  const h = await harness(page, { record: legacyOpen });
+  await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
+  page.on('dialog', (d) => d.accept());   // the chip mark below makes Continue ask first
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+
+  // Good 7 exists only in the LIVE 32-criterion (v2) rubric ("good" tops out
+  // at 6 in the legacy 26-paragraph v1); marking it before Continue puts a
+  // v2-numbered selection in the draft that a wrong active rubric would
+  // misread or lose.
+  await chipAt(page, 'good', 7).click();
+  await expect(chipAt(page, 'good', 7)).toHaveAttribute('data-state', 'present');
+  await page.waitForTimeout(400);   // past the 220ms autosave debounce
+
+  await page.locator('#strip-continue').click();
+  await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
+  // otp-v0.6: a legacy record (no rubric_version) renders on the 26 v1
+  // paragraphs; "good" has 6 there, not 7.
+  await expect(page.locator('.rub-chip')).toHaveCount(26);
+  await expect(page.locator('.rub-chip[data-level="good"]')).toHaveCount(6);
+
+  await tsControl(page, 'teacher').locator('.clear-button').click();
+  await expect(page.locator('#btn-reset')).toBeVisible();
+
+  // REV-001: back on the blank form, the LIVE v2 rubric must be rebuilt...
+  await expect(page.locator('.rub-chip')).toHaveCount(32, { timeout: 10_000 });
+  await expect(page.locator('.rub-chip[data-level="good"]')).toHaveCount(7);
+  // ...with the draft's own v2 selection restored under the CORRECT
+  // numbering (not lost, not shifted onto a different criterion by the v1
+  // table still being on screen when the draft was applied).
+  await expect(chipAt(page, 'good', 7)).toHaveAttribute('data-state', 'present');
+  await expect(page.locator('#rubric_version')).toHaveValue('sp1-v2');
+  expect(h.errors).toEqual([]);
+  await expectConsistentFormState(page);
+});
+
+test('REV-004: Save changes refreshes the Next Steps echo to the observation\'s own just-saved steps (plan 2.3(b), R8)', async ({ page }) => {
+  const openNoSteps = {
+    ...RECORD_PAYLOAD_OPEN,
+    data: { ...RECORD_PAYLOAD_OPEN.data, next_step_1: '', next_step_2: '', next_step_3: '' },
+  };
+  const h = await harness(page, { record: openNoSteps });
+  // The backend answer changes after the save actually lands: the SECOND
+  // get_teacher_lap_state read carries this observation's own, just-updated
+  // Next Steps, exactly as a real Supabase re-read would.
+  const afterSave = {
+    ...LAP_STATE_OPEN_NO_OWN_STEPS,
+    open: { ...LAP_STATE_OPEN_NO_OWN_STEPS.open, next_step_1: 'Give the new starter a buddy' },
+  };
+  let lapStateCalls = 0;
+  await page.route('**/rest/v1/rpc/get_teacher_lap_state', async (r: Route) => {
+    lapStateCalls++;
+    await r.fulfill({ status: 200, contentType: 'application/json',
+      body: JSON.stringify(lapStateCalls === 1 ? LAP_STATE_OPEN_NO_OWN_STEPS : afterSave) });
+  });
+  await openEdit(page);
+  // own steps are empty, so the predecessor's show first (R8)
+  const predecessorHead = new RegExp(`^Observation 1 Next Steps · ${dayPat('2026-09-01')} · Igor Sesar$`);
+  await expect(page.locator('#prev-ns-echo-head')).toHaveText(predecessorHead, { timeout: 10_000 });
+
+  await page.fill('#next_step_1', 'Give the new starter a buddy');
+  await page.locator('#btn-save-changes').click();
+  await expect(page.locator('#notice')).toBeVisible({ timeout: 10_000 });   // the open-lap sticky notice
+
+  // REV-004: the echo must switch to Observation 2's OWN just-saved step
+  // (heading alone, no date/observer, plan 2.3(b)) instead of continuing to
+  // show the predecessor's, and the teacher-status cache must have been
+  // invalidated and re-read to get there.
+  await expect(page.locator('#prev-ns-echo-head')).toHaveText('Observation 2 Next Steps', { timeout: 10_000 });
+  await expect(page.locator('#prev-ns-echo-list li')).toHaveText(['Give the new starter a buddy']);
+  expect(lapStateCalls, 'Save changes must trigger a fresh teacher-status read').toBeGreaterThan(1);
+  expect(h.errors).toEqual([]);
+});
+
+test('REV-005: a Google submit answer of open_observation shows the calm message and refreshes the strip, never the red Submit-failed toast', async ({ page }) => {
+  const h = await harness(page);
+  page.on('dialog', (d) => d.accept());
+  let lapStateCalls = 0;
+  await page.route('**/rest/v1/rpc/get_teacher_lap_state', async (r: Route) => {
+    lapStateCalls++;
+    await r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(LAP_STATE_NEVER) });
+  });
+  await openForm(page);
+  await fillRequired(page);
+  expect(lapStateCalls, 'the teacher pick reads the strip once').toBe(1);
+
+  // Supabase submit fails as a plain transport error (not a parsed business
+  // answer), twice (sbWriteRetry's one retry) - the same setup as "a failed
+  // edge function falls back to the Google POST" above - so the write falls
+  // through to Google, whose own R7 check (plan 3.6, R13) then answers
+  // open_observation instead of creating the row.
+  let edgeCalls = 0;
+  await page.route(EDGE_FN, async (r: Route) => {
+    edgeCalls++;
+    await r.fulfill({ status: 500, contentType: 'application/json',
+      body: JSON.stringify({ success: false, error: 'write failed' }) });
+  });
+  await page.route('**/script.google.com/**', async (r: Route) => {
+    if (r.request().method() === 'POST') {
+      const parsed = JSON.parse(r.request().postData() || '{}');
+      if (parsed.form === 'otp' && !parsed.action) {
+        return r.fulfill({ status: 200, contentType: 'application/json',
+          body: JSON.stringify({ success: false, error: 'open_observation', lap: 5, id: 'AIS-OTP-OTHER' }) });
+      }
+    }
+    await r.fallback();
+  });
+
+  await page.locator('#btn-submit').click();
+  await expect(page.locator('#toast')).toHaveText(
+    'Observation 5 is still open. Continue it, or close it first.', { timeout: 10_000 });
+  await expect(page.locator('#toast')).not.toHaveClass(/error/);
+  expect(edgeCalls, 'the retry that precedes the Google fallback').toBe(2);
+  expect(lapStateCalls, 'the strip is refreshed after the business answer').toBe(2);
+  await expect(page.locator('#submitted-banner')).not.toHaveClass(/is-active/);
+  await expect(page.locator('#btn-submit')).toBeVisible();
+  await expect(page.locator('#btn-submit')).not.toBeDisabled();
+  expect(h.errors.filter((e) => !/status of 500/.test(e))).toEqual([]);
 });

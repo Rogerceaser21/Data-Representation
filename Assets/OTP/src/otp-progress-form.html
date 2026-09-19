@@ -5479,6 +5479,21 @@ body.is-viewer .cog-btn { display: none; }
         });
         result = await resp.json();
       }
+      // REV-005 fix (otp-v0.11 final inspection round 1): the Google fallback
+      // can ALSO answer open_observation / already_closed now (plan 3.6, R13,
+      // the release-enabled Sheet-only R7 check), the same business answers
+      // the Supabase path above already handles. Treat them the same way
+      // here too - calm message, the answer's own lap, a fresh strip - never
+      // let them fall into the generic failure throw below and surface as a
+      // red "Submit failed: open_observation" toast.
+      if (result && (result.error === 'open_observation' || result.error === 'already_closed')) {
+        delete btn.dataset.busy;
+        btn.disabled = false;
+        btn.textContent = prevText;
+        if (result.error === 'open_observation') showOpenObservationBlocked(result.lap);
+        else showAlreadyClosedBlocked();
+        return;
+      }
       if (!result || !result.success) throw new Error((result && result.error) || 'Submit failed');
 
       clearDraftEverywhere();   // the local draft and its Supabase copy
@@ -5598,6 +5613,16 @@ body.is-viewer .cog-btn { display: none; }
                  ' is still OPEN. If you have met the teacher, given feedback and ' +
                  'agreed the Next Steps, tap Close Lap so a new observation starts ' +
                  'the next time they are observed.');
+      // REV-004 fix (otp-v0.11 final inspection round 1): the three-state
+      // Next Steps echo (plan 2.3(b), R8) must reflect what was just saved,
+      // not whatever it showed before this save ran. Invalidate the cached
+      // teacher status and re-read it, the same way a business refusal
+      // already does (showOpenObservationBlocked/showAlreadyClosedBlocked):
+      // a fresh get_teacher_lap_state carries this observation's own,
+      // just-updated Next Steps, and renderNextStepsFromLapState already
+      // falls back to the predecessor's only while they are still empty.
+      lapStateTeacher = '';
+      refreshTeacherStatus();
       return;
     }
     if (out && out.error === 'open_observation') { showOpenObservationBlocked(out.lap); return; }
@@ -5772,6 +5797,16 @@ body.is-viewer .cog-btn { display: none; }
     // record just left, never leaves the just-exited "open" picture
     // standing (refreshTeacherStatus alone would skip a same-name re-fetch).
     clearLapCardAndOutlines();
+    // REV-001 fix (otp-v0.11 final inspection round 1): a legacy record
+    // (rubric_version other than "sp1-v2") left the active rubric on SP1_V1
+    // (setActiveRubric, at load). The blank form always drafts against the
+    // LIVE SP1 rubric, so its numbering must be restored, and its table
+    // rebuilt, BEFORE the draft below is applied - otherwise a v2-numbered
+    // selection renders (or is silently dropped) under v1's different
+    // criteria while rubric_version gets stamped "sp1-v2" regardless
+    // (syncRubricNotes), misrepresenting the saved coaching evidence.
+    // No-op (see setActiveRubric) when the rubric was never switched.
+    setActiveRubric(SP1);
     // the draft comes back (plan 3.5 point 7)
     let data;
     try { data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch (e) { data = {}; }
@@ -6047,14 +6082,22 @@ body.is-viewer .cog-btn { display: none; }
         enterEditMode(rec, token);
       } else {
         lockForm(rec.record_id, rec.submitted_at, 'closed', rec);
-        // F3 fix (otp-v0.11 round 1): an ?edit= link to an ALREADY-CLOSED
-        // record takes this branch, never enterEditMode's own
-        // refreshTeacherStatus() call. The Teacher field is filled above, so
-        // the strip must still read this teacher's coaching history, even
-        // when the option lists landed first and their own trigger saw no
-        // teacher yet. A plain (non-edit) closed record view stays silent,
-        // as it always has.
-        if (EDIT_MODE) refreshTeacherStatus();
+        // REV-003 fix (otp-v0.11 final inspection round 1): an ?edit= link to
+        // an ALREADY-CLOSED record used to fall back to refreshTeacherStatus()
+        // here (F3 fix, round 1), but that reads the TEACHER's current
+        // coaching state, which can name a different (or no) open observation
+        // and contradict the closed record on screen. Plan 2.1: "a closed
+        // observation always shows cards 1, 3, 4, 6 Completed" for ITS OWN
+        // lap. Render that directly from the record instead (no re-fetch,
+        // the same helper Close Lap uses), and stamp lapStateTeacher so a
+        // later get_teacher_lap_state answer for this same teacher (the
+        // option lists landing afterwards, via applyDropdownOptions) can
+        // never replace it. A plain (non-edit) closed record view stays
+        // silent, as it always has.
+        if (EDIT_MODE) {
+          lapStateTeacher = currentTeacherName();
+          renderStripJustClosed(rec.lap, rec.closed_at);
+        }
       }
       initPadAttachments(result.pad_files, token);   // v0.53: pad pages, if any
       hideLoadingOverlay();   // otp-v0.10 Phase 3: the record is what the page waited for
