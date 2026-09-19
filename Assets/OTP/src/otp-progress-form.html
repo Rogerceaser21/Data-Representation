@@ -742,20 +742,6 @@ body.is-viewer .prev-ns { display: none !important; }
 .strip-card.is-coming    { border-color: var(--paper-faint); border-style: dashed; }
 .strip-card.is-grey      { border-color: var(--paper-faint); border-style: solid; opacity: 0.6; }
 
-.strip-continue-btn {
-  display: block;
-  margin: clamp(0.7rem, 1.2vw, 0.9rem) auto 0;
-  padding: 0.55rem 1.3rem;
-  border: none; border-radius: 999px;
-  background: var(--ais-blue);
-  color: #fff;
-  font-family: var(--body-font);
-  font-weight: 700;
-  font-size: 0.85rem;
-  text-decoration: none;
-  cursor: pointer;
-}
-.strip-continue-btn[hidden] { display: none; }
 /* Never in the ungated teacher viewer (R5: teachers only ever view). */
 body.is-viewer .status-strip-section { display: none !important; }
 
@@ -2862,7 +2848,6 @@ body.is-viewer .cog-btn { display: none; }
         <span class="strip-status"></span>
       </div>
     </div>
-    <button type="button" class="strip-continue-btn" id="strip-continue" hidden></button>
   </section>
 
   <!-- ============================================
@@ -5693,6 +5678,20 @@ body.is-viewer .cog-btn { display: none; }
   /* The record is loaded and its lap is still open: keep the fields live and
      say where the lap stands. */
   function enterEditMode(rec, token) {
+    // BUG-1 fix (Igor's iPad report, 2026-09-19): lockForm() stamps
+    // dataset.locked='1' on both buttons for EVERY lock, including a plain
+    // Save & Lock (mode 'submit'), where they are not even shown; the
+    // automatic reset after Save & Lock (softResetForm) clears is-locked and
+    // every field but never that flag on these two, only exitEditToBlank
+    // does. THIS record is a fresh, genuinely open one just landing in edit
+    // mode, so any such leftover from earlier in the same page session (a
+    // prior Save & Lock, Close Lap, or closed-record view) must never carry
+    // over onto it; updateSubmitState()'s own guard treats the flag as
+    // permanent otherwise.
+    ['btn-save-changes', 'btn-close-lap'].forEach(function (id) {
+      const b = document.getElementById(id);
+      if (b) delete b.dataset.locked;
+    });
     EDIT_RECORD = {
       token: token,
       lap: String(rec.lap || '').trim() || '1',
@@ -5722,54 +5721,40 @@ body.is-viewer .cog-btn { display: none; }
     newFormContext('enter-edit-mode');
   }
 
-  // otp-v0.11 plan 2.2 + 3.5: "Continue Observation N" on the status strip.
-  // Switches the page into edit mode for the picked teacher's open record,
-  // through the SAME load path the ?edit= email link uses, with NO page
-  // reload (a reload can show the gate again; the wrapped iOS app needs
-  // this). The token stays in memory only: never the DOM, never a log, never
-  // the URL.
-  // Picking the teacher (and usually the observer) is how the Continue button
-  // appears at all, so those two names alone never count as "typed" for the
-  // point 5 question below; only free content beyond them does. sp1_not_seen
-  // is the rubric's own complement list, derived and non-empty (every
-  // criterion, comma separated) from the very first autosave of a genuinely
-  // blank form, never something the observer typed or picked.
-  function draftHasTypedContent(data) {
-    const skip = { teacher: 1, inspector: 1, saved_at: 1, rubric_version: 1, sp1_not_seen: 1 };
-    return Object.keys(data || {}).some(function (k) {
-      return !skip[k] && String(data[k] == null ? '' : data[k]).trim() !== '';
-    });
-  }
-
-  async function continueOpenObservation(token) {
-    if (!token || EDIT_MODE) return;
-    const btn = document.getElementById('strip-continue');
-    if (btn && btn.dataset.busy === '1') return;   // CNL-006: no double tap
-    if (btn) btn.dataset.busy = '1';
+  // otp-v0.11 plan 2.2 + 3.5, amended (Problem 2, 2026-09-19): a teacher with
+  // an open observation loads it automatically as soon as they are picked -
+  // no Continue button, no ask-first pop-up. Through the SAME load path the
+  // ?edit= email link uses, with NO page reload (a reload can show the gate
+  // again; the wrapped iOS app needs this). The token stays in memory only:
+  // never the DOM, never a log, never the URL.
+  // Guards: EDIT_MODE / viewer / a record view already in progress rule out
+  // starting a second one; autoLoadToken, set before any await, rules out a
+  // second load of the SAME record (a second pick while the first is still
+  // in flight, or refreshTeacherStatus's own post-load re-read in
+  // enterEditMode seeing the same still-open record). Anything already typed
+  // into the blank form is flushed and kept as the draft exactly as the old
+  // Continue path did (CNL-002); it comes back when the coach returns to the
+  // blank form with the Teacher-box x or Reset.
+  let autoLoadToken = '';
+  async function autoLoadOpenObservation(token, teacher) {
+    if (!token || EDIT_MODE || window.R3_VIEWER || CLOSED_RECORD_VIEW) return;
+    if (autoLoadToken === token) return;
+    autoLoadToken = token;
     try {
-      // plan 3.5 point 1: flush the blank form's draft first, SYNCHRONOUSLY,
-      // before deciding whether to ask. CNL-002 (fix round 1): the question
-      // used to read localStorage before this flush, so typing and tapping
-      // Continue inside the 220 ms autosave debounce skipped the question and
-      // could lose the typing; saveForm() takes a fresh DOM snapshot right now.
+      // plan 3.5 point 1: flush the blank form's draft first, SYNCHRONOUSLY -
+      // saveForm() takes a fresh DOM snapshot right now, before anything else
+      // touches the form.
       clearTimeout(saveTimer);
       saveForm();
-      let draft;
-      try { draft = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch (e) { draft = {}; }
-      if (draftHasTypedContent(draft) &&
-          !confirm('Save what you have typed as your draft and continue this observation?')) {
-        return;
-      }
       // CNL-006: capture the context and the picked teacher before the first
-      // await; a Reset or a teacher change during it must stop Continue, not
+      // await; a Reset or a teacher change during it must stop the load, not
       // let it resume and load A's record under B (or after a Reset).
       const gen = formContextGen;
-      const teacher = currentTeacherName();
       clearTimeout(draftSyncTimer);
       await syncDraftToSupabase();   // the Supabase copy, before anything else touches the form
       if (gen !== formContextGen || EDIT_MODE || currentTeacherName() !== teacher) return;
       // plan 3.5 point 2: a new context begins.
-      newFormContext('continue');
+      newFormContext('autoload');
       EDIT_TOKEN = token;
       EDIT_MODE = true;
       document.body.classList.add('is-editing');
@@ -5778,7 +5763,7 @@ body.is-viewer .cog-btn { display: none; }
       // bootstrap keeps today's error toast.
       await loadClosedRecord('', token, exitEditToBlank);
     } finally {
-      if (btn) delete btn.dataset.busy;
+      if (autoLoadToken === token) autoLoadToken = '';
     }
   }
 
@@ -5831,10 +5816,6 @@ body.is-viewer .cog-btn { display: none; }
     applyPulledDraftToControls(data);       // resolves teacher/subject/grade, syncs visuals, re-reads the strip
     updateSubmitState();
   }
-
-  document.getElementById('strip-continue').addEventListener('click', () => {
-    continueOpenObservation(stripContinueToken);
-  });
 
   // === Closed-record viewer ============================================
   // v0.45: resilient record fetch, mirroring loadDropdownOptions. The old single
@@ -7173,11 +7154,8 @@ body.is-viewer .cog-btn { display: none; }
   const STRIP_STATUS_WORD = { current: 'Current', completed: 'Completed', pending: 'Pending', coming: 'Coming soon', grey: '' };
   const STRIP_GREY_VIEW = {
     n: null, line: 'Select a teacher',
-    status: ['grey', 'grey', 'grey', 'grey', 'grey', 'grey'], button: null,
+    status: ['grey', 'grey', 'grey', 'grey', 'grey', 'grey'],
   };
-  // otp-v0.11 task 7: the open observation's token for #strip-continue, kept
-  // ONLY here (never the DOM, never the URL) and read by its click handler.
-  let stripContinueToken = '';
 
   function renderStripView(view) {
     const lineEl = document.getElementById('status-strip-line');
@@ -7203,21 +7181,6 @@ body.is-viewer .cog-btn { display: none; }
       statusEl.textContent = word;
       statusEl.style.visibility = word ? 'visible' : 'hidden';
     }
-    const btn = document.getElementById('strip-continue');
-    if (btn) {
-      if (view.button) {
-        btn.textContent = view.button.label;
-        // otp-v0.11 task 7: Continue no longer navigates (the token must never
-        // reach the URL, a log, or anywhere else in the DOM), so it lives ONLY
-        // in this closure variable, read by the button's own click handler.
-        stripContinueToken = view.button.token || '';
-        btn.hidden = false;
-      } else {
-        btn.textContent = '';
-        stripContinueToken = '';
-        btn.hidden = true;
-      }
-    }
   }
 
   // plan 2.1 worked examples 1-3, from a get_teacher_lap_state success answer.
@@ -7231,7 +7194,6 @@ body.is-viewer .cog-btn { display: none; }
         line: 'Observation ' + n + ' · open since ' + formatDay(d.open.observation_date) +
               ' · coach ' + (d.open.observer || ''),
         status: ['completed', 'coming', emailsDone ? 'completed' : 'pending', 'current', 'coming', 'pending'],
-        button: { label: 'Continue Observation ' + n, token: d.open.record_token },
       };
     }
     if (d.last_closed) {
@@ -7242,7 +7204,6 @@ body.is-viewer .cog-btn { display: none; }
         line: 'Observation ' + prevN + ' completed ' + formatDay(d.last_closed.closed_at) +
               ' · now starting Observation ' + n,
         status: ['current', 'coming', 'pending', 'pending', 'coming', 'pending'],
-        button: null,
       };
     }
     const n = String(d.next_lap || '').trim() || '1';
@@ -7250,7 +7211,6 @@ body.is-viewer .cog-btn { display: none; }
       n: n,
       line: 'Teacher not observed yet · ' + currentSchoolYearLabel(),
       status: ['current', 'coming', 'pending', 'pending', 'coming', 'pending'],
-      button: null,
     };
   }
 
@@ -7263,7 +7223,6 @@ body.is-viewer .cog-btn { display: none; }
       n: n,
       line: 'Observation ' + n + ' completed ' + formatDay(closedAtIso),
       status: ['completed', 'coming', 'completed', 'completed', 'coming', 'completed'],
-      button: null,
     });
   }
 
@@ -7280,7 +7239,6 @@ body.is-viewer .cog-btn { display: none; }
       line: 'Observation ' + n + ' · open since ' + formatDay(observationDateVal) +
             ' · coach ' + (observerName || ''),
       status: ['completed', 'coming', 'pending', 'current', 'coming', 'pending'],
-      button: null,
     });
   }
 
@@ -7310,7 +7268,16 @@ body.is-viewer .cog-btn { display: none; }
   // The ONE trigger for both the strip and the Next Steps echo: teacher pick,
   // change, clear, draft restore, ?edit= record load, and (via
   // clearLapCardAndOutlines) Reset and the soft reset after Save & Lock.
-  async function refreshTeacherStatus() {
+  // `isPick` is true ONLY from the Teacher Tom Select's own onChange: BUG-1
+  // fix / Problem 2 amendment's loop guard ("the teacher value set BY a
+  // loaded record must not trigger another auto-load") - every other caller
+  // (enterEditMode, the draft restores in exitEditToBlank/
+  // pullDraftFromSupabase, applyDropdownOptions resolving a pending name,
+  // the post-save/blocked re-reads) sets the Teacher field itself or reads
+  // an already-showing one, never a fresh user pick, so none of them may
+  // start a new auto-load; that is exactly what "returns to the blank form
+  // with the Teacher-box x or Reset" requires.
+  async function refreshTeacherStatus(isPick) {
     if (window.R3_VIEWER) return;
     // REV-008 fix (otp-v0.11 final inspection round 2): a loaded CLOSED
     // record's own strip (renderStripJustClosed) must never be replaced by a
@@ -7334,8 +7301,8 @@ body.is-viewer .cog-btn { display: none; }
     // STRIP-001 fix (otp-v0.11 round 1): render the grey pending state AT ONCE,
     // before awaiting the RPC. Without this, changing from Teacher A (whose
     // open observation was already drawn) to Teacher B left A's line, card
-    // states and #strip-continue (with A's token) on screen until B's answer
-    // returned, so a coach could tap A's Continue with B selected.
+    // states and A's token on screen until B's answer returned, so an
+    // auto-load could still fire for A with B now selected.
     renderStripView(STRIP_GREY_VIEW);
     // CNL-008: a lookup for a different teacher begins; the previous
     // teacher's block/cache must never survive onto this one, even before
@@ -7359,6 +7326,12 @@ body.is-viewer .cog-btn { display: none; }
       renderStripView(stripViewFromLapState(d));
       renderNextStepsFromLapState(d);
       updateSubmitState();   // reflect the open-block grey state right away
+      // Problem 2 amendment: picking a teacher with an open observation
+      // loads it by itself. Gated on isPick (see the function doc above) so
+      // a draft/record restore that merely shows this same teacher again
+      // (exitEditToBlank, a Supabase draft pull, the option lists landing)
+      // never starts a second load on its own.
+      if (isPick && d.open && d.open.record_token) autoLoadOpenObservation(d.open.record_token, name);
     } else {
       // CNL-008: no usable answer; R10 says the strip goes grey and the form
       // works as today, so a stale block from an earlier answer for this
@@ -7414,7 +7387,7 @@ body.is-viewer .cog-btn { display: none; }
         newFormContext('teacher-change');
         updateSubmitState();
         if (!value && EDIT_MODE) { exitEditToBlank(); return; }
-        refreshTeacherStatus();
+        refreshTeacherStatus(!!value);   // isPick: only a genuine pick may auto-load
       },
     }));
     tomSelects.inspector = new TomSelect('#inspector', Object.assign({}, baseOpts, {

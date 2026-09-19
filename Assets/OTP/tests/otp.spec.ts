@@ -3140,10 +3140,10 @@ test('otp-v0.11: the status strip renders the four worked examples of plan 2.1',
   await expect(stripLine(page)).toHaveText(`Teacher not observed yet · ${schoolYearLabel()}`, { timeout: 10_000 });
   expect(await stripStatuses(page)).toEqual(
     ['Current', 'Coming soon', 'Pending', 'Pending', 'Coming soon', 'Pending']);
-  await expect(page.locator('#strip-continue')).toBeHidden();
   expect(h.errors).toEqual([]);
 
-  // 2. open observation (Igor Sesar today)
+  // 2. open observation (Igor Sesar today): amended (Problem 2) - it auto-loads,
+  // no Continue button any more.
   h = await harness(page);
   await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
   await openForm(page);
@@ -3153,8 +3153,7 @@ test('otp-v0.11: the status strip renders the four worked examples of plan 2.1',
     { timeout: 10_000 });
   expect(await stripStatuses(page)).toEqual(
     ['Completed', 'Coming soon', 'Completed', 'Current', 'Coming soon', 'Pending']);
-  await expect(page.locator('#strip-continue')).toBeVisible();
-  await expect(page.locator('#strip-continue')).toHaveText('Continue Observation 2');
+  await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
   expect(await page.evaluate(() => (window as any).__otpReadSource.lapState)).toBe('supabase');
   expect(h.errors).toEqual([]);
 
@@ -3168,7 +3167,6 @@ test('otp-v0.11: the status strip renders the four worked examples of plan 2.1',
     { timeout: 10_000 });
   expect(await stripStatuses(page)).toEqual(
     ['Current', 'Coming soon', 'Pending', 'Pending', 'Coming soon', 'Pending']);
-  await expect(page.locator('#strip-continue')).toBeHidden();
   expect(h.errors).toEqual([]);
 
   // 4. straight after a successful Close Lap in this page: a direct, local
@@ -3209,7 +3207,6 @@ test('otp-v0.11: before a teacher is picked, the strip shows six grey cards and 
   for (let i = 1; i <= 6; i++) {
     await expect(page.locator(`#strip-card-${i}`)).toHaveClass(/\bis-grey\b/);
   }
-  await expect(page.locator('#strip-continue')).toBeHidden();
   expect(h.errors).toEqual([]);
 });
 
@@ -3314,39 +3311,34 @@ test('otp-v0.11: the status strip is absent in the ungated teacher viewer', asyn
   expect(h.errors).toEqual([]);
 });
 
-test('otp-v0.11 task 7: Continue is a button (never a link), and its token never appears in the DOM', async ({ page }) => {
+test('otp-v0.11 task 7 (amended, Problem 2): no Continue button/link exists anywhere, and the open observation\'s token never appears in the DOM, even while it auto-loads', async ({ page }) => {
   const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
   await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
   await openForm(page);
-  await pickTomSelect(page, 'teacher', 'Test Teacher');
-  const btn = page.locator('#strip-continue');
-  await expect(btn).toBeVisible({ timeout: 10_000 });
-  await expect(btn).toHaveText('Continue Observation 2');
-  expect(await btn.evaluate((el) => el.tagName)).toBe('BUTTON');
-  expect(await btn.evaluate((el) => el.hasAttribute('href'))).toBe(false);
+  expect(await page.locator('#strip-continue').count(), 'the Continue element must not exist at all').toBe(0);
   const token = LAP_STATE_OPEN_WITH_OWN_STEPS.open.record_token;
   const tokenCount = () => page.evaluate(
     (t) => document.documentElement.outerHTML.split(t).length - 1, token,
   );
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
   expect(await tokenCount(), 'the token must never appear in the DOM').toBe(0);
 
-  await btn.click();
   await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 15_000 });
+  expect(await page.locator('#strip-continue').count()).toBe(0);
   expect(await tokenCount(), 'the token must never appear in the DOM, even mid-edit').toBe(0);
   expect(h.errors).toEqual([]);
 });
 
-test('otp-v0.11 task 7 (2.2.2 / 2.2.7): Continue loads the SAME state a matching ?edit= link would, with no page navigation', async ({ page }) => {
+test('otp-v0.11 task 7 (2.2.2 / 2.2.7, amended): picking a teacher with an open observation loads the SAME state a matching ?edit= link would, with no page navigation', async ({ page }) => {
   const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
   await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
   await openForm(page);
   const startUrl = page.url();
   await page.evaluate(() => { (window as any).__navMarker = 'still here'; });
   await pickTomSelect(page, 'teacher', 'Test Teacher');
-  await page.locator('#strip-continue').click();
 
   await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 15_000 });
-  expect(page.url(), 'Continue must never navigate').toBe(startUrl);
+  expect(page.url(), 'the auto-load must never navigate').toBe(startUrl);
   expect(await page.evaluate(() => (window as any).__navMarker)).toBe('still here');
   await expect(page.locator('#btn-save-changes')).toBeVisible();
   await expect(page.locator('#btn-close-lap')).toBeVisible();
@@ -3407,12 +3399,15 @@ test('otp-v0.11: the strip causes no horizontal overflow at 1440, 1024 and 820, 
 test('otp-v0.11 F1: a late Next Steps fallback answer for a previous teacher never overwrites the next teacher\'s echo', async ({ page }) => {
   // B's own get_teacher_lap_state fails, so B falls into the old
   // Supabase-then-Google get_prev_next_steps path; that Supabase call is
-  // held here. C is then picked and answers cleanly via the primary read.
-  // Releasing B's held answer must not repaint C's echo with B's history.
+  // held here. C is then picked and answers cleanly via the primary read,
+  // and (Problem 2) auto-loads their OWN record - which must actually be
+  // named for C, or its silent Teacher repopulation reads back as B and
+  // spuriously restarts B's own lookup (a fixture bug, not a product one).
   const options = JSON.parse(JSON.stringify(OPTIONS_PAYLOAD));
   const list = options.options ? options.options.teachers : options.teachers;
   list.push({ name: 'Second Teacher' });
-  const h = await harness(page, { options });
+  const secondRecord = { ...RECORD_PAYLOAD, data: { ...RECORD_PAYLOAD.data, teacher: 'Second Teacher' } };
+  const h = await harness(page, { options, record: secondRecord });
   await page.route('**/rest/v1/rpc/get_teacher_lap_state', async (r: Route) => {
     const body = r.request().postDataJSON();
     if (body.p_teacher === 'Test Teacher') {
@@ -3430,8 +3425,11 @@ test('otp-v0.11 F1: a late Next Steps fallback answer for a previous teacher nev
   });
   await openForm(page);
   await pickTomSelect(page, 'teacher', 'Test Teacher');     // B: lap-state fails, fallback held
-  await pickTomSelect(page, 'teacher', 'Second Teacher');   // C: lap-state answers directly
+  await pickTomSelect(page, 'teacher', 'Second Teacher');   // C: lap-state answers directly, auto-loads
   await expect(page.locator('#prev-ns-echo-head')).toHaveText('Observation 2 Next Steps', { timeout: 10_000 });
+  // let C's own auto-load fully settle before releasing B's stale answer, so
+  // the two async chains never overlap.
+  await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
   releaseB();
   await page.waitForTimeout(500);
   // B's late fallback answer must not have overwritten C's echo
@@ -3460,9 +3458,11 @@ test('otp-v0.11 F2: a late get_teacher_lap_state answer never redraws over a jus
   await expect(stripLine(page)).toHaveText(justClosedRe, { timeout: 10_000 });
   releaseLapState();
   await page.waitForTimeout(500);
-  // the held (stale) "open" answer must not have redrawn the strip
+  // the held (stale) "open" answer must not have redrawn the strip, and must
+  // never auto-load a "fresh" copy of the record we just closed
   await expect(stripLine(page)).toHaveText(justClosedRe);
-  await expect(page.locator('#strip-continue')).toBeHidden();
+  await expect(page.locator('#btn-save-changes')).toBeHidden();
+  await expect(page.locator('#otp-form')).toHaveClass(/is-locked/);
   expect(h.errors).toEqual([]);
 });
 
@@ -4409,7 +4409,7 @@ test('otp-v0.10 Phase 3: an uppercase token skips Supabase and reaches Google un
  * otp-v0.11 task 7 · Part A (STRIP-001..003, the three open findings of task 5)
  * ========================================================================== */
 
-test('otp-v0.11 STRIP-001: switching teacher while a fetch is pending shows no stale line, cards or Continue token', async ({ page }) => {
+test('otp-v0.11 STRIP-001: switching teacher while a fetch is pending shows no stale line, cards or leaked token', async ({ page }) => {
   const options = JSON.parse(JSON.stringify(OPTIONS_PAYLOAD));
   const list = options.options ? options.options.teachers : options.teachers;
   list.push({ name: 'Second Teacher' });
@@ -4423,17 +4423,28 @@ test('otp-v0.11 STRIP-001: switching teacher while a fetch is pending shows no s
     await new Promise<void>((res) => { resolveB = res; });
     await r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(LAP_STATE_NEVER) });
   });
+  const token = LAP_STATE_OPEN_WITH_OWN_STEPS.open.record_token;
+  // A's own auto-load record fetch never lands in this test (amended for
+  // Problem 2: A's answer is no longer held back behind a Continue tap, so
+  // its record fetch is held instead, keeping A mid-load exactly as A's
+  // un-clicked Continue button used to) - the point under test is B's own
+  // pick clearing the strip at once, not A's eventual load.
+  await page.route('**/script.google.com/**', async (r: Route) => {
+    const url = r.request().url();
+    if (r.request().method() === 'GET' && url.includes(`token=${token}`)) {
+      await new Promise(() => {});   // never resolves
+    }
+    await r.fallback();
+  });
   await openForm(page);
   await pickTomSelect(page, 'teacher', 'Test Teacher');
-  await expect(page.locator('#strip-continue')).toBeVisible({ timeout: 10_000 });
-  const token = LAP_STATE_OPEN_WITH_OWN_STEPS.open.record_token;
+  await expect(page.locator('body')).toHaveClass(/is-editing/, { timeout: 10_000 });   // A's auto-load started
 
   await pickTomSelect(page, 'teacher', 'Second Teacher');   // B's answer stalls, released below
   // during the pending request: no previous line, no previous statuses, no
-  // Continue control, the token nowhere in the DOM
+  // stray token in the DOM
   await expect(stripLine(page)).toHaveText('Select a teacher');
   expect(await stripStatuses(page)).toEqual(['', '', '', '', '', '']);
-  await expect(page.locator('#strip-continue')).toBeHidden();
   const tokenCount = await page.evaluate(
     (t) => document.documentElement.outerHTML.split(t).length - 1, token,
   );
@@ -4486,24 +4497,23 @@ test.describe('otp-v0.11 STRIP-003: date-only values read as their own calendar 
  * Part C (plan 3.6, definitive answers)
  * ========================================================================== */
 
-test('otp-v0.11 plan 2.2 point 1: a teacher with an open observation shows worked example 2 with a Continue button', async ({ page }) => {
-  const h = await harness(page);
+test('otp-v0.11 plan 2.2 point 1 (amended, Problem 2): a teacher with an open observation auto-loads worked example 2, no button to tap', async ({ page }) => {
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
   await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
   await openForm(page);
   await pickTomSelect(page, 'teacher', 'Test Teacher');
-  await expect(page.locator('#strip-continue')).toHaveText('Continue Observation 2', { timeout: 10_000 });
-  await expect(stripLine(page)).toContainText('Observation 2 · open since');
+  await expect(stripLine(page)).toContainText('Observation 2 · open since', { timeout: 10_000 });
+  await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
   expect(h.errors).toEqual([]);
 });
 
-test('otp-v0.11 plan 2.2 point 2: Continue fills the form exactly as ?edit= does and swaps the bottom buttons', async ({ page }) => {
+test('otp-v0.11 plan 2.2 point 2 (amended): the auto-load fills the form exactly as ?edit= does and swaps the bottom buttons', async ({ page }) => {
   const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
   await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
   await openForm(page);
   await expect(page.locator('#btn-reset')).toBeVisible();
   await expect(page.locator('#btn-submit')).toBeVisible();
   await pickTomSelect(page, 'teacher', 'Test Teacher');
-  await page.locator('#strip-continue').click();
   await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 15_000 });
   await expect(page.locator('#btn-reset')).toBeHidden();
   await expect(page.locator('#btn-submit')).toBeHidden();
@@ -4514,13 +4524,12 @@ test('otp-v0.11 plan 2.2 point 2: Continue fills the form exactly as ?edit= does
   expect(h.errors).toEqual([]);
 });
 
-test('otp-v0.11 plan 2.2 point 3: Close Lap after Continue locks the record and shows worked example 4', async ({ page }) => {
+test('otp-v0.11 plan 2.2 point 3 (amended): Close Lap after the auto-load locks the record and shows worked example 4', async ({ page }) => {
   const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
   await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
   page.on('dialog', (d) => d.accept());
   await openForm(page);
   await pickTomSelect(page, 'teacher', 'Test Teacher');
-  await page.locator('#strip-continue').click();
   await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
   await page.locator('#btn-close-lap').click();
   await expect(page.locator('#otp-form')).toHaveClass(/is-locked/, { timeout: 15_000 });
@@ -4531,55 +4540,52 @@ test('otp-v0.11 plan 2.2 point 3: Close Lap after Continue locks the record and 
   expect(h.errors).toEqual([]);
 });
 
-test('otp-v0.11 plan 2.2 point 4 / R7: Save & Lock stays grey while the teacher has an open observation, and names it exactly on tap', async ({ page }) => {
-  const h = await harness(page);
+test('otp-v0.11 plan 2.2 point 4 / R7 (amended, Problem 2): a teacher with an open observation auto-loads instead of leaving Save & Lock grey - that state is no longer reachable from the screen', async ({ page }) => {
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
   page.on('dialog', (d) => d.accept());
   await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);   // lap 2 open
   await openForm(page);
-  await fillRequired(page);
-  await expect(page.locator('#btn-submit')).toHaveClass(/disabled/, { timeout: 10_000 });
-  await expect(page.locator('#btn-submit')).toHaveAttribute('aria-disabled', 'true');
-  await tapCentre(page, '#btn-submit');
-  await expect(page.locator('#toast')).toHaveText('Observation 2 is still open. Continue it, or close it first.');
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  // amended: no grey Save & Lock to tap any more - picking them loads
+  // Observation 2 straight into edit mode (the calm open_observation /
+  // already_closed handling from a genuinely stale answer is unchanged and
+  // covered separately by the "plan 3.6" specs).
+  await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator('#btn-submit')).toBeHidden();
   expect(h.posts, 'no override: nothing was ever posted').toHaveLength(0);
   expect(h.errors).toEqual([]);
 });
 
-test('otp-v0.11 plan 2.2 point 5: typed content on the blank form is asked about before Continue, and stays saved as the draft', async ({ page }) => {
+test('otp-v0.11 plan 2.2 point 5 (amended, Problem 2): typed content on the blank form is flushed silently (no ask) into the draft when the teacher auto-loads', async ({ page }) => {
   const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
   await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
   await openForm(page);
-  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  // typed BEFORE the pick: this is the "anything typed into the blank form
+  // beforehand" the auto-load must flush, since there is no button tap left
+  // to type in front of.
   await page.fill('#observer_comments', 'typed before continuing');
   await page.waitForTimeout(400);   // past the 220 ms autosave debounce
 
-  // decline: Continue is aborted, nothing changes
-  let lastDialogMsg = '';
-  page.once('dialog', (d) => { lastDialogMsg = d.message(); d.dismiss(); });
-  await page.locator('#strip-continue').click();
-  await page.waitForTimeout(300);
-  expect(lastDialogMsg).toBe('Save what you have typed as your draft and continue this observation?');
-  await expect(page.locator('#btn-close-lap')).toBeHidden();
-  await expect(page.locator('#observer_comments')).toHaveValue('typed before continuing');
-
-  // accept: Continue proceeds, and the typed text stays saved as the draft
-  page.once('dialog', (d) => d.accept());
-  await page.locator('#strip-continue').click();
+  let dialogSeen = false;
+  page.on('dialog', () => { dialogSeen = true; });   // must never fire
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
   await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
+  expect(dialogSeen, 'no ask-first pop-up any more').toBe(false);
   const saved = await page.evaluate((k) => JSON.parse(localStorage.getItem(k) || '{}'), DRAFT_KEY);
   expect(saved.observer_comments).toBe('typed before continuing');
   expect(h.errors).toEqual([]);
 });
 
-test('otp-v0.11 plan 2.2 point 6: the Teacher-box x, while continuing, returns to the blank new-observation form (draft comes back, plan 3.5.7)', async ({ page }) => {
+test('otp-v0.11 plan 2.2 point 6 (amended, Problem 2): the Teacher-box x returns to the blank new-observation form (draft comes back, plan 3.5.7), and does not auto-load it straight back', async ({ page }) => {
   const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
   await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
   await openForm(page);
   await pickTomSelect(page, 'teacher', 'Test Teacher');
   await page.waitForTimeout(400);   // past the 220 ms autosave: the pick itself is now the draft
-  await page.locator('#strip-continue').click();
   await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
 
+  let dialogSeen = false;
+  page.on('dialog', () => { dialogSeen = true; });   // must never fire
   await tsControl(page, 'teacher').locator('.clear-button').click();
   await expect(page.locator('#btn-save-changes')).toBeHidden();
   await expect(page.locator('#btn-close-lap')).toBeHidden();
@@ -4589,11 +4595,15 @@ test('otp-v0.11 plan 2.2 point 6: the Teacher-box x, while continuing, returns t
   await expect(page.locator('#observer_comments')).toHaveValue('');
   await expect(page.locator('#otp-form')).not.toHaveClass(/is-locked/);
   // plan 3.5.7: the draft comes back, and it already named this teacher (the
-  // pick that revealed Continue in the first place), so the strip correctly
-  // re-reads their live status rather than sitting on a stale grey picture.
+  // pick that started the auto-load in the first place); the isPick guard
+  // (Problem 2) means this restore-driven re-read never starts a SECOND
+  // auto-load, so the coach genuinely sees the blank form, not a bounce-back.
   await expect(tsControl(page, 'teacher')).toContainText('Test Teacher', { timeout: 10_000 });
   await expect(stripLine(page)).toContainText('Observation 2 · open since', { timeout: 10_000 });
-  await expect(page.locator('#strip-continue')).toBeVisible();
+  await page.waitForTimeout(500);   // give a wrongful second auto-load every chance to appear
+  await expect(page.locator('#btn-close-lap')).toBeHidden();
+  await expect(page.locator('body')).not.toHaveClass(/is-editing/);
+  expect(dialogSeen).toBe(false);
   expect(h.errors).toEqual([]);
 });
 
@@ -4602,7 +4612,6 @@ test('otp-v0.11 plan 2.2 point 6 / 3.5.7: with no draft at all, x returns to a g
   await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
   await openForm(page);
   await pickTomSelect(page, 'teacher', 'Test Teacher');
-  await page.locator('#strip-continue').click();
   await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
   // wipe the draft that the earlier pick left behind, so this exit has
   // nothing at all to restore
@@ -4612,13 +4621,12 @@ test('otp-v0.11 plan 2.2 point 6 / 3.5.7: with no draft at all, x returns to a g
   await expect(page.locator('#btn-reset')).toBeVisible();
   await expect(page.locator('#otp-form')).not.toHaveClass(/is-locked/);
   await expect(stripLine(page)).toHaveText('Select a teacher');
-  await expect(page.locator('#strip-continue')).toBeHidden();
   await expect(page.locator('#teacher')).toHaveValue('');
   expect(h.errors).toEqual([]);
 });
 
-test('otp-v0.11 hard rule 13: a record loaded via Continue or ?edit= never writes the localStorage or Supabase draft', async ({ page }) => {
-  for (const [what, useContinue] of [['Continue', true], ['?edit=', false]] as [string, boolean][]) {
+test('otp-v0.11 hard rule 13: a record loaded via the auto-load or ?edit= never writes the localStorage or Supabase draft', async ({ page }) => {
+  for (const [what, useAutoLoad] of [['auto-load', true], ['?edit=', false]] as [string, boolean][]) {
     const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
     await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
     const drafts: string[] = [];
@@ -4630,10 +4638,9 @@ test('otp-v0.11 hard rule 13: a record loaded via Continue or ?edit= never write
       drafts.push('load');
       return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ success: false }) });
     });
-    if (useContinue) {
+    if (useAutoLoad) {
       await openForm(page);
       await pickTomSelect(page, 'teacher', 'Test Teacher');
-      await page.locator('#strip-continue').click();
     } else {
       await openEdit(page);
     }
@@ -4657,9 +4664,10 @@ test('otp-v0.11 plan 3.5 point 5: Next Steps typed into the blank form do not su
   await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
   page.on('dialog', (d) => d.accept());
   await openForm(page);
-  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  // typed BEFORE the pick: the auto-load fires as soon as the teacher lands,
+  // so this is what "the blank form beforehand" now means.
   await page.fill('#next_step_1', 'typed on the blank form, must not survive');
-  await page.locator('#strip-continue').click();
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
   await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
   await expect(page.locator('#next_step_1')).toHaveValue('');
   await expect(page.locator('#next_step_2')).toHaveValue('');
@@ -4667,7 +4675,7 @@ test('otp-v0.11 plan 3.5 point 5: Next Steps typed into the blank form do not su
   expect(h.errors).toEqual([]);
 });
 
-test('otp-v0.11 plan 3.5 point 2: a draft pull that resolves AFTER Continue changes nothing in the loaded record', async ({ page }) => {
+test('otp-v0.11 plan 3.5 point 2 (amended): a draft pull that resolves AFTER the auto-load changes nothing in the loaded record', async ({ page }) => {
   const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
   await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
   page.on('dialog', (d) => d.accept());
@@ -4678,9 +4686,11 @@ test('otp-v0.11 plan 3.5 point 2: a draft pull that resolves AFTER Continue chan
       body: JSON.stringify({ success: true, found: true, data: MAC_DRAFT, updated_at: '2026-09-16T12:00:00.000+00:00' }) });
   });
   await openForm(page);
-  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  // inspector picked FIRST (starts the held pull), teacher picked SECOND
+  // (starts the auto-load) - so the pull is genuinely in flight when the
+  // record lands, and only resolves after.
   await pickTomSelect(page, 'inspector', 'Test Observer');   // triggers pullDraftFromSupabase, held above
-  await page.locator('#strip-continue').click();
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
   await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
   await expect(page.locator('#observer_comments')).toHaveValue('Record observer comments');
 
@@ -4692,12 +4702,11 @@ test('otp-v0.11 plan 3.5 point 2: a draft pull that resolves AFTER Continue chan
   expect(h.errors).toEqual([]);
 });
 
-test('otp-v0.11 plan 3.5 point 2: a pad extraction that resolves AFTER Continue changes nothing in the loaded record', async ({ page }) => {
+test('otp-v0.11 plan 3.5 point 2 (amended): a pad extraction that resolves AFTER the auto-load changes nothing in the loaded record', async ({ page }) => {
   const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
   await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
   page.on('dialog', (d) => d.accept());
   await openForm(page);
-  await pickTomSelect(page, 'teacher', 'Test Teacher');
 
   let releaseExtract: () => void = () => {};
   await page.route('**/script.google.com/**', async (r: Route) => {
@@ -4714,6 +4723,9 @@ test('otp-v0.11 plan 3.5 point 2: a pad extraction that resolves AFTER Continue 
     await r.fallback();
   });
 
+  // the whole pad interaction happens on the BLANK form, before the teacher
+  // is even picked, so the extraction is already in flight when the auto-load
+  // starts.
   await page.locator('.pad-field-btn[data-pad-target="observer_comments"]').click();
   await expect(page.locator('#pad-modal')).toHaveClass(/open/, { timeout: 10_000 });
   const stage = await page.locator('#pad-stage').boundingBox();
@@ -4724,7 +4736,7 @@ test('otp-v0.11 plan 3.5 point 2: a pad extraction that resolves AFTER Continue 
   await page.locator('#pad-done').click();     // fires the (held) background extraction
   await expect(page.locator('#pad-modal')).not.toHaveClass(/open/);
 
-  await page.locator('#strip-continue').click();   // Continue before the extraction answers
+  await pickTomSelect(page, 'teacher', 'Test Teacher');   // auto-loads before the extraction answers
   await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
   await expect(page.locator('#observer_comments')).toHaveValue('Record observer comments');
 
@@ -4778,16 +4790,14 @@ test('otp-v0.11 plan 3.5 point 6: teacher A\'s pad image is never shown for teac
 
   await openForm(page);
   await pickTomSelect(page, 'teacher', 'Test Teacher');
-  await page.locator('#strip-continue').click();
   await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
   await page.locator('.pad-attach[data-pad-target="observer_comments"]').click();
   await expect.poll(() => padImageCalls.filter((u) => u.includes(`token=${TOKEN_A}`)).length, { timeout: 15_000 }).toBe(1);
   await page.locator('#pad-view-close').click();
 
-  // back to blank, then continue teacher B's open record (same pad filename)
+  // back to blank, then teacher B's open record auto-loads (same pad filename)
   await tsControl(page, 'teacher').locator('.clear-button').click();
   await pickTomSelect(page, 'teacher', 'Second Teacher');
-  await page.locator('#strip-continue').click();
   await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
   await page.locator('.pad-attach[data-pad-target="observer_comments"]').click();
   await expect.poll(() => padImageCalls.filter((u) => u.includes(`token=${TOKEN_B}`)).length, { timeout: 15_000 }).toBe(1);
@@ -4911,18 +4921,19 @@ test('CNL-001: Save changes on a teacher-changing update sends enforce_open_bloc
   expect(h.errors).toEqual([]);
 });
 
-test('CNL-002: typing then clicking Continue at once (no wait) still asks, and the draft holds the typed text', async ({ page }) => {
+test('CNL-002 (amended): typing then picking the teacher at once (no wait) still flushes the fresh text into the draft, with no confirm', async ({ page }) => {
   const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
   await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
   await openForm(page);
-  await pickTomSelect(page, 'teacher', 'Test Teacher');
   await page.fill('#observer_comments', 'typed right before continuing, no wait');
-  // no waitForTimeout here: click immediately, inside the 220 ms autosave debounce
-  let dialogMsg = '';
-  page.once('dialog', (d) => { dialogMsg = d.message(); d.accept(); });
-  await page.locator('#strip-continue').click();
+  // no waitForTimeout here: pick immediately, inside the 220 ms autosave
+  // debounce - the auto-load's own saveForm() must still take a fresh
+  // snapshot rather than relying on the debounced autosave having run.
+  let dialogSeen = false;
+  page.on('dialog', () => { dialogSeen = true; });   // must never fire
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
   await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
-  expect(dialogMsg).toBe('Save what you have typed as your draft and continue this observation?');
+  expect(dialogSeen).toBe(false);
   const draft = await page.evaluate((k) => JSON.parse(localStorage.getItem(k) || '{}'), DRAFT_KEY);
   expect(draft.observer_comments).toBe('typed right before continuing, no wait');
   expect(h.errors).toEqual([]);
@@ -4939,12 +4950,11 @@ test('CNL-003: after the Teacher-box x from an ?edit= load, a field pencil opens
   expect(h.errors).toEqual([]);
 });
 
-test('CNL-004 (i): a late extraction for an ordinary field merges into the draft alongside its existing typed text', async ({ page }) => {
+test('CNL-004 (i) (amended): a late extraction for an ordinary field merges into the draft alongside its existing typed text', async ({ page }) => {
   const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
   await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
   page.on('dialog', (d) => d.accept());
   await openForm(page);
-  await pickTomSelect(page, 'teacher', 'Test Teacher');
   await page.fill('#observer_comments', 'typed by hand first');
   await page.waitForTimeout(400);   // past the 220 ms autosave, so the draft already holds it
 
@@ -4973,7 +4983,7 @@ test('CNL-004 (i): a late extraction for an ordinary field merges into the draft
   await page.locator('#pad-done').click();
   await expect(page.locator('#pad-modal')).not.toHaveClass(/open/);
 
-  await page.locator('#strip-continue').click();
+  await pickTomSelect(page, 'teacher', 'Test Teacher');   // auto-loads before the extraction answers
   await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
   await expect(page.locator('#observer_comments')).toHaveValue('Record observer comments');
 
@@ -4985,12 +4995,11 @@ test('CNL-004 (i): a late extraction for an ordinary field merges into the draft
   expect(h.errors).toEqual([]);
 });
 
-test("CNL-004 (ii): a late criterion-note extraction lands in the draft's sp1_notes, not the loaded record", async ({ page }) => {
+test("CNL-004 (ii) (amended): a late criterion-note extraction lands in the draft's sp1_notes, not the loaded record", async ({ page }) => {
   const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
   await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
   page.on('dialog', (d) => d.accept());
   await openForm(page);
-  await pickTomSelect(page, 'teacher', 'Test Teacher');
 
   let releaseExtract: () => void = () => {};
   await page.route('**/script.google.com/**', async (r: Route) => {
@@ -5019,7 +5028,7 @@ test("CNL-004 (ii): a late criterion-note extraction lands in the draft's sp1_no
   await page.locator('#pad-done').click();
   await expect(page.locator('#pad-modal')).not.toHaveClass(/open/);
 
-  await page.locator('#strip-continue').click();
+  await pickTomSelect(page, 'teacher', 'Test Teacher');   // auto-loads before the extraction answers
   await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
   // the loaded record's own notes (Good 3, Great 5) show, untouched
   await expect(page.locator('#sp1_notes')).toHaveValue(JSON.stringify(RECORD_NOTES));
@@ -5040,7 +5049,6 @@ test('CNL-005: a programmatic click on the hidden #btn-reset, mid-edit, exits to
   await openForm(page);
   await pickTomSelect(page, 'teacher', 'Test Teacher');
   await page.waitForTimeout(400);   // let the teacher pick land in the draft
-  await page.locator('#strip-continue').click();
   await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
   await expect(page.locator('#btn-reset')).toBeHidden();   // still hidden, unchanged (no new control)
 
@@ -5063,7 +5071,7 @@ test('CNL-005: a programmatic click on the hidden #btn-reset, mid-edit, exits to
  * without rechecking the context that started it.
  * ========================================================================== */
 
-test('CNL-006 (a): Reset during a held-back Continue stops it; the form never enters edit mode and the record is never requested', async ({ page }) => {
+test('CNL-006 (a) (amended): Reset during a held-back auto-load stops it; the form never enters edit mode and the record is never requested', async ({ page }) => {
   const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
   await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
   page.on('dialog', (d) => d.accept());
@@ -5076,9 +5084,8 @@ test('CNL-006 (a): Reset during a held-back Continue stops it; the form never en
   const recordGets = await routeEdgeRecord(page, (r) =>
     r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(edgeRecord(RECORD_PAYLOAD_OPEN)) }));
   await openForm(page);
-  await pickTomSelect(page, 'teacher', 'Test Teacher');
   await pickTomSelect(page, 'inspector', 'Test Observer');   // so the draft sync actually fires
-  await page.locator('#strip-continue').click();             // held back inside syncDraftToSupabase
+  await pickTomSelect(page, 'teacher', 'Test Teacher');      // auto-loads; held back inside syncDraftToSupabase
   await page.waitForTimeout(200);
   await expect(page.locator('body')).not.toHaveClass(/is-editing/);
 
@@ -5090,12 +5097,12 @@ test('CNL-006 (a): Reset during a held-back Continue stops it; the form never en
   await expect(page.locator('#btn-save-changes')).toBeHidden();
   await expect(page.locator('#btn-close-lap')).toBeHidden();
   await expect(page.locator('#btn-reset')).toBeVisible();
-  expect(recordGets, 'the record must never be requested once Reset stopped Continue').toHaveLength(0);
+  expect(recordGets, 'the record must never be requested once Reset stopped the auto-load').toHaveLength(0);
   expect(h.errors).toEqual([]);
   await expectConsistentFormState(page);
 });
 
-test('CNL-006 (b): switching from A to B during a held-back Continue stops it; B is shown and A\'s record is never requested', async ({ page }) => {
+test('CNL-006 (b) (amended): switching from A to B during a held-back auto-load stops it; B is shown and A\'s record is never requested', async ({ page }) => {
   const options = JSON.parse(JSON.stringify(OPTIONS_PAYLOAD));
   const list = options.options ? options.options.teachers : options.teachers;
   list.push({ name: 'Second Teacher' });
@@ -5115,9 +5122,8 @@ test('CNL-006 (b): switching from A to B during a held-back Continue stops it; B
   const recordGets = await routeEdgeRecord(page, (r) =>
     r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(edgeRecord(RECORD_PAYLOAD_OPEN)) }));
   await openForm(page);
-  await pickTomSelect(page, 'teacher', 'Test Teacher');
   await pickTomSelect(page, 'inspector', 'Test Observer');
-  await page.locator('#strip-continue').click();
+  await pickTomSelect(page, 'teacher', 'Test Teacher');   // auto-loads; held back inside syncDraftToSupabase
   await page.waitForTimeout(200);
 
   await pickTomSelect(page, 'teacher', 'Second Teacher');
@@ -5201,11 +5207,16 @@ test('CNL-007 (close): the Teacher-box x during a held-back Close Lap causes no 
   await expectConsistentFormState(page);
 });
 
-test('CNL-008: teacher A (open), switch to B, back to A whose refetch fails - Save & Lock ends enabled with no message', async ({ page }) => {
+test('CNL-008 (amended): a stale open-lap block for teacher A is cleared on any new lookup, even when re-checking on returning to A fails', async ({ page }) => {
+  // amended: picking A with an open lap now auto-loads it (Problem 2), so
+  // this replays "switch to B, back to A whose refetch fails" AROUND that -
+  // load A, leave it (blank form; the isPick guard means this restore never
+  // re-triggers), switch to B, back to A - the same aCalls shape the
+  // original fix targeted (A's first lookup open, every later one failing).
   const options = JSON.parse(JSON.stringify(OPTIONS_PAYLOAD));
   const list = options.options ? options.options.teachers : options.teachers;
   list.push({ name: 'Second Teacher' });
-  const h = await harness(page, { options });
+  const h = await harness(page, { options, record: RECORD_PAYLOAD_OPEN });
   page.on('dialog', (d) => d.accept());
   let aCalls = 0;
   await page.route('**/rest/v1/rpc/get_teacher_lap_state', async (r: Route) => {
@@ -5223,8 +5234,20 @@ test('CNL-008: teacher A (open), switch to B, back to A whose refetch fails - Sa
     await new Promise(() => {});
   });
   await openForm(page);
-  await fillRequired(page);
-  await expect(page.locator('#btn-submit')).toHaveClass(/disabled/, { timeout: 10_000 });
+  // fill everything except Teacher first, so the auto-load's own flush below
+  // carries a complete draft (all of fillRequired, teacher last).
+  await pickTomSelect(page, 'inspector', 'Test Observer');
+  await page.locator('#curriculum-pills .pill', { hasText: 'Australian' }).click();
+  await pickGrade(page, '3');
+  await pickTomSelect(page, 'subject', 'Mathematics');
+  await page.fill('#date', '2026-09-03');
+  await page.fill('#time_in', '09:15');
+  await page.fill('#time_out', '10:05');
+
+  await pickTomSelect(page, 'teacher', 'Test Teacher');   // aCalls=1, open -> auto-loads
+  await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
+  await tsControl(page, 'teacher').locator('.clear-button').click();   // leave; the restore never re-triggers (isPick)
+  await expect(page.locator('#btn-reset')).toBeVisible();
 
   await pickTomSelect(page, 'teacher', 'Second Teacher');
   await page.waitForTimeout(200);   // B's own fetch is stuck; never resolves
@@ -5238,22 +5261,26 @@ test('CNL-008: teacher A (open), switch to B, back to A whose refetch fails - Sa
   expect(h.errors.filter((e) => !/status of 500/.test(e))).toEqual([]);
 });
 
-test('CNL-009: Continue rolls back silently when both record sources fail, with the draft and buttons restored', async ({ page }) => {
+test('CNL-009 (amended): the auto-load rolls back silently when both record sources fail, with the draft and buttons restored', async ({ page }) => {
   const h = await harness(page, { record: { success: false, error: 'Record not found' } });
   await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
-  await routeEdgeRecord(page, (r) =>
+  const edgeGets = await routeEdgeRecord(page, (r) =>
     r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(EDGE_MISS) }));
   await openForm(page);
   await pickTomSelect(page, 'teacher', 'Test Teacher');
-  await page.waitForTimeout(400);
-  await page.locator('#strip-continue').click();
+  // wait for proof the auto-load genuinely started (the Supabase record
+  // fetch actually fired) before waiting out its round trip - #btn-reset
+  // alone is a bad proxy, since it is ALSO true before the auto-load starts,
+  // and both failures here are fast enough that a is-editing on/off toggle
+  // can come and go between two Playwright polls.
+  await expect.poll(() => edgeGets.length, { timeout: 10_000 }).toBeGreaterThan(0);
+  await page.waitForTimeout(400);   // the Google fallback + silent rollback settle
 
-  await expect(page.locator('#btn-reset')).toBeVisible({ timeout: 15_000 });
+  await expect(page.locator('#btn-reset')).toBeVisible();
   await expect(page.locator('#btn-submit')).toBeVisible();
   await expect(page.locator('#btn-save-changes')).toBeHidden();
   await expect(page.locator('#btn-close-lap')).toBeHidden();
   await expect(page.locator('#otp-form')).not.toHaveClass(/is-locked/);
-  await expect(page.locator('body')).not.toHaveClass(/is-editing/);
   await expect(tsControl(page, 'teacher')).toContainText('Test Teacher', { timeout: 10_000 });
   await expect(page.locator('#toast')).not.toHaveClass(/error/);
   await expect(page.locator('#toast')).not.toContainText('Could not load');
@@ -5352,14 +5379,25 @@ test('CNL-010: a held-back load_draft spanning Save & Lock and the automatic res
   await expectConsistentFormState(page);
 });
 
-test('CNL-011: changing A to B after Continue enters edit mode and before the record answers never strands the page in edit mode', async ({ page }) => {
+test('CNL-011 (amended): changing A to B after the auto-load enters edit mode and before the record answers never strands the page in edit mode', async ({ page }) => {
   const options = JSON.parse(JSON.stringify(OPTIONS_PAYLOAD));
   const list = options.options ? options.options.teachers : options.teachers;
   list.push({ name: 'Second Teacher' });
   const h = await harness(page, { record: RECORD_PAYLOAD_OPEN, options });
+  let aCalls = 0;
   await page.route('**/rest/v1/rpc/get_teacher_lap_state', async (r: Route) => {
     const body = r.request().postDataJSON();
-    const answer = body.p_teacher === 'Second Teacher' ? LAP_STATE_NEVER : LAP_STATE_OPEN_WITH_OWN_STEPS;
+    let answer;
+    if (body.p_teacher === 'Second Teacher') {
+      answer = LAP_STATE_NEVER;
+    } else {
+      aCalls++;
+      // amended: only A's FIRST pick is open, exactly as needed to start the
+      // one auto-load under test; once rolled back, the draft's own re-read
+      // (plan 3.5.7) must not bounce straight into a SECOND one, or this
+      // spec could never observe the rolled-back state at all.
+      answer = aCalls === 1 ? LAP_STATE_OPEN_WITH_OWN_STEPS : LAP_STATE_STARTING_NEXT;
+    }
     await r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(answer) });
   });
   let releaseRecord: () => void = () => {};
@@ -5368,15 +5406,14 @@ test('CNL-011: changing A to B after Continue enters edit mode and before the re
     await r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(edgeRecord(RECORD_PAYLOAD_OPEN)) });
   });
   await openForm(page);
-  await pickTomSelect(page, 'teacher', 'Test Teacher');
-  await page.locator('#strip-continue').click();
-  await expect(page.locator('body')).toHaveClass(/is-editing/, { timeout: 10_000 });   // Continue set EDIT_MODE synchronously
+  await pickTomSelect(page, 'teacher', 'Test Teacher');   // auto-loads; EDIT_MODE flips synchronously
+  await expect(page.locator('body')).toHaveClass(/is-editing/, { timeout: 10_000 });
 
   await pickTomSelect(page, 'teacher', 'Second Teacher');   // bumps the context; does not itself leave edit mode
   releaseRecord();
   await page.waitForTimeout(500);
 
-  expect(recordGets.length, 'the record was requested once, by Continue, before B was picked').toBe(1);
+  expect(recordGets.length, 'the record was requested once, by the auto-load, before B was picked').toBe(1);
   await expect(page.locator('body')).not.toHaveClass(/is-editing/);
   await expect(page.locator('#btn-reset')).toBeVisible();
   await expect(page.locator('#btn-submit')).toBeVisible();
@@ -5385,7 +5422,8 @@ test('CNL-011: changing A to B after Continue enters edit mode and before the re
   // exitEditToBlank restores the draft (hard rule 13: nothing typed in edit
   // mode is ever persisted, so B's mid-flight pick was never saved); Test
   // Teacher (A, the draft's own last-saved value) comes back with its own
-  // accurate, freshly re-fetched strip, never the stale "just opened" one.
+  // accurate, freshly re-fetched strip (aCalls' second answer above), never
+  // the stale "just opened" one B never actually caused.
   await expect(tsControl(page, 'teacher')).toContainText('Test Teacher');
   await expect(stripLine(page)).toContainText('Observation 2', { timeout: 10_000 });
   await expect(page.locator('#toast')).not.toHaveClass(/error/);
@@ -5508,26 +5546,33 @@ test('sweep fix (round 3): Reset during "Reading pad..." on Save & Lock aborts t
  * REV-001, REV-004, REV-005. REV-003 is folded into the existing F3 spec above.
  * ========================================================================== */
 
-test('REV-001: continuing a legacy (v1) record then exiting through the Teacher-box x restores the live v2 rubric, not v1', async ({ page }) => {
+test('REV-001 (amended): continuing a legacy (v1) record then exiting through the Teacher-box x restores the live v2 rubric, not v1', async ({ page }) => {
   const legacyOpen = {
     ...RECORD_PAYLOAD_LEGACY,
     data: { ...RECORD_PAYLOAD_LEGACY.data, status: 'observed', closed_at: '', lap: '2', round: 'OTP Term 1 26-27' },
   };
   const h = await harness(page, { record: legacyOpen });
-  await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
-  page.on('dialog', (d) => d.accept());   // the chip mark below makes Continue ask first
+  let calls = 0;
+  await page.route('**/rest/v1/rpc/get_teacher_lap_state', async (r: Route) => {
+    calls++;
+    // amended: only the FIRST pick is open, exactly enough to start the one
+    // auto-load under test; once the x leaves it, the draft's own re-read
+    // (plan 3.5.7) must not bounce straight back in, or the blank form this
+    // spec checks the rubric on could never be observed.
+    const answer = calls === 1 ? LAP_STATE_OPEN_WITH_OWN_STEPS : LAP_STATE_STARTING_NEXT;
+    await r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(answer) });
+  });
   await openForm(page);
-  await pickTomSelect(page, 'teacher', 'Test Teacher');
 
   // Good 7 exists only in the LIVE 32-criterion (v2) rubric ("good" tops out
-  // at 6 in the legacy 26-paragraph v1); marking it before Continue puts a
-  // v2-numbered selection in the draft that a wrong active rubric would
-  // misread or lose.
+  // at 6 in the legacy 26-paragraph v1); marking it on the BLANK form, before
+  // the auto-load, puts a v2-numbered selection in the draft that a wrong
+  // active rubric would misread or lose.
   await chipAt(page, 'good', 7).click();
   await expect(chipAt(page, 'good', 7)).toHaveAttribute('data-state', 'present');
   await page.waitForTimeout(400);   // past the 220ms autosave debounce
 
-  await page.locator('#strip-continue').click();
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
   await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
   // otp-v0.6: a legacy record (no rubric_version) renders on the 26 v1
   // paragraphs; "good" has 6 there, not 7.
@@ -5709,4 +5754,119 @@ test('REV-008: a closed ?edit= record stands even if get_teacher_lap_state would
     ['Completed', 'Coming soon', 'Completed', 'Completed', 'Coming soon', 'Completed']);
   await expect(page.locator('#toast')).not.toHaveClass(/error/);
   expect(h.errors.filter((e) => !/status of 500/.test(e))).toEqual([]);
+});
+
+/* ============================================================================
+ * otp-v0.11 lap tracker · BUG-1 (Igor's iPad report, 19 Sep 2026). His exact
+ * sequence, one page session, no reload: close Observation 2, start a fresh
+ * one, Save & Lock it, pick the same teacher again, Continue, edit, and Save
+ * changes / Close Lap stayed grey. Root cause (proved below, not the
+ * orchestrator's original lead): lockForm() stamps dataset.locked='1' on BOTH
+ * #btn-save-changes and #btn-close-lap on every lock, including a plain
+ * Save & Lock (mode 'submit'), where those two buttons are not even shown.
+ * The automatic 3s reset after Save & Lock (softResetForm) clears is-locked
+ * and re-enables every field, but never that dataset flag on those two
+ * buttons - only exitEditToBlank does. So the NEXT time the SAME page enters
+ * edit mode for an open record (Continue, or the amended auto-load),
+ * updateSubmitState()'s own guard ("if (b.dataset.locked === '1') return")
+ * permanently skips them, even though the record has landed and every
+ * required field is filled. Fix: enterEditMode(), the ONE function that wires
+ * up an open record for editing, clears any stale flag before wiring it up.
+ * ========================================================================== */
+
+test('BUG-1: Save changes and Close Lap are live on a re-entered open record, after an earlier Save & Lock in the SAME page session', async ({ page }) => {
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
+  let lapStateCalls = 0;
+  await page.route('**/rest/v1/rpc/get_teacher_lap_state', async (r: Route) => {
+    lapStateCalls++;
+    // 1st pick (before Save & Lock): no open lap yet. 2nd pick (after the
+    // automatic reset): the observation just saved is now open, lap 2 -
+    // exactly what Igor picked back up with Continue.
+    const answer = lapStateCalls === 1 ? LAP_STATE_NEVER : LAP_STATE_OPEN_WITH_OWN_STEPS;
+    await r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(answer) });
+  });
+  page.on('dialog', (d) => d.accept());
+  await openForm(page);
+
+  // Observation 1 (stands in for Igor's "Observation 2"): a plain Save & Lock.
+  await fillRequired(page);
+  await page.route(EDGE_FN, (r: Route) => r.fulfill({ status: 200, contentType: 'application/json',
+    body: JSON.stringify({ success: true, id: 'AIS-OTP-TEST-1', token: 'tok1', status: 'observed', closed_at: '', lap: 1, source: 'supabase' }) }));
+  await page.locator('#btn-submit').click();
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 10_000 });
+
+  // the automatic reset 3s later: is-locked clears, fields re-enable. This is
+  // exactly where the stale dataset.locked on Save changes / Close Lap survives.
+  await page.waitForTimeout(3300);
+  await expect(page.locator('#otp-form')).not.toHaveClass(/is-locked/);
+  await expect(page.locator('#btn-reset')).toBeVisible();
+
+  // Re-pick the SAME teacher (Igor's "picked the same teacher again"): they
+  // now have an open observation, so it auto-loads (Problem 2 amendment).
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
+
+  // edit the record, exactly as Igor described
+  await page.fill('#next_step_1', 'edited after re-entering');
+
+  // BUG-1: these must be live, not stuck grey from the earlier Save & Lock.
+  await expect(page.locator('#btn-save-changes')).toBeEnabled();
+  await expect(page.locator('#btn-close-lap')).toBeEnabled();
+  expect(h.errors).toEqual([]);
+});
+
+/* Mirror case, as asked: "view an already-closed record through ?edit=,
+ * leave it with the Teacher-box x, then open a teacher's open observation."
+ * CHECKED against the real UI first (see the report): a locked record
+ * (lockForm(...,'closed',...), which an already-closed ?edit= record always
+ * is) disables every Tom Select via ts.disable(), and
+ * ".ts-wrapper.disabled .clear-button{display:none}" then hides the x
+ * itself - confirmed live (Playwright timed out waiting for it to become
+ * visible; the Teacher combobox renders [disabled] with no clear button).
+ * #btn-reset is also hidden while is-editing. So a real coach cannot reach
+ * "leave it with the x" from a locked record at all; the only control left
+ * is "New observation" (#btn-new), which reloads and trivially clears every
+ * flag, proving nothing about the leak. The test below exercises the exact
+ * same code (exitEditToBlank, the one place that already clears
+ * dataset.locked) the way the UI itself would call it if the x were ever
+ * reachable from a locked view, as a regression guard should that change. */
+test('BUG-1 mirror: exitEditToBlank after viewing an already-closed ?edit= record leaves a DIFFERENT teacher\'s open observation fully editable', async ({ page }) => {
+  const options = JSON.parse(JSON.stringify(OPTIONS_PAYLOAD));
+  const list = options.options ? options.options.teachers : options.teachers;
+  list.push({ name: 'Second Teacher' });
+  const h = await harness(page, { record: RECORD_PAYLOAD_CLOSED, options });
+  await page.route('**/rest/v1/rpc/get_teacher_lap_state', async (r: Route) => {
+    const body = r.request().postDataJSON();
+    const answer = body.p_teacher === 'Second Teacher' ? LAP_STATE_OPEN_WITH_OWN_STEPS : LAP_STATE_STARTING_NEXT;
+    await r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(answer) });
+  });
+  // harness()'s generic Google mock answers every token= GET with the SAME
+  // fixture; Second Teacher's own open observation needs its own (open) one,
+  // distinguished by its lap-state token, added AFTER harness() so it wins.
+  const secondToken = LAP_STATE_OPEN_WITH_OWN_STEPS.open.record_token;
+  await page.route('**/script.google.com/**', async (r: Route) => {
+    const url = r.request().url();
+    if (r.request().method() === 'GET' && url.includes('form=otp') && url.includes(`token=${secondToken}`)) {
+      return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(RECORD_PAYLOAD_OPEN) });
+    }
+    await r.fallback();
+  });
+
+  // a closed record, opened via ?edit=: dataset.locked='1' on both buttons
+  await openEdit(page);
+  await expect(page.locator('#otp-form')).toHaveClass(/is-locked/);
+  await expect(tsControl(page, 'teacher')).toHaveClass(/disabled/);   // the x is unreachable from here (see comment above)
+
+  // the UI's own exit path, invoked the way a clickable x would
+  await page.evaluate(() => (window as any).exitEditToBlank());
+  await expect(page.locator('#btn-reset')).toBeVisible();
+  await expect(page.locator('#otp-form')).not.toHaveClass(/is-locked/);
+
+  // a DIFFERENT teacher, who has an open observation: auto-loads
+  await pickTomSelect(page, 'teacher', 'Second Teacher');
+  await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
+  await page.fill('#next_step_1', 'edited via the mirror path');
+  await expect(page.locator('#btn-save-changes')).toBeEnabled();
+  await expect(page.locator('#btn-close-lap')).toBeEnabled();
+  expect(h.errors).toEqual([]);
 });
