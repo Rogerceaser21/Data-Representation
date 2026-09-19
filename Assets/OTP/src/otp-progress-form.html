@@ -682,6 +682,14 @@ body.is-viewer .prev-ns { display: none !important; }
   font-size: var(--small);
   color: var(--paper-mid);
   margin: 0 0 clamp(0.5rem, 0.9vw, 0.7rem) 0;
+  /* otp-v0.11 layout-shift fix: an "open" lap's line names the coach, whose
+     name has no length bound; a wrap to a 2nd line would push the grid below
+     down exactly like the title/status bug this rule sits next to. Truncating
+     instead of reserving a 2nd line avoids adding a permanent gap under the
+     far more common 1-line states. */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .status-strip {
   display: grid;
@@ -723,6 +731,18 @@ body.is-viewer .prev-ns { display: none !important; }
   font-size: 0.74rem;
   line-height: 1.2;
   color: var(--paper);
+  /* otp-v0.11 layout-shift fix: card 1's title grows from "Teacher
+     Observation" (1 line) to "<Ordinal> Teacher Observation<br>Observation N"
+     once a lap-state answer lands, up to 3 lines at the 6-column (>900px)
+     width; reserve the tallest up front so the grid below never moves. */
+  min-height: 3.6em;
+}
+/* At the 3-column width (below) the same title never needs more than 2
+   lines; a media query AFTER the base rule above, so it wins the cascade at
+   that width instead of the unconditional 3.6em (equal specificity, source
+   order decides ties regardless of @media nesting elsewhere in this file). */
+@media (max-width: 900px) {
+  .strip-title { min-height: 2.4em; }
 }
 .strip-status {
   margin-top: auto;
@@ -734,6 +754,12 @@ body.is-viewer .prev-ns { display: none !important; }
   text-transform: uppercase;
   color: var(--paper-mid);
 }
+/* otp-v0.11 layout-shift fix: an unanswered card's status span is empty (0
+   text height); the first real word (e.g. "Current") is taller. Reserve that
+   height up front with a non-breaking space, so the answer landing never
+   grows the card. Stops applying itself once real text lands (:empty no
+   longer matches), so nothing is reserved twice. */
+.strip-status:empty::before { content: "\00a0"; }
 .strip-card.is-current   { border-color: var(--ais-blue); border-style: solid; }
 .strip-card.is-current   .strip-status { color: var(--ais-blue); }
 .strip-card.is-completed { border-color: var(--rate-success); border-style: solid; }
@@ -3378,6 +3404,18 @@ body.is-viewer .cog-btn { display: none; }
     // (t0, i0, s0…) as values. Persist the display TEXT so a future load can
     // restore by name even if option order has shifted.
     translateOpaqueTomSelectsToText(data);
+    // otp-v0.11 fix round 2 (VERIFIER hand-walk, 2026-09-19): picking a
+    // teacher with an open observation means "open that observation", never
+    // "start a draft for this teacher" (see autoLoadOpenObservation below).
+    // autoLoadToken is set for the whole span of that flush-through-load
+    // attempt (before its first await, cleared in its own finally), so every
+    // save landing in that window - the flush itself, and any debounced
+    // autosave the pick's own change event (or a keystroke while the record
+    // is still loading) schedules - keeps the teacher OUT of the draft a
+    // blank form later restores from (reload, Close Lap -> New Observation,
+    // the Teacher-box x, Reset, or a failed load's own rollback). Nothing
+    // else in the draft is touched.
+    if (autoLoadToken) data.teacher = '';
     data.saved_at = Date.now();   // otp-v0.10: newest draft wins across devices
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
@@ -5699,19 +5737,21 @@ body.is-viewer .cog-btn { display: none; }
       submitted_at: rec.submitted_at || '',
       evidence_pad_id: rec.evidence_pad_id || ''
     };
+    // BUG-2 continued (Igor's iPad report, 2026-09-19): this banner used to
+    // show here too, ~1s after the teacher pick (or the ?edit= load), and its
+    // display:none -> flex sat ABOVE the header/strip, pushing the whole info
+    // grid down under the coach's finger - the bigger of the two shifts BUG-2
+    // found (the strip's own reflow, fixed separately, was the smaller one).
+    // Decision: an OPEN record in edit mode shows NO top banner at all, on
+    // both paths (auto-load and ?edit=). Its text only repeated the strip
+    // line above ('Observation N · open since <date> · coach <name>'), so
+    // nothing is lost. Explicitly hidden (not just left alone) so a residual
+    // is-active from an earlier state on this same page can never show
+    // through. The banner is unchanged for a CLOSED record (lockForm) and for
+    // a just-submitted lock, including after Close Lap (closeCurrentLap calls
+    // lockForm directly, regardless of how the record got here).
     const banner = document.getElementById('submitted-banner');
-    const titleEl = document.getElementById('submitted-title');
-    const metaEl = document.getElementById('submitted-meta');
-    if (banner && titleEl && metaEl) {
-      const when = formatDay(rec.observation_date);
-      let line = 'Observation ' + EDIT_RECORD.lap + ' · open';
-      if (when) line += ' · observed ' + when;
-      const who = String(rec.observer || rec.inspector || '').trim();   // the OTP Sheet says `observer`
-      if (who) line += ' by ' + who;
-      titleEl.textContent = line;
-      metaEl.textContent = 'Record ID ' + EDIT_RECORD.record_id;
-      banner.classList.add('is-active');
-    }
+    if (banner) banner.classList.remove('is-active');
     refreshTeacherStatus();   // the teacher came from the record, not a tap
     autoGrowAll();            // otp-v0.9.3: the record's long answers show in full
     updateSubmitState();
@@ -5734,7 +5774,10 @@ body.is-viewer .cog-btn { display: none; }
   // enterEditMode seeing the same still-open record). Anything already typed
   // into the blank form is flushed and kept as the draft exactly as the old
   // Continue path did (CNL-002); it comes back when the coach returns to the
-  // blank form with the Teacher-box x or Reset.
+  // blank form with the Teacher-box x or Reset. otp-v0.11 fix round 2: EXCEPT
+  // the teacher, which saveForm() blanks in the draft for as long as this
+  // token is set - picking a teacher with an open observation means "open
+  // that observation", never "start a draft for this teacher" (see saveForm).
   let autoLoadToken = '';
   async function autoLoadOpenObservation(token, teacher) {
     if (!token || EDIT_MODE || window.R3_VIEWER || CLOSED_RECORD_VIEW) return;
