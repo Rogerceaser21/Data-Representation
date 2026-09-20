@@ -149,6 +149,13 @@ the email naming sweep (task 8) are separate, later nodes.
   confirm's "until you close the lap." was missed by the first naming
   sweep, now "until you close the observation."
 
+## otp-v0.10 · released to main (2026-09-18)
+
+Tag `otp-v0.10` (`eab8c25`). The preview folder (`Assets/OTP/preview.10/`)
+and its `gh-pages` branch are gone: what GitHub Pages serves now is this
+release build. Phase 1-3 below (Supabase-first reads, writes, record links)
+describe the same technical contract that shipped.
+
 ## otp-v0.10 · Phase 3 (2026-09-17)
 
 Supabase-first, part three: the record links. Preview only, same branch as
