@@ -601,20 +601,24 @@ section('(a) OTP submission · row + email + Supabase mirror');
   // Kruger' has an email seeded in Teachers 26-27, so both fire.
   ok(dump.mail.length === 2, 'submit sends the backup email AND the teacher email (otp-v0.9)', 'count: ' + dump.mail.length);
   const mail = dump.mail[0] || {};
-  ok(mail.subject === 'AIS OTP Progress · Observation 1 · Jo Mare Kruger · 2026-09-02', 'email A subject carries Observation 1 (otp-v0.9)', 'got: ' + mail.subject);
+  ok(mail.subject === 'AIS OTP Observation 1 · Jo Mare Kruger · 2026-09-02', 'email A subject carries Observation 1 (otp-v0.9)', 'got: ' + mail.subject);
   ok(mail.to === 'admin.user@ais.ae', 'email A goes to the backup mailbox', 'got: ' + mail.to);
   ok(mail.cc === 'dave.richards2627@ais.ae', 'observer CC resolved over the OTP Coaches 26-27 tab', 'got: ' + mail.cc);
   const viewerLink = 'https://rogerceaser21.github.io/Data-Representation/Assets/OTP/otp-record.html?token=' + row[idx('record_token')];
   const editLink = 'https://rogerceaser21.github.io/Data-Representation/Assets/OTP/otp-progress-form.html?edit=' + row[idx('record_token')];
   ok(String(mail.htmlBody).indexOf(viewerLink) > -1, 'email A body carries the OTP viewer link (token only)', 'looked for: ' + viewerLink);
   ok(String(mail.htmlBody).indexOf(editLink) > -1, 'email A body carries the edit link (otp-v0.9)', 'looked for: ' + editLink);
+  const mailAVisible = String(mail.htmlBody).replace(/href="[^"]*"/g, 'href="…"');
+  ok(mailAVisible.indexOf(row[idx('record_token')]) < 0, 'email A visible text never prints the raw link URL/token outside an href');
 
   const mailB = dump.mail[1] || {};
   ok(mailB.to === 'jo.marekruger@ais.ae', 'email B goes to the teacher (otp-v0.9)', 'got: ' + mailB.to);
-  ok(mailB.subject === 'Your OTP Progress observation · Observation 1 · 2026-09-02', 'email B subject carries Observation 1 (otp-v0.9)', 'got: ' + mailB.subject);
+  ok(mailB.subject === 'AIS OTP Observation 1 · 2026-09-02', 'email B subject carries Observation 1 (otp-v0.9)', 'got: ' + mailB.subject);
   ok(String(mailB.htmlBody).indexOf(viewerLink) > -1, 'email B carries the view link (otp-v0.9)', 'looked for: ' + viewerLink);
   ok(String(mailB.htmlBody).indexOf('?edit=') < 0, 'email B never carries an edit link (otp-v0.9)');
   ok(!mailB.cc, 'email B has no CC (teacher only)', 'got: ' + JSON.stringify(mailB.cc));
+  const mailBVisible = String(mailB.htmlBody).replace(/href="[^"]*"/g, 'href="…"');
+  ok(mailBVisible.indexOf(row[idx('record_token')]) < 0, 'email B visible text never prints the raw link URL/token outside an href');
 
   const labelsMissing = ['Observer Comments', 'Other Observations', 'Next Steps / Support 1', 'Selected criteria', 'Support teachers / CAs',
     'Present in lesson', 'Partially present', 'Not present', 'Not assessed (does not count)', 'Grade', 'Time out']
@@ -1149,13 +1153,15 @@ section('(k) otp-v0.9 · close sets status closed + closed_at and sends email C 
   const emailC = mail[2];
   const viewUrl = 'https://rogerceaser21.github.io/Data-Representation/Assets/OTP/otp-record.html?token=' + token;
   ok(emailC.to === 'jo.marekruger@ais.ae', 'email C goes to the teacher', 'got: ' + emailC.to);
-  ok(emailC.subject === 'OTP Progress · Observation 1 closed · Jo Mare Kruger · 2026-09-02', 'email C subject names the closed observation', 'got: ' + emailC.subject);
+  ok(emailC.subject === 'AIS OTP Observation 1 · Jo Mare Kruger · 2026-09-02', 'email C subject names the observation', 'got: ' + emailC.subject);
   ok(String(emailC.htmlBody).indexOf('1. ' + closePayload.next_step_1) > -1 &&
      String(emailC.htmlBody).indexOf('2. ' + closePayload.next_step_2) > -1 &&
      String(emailC.htmlBody).indexOf('3. ' + closePayload.next_step_3) > -1,
      'email C body carries all three Next Steps, numbered', emailC.htmlBody);
   ok(String(emailC.htmlBody).indexOf(viewUrl) > -1, 'email C carries the view link', 'looked for: ' + viewUrl);
   ok(String(emailC.htmlBody).indexOf('?edit=') < 0, 'email C never carries an edit link (record is locked)');
+  const emailCVisible = String(emailC.htmlBody).replace(/href="[^"]*"/g, 'href="…"');
+  ok(emailCVisible.indexOf(token) < 0, 'email C visible text never prints the raw link URL/token outside an href');
   ok(emailC.cc.indexOf('dave.richards2627@ais.ae') > -1 && emailC.cc.indexOf('admin.user@ais.ae') > -1,
     'email C CCs the observer and the backup mailbox', 'got: ' + emailC.cc);
 

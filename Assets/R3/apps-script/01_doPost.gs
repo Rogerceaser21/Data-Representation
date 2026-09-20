@@ -675,7 +675,7 @@ function sendOtpSubmissionEmail(ss, recordId, recordToken, submittedAt, data) {
 
   const teacherName = String(data.teacher || '(no teacher)').trim();
   const obsDate = String(data.date || data.observation_date || '').trim();
-  const subject = 'AIS OTP Progress · Observation ' + data.lap + ' · ' + teacherName + ' · ' + obsDate;
+  const subject = 'AIS OTP Observation ' + data.lap + ' · ' + teacherName + ' · ' + obsDate;
 
   const htmlBody = buildOtpSubmissionHtml(recordId, lockedUrl, editUrl, submittedAt, data);
 
@@ -717,14 +717,14 @@ function sendOtpTeacherEmail(ss, recordId, recordToken, submittedAt, data) {
   const viewUrl = RECORD_VIEWER_URL_OTP + '?token=' + encodeURIComponent(recordToken);
   const observerName = String(data.inspector || data.observer || 'Your observer').trim();
   const obsDate = String(data.date || data.observation_date || '').trim();
-  const subject = 'Your OTP Progress observation · Observation ' + data.lap + ' · ' + obsDate;
+  const subject = 'AIS OTP Observation ' + data.lap + ' · ' + obsDate;
 
-  // The link is a real anchor with the URL as its text: a bare URL followed
-  // by a full stop can be auto-linked WITH the stop, which breaks the token.
+  // The link text is fixed wording ("Click here to view."), not the URL, so
+  // the full stop sits inside the anchor; there is no bare-URL auto-link risk.
   const esc = function(s) {
     return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   };
-  const link = '<a href="' + esc(viewUrl) + '" style="color:#143642;font-weight:700;text-decoration:underline;">' + esc(viewUrl) + '</a>';
+  const link = '<a href="' + esc(viewUrl) + '" style="color:#143642;font-weight:700;text-decoration:underline;">Click here to view.</a>';
   const body = '<p style="margin:0 0 12px;">' + esc(observerName) + ' observed your lesson on ' + esc(obsDate) + '.</p>' +
                '<p style="margin:0 0 12px;">You can read the observation here:<br>' + link + '</p>' +
                '<p style="margin:0;">' + esc(observerName) + ' will arrange a time to go through it with you and agree your next steps together.</p>';
@@ -752,18 +752,19 @@ function sendOtpCloseEmail(ss, record) {
   const observerName = String(record.observer || 'your observer').trim();
   const teacherName = String(record.teacher || '(no teacher)').trim();
   const obsDate = String(record.observation_date || '').trim();
-  const subject = 'OTP Progress · Observation ' + record.lap + ' closed · ' + teacherName + ' · ' + obsDate;
+  const subject = 'AIS OTP Observation ' + record.lap + ' · ' + teacherName + ' · ' + obsDate;
 
   const closedDate = formatStampSafe(record.closed_at);
   const s1 = String(record.next_step_1 || '').trim();
   const s2 = String(record.next_step_2 || '').trim();
   const s3 = String(record.next_step_3 || '').trim();
-  // Real anchor, URL as its text (a bare URL + full stop can be auto-linked
-  // with the stop attached). The numbered lines stay literal text.
+  // Link text is fixed wording ("Click here to view."), not the URL, so the
+  // full stop sits inside the anchor; there is no bare-URL auto-link risk.
+  // The numbered lines stay literal text.
   const esc = function(s) {
     return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   };
-  const link = '<a href="' + esc(viewUrl) + '" style="color:#143642;font-weight:700;text-decoration:underline;">' + esc(viewUrl) + '</a>';
+  const link = '<a href="' + esc(viewUrl) + '" style="color:#143642;font-weight:700;text-decoration:underline;">Click here to view.</a>';
   const body = '<p style="margin:0 0 12px;">Observation ' + esc(record.lap) + ' was closed on ' + esc(closedDate) + '.</p>' +
                '<p style="margin:0 0 6px;">Next Steps agreed with ' + esc(observerName) + ':</p>' +
                '<div style="margin:0 0 4px 12px;">1. ' + esc(s1) + '</div>' +
@@ -861,8 +862,8 @@ function buildOtpSubmissionHtml(recordId, lockedUrl, editUrl, submittedAt, data)
   html += '    <div style="padding:24px 28px;">';
   html += '      <div style="background:#fff8e1;border:1px solid #FFBA14;border-radius:8px;padding:16px;margin-bottom:20px;">';
   html += '        <div style="font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:#8a6d00;font-weight:700;margin-bottom:6px;">Locked record</div>';
-  html += '        <div style="font-size:14px;color:#143642;">Open the locked record: <a href="' + esc(lockedUrl) + '" style="color:#143642;font-weight:700;text-decoration:underline;">Link</a></div>';
-  html += '        <div style="font-size:14px;color:#143642;margin-top:6px;">Edit this record: <a href="' + esc(editUrl) + '" style="color:#143642;font-weight:700;text-decoration:underline;">Link</a></div>';
+  html += '        <div style="font-size:14px;color:#143642;">Open the locked record: <a href="' + esc(lockedUrl) + '" style="color:#143642;font-weight:700;text-decoration:underline;">Click here to view.</a></div>';
+  html += '        <div style="font-size:14px;color:#143642;margin-top:6px;">Edit this record: <a href="' + esc(editUrl) + '" style="color:#143642;font-weight:700;text-decoration:underline;">Click here to edit.</a></div>';
   html += '      </div>';
   html += '      <table style="width:100%;border-collapse:collapse;">';
 
