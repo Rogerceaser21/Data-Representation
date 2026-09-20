@@ -1,3 +1,18 @@
+## otp-v0.11 · released to main (2026-09-20)
+
+Tag `otp-v0.11` (`3b5399f`). What GitHub Pages serves is this release build
+(served md5 = committed: form `aad7f69fabecc46d6312a49a9811ec7d`, teacher page
+`774fa0429a86103a2245d437e78b2f18`). The preview is archived as origin tag
+`preview-otp-v0.11`. Apps Script @33: OTP email subjects read
+`AIS OTP Observation N · [teacher ·] date` (the teacher's own copy carries no
+name) and every link is the text "Click here to view." / "Click here to edit.".
+The one-open-observation block is ON in Supabase
+(`app_config.otp_block_open_required`); the matching Script Property
+`OTP_BLOCK_OPEN_REQUIRED` is set by hand in the Apps Script editor. Known,
+shipped as-is (cosmetic): on Mac Safari the Teacher list can stay open after a
+pick (not reproduced on the WebKit rig yet). Suite: 294 specs, Chromium +
+WebKit, exit 0. Live proof: test observation 17 (`AIS-OTP-20260920-115018`).
+
 ## otp-v0.11 · continue and close, no reload (2026-09-18, task 7, preview build)
 
 Part of the otp-v0.11 "lap tracker" plan (`graph/continue` branch, wave 3),
