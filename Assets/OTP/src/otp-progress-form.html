@@ -791,6 +791,361 @@ body.is-viewer .status-strip-section { display: none !important; }
 body.is-viewer #op-card { display: none !important; }
 
 /* ===========================================
+   otp-v0.12 B2 · PINNED OBSERVATION PROCESS BAR
+   Ported verbatim from the approved look mock (handoff/research/
+   2026-09-21-otp-v012/mock/process-bar-mock.html, #op-bar). A permanent
+   fixed layer, always mounted, driven by data-state alone (never
+   display/visibility toggled while it animates - the iOS raster law):
+   an IntersectionObserver on #op-card switches it on once the card leaves
+   the top of the screen and a teacher is picked. Painted by the same
+   renderStripView() the full card uses (see the script below), so the two
+   can never disagree. The Next Steps button is B3, not here yet.
+   =========================================== */
+:root {
+  --op-bar-h: 2.75rem;  /* 44px, Apple HIG minimum touch target */
+  --op-bar-top: clamp(0.7rem, 1.4vw, 1.2rem);
+  /* near-opaque, both themes, so nothing scrolling underneath can ever be
+     read through the bar; blur is a bonus only, never load-bearing. */
+  --op-bar-surface: rgba(255, 255, 255, 0.98);
+  /* set by opBarSyncGeometry() from #op-card's own live getBoundingClientRect,
+     kept in sync on load, resize/orientationchange and whenever the bar is
+     about to show; these px fallbacks only matter for one unstyled frame. */
+  --op-bar-x: 16px;
+  --op-bar-w: 300px;
+  --op-end-l: 1.1rem;
+  --op-end-r: 1.1rem;
+}
+:root[data-theme="dark"] {
+  --op-bar-surface: rgba(17, 22, 46, 0.98);  /* --card-bg #11162e */
+}
+.op-bar-wrap {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 0;
+  z-index: 120;
+  pointer-events: none;
+}
+.op-bar {
+  position: fixed;
+  top: var(--op-bar-top);
+  left: var(--op-bar-x);
+  width: var(--op-bar-w);
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 1.1rem;
+  padding-right: 1.1rem;
+  height: var(--op-bar-h);
+  display: flex;
+  align-items: center;
+  gap: clamp(0.25rem, 0.6vw, 0.45rem);
+  background: var(--op-bar-surface);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  box-shadow: 0 12px 30px -12px rgba(20, 54, 66, 0.38), 0 1px 0 rgba(255,255,255,0.5) inset;
+  -webkit-backdrop-filter: blur(8px) saturate(160%);
+          backdrop-filter: blur(8px) saturate(160%);
+  opacity: 0;
+  transform: scale(0.94) translateY(-10px);
+  transform-origin: top center;
+  pointer-events: none;
+  overflow: hidden;
+  /* only opacity + transform animate; left/width/padding are set
+     synchronously by script before data-state flips to "shown", so they are
+     already correct while the bar is still invisible. */
+  transition: opacity 220ms cubic-bezier(0.64, 0, 0.78, 0),
+              transform 220ms cubic-bezier(0.64, 0, 0.78, 0);
+}
+:root[data-theme="dark"] .op-bar {
+  box-shadow: 0 12px 30px -12px rgba(0, 0, 0, 0.55), 0 1px 0 rgba(255,255,255,0.04) inset;
+}
+.op-bar[data-state="shown"] {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  pointer-events: auto;
+  /* materialize and settle, the same curve as every other pop in this form
+     (rub-note-pop, the admin modal). */
+  transition: opacity 320ms cubic-bezier(0.22, 1, 0.36, 1),
+              transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+/* reduced-motion rule for .op-bar lives with the form's other reduced-motion
+   rules, just after .rub-note-pop's own (see the comment there): otp-v0.7's
+   own spec slices the CSS from the FIRST @media (prefers-reduced-motion:
+   reduce) block and expects it to be rub-note-pop's, so this stays out of
+   the way rather than becoming a new first occurrence. */
+/* room reserved at each end for the docked Agenda/Check buttons, set by
+   opBarSyncEndPadding() from their real rendered width once opBarFitContent()
+   has picked a tier that actually fits inside the card's own width; only
+   reserved while actually docked + shown and not under the pad. */
+body.op-dock.op-bar-active:not(.pad-open) .op-bar {
+  padding-left: var(--op-end-l, 1.1rem);
+  padding-right: var(--op-end-r, 1.1rem);
+}
+.op-bar-steps {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: clamp(0.2rem, 0.5vw, 0.4rem);
+}
+/* the Active step's own name must never clip, so nothing here shrinks; every
+   step and the label keep their natural size and opBarFitContent()
+   downgrades the label tier (and, if still needed, the docked buttons to
+   icon-only) until the row's scrollWidth actually fits its clientWidth - a
+   measured fit, not a guessed breakpoint, so it holds after a rotate too. */
+.op-step { display: flex; align-items: center; gap: 0.3rem; min-width: 0; flex-shrink: 0; }
+.op-step-name { flex-shrink: 0; }
+/* step dots (pending / completed / coming soon; the Active step is its own
+   pill below, not a dot): Completed = filled green + white tick badge,
+   Pending = grey, Coming soon = dashed outline, transparent. Icons are
+   cloned from the real strip cards with their stroke rewritten to
+   currentColor so this colour language can drive them. No step number badge
+   (owner feedback: "too distracting"); the big card above keeps its own. */
+.op-step-dot {
+  position: relative;
+  flex: none;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--navy-card);
+  border: 2px solid var(--paper-faint);
+  color: var(--paper-faint);
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), background 0.2s ease, border-color 0.2s ease;
+}
+.op-step-dot svg { width: 14px; height: 14px; display: block; }
+.op-step.is-pending .op-step-dot { background: var(--navy-card); border-color: var(--paper-faint); color: var(--paper-faint); }
+.op-step.is-coming .op-step-dot {
+  background: transparent;
+  border-style: dashed; border-color: var(--paper-faint);
+  color: var(--paper-faint);
+  opacity: 0.75;
+}
+.op-step.is-completed .op-step-dot {
+  background: var(--rate-success);
+  border-color: var(--rate-success-deep);
+  color: #fff;
+}
+.op-step-tick {
+  position: absolute; right: -3px; bottom: -3px;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--rate-success-deep);
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid var(--op-bar-surface);
+}
+.op-step-tick svg { width: 7px; height: 7px; display: block; }
+/* the Active step is no longer a dot with a name beside it - it is ONE pill
+   (icon + name both INSIDE the same element), replacing the dot in its own
+   slot in the row (order still reads 1 2 3 [pill] 5 6). No digit anywhere:
+   the numbers are gone from the bar entirely; the card above keeps its own. */
+.op-step-active-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  flex: none;
+  flex-shrink: 0;
+  height: calc(var(--op-bar-h) - 0.7rem);
+  padding: 0 0.75rem 0 0.55rem;
+  border-radius: 999px;
+  background: var(--ais-blue);
+  color: #fff;                                /* ~5.5:1 on #1257FF, exceeds 4.5:1 */
+  box-shadow: 0 0 0 4px rgba(18, 87, 255, 0.18);
+}
+.op-step-active-pill svg { width: 15px; height: 15px; flex: none; display: block; }
+.op-step-name {
+  font-family: var(--body-font);
+  font-weight: 700;
+  font-size: var(--tiny);
+  color: inherit;   /* white, inherited from .op-step-active-pill */
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+/* THREE label tiers, chosen by measured fit (opBarFitContent), not by a
+   guessed viewport breakpoint - #op-bar[data-label-tier] drives which one is
+   visible. "full" is the default markup state (no attribute needed). No
+   digit in any tier; "tiny" (just the state word, e.g. "Active") is the
+   guaranteed floor at any width. */
+.op-step-name-short, .op-step-name-tiny { display: none; }
+#op-bar[data-label-tier="short"] .op-step-name-full { display: none; }
+#op-bar[data-label-tier="short"] .op-step-name-short { display: inline; }
+#op-bar[data-label-tier="tiny"] .op-step-name-full,
+#op-bar[data-label-tier="tiny"] .op-step-name-short { display: none; }
+#op-bar[data-label-tier="tiny"] .op-step-name-tiny { display: inline; }
+
+/* ===========================================
+   otp-v0.12 B3 · NEXT STEPS BUTTON + DROP-DOWN
+   Sits on the bar, between the steps and the docked Check Teacher button
+   (the last child of #op-bar, so the bar's own flexbox already reserves it
+   room - the fit routine above measures #op-bar-steps against its OWN
+   clientWidth, which this button already narrows just by sharing the row).
+   =========================================== */
+.op-bar-ns {
+  flex: none;
+  display: inline-flex; align-items: center; gap: 0.3em;
+  height: calc(var(--op-bar-h) - 0.7rem);
+  padding: 0 0.6rem;
+  border-radius: 999px;
+  border: 1px solid var(--rule);
+  background: var(--card-bg);
+  color: var(--paper);
+  font-family: var(--body-font);
+  font-weight: 700;
+  font-size: clamp(0.66rem, 1.2vw, 0.8rem);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.op-bar-ns .op-ns-icon { width: 1em; height: 1em; flex: none; }
+.op-bar-ns.is-empty { color: var(--paper-mid); border-color: var(--paper-faint); background: transparent; }
+.op-bar-ns[aria-expanded="true"] { border-color: var(--ais-blue); color: var(--ais-blue); }
+@media (hover: hover) {
+  .op-bar-ns:hover { border-color: var(--ais-yellow); }
+}
+
+/* the drop-down: a permanent card + a light, non-blocking scrim, driven by
+   data-state alone, the SAME motion as the otp-v0.7 rubric note pop
+   (rub-note-pop/rub-note-scrim). Fixed (never absolute: it floats over
+   scrolled content, not inside a section), so opening it never moves the
+   page and never locks scroll. Horizontally aligned to the SAME measured
+   card box as the bar itself (--op-bar-x/--op-bar-w). */
+.op-ns-scrim {
+  position: fixed;
+  top: calc(var(--op-bar-top) + var(--op-bar-h));
+  left: 0; right: 0; bottom: 0;
+  z-index: 119;
+  background: rgba(20, 54, 66, 0.14);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms linear;
+}
+.op-ns-scrim[data-state="open"] { opacity: 1; pointer-events: auto; }
+.op-ns-pop {
+  position: fixed;
+  top: calc(var(--op-bar-top) + var(--op-bar-h) + 0.5rem);
+  left: var(--op-bar-x);
+  width: var(--op-bar-w);
+  z-index: 121;
+  background: var(--card-bg);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  box-shadow: 0 16px 40px -16px rgba(20, 54, 66, 0.28);
+  padding: 0.85rem 1rem 1rem;
+  opacity: 0;
+  transform: scale(0.96) translateY(-8px);
+  transform-origin: top right;
+  pointer-events: none;
+  transition: transform 200ms cubic-bezier(0.64, 0, 0.78, 0), opacity 200ms linear;
+}
+.op-ns-pop[data-state="open"] {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  pointer-events: auto;
+  transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1), opacity 200ms linear;
+}
+/* reduced-motion rule lives with .op-bar's own, just after .rub-note-pop's
+   (see the comment there). */
+.op-ns-head {
+  font-family: var(--body-font);
+  font-size: var(--tiny);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--paper);
+  margin-bottom: 0.35rem;
+}
+.op-ns-empty {
+  margin: 0;
+  font-size: var(--small);
+  color: var(--paper-mid);
+  font-style: italic;
+}
+/* never in the ungated teacher viewer: #op-bar-ns-btn is already covered by
+   body.is-viewer .op-bar-wrap below, but the pop/scrim are siblings of that
+   wrap, not descendants, so they need their own rule. */
+body.is-viewer .op-ns-pop,
+body.is-viewer .op-ns-scrim { display: none !important; }
+
+/* --- docking: while the bar shows (and dock is on, which it always is in
+   the product), the floating Agenda/Check buttons move to the bar's two
+   ends and become part of its surface. They must stay OBVIOUSLY tappable
+   buttons, not bare glyphs: labelled at 834/1024 by default, icon-only (but
+   still a full-contrast button chip) at 744 always, or at any width once
+   opBarFitContent() adds body.op-dock-compact because the labelled form does
+   not fit inside the (narrower, card-matched) bar. 44px minimum always.
+   Docking must switch off completely the instant body.pad-open is present,
+   however op-dock/op-bar-active landed, so every docking rule below is
+   qualified :not(.pad-open) on body, rather than trying to out-specificity
+   or !important an undo afterwards. --- */
+.float-link {
+  /* extends the base rule's transition list (background/color/border-
+     color/transform) with the geometry properties the dock/undock swap
+     touches; same specificity, later in the cascade, so this wins without
+     editing the original declaration. */
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease,
+              left 260ms cubic-bezier(0.22, 1, 0.36, 1), right 260ms cubic-bezier(0.22, 1, 0.36, 1),
+              width 260ms cubic-bezier(0.22, 1, 0.36, 1), padding 260ms cubic-bezier(0.22, 1, 0.36, 1),
+              border-radius 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+body.op-dock.op-bar-active:not(.pad-open) .float-link {
+  top: var(--op-bar-top);
+  height: var(--op-bar-h);
+  min-width: var(--op-bar-h);
+  padding: 0 0.55rem;
+  justify-content: center;
+  gap: 0.3em;
+  /* same visible surface + contrast as the Next Steps button (B3), so the
+     docked buttons read as one family of controls with the bar's own. */
+  background: var(--card-bg);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  box-shadow: none;
+  color: var(--paper);
+  -webkit-backdrop-filter: none;
+          backdrop-filter: none;
+  /* paints ABOVE op-bar-wrap (120), so the icon/label read crisp on top of
+     the bar's own surface instead of being blurred a second time by it */
+  z-index: 130;
+}
+body.op-dock.op-bar-active:not(.pad-open) .float-link.agenda { left: var(--op-bar-x); }
+/* Check's RIGHT edge (not left) must align with the bar's right edge; `right`
+   is measured from the viewport's own right edge (the containing block for
+   position:fixed here), so this is 100vw minus the bar's right edge in
+   viewport-left terms - avoids needing Check's own rendered width. */
+body.op-dock.op-bar-active:not(.pad-open) .float-link.check { right: calc(100vw - var(--op-bar-x) - var(--op-bar-w)); }
+@media (hover: hover) {
+  body.op-dock.op-bar-active:not(.pad-open) .float-link:hover { border-color: var(--ais-yellow); color: var(--paper); transform: translateY(0); }
+}
+/* icon-only: the guaranteed floor at <=760px, or above that whenever
+   opBarFitContent() decides the labelled buttons don't fit the (narrower,
+   card-matched) bar and adds this class - still a full button chip
+   (background + border), never a bare glyph, just without room for the label. */
+@media (max-width: 760px) {
+  body.op-dock.op-bar-active:not(.pad-open) .float-link { width: var(--op-bar-h); padding: 0; }
+  body.op-dock.op-bar-active:not(.pad-open) .float-link span { display: none; }
+}
+body.op-dock-compact.op-dock.op-bar-active:not(.pad-open) .float-link { width: var(--op-bar-h); padding: 0; }
+body.op-dock-compact.op-dock.op-bar-active:not(.pad-open) .float-link span { display: none; }
+
+/* body.pad-open must hide the bar (and, B3, the Next Steps drop-down + its
+   scrim) 100%, directly, regardless of their current data-state. A
+   descendant's OWN computed display/opacity is NOT changed by an ancestor's
+   display:none (only whether it renders), so hiding .op-bar-wrap alone
+   would leave #op-bar itself still computing display:flex/opacity:1; the
+   drop-down and scrim are siblings of the wrap, not descendants, so they
+   need naming here too. This targets each directly; body.pad-open .op-bar
+   (specificity 0,2,1) already outranks .op-bar[data-state="shown"] (0,2,0),
+   and !important is added anyway so this hard product rule ("the pad wins,
+   always") can never lose to a future higher-specificity rule. This reads
+   the SAME body.pad-open class the pad already sets (hard rule 15); no
+   Evidence Pad code is touched. */
+body.pad-open .op-bar,
+body.pad-open .op-ns-pop,
+body.pad-open .op-ns-scrim {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* the bar never shows on the ungated teacher viewer. */
+body.is-viewer .op-bar-wrap { display: none !important; }
+
+/* ===========================================
    SUBMITTED BANNER + LOCK STATE
    =========================================== */
 .submitted-banner {
@@ -2495,6 +2850,16 @@ body.is-viewer .cog-btn { display: none; }
     color: var(--close-lap-ink);
   }
 }
+/* otp-v0.12 B2/B3: the pinned bar and its Next Steps drop-down, same
+   reduced-motion treatment (scale/translate dropped, the fade kept). */
+@media (prefers-reduced-motion: reduce) {
+  .op-bar, .op-bar[data-state="shown"] {
+    transform: none;
+    transition: opacity 150ms linear;
+  }
+  .op-ns-pop, .op-ns-pop[data-state="open"] { transform: none; transition: opacity 150ms linear; }
+  .op-ns-scrim, .op-ns-scrim[data-state="open"] { transition: opacity 150ms linear; }
+}
 .rub-note-headrow { display: flex; align-items: center; gap: 0.4rem; }
 .rub-note-dot {
   flex: none;
@@ -3111,6 +3476,28 @@ body.is-viewer .cog-btn { display: none; }
 <!-- otp-v0.9.3: a saved change on an open lap leaves this on screen until it is
      dismissed, so the lap is never left open by accident. -->
 <div class="notice" id="notice" role="alert" hidden><span class="notice-text" id="notice-text"></span><button type="button" class="notice-close" id="notice-close" aria-label="Dismiss">×</button></div>
+
+<!-- ============================================
+     otp-v0.12 B2/B3 · pinned Observation Process bar + Next Steps
+     drop-down. Permanent layers, driven by data-state alone (the iOS
+     raster law): never created/destroyed, never display/visibility
+     toggled while animating.
+     ============================================ -->
+<div class="op-bar-wrap" id="op-bar-wrap" aria-hidden="true">
+  <div class="op-bar" id="op-bar" data-state="hidden" role="navigation" aria-label="Observation process, pinned">
+    <div class="op-bar-steps" id="op-bar-steps"></div>
+    <button type="button" class="op-bar-ns is-empty" id="op-bar-ns-btn" aria-haspopup="true" aria-expanded="false">
+      <svg class="op-ns-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      <span>Next Steps</span>
+    </button>
+  </div>
+</div>
+<div class="op-ns-scrim" id="op-ns-scrim" data-state="closed" aria-hidden="true"></div>
+<div class="op-ns-pop" id="op-ns-pop" data-state="closed" role="dialog" aria-modal="false" aria-hidden="true" aria-label="Next Steps">
+  <span class="op-ns-head" id="op-ns-head"></span>
+  <ol class="op-ns-list prev-ns-list" id="op-ns-list"></ol>
+  <p class="op-ns-empty" id="op-ns-empty" hidden>No Next Steps yet</p>
+</div>
 
 <script>
   /* === Theme toggle ============================================= */
@@ -7813,6 +8200,383 @@ body.is-viewer .cog-btn { display: none; }
   if (!VIEWER_LANDING && !window.R3_VIEWER) loadDropdownOptions();
 
   // Keyboard convenience: Cmd/Ctrl + P → uses print path (browser default already does this, no override needed)
+</script>
+
+<!-- ============================================================
+     otp-v0.12 B2 · pinned Observation Process bar. Ported from the
+     approved look mock (handoff/research/2026-09-21-otp-v012/mock/
+     process-bar-mock.html). Reads the real form's own functions/DOM
+     (renderStripView, #strip-card-N, #op-card) so the bar can never
+     disagree with the full card above it. The Next Steps button is
+     B3, not here yet. Everything here is enhancement only: a thrown
+     error is swallowed so the strip and the rest of the form always
+     carry on exactly as today (hard rule, no error UI).
+     ============================================================ -->
+<script>
+(function () {
+  var opBarCardGone = false;
+  var opBarTeacherPicked = false;
+
+  // exact icon ported from the tracker mock's TICK_SVG, so a completed
+  // step's white tick badge matches everywhere it appears.
+  var OP_TICK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>';
+
+  function opBarBuildSteps(view) {
+    var stepsEl = document.getElementById('op-bar-steps');
+    var isAllGrey = true;
+    if (!stepsEl) return isAllGrey;
+    stepsEl.innerHTML = '';
+    // steps 1 and 6: card 1's title is built with innerHTML as an ordinal
+    // word plus a line break ("Second Teacher Observation<br>Observation 2"),
+    // unusable prose for the pill, so these two use the OBSERVATION number
+    // instead (view.n, the same number the card title and status line
+    // already show), never the ordinal wording.
+    var obsN = (view && view.n) ? String(view.n) : '1';
+    for (var i = 1; i <= 6; i++) {
+      var card = document.getElementById('strip-card-' + i);
+      if (!card) continue;
+      var stateClass = 'is-grey';
+      for (var c = 0; c < card.classList.length; c++) {
+        if (card.classList[c].indexOf('is-') === 0) { stateClass = card.classList[c]; break; }
+      }
+      if (stateClass !== 'is-grey') isAllGrey = false;
+      var isActive = stateClass === 'is-current';
+      var isCompleted = stateClass === 'is-completed';
+      var iconSvg = card.querySelector('.strip-icon svg');
+      var titleEl = card.querySelector('.strip-title');
+      var wordEl = card.querySelector('.strip-status');
+
+      // the Active step is ONE pill (icon + name both inside the same
+      // element, no digit anywhere), replacing the dot in its own slot -
+      // order still reads 1 2 3 [pill] 5 6. Every other step is a plain
+      // icon dot with no number badge (tick stays for completed).
+      if (isActive) {
+        var word = wordEl ? wordEl.textContent.trim() : 'Active';
+
+        var pill = document.createElement('span');
+        pill.className = 'op-step-active-pill';
+        pill.id = 'op-bar-active';
+        if (iconSvg) {
+          // same stroke-rewrite as the dots below: white icon on the
+          // filled blue pill, driven by CSS `color` (inherit -> #fff).
+          var pillIcon = iconSvg.cloneNode(true);
+          pillIcon.setAttribute('stroke', 'currentColor');
+          pill.appendChild(pillIcon);
+        }
+        var label = document.createElement('span');
+        label.className = 'op-step-name';
+        var full = document.createElement('span');
+        full.className = 'op-step-name-full';
+        var short = document.createElement('span');
+        short.className = 'op-step-name-short';
+        var tiny = document.createElement('span');
+        tiny.className = 'op-step-name-tiny';
+        tiny.textContent = word;
+
+        if (i === 1 || i === 6) {
+          // two tiers only: "Observation N - Active", proven to always fit
+          // at 744/834/1024, then the bare word as the last-resort floor.
+          var withObs = 'Observation ' + obsN + (word ? ' · ' + word : '');
+          full.textContent = withObs;
+          short.textContent = withObs;
+        } else {
+          // steps 3/4 (and 2/5, never Active in practice) keep three tiers,
+          // scraped from the card's own title text.
+          var titleText = '';
+          if (titleEl) {
+            titleText = Array.prototype.map.call(titleEl.childNodes, function (n) {
+              return n.nodeType === 3 ? n.textContent : ' ';
+            }).join('').replace(/\s+/g, ' ').trim();
+          }
+          var shortTitle = titleText.replace(/^Observation\s+/, '');
+          full.textContent = titleText + (word ? ' · ' + word : '');
+          short.textContent = shortTitle + (word ? ' · ' + word : '');
+        }
+        label.appendChild(full);
+        label.appendChild(short);
+        label.appendChild(tiny);
+        pill.appendChild(label);
+        stepsEl.appendChild(pill);
+        continue;
+      }
+
+      var step = document.createElement('span');
+      step.className = 'op-step ' + stateClass;
+
+      var dot = document.createElement('span');
+      dot.className = 'op-step-dot';
+      if (iconSvg) {
+        // the real strip icon hardcodes stroke="#fff" (it sits on a constant
+        // dark .strip-icon background in the full card); the bar's dot fills
+        // with state colour instead (grey/green), so the clone's stroke is
+        // rewritten to currentColor and .op-step-dot's CSS `color` per state
+        // drives it from there.
+        var clone = iconSvg.cloneNode(true);
+        clone.setAttribute('stroke', 'currentColor');
+        dot.appendChild(clone);
+      }
+      if (isCompleted) {
+        var tick = document.createElement('span');
+        tick.className = 'op-step-tick';
+        tick.innerHTML = OP_TICK_SVG;
+        dot.appendChild(tick);
+      }
+      step.appendChild(dot);
+      stepsEl.appendChild(step);
+    }
+    return isAllGrey;
+  }
+
+  // owner's rule: "shrink in height only, width stays the same" - the bar's
+  // outer box must equal the Observation Process CARD's own left/width, not
+  // the wider .form-container, and it must keep matching after a
+  // rotate/resize, so #op-bar's left/width are read directly off #op-card's
+  // getBoundingClientRect, always, not just while shown, so it is already
+  // correct before the bar ever fades in.
+  function opBarSyncGeometry() {
+    var card = document.getElementById('op-card');
+    if (!card) return;
+    var r = card.getBoundingClientRect();
+    if (r.width < 4) return;   // card not laid out yet (e.g. display:none behind the pad)
+    document.documentElement.style.setProperty('--op-bar-x', r.left + 'px');
+    document.documentElement.style.setProperty('--op-bar-w', r.width + 'px');
+  }
+
+  // the docked Agenda/Check buttons are labelled, full-contrast pills
+  // (variable width, not a fixed icon circle). Measure their REAL rendered
+  // width (after the docked classes are live) and set the bar's own end
+  // padding to match exactly, so the centre content can never collide.
+  function opBarSyncEndPadding() {
+    var agenda = document.querySelector('.float-link.agenda');
+    var check = document.querySelector('.float-link.check');
+    if (!agenda || !check) return;
+    var gap = 12; // breathing room between the docked button and the bar's own content
+    var lw = Math.ceil(agenda.getBoundingClientRect().width) + gap;
+    var rw = Math.ceil(check.getBoundingClientRect().width) + gap;
+    if (lw > 4) document.documentElement.style.setProperty('--op-end-l', lw + 'px');
+    if (rw > 4) document.documentElement.style.setProperty('--op-end-r', rw + 'px');
+  }
+
+  // the bar is exactly as wide as the card, so the full/short label and
+  // labelled docked buttons can genuinely stop fitting at some widths. This
+  // measures the ACTUAL fit (steps row scrollWidth vs its allotted
+  // clientWidth) and downgrades in order: short label, then tiny label, then
+  // (still not fitting) icon-only docked buttons. Re-run on every geometry
+  // change (resize/orientationchange), never a one-shot guess, so "never
+  // clip, never overflow" holds after a rotate too.
+  var OP_LABEL_TIERS = ['full', 'short', 'tiny'];
+  function opBarFitsAtCurrentTier() {
+    var stepsEl = document.getElementById('op-bar-steps');
+    if (!stepsEl) return true;
+    return stepsEl.scrollWidth <= stepsEl.clientWidth + 1;
+  }
+  function opBarFitContent() {
+    var bar = document.getElementById('op-bar');
+    if (!bar) return;
+    document.body.classList.remove('op-dock-compact');
+    opBarSyncEndPadding();
+    for (var i = 0; i < OP_LABEL_TIERS.length; i++) {
+      bar.dataset.labelTier = OP_LABEL_TIERS[i];
+      if (opBarFitsAtCurrentTier()) return;
+    }
+    // still doesn't fit even at the tersest label: drop the docked buttons
+    // to icon-only too, which frees a lot of width, then re-run the label
+    // tiers against the new room.
+    document.body.classList.add('op-dock-compact');
+    opBarSyncEndPadding();
+    for (var j = 0; j < OP_LABEL_TIERS.length; j++) {
+      bar.dataset.labelTier = OP_LABEL_TIERS[j];
+      if (opBarFitsAtCurrentTier()) return;
+    }
+    // guaranteed floor: tiny label stays selected from the loop above.
+  }
+
+  function syncOpBarVisibility() {
+    var bar = document.getElementById('op-bar');
+    if (!bar) return;
+    var show = opBarCardGone && opBarTeacherPicked;
+    var wrap = document.getElementById('op-bar-wrap');
+    if (show) {
+      // geometry, docking and label tier are all resolved HERE,
+      // synchronously, BEFORE data-state flips to "shown" below - so they
+      // are already correct while the bar is still opacity:0/invisible, and
+      // only opacity+transform are ever left to actually animate.
+      opBarSyncGeometry();
+      document.body.classList.add('op-bar-active');
+      opBarFitContent();
+    } else {
+      document.body.classList.remove('op-bar-active');
+      closeNsPop();   // B3: the bar leaving (scroll back, Reset, teacher change) closes the drop-down too
+    }
+    bar.dataset.state = show ? 'shown' : 'hidden';
+    if (wrap) wrap.setAttribute('aria-hidden', show ? 'false' : 'true');
+  }
+
+  function updateOpBar(view) {
+    opBarTeacherPicked = !opBarBuildSteps(view);
+    syncOpBarVisibility();
+  }
+
+  function initOpBarObserver() {
+    var card = document.getElementById('op-card');
+    if (!card || !('IntersectionObserver' in window)) return;
+    var io = new IntersectionObserver(function (entries) {
+      var entry = entries[0];
+      // "off the top of the screen" = the card's own bottom edge has
+      // scrolled past the viewport top; not-intersecting-but-below (before
+      // layout settles) must never be read as gone.
+      opBarCardGone = !entry.isIntersecting && entry.boundingClientRect.bottom <= 0;
+      syncOpBarVisibility();
+    }, { threshold: 0 });
+    io.observe(card);
+  }
+
+  /* ---------- B3: the Next Steps drop-down, read-only, reads #prev-ns-echo
+     verbatim (the same block the form already loads above the rubric), so
+     the two can never disagree. Nothing here types, saves or fetches. ---------- */
+  function updateNsButtonState() {
+    var btn = document.getElementById('op-bar-ns-btn');
+    var echo = document.getElementById('prev-ns-echo');
+    if (!btn) return;
+    var hasSteps = !!(echo && !echo.hidden);
+    btn.classList.toggle('is-empty', !hasSteps);
+    var pop = document.getElementById('op-ns-pop');
+    if (pop && pop.dataset.state === 'open') fillNsPop();
+  }
+
+  // builds the card's own <li> elements fresh via textContent (never
+  // innerHTML): the echo's own list was already built the same safe way
+  // (prevNsRender), but content shown here must never be parsed as markup.
+  function fillNsPop() {
+    var echo = document.getElementById('prev-ns-echo');
+    var head = document.getElementById('op-ns-head');
+    var list = document.getElementById('op-ns-list');
+    var empty = document.getElementById('op-ns-empty');
+    var hasSteps = !!(echo && !echo.hidden);
+    if (hasSteps) {
+      var echoHead = document.getElementById('prev-ns-echo-head');
+      var echoList = document.getElementById('prev-ns-echo-list');
+      if (head) { head.textContent = echoHead ? echoHead.textContent : ''; head.hidden = false; }
+      if (list) {
+        list.innerHTML = '';
+        if (echoList) {
+          Array.prototype.forEach.call(echoList.children, function (li) {
+            var item = document.createElement('li');
+            item.textContent = li.textContent;   // never parsed as markup
+            list.appendChild(item);
+          });
+        }
+        list.hidden = false;
+      }
+      if (empty) empty.hidden = true;
+    } else {
+      if (head) { head.textContent = ''; head.hidden = true; }
+      if (list) { list.innerHTML = ''; list.hidden = true; }
+      if (empty) empty.hidden = false;
+    }
+  }
+
+  function openNsPop() {
+    fillNsPop();
+    var pop = document.getElementById('op-ns-pop');
+    var scrim = document.getElementById('op-ns-scrim');
+    var btn = document.getElementById('op-bar-ns-btn');
+    if (pop) { pop.dataset.state = 'open'; pop.setAttribute('aria-hidden', 'false'); }
+    if (scrim) { scrim.dataset.state = 'open'; scrim.setAttribute('aria-hidden', 'false'); }
+    if (btn) btn.setAttribute('aria-expanded', 'true');
+  }
+  function closeNsPop() {
+    var pop = document.getElementById('op-ns-pop');
+    var scrim = document.getElementById('op-ns-scrim');
+    var btn = document.getElementById('op-bar-ns-btn');
+    if (pop) { pop.dataset.state = 'closed'; pop.setAttribute('aria-hidden', 'true'); }
+    if (scrim) { scrim.dataset.state = 'closed'; scrim.setAttribute('aria-hidden', 'true'); }
+    if (btn) btn.setAttribute('aria-expanded', 'false');
+  }
+
+  // the drop-down must also close the instant the Evidence Pad opens, even
+  // when the bar was ALREADY pinned (syncOpBarVisibility's own IO callback
+  // then never re-enters its "hidden" branch, since opBarCardGone was
+  // already true). Observes body's class attribute only - no Evidence Pad
+  // code is touched - and reacts on the rising edge alone, so closing the
+  // pad never re-opens a drop-down the coach did not re-request.
+  function initOpBarPadObserver() {
+    if (!('MutationObserver' in window)) return;
+    var wasOpen = document.body.classList.contains('pad-open');
+    var mo = new MutationObserver(function () {
+      var isOpen = document.body.classList.contains('pad-open');
+      if (isOpen && !wasOpen) closeNsPop();
+      wasOpen = isOpen;
+    });
+    mo.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+  }
+
+  // prevNsRender/prevNsHide are the SAME functions that fill #prev-ns-echo
+  // above the rubric; overriding them keeps the button's grey/active state
+  // (and an already-open card's content) in sync with that block always,
+  // never a second source of truth. Wrapped in try/catch: enhancement only.
+  if (typeof prevNsRender === 'function') {
+    var __origPrevNsRender = prevNsRender;
+    prevNsRender = function (d, opts) {
+      var r = __origPrevNsRender(d, opts);
+      try { updateNsButtonState(); } catch (e) { /* enhancement only, hard rule 12 */ }
+      return r;
+    };
+  }
+  if (typeof prevNsHide === 'function') {
+    var __origPrevNsHide = prevNsHide;
+    prevNsHide = function () {
+      __origPrevNsHide();
+      try { updateNsButtonState(); } catch (e) { /* enhancement only, hard rule 12 */ }
+    };
+  }
+
+  // keeps the bar's geometry (and, while shown, its fit) correct after a
+  // real rotate/resize - not just at the moment it first appears.
+  function opBarHandleViewportChange() {
+    opBarSyncGeometry();
+    var bar = document.getElementById('op-bar');
+    if (bar && bar.dataset.state === 'shown') opBarFitContent();
+  }
+  window.addEventListener('resize', opBarHandleViewportChange);
+  window.addEventListener('orientationchange', opBarHandleViewportChange);
+
+  // the bar is painted FROM the same renderStripView the full card uses, so
+  // the two can never disagree. renderStripView is a plain top-level
+  // function declaration in the form's own script, so it is reachable and
+  // reassignable from this later script tag. Wrapped in try/catch: the bar
+  // is enhancement only, so a fault in it must never stop the real strip
+  // paint (which already ran, above) or surface an error to the coach.
+  if (typeof renderStripView === 'function') {
+    var __origRenderStripView = renderStripView;
+    renderStripView = function (view) {
+      __origRenderStripView(view);
+      try { updateOpBar(view); } catch (e) { /* enhancement only, hard rule 12 */ }
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    document.body.classList.add('op-dock');   // docking is always on in the product
+    try {
+      opBarSyncGeometry();
+      initOpBarObserver();
+      initOpBarPadObserver();
+      updateOpBar();
+      updateNsButtonState();
+    } catch (e) { /* enhancement only, hard rule 12 */ }
+
+    var nsBtn = document.getElementById('op-bar-ns-btn');
+    if (nsBtn) nsBtn.addEventListener('click', function () {
+      var pop = document.getElementById('op-ns-pop');
+      if (pop && pop.dataset.state === 'open') closeNsPop(); else openNsPop();
+    });
+    var scrim = document.getElementById('op-ns-scrim');
+    if (scrim) scrim.addEventListener('click', function () { closeNsPop(); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeNsPop();
+    });
+  });
+})();
 </script>
 
 </body>

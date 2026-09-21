@@ -6455,3 +6455,711 @@ test('otp-v0.11 fix round 2: a debounced autosave landing while the flush is sti
   expect(draft.observer_comments).toBe('typed while the load was still in flight');
   expect(h.errors).toEqual([]);
 });
+
+/* ===================================================================
+   otp-v0.12 B2 · the pinned Observation Process bar (Focus OS task 6)
+   Ported from the approved look mock (handoff/research/2026-09-21-
+   otp-v012/mock/process-bar-mock.html). No Next Steps button yet (that
+   is B3, below). The bar is painted from the SAME renderStripView the
+   full card uses, so these specs drive it with the suite's own
+   mockLapState/LAP_STATE_* fixtures, exactly like the strip specs above.
+   =================================================================== */
+
+/** The three iPad widths B2 is proved at, reusing the sizes already
+ *  measured against this master (STEP_CARD_SIZE_BY_WIDTH, above). */
+const OP_WIDTHS = STEP_CARD_SIZE_BY_WIDTH.map(({ width, height }) => ({ width, height }));
+
+/** Same open observation as LAP_STATE_OPEN_WITH_OWN_STEPS, but neither email
+ *  has gone out yet: card 3 must read "pending", not "completed". */
+const LAP_STATE_OPEN_EMAILS_PENDING = {
+  ...LAP_STATE_OPEN_WITH_OWN_STEPS,
+  open: { ...LAP_STATE_OPEN_WITH_OWN_STEPS.open, coach_emailed_at: null, teacher_emailed_at: null },
+};
+
+/** The bar's own box + visibility, read the same way the approved mock's
+ *  verifier scripts do (foreman_verify.mjs barState). */
+const opBarBox = (page: Page) => page.evaluate(() => {
+  const bar = document.getElementById('op-bar')!;
+  const wrap = document.getElementById('op-bar-wrap');
+  const card = document.getElementById('op-card')!;
+  const cs = getComputedStyle(bar);
+  const r = bar.getBoundingClientRect();
+  const cr = card.getBoundingClientRect();
+  return {
+    state: bar.dataset.state,
+    opacity: +cs.opacity,
+    display: cs.display,
+    pointerEvents: cs.pointerEvents,
+    visibility: cs.visibility,
+    top: r.top, left: r.left, width: r.width, height: r.height,
+    cardLeft: cr.left, cardWidth: cr.width,
+    wrapAriaHidden: wrap ? wrap.getAttribute('aria-hidden') : null,
+  };
+});
+
+/** Every step slot's state, in bar order 1-6: the dot's own is-* class, or
+ *  'active' for the pill slot (mirrors the card's own strip-card classes). */
+const opBarStepStates = (page: Page) => page.evaluate(() => {
+  const steps = document.getElementById('op-bar-steps')!;
+  return Array.from(steps.children).map((el) => {
+    if (el.id === 'op-bar-active') return 'active';
+    const m = el.className.match(/\bis-(\w+)\b/);
+    return m ? m[1] : '';
+  });
+});
+
+/** Bare "1".."6" number badges visible anywhere in the bar (there must be
+ *  none, owner feedback round 1), plus the Active pill's own visible text
+ *  and whether its name is clipped (foreman_verify.mjs's `fb`). */
+const opBarPillInfo = (page: Page) => page.evaluate(() => {
+  const bar = document.getElementById('op-bar')!;
+  const visible = (el: Element) => {
+    const r = el.getBoundingClientRect();
+    const cs = getComputedStyle(el);
+    return r.width > 0 && r.height > 0 && cs.display !== 'none' && cs.visibility !== 'hidden' && +cs.opacity > 0;
+  };
+  const digitsBadges = Array.from(bar.querySelectorAll('*')).filter(
+    (el) => el.children.length === 0 && /^[1-6]$/.test((el.textContent || '').trim()) && visible(el),
+  ).length;
+  const pill = bar.querySelector('#op-bar-active');
+  if (!pill) return { digitsBadges, pillText: null as string | null, clipped: null as boolean | null };
+  const name = pill.querySelector('.op-step-name') as HTMLElement | null;
+  return {
+    digitsBadges,
+    pillText: (pill as HTMLElement).innerText.trim(),
+    clipped: name ? name.scrollWidth > name.clientWidth + 1 : null,
+  };
+});
+
+/** Scrolls to `y` and waits for the bar to actually settle - both its
+ *  data-state (IntersectionObserver fires asynchronously, so a fixed sleep
+ *  can flake under the CPU load of many sequential page loads in one spec)
+ *  AND its own opacity, until the 220/320ms transition has actually
+ *  finished (a fixed sleep here can also flake: 0.999993 is not === 1).
+ *  Re-asserts the scroll position on EVERY poll tick, for the whole wait:
+ *  a Tom Select pick's own focus/blur can - a couple of seconds later, on
+ *  WebKit - wake the form's PRE-EXISTING iPad keyboard-void cleanup
+ *  (unrelated to the bar, see the vv-delta engine around body.kb-open),
+ *  which snaps scrollY back even after the bar first reached the wanted
+ *  state; a one-shot scrollTo has no way to recover from a LATE reset. */
+const scrollAndWaitForBar = async (page: Page, y: number, shown: boolean) => {
+  await page.waitForFunction(
+    ([yy, want]) => {
+      if (Math.abs(window.scrollY - (yy as number)) > 2) window.scrollTo(0, yy as number);
+      const bar = document.getElementById('op-bar');
+      if (!bar || bar.dataset.state !== (want ? 'shown' : 'hidden')) return false;
+      const o = +getComputedStyle(bar).opacity;
+      return want ? o > 0.995 : o < 0.005;
+    },
+    [y, shown] as [number, boolean], { timeout: 10_000, polling: 100 },
+  );
+};
+
+test('otp-v0.12 B2: the bar is invisible and not tappable at the top, stays hidden scrolled with no teacher picked, then pins flush with the card once it scrolls off', async ({ page }) => {
+  for (const { width, height } of OP_WIDTHS) {
+    const h = await harness(page);
+    await page.setViewportSize({ width, height });
+    await mockLapState(page, LAP_STATE_NEVER);
+    // a fresh page per width iteration on the SAME origin: without this, the
+    // previous iteration's picked-teacher draft would auto-restore here too.
+    await page.addInitScript(() => { try { localStorage.clear(); } catch (e) { /* ignore */ } });
+    await openForm(page);
+
+    let box = await opBarBox(page);
+    expect(box.opacity, `${width}px: bar visible at the top before any pick`).toBeLessThan(0.01);
+    expect(box.pointerEvents, `${width}px: bar tappable at the top`).toBe('none');
+    expect(box.wrapAriaHidden, `${width}px: wrap aria-hidden at the top`).toBe('true');
+
+    // scrolled down, but no teacher picked yet: still hidden
+    await scrollAndWaitForBar(page, 2000, false);
+    box = await opBarBox(page);
+    expect(box.opacity, `${width}px: bar showed with no teacher picked`).toBeLessThan(0.01);
+    await scrollAndWaitForBar(page, 0, false);
+
+    // a teacher is picked, but the card is still fully on screen: bar stays hidden
+    await pickTomSelect(page, 'teacher', 'Test Teacher');
+    await expect(stripLine(page)).not.toHaveText('Select a teacher', { timeout: 10_000 });
+    box = await opBarBox(page);
+    expect(box.opacity, `${width}px: bar showed while the card is still on screen`).toBeLessThan(0.01);
+
+    // scroll the card fully off the top: the bar pins, flush with the card
+    await scrollAndWaitForBar(page, 1600, true);
+    box = await opBarBox(page);
+    expect(box.opacity, `${width}px: bar did not pin ${JSON.stringify(box)}`).toBeGreaterThan(0.99);
+    expect(box.pointerEvents, `${width}px: pinned bar not tappable`).not.toBe('none');
+    expect(box.visibility, `${width}px: pinned bar visibility`).toBe('visible');
+    expect(Math.abs(box.width - box.cardWidth), `${width}px: bar width ${box.width} vs card ${box.cardWidth}`).toBeLessThanOrEqual(2);
+    expect(Math.abs(box.left - box.cardLeft), `${width}px: bar left ${box.left} vs card ${box.cardLeft}`).toBeLessThanOrEqual(2);
+    expect(box.height, `${width}px: bar not slim (${box.height}px)`).toBeLessThanOrEqual(72);
+    expect(box.wrapAriaHidden, `${width}px: wrap aria-hidden while pinned`).toBe('false');
+
+    expect(h.errors).toEqual([]);
+  }
+});
+
+test('otp-v0.12 B2: all five strip states read correctly in the pinned bar - state classes match the card, no number badges, the Active pill names the step', async ({ page }) => {
+  const cardStates = (p: Page) => p.evaluate(() =>
+    Array.from({ length: 6 }, (_, i) => {
+      const c = document.getElementById('strip-card-' + (i + 1))!;
+      const m = c.className.match(/\bis-(\w+)\b/);
+      return m ? m[1] : '';
+    }));
+  // registered once: a second page.on('dialog', ...) per width iteration
+  // would double-handle the same Close Lap confirm below.
+  page.on('dialog', (d) => d.accept());
+
+  for (const { width, height } of OP_WIDTHS) {
+    await page.setViewportSize({ width, height });
+    // (no localStorage.clear() here: the open-observation states below go
+    // through the app's own auto-load, which already blanks the draft's
+    // teacher for as long as that token is set - otp-v0.11 fix round 2 -
+    // so state 1 of the next width iteration starts naturally blank too.
+    // Clearing localStorage on every navigation was tried and dropped: an
+    // EMPTY draft changes the auto-load's own timing enough to race the
+    // pre-existing keyboard-void engine's scroll clamp, unrelated to B2.)
+
+    // 1. select a teacher: the bar stays hidden even scrolled
+    let h = await harness(page);
+    await openForm(page);
+    await scrollAndWaitForBar(page, 1600, false);
+    let box = await opBarBox(page);
+    expect(box.opacity, `${width}px select-a-teacher: bar shown with nobody picked`).toBeLessThan(0.01);
+    expect(h.errors).toEqual([]);
+
+    const checkPinnedState = async (label: string, pattern: RegExp | null, forbidDigit: boolean) => {
+      await scrollAndWaitForBar(page, 1600, true);
+      const card = await cardStates(page);
+      const barSteps = await opBarStepStates(page);
+      const pill = await opBarPillInfo(page);
+      const box2 = await opBarBox(page);
+      expect(box2.opacity, `${width}px ${label}: bar not pinned`).toBeGreaterThan(0.99);
+      const expected = card.map((s) => (s === 'current' ? 'active' : s));
+      expect(barSteps, `${width}px ${label}: bar steps ${barSteps} vs card ${card}`).toEqual(expected);
+      expect(pill.digitsBadges, `${width}px ${label}: number badge(s) visible in the bar`).toBe(0);
+      if (pattern) {
+        expect(pill.pillText, `${width}px ${label}: pill text "${pill.pillText}"`).toMatch(pattern);
+        if (forbidDigit) expect(pill.pillText, `${width}px ${label}: digit leaked into the pill`).not.toMatch(/\d/);
+        expect(pill.clipped, `${width}px ${label}: pill name clipped`).toBe(false);
+      } else {
+        expect(pill.pillText, `${width}px ${label}: a pill exists with no Active step`).toBeNull();
+      }
+    };
+
+    // 2. not observed yet: step 1 Active, carries the Observation number
+    h = await harness(page);
+    await mockLapState(page, LAP_STATE_NEVER);
+    await openForm(page);
+    await pickTomSelect(page, 'teacher', 'Test Teacher');
+    await expect(stripLine(page)).not.toHaveText('Select a teacher', { timeout: 10_000 });
+    await checkPinnedState('not observed yet', /^Observation \d+ · Active$/, false);
+    expect(h.errors).toEqual([]);
+
+    // 3. open, emails pending: step 4 Active, never a digit
+    h = await harness(page);
+    await mockLapState(page, LAP_STATE_OPEN_EMAILS_PENDING);
+    await openForm(page);
+    await pickTomSelect(page, 'teacher', 'Test Teacher');
+    await expect(stripLine(page)).toContainText('open since', { timeout: 10_000 });
+    await checkPinnedState('open, emails pending', /· Active$/, true);
+    expect(h.errors).toEqual([]);
+
+    // 4. open, emails sent: step 4 Active, never a digit
+    h = await harness(page);
+    await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
+    await openForm(page);
+    await pickTomSelect(page, 'teacher', 'Test Teacher');
+    await expect(stripLine(page)).toContainText('open since', { timeout: 10_000 });
+    await checkPinnedState('open, emails sent', /· Active$/, true);
+    expect(h.errors).toEqual([]);
+
+    // 5. just closed (a real Close Lap, not a mocked view): no Active step
+    h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
+    await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
+    await openEdit(page);
+    await page.locator('#btn-close-lap').click();
+    await expect(page.locator('#otp-form')).toHaveClass(/is-locked/, { timeout: 10_000 });
+    await checkPinnedState('just closed', null, false);
+    expect(h.errors).toEqual([]);
+  }
+});
+
+test('otp-v0.12 B2: body.pad-open hides the pinned bar completely; it returns once the class is gone', async ({ page }) => {
+  const h = await harness(page);
+  await page.setViewportSize({ width: 834, height: 1194 });
+  await mockLapState(page, LAP_STATE_NEVER);
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await expect(stripLine(page)).not.toHaveText('Select a teacher', { timeout: 10_000 });
+  await scrollAndWaitForBar(page, 1600, true);
+  let box = await opBarBox(page);
+  expect(box.opacity, 'bar did not pin before the pad-open check').toBeGreaterThan(0.99);
+
+  // body.pad-open collapses the page (hard rule 15's scrollhair note), which
+  // clamps window.scrollY back to 0 on its own; the real pad always saves
+  // and restores the scroll spot around that (hard rule 15f) - mirror it
+  // here too, so this spec isolates the CSS-hiding behaviour on its own
+  // rather than re-testing the scroll-restore the real-pad spec already covers.
+  const scrollY = await page.evaluate(() => window.scrollY);
+  await page.evaluate(() => document.body.classList.add('pad-open'));
+  await page.waitForTimeout(200);
+  box = await opBarBox(page);
+  expect(box.display === 'none' || box.opacity === 0, `bar not hidden under body.pad-open: ${JSON.stringify(box)}`).toBeTruthy();
+
+  await page.evaluate(() => document.body.classList.remove('pad-open'));
+  await page.evaluate((y) => window.scrollTo(0, y), scrollY);
+  await page.waitForTimeout(300);
+  box = await opBarBox(page);
+  expect(box.opacity, 'bar did not return once pad-open was removed').toBeGreaterThan(0.99);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.12 B2: opening the real Evidence Pad while the bar is pinned hides it; closing the pad brings it back', async ({ page }) => {
+  const h = await harness(page);
+  await page.setViewportSize({ width: 834, height: 1194 });
+  await mockLapState(page, LAP_STATE_NEVER);
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await expect(stripLine(page)).not.toHaveText('Select a teacher', { timeout: 10_000 });
+  await scrollAndWaitForBar(page, 1600, true);
+  let box = await opBarBox(page);
+  expect(box.opacity, 'bar did not pin before opening the pad').toBeGreaterThan(0.99);
+
+  await page.locator('.pad-field-btn[data-pad-target="observer_comments"]').click();
+  await expect(page.locator('body')).toHaveClass(/pad-open/, { timeout: 10_000 });
+  box = await opBarBox(page);
+  expect(box.display === 'none' || box.opacity === 0, `bar not hidden while the pad is open: ${JSON.stringify(box)}`).toBeTruthy();
+
+  await page.locator('#pad-done').click();
+  await expect(page.locator('body')).not.toHaveClass(/pad-open/, { timeout: 10_000 });
+  await page.waitForTimeout(300);
+  box = await opBarBox(page);
+  expect(box.opacity, 'bar did not come back once the pad closed').toBeGreaterThan(0.99);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.12 B2: the pinned bar never shows in the ungated teacher viewer', async ({ page }) => {
+  const src = viewerSrc();
+  expect(src).toContain('body.is-viewer .op-bar-wrap { display: none !important; }');
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
+  await page.goto(RECORD_URL + '?token=abc');
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 20_000 });
+  await page.evaluate(() => window.scrollTo(0, 1600));
+  await page.waitForTimeout(500);
+  await expect(page.locator('#op-bar-wrap')).toHaveCSS('display', 'none');
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.12 B2: 0 px shift of Teacher, Observer and Time In before, while pinned, and after the bar', async ({ page }) => {
+  for (const { width, height } of OP_WIDTHS) {
+    const h = await harness(page);
+    await page.setViewportSize({ width, height });
+    await mockLapState(page, LAP_STATE_NEVER);
+    await openForm(page);
+    await pickTomSelect(page, 'teacher', 'Test Teacher');
+    await expect(stripLine(page)).not.toHaveText('Select a teacher', { timeout: 10_000 });
+    await page.waitForTimeout(200);
+    const before = await gridTops(page);
+
+    await scrollAndWaitForBar(page, 1600, true);
+    const pinned = await gridTops(page);
+
+    await scrollAndWaitForBar(page, 0, false);
+    const after = await gridTops(page);
+
+    for (const key of ['teacher', 'observer', 'timeIn'] as const) {
+      expect(before[key], `${width}px ${key} missing`).not.toBeNull();
+      expect(Math.abs(pinned[key]! - before[key]!), `${width}px ${key} shifted when the bar pinned`).toBeLessThanOrEqual(1);
+      expect(Math.abs(after[key]! - before[key]!), `${width}px ${key} shifted after the bar left`).toBeLessThanOrEqual(1);
+    }
+    expect(h.errors).toEqual([]);
+  }
+});
+
+test("otp-v0.12 B2: Agenda and Check Teacher dock into the bar's two ends while pinned, keep their href/target, and return to the corners once the bar leaves", async ({ page }) => {
+  for (const { width, height } of OP_WIDTHS) {
+    const h = await harness(page);
+    await page.setViewportSize({ width, height });
+    await mockLapState(page, LAP_STATE_NEVER);
+    await openForm(page);
+
+    const agendaHref = await page.locator('.float-link.agenda').getAttribute('href');
+    const checkHref = await page.locator('.float-link.check').getAttribute('href');
+    const cornerAgenda = (await page.locator('.float-link.agenda').boundingBox())!;
+    const cornerCheck = (await page.locator('.float-link.check').boundingBox())!;
+
+    await pickTomSelect(page, 'teacher', 'Test Teacher');
+    await expect(stripLine(page)).not.toHaveText('Select a teacher', { timeout: 10_000 });
+    await scrollAndWaitForBar(page, 1600, true);
+
+    const barBox = (await page.locator('#op-bar').boundingBox())!;
+    const dockedAgenda = (await page.locator('.float-link.agenda').boundingBox())!;
+    const dockedCheck = (await page.locator('.float-link.check').boundingBox())!;
+    expect(await page.locator('.float-link.agenda').getAttribute('href'), `${width}px agenda href changed while docked`).toBe(agendaHref);
+    expect(await page.locator('.float-link.agenda').getAttribute('target'), `${width}px agenda target while docked`).toBe('_blank');
+    expect(await page.locator('.float-link.check').getAttribute('href'), `${width}px check href changed while docked`).toBe(checkHref);
+    expect(await page.locator('.float-link.check').getAttribute('target'), `${width}px check target while docked`).toBe('_blank');
+    expect(Math.abs(dockedAgenda.y - barBox.y), `${width}px agenda not level with the bar`).toBeLessThanOrEqual(2);
+    expect(Math.abs(dockedCheck.y - barBox.y), `${width}px check not level with the bar`).toBeLessThanOrEqual(2);
+    expect(dockedAgenda.x, `${width}px agenda not at the bar's left end`).toBeGreaterThanOrEqual(barBox.x - 2);
+    expect(dockedCheck.x + dockedCheck.width, `${width}px check not at the bar's right end`).toBeLessThanOrEqual(barBox.x + barBox.width + 2);
+
+    await scrollAndWaitForBar(page, 0, false);
+    const backAgenda = (await page.locator('.float-link.agenda').boundingBox())!;
+    const backCheck = (await page.locator('.float-link.check').boundingBox())!;
+    expect(Math.abs(backAgenda.x - cornerAgenda.x), `${width}px agenda did not return to its corner`).toBeLessThanOrEqual(2);
+    expect(Math.abs(backCheck.x - cornerCheck.x), `${width}px check did not return to its corner`).toBeLessThanOrEqual(2);
+    expect(h.errors).toEqual([]);
+  }
+});
+
+test('otp-v0.12 B2 touch: real-coordinate taps land correctly on a field below the pinned bar and on the docked buttons (WebKit/touch)', async ({ browser }) => {
+  for (const { width, height } of OP_WIDTHS) {
+    const ctx = await browser.newContext({ hasTouch: true, viewport: { width, height }, baseURL: 'http://127.0.0.1:8123' });
+    const page = await ctx.newPage();
+    // the docked buttons are real links to docs.google.com; routed to a local
+    // 200 so tapping them proves the tap landed without leaving the machine.
+    await page.route('**/docs.google.com/**', (r: Route) => r.fulfill({ status: 200, contentType: 'text/html', body: '' }));
+    const h = await harness(page);
+    await mockLapState(page, LAP_STATE_NEVER);
+    await openForm(page);
+    await pickTomSelect(page, 'teacher', 'Test Teacher');
+    await expect(stripLine(page)).not.toHaveText('Select a teacher', { timeout: 10_000 });
+
+    // scroll just past the card's own bottom edge, not a guessed constant:
+    // at the tall 1024x1366 iPad Pro portrait size the whole form fits in
+    // far less scroll distance than at 744/834, so a fixed offset (or
+    // pointOf's own auto-centring on a field further down the form) can
+    // either undershoot (card still visible) or overshoot (field scrolled
+    // past). room_number sits in the SAME info-grid row as the card, right
+    // below it in the DOM at every width, so this lands it just under the
+    // bar's own area - literally the field the engineering rule is about.
+    const cardBottom = await page.evaluate(() => document.getElementById('op-card')!.getBoundingClientRect().bottom + window.scrollY);
+    await scrollAndWaitForBar(page, cardBottom + 20, true);
+    const box = await opBarBox(page);
+    expect(box.opacity, `${width}px: the card should be off screen once scrolled past it`).toBeGreaterThan(0.99);
+
+    const fieldBox = (await page.locator('#room_number').boundingBox())!;
+    await page.touchscreen.tap(fieldBox.x + fieldBox.width / 2, fieldBox.y + fieldBox.height / 2);
+    await page.waitForTimeout(150);
+    expect(await page.evaluate(() => document.activeElement && (document.activeElement as HTMLElement).id),
+      `${width}px: room_number did not focus on a real tap`).toBe('room_number');
+
+    for (const cls of ['agenda', 'check']) {
+      const btnBox = (await page.locator(`.float-link.${cls}`).boundingBox())!;
+      const [popup] = await Promise.all([
+        ctx.waitForEvent('page'),
+        page.touchscreen.tap(btnBox.x + btnBox.width / 2, btnBox.y + btnBox.height / 2),
+      ]);
+      expect(popup, `${width}px: tapping the docked ${cls} button did not open its link`).toBeTruthy();
+      await popup.close();
+    }
+
+    expect(h.errors).toEqual([]);
+    await ctx.close();
+  }
+});
+
+test('otp-v0.12 B2: Reset while the bar is pinned hides it', async ({ page }) => {
+  const h = await harness(page);
+  page.on('dialog', (d) => d.accept());   // Reset confirms before it wipes the form
+  await page.setViewportSize({ width: 834, height: 1194 });
+  await mockLapState(page, LAP_STATE_NEVER);
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await expect(stripLine(page)).not.toHaveText('Select a teacher', { timeout: 10_000 });
+  await scrollAndWaitForBar(page, 1600, true);
+  let box = await opBarBox(page);
+  expect(box.opacity, 'bar did not pin before Reset').toBeGreaterThan(0.99);
+
+  await page.locator('#btn-reset').click();
+  await expect(stripLine(page)).toHaveText('Select a teacher', { timeout: 10_000 });
+  await page.waitForTimeout(300);
+  box = await opBarBox(page);
+  expect(box.opacity, 'bar stayed shown after Reset').toBeLessThan(0.01);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.12 B2: a thrown error inside the bar paint does not break the strip', async ({ page }) => {
+  const h = await harness(page);
+  await mockLapState(page, LAP_STATE_NEVER);
+  await openForm(page);
+  // stub a low-level DOM API the bar's own icon-cloning relies on, so its
+  // paint throws once; the full card must still render correctly and no
+  // pageerror may escape (hard rule: the bar is enhancement only).
+  await page.evaluate(() => {
+    const orig = Element.prototype.cloneNode;
+    let thrown = false;
+    Element.prototype.cloneNode = function (this: Element, ...args: any[]) {
+      if (!thrown && this.closest && this.closest('.strip-icon')) {
+        thrown = true;
+        throw new Error('otp-v0.12 B2 test: injected bar-paint failure');
+      }
+      return orig.apply(this, args as any);
+    } as any;
+  });
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await expect(stripLine(page)).toHaveText(`Teacher not observed yet · ${schoolYearLabel()}`, { timeout: 10_000 });
+  expect(await stripStatuses(page)).toEqual(
+    ['Active', 'Coming soon', 'Pending', 'Pending', 'Coming soon', 'Pending']);
+  expect(h.errors).toEqual([]);
+});
+
+/* ===================================================================
+   otp-v0.12 B3 · the "Next Steps" button + read-only drop-down
+   (Focus OS task 7). Ported from the same approved mock as B2. Content is
+   always #prev-ns-echo's own text, read at open time; nothing here types,
+   saves or fetches.
+   =================================================================== */
+
+/** Scrolls just past the card's own bottom edge (never a guessed constant:
+ *  the tall 1024x1366 iPad Pro portrait size fits the whole form in far
+ *  less scroll distance than 744/834), waits for the bar to pin, then
+ *  returns a real-coordinate tap function for the Next Steps button. */
+async function pinBarPastCard(page: Page) {
+  const cardBottom = await page.evaluate(() => document.getElementById('op-card')!.getBoundingClientRect().bottom + window.scrollY);
+  await scrollAndWaitForBar(page, cardBottom + 20, true);
+}
+
+test('otp-v0.12 B3 touch: the Next Steps button opens and closes the drop-down by real touch taps at 744/834/1024 - a second tap, an outside tap, and Esc', async ({ browser }) => {
+  for (const { width, height } of OP_WIDTHS) {
+    const ctx = await browser.newContext({ hasTouch: true, viewport: { width, height }, baseURL: 'http://127.0.0.1:8123' });
+    const page = await ctx.newPage();
+    const h = await harness(page);
+    await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
+    await openForm(page);
+    await pickTomSelect(page, 'teacher', 'Test Teacher');
+    await expect(stripLine(page)).toContainText('open since', { timeout: 10_000 });
+    await pinBarPastCard(page);
+
+    const tapNs = async () => {
+      const box = (await page.locator('#op-bar-ns-btn').boundingBox())!;
+      await page.touchscreen.tap(box.x + box.width / 2, box.y + box.height / 2);
+    };
+
+    // open by a real tap
+    await tapNs();
+    await expect(page.locator('#op-ns-pop'), `${width}px: did not open`).toHaveAttribute('data-state', 'open', { timeout: 5_000 });
+    await expect(page.locator('#op-bar-ns-btn')).toHaveAttribute('aria-expanded', 'true');
+
+    // a second tap on the button closes it
+    await tapNs();
+    await expect(page.locator('#op-ns-pop'), `${width}px: a second tap did not close it`).toHaveAttribute('data-state', 'closed');
+
+    // an outside tap (the scrim) closes it
+    await tapNs();
+    await expect(page.locator('#op-ns-pop')).toHaveAttribute('data-state', 'open', { timeout: 5_000 });
+    const scrimBox = (await page.locator('#op-ns-scrim').boundingBox())!;
+    await page.touchscreen.tap(scrimBox.x + 6, scrimBox.y + 6);
+    await expect(page.locator('#op-ns-pop'), `${width}px: an outside tap did not close it`).toHaveAttribute('data-state', 'closed');
+
+    // Esc closes it
+    await tapNs();
+    await expect(page.locator('#op-ns-pop')).toHaveAttribute('data-state', 'open', { timeout: 5_000 });
+    await page.keyboard.press('Escape');
+    await expect(page.locator('#op-ns-pop'), `${width}px: Esc did not close it`).toHaveAttribute('data-state', 'closed');
+
+    expect(h.errors).toEqual([]);
+    await ctx.close();
+  }
+});
+
+test('otp-v0.12 B3: the drop-down text equals #prev-ns-echo verbatim - an open observation\'s own steps, a last-closed one, and the grey "none" case', async ({ page }) => {
+  const openPopAndRead = async () => {
+    await page.locator('#op-bar-ns-btn').click();
+    await expect(page.locator('#op-ns-pop')).toHaveAttribute('data-state', 'open', { timeout: 5_000 });
+    return {
+      head: await page.locator('#op-ns-head').textContent(),
+      items: await page.locator('#op-ns-list li').allTextContents(),
+      emptyVisible: await page.locator('#op-ns-empty').isVisible(),
+    };
+  };
+
+  // 1. an open observation with its own Next Steps already saved
+  let h = await harness(page);
+  await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await expect(stripLine(page)).toContainText('open since', { timeout: 10_000 });
+  await expect(page.locator('#prev-ns-echo')).toBeVisible({ timeout: 10_000 });
+  const echoHead1 = await page.locator('#prev-ns-echo-head').textContent();
+  const echoItems1 = await page.locator('#prev-ns-echo-list li').allTextContents();
+  await pinBarPastCard(page);
+  await expect(page.locator('#op-bar-ns-btn'), 'button must not read empty when steps exist').not.toHaveClass(/is-empty/);
+  const r1 = await openPopAndRead();
+  expect(r1.head).toBe(echoHead1);
+  expect(r1.items).toEqual(echoItems1);
+  expect(echoItems1.length).toBeGreaterThan(0);
+  expect(r1.emptyVisible).toBe(false);
+  expect(h.errors).toEqual([]);
+
+  // 2. nothing open: the last CLOSED observation's Next Steps
+  h = await harness(page);
+  await mockLapState(page, LAP_STATE_STARTING_NEXT);
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await expect(stripLine(page)).toContainText('now starting Observation', { timeout: 10_000 });
+  await expect(page.locator('#prev-ns-echo')).toBeVisible({ timeout: 10_000 });
+  const echoHead2 = await page.locator('#prev-ns-echo-head').textContent();
+  const echoItems2 = await page.locator('#prev-ns-echo-list li').allTextContents();
+  await pinBarPastCard(page);
+  await expect(page.locator('#op-bar-ns-btn')).not.toHaveClass(/is-empty/);
+  const r2 = await openPopAndRead();
+  expect(r2.head).toBe(echoHead2);
+  expect(r2.items).toEqual(echoItems2);
+  expect(echoItems2.length).toBeGreaterThan(0);
+  expect(r2.emptyVisible).toBe(false);
+  expect(h.errors).toEqual([]);
+
+  // 3. grey "none" case: a first observation, nothing loaded yet
+  h = await harness(page);
+  await mockLapState(page, LAP_STATE_NEVER);
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await expect(stripLine(page)).not.toHaveText('Select a teacher', { timeout: 10_000 });
+  await page.waitForTimeout(300);
+  await expect(page.locator('#prev-ns-echo')).toBeHidden();
+  await pinBarPastCard(page);
+  await expect(page.locator('#op-bar-ns-btn'), 'button must read empty/grey with nothing loaded').toHaveClass(/is-empty/);
+  const r3 = await openPopAndRead();
+  expect(r3.emptyVisible).toBe(true);
+  expect(r3.items).toEqual([]);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.12 B3: opening the drop-down does not move the page and does not lock body scroll', async ({ page }) => {
+  const h = await harness(page);
+  await page.setViewportSize({ width: 834, height: 1194 });
+  await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await expect(stripLine(page)).toContainText('open since', { timeout: 10_000 });
+  await pinBarPastCard(page);
+
+  const before = await page.evaluate(() => ({ y: window.scrollY, overflow: getComputedStyle(document.body).overflow }));
+  await page.locator('#op-bar-ns-btn').click();
+  await expect(page.locator('#op-ns-pop')).toHaveAttribute('data-state', 'open', { timeout: 5_000 });
+  const after = await page.evaluate(() => ({ y: window.scrollY, overflow: getComputedStyle(document.body).overflow }));
+  expect(after.y, 'opening the drop-down moved the page').toBe(before.y);
+  expect(after.overflow, 'opening the drop-down locked body scroll').toBe(before.overflow);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.12 B3: body.pad-open hides the drop-down completely, even when it was already open, and it does not silently reappear when the pad closes', async ({ page }) => {
+  const h = await harness(page);
+  await page.setViewportSize({ width: 834, height: 1194 });
+  await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await expect(stripLine(page)).toContainText('open since', { timeout: 10_000 });
+  await pinBarPastCard(page);
+  await page.locator('#op-bar-ns-btn').click();
+  await expect(page.locator('#op-ns-pop')).toHaveAttribute('data-state', 'open', { timeout: 5_000 });
+
+  const scrollY = await page.evaluate(() => window.scrollY);
+  await page.evaluate(() => document.body.classList.add('pad-open'));
+  await page.waitForTimeout(300);
+  const pop = await page.evaluate(() => {
+    const el = document.getElementById('op-ns-pop')!;
+    return { display: getComputedStyle(el).display, dataState: el.dataset.state };
+  });
+  expect(pop.display, 'the drop-down must not still render under body.pad-open').toBe('none');
+  expect(pop.dataState, 'the pad-open watcher must actually CLOSE it, not just visually hide it').toBe('closed');
+
+  await page.evaluate(() => document.body.classList.remove('pad-open'));
+  await page.evaluate((y) => window.scrollTo(0, y), scrollY);
+  await page.waitForTimeout(300);
+  await expect(page.locator('#op-ns-pop'), 'the drop-down must not silently reappear once the pad closes').toHaveAttribute('data-state', 'closed');
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.12 B3: the drop-down closes whenever the bar leaves - scrolling back to the card, Reset, and a teacher change', async ({ page }) => {
+  // (a) scrolling back to the card
+  let h = await harness(page);
+  page.on('dialog', (d) => d.accept());
+  await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await expect(stripLine(page)).toContainText('open since', { timeout: 10_000 });
+  await pinBarPastCard(page);
+  await page.locator('#op-bar-ns-btn').click();
+  await expect(page.locator('#op-ns-pop')).toHaveAttribute('data-state', 'open', { timeout: 5_000 });
+  await scrollAndWaitForBar(page, 0, false);
+  await expect(page.locator('#op-ns-pop'), 'scrolling back to the card did not close it').toHaveAttribute('data-state', 'closed');
+  expect(h.errors).toEqual([]);
+
+  // (b) Reset. LAP_STATE_NEVER, not an open observation: an open one
+  // auto-loads into edit mode, where #btn-reset is hidden (Save
+  // changes/Close Lap show instead) - Reset itself is what this proves.
+  h = await harness(page);
+  await mockLapState(page, LAP_STATE_NEVER);
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await expect(stripLine(page)).not.toHaveText('Select a teacher', { timeout: 10_000 });
+  await pinBarPastCard(page);
+  await page.locator('#op-bar-ns-btn').click();
+  await expect(page.locator('#op-ns-pop')).toHaveAttribute('data-state', 'open', { timeout: 5_000 });
+  // the open drop-down's own scrim (by design, same as an outside tap)
+  // covers the fixed action-bar too, so a real tap on Reset would first
+  // dismiss the drop-down rather than reach the button underneath - that
+  // is the SAME "outside tap closes it" rule, already proved above; a
+  // dispatched click (CNL-005's own pattern, elsewhere in this file)
+  // reaches Reset directly, to prove Reset's OWN result closes the
+  // drop-down too.
+  await page.locator('#btn-reset').dispatchEvent('click');
+  await expect(stripLine(page)).toHaveText('Select a teacher', { timeout: 10_000 });
+  await expect(page.locator('#op-ns-pop'), 'Reset did not close it').toHaveAttribute('data-state', 'closed');
+  expect(h.errors).toEqual([]);
+
+  // (c) a teacher change
+  const options = JSON.parse(JSON.stringify(OPTIONS_PAYLOAD));
+  const list = options.options ? options.options.teachers : options.teachers;
+  list.push({ name: 'Second Teacher' });
+  h = await harness(page, { options });
+  await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await expect(stripLine(page)).toContainText('open since', { timeout: 10_000 });
+  await pinBarPastCard(page);
+  await page.locator('#op-bar-ns-btn').click();
+  await expect(page.locator('#op-ns-pop')).toHaveAttribute('data-state', 'open', { timeout: 5_000 });
+  await pickTomSelect(page, 'teacher', 'Second Teacher');
+  await expect(page.locator('#op-ns-pop'), 'changing teacher did not close it').toHaveAttribute('data-state', 'closed');
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.12 B3: the Next Steps button and drop-down never show in the ungated teacher viewer', async ({ page }) => {
+  const src = viewerSrc();
+  expect(src).toContain('body.is-viewer .op-ns-scrim { display: none !important; }');
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
+  await page.goto(RECORD_URL + '?token=abc');
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 20_000 });
+  await page.evaluate(() => window.scrollTo(0, 1600));
+  await page.waitForTimeout(500);
+  await expect(page.locator('#op-bar-ns-btn')).toBeHidden();
+  await expect(page.locator('#op-ns-pop')).toHaveCSS('display', 'none');
+  await expect(page.locator('#op-ns-scrim')).toHaveCSS('display', 'none');
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.12 B3: the fit routine counts the Next Steps button - it never overlaps the steps or spills outside the bar, at every width', async ({ page }) => {
+  for (const { width, height } of OP_WIDTHS) {
+    const h = await harness(page);
+    await page.setViewportSize({ width, height });
+    await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
+    await openForm(page);
+    await pickTomSelect(page, 'teacher', 'Test Teacher');
+    await expect(stripLine(page)).toContainText('open since', { timeout: 10_000 });
+    await pinBarPastCard(page);
+
+    const r = await page.evaluate(() => {
+      const bar = document.getElementById('op-bar')!.getBoundingClientRect();
+      const steps = document.getElementById('op-bar-steps')!.getBoundingClientRect();
+      const ns = document.getElementById('op-bar-ns-btn')!.getBoundingClientRect();
+      return { stepsRight: steps.right, nsLeft: ns.left, nsRight: ns.right, barRight: bar.right, barLeft: bar.left };
+    });
+    expect(r.stepsRight, `${width}px: the steps overlap the Next Steps button`).toBeLessThanOrEqual(r.nsLeft + 1);
+    expect(r.nsRight, `${width}px: the Next Steps button spills outside the bar`).toBeLessThanOrEqual(r.barRight + 1);
+    expect(r.nsLeft, `${width}px: the Next Steps button starts left of the bar`).toBeGreaterThanOrEqual(r.barLeft - 1);
+    expect(h.errors).toEqual([]);
+  }
+});
