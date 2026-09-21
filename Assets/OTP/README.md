@@ -1,3 +1,58 @@
+## Teacher Tracker (otp-v0.12)
+
+A password-gated page listing every teacher and where they are in the six-step
+observation process, so a coach can check "have I observed this teacher, and
+what's next" without opening the Sheet. Built from an owner-approved look mock
+(`handoff/research/2026-09-21-otp-v012/mock/tracker-mock.html`), wired to the
+LIVE read-only Supabase function `get_otp_tracker()` (`supabase/sql/migrate_25_otp_tracker.sql`),
+which reuses the exact rules `get_teacher_lap_state` (the form's own status
+strip) already uses, so the tracker and the strip can never disagree. It never
+returns a token, a rating, a note or a Next Step, only stage.
+
+- Master: `src/otp-tracker.html`. Self-contained like the form (inline CSS/JS,
+  `../brand/AIS Logo/...` relative paths, Google Fonts the only external
+  request). POSTs to `SB_URL + '/rest/v1/rpc/get_otp_tracker'` with the same
+  publishable key and header pattern as the form's `sbRpcTimed`. Hard rule 12
+  (no error UI, ever): each attempt is capped via `AbortController` (7s in
+  production; a documented test-only `?_tmo=<ms>` query flag shortens it for
+  the resilience specs), a stall or a bad answer retries silently behind the
+  loading overlay, a guarded `?_r=1` reload is the last resort after 8
+  attempts, and a tab restored from bfcache reloads outright. A Refresh
+  button re-fetches on demand.
+- Build: `encrypt.sh` adds a THIRD StatiCrypt output, `otp-tracker.html`
+  (same password `ais2026ais`, same `password-template.html`, its own
+  `--template-title`/`--template-button`). Never hand-edit the output.
+- Gate: same access password as the form, so only coaches and leaders can
+  open it (teachers never get the password). The ungated teacher viewer
+  (`otp-record.html`) already hides the Check Teacher link and ships with a
+  blank `SB_URL`/`SB_KEY`, so it has no visible or reachable route to the
+  tracker and cannot call Supabase at all.
+- The form's Check Teacher button (`Assets/OTP/src/otp-progress-form.html`)
+  now opens `otp-tracker.html` in a new tab instead of the old Google Sheet;
+  nothing else about the form changed.
+- Row mapping (six steps: Teacher Observation, Teacher Reflection Form
+  [Coming soon], Observation details emailed, Observation Feedback Meeting,
+  Teacher Plan Form [Coming soon], Observation complete): an open lap ->
+  completed/coming/(emails done? completed : pending)/ACTIVE/coming/pending;
+  no open but a last closed lap -> all completed except the two Coming-soon
+  steps; neither -> all pending. Tapping a row expands its full history,
+  oldest first. Chips: All, Not observed, Observation, Reflection Form
+  (disabled), Emails, Feedback Meeting, Plan Form (disabled), Completed. A to
+  Z by name; an `on_roster:false` test teacher renders like any other row.
+  Dates render like the form does ("14 Sep"). All teacher-derived text goes
+  through `textContent`, never `innerHTML`.
+- A commented seam in `otp-tracker.html` (and in the SQL) marks where a later
+  version could show what the teacher wrote per step, once the Reflection
+  Form and Plan Form exist. Not built.
+- Tests: `tests/tracker.spec.ts`, every title prefixed `otp-v0.12 A2:`. Mocks
+  `get_otp_tracker` with fixtures using the real key names; covers every row
+  state, the three counts, A-to-Z order, every chip's exact row set, search,
+  history expand/collapse (including multi-lap history), the Active pill at
+  744/834/1024 with no clipping, light/dark, the two resilience paths (a
+  stalled first response, a 500 then a 200), and the lock-out guarantees
+  above (the built tracker's raw bytes hold no fixture name/key, the viewer
+  stays keyless with no reachable link, the form's link targets the tracker).
+
 ## otp-v0.11 · released to main (2026-09-20)
 
 Tag `otp-v0.11` (`3b5399f`). What GitHub Pages serves is this release build

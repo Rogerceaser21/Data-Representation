@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teacher Tracker · AIS Sharjah</title>
+<script>
+  /* Pre-paint theme, same key + logic as the gate and the form, so a
+     coach's choice on one page holds on the others (localStorage is
+     shared across this Pages origin). */
+  (function() {
+    try {
+      var stored = localStorage.getItem('ais-form-theme');
+      var theme = stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      if (theme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+    } catch (e) {}
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,500&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700&family=Lora:ital,wght@0,400;0,500;0,600;0,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ===========================================
+   otp-v0.12 Teacher Tracker (PLAN-A.md). Ported from the owner-approved
+   look mock (handoff/research/2026-09-21-otp-v012/mock/tracker-mock.html):
+   same markup, same classes, same measured-fit Active pill. Two things the
+   mock had for review only are dropped here: the fake TEACHERS array (this
+   page reads get_otp_tracker() live) and the red "Mock" badge.
+
+   THEME TOKENS · copied verbatim from
+   Assets/OTP/src/otp-progress-form.html :root (light default)
+   + :root[data-theme="dark"]
+   =========================================== */
+:root {
+  --display-font: 'Lora', Georgia, 'Times New Roman', serif;
+  --body-font: 'Inter', system-ui, -apple-system, sans-serif;
+
+  --navy: #143642;
+  --navy-elev: #ffffff;
+  --navy-card: #f4f3ee;
+  --navy-edge: #e3e2dc;
+  --paper: #143642;
+  --paper-dim: #3a4f59;
+  --paper-mid: #6b7e85;
+  --paper-faint: #9aa6ac;
+
+  --ais-red: #EF343A;
+  --ais-blue: #1257FF;
+  --ais-yellow: #FFBA14;
+  --rate-success: #2ea15a;
+  --rate-success-deep: #0f5f30;
+  --rate-unsuccess: #d68a1a;
+  --rate-unsuccess-deep: #b06d10;
+
+  --rule: rgba(20, 54, 66, 0.14);
+  --rule-soft: rgba(20, 54, 66, 0.07);
+  --page-bg: #efece2;
+  --card-bg: #ffffff;
+  --row-tint: rgba(20, 54, 66, 0.025);
+  --section-tint: rgba(20, 54, 66, 0.055);
+  --surface-soft: rgba(20, 54, 66, 0.025);
+  --surface-mid: rgba(20, 54, 66, 0.045);
+  --surface-strong: rgba(20, 54, 66, 0.08);
+  --shadow-card: 0 14px 36px -18px rgba(20, 54, 66, 0.22), 0 2px 6px -3px rgba(20, 54, 66, 0.08);
+
+  --title: clamp(1.85rem, 3.4vw, 2.6rem);
+  --section: clamp(1.15rem, 1.8vw, 1.4rem);
+  --label: clamp(0.7rem, 0.95vw, 0.8rem);
+  --body: clamp(0.95rem, 1.25vw, 1.05rem);
+  --small: clamp(0.78rem, 1.05vw, 0.88rem);
+  --tiny: clamp(0.72rem, 0.95vw, 0.8rem);
+}
+
+:root[data-theme="dark"] {
+  --display-font: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --body-font: 'Source Sans 3', system-ui, -apple-system, sans-serif;
+  --navy: #0a0d1f;
+  --navy-elev: #11162e;
+  --navy-card: #131938;
+  --navy-edge: #1c244d;
+  --paper: #f2efe6;
+  --paper-dim: #cdd0e0;
+  --paper-mid: #9ea3bf;
+  --paper-faint: #6c7290;
+  --rule: rgba(255, 255, 255, 0.10);
+  --rule-soft: rgba(255, 255, 255, 0.06);
+  --page-bg: #04061a;
+  --card-bg: #11162e;
+  --row-tint: rgba(255, 255, 255, 0.025);
+  --section-tint: rgba(255, 255, 255, 0.05);
+  --surface-soft: rgba(255, 255, 255, 0.03);
+  --surface-mid: rgba(255, 255, 255, 0.05);
+  --surface-strong: rgba(255, 255, 255, 0.08);
+  --rate-success: #3CBB6C;
+  --rate-success-deep: #1e7a3f;
+  --rate-unsuccess: #ff9a4d;
+  --rate-unsuccess-deep: #c46810;
+  --shadow-card: 0 18px 48px -20px rgba(0, 0, 0, 0.55), 0 3px 8px -3px rgba(0, 0, 0, 0.4);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--body-font);
+  background: var(--page-bg);
+  color: var(--paper);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  min-height: 100vh;
+  padding: clamp(1rem, 2.5vw, 2rem) clamp(0.6rem, 2vw, 1.5rem);
+  padding-bottom: clamp(5rem, 8vw, 7rem);
+  transition: background 0.3s ease, color 0.3s ease;
+  overflow-x: hidden;
+}
+
+/* ===========================================
+   SHELL (mirrors .form-container)
+   =========================================== */
+.tt-shell {
+  max-width: 1180px;
+  margin: 0 auto;
+  background: var(--card-bg);
+  border: 1px solid var(--rule);
+  border-radius: clamp(0.5rem, 0.9vw, 0.8rem);
+  box-shadow: var(--shadow-card);
+  padding: clamp(1.4rem, 3vw, 2.6rem);
+  position: relative;
+  overflow: hidden;
+}
+.tt-shell::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, var(--ais-red), var(--ais-yellow), var(--ais-blue));
+}
+
+/* ===========================================
+   HEADER (brand-row / eyebrow / title copied
+   verbatim from the form; Refresh is new)
+   =========================================== */
+.tt-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  flex-wrap: wrap;
+  gap: clamp(0.8rem, 1.6vw, 1.2rem);
+  padding-bottom: clamp(1rem, 2vw, 1.6rem);
+  margin-bottom: clamp(1.2rem, 2.4vw, 2rem);
+  border-bottom: 1px solid var(--rule);
+}
+.brand-row {
+  display: flex; align-items: center;
+  gap: clamp(0.6rem, 1.2vw, 1rem);
+  min-width: 0;
+}
+.brand-row img {
+  height: clamp(44px, 6vw, 64px);
+  width: auto;
+  display: block;
+  flex-shrink: 0;
+}
+.form-title-block { display: flex; flex-direction: column; gap: 0.3rem; min-width: 0; }
+.form-eyebrow {
+  font-family: var(--body-font);
+  font-size: var(--label);
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--ais-red);
+  display: inline-flex; align-items: center; gap: 0.7em;
+}
+.form-eyebrow .stripe {
+  width: clamp(1.8rem, 2.6vw, 2.4rem);
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--ais-red), var(--ais-yellow), var(--rate-success));
+}
+.form-title {
+  font-family: var(--display-font);
+  font-weight: 700;
+  font-size: var(--title);
+  line-height: 1.05;
+  letter-spacing: -0.012em;
+  color: var(--paper);
+  margin: 0;
+}
+.form-title em {
+  font-style: italic; font-weight: 400; color: var(--rate-success-deep);
+}
+:root[data-theme="dark"] .form-title em { color: var(--rate-success); }
+
+/* Refresh (new, otp-v0.12): reuses the .pill look below so nothing about
+   the approved header needed restyling to fit it in. */
+.tt-refresh {
+  flex-shrink: 0;
+  align-self: center;
+}
+.tt-refresh svg { width: 1.05em; height: 1.05em; flex-shrink: 0; }
+
+.theme-toggle {
+  flex-shrink: 0;
+  width: clamp(2.75rem, 2.6vw, 2.9rem);
+  height: clamp(2.75rem, 2.6vw, 2.9rem);
+  border-radius: 50%;
+  border: 1px solid var(--rule);
+  background: var(--surface-mid);
+  color: var(--paper-dim);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; padding: 0;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+}
+.theme-toggle:hover {
+  background: var(--surface-strong);
+  color: var(--paper);
+  border-color: var(--rate-success);
+  transform: scale(1.06);
+}
+.theme-toggle:active { transform: scale(0.96); }
+.theme-toggle .icon { width: 1.15em; height: 1.15em; display: block; }
+.theme-toggle .icon-sun { display: block; }
+.theme-toggle .icon-moon { display: none; }
+:root[data-theme="dark"] .theme-toggle .icon-sun { display: none; }
+:root[data-theme="dark"] .theme-toggle .icon-moon { display: block; }
+
+/* ===========================================
+   STAT TILES
+   =========================================== */
+.tt-tiles {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(0.6rem, 1.2vw, 0.9rem);
+  margin-bottom: clamp(1.2rem, 2.2vw, 1.8rem);
+}
+.tt-tile {
+  background: var(--navy-card);
+  border: 1px solid var(--rule);
+  border-radius: clamp(0.5rem, 0.8vw, 0.7rem);
+  padding: clamp(0.8rem, 1.5vw, 1.15rem) clamp(0.9rem, 1.6vw, 1.2rem);
+  display: flex; flex-direction: column; gap: 0.3rem;
+  min-width: 0;
+}
+.tt-tile-num {
+  font-family: var(--display-font);
+  font-weight: 700;
+  font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+  line-height: 1;
+  color: var(--paper);
+  letter-spacing: -0.01em;
+}
+.tt-tile.is-open .tt-tile-num { color: var(--ais-blue); }
+.tt-tile.is-none .tt-tile-num { color: var(--paper-mid); }
+.tt-tile-label {
+  font-family: var(--body-font);
+  font-size: var(--label);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--paper-mid);
+}
+@media (max-width: 640px) {
+  .tt-tiles { grid-template-columns: 1fr; }
+}
+
+/* ===========================================
+   SEARCH + CHIPS
+   =========================================== */
+.tt-controls {
+  display: flex; flex-direction: column; gap: clamp(0.7rem, 1.3vw, 1rem);
+  margin-bottom: clamp(1.2rem, 2.2vw, 1.7rem);
+}
+.tt-search {
+  display: flex; align-items: center; gap: 0.55rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--surface-soft);
+  padding: 0.6rem 1rem;
+  min-height: 2.75rem;
+  max-width: 380px;
+}
+.tt-search svg { flex-shrink: 0; color: var(--paper-mid); width: 1.05em; height: 1.05em; }
+.tt-search input {
+  border: none; outline: none; background: transparent;
+  font-family: var(--body-font);
+  font-size: var(--body);
+  color: var(--paper);
+  width: 100%;
+  min-height: 1.4rem;
+}
+.tt-search input::placeholder { color: var(--paper-faint); }
+
+.tt-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.pill {
+  font-family: var(--body-font);
+  font-size: var(--small);
+  font-weight: 500;
+  padding: 0.55rem 1rem;
+  min-height: 2.75rem;
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  border-radius: 999px;
+  border: 1px dashed var(--rule);
+  background: transparent;
+  color: var(--paper-mid);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.pill:hover { background: var(--surface-mid); color: var(--paper); }
+.pill.is-selected {
+  background: var(--ais-blue);
+  color: white;
+  border: 1px solid var(--ais-blue);
+  font-weight: 600;
+}
+.pill .chip-count {
+  font-weight: 700;
+  opacity: 0.75;
+  font-size: 0.85em;
+}
+.pill[disabled] {
+  cursor: default;
+  opacity: 0.55;
+  border-style: dashed;
+}
+.pill[disabled]:hover { background: transparent; color: var(--paper-mid); }
+.pill .chip-soon {
+  font-style: italic;
+  font-size: 0.85em;
+  opacity: 0.85;
+}
+
+/* ===========================================
+   TEACHER LIST
+   =========================================== */
+.tt-list-head {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 0.6rem;
+  margin: 0 0 0.6rem;
+}
+.tt-list-title {
+  font-family: var(--body-font);
+  font-size: var(--label);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--paper-mid);
+}
+.tt-list-empty {
+  font-family: var(--body-font);
+  font-style: italic;
+  font-size: var(--small);
+  color: var(--paper-mid);
+  padding: 1.6rem 0.5rem;
+  text-align: center;
+  border: 1px dashed var(--rule);
+  border-radius: clamp(0.4rem, 0.7vw, 0.6rem);
+  display: none;
+}
+.tt-list-empty.is-visible { display: block; }
+
+.tt-rows {
+  border: 1px solid var(--rule);
+  border-radius: clamp(0.5rem, 0.8vw, 0.7rem);
+  overflow: hidden;
+  background: var(--card-bg);
+  /* Fixed name-column width so the icon column starts at the same x on
+     every row, regardless of name length (a long name wraps inside this
+     column instead of pushing the icons right). Widened at >=900px where
+     there is room to spare. */
+  --tt-namecol: 168px;
+}
+@media (min-width: 900px) {
+  .tt-rows { --tt-namecol: 208px; }
+}
+.tt-row {
+  border-bottom: 1px solid var(--rule-soft);
+  background: var(--card-bg);
+  transition: background 0.15s ease;
+}
+.tt-row:last-child { border-bottom: none; }
+.tt-row:hover { background: var(--row-tint); }
+.tt-row-main {
+  display: grid;
+  grid-template-columns: var(--tt-namecol) 1fr auto;
+  grid-template-areas: "name mid chev";
+  align-items: center;
+  gap: clamp(0.6rem, 1.4vw, 1.1rem);
+  padding: clamp(0.7rem, 1.4vw, 1rem) clamp(0.8rem, 1.6vw, 1.2rem);
+  cursor: pointer;
+  width: 100%;
+  border: none; background: none; text-align: left;
+  font: inherit; color: inherit;
+  min-height: 44px;
+}
+.tt-row-main:focus-visible { outline: 2px solid var(--ais-blue); outline-offset: -2px; }
+
+.tt-name-col {
+  grid-area: name;
+  display: flex; flex-direction: column; gap: 0.15rem;
+  min-width: 0;
+}
+.tt-name {
+  font-family: var(--display-font);
+  font-weight: 600;
+  font-size: clamp(0.98rem, 1.3vw, 1.08rem);
+  color: var(--paper);
+  letter-spacing: -0.005em;
+  line-height: 1.25;
+  /* Long names wrap inside the fixed column; never clipped, never widen it. */
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+.tt-obs-badge {
+  align-self: flex-start;
+  font-family: var(--body-font);
+  font-size: var(--tiny);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  background: var(--surface-mid);
+  color: var(--paper-mid);
+  white-space: nowrap;
+}
+.tt-obs-badge.has-obs { background: rgba(18, 87, 255, 0.12); color: var(--ais-blue); }
+:root[data-theme="dark"] .tt-obs-badge.has-obs { background: rgba(18, 87, 255, 0.22); }
+
+.tt-mid-col {
+  grid-area: mid;
+  display: flex; flex-direction: column; gap: 0.3rem;
+  min-width: 0;
+}
+/* Measured-fit Active pill (opFitPills below): full -> short -> tiny label
+   tier is picked by fitPills() so the row never wraps to a taller 2nd line. */
+.tt-icons { display: flex; align-items: center; gap: clamp(0.3rem, 0.7vw, 0.5rem); flex-wrap: nowrap; overflow: hidden; }
+.tt-step {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  background: var(--navy-card);
+  border: 2px solid var(--paper-faint);
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), background 0.2s ease, border-color 0.2s ease;
+}
+.tt-step svg { width: 15px; height: 15px; display: block; flex-shrink: 0; }
+.tt-step.is-pending { background: var(--navy-card); border-color: var(--paper-faint); color: var(--paper-faint); }
+.tt-step.is-coming {
+  background: transparent;
+  border-style: dashed; border-color: var(--paper-faint);
+  color: var(--paper-faint);
+  opacity: 0.75;
+}
+.tt-step.is-completed {
+  background: var(--rate-success);
+  border-color: var(--rate-success-deep);
+  color: #fff;
+}
+.tt-tick {
+  position: absolute; right: -3px; bottom: -3px;
+  width: 13px; height: 13px; border-radius: 50%;
+  background: var(--rate-success-deep);
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid var(--card-bg);
+}
+.tt-tick svg { width: 8px; height: 8px; }
+
+/* The Active step is ONE pill-shaped element (icon + name together), never
+   a circle with the name floating loose beside it. Height stays in the
+   same family as the other icons (34px) so the row is never taller than
+   before; width grows to fit the label instead. */
+.tt-step.is-current {
+  width: auto;
+  height: 34px;
+  border-radius: 999px;
+  padding: 0 0.75rem 0 0.5rem;
+  gap: 0.35rem;
+  background: var(--ais-blue);
+  border-color: var(--ais-blue);
+  color: #fff;
+  box-shadow: 0 0 0 4px rgba(18, 87, 255, 0.18);
+}
+.tt-step.is-current svg { width: 17px; height: 17px; }
+.tt-pill-label {
+  font-family: var(--body-font);
+  font-weight: 700;
+  font-size: var(--tiny);
+  color: #fff;
+  white-space: nowrap;
+}
+/* Three label tiers, chosen by measured fit (fitPills), never a guessed
+   breakpoint: full is the default (no data-tier attribute needed). */
+.tt-pill-label .tier-short, .tt-pill-label .tier-tiny { display: none; }
+.tt-step.is-current[data-tier="short"] .tier-full { display: none; }
+.tt-step.is-current[data-tier="short"] .tier-short { display: inline; }
+.tt-step.is-current[data-tier="tiny"] .tier-full,
+.tt-step.is-current[data-tier="tiny"] .tier-short { display: none; }
+.tt-step.is-current[data-tier="tiny"] .tier-tiny { display: inline; }
+
+.tt-subline {
+  font-family: var(--body-font);
+  font-size: var(--tiny);
+  color: var(--paper-mid);
+}
+
+.tt-chevron {
+  grid-area: chev;
+  width: 1.6rem; height: 1.6rem;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--paper-faint);
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.tt-row.is-open .tt-chevron { transform: rotate(180deg); color: var(--paper-mid); }
+
+/* Expand/collapse via the grid-rows trick: animates auto height smoothly,
+   no JS measuring, freeze-safe (final state applies with no rAF needed). */
+.tt-history-wrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.tt-row.is-open .tt-history-wrap { grid-template-rows: 1fr; }
+.tt-history-inner { overflow: hidden; }
+.tt-history {
+  padding: 0.7rem clamp(0.8rem, 1.6vw, 1.2rem) clamp(0.9rem, 1.6vw, 1.2rem);
+  display: flex; flex-direction: column; gap: 0.55rem;
+  border-top: 1px dashed var(--rule);
+}
+.tt-hist-row { display: flex; align-items: center; gap: clamp(0.5rem, 1vw, 0.8rem); flex-wrap: wrap; min-width: 0; }
+.tt-hist-icons { display: flex; align-items: center; gap: 0.3rem; flex-wrap: nowrap; overflow: hidden; min-width: 0; }
+.tt-hist-step {
+  width: 20px; height: 20px; border-radius: 50%;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--navy-card);
+  border: 1.5px solid var(--paper-faint);
+}
+.tt-hist-step svg { width: 10px; height: 10px; display: block; flex-shrink: 0; }
+.tt-hist-step.is-pending { color: var(--paper-faint); }
+.tt-hist-step.is-coming { background: transparent; border-style: dashed; color: var(--paper-faint); opacity: 0.7; }
+.tt-hist-step.is-completed { background: var(--rate-success); border-color: var(--rate-success-deep); color: #fff; }
+.tt-hist-step.is-current {
+  width: auto; height: 24px;
+  border-radius: 999px;
+  padding: 0 0.55rem 0 0.4rem;
+  gap: 0.28rem;
+  background: var(--ais-blue);
+  border-color: var(--ais-blue);
+  color: #fff;
+}
+.tt-hist-step.is-current svg { width: 12px; height: 12px; }
+.tt-hist-pill-label {
+  font-family: var(--body-font);
+  font-weight: 700;
+  font-size: 0.64rem;
+  color: #fff;
+  white-space: nowrap;
+}
+.tt-hist-pill-label .tier-short, .tt-hist-pill-label .tier-tiny { display: none; }
+.tt-hist-step.is-current[data-tier="short"] .tier-full { display: none; }
+.tt-hist-step.is-current[data-tier="short"] .tier-short { display: inline; }
+.tt-hist-step.is-current[data-tier="tiny"] .tier-full,
+.tt-hist-step.is-current[data-tier="tiny"] .tier-short { display: none; }
+.tt-hist-step.is-current[data-tier="tiny"] .tier-tiny { display: inline; }
+.tt-hist-label {
+  font-family: var(--body-font);
+  font-size: var(--tiny);
+  color: var(--paper-mid);
+  flex-shrink: 0;
+}
+.tt-hist-label strong { color: var(--paper); font-weight: 700; }
+
+/* Below 641px there isn't room for a side-by-side name column and icon
+   row without squeezing the icons; stack name (with badge) above the
+   icons instead. The icon column still starts at the same x on every
+   row at this width, it just starts at the row's own left edge. */
+@media (max-width: 640px) {
+  .tt-row-main {
+    grid-template-columns: 1fr auto;
+    grid-template-areas: "name chev" "mid mid";
+    row-gap: 0.5rem;
+  }
+  .tt-name-col { flex-direction: row; align-items: center; justify-content: space-between; gap: 0.6rem; }
+}
+
+/* ===========================================
+   LOADING OVERLAY (hard rule 12: no error UI, ever) · copied verbatim from
+   otp-progress-form.html's #form-loading so a coach sees the same calm
+   frosted card while the tracker retries silently.
+   =========================================== */
+.form-loading {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(239, 236, 226, 0.55);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+          backdrop-filter: blur(14px) saturate(140%);
+  transition: opacity 320ms ease, visibility 320ms ease;
+  opacity: 1;
+  visibility: visible;
+}
+:root[data-theme="dark"] .form-loading {
+  background: rgba(10, 13, 31, 0.55);
+}
+.form-loading.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.form-loading-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  padding: 32px 44px;
+  background: rgba(255, 255, 255, 0.42);
+  border: 1px solid var(--rule);
+  border-radius: 18px;
+  box-shadow: 0 24px 48px -20px rgba(20, 54, 66, 0.22);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+          backdrop-filter: blur(22px) saturate(160%);
+  position: relative;
+  overflow: hidden;
+}
+:root[data-theme="dark"] .form-loading-card {
+  background: rgba(17, 22, 46, 0.5);
+  box-shadow: 0 24px 48px -20px rgba(0, 0, 0, 0.55);
+}
+.form-loading-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--ais-red), var(--ais-yellow), #1257FF);
+  opacity: 0.85;
+}
+.form-loading-spinner {
+  color: var(--ais-yellow);
+  display: block;
+  filter: drop-shadow(0 4px 10px rgba(255, 186, 20, 0.35));
+}
+.form-loading-spinner .ring-spin {
+  transform-origin: 32px 32px;
+  animation: form-loading-spin 1.05s linear infinite;
+}
+@keyframes form-loading-spin {
+  to { transform: rotate(360deg); }
+}
+.form-loading-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+}
+.form-loading-label .dot {
+  width: 0.4em;
+  height: 0.4em;
+  border-radius: 50%;
+  background: var(--ais-yellow);
+  box-shadow: 0 0 8px var(--ais-yellow);
+  animation: form-loading-pulse 1.4s ease-in-out infinite;
+}
+@keyframes form-loading-pulse {
+  0%, 100% { opacity: 0.35; transform: scale(0.85); }
+  50%      { opacity: 1;    transform: scale(1.1); }
+}
+
+/* Icon SVGs verbatim from otp-progress-form.html status strip (never redrawn). */
+</style>
+</head>
+<body>
+
+<button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle light or dark theme" title="Toggle light / dark theme" style="position:fixed; left:clamp(0.7rem,1.4vw,1.2rem); bottom:clamp(0.7rem,1.4vw,1.2rem); z-index:100;">
+  <svg class="icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+  </svg>
+  <svg class="icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="4"/>
+    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+  </svg>
+</button>
+
+<div class="form-loading" id="form-loading" role="status" aria-live="polite" aria-label="Loading tracker">
+  <div class="form-loading-card">
+    <svg class="form-loading-spinner" viewBox="0 0 64 64" width="56" height="56" aria-hidden="true">
+      <circle cx="32" cy="32" r="26" fill="none" stroke="currentColor" stroke-opacity="0.18" stroke-width="5"/>
+      <circle class="ring-spin" cx="32" cy="32" r="26" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-dasharray="50 200"/>
+    </svg>
+    <div class="form-loading-label"><span class="dot"></span>Loading teachers</div>
+  </div>
+</div>
+
+<div class="tt-shell">
+
+  <header class="tt-header">
+    <div class="brand-row">
+      <img src="../brand/AIS Logo/AIS Navy.png" data-light-src="../brand/AIS Logo/AIS Navy.png" data-dark-src="../brand/AIS Logo/AIS White.png" alt="Australian International School Sharjah">
+      <div class="form-title-block">
+        <span class="form-eyebrow"><span class="stripe"></span>AIS Sharjah · Human Resources</span>
+        <h1 class="form-title">Teacher <em>Tracker</em></h1>
+      </div>
+    </div>
+    <button class="pill tt-refresh" id="btn-refresh" type="button" title="Reload the tracker">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/>
+      </svg>
+      <span>Refresh</span>
+    </button>
+  </header>
+
+  <section class="tt-tiles">
+    <div class="tt-tile" id="tile-observed">
+      <span class="tt-tile-num" id="tile-observed-num">0 of 0</span>
+      <span class="tt-tile-label">Observed at least once</span>
+    </div>
+    <div class="tt-tile is-open" id="tile-open">
+      <span class="tt-tile-num" id="tile-open-num">0</span>
+      <span class="tt-tile-label">Observation open now</span>
+    </div>
+    <div class="tt-tile is-none" id="tile-none">
+      <span class="tt-tile-num" id="tile-none-num">0</span>
+      <span class="tt-tile-label">Not observed yet</span>
+    </div>
+  </section>
+
+  <section class="tt-controls">
+    <label class="tt-search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="7"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input type="text" id="search-input" placeholder="Search teachers by name…" autocomplete="off">
+    </label>
+    <div class="tt-chips" id="chip-row">
+      <button class="pill is-selected" type="button" data-chip="all">All</button>
+      <button class="pill" type="button" data-chip="not-observed">Not observed</button>
+      <button class="pill" type="button" data-chip="observation">Observation</button>
+      <button class="pill" type="button" data-chip="reflection" disabled title="Coming soon"><span class="chip-label">Reflection Form</span> <span class="chip-soon">· Coming soon</span></button>
+      <button class="pill" type="button" data-chip="emails">Emails</button>
+      <button class="pill" type="button" data-chip="feedback">Feedback Meeting</button>
+      <button class="pill" type="button" data-chip="plan" disabled title="Coming soon"><span class="chip-label">Plan Form</span> <span class="chip-soon">· Coming soon</span></button>
+      <button class="pill" type="button" data-chip="completed">Completed</button>
+    </div>
+  </section>
+
+  <section>
+    <div class="tt-list-head">
+      <span class="tt-list-title">Teachers, A to Z</span>
+    </div>
+    <p class="tt-list-empty" id="list-empty">No teachers match this search or filter.</p>
+    <div class="tt-rows" id="tt-rows"></div>
+  </section>
+
+</div>
+
+<script>
+/* ===========================================
+   Theme toggle: same mechanism and same localStorage key as the gate and
+   the form (data-theme attribute on <html>, persisted).
+   =========================================== */
+(function initTheme() {
+  var root = document.documentElement;
+  var toggle = document.getElementById('theme-toggle');
+  var themedImages = Array.prototype.slice.call(document.querySelectorAll('img[data-light-src][data-dark-src]'));
+
+  function syncImages(theme) {
+    themedImages.forEach(function (img) {
+      var next = theme === 'dark' ? img.dataset.darkSrc : img.dataset.lightSrc;
+      if (img.getAttribute('src') !== next) img.setAttribute('src', next);
+    });
+  }
+  function applyTheme(theme, persist) {
+    if (theme === 'dark') root.setAttribute('data-theme', 'dark');
+    else root.removeAttribute('data-theme');
+    syncImages(theme);
+    if (persist) {
+      try { localStorage.setItem('ais-form-theme', theme); } catch (e) {}
+    }
+  }
+  syncImages(root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light');
+  if (toggle) {
+    toggle.addEventListener('click', function () {
+      var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      applyTheme(next, true);
+    });
+  }
+})();
+
+/* ===========================================
+   Supabase (publishable/anon key, client-safe; ships inside the
+   StatiCrypt-encrypted page, same as the form's admin cog). Copied
+   verbatim from otp-progress-form.html's SB_URL/SB_KEY.
+   =========================================== */
+var SB_URL = 'https://rfbetrcevtmisknndpgg.supabase.co';
+var SB_KEY = 'sb_publishable_shin2gZ5-pARRc-cLDd5lQ_YAOacR72';
+
+/* ===========================================
+   Real six-step icon SVGs, copied verbatim from
+   otp-progress-form.html's status strip. Never redrawn. Static, authored
+   strings only: never interpolated with data, so it is safe for these
+   (and only these) to go through innerHTML below.
+   =========================================== */
+var STEP_ICONS = [
+  '<path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  '<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>',
+  '<rect x="2" y="5" width="20" height="14" rx="2"/><path d="m3 6.5 9 6.5 9-6.5"/>',
+  '<circle cx="8.5" cy="8" r="3"/><path d="M2.5 20c0-3.3 2.8-6 6-6s6 2.7 6 6"/><circle cx="16.5" cy="8.5" r="2.3"/><path d="M14.7 14.3c.5-.2 1.1-.3 1.8-.3 3 0 5.5 2.5 5.5 5.6"/>',
+  '<rect x="5" y="4" width="14" height="17" rx="2"/><rect x="9" y="2" width="6" height="4" rx="1"/><path d="M9 11h6M9 15h6"/>',
+  '<circle cx="12" cy="12" r="9"/><path d="m8 12.5 2.5 2.5 5-6"/>'
+];
+var STEP_NAMES = [
+  'Teacher Observation',
+  'Teacher Reflection Form',
+  'Observation details emailed to Teacher and Coach',
+  'Observation Feedback Meeting',
+  'Teacher Plan Form',
+  'Observation complete'
+];
+var TICK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>';
+var CHEVRON_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
+
+function stepIconSvg(i, big) {
+  var s = big ? 18 : 15;
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="' + s + '" height="' + s + '">' + STEP_ICONS[i] + '</svg>';
+}
+
+/* ===========================================
+   Dates: mirrors the form's own formatDay (STRIP-003): a date-only value
+   ("2026-09-16") is a calendar date, parsed by hand as a local date, never
+   through `new Date('2026-09-16')` (UTC midnight, can render a day early
+   west of UTC). A full timestamp (closed_at) keeps its real instant. The
+   month comes from a fixed table, not Intl, because en-GB abbreviates
+   September as "Sept", not the "Sep" of the approved mock. No year, per
+   the plan's own examples ("14 Sep").
+   =========================================== */
+var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+function fmtDayShort(v) {
+  if (!v) return '';
+  var s = String(v);
+  var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s);
+  try {
+    var d = m
+      ? new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]))
+      : new Date(s);
+    if (isNaN(d)) return s;
+    return String(d.getDate()).padStart(2, '0') + ' ' + MONTHS[d.getMonth()];
+  } catch (e) { return s; }
+}
+
+/* ===========================================
+   State mapping: migrate_25_otp_tracker.sql / PLAN-A.md section 4:
+     open        -> [completed, coming, emails_done?completed:pending, ACTIVE, coming, pending]
+     no open,
+     last_closed -> [completed, coming, completed, completed, coming, completed]
+     neither     -> [pending, coming, pending, pending, coming, pending]
+   The same three shapes drive both a teacher's current row and each of
+   their history entries (a history entry carries its own state + emails).
+
+   SEAM (do not build yet: PLAN-A.md section 10): a later version may show
+   what the teacher wrote per step, once the Teacher Reflection Form and
+   Teacher Plan Form exist. get_otp_tracker()'s shape already reserves room
+   for that inside `open` / each `history` entry; nothing here reads or
+   renders it, and no token, rating, note or Next Step is ever in the
+   payload this page receives.
+   =========================================== */
+function stepsForState(state, emailsDone) {
+  if (state === 'open') return ['completed', 'coming', emailsDone ? 'completed' : 'pending', 'current', 'coming', 'pending'];
+  if (state === 'closed') return ['completed', 'coming', 'completed', 'completed', 'coming', 'completed'];
+  return ['pending', 'coming', 'pending', 'pending', 'coming', 'pending'];
+}
+function stepsFor(t) {
+  if (t.open) return stepsForState('open', t.open.emails_done);
+  if (t.last_closed) return stepsForState('closed', false);
+  return stepsForState('none', false);
+}
+function stepsForHist(h) {
+  return stepsForState(h.state, h.emails_done);
+}
+function activeStepIndex(steps) {
+  var i = steps.indexOf('current');
+  return i === -1 ? null : i;
+}
+
+function badgeInfo(t) {
+  if (t.open) return { text: 'Observation ' + t.open.lap, has: true };
+  if (t.last_closed) return { text: 'Observation ' + t.last_closed.lap, has: true };
+  return { text: 'Not observed yet', has: false };
+}
+/* Only meaningful for a teacher with at least one observation: a
+   never-observed row shows the badge only, no grey line underneath. */
+function sublineText(t) {
+  if (t.open) return 'open since ' + fmtDayShort(t.open.observation_date) + ' · coach ' + t.open.observer;
+  if (t.last_closed) return 'completed ' + fmtDayShort(t.last_closed.closed_at || t.last_closed.observation_date);
+  return '';
+}
+
+/* "Waiting on" classification for the chips (plan section 4). */
+function waitingOn(t) {
+  if (!t.open && !t.last_closed) return 'not-observed';   // never observed
+  if (!t.open && t.last_closed) return 'completed';        // latest closed
+  return t.open.emails_done ? 'feedback' : 'emails';        // open
+}
+/* The "Observation" chip = next thing due is an observation: never
+   observed, OR latest observation completed (ready for the next one). */
+function isObservationDue(t) {
+  return !t.open;
+}
+
+/* ===========================================
+   Render: every teacher-derived string goes through textContent /
+   createTextNode, never innerHTML. Only the fixed SVG strings above
+   (authored here, never from the RPC response) go through innerHTML.
+   =========================================== */
+function pillLabelSpans(i) {
+  var full = document.createElement('span');
+  full.className = 'tier-full';
+  full.textContent = STEP_NAMES[i] + ' · Active';
+  var short = document.createElement('span');
+  short.className = 'tier-short';
+  short.textContent = STEP_NAMES[i].replace(/^Observation\s+/, '') + ' · Active';
+  var tiny = document.createElement('span');
+  tiny.className = 'tier-tiny';
+  tiny.textContent = 'Active';
+  return [full, short, tiny];
+}
+function stepEl(i, state) {
+  var el = document.createElement('span');
+  el.title = STEP_NAMES[i];
+  if (state === 'current') {
+    el.className = 'tt-step is-current';
+    el.innerHTML = stepIconSvg(i, true);
+    var label = document.createElement('span');
+    label.className = 'tt-pill-label';
+    pillLabelSpans(i).forEach(function (s) { label.appendChild(s); });
+    el.appendChild(label);
+  } else {
+    el.className = 'tt-step is-' + state;
+    el.innerHTML = stepIconSvg(i, false);
+    if (state === 'completed') {
+      var tick = document.createElement('span');
+      tick.className = 'tt-tick';
+      tick.innerHTML = TICK_SVG;
+      el.appendChild(tick);
+    }
+  }
+  return el;
+}
+function histStepEl(i, state) {
+  var el = document.createElement('span');
+  el.title = STEP_NAMES[i];
+  if (state === 'current') {
+    el.className = 'tt-hist-step is-current';
+    el.innerHTML = stepIconSvg(i, false);
+    var label = document.createElement('span');
+    label.className = 'tt-hist-pill-label';
+    pillLabelSpans(i).forEach(function (s) { label.appendChild(s); });
+    el.appendChild(label);
+  } else {
+    el.className = 'tt-hist-step is-' + state;
+    el.innerHTML = stepIconSvg(i, false);
+  }
+  return el;
+}
+function renderStepsInto(container, steps, histMode) {
+  container.innerHTML = '';
+  for (var i = 0; i < 6; i++) {
+    container.appendChild(histMode ? histStepEl(i, steps[i]) : stepEl(i, steps[i]));
+  }
+}
+
+function buildRow(t) {
+  var badge = badgeInfo(t);
+  var steps = stepsFor(t);
+  var sub = sublineText(t);
+
+  var row = document.createElement('div');
+  row.className = 'tt-row';
+  row.dataset.name = t.name.toLowerCase();
+  row.dataset.waiting = waitingOn(t);
+  row.dataset.obsDue = isObservationDue(t) ? '1' : '0';
+
+  var main = document.createElement('button');
+  main.type = 'button';
+  main.className = 'tt-row-main';
+  main.setAttribute('aria-expanded', 'false');
+
+  var nameCol = document.createElement('div');
+  nameCol.className = 'tt-name-col';
+  var nameEl = document.createElement('span');
+  nameEl.className = 'tt-name';
+  nameEl.textContent = t.name;
+  var badgeEl = document.createElement('span');
+  badgeEl.className = 'tt-obs-badge' + (badge.has ? ' has-obs' : '');
+  badgeEl.textContent = badge.text;
+  nameCol.appendChild(nameEl);
+  nameCol.appendChild(badgeEl);
+
+  var midCol = document.createElement('div');
+  midCol.className = 'tt-mid-col';
+  var iconsWrap = document.createElement('div');
+  iconsWrap.className = 'tt-icons';
+  renderStepsInto(iconsWrap, steps, false);
+  midCol.appendChild(iconsWrap);
+  if (sub) {
+    var subEl = document.createElement('span');
+    subEl.className = 'tt-subline';
+    subEl.textContent = sub;
+    midCol.appendChild(subEl);
+  }
+
+  var chevron = document.createElement('span');
+  chevron.className = 'tt-chevron';
+  chevron.innerHTML = CHEVRON_SVG;
+
+  main.appendChild(nameCol);
+  main.appendChild(midCol);
+  main.appendChild(chevron);
+
+  var histWrap = document.createElement('div');
+  histWrap.className = 'tt-history-wrap';
+  var histInner = document.createElement('div');
+  histInner.className = 'tt-history-inner';
+  var hist = document.createElement('div');
+  hist.className = 'tt-history';
+
+  var list = t.history || [];
+  if (list.length) {
+    list.forEach(function (h) {
+      var hSteps = stepsForHist(h);
+      var hActive = activeStepIndex(hSteps);
+      var hRow = document.createElement('div');
+      hRow.className = 'tt-hist-row';
+      var hIcons = document.createElement('div');
+      hIcons.className = 'tt-hist-icons';
+      renderStepsInto(hIcons, hSteps, true);
+      var hLabel = document.createElement('span');
+      hLabel.className = 'tt-hist-label';
+      var strong = document.createElement('strong');
+      strong.textContent = 'Observation ' + h.lap;
+      hLabel.appendChild(strong);
+      if (hActive === null) {
+        hLabel.appendChild(document.createTextNode(' · Completed ' + fmtDayShort(h.closed_at || h.observation_date)));
+      }
+      hRow.appendChild(hIcons);
+      hRow.appendChild(hLabel);
+      hist.appendChild(hRow);
+    });
+  } else {
+    var emptyRow = document.createElement('div');
+    emptyRow.className = 'tt-hist-row';
+    var emptyLabel = document.createElement('span');
+    emptyLabel.className = 'tt-hist-label';
+    emptyLabel.textContent = 'No observations recorded yet this school year.';
+    emptyRow.appendChild(emptyLabel);
+    hist.appendChild(emptyRow);
+  }
+
+  histInner.appendChild(hist);
+  histWrap.appendChild(histInner);
+
+  row.appendChild(main);
+  row.appendChild(histWrap);
+
+  main.addEventListener('click', function () {
+    var wasOpen = row.classList.contains('is-open');
+    row.classList.toggle('is-open', !wasOpen);
+    main.setAttribute('aria-expanded', String(!wasOpen));
+  });
+
+  return row;
+}
+
+/* ===========================================
+   Measured-fit label tiers for every Active pill (main rows and history
+   rows). For each pill, try full -> short -> tiny and stop at the first
+   tier whose icon row does not overflow its own box. Runs once right
+   after the rows are built and again on resize; a row hidden by a later
+   chip/search filter is skipped (its width would read as 0) and keeps
+   whatever tier it last measured.
+   =========================================== */
+var PILL_TIERS = ['full', 'short', 'tiny'];
+function fitPills() {
+  document.querySelectorAll('.tt-step.is-current, .tt-hist-step.is-current').forEach(function (pill) {
+    var container = pill.closest('.tt-icons, .tt-hist-icons');
+    if (!container || container.offsetParent === null) return;
+    for (var i = 0; i < PILL_TIERS.length; i++) {
+      pill.dataset.tier = PILL_TIERS[i];
+      if (container.scrollWidth <= container.clientWidth + 1) return;
+    }
+  });
+}
+window.addEventListener('resize', fitPills);
+
+var rowsEl = document.getElementById('tt-rows');
+var tileObservedNum = document.getElementById('tile-observed-num');
+var tileOpenNum = document.getElementById('tile-open-num');
+var tileNoneNum = document.getElementById('tile-none-num');
+var searchInput = document.getElementById('search-input');
+var chipRow = document.getElementById('chip-row');
+var emptyEl = document.getElementById('list-empty');
+var activeChip = 'all';
+
+function applyFilter() {
+  var q = searchInput.value.trim().toLowerCase();
+  var visible = 0;
+  Array.prototype.forEach.call(rowsEl.children, function (row) {
+    var nameMatch = !q || row.dataset.name.indexOf(q) !== -1;
+    var chipMatch = true;
+    if (activeChip === 'not-observed') chipMatch = row.dataset.waiting === 'not-observed';
+    else if (activeChip === 'observation') chipMatch = row.dataset.obsDue === '1';
+    else if (activeChip === 'emails') chipMatch = row.dataset.waiting === 'emails';
+    else if (activeChip === 'feedback') chipMatch = row.dataset.waiting === 'emails' || row.dataset.waiting === 'feedback';
+    else if (activeChip === 'completed') chipMatch = row.dataset.waiting === 'completed';
+    else if (activeChip === 'reflection' || activeChip === 'plan') chipMatch = false; // coming soon, always empty
+    var show = nameMatch && chipMatch;
+    row.style.display = show ? '' : 'none';
+    if (show) visible++;
+  });
+  emptyEl.classList.toggle('is-visible', visible === 0);
+}
+searchInput.addEventListener('input', applyFilter);
+chipRow.addEventListener('click', function (e) {
+  var btn = e.target.closest('.pill');
+  if (!btn || btn.disabled) return;
+  Array.prototype.forEach.call(chipRow.querySelectorAll('.pill'), function (p) { p.classList.remove('is-selected'); });
+  btn.classList.add('is-selected');
+  activeChip = btn.dataset.chip;
+  applyFilter();
+});
+
+/* "Observed at least once" also counts a teacher whose CURRENT-ROUND open
+   or last_closed falls outside the whole-school-year observation_count
+   window (migrate_25's own deliberate round-vs-year mismatch comment) :
+   belt and suspenders, matching PLAN-A.md section 4's formula exactly. */
+function computeCounts(teachers) {
+  var observed = 0, open = 0;
+  teachers.forEach(function (t) {
+    if (t.observation_count > 0 || t.open || t.last_closed) observed++;
+    if (t.open) open++;
+  });
+  return { observed: observed, open: open, none: teachers.length - observed, total: teachers.length };
+}
+
+function renderTracker(data) {
+  var teachers = (data.teachers || []).slice().sort(function (a, b) { return a.name.localeCompare(b.name); });
+  var counts = computeCounts(teachers);
+  tileObservedNum.textContent = counts.observed + ' of ' + counts.total;
+  tileOpenNum.textContent = String(counts.open);
+  tileNoneNum.textContent = String(counts.none);
+
+  rowsEl.innerHTML = '';
+  teachers.forEach(function (t) { rowsEl.appendChild(buildRow(t)); });
+
+  fitPills();
+  applyFilter();
+}
+
+/* ===========================================
+   Load, with hard rule 12 (no error UI, ever): each attempt is capped via
+   AbortController (NOT AbortSignal.timeout, iOS 16+ only); a stall, a
+   non-2xx answer, or an unexpected shape retries silently behind the
+   loading overlay; after 8 attempts a single guarded reload (?_r=1) gives
+   a wedged tab a clean context; a tab restored from bfcache reloads
+   outright. Mirrors otp-progress-form.html's
+   loadDropdownOptions/fetchOptionsOnce.
+   =========================================== */
+var TT_RETRY_DELAY_MS = 600;
+// Test-only: ?_tmo=<ms> shortens the per-attempt cap below so the
+// resilience specs don't have to wait through the real 7s timeout. Unset
+// (the normal case, and always on a coach's own link) leaves it at 7000.
+var TT_FETCH_TIMEOUT_MS = (function () {
+  try {
+    var v = parseInt(new URLSearchParams(location.search).get('_tmo'), 10);
+    return v > 0 ? v : 7000;
+  } catch (e) { return 7000; }
+})();
+
+async function fetchTrackerOnce() {
+  var ctrl = new AbortController();
+  var timer = setTimeout(function () { ctrl.abort(); }, TT_FETCH_TIMEOUT_MS);
+  try {
+    var resp = await fetch(SB_URL + '/rest/v1/rpc/get_otp_tracker', {
+      method: 'POST',
+      headers: {
+        'apikey': SB_KEY,
+        'Authorization': 'Bearer ' + SB_KEY,
+        'Content-Type': 'application/json'
+      },
+      body: '{}',
+      signal: ctrl.signal
+    });
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    var data = await resp.json();
+    if (!data || data.success !== true || !Array.isArray(data.teachers)) throw new Error('bad payload');
+    return data;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function showLoading(on) {
+  document.getElementById('form-loading').classList.toggle('is-hidden', !on);
+}
+
+async function loadTracker() {
+  showLoading(true);
+  for (var attempt = 1; ; attempt++) {
+    try {
+      var data = await fetchTrackerOnce();
+      renderTracker(data);
+      showLoading(false);
+      return;
+    } catch (err) {
+      if (attempt >= 8) {
+        if (location.search.indexOf('_r=') === -1) {
+          var sep = location.search ? '&' : '?';
+          location.replace(location.href + sep + '_r=1');
+        }
+        return;
+      }
+      await new Promise(function (r) { setTimeout(r, TT_RETRY_DELAY_MS); });
+    }
+  }
+}
+
+document.getElementById('btn-refresh').addEventListener('click', function () { loadTracker(); });
+
+// v0.37-style bfcache guard: a stale iPad tab restored from suspension can
+// hang its next fetch forever; reload to a clean context before the user
+// notices anything.
+window.addEventListener('pageshow', function (event) {
+  if (event.persisted) location.reload();
+});
+
+loadTracker();
+</script>
+</body>
+</html>

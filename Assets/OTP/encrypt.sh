@@ -66,3 +66,32 @@ sed -e 's|<head>|<head><script>window.R3_VIEWER = true;</script>|' \
     -e "s|const SB_URL = '[^']*';|const SB_URL = '';|" \
     "$MASTER" > "$VIEWER"
 echo "Viewer written to $VIEWER"
+
+# Teacher Tracker (otp-v0.12): the same gate, same password, same
+# password-template.html, own master and own output. Coaches/leaders only,
+# same access as the form; the ungated viewer above never gets this link or
+# this key (PLAN-A.md section 3/8).
+TRACKER_MASTER="src/otp-tracker.html"
+TRACKER_OUTPUT="otp-tracker.html"
+TRACKER_TMP_DIR=".staticrypt-out-tracker"
+
+if [[ ! -f "$TRACKER_MASTER" ]]; then
+  echo "Tracker master not found: $TRACKER_MASTER" >&2
+  exit 1
+fi
+
+rm -rf "$TRACKER_TMP_DIR"
+
+npx --yes staticrypt "$TRACKER_MASTER" -p "$PASSWORD" --short \
+  --template "$TEMPLATE" \
+  --template-title "AIS OTP Teacher Tracker" \
+  --template-button "Open Tracker" \
+  --template-placeholder "Access password" \
+  --template-error "That password is not right. Try again." \
+  --template-remember "Remember me on this device" \
+  -d "$TRACKER_TMP_DIR"
+
+mv "$TRACKER_TMP_DIR/otp-tracker.html" "$TRACKER_OUTPUT"
+rmdir "$TRACKER_TMP_DIR"
+
+echo "Encrypted to $TRACKER_OUTPUT"
