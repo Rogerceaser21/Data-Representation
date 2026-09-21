@@ -3140,6 +3140,10 @@ const stripStatuses = async (page: Page) => {
   }
   return words;
 };
+/** otp-v0.12: the whole strip's visible text, to prove the retired word
+ *  "Current" is gone everywhere, not just at the five spots the worked
+ *  examples happen to name. */
+const stripText = (page: Page) => page.locator('#status-strip').innerText();
 
 test('otp-v0.11: the status strip renders the four worked examples of plan 2.1', async ({ page }) => {
   // 1. never observed this year
@@ -3149,7 +3153,8 @@ test('otp-v0.11: the status strip renders the four worked examples of plan 2.1',
   await pickTomSelect(page, 'teacher', 'Test Teacher');
   await expect(stripLine(page)).toHaveText(`Teacher not observed yet · ${schoolYearLabel()}`, { timeout: 10_000 });
   expect(await stripStatuses(page)).toEqual(
-    ['Current', 'Coming soon', 'Pending', 'Pending', 'Coming soon', 'Pending']);
+    ['Active', 'Coming soon', 'Pending', 'Pending', 'Coming soon', 'Pending']);
+  expect(await stripText(page), 'otp-v0.12: "Current" is retired').not.toContain('Current');
   expect(h.errors).toEqual([]);
 
   // 2. open observation (Igor Sesar today): amended (Problem 2) - it auto-loads,
@@ -3162,7 +3167,8 @@ test('otp-v0.11: the status strip renders the four worked examples of plan 2.1',
     new RegExp(`^Observation 2 · open since ${dayPat('2026-09-16')} · coach Igor Sesar$`),
     { timeout: 10_000 });
   expect(await stripStatuses(page)).toEqual(
-    ['Completed', 'Coming soon', 'Completed', 'Current', 'Coming soon', 'Pending']);
+    ['Completed', 'Coming soon', 'Completed', 'Active', 'Coming soon', 'Pending']);
+  expect(await stripText(page), 'otp-v0.12: "Current" is retired').not.toContain('Current');
   await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
   expect(await page.evaluate(() => (window as any).__otpReadSource.lapState)).toBe('supabase');
   expect(h.errors).toEqual([]);
@@ -3176,7 +3182,8 @@ test('otp-v0.11: the status strip renders the four worked examples of plan 2.1',
     new RegExp(`^Observation 1 completed ${dayPat('2026-09-14')} · now starting Observation 2$`),
     { timeout: 10_000 });
   expect(await stripStatuses(page)).toEqual(
-    ['Current', 'Coming soon', 'Pending', 'Pending', 'Coming soon', 'Pending']);
+    ['Active', 'Coming soon', 'Pending', 'Pending', 'Coming soon', 'Pending']);
+  expect(await stripText(page), 'otp-v0.12: "Current" is retired').not.toContain('Current');
   expect(h.errors).toEqual([]);
 
   // 4. straight after a successful Close Lap in this page: a direct, local
@@ -3193,6 +3200,7 @@ test('otp-v0.11: the status strip renders the four worked examples of plan 2.1',
   expect(line4).toMatch(dayRe('Observation 1 completed ', '2026-09-11T09:30:00.000Z'));
   expect(await stripStatuses(page)).toEqual(
     ['Completed', 'Coming soon', 'Completed', 'Completed', 'Coming soon', 'Completed']);
+  expect(await stripText(page), 'otp-v0.12: "Current" is retired').not.toContain('Current');
   expect(h.errors).toEqual([]);
 });
 
@@ -3319,6 +3327,63 @@ test('otp-v0.11: the status strip is absent in the ungated teacher viewer', asyn
   await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 20_000 });
   await expect(page.locator('#status-strip-section')).toBeHidden();
   expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.12: the status strip sits inside a titled "Observation Process" card on the gated form, hidden whole in the ungated viewer', async ({ page }) => {
+  const h = await harness(page);
+  await openForm(page);
+  const card = page.locator('#op-card');
+  await expect(card).toBeVisible();
+  await expect(card.locator('.op-card-title')).toHaveText('Observation Process');
+  // the status line and the six step cards live INSIDE the card, not beside it
+  await expect(card.locator('#status-strip-section')).toBeVisible();
+  await expect(card.locator('#status-strip-line')).toBeVisible();
+  await expect(card.locator('#status-strip')).toBeVisible();
+  for (let i = 1; i <= 6; i++) {
+    await expect(card.locator(`#strip-card-${i}`)).toBeVisible();
+  }
+  expect(h.errors).toEqual([]);
+
+  // the ungated teacher viewer shows none of it: no card, no title, no steps
+  const src = viewerSrc();
+  expect(src).toContain('body.is-viewer #op-card { display: none !important; }');
+  const h2 = await harness(page, { record: RECORD_PAYLOAD_OPEN });
+  await page.goto(RECORD_URL + '?token=abc');
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 20_000 });
+  await expect(page.locator('#op-card')).toBeHidden();
+  expect(h2.errors).toEqual([]);
+});
+
+/** #strip-card-1's own box at each width, measured on the untouched master
+ *  (HEAD 444a206, "otp-v0.12 preview 1 · branch start", before the
+ *  Observation Process card wrapper existed), Chromium and WebKit:
+ *  width 217.15625 / 243.984375 / 144.21875, height 125.96875(.953125) /
+ *  125.96875(.953125) / 140.171875(.15625), at 744 / 834 / 1024px. Height
+ *  must stay untouched by the wrapper (the strip cards' own CSS is not
+ *  touched at all here); width narrows because the card adds its own
+ *  left/right padding around the strip, exactly like the approved mock
+ *  (process-bar-mock.html #op-card, measured the same way: 205.8125 /
+ *  232.65625 / 137.75 wide, same heights). That narrower width IS the
+ *  ported look, not a regression, so it is pinned here too. */
+const STEP_CARD_SIZE_BY_WIDTH: { width: number; height: number; cardH: number; cardW: number }[] = [
+  { width: 744, height: 1133, cardH: 125.97, cardW: 205.81 },
+  { width: 834, height: 1194, cardH: 125.97, cardW: 232.66 },
+  { width: 1024, height: 1366, cardH: 140.17, cardW: 137.75 },
+];
+
+test('otp-v0.12: the Observation Process card leaves each step card\'s own height untouched; width matches the card\'s own padding, exactly as the approved mock renders it', async ({ page }) => {
+  for (const { width, height, cardH, cardW } of STEP_CARD_SIZE_BY_WIDTH) {
+    const h = await harness(page);
+    await page.setViewportSize({ width, height });
+    await openForm(page);
+    const box = await page.locator('#strip-card-1').boundingBox();
+    expect(box, `card missing at ${width}px`).not.toBeNull();
+    expect(Math.abs(box!.height - cardH), `height at ${width}px: ${box!.height}, expected ~${cardH}`)
+      .toBeLessThanOrEqual(0.5);
+    expect(Math.abs(box!.width - cardW), `width at ${width}px: ${box!.width}, expected ~${cardW}`)
+      .toBeLessThanOrEqual(0.5);
+    expect(h.errors).toEqual([]);
+  }
 });
 
 test('otp-v0.11 task 7 (amended, Problem 2): no Continue button/link exists anywhere, and the open observation\'s token never appears in the DOM, even while it auto-loads', async ({ page }) => {
@@ -4491,12 +4556,14 @@ test('otp-v0.11 STRIP-002: right after Save & Lock, the strip shows the observat
   await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 15_000 });
   const statuses = await stripStatuses(page);
   expect(statuses[0], 'card 1 Completed').toBe('Completed');
-  expect(statuses[3], 'card 4 Current').toBe('Current');
+  expect(statuses[3], 'card 4 Active').toBe('Active');
+  expect(await stripText(page), 'otp-v0.12: "Current" is retired').not.toContain('Current');
   await expect(stripLine(page)).toContainText('Observation 2 · open since');
   await page.waitForTimeout(1500);   // still well inside the 3 s locked interval
   const statusesLater = await stripStatuses(page);
   expect(statusesLater[0]).toBe('Completed');
-  expect(statusesLater[3]).toBe('Current');
+  expect(statusesLater[3]).toBe('Active');
+  expect(await stripText(page), 'otp-v0.12: "Current" is retired').not.toContain('Current');
   expect(h.errors.filter((e) => !/status of 500/.test(e))).toEqual([]);
 });
 
@@ -6028,14 +6095,21 @@ function holdRecordFetch(page: Page, record: any): () => void {
   return () => release();
 }
 
-/** getBoundingClientRect().top of the Observer control and the Time In
- *  input, the two targets BUG-2's own iPad report named. */
+/** getBoundingClientRect().top + scrollY (the page-absolute position, not
+ *  just the viewport-relative one) of the Teacher, Observer and Time In
+ *  controls: BUG-2's original two targets plus Teacher, extended for
+ *  otp-v0.12's Observation Process card wrapper, which must not move any of
+ *  the three either. */
 const gridTops = (page: Page) => page.evaluate(() => {
   const top = (sel: string) => {
     const el = document.querySelector(sel);
-    return el ? el.getBoundingClientRect().top : null;
+    return el ? el.getBoundingClientRect().top + window.scrollY : null;
   };
-  return { observer: top('#inspector + .ts-wrapper'), timeIn: top('#time_in') };
+  return {
+    teacher: top('#teacher + .ts-wrapper'),
+    observer: top('#inspector + .ts-wrapper'),
+    timeIn: top('#time_in'),
+  };
 });
 
 /** Opens a Tom Select control and picks one option, at real coordinates
@@ -6077,8 +6151,13 @@ for (const lapName of ['never-observed'] as const) {
       await page.waitForTimeout(50);    // let the reflow this answer causes settle
 
       const late = await gridTops(page);
+      expect(early.teacher, `Teacher control missing at ${width}px`).not.toBeNull();
       expect(early.observer, `Observer control missing at ${width}px`).not.toBeNull();
       expect(early.timeIn, `Time In input missing at ${width}px`).not.toBeNull();
+      expect(
+        Math.abs(late.teacher! - early.teacher!),
+        `Teacher top shift at ${width}px (${lapName}): ${early.teacher} -> ${late.teacher}`,
+      ).toBeLessThanOrEqual(1);
       expect(
         Math.abs(late.observer! - early.observer!),
         `Observer top shift at ${width}px (${lapName}): ${early.observer} -> ${late.observer}`,
@@ -6119,12 +6198,14 @@ for (const { width, height } of BUG2_RECORD_WIDTHS) {
 
     await page.waitForTimeout(150);   // "the coach sees the Observer box" (early)
     const early = await gridTops(page);
+    expect(early.teacher, `Teacher control missing at ${width}px`).not.toBeNull();
     expect(early.observer, `Observer control missing at ${width}px`).not.toBeNull();
     expect(early.timeIn, `Time In input missing at ${width}px`).not.toBeNull();
 
-    const deltas = { observer: [] as number[], timeIn: [] as number[] };
+    const deltas = { teacher: [] as number[], observer: [] as number[], timeIn: [] as number[] };
     const sample = async () => {
       const t = await gridTops(page);
+      if (t.teacher != null) deltas.teacher.push(Math.abs(t.teacher - early.teacher!));
       if (t.observer != null) deltas.observer.push(Math.abs(t.observer - early.observer!));
       if (t.timeIn != null) deltas.timeIn.push(Math.abs(t.timeIn - early.timeIn!));
     };
@@ -6151,8 +6232,13 @@ for (const { width, height } of BUG2_RECORD_WIDTHS) {
       await sample();
     }
 
+    const maxTeacher = Math.max(0, ...deltas.teacher);
     const maxObserver = Math.max(0, ...deltas.observer);
     const maxTimeIn = Math.max(0, ...deltas.timeIn);
+    expect(
+      maxTeacher,
+      `Teacher top drifted more than 1px at ${width}px: samples ${JSON.stringify(deltas.teacher)}`,
+    ).toBeLessThanOrEqual(1);
     expect(
       maxObserver,
       `Observer top drifted more than 1px at ${width}px: samples ${JSON.stringify(deltas.observer)}`,

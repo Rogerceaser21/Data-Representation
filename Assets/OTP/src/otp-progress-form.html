@@ -670,6 +670,22 @@ body.is-editing:not(.is-locked) #btn-close-lap:not(:disabled) {
 body.is-viewer .prev-ns { display: none !important; }
 
 /* ===========================================
+   otp-v0.12 · OBSERVATION PROCESS CARD (plan B1)
+   Titles the status strip in a bordered card, ported from the approved look
+   mock (process-bar-mock.html, #op-card). The strip and its six step cards
+   keep their own CSS untouched; this only wraps them.
+   =========================================== */
+.op-card {
+  border: 1px solid var(--rule);
+  border-radius: clamp(0.6rem, 1vw, 0.9rem);
+  background: var(--surface-soft);
+  padding: clamp(1rem, 1.8vw, 1.5rem) clamp(1rem, 1.8vw, 1.5rem) clamp(1.2rem, 2vw, 1.8rem);
+  margin-bottom: clamp(1.2rem, 2vw, 1.8rem);
+}
+.op-card .status-strip-section { margin-bottom: 0; }
+.op-card-title { margin-bottom: clamp(0.6rem, 1.1vw, 0.9rem); }
+
+/* ===========================================
    otp-v0.11 · STATUS STRIP (plan 2.1)
    Six cards above the top info grid, always present in the gated form.
    Look ported verbatim from the approved mock (graph/stripmock).
@@ -770,6 +786,9 @@ body.is-viewer .prev-ns { display: none !important; }
 
 /* Never in the ungated teacher viewer (R5: teachers only ever view). */
 body.is-viewer .status-strip-section { display: none !important; }
+/* otp-v0.12: hides the whole titled card (border + "Observation Process"
+   title), not just its content, so the viewer never shows an empty card. */
+body.is-viewer #op-card { display: none !important; }
 
 /* ===========================================
    SUBMITTED BANNER + LOCK STATE
@@ -2833,8 +2852,14 @@ body.is-viewer .cog-btn { display: none; }
        every card; see refreshTeacherStatus() below. Resting-visible base:
        the grey "Select a teacher" look is the markup default, so a frozen
        tab or a dead read never leaves the strip blank.
+
+       otp-v0.12: wrapped in a titled card (#op-card), ported from the
+       approved look mock. The strip and its six step cards below are
+       unchanged; only the card wrapper and title are new.
        ============================================ -->
-  <section class="status-strip-section" id="status-strip-section">
+  <section class="op-card" id="op-card">
+    <h2 class="section-title op-card-title">Observation Process</h2>
+    <section class="status-strip-section" id="status-strip-section">
     <p class="status-strip-line" id="status-strip-line">Select a teacher</p>
     <div class="status-strip" id="status-strip">
       <div class="strip-card is-grey" id="strip-card-1">
@@ -2874,6 +2899,7 @@ body.is-viewer .cog-btn { display: none; }
         <span class="strip-status"></span>
       </div>
     </div>
+  </section>
   </section>
 
   <!-- ============================================
@@ -7194,7 +7220,7 @@ body.is-viewer .cog-btn { display: none; }
     const startYear = now.getMonth() >= 7 ? y : y - 1;
     return startYear + '/' + (startYear + 1);
   }
-  const STRIP_STATUS_WORD = { current: 'Current', completed: 'Completed', pending: 'Pending', coming: 'Coming soon', grey: '' };
+  const STRIP_STATUS_WORD = { current: 'Active', completed: 'Completed', pending: 'Pending', coming: 'Coming soon', grey: '' };
   const STRIP_GREY_VIEW = {
     n: null, line: 'Select a teacher',
     status: ['grey', 'grey', 'grey', 'grey', 'grey', 'grey'],
