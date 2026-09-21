@@ -504,7 +504,7 @@ test('renders all 32 SP1 v2 rubric chips verbatim, in order, 4/5/7/8/8', async (
   await expect(page.locator('tr.rub-caption .rub-cap-k')).toHaveText('Aspect of Practice');
   await expect(page.locator('tr.rub-caption .rub-cap-v')).toHaveText(RUBRIC.aspect);
   // the footer renders uppercase through CSS, so match the text case-insensitively
-  await expect(page.locator('.form-footer')).toContainText(/otp-v0\.11/i);
+  await expect(page.locator('.form-footer')).toContainText(/otp-v0\.12/i);
   await expect(page.locator('#rubric_version')).toHaveValue('sp1-v2');
 
   expect(h.errors).toEqual([]);
@@ -2016,7 +2016,7 @@ test('otp-v0.7: no console errors and no horizontal overflow at 1280, 1180x820 a
       await notePop(page).evaluate((el) => getComputedStyle(el).position),
     ).toBe('absolute');
 
-    await expect(page.locator('.form-footer')).toContainText(/otp-v0\.11/i);
+    await expect(page.locator('.form-footer')).toContainText(/otp-v0\.12/i);
     await page.evaluate((k) => localStorage.removeItem(k), DRAFT_KEY);
   }
 
@@ -3486,13 +3486,13 @@ test('otp-v0.11 F2: a late get_teacher_lap_state answer never redraws over a jus
   expect(h.errors).toEqual([]);
 });
 
-test('otp-v0.11: the footer reads otp-v0.11', async ({ page }) => {
+test('otp-v0.12: the footer reads otp-v0.12', async ({ page }) => {
   await harness(page);
   await openForm(page);
   await expect(
     page.locator('.form-footer'),
-    'footer version was not bumped to otp-v0.11',
-  ).toContainText(/otp-v0\.11/i);
+    'footer version was not bumped to otp-v0.12',
+  ).toContainText(/otp-v0\.12/i);
 });
 
 /** otp-v0.10 Phase 1: the dropdown lists and the previous-lap card are read from
