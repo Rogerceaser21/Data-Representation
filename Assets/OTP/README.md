@@ -53,6 +53,20 @@ returns a token, a rating, a note or a Next Step, only stage.
   above (the built tracker's raw bytes hold no fixture name/key, the viewer
   stays keyless with no reachable link, the form's link targets the tracker).
 
+## otp-v0.12 · released to main (2026-09-23)
+
+Tag `otp-v0.12`. Built outputs committed together (served md5 = committed): form
+`760b94b374c1b7881c4b69e341f8e06c`, teacher page `052b1a52178409514ff6199432b201c4`,
+Teacher Tracker `9a0d99cbbeed3551bedbfa8902740ee1`. The preview is archived as origin
+tag `preview-otp-v0.12` (four review rounds on `.../Assets/OTP/preview.12/`). What
+shipped: the titled Observation Process card ("Active"), the pinned bar with docked
+Agenda / Check Teacher (same thin pill as on the form, inset inside the bar), the
+Next Steps drop-down, the visible-top pin for iPad Safari's keyboard strip
+(`--vv-top`, `?d=notoppin`), and the Teacher Tracker (step-name pill, per-observation
+observer + Next Steps, Reflection / Plan placeholders, scrollbar-gutter stable).
+Supabase: `get_otp_tracker()` from migrate_25 + migrate_26 (live since 2026-09-21 / 23).
+No Apps Script change. Suite: 418+ specs, Chromium + WebKit, exit 0.
+
 ## otp-v0.11 · released to main (2026-09-20)
 
 Tag `otp-v0.11` (`3b5399f`). What GitHub Pages serves is this release build

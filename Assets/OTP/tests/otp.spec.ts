@@ -3558,6 +3558,8 @@ test('otp-v0.12: the footer reads otp-v0.12', async ({ page }) => {
     page.locator('.form-footer'),
     'footer version was not bumped to otp-v0.12',
   ).toContainText(/otp-v0\.12/i);
+  // release: the preview round label is gone from the shipped footer
+  await expect(page.locator('.form-footer')).not.toContainText(/preview/i);
 });
 
 /** otp-v0.10 Phase 1: the dropdown lists and the previous-lap card are read from
