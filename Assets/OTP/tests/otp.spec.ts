@@ -6707,9 +6707,11 @@ test('otp-v0.12 B2: body.pad-open hides the pinned bar completely; it returns on
 
   await page.evaluate(() => document.body.classList.remove('pad-open'));
   await page.evaluate((y) => window.scrollTo(0, y), scrollY);
-  await page.waitForTimeout(300);
-  box = await opBarBox(page);
-  expect(box.opacity, 'bar did not return once pad-open was removed').toBeGreaterThan(0.99);
+  // the enter transition is 320ms plus a rAF scroll check, longer than a
+  // fixed 300ms sleep can guarantee under load - poll instead of one read.
+  await expect.poll(async () => (await opBarBox(page)).opacity, {
+    timeout: 3_000, message: 'bar did not return once pad-open was removed',
+  }).toBeGreaterThan(0.99);
   expect(h.errors).toEqual([]);
 });
 
@@ -6731,9 +6733,11 @@ test('otp-v0.12 B2: opening the real Evidence Pad while the bar is pinned hides 
 
   await page.locator('#pad-done').click();
   await expect(page.locator('body')).not.toHaveClass(/pad-open/, { timeout: 10_000 });
-  await page.waitForTimeout(300);
-  box = await opBarBox(page);
-  expect(box.opacity, 'bar did not come back once the pad closed').toBeGreaterThan(0.99);
+  // same 320ms enter transition + rAF scroll check as the pad-open class
+  // spec above - poll instead of a fixed sleep shorter than the transition.
+  await expect.poll(async () => (await opBarBox(page)).opacity, {
+    timeout: 3_000, message: 'bar did not come back once the pad closed',
+  }).toBeGreaterThan(0.99);
   expect(h.errors).toEqual([]);
 });
 
