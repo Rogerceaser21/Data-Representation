@@ -375,7 +375,7 @@ test('otp-v0.12 A2: closed lap 3 with two earlier laps renders three history row
 });
 
 test('otp-v0.12 A2: a real touch tap expands a row (WebKit/touch)', async ({ browser }: { browser: Browser }) => {
-  const ctx = await browser.newContext({ hasTouch: true, viewport: { width: 834, height: 1194 }, baseURL: 'http://127.0.0.1:8123' });
+  const ctx = await browser.newContext({ hasTouch: true, viewport: { width: 834, height: 1194 }, baseURL: `http://127.0.0.1:${process.env.OTP_PORT || '8123'}` });
   const page = await ctx.newPage();
   const h = await harness(page);
   await mockTracker(page, FIXTURES);

@@ -8,13 +8,16 @@ import { defineConfig, devices } from '@playwright/test';
  *   npm install        (once; @playwright/test is the only dependency)
  *   npx playwright test
  */
+// OTP_PORT lets parallel worktrees each run the suite on their own server (default 8123).
+const PORT = process.env.OTP_PORT || '8123';
+
 export default defineConfig({
   testDir: './Assets/OTP/tests',
   fullyParallel: false,
   workers: 1,
   reporter: [['list']],
   use: {
-    baseURL: 'http://127.0.0.1:8123',
+    baseURL: `http://127.0.0.1:${PORT}`,
     ...devices['Desktop Chrome'],
   },
   // otp-v0.9: WebKit runs alongside Chromium. The iPad rules (hard rule 15)
@@ -25,8 +28,8 @@ export default defineConfig({
     { name: 'webkit', use: { ...devices['Desktop Safari'] } },
   ],
   webServer: {
-    command: 'python3 -m http.server 8123 --bind 127.0.0.1',
-    url: 'http://127.0.0.1:8123/Assets/OTP/rubric-sp1.json',
+    command: `python3 -m http.server ${PORT} --bind 127.0.0.1`,
+    url: `http://127.0.0.1:${PORT}/Assets/OTP/rubric-sp1.json`,
     reuseExistingServer: true,
     timeout: 30_000,
   },

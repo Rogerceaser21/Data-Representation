@@ -2637,7 +2637,7 @@ test('otp-v0.9.3: WebKit taps drive Save changes and Close Lap', async ({ browse
   const ctx = await browser.newContext({
     hasTouch: true,
     viewport: { width: 820, height: 1180 },
-    baseURL: 'http://127.0.0.1:8123',
+    baseURL: `http://127.0.0.1:${process.env.OTP_PORT || '8123'}`,
   });
   const page = await ctx.newPage();
   const h = await harness(page, { record: RECORD_PAYLOAD_OPEN, prev: PREV_NS_FOUND });
@@ -6258,7 +6258,7 @@ test('otp-v0.11 BUG-2 touch: a stale tap 1.5s after picking Teacher still lands 
     hasTouch: true,
     isMobile: true,
     viewport: { width: 834, height: 1194 },
-    baseURL: 'http://127.0.0.1:8123',
+    baseURL: `http://127.0.0.1:${process.env.OTP_PORT || '8123'}`,
   });
   const page = await ctx.newPage();
   const h = await harness(page);
@@ -6814,7 +6814,7 @@ test("otp-v0.12 B2: Agenda and Check Teacher dock into the bar's two ends while 
 
 test('otp-v0.12 B2 touch: real-coordinate taps land correctly on a field below the pinned bar and on the docked buttons (WebKit/touch)', async ({ browser }) => {
   for (const { width, height } of OP_WIDTHS) {
-    const ctx = await browser.newContext({ hasTouch: true, viewport: { width, height }, baseURL: 'http://127.0.0.1:8123' });
+    const ctx = await browser.newContext({ hasTouch: true, viewport: { width, height }, baseURL: `http://127.0.0.1:${process.env.OTP_PORT || '8123'}` });
     const page = await ctx.newPage();
     // the docked buttons are real links to docs.google.com; routed to a local
     // 200 so tapping them proves the tap landed without leaving the machine.
@@ -6922,7 +6922,7 @@ async function pinBarPastCard(page: Page) {
 
 test('otp-v0.12 B3 touch: the Next Steps button opens and closes the drop-down by real touch taps at 744/834/1024 - a second tap, an outside tap, and Esc', async ({ browser }) => {
   for (const { width, height } of OP_WIDTHS) {
-    const ctx = await browser.newContext({ hasTouch: true, viewport: { width, height }, baseURL: 'http://127.0.0.1:8123' });
+    const ctx = await browser.newContext({ hasTouch: true, viewport: { width, height }, baseURL: `http://127.0.0.1:${process.env.OTP_PORT || '8123'}` });
     const page = await ctx.newPage();
     const h = await harness(page);
     await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
