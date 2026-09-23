@@ -7265,3 +7265,162 @@ test('otp-v0.12 B3: the fit routine counts the Next Steps button - it never over
     expect(h.errors).toEqual([]);
   }
 });
+
+/* ===================================================================
+   otp-v0.12 P2-C · visible-top pin
+   iPad Safari pans the visual viewport DOWN inside the layout viewport
+   while a text field is focused and the keyboard accessory strip is up
+   (device-measured offsetTop 59-71px); position:fixed top elements stay
+   at the LAYOUT top, so the pinned bar and the docked Agenda/Check
+   Teacher buttons end up hidden under Safari's collapsed toolbar until
+   the page scrolls back to the very top - the owner's exact report.
+   These specs stub window.visualViewport as a real EventTarget so
+   offsetTop can be changed and 'scroll' replayed; the existing
+   fakeViewport() above only supports height + a resize dispatch, not
+   offsetTop or a scroll event, so it is not reused here.
+   =================================================================== */
+
+/** Replaces window.visualViewport with a real EventTarget the test can
+ *  drive directly (offsetTop/height/etc settable, 'scroll'/'resize'
+ *  dispatchable), before any page script runs. */
+async function stubVisualViewport(page: Page) {
+  await page.addInitScript(() => {
+    class FakeVisualViewport extends EventTarget {
+      offsetTop = 0;
+      offsetLeft = 0;
+      pageTop = 0;
+      pageLeft = 0;
+      height = window.innerHeight;
+      width = window.innerWidth;
+      scale = 1;
+    }
+    const fake = new FakeVisualViewport();
+    Object.defineProperty(window, 'visualViewport', { value: fake, configurable: true });
+    (window as any).__vv = fake;
+  });
+}
+
+/** Sets one or more visualViewport properties then dispatches `type`
+ *  ('scroll' by default), the same way the real API notifies listeners. */
+async function setVV(page: Page, patch: Record<string, number>, type: 'scroll' | 'resize' = 'scroll') {
+  await page.evaluate(
+    ({ patch, type }) => {
+      const vv = (window as any).__vv;
+      Object.assign(vv, patch);
+      vv.dispatchEvent(new Event(type));
+    },
+    { patch, type },
+  );
+}
+
+/** Polls until documentElement's --vv-top custom property equals `px`+'px' -
+ *  0 also accepts unset/empty (the ?d=notoppin case never sets it at all
+ *  and relies on the CSS fallback). */
+async function waitForVVTop(page: Page, px: number) {
+  await page.waitForFunction(
+    (wanted) => {
+      const v = document.documentElement.style.getPropertyValue('--vv-top').trim();
+      return wanted === 0 ? (v === '' || v === '0px') : v === wanted + 'px';
+    },
+    px,
+    { timeout: 5_000 },
+  );
+}
+
+const OP_TOP_WIDTH = { width: 834, height: 1194 };
+
+test('otp-v0.12 P2-C (a): the pinned bar and its docked buttons follow visualViewport.offsetTop', async ({ page }) => {
+  await stubVisualViewport(page);
+  const h = await harness(page);
+  await page.setViewportSize(OP_TOP_WIDTH);
+  await mockLapState(page, LAP_STATE_NEVER);
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await expect(stripLine(page)).not.toHaveText('Select a teacher', { timeout: 10_000 });
+  await scrollAndWaitForBar(page, 1600, true);
+
+  // offsetTop 0: the bar's rendered top IS the computed --op-bar-top in px
+  // (translate is 0 at this point), so this doubles as that measurement.
+  const baseline = (await page.locator('#op-bar').boundingBox())!;
+
+  await setVV(page, { offsetTop: 70 });
+  await waitForVVTop(page, 70);
+
+  const shifted = (await page.locator('#op-bar').boundingBox())!;
+  expect(shifted.y - baseline.y, 'bar did not follow the visible top').toBeGreaterThanOrEqual(69);
+  expect(shifted.y - baseline.y, 'bar over-shifted').toBeLessThanOrEqual(71);
+
+  const vvHeight = await page.evaluate(() => (window as any).__vv.height);
+  const agenda = (await page.locator('.float-link.agenda').boundingBox())!;
+  const check = (await page.locator('.float-link.check').boundingBox())!;
+  expect(agenda.y, 'docked Agenda hidden above the visible top').toBeGreaterThanOrEqual(69);
+  expect(agenda.y, 'docked Agenda below the visible viewport').toBeLessThanOrEqual(70 + vvHeight);
+  expect(check.y, 'docked Check Teacher hidden above the visible top').toBeGreaterThanOrEqual(69);
+  expect(check.y, 'docked Check Teacher below the visible viewport').toBeLessThanOrEqual(70 + vvHeight);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.12 P2-C (b): the undocked Agenda / Check Teacher follow visualViewport.offsetTop at the page top', async ({ page }) => {
+  await stubVisualViewport(page);
+  const h = await harness(page);
+  await page.setViewportSize(OP_TOP_WIDTH);
+  await openForm(page);
+
+  const agenda0 = (await page.locator('.float-link.agenda').boundingBox())!;
+  const check0 = (await page.locator('.float-link.check').boundingBox())!;
+
+  await setVV(page, { offsetTop: 70 });
+  await waitForVVTop(page, 70);
+
+  const agenda70 = (await page.locator('.float-link.agenda').boundingBox())!;
+  const check70 = (await page.locator('.float-link.check').boundingBox())!;
+  expect(agenda70.y - agenda0.y, 'Agenda did not shift with the visible top').toBeGreaterThanOrEqual(69);
+  expect(agenda70.y - agenda0.y, 'Agenda over-shifted').toBeLessThanOrEqual(71);
+  expect(check70.y - check0.y, 'Check Teacher did not shift with the visible top').toBeGreaterThanOrEqual(69);
+  expect(check70.y - check0.y, 'Check Teacher over-shifted').toBeLessThanOrEqual(71);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.12 P2-C (c): the scroll-driven "card gone" signal shows and hides the bar on its own, with the IntersectionObserver dead', async ({ page }) => {
+  await page.addInitScript(() => {
+    class DeadIO {
+      constructor(_cb: any) { /* never calls back */ }
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    }
+    (window as any).IntersectionObserver = DeadIO;
+  });
+  const h = await harness(page);
+  await page.setViewportSize(OP_TOP_WIDTH);
+  await mockLapState(page, LAP_STATE_NEVER);
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await expect(stripLine(page)).not.toHaveText('Select a teacher', { timeout: 10_000 });
+
+  await scrollAndWaitForBar(page, 1600, true);   // IO is dead: only the scroll fallback can drive this
+  await scrollAndWaitForBar(page, 0, false);     // and back
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.12 P2-C (d): ?d=notoppin keeps --vv-top at 0px', async ({ page }) => {
+  await stubVisualViewport(page);
+  const h = await harness(page);
+  await page.setViewportSize(OP_TOP_WIDTH);
+  await mockLapState(page, LAP_STATE_NEVER);
+  await page.goto(FORM_URL + '?d=notoppin');
+  await passGate(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await expect(stripLine(page)).not.toHaveText('Select a teacher', { timeout: 10_000 });
+  await scrollAndWaitForBar(page, 1600, true);
+
+  const baseline = (await page.locator('#op-bar').boundingBox())!;
+  await setVV(page, { offsetTop: 70 });
+  await page.waitForTimeout(300);   // give a (wrongly) attached listener every chance to fire
+
+  const after = (await page.locator('#op-bar').boundingBox())!;
+  expect(Math.abs(after.y - baseline.y), '?d=notoppin: bar shifted anyway').toBeLessThanOrEqual(1);
+  const vvTop = await page.evaluate(() => document.documentElement.style.getPropertyValue('--vv-top'));
+  expect(vvTop, '?d=notoppin: --vv-top must never be set').toBe('');
+  expect(h.errors).toEqual([]);
+});
