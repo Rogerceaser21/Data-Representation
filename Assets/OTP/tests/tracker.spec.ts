@@ -43,7 +43,7 @@ const FIXTURES = [
     name: 'Farah Nasser', section: 'secondary', on_roster: true, observation_count: 1,
     open: { lap: 1, observation_date: '2026-09-10', observer: 'Marcus Lee', emails_done: true },
     open_count: 1, last_closed: null,
-    history: [{ lap: 1, state: 'open', observation_date: '2026-09-10', observer: 'Marcus Lee', closed_at: '', emails_done: true }],
+    history: [{ lap: 1, state: 'open', observation_date: '2026-09-10', observer: 'Marcus Lee', closed_at: '', emails_done: true, next_steps: ['Set up a vocabulary wall', 'Model think-alouds twice a week'] }],
   },
   {
     name: 'Zoe Larkin', section: 'secondary', on_roster: true, observation_count: 0,
@@ -53,21 +53,21 @@ const FIXTURES = [
     name: 'Amit Rao', section: 'primary', on_roster: true, observation_count: 1,
     open: { lap: 1, observation_date: '2026-09-14', observer: 'Dana Cole', emails_done: false },
     open_count: 1, last_closed: null,
-    history: [{ lap: 1, state: 'open', observation_date: '2026-09-14', observer: 'Dana Cole', closed_at: '', emails_done: false }],
+    history: [{ lap: 1, state: 'open', observation_date: '2026-09-14', observer: 'Dana Cole', closed_at: '', emails_done: false, next_steps: [] }],
   },
   {
     name: 'Priya Menon', section: 'primary', on_roster: true, observation_count: 1,
     open: null, open_count: 0,
     last_closed: { lap: 1, observation_date: '2026-09-05', observer: 'Dana Cole', closed_at: '2026-09-06T08:00:00.000Z' },
-    history: [{ lap: 1, state: 'closed', observation_date: '2026-09-05', observer: 'Dana Cole', closed_at: '2026-09-06T08:00:00.000Z', emails_done: true }],
+    history: [{ lap: 1, state: 'closed', observation_date: '2026-09-05', observer: 'Dana Cole', closed_at: '2026-09-06T08:00:00.000Z', emails_done: true, next_steps: ['Share the marking rubric with the department'] }],
   },
   {
     name: 'Idris Osei', section: 'secondary', on_roster: true, observation_count: 2,
     open: { lap: 2, observation_date: '2026-09-18', observer: 'Marcus Lee', emails_done: false },
     open_count: 1, last_closed: null,
     history: [
-      { lap: 1, state: 'closed', observation_date: '2026-08-20', observer: 'Dana Cole', closed_at: '2026-08-21T08:00:00.000Z', emails_done: true },
-      { lap: 2, state: 'open', observation_date: '2026-09-18', observer: 'Marcus Lee', closed_at: '', emails_done: false },
+      { lap: 1, state: 'closed', observation_date: '2026-08-20', observer: 'Dana Cole', closed_at: '2026-08-21T08:00:00.000Z', emails_done: true, next_steps: ['Introduce cold-call questioning'] },
+      { lap: 2, state: 'open', observation_date: '2026-09-18', observer: 'Marcus Lee', closed_at: '', emails_done: false, next_steps: [] },
     ],
   },
   {
@@ -75,16 +75,16 @@ const FIXTURES = [
     open: null, open_count: 0,
     last_closed: { lap: 3, observation_date: '2026-09-15', observer: 'Dana Cole', closed_at: '2026-09-16T08:00:00.000Z' },
     history: [
-      { lap: 1, state: 'closed', observation_date: '2026-08-10', observer: 'Marcus Lee', closed_at: '2026-08-11T08:00:00.000Z', emails_done: true },
-      { lap: 2, state: 'closed', observation_date: '2026-08-25', observer: 'Dana Cole', closed_at: '2026-08-26T08:00:00.000Z', emails_done: true },
-      { lap: 3, state: 'closed', observation_date: '2026-09-15', observer: 'Dana Cole', closed_at: '2026-09-16T08:00:00.000Z', emails_done: true },
+      { lap: 1, state: 'closed', observation_date: '2026-08-10', observer: 'Marcus Lee', closed_at: '2026-08-11T08:00:00.000Z', emails_done: true, next_steps: ['Build a retrieval starter for every lesson'] },
+      { lap: 2, state: 'closed', observation_date: '2026-08-25', observer: 'Dana Cole', closed_at: '2026-08-26T08:00:00.000Z', emails_done: true, next_steps: ['Pair weaker readers with a talk partner', 'Add a cold-call round to plenary'] },
+      { lap: 3, state: 'closed', observation_date: '2026-09-15', observer: 'Dana Cole', closed_at: '2026-09-16T08:00:00.000Z', emails_done: true, next_steps: [] },
     ],
   },
   {
     name: 'OTP Test Teacher (delete me)', section: null, on_roster: false, observation_count: 1,
     open: { lap: 1, observation_date: '2026-09-19', observer: 'Dana Cole', emails_done: true },
     open_count: 1, last_closed: null,
-    history: [{ lap: 1, state: 'open', observation_date: '2026-09-19', observer: 'Dana Cole', closed_at: '', emails_done: true }],
+    history: [{ lap: 1, state: 'open', observation_date: '2026-09-19', observer: 'Dana Cole', closed_at: '', emails_done: true, next_steps: ['Test next step for QA'] }],
   },
 ];
 const SORTED_NAMES = [...FIXTURES].map((t) => t.name).sort((a, b) => a.localeCompare(b));
@@ -320,10 +320,41 @@ test('otp-v0.12 A2: search filters rows by name', async ({ page }) => {
 });
 
 /* ==========================================================================
- * History expand/collapse
+ * Layout stability: a search that shrinks the list to where the vertical
+ * scrollbar disappears must never shift or resize the card (scrollbar-gutter
+ * reserves the space up front, see hard rule 12's neighbour: no layout jump).
  * ========================================================================== */
 
-test('otp-v0.12 A2: tap a row expands history in order, tap again collapses', async ({ page }) => {
+test('otp-v0.12 A2: a search that leaves one row does not move or resize the card', async ({ page }) => {
+  const h = await harness(page);
+  await mockTracker(page, FIXTURES);
+  await openTracker(page);
+
+  const shell = page.locator('.tt-shell');
+  const before = await shell.boundingBox();
+  expect(before).not.toBeNull();
+
+  await page.fill('#search-input', 'farah');
+  expect(await visibleNames(page)).toEqual(['Farah Nasser']);
+
+  const after = await shell.boundingBox();
+  expect(after).not.toBeNull();
+  expect(Math.abs(after!.x - before!.x), 'card left edge moved').toBeLessThanOrEqual(0.5);
+  expect(Math.abs(after!.width - before!.width), 'card width changed').toBeLessThanOrEqual(0.5);
+
+  const gutter = await page.evaluate(() => getComputedStyle(document.documentElement).scrollbarGutter);
+  expect(gutter, 'html must reserve a stable scrollbar gutter').toBe('stable');
+  expect(h.errors).toEqual([]);
+});
+
+/* ==========================================================================
+ * History expand/collapse: each observation's own block, newest first,
+ * heading + Next Steps (otp-v0.12 preview 2, P2-A). The old repeated
+ * icon-row history (.tt-hist-icons/.tt-hist-step) is gone; these tests
+ * replace the three that asserted it (icon classes, oldest-first order).
+ * ========================================================================== */
+
+test('otp-v0.12 A2: tap a row expands history newest first, tap again collapses', async ({ page }) => {
   const h = await harness(page);
   await mockTracker(page, FIXTURES);
   await openTracker(page);
@@ -333,44 +364,100 @@ test('otp-v0.12 A2: tap a row expands history in order, tap again collapses', as
 
   await row.locator('.tt-row-main').click();
   await expect(row).toHaveClass(/is-open/);
-  const histRows = row.locator('.tt-hist-row');
-  await expect(histRows).toHaveCount(2);
-  await expect(histRows.nth(0).locator('.tt-hist-label')).toHaveText(`Observation 1 · Completed ${expectedDayShort('2026-08-21T08:00:00.000Z')}`);
-  await expect(histRows.nth(1).locator('.tt-hist-label')).toHaveText('Observation 2');
+  const blocks = row.locator('.tt-hist-block');
+  await expect(blocks).toHaveCount(2);
+  // newest first: lap 2 (open) before lap 1 (closed)
+  await expect(blocks.nth(0).locator('.tt-hist-heading')).toHaveText('Observation 2 · Observation Feedback Meeting · Marcus Lee');
+  await expect(blocks.nth(1).locator('.tt-hist-heading')).toHaveText(`Observation 1 · Completed ${expectedDayShort('2026-08-21T08:00:00.000Z')} · Dana Cole`);
 
   await row.locator('.tt-row-main').click();
   await expect(row).not.toHaveClass(/is-open/);
   expect(h.errors).toEqual([]);
 });
 
-test('otp-v0.12 A2: open lap 2 with a closed lap 1 in history renders two rows, oldest first, the active one named only', async ({ page }) => {
+test('otp-v0.12 A2: an open observation with Next Steps lists them word for word, no icon row', async ({ page }) => {
   const h = await harness(page);
   await mockTracker(page, FIXTURES);
   await openTracker(page);
 
-  const row = rowByName(page, 'Idris Osei');
+  const row = rowByName(page, 'Farah Nasser');
   await row.locator('.tt-row-main').click();
-  const histRows = row.locator('.tt-hist-row');
-  await expect(histRows).toHaveCount(2);
-  expect(await histRows.nth(0).locator('.tt-hist-icons > .tt-hist-step').evaluateAll((els) => els.map((e) => e.className)))
-    .toEqual(['tt-hist-step is-completed', 'tt-hist-step is-coming', 'tt-hist-step is-completed', 'tt-hist-step is-completed', 'tt-hist-step is-coming', 'tt-hist-step is-completed']);
-  expect(await histRows.nth(1).locator('.tt-hist-icons > .tt-hist-step').evaluateAll((els) => els.map((e) => e.className)))
-    .toEqual(['tt-hist-step is-completed', 'tt-hist-step is-coming', 'tt-hist-step is-pending', 'tt-hist-step is-current', 'tt-hist-step is-coming', 'tt-hist-step is-pending']);
+  const block = row.locator('.tt-hist-block').first();
+  await expect(block.locator('.tt-hist-heading')).toHaveText('Observation 1 · Observation Feedback Meeting · Marcus Lee');
+  await expect(block.locator('.tt-next-list li')).toHaveCount(2);
+  await expect(block.locator('.tt-next-list li').nth(0)).toHaveText('Set up a vocabulary wall');
+  await expect(block.locator('.tt-next-list li').nth(1)).toHaveText('Model think-alouds twice a week');
+  await expect(block.locator('.tt-next-empty')).toHaveCount(0);
+  await expect(block.locator('.tt-hist-icons')).toHaveCount(0);
   expect(h.errors).toEqual([]);
 });
 
-test('otp-v0.12 A2: closed lap 3 with two earlier laps renders three history rows, oldest first', async ({ page }) => {
+test('otp-v0.12 A2: an observation with no Next Steps shows the "No Next Steps yet" line', async ({ page }) => {
+  const h = await harness(page);
+  await mockTracker(page, FIXTURES);
+  await openTracker(page);
+
+  const row = rowByName(page, 'Amit Rao');
+  await row.locator('.tt-row-main').click();
+  const block = row.locator('.tt-hist-block').first();
+  await expect(block.locator('.tt-next-empty')).toHaveText('No Next Steps yet');
+  await expect(block.locator('.tt-next-list')).toHaveCount(0);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.12 A2: a closed observation with Next Steps shows Completed + observer, no icon row', async ({ page }) => {
+  const h = await harness(page);
+  await mockTracker(page, FIXTURES);
+  await openTracker(page);
+
+  const row = rowByName(page, 'Priya Menon');
+  await row.locator('.tt-row-main').click();
+  const block = row.locator('.tt-hist-block').first();
+  await expect(block.locator('.tt-hist-heading')).toHaveText(`Observation 1 · Completed ${expectedDayShort('2026-09-06T08:00:00.000Z')} · Dana Cole`);
+  await expect(block.locator('.tt-next-list li')).toHaveCount(1);
+  await expect(block.locator('.tt-next-list li').nth(0)).toHaveText('Share the marking rubric with the department');
+  await expect(block.locator('.tt-hist-icons')).toHaveCount(0);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.12 A2: closed lap 3 with two earlier laps renders three blocks, newest first, no icon row anywhere', async ({ page }) => {
   const h = await harness(page);
   await mockTracker(page, FIXTURES);
   await openTracker(page);
 
   const row = rowByName(page, 'Beatrix Yun');
   await row.locator('.tt-row-main').click();
-  const histRows = row.locator('.tt-hist-row');
-  await expect(histRows).toHaveCount(3);
-  await expect(histRows.nth(0).locator('.tt-hist-label')).toHaveText(`Observation 1 · Completed ${expectedDayShort('2026-08-11T08:00:00.000Z')}`);
-  await expect(histRows.nth(1).locator('.tt-hist-label')).toHaveText(`Observation 2 · Completed ${expectedDayShort('2026-08-26T08:00:00.000Z')}`);
-  await expect(histRows.nth(2).locator('.tt-hist-label')).toHaveText(`Observation 3 · Completed ${expectedDayShort('2026-09-16T08:00:00.000Z')}`);
+  const blocks = row.locator('.tt-hist-block');
+  await expect(blocks).toHaveCount(3);
+  await expect(blocks.nth(0).locator('.tt-hist-heading')).toHaveText(`Observation 3 · Completed ${expectedDayShort('2026-09-16T08:00:00.000Z')} · Dana Cole`);
+  await expect(blocks.nth(1).locator('.tt-hist-heading')).toHaveText(`Observation 2 · Completed ${expectedDayShort('2026-08-26T08:00:00.000Z')} · Dana Cole`);
+  await expect(blocks.nth(2).locator('.tt-hist-heading')).toHaveText(`Observation 1 · Completed ${expectedDayShort('2026-08-11T08:00:00.000Z')} · Marcus Lee`);
+  await expect(blocks.nth(0).locator('.tt-next-empty')).toHaveText('No Next Steps yet');
+  await expect(blocks.nth(1).locator('.tt-next-list li')).toHaveCount(2);
+  await expect(blocks.nth(2).locator('.tt-next-list li')).toHaveCount(1);
+  await expect(row.locator('.tt-hist-icons')).toHaveCount(0);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.12 A2: two dashed placeholders sit under the observations, both when observed and when never observed', async ({ page }) => {
+  const h = await harness(page);
+  await mockTracker(page, FIXTURES);
+  await openTracker(page);
+
+  const observedRow = rowByName(page, 'Beatrix Yun');
+  await observedRow.locator('.tt-row-main').click();
+  const observedPlaceholders = observedRow.locator('.tt-history > .tt-placeholder');
+  await expect(observedPlaceholders).toHaveCount(2);
+  await expect(observedPlaceholders.nth(0)).toHaveText('Teacher Reflection · not yet available');
+  await expect(observedPlaceholders.nth(1)).toHaveText('Teacher Plan · not yet available');
+
+  const neverRow = rowByName(page, 'Zoe Larkin');
+  await neverRow.locator('.tt-row-main').click();
+  await expect(neverRow.locator('.tt-hist-row')).toHaveText('No observations recorded yet this school year.');
+  const neverPlaceholders = neverRow.locator('.tt-history > .tt-placeholder');
+  await expect(neverPlaceholders).toHaveCount(2);
+  await expect(neverPlaceholders.nth(0)).toHaveText('Teacher Reflection · not yet available');
+  await expect(neverPlaceholders.nth(1)).toHaveText('Teacher Plan · not yet available');
   expect(h.errors).toEqual([]);
 });
 
@@ -400,10 +487,14 @@ test('otp-v0.12 A2: the Active step renders as one pill at 744/834/1024, never c
     await page.setViewportSize({ width, height });
     if (!page.url().includes(TRACKER_URL)) {
       await openTracker(page);
-      // open one row so its history's own Active pill (Idris Osei lap 2) is measured too
+      // open one row too (P2-A: its expanded section no longer carries a
+      // .tt-hist-step Active pill, that history is now text-only, but this
+      // still exercises the main row's own Active pill while a row is open)
       await rowByName(page, 'Idris Osei').locator('.tt-row-main').click();
     }
-    // one pill element per Active step: the icon and its label live inside the SAME .tt-step/.tt-hist-step
+    // one pill element per Active step: the icon and its label live inside the SAME .tt-step
+    // (the .tt-hist-step alternative is dead since P2-A removed the icon history, kept here
+    // so this check still holds if that markup ever returns)
     const pillCount = await page.locator('.tt-step.is-current, .tt-hist-step.is-current').count();
     expect(pillCount, `${width}px: expected at least one Active pill`).toBeGreaterThan(0);
     const labelInside = await page.locator('.tt-step.is-current > .tt-pill-label, .tt-hist-step.is-current > .tt-hist-pill-label').count();

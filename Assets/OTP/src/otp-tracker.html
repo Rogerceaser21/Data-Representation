@@ -99,6 +99,7 @@
 }
 
 * { box-sizing: border-box; }
+html { scrollbar-gutter: stable; }
 html, body { margin: 0; padding: 0; }
 body {
   font-family: var(--body-font);
@@ -522,41 +523,6 @@ body {
   border-top: 1px dashed var(--rule);
 }
 .tt-hist-row { display: flex; align-items: center; gap: clamp(0.5rem, 1vw, 0.8rem); flex-wrap: wrap; min-width: 0; }
-.tt-hist-icons { display: flex; align-items: center; gap: 0.3rem; flex-wrap: nowrap; overflow: hidden; min-width: 0; }
-.tt-hist-step {
-  width: 20px; height: 20px; border-radius: 50%;
-  flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  background: var(--navy-card);
-  border: 1.5px solid var(--paper-faint);
-}
-.tt-hist-step svg { width: 10px; height: 10px; display: block; flex-shrink: 0; }
-.tt-hist-step.is-pending { color: var(--paper-faint); }
-.tt-hist-step.is-coming { background: transparent; border-style: dashed; color: var(--paper-faint); opacity: 0.7; }
-.tt-hist-step.is-completed { background: var(--rate-success); border-color: var(--rate-success-deep); color: #fff; }
-.tt-hist-step.is-current {
-  width: auto; height: 24px;
-  border-radius: 999px;
-  padding: 0 0.55rem 0 0.4rem;
-  gap: 0.28rem;
-  background: var(--ais-blue);
-  border-color: var(--ais-blue);
-  color: #fff;
-}
-.tt-hist-step.is-current svg { width: 12px; height: 12px; }
-.tt-hist-pill-label {
-  font-family: var(--body-font);
-  font-weight: 700;
-  font-size: 0.64rem;
-  color: #fff;
-  white-space: nowrap;
-}
-.tt-hist-pill-label .tier-short, .tt-hist-pill-label .tier-tiny { display: none; }
-.tt-hist-step.is-current[data-tier="short"] .tier-full { display: none; }
-.tt-hist-step.is-current[data-tier="short"] .tier-short { display: inline; }
-.tt-hist-step.is-current[data-tier="tiny"] .tier-full,
-.tt-hist-step.is-current[data-tier="tiny"] .tier-short { display: none; }
-.tt-hist-step.is-current[data-tier="tiny"] .tier-tiny { display: inline; }
 .tt-hist-label {
   font-family: var(--body-font);
   font-size: var(--tiny);
@@ -564,6 +530,45 @@ body {
   flex-shrink: 0;
 }
 .tt-hist-label strong { color: var(--paper); font-weight: 700; }
+
+/* Each observation's own block (P2-A): a text heading (no repeated icon
+   row) plus its Next Steps, newest observation first. */
+.tt-hist-block + .tt-hist-block { margin-top: 0.15rem; padding-top: 0.55rem; border-top: 1px dashed var(--rule); }
+.tt-hist-heading {
+  font-family: var(--body-font);
+  font-size: var(--tiny);
+  color: var(--paper-mid);
+}
+.tt-hist-heading strong { color: var(--paper); font-weight: 700; }
+.tt-next-list {
+  margin: 0.35rem 0 0;
+  padding-left: 1.2rem;
+  font-size: var(--small);
+  color: var(--paper);
+  display: flex; flex-direction: column; gap: 0.2rem;
+}
+.tt-next-empty {
+  margin: 0.35rem 0 0;
+  font-size: var(--small);
+  color: var(--paper-faint);
+  font-style: italic;
+}
+
+/* Reflection / Plan seams (do not build yet, PLAN-A.md section 10; what the
+   teacher wrote will live here once those forms exist): styled like the
+   chip-soon "Coming soon" tags above. */
+.tt-placeholder {
+  display: inline-flex; align-items: center;
+  margin-top: 0.6rem;
+  padding: 0.4rem 0.85rem;
+  border: 1px dashed var(--rule);
+  border-radius: 999px;
+  font-size: var(--tiny);
+  font-style: italic;
+  color: var(--paper-mid);
+  opacity: 0.7;
+  width: fit-content;
+}
 
 /* Below 641px there isn't room for a side-by-side name column and icon
    row without squeezing the icons; stack name (with badge) above the
@@ -946,26 +951,10 @@ function stepEl(i, state) {
   }
   return el;
 }
-function histStepEl(i, state) {
-  var el = document.createElement('span');
-  el.title = STEP_NAMES[i];
-  if (state === 'current') {
-    el.className = 'tt-hist-step is-current';
-    el.innerHTML = stepIconSvg(i, false);
-    var label = document.createElement('span');
-    label.className = 'tt-hist-pill-label';
-    pillLabelSpans(i).forEach(function (s) { label.appendChild(s); });
-    el.appendChild(label);
-  } else {
-    el.className = 'tt-hist-step is-' + state;
-    el.innerHTML = stepIconSvg(i, false);
-  }
-  return el;
-}
-function renderStepsInto(container, steps, histMode) {
+function renderStepsInto(container, steps) {
   container.innerHTML = '';
   for (var i = 0; i < 6; i++) {
-    container.appendChild(histMode ? histStepEl(i, steps[i]) : stepEl(i, steps[i]));
+    container.appendChild(stepEl(i, steps[i]));
   }
 }
 
@@ -1000,7 +989,7 @@ function buildRow(t) {
   midCol.className = 'tt-mid-col';
   var iconsWrap = document.createElement('div');
   iconsWrap.className = 'tt-icons';
-  renderStepsInto(iconsWrap, steps, false);
+  renderStepsInto(iconsWrap, steps);
   midCol.appendChild(iconsWrap);
   if (sub) {
     var subEl = document.createElement('span');
@@ -1026,25 +1015,38 @@ function buildRow(t) {
 
   var list = t.history || [];
   if (list.length) {
-    list.forEach(function (h) {
-      var hSteps = stepsForHist(h);
-      var hActive = activeStepIndex(hSteps);
-      var hRow = document.createElement('div');
-      hRow.className = 'tt-hist-row';
-      var hIcons = document.createElement('div');
-      hIcons.className = 'tt-hist-icons';
-      renderStepsInto(hIcons, hSteps, true);
-      var hLabel = document.createElement('span');
-      hLabel.className = 'tt-hist-label';
+    // newest observation first (the RPC returns oldest first).
+    list.slice().reverse().forEach(function (h) {
+      var hActive = activeStepIndex(stepsForHist(h));
+      var block = document.createElement('div');
+      block.className = 'tt-hist-block';
+      var heading = document.createElement('div');
+      heading.className = 'tt-hist-heading';
       var strong = document.createElement('strong');
       strong.textContent = 'Observation ' + h.lap;
-      hLabel.appendChild(strong);
-      if (hActive === null) {
-        hLabel.appendChild(document.createTextNode(' · Completed ' + fmtDayShort(h.closed_at || h.observation_date)));
+      heading.appendChild(strong);
+      heading.appendChild(document.createTextNode(' · '
+        + (hActive === null ? 'Completed ' + fmtDayShort(h.closed_at || h.observation_date) : STEP_NAMES[hActive])
+        + ' · ' + h.observer));
+      block.appendChild(heading);
+
+      var steps = (h.next_steps || []).filter(function (s) { return s && String(s).trim(); });
+      if (steps.length) {
+        var ol = document.createElement('ol');
+        ol.className = 'tt-next-list';
+        steps.forEach(function (s) {
+          var li = document.createElement('li');
+          li.textContent = s;
+          ol.appendChild(li);
+        });
+        block.appendChild(ol);
+      } else {
+        var noSteps = document.createElement('p');
+        noSteps.className = 'tt-next-empty';
+        noSteps.textContent = 'No Next Steps yet';
+        block.appendChild(noSteps);
       }
-      hRow.appendChild(hIcons);
-      hRow.appendChild(hLabel);
-      hist.appendChild(hRow);
+      hist.appendChild(block);
     });
   } else {
     var emptyRow = document.createElement('div');
@@ -1055,6 +1057,15 @@ function buildRow(t) {
     emptyRow.appendChild(emptyLabel);
     hist.appendChild(emptyRow);
   }
+
+  // Reflection / Plan seams (PLAN-A.md section 10, do not build yet): what
+  // the teacher wrote per step, once those forms exist.
+  ['Teacher Reflection', 'Teacher Plan'].forEach(function (label) {
+    var ph = document.createElement('span');
+    ph.className = 'tt-placeholder';
+    ph.textContent = label + ' · not yet available';
+    hist.appendChild(ph);
+  });
 
   histInner.appendChild(hist);
   histWrap.appendChild(histInner);
