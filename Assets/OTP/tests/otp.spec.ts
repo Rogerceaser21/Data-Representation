@@ -7267,6 +7267,155 @@ test('otp-v0.12 B3: the fit routine counts the Next Steps button - it never over
 });
 
 /* ===================================================================
+   otp-v0.12 P3 · docked buttons sit fully INSIDE the bar (owner's iPad
+   screenshot: the docked Agenda/Check pills sat exactly on the bar's
+   rounded ends and border, overlapping them). Approved fix (option A):
+   the bar keeps its own size; the docked pills move inward by the same
+   margin already used above/below them (bar height minus pill height,
+   halved - the number opBarSyncBtnTop already computes for vertical
+   centring), and the bar's own end padding grows by that same amount so
+   the Active pill / step icons / Next Steps button never collide with
+   them either. Reuses the B2/B3 fixtures and OP_WIDTHS verbatim, plus
+   the three landscape mirrors of the same iPad sizes (width/height
+   swapped) so both orientations are proved, not just portrait.
+   =================================================================== */
+
+const P3_LANDSCAPE_WIDTHS = OP_WIDTHS.map(({ width, height }) => ({ width: height, height: width }));
+const P3_WIDTHS = [...OP_WIDTHS, ...P3_LANDSCAPE_WIDTHS];
+
+const P3_SHOTS_DIR = '/Users/igor/Developer/claudex-runs/otp-v0.12/p3/shots';
+fs.mkdirSync(P3_SHOTS_DIR, { recursive: true });
+
+/** Every rect that shares the 44px bar: the bar itself, the docked Agenda/
+ *  Check pills, the Active pill, and the Next Steps button. Returned as
+ *  plain objects (a getBoundingClientRect() clone survives page.evaluate's
+ *  JSON serialisation with the same left/right/top/bottom/width/height
+ *  fields, just not the DOMRect prototype). */
+const opBarP3Layout = (page: Page) => page.evaluate(() => {
+  const rect = (el: Element | null) => (el ? el.getBoundingClientRect() : null);
+  return {
+    bar: rect(document.getElementById('op-bar')),
+    agenda: rect(document.querySelector('.float-link.agenda')),
+    check: rect(document.querySelector('.float-link.check')),
+    active: rect(document.getElementById('op-bar-active')),
+    ns: rect(document.getElementById('op-bar-ns-btn')),
+    dots: Array.from(document.querySelectorAll('#op-bar .op-step-dot')).map((el) => el.getBoundingClientRect()),
+  };
+});
+
+type Box = { left: number; right: number; top: number; bottom: number; width: number; height: number };
+const rectsOverlap = (a: Box, b: Box, tol = 1) =>
+  a.left < b.right - tol && b.left < a.right - tol && a.top < b.bottom - tol && b.top < a.bottom - tol;
+
+/** height/padding/background/border/radius/font-size, the look docking must
+ *  never touch (position is the only thing that may change) - the same
+ *  property list the existing B2 "one identical pill family" spec reads. */
+const P3_STYLE_PROPS = ['height', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft',
+  'backgroundColor', 'borderTopWidth', 'borderTopStyle', 'borderTopColor', 'borderRadius', 'fontSize'] as const;
+const readP3Style = (page: Page, sel: string) => page.evaluate(({ sel, props }) => {
+  const el = document.querySelector(sel) as HTMLElement | null;
+  if (!el) return null;
+  const cs = getComputedStyle(el);
+  const out: Record<string, string> = {};
+  for (const p of props) out[p] = (cs as any)[p] ?? '';
+  return out;
+}, { sel, props: P3_STYLE_PROPS });
+
+const runP3Check = (stateName: 'step-1' | 'open', lapState: any, waitForStrip: (page: Page) => Promise<unknown>) => {
+  for (const theme of ['light', 'dark'] as const) {
+    test(`otp-v0.12 P3: bar: docked buttons sit inside the bar with an even inset, no overlap (${theme}/${stateName})`, async ({ page }) => {
+      for (const { width, height } of P3_WIDTHS) {
+        const h = await harness(page);
+        await page.setViewportSize({ width, height });
+        await mockLapState(page, lapState);
+        await openForm(page);
+        await page.evaluate((t) => document.documentElement.setAttribute('data-theme', t), theme);
+        await page.waitForTimeout(300);   // let the theme's colour transition settle before measuring
+
+        const undockedAgenda = await readP3Style(page, '.float-link.agenda');
+        const undockedCheck = await readP3Style(page, '.float-link.check');
+
+        await pickTomSelect(page, 'teacher', 'Test Teacher');
+        await waitForStrip(page);
+        await pinBarPastCard(page);
+        await page.waitForTimeout(300);   // theme transition + 260ms dock transition settle
+
+        const tag = `${width}x${height} ${theme}/${stateName}`;
+        const layout = await opBarP3Layout(page);
+        expect(layout.bar, `${tag}: bar missing`).not.toBeNull();
+        expect(layout.agenda, `${tag}: agenda missing`).not.toBeNull();
+        expect(layout.check, `${tag}: check missing`).not.toBeNull();
+        const bar = layout.bar as Box;
+        const agenda = layout.agenda as Box;
+        const check = layout.check as Box;
+
+        // (1) each docked button's rect lies inside the bar's rect, side
+        // margin >= 6px, and the side margin equals the top/bottom margin
+        // within 1.5px (the button is centred vertically already; this
+        // proves it is now centred the SAME amount horizontally too).
+        const leftMargin = agenda.left - bar.left;
+        const rightMargin = bar.right - check.right;
+        const agendaTopMargin = agenda.top - bar.top;
+        const agendaBottomMargin = bar.bottom - agenda.bottom;
+        const checkTopMargin = check.top - bar.top;
+        const checkBottomMargin = bar.bottom - check.bottom;
+
+        expect(agenda.left, `${tag}: agenda left of the bar`).toBeGreaterThanOrEqual(bar.left - 0.5);
+        expect(agenda.right, `${tag}: agenda spills past the bar's right edge`).toBeLessThanOrEqual(bar.right + 0.5);
+        expect(check.left, `${tag}: check spills past the bar's left edge`).toBeGreaterThanOrEqual(bar.left - 0.5);
+        expect(check.right, `${tag}: check right of the bar`).toBeLessThanOrEqual(bar.right + 0.5);
+
+        expect(leftMargin, `${tag}: agenda left margin ${leftMargin.toFixed(2)} < 6px`).toBeGreaterThanOrEqual(6);
+        expect(rightMargin, `${tag}: check right margin ${rightMargin.toFixed(2)} < 6px`).toBeGreaterThanOrEqual(6);
+        expect(Math.abs(leftMargin - agendaTopMargin), `${tag}: agenda side (${leftMargin.toFixed(2)}) vs top (${agendaTopMargin.toFixed(2)}) margin`).toBeLessThanOrEqual(1.5);
+        expect(Math.abs(leftMargin - agendaBottomMargin), `${tag}: agenda side (${leftMargin.toFixed(2)}) vs bottom (${agendaBottomMargin.toFixed(2)}) margin`).toBeLessThanOrEqual(1.5);
+        expect(Math.abs(rightMargin - checkTopMargin), `${tag}: check side (${rightMargin.toFixed(2)}) vs top (${checkTopMargin.toFixed(2)}) margin`).toBeLessThanOrEqual(1.5);
+        expect(Math.abs(rightMargin - checkBottomMargin), `${tag}: check side (${rightMargin.toFixed(2)}) vs bottom (${checkBottomMargin.toFixed(2)}) margin`).toBeLessThanOrEqual(1.5);
+
+        // (2) no overlap between docked Agenda, the Active pill, the step
+        // icons, the Next Steps button, docked Check Teacher.
+        const named: [string, Box | null][] = [
+          ['docked Agenda', agenda], ['Active pill', layout.active as Box | null],
+          ['Next Steps button', layout.ns as Box | null], ['docked Check Teacher', check],
+        ];
+        const present = named.filter((pair): pair is [string, Box] => pair[1] !== null);
+        for (let i = 0; i < present.length; i++) {
+          for (let j = i + 1; j < present.length; j++) {
+            const [nameA, boxA] = present[i];
+            const [nameB, boxB] = present[j];
+            expect(rectsOverlap(boxA, boxB), `${tag}: ${nameA} overlaps ${nameB}`).toBe(false);
+          }
+        }
+        (layout.dots as Box[]).forEach((dot, i) => {
+          expect(rectsOverlap(dot, agenda), `${tag}: step icon ${i + 1} overlaps docked Agenda`).toBe(false);
+          expect(rectsOverlap(dot, check), `${tag}: step icon ${i + 1} overlaps docked Check Teacher`).toBe(false);
+        });
+
+        // (3) the docked buttons' own look is untouched by docking.
+        const dockedAgenda = await readP3Style(page, '.float-link.agenda');
+        const dockedCheck = await readP3Style(page, '.float-link.check');
+        for (const prop of P3_STYLE_PROPS) {
+          expect(dockedAgenda?.[prop], `${tag}: agenda ${prop} changed while docked`).toBe(undockedAgenda?.[prop]);
+          expect(dockedCheck?.[prop], `${tag}: check ${prop} changed while docked`).toBe(undockedCheck?.[prop]);
+        }
+
+        // one PNG of the bar per width, light theme, open state, for the verifier.
+        if (theme === 'light' && stateName === 'open') {
+          await page.locator('#op-bar').screenshot({ path: `${P3_SHOTS_DIR}/bar-${width}.png` });
+        }
+
+        expect(h.errors).toEqual([]);
+      }
+    });
+  }
+};
+
+runP3Check('step-1', LAP_STATE_NEVER, (page) =>
+  expect(stripLine(page)).not.toHaveText('Select a teacher', { timeout: 10_000 }));
+runP3Check('open', LAP_STATE_OPEN_WITH_OWN_STEPS, (page) =>
+  expect(stripLine(page)).toContainText('open since', { timeout: 10_000 }));
+
+/* ===================================================================
    otp-v0.12 P2-C · visible-top pin
    iPad Safari pans the visual viewport DOWN inside the layout viewport
    while a text field is focused and the keyboard accessory strip is up

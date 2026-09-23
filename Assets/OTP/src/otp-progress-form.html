@@ -814,6 +814,12 @@ body.is-viewer #op-card { display: none !important; }
   --op-bar-w: 300px;
   --op-end-l: 1.1rem;
   --op-end-r: 1.1rem;
+  /* otp-v0.12 P3: how far each docked button sits IN from the bar's own
+     ends, set by opBarSyncBtnTop() to the same number it already uses to
+     centre the button vertically (bar height minus button height, halved),
+     so the button clears the bar's rounded end and border by an even
+     margin on every side. 0px fallback only matters for one unstyled frame. */
+  --op-dock-inset: 0px;
 }
 :root[data-theme="dark"] {
   --op-bar-surface: rgba(17, 22, 46, 0.98);  /* --card-bg #11162e */
@@ -1106,12 +1112,16 @@ body.op-dock.op-bar-active:not(.pad-open) .float-link {
      the bar's own surface instead of being blurred a second time by it */
   z-index: 130;
 }
-body.op-dock.op-bar-active:not(.pad-open) .float-link.agenda { left: var(--op-bar-x); }
+/* otp-v0.12 P3: inset IN from the bar's own left edge by --op-dock-inset
+   (see the :root comment above), instead of sitting flush on it - the pill
+   no longer overlaps the bar's rounded end and border. */
+body.op-dock.op-bar-active:not(.pad-open) .float-link.agenda { left: calc(var(--op-bar-x) + var(--op-dock-inset, 0px)); }
 /* Check's RIGHT edge (not left) must align with the bar's right edge; `right`
    is measured from the viewport's own right edge (the containing block for
    position:fixed here), so this is 100vw minus the bar's right edge in
-   viewport-left terms - avoids needing Check's own rendered width. */
-body.op-dock.op-bar-active:not(.pad-open) .float-link.check { right: calc(100vw - var(--op-bar-x) - var(--op-bar-w)); }
+   viewport-left terms - avoids needing Check's own rendered width. The same
+   --op-dock-inset then pulls it IN from that edge, mirroring Agenda. */
+body.op-dock.op-bar-active:not(.pad-open) .float-link.check { right: calc(100vw - var(--op-bar-x) - var(--op-bar-w) + var(--op-dock-inset, 0px)); }
 @media (hover: hover) {
   /* colour/border-colour already match the base :hover rule; only the
      lift differs (no translateY while docked in the thin bar row). */
@@ -8405,13 +8415,18 @@ body.is-viewer .cog-btn { display: none; }
   // (variable width, not a fixed icon circle). Measure their REAL rendered
   // width (after the docked classes are live) and set the bar's own end
   // padding to match exactly, so the centre content can never collide.
+  // otp-v0.12 P3: the button now also sits --op-dock-inset IN from the
+  // bar's own edge (set by opBarSyncBtnTop, called before this), so the
+  // reserved room must grow by that same inset or the content could creep
+  // back under the button's new, further-in position.
   function opBarSyncEndPadding() {
     var agenda = document.querySelector('.float-link.agenda');
     var check = document.querySelector('.float-link.check');
     if (!agenda || !check) return;
     var gap = 12; // breathing room between the docked button and the bar's own content
-    var lw = Math.ceil(agenda.getBoundingClientRect().width) + gap;
-    var rw = Math.ceil(check.getBoundingClientRect().width) + gap;
+    var inset = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--op-dock-inset')) || 0;
+    var lw = Math.ceil(agenda.getBoundingClientRect().width) + gap + inset;
+    var rw = Math.ceil(check.getBoundingClientRect().width) + gap + inset;
     if (lw > 4) document.documentElement.style.setProperty('--op-end-l', lw + 'px');
     if (rw > 4) document.documentElement.style.setProperty('--op-end-r', rw + 'px');
   }
@@ -8423,6 +8438,10 @@ body.is-viewer .cog-btn { display: none; }
   // font metrics; measured live instead, the same pattern as
   // opBarSyncEndPadding above. Agenda and Check share one CSS rule so
   // either's real height stands for both.
+  // otp-v0.12 P3: the same offset also becomes --op-dock-inset, the
+  // horizontal margin the docked button sits IN from the bar's own left/
+  // right edge, so it clears the bar's rounded end and border by the same
+  // amount it already clears the bar's own top/bottom by.
   function opBarSyncBtnTop() {
     var bar = document.getElementById('op-bar');
     var agenda = document.querySelector('.float-link.agenda');
@@ -8437,6 +8456,14 @@ body.is-viewer .cog-btn { display: none; }
     if (!(barH > 4) || !(btnH > 4)) return;
     var offset = (barH - btnH) / 2;
     document.documentElement.style.setProperty('--op-dock-btn-top', 'calc(var(--op-bar-top) + ' + offset.toFixed(2) + 'px)');
+    // otp-v0.12 P3: the pill's font-size clamp maxes out on wide viewports
+    // (the pill grows taller, so the natural centring offset shrinks - as
+    // low as ~5.9px at 1024px+), so the inset floors at 7px, comfortably
+    // above that, keeping a real gap from the bar's rounded end and border
+    // at every width. The gap between this and the vertical offset above
+    // stays under 1.5px in practice, invisible.
+    var inset = Math.max(offset, 7);
+    document.documentElement.style.setProperty('--op-dock-inset', inset.toFixed(2) + 'px');
   }
 
   // the bar is exactly as wide as the card, so the full/short label and
@@ -8456,8 +8483,10 @@ body.is-viewer .cog-btn { display: none; }
     var bar = document.getElementById('op-bar');
     if (!bar) return;
     document.body.classList.remove('op-dock-compact');
-    opBarSyncEndPadding();
+    // otp-v0.12 P3: btnTop first - it sets --op-dock-inset, which
+    // opBarSyncEndPadding below now reads to size the reserved end room.
     opBarSyncBtnTop();
+    opBarSyncEndPadding();
     for (var i = 0; i < OP_LABEL_TIERS.length; i++) {
       bar.dataset.labelTier = OP_LABEL_TIERS[i];
       if (opBarFitsAtCurrentTier()) return;
