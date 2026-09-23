@@ -529,6 +529,33 @@ test('otp-v0.12 A2: the icon column starts at the same x for every row, one valu
   expect(h.errors).toEqual([]);
 });
 
+test('otp-v0.12 P4: the Active pill shows the step name only, never the word "Active"', async ({ page }) => {
+  const h = await harness(page);
+  await mockTracker(page, FIXTURES);
+  for (const { width, height } of TT_WIDTHS) {
+    await page.setViewportSize({ width, height });
+    if (!page.url().includes(TRACKER_URL)) {
+      await openTracker(page);
+    }
+    const pills = page.locator('.tt-step.is-current');
+    const count = await pills.count();
+    expect(count, `${width}px: expected at least one Active pill`).toBeGreaterThan(0);
+    for (let i = 0; i < count; i++) {
+      const pill = pills.nth(i);
+      const fullText = await pill.locator('.tier-full').textContent();
+      const shortText = await pill.locator('.tier-short').textContent();
+      const tinyText = await pill.locator('.tier-tiny').textContent();
+      expect(fullText, `${width}px pill ${i}: full tier must not say Active`).not.toContain('Active');
+      expect(shortText, `${width}px pill ${i}: short tier must not say Active`).not.toContain('Active');
+      expect(tinyText, `${width}px pill ${i}: tiny tier must not say Active`).not.toContain('Active');
+      // every fixture with an open observation lands on step 4 (index 3),
+      // "Observation Feedback Meeting" (stepsForState always marks it 'current' when open)
+      expect(fullText, `${width}px pill ${i}: full tier must equal the step name exactly`).toBe('Observation Feedback Meeting');
+    }
+  }
+  expect(h.errors).toEqual([]);
+});
+
 /* ==========================================================================
  * Theme
  * ========================================================================== */
