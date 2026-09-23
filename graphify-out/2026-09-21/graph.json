@@ -563,8 +563,8 @@
         "kind": "file"
       },
       "_origin": "ast",
-      "id": "otp_encrypt",
-      "community": 188,
+      "id": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_assets_otp_encrypt_sh",
+      "community": 150,
       "norm_label": "encrypt.sh"
     },
     {
@@ -577,8 +577,8 @@
         "kind": "bash_entrypoint"
       },
       "_origin": "ast",
-      "id": "users_igor_wt_otp_v012_assets_otp_encrypt_sh__entry",
-      "community": 188,
+      "id": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_assets_otp_encrypt_sh__entry",
+      "community": 150,
       "norm_label": "encrypt.sh script"
     },
     {
@@ -1095,161 +1095,11 @@
       "label": "submitOtpRow()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/gs-harness.mjs",
-      "source_location": "L1052",
+      "source_location": "L1048",
       "_origin": "ast",
       "id": "tests_gs_harness_submitotprow",
       "community": 47,
       "norm_label": "submitotprow()"
-    },
-    {
-      "label": "gs-stamps-harness.mjs",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/gs-stamps-harness.mjs",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "tests_gs_stamps_harness",
-      "community": 79,
-      "norm_label": "gs-stamps-harness.mjs"
-    },
-    {
-      "label": "HERE",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/gs-stamps-harness.mjs",
-      "source_location": "L9",
-      "_origin": "ast",
-      "id": "tests_gs_stamps_harness_here",
-      "community": 79,
-      "norm_label": "here"
-    },
-    {
-      "label": "REPO",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/gs-stamps-harness.mjs",
-      "source_location": "L10",
-      "_origin": "ast",
-      "id": "tests_gs_stamps_harness_repo",
-      "community": 79,
-      "norm_label": "repo"
-    },
-    {
-      "label": "GS",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/gs-stamps-harness.mjs",
-      "source_location": "L11",
-      "_origin": "ast",
-      "id": "tests_gs_stamps_harness_gs",
-      "community": 79,
-      "norm_label": "gs"
-    },
-    {
-      "label": "results",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/gs-stamps-harness.mjs",
-      "source_location": "L16",
-      "_origin": "ast",
-      "id": "tests_gs_stamps_harness_results",
-      "community": 79,
-      "norm_label": "results"
-    },
-    {
-      "label": "response()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/gs-stamps-harness.mjs",
-      "source_location": "L18",
-      "_origin": "ast",
-      "id": "tests_gs_stamps_harness_response",
-      "community": 79,
-      "norm_label": "response()"
-    },
-    {
-      "label": "makeSheet()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/gs-stamps-harness.mjs",
-      "source_location": "L22",
-      "_origin": "ast",
-      "id": "tests_gs_stamps_harness_makesheet",
-      "community": 79,
-      "norm_label": "makesheet()"
-    },
-    {
-      "label": "range()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/gs-stamps-harness.mjs",
-      "source_location": "L35",
-      "_origin": "ast",
-      "id": "tests_gs_stamps_harness_range",
-      "community": 79,
-      "norm_label": "range()"
-    },
-    {
-      "label": "makeEnv()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/gs-stamps-harness.mjs",
-      "source_location": "L61",
-      "_origin": "ast",
-      "id": "tests_gs_stamps_harness_makeenv",
-      "community": 79,
-      "norm_label": "makeenv()"
-    },
-    {
-      "label": "payload()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/gs-stamps-harness.mjs",
-      "source_location": "L126",
-      "_origin": "ast",
-      "id": "tests_gs_stamps_harness_payload",
-      "community": 79,
-      "norm_label": "payload()"
-    },
-    {
-      "label": "mirrorRecord()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/gs-stamps-harness.mjs",
-      "source_location": "L133",
-      "_origin": "ast",
-      "id": "tests_gs_stamps_harness_mirrorrecord",
-      "community": 79,
-      "norm_label": "mirrorrecord()"
-    },
-    {
-      "label": "appendRecord()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/gs-stamps-harness.mjs",
-      "source_location": "L141",
-      "_origin": "ast",
-      "id": "tests_gs_stamps_harness_appendrecord",
-      "community": 79,
-      "norm_label": "appendrecord()"
-    },
-    {
-      "label": "output()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/gs-stamps-harness.mjs",
-      "source_location": "L146",
-      "_origin": "ast",
-      "id": "tests_gs_stamps_harness_output",
-      "community": 79,
-      "norm_label": "output()"
-    },
-    {
-      "label": "stampCalls()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/gs-stamps-harness.mjs",
-      "source_location": "L147",
-      "_origin": "ast",
-      "id": "tests_gs_stamps_harness_stampcalls",
-      "community": 79,
-      "norm_label": "stampcalls()"
-    },
-    {
-      "label": "check()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/gs-stamps-harness.mjs",
-      "source_location": "L148",
-      "_origin": "ast",
-      "id": "tests_gs_stamps_harness_check",
-      "community": 79,
-      "norm_label": "check()"
     },
     {
       "label": "evidence.mjs",
@@ -1627,7 +1477,7 @@
       "label": "PREV_NS_FOUND",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L207",
+      "source_location": "L206",
       "_origin": "ast",
       "id": "tests_otp_spec_prev_ns_found",
       "community": 84,
@@ -1637,7 +1487,7 @@
       "label": "PREV_NS_STEPS",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L217",
+      "source_location": "L216",
       "_origin": "ast",
       "id": "tests_otp_spec_prev_ns_steps",
       "community": 84,
@@ -1647,7 +1497,7 @@
       "label": "RECORD_PAYLOAD_LEGACY",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L224",
+      "source_location": "L223",
       "_origin": "ast",
       "id": "tests_otp_spec_record_payload_legacy",
       "community": 84,
@@ -1657,7 +1507,7 @@
       "label": "Harness",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L239",
+      "source_location": "L238",
       "_origin": "ast",
       "id": "tests_otp_spec_harness",
       "community": 84,
@@ -1667,7 +1517,7 @@
       "label": "openForm()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L325",
+      "source_location": "L324",
       "_origin": "ast",
       "id": "tests_otp_spec_openform",
       "community": 180,
@@ -1677,7 +1527,7 @@
       "label": "openEdit()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L335",
+      "source_location": "L330",
       "_origin": "ast",
       "id": "tests_otp_spec_openedit",
       "community": 180,
@@ -1687,7 +1537,7 @@
       "label": "bannerText()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L348",
+      "source_location": "L337",
       "_origin": "ast",
       "id": "tests_otp_spec_bannertext",
       "community": 84,
@@ -1697,7 +1547,7 @@
       "label": "dayPat()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L353",
+      "source_location": "L342",
       "_origin": "ast",
       "id": "tests_otp_spec_daypat",
       "community": 183,
@@ -1707,7 +1557,7 @@
       "label": "dayRe()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L359",
+      "source_location": "L348",
       "_origin": "ast",
       "id": "tests_otp_spec_dayre",
       "community": 183,
@@ -1717,7 +1567,7 @@
       "label": "passGate()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L361",
+      "source_location": "L350",
       "_origin": "ast",
       "id": "tests_otp_spec_passgate",
       "community": 180,
@@ -1727,7 +1577,7 @@
       "label": "pickTomSelect()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L368",
+      "source_location": "L357",
       "_origin": "ast",
       "id": "tests_otp_spec_picktomselect",
       "community": 179,
@@ -1737,7 +1587,7 @@
       "label": "gradeControl()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L374",
+      "source_location": "L363",
       "_origin": "ast",
       "id": "tests_otp_spec_gradecontrol",
       "community": 84,
@@ -1747,17 +1597,17 @@
       "label": "tsControl()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L378",
+      "source_location": "L367",
       "_origin": "ast",
       "id": "tests_otp_spec_tscontrol",
-      "community": 191,
+      "community": 84,
       "norm_label": "tscontrol()"
     },
     {
       "label": "pickGrade()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L382",
+      "source_location": "L371",
       "_origin": "ast",
       "id": "tests_otp_spec_pickgrade",
       "community": 179,
@@ -1767,7 +1617,7 @@
       "label": "fillRequired()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L387",
+      "source_location": "L376",
       "_origin": "ast",
       "id": "tests_otp_spec_fillrequired",
       "community": 179,
@@ -1777,7 +1627,7 @@
       "label": "chipAt()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L399",
+      "source_location": "L388",
       "_origin": "ast",
       "id": "tests_otp_spec_chipat",
       "community": 84,
@@ -1787,27 +1637,27 @@
       "label": "noteBtnAt()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L401",
+      "source_location": "L390",
       "_origin": "ast",
       "id": "tests_otp_spec_notebtnat",
-      "community": 157,
+      "community": 177,
       "norm_label": "notebtnat()"
     },
     {
       "label": "notePop()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L404",
+      "source_location": "L393",
       "_origin": "ast",
       "id": "tests_otp_spec_notepop",
-      "community": 157,
+      "community": 177,
       "norm_label": "notepop()"
     },
     {
       "label": "noteScrim()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L405",
+      "source_location": "L394",
       "_origin": "ast",
       "id": "tests_otp_spec_notescrim",
       "community": 84,
@@ -1817,17 +1667,17 @@
       "label": "expectPop()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L406",
+      "source_location": "L395",
       "_origin": "ast",
       "id": "tests_otp_spec_expectpop",
-      "community": 157,
+      "community": 177,
       "norm_label": "expectpop()"
     },
     {
       "label": "noteText()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L408",
+      "source_location": "L397",
       "_origin": "ast",
       "id": "tests_otp_spec_notetext",
       "community": 84,
@@ -1837,7 +1687,7 @@
       "label": "pointOf()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L414",
+      "source_location": "L403",
       "_origin": "ast",
       "id": "tests_otp_spec_pointof",
       "community": 157,
@@ -1847,7 +1697,7 @@
       "label": "tapAt()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L429",
+      "source_location": "L418",
       "_origin": "ast",
       "id": "tests_otp_spec_tapat",
       "community": 157,
@@ -1857,7 +1707,7 @@
       "label": "stackAt()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L435",
+      "source_location": "L424",
       "_origin": "ast",
       "id": "tests_otp_spec_stackat",
       "community": 157,
@@ -1867,7 +1717,7 @@
       "label": "chipSel()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L445",
+      "source_location": "L434",
       "_origin": "ast",
       "id": "tests_otp_spec_chipsel",
       "community": 157,
@@ -1877,7 +1727,7 @@
       "label": "tapChip()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L446",
+      "source_location": "L435",
       "_origin": "ast",
       "id": "tests_otp_spec_tapchip",
       "community": 157,
@@ -1887,17 +1737,17 @@
       "label": "tapNoteBtn()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L452",
+      "source_location": "L441",
       "_origin": "ast",
       "id": "tests_otp_spec_tapnotebtn",
-      "community": 157,
+      "community": 177,
       "norm_label": "tapnotebtn()"
     },
     {
       "label": "VIEWPORTS",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L461",
+      "source_location": "L450",
       "_origin": "ast",
       "id": "tests_otp_spec_viewports",
       "community": 84,
@@ -1907,7 +1757,7 @@
       "label": "viewerSrc()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L468",
+      "source_location": "L457",
       "_origin": "ast",
       "id": "tests_otp_spec_viewersrc",
       "community": 84,
@@ -1917,7 +1767,7 @@
       "label": "fakeViewport()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L2859",
+      "source_location": "L2882",
       "_origin": "ast",
       "id": "tests_otp_spec_fakeviewport",
       "community": 84,
@@ -1927,7 +1777,7 @@
       "label": "vvSet()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L2872",
+      "source_location": "L2895",
       "_origin": "ast",
       "id": "tests_otp_spec_vvset",
       "community": 84,
@@ -1937,691 +1787,11 @@
       "label": "kbOpen()",
       "file_type": "code",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L2873",
+      "source_location": "L2896",
       "_origin": "ast",
       "id": "tests_otp_spec_kbopen",
       "community": 84,
       "norm_label": "kbopen()"
-    },
-    {
-      "label": "schoolYearLabel()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L3063",
-      "_origin": "ast",
-      "id": "tests_otp_spec_schoolyearlabel",
-      "community": 84,
-      "norm_label": "schoolyearlabel()"
-    },
-    {
-      "label": "LAP_STATE_NEVER",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L3073",
-      "_origin": "ast",
-      "id": "tests_otp_spec_lap_state_never",
-      "community": 84,
-      "norm_label": "lap_state_never"
-    },
-    {
-      "label": "LAP_STATE_OPEN_WITH_OWN_STEPS",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L3078",
-      "_origin": "ast",
-      "id": "tests_otp_spec_lap_state_open_with_own_steps",
-      "community": 84,
-      "norm_label": "lap_state_open_with_own_steps"
-    },
-    {
-      "label": "LAP_STATE_OPEN_NO_OWN_STEPS",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L3102",
-      "_origin": "ast",
-      "id": "tests_otp_spec_lap_state_open_no_own_steps",
-      "community": 84,
-      "norm_label": "lap_state_open_no_own_steps"
-    },
-    {
-      "label": "LAP_STATE_OPEN_NO_PREDECESSOR",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L3112",
-      "_origin": "ast",
-      "id": "tests_otp_spec_lap_state_open_no_predecessor",
-      "community": 84,
-      "norm_label": "lap_state_open_no_predecessor"
-    },
-    {
-      "label": "LAP_STATE_STARTING_NEXT",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L3119",
-      "_origin": "ast",
-      "id": "tests_otp_spec_lap_state_starting_next",
-      "community": 84,
-      "norm_label": "lap_state_starting_next"
-    },
-    {
-      "label": "mockLapState()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L3129",
-      "_origin": "ast",
-      "id": "tests_otp_spec_mocklapstate",
-      "community": 84,
-      "norm_label": "mocklapstate()"
-    },
-    {
-      "label": "stripLine()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L3135",
-      "_origin": "ast",
-      "id": "tests_otp_spec_stripline",
-      "community": 84,
-      "norm_label": "stripline()"
-    },
-    {
-      "label": "stripStatuses()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L3136",
-      "_origin": "ast",
-      "id": "tests_otp_spec_stripstatuses",
-      "community": 84,
-      "norm_label": "stripstatuses()"
-    },
-    {
-      "label": "stripText()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L3146",
-      "_origin": "ast",
-      "id": "tests_otp_spec_striptext",
-      "community": 84,
-      "norm_label": "striptext()"
-    },
-    {
-      "label": "STEP_CARD_SIZE_BY_WIDTH",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L3368",
-      "_origin": "ast",
-      "id": "tests_otp_spec_step_card_size_by_width",
-      "community": 84,
-      "norm_label": "step_card_size_by_width"
-    },
-    {
-      "label": "SB_OPTIONS",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L3569",
-      "_origin": "ast",
-      "id": "tests_otp_spec_sb_options",
-      "community": 84,
-      "norm_label": "sb_options"
-    },
-    {
-      "label": "DATE_TIME_IDS",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L3634",
-      "_origin": "ast",
-      "id": "tests_otp_spec_date_time_ids",
-      "community": 84,
-      "norm_label": "date_time_ids"
-    },
-    {
-      "label": "textColour()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L3636",
-      "_origin": "ast",
-      "id": "tests_otp_spec_textcolour",
-      "community": 84,
-      "norm_label": "textcolour()"
-    },
-    {
-      "label": "tapCentre()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L3640",
-      "_origin": "ast",
-      "id": "tests_otp_spec_tapcentre",
-      "community": 84,
-      "norm_label": "tapcentre()"
-    },
-    {
-      "label": "MAC_DRAFT",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L3943",
-      "_origin": "ast",
-      "id": "tests_otp_spec_mac_draft",
-      "community": 84,
-      "norm_label": "mac_draft"
-    },
-    {
-      "label": "edgeRecord()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L4006",
-      "_origin": "ast",
-      "id": "tests_otp_spec_edgerecord",
-      "community": 84,
-      "norm_label": "edgerecord()"
-    },
-    {
-      "label": "EDGE_MISS",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L4015",
-      "_origin": "ast",
-      "id": "tests_otp_spec_edge_miss",
-      "community": 84,
-      "norm_label": "edge_miss"
-    },
-    {
-      "label": "routeEdgeRecord()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L4018",
-      "_origin": "ast",
-      "id": "tests_otp_spec_routeedgerecord",
-      "community": 84,
-      "norm_label": "routeedgerecord()"
-    },
-    {
-      "label": "countGoogle()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L4028",
-      "_origin": "ast",
-      "id": "tests_otp_spec_countgoogle",
-      "community": 84,
-      "norm_label": "countgoogle()"
-    },
-    {
-      "label": "recordSource()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L4037",
-      "_origin": "ast",
-      "id": "tests_otp_spec_recordsource",
-      "community": 84,
-      "norm_label": "recordsource()"
-    },
-    {
-      "label": "expectConsistentFormState()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L4045",
-      "_origin": "ast",
-      "id": "tests_otp_spec_expectconsistentformstate",
-      "community": 84,
-      "norm_label": "expectconsistentformstate()"
-    },
-    {
-      "label": "searchablesDisabled()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L4059",
-      "_origin": "ast",
-      "id": "tests_otp_spec_searchablesdisabled",
-      "community": 84,
-      "norm_label": "searchablesdisabled()"
-    },
-    {
-      "label": "optionKeys()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L4068",
-      "_origin": "ast",
-      "id": "tests_otp_spec_optionkeys",
-      "community": 189,
-      "norm_label": "optionkeys()"
-    },
-    {
-      "label": "SEEDED_DRAFT_JSON",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L4079",
-      "_origin": "ast",
-      "id": "tests_otp_spec_seeded_draft_json",
-      "community": 84,
-      "norm_label": "seeded_draft_json"
-    },
-    {
-      "label": "SEEDED_SYNC_JSON",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L4087",
-      "_origin": "ast",
-      "id": "tests_otp_spec_seeded_sync_json",
-      "community": 84,
-      "norm_label": "seeded_sync_json"
-    },
-    {
-      "label": "holdOptions()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L4334",
-      "_origin": "ast",
-      "id": "tests_otp_spec_holdoptions",
-      "community": 84,
-      "norm_label": "holdoptions()"
-    },
-    {
-      "label": "expectListsApplied()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L4348",
-      "_origin": "ast",
-      "id": "tests_otp_spec_expectlistsapplied",
-      "community": 189,
-      "norm_label": "expectlistsapplied()"
-    },
-    {
-      "label": "holdLapState()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L6059",
-      "_origin": "ast",
-      "id": "tests_otp_spec_holdlapstate",
-      "community": 84,
-      "norm_label": "holdlapstate()"
-    },
-    {
-      "label": "blockRecordFetch()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L6074",
-      "_origin": "ast",
-      "id": "tests_otp_spec_blockrecordfetch",
-      "community": 84,
-      "norm_label": "blockrecordfetch()"
-    },
-    {
-      "label": "holdRecordFetch()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L6086",
-      "_origin": "ast",
-      "id": "tests_otp_spec_holdrecordfetch",
-      "community": 84,
-      "norm_label": "holdrecordfetch()"
-    },
-    {
-      "label": "gridTops()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L6103",
-      "_origin": "ast",
-      "id": "tests_otp_spec_gridtops",
-      "community": 84,
-      "norm_label": "gridtops()"
-    },
-    {
-      "label": "rawPickTomSelect()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L6117",
-      "_origin": "ast",
-      "id": "tests_otp_spec_rawpicktomselect",
-      "community": 191,
-      "norm_label": "rawpicktomselect()"
-    },
-    {
-      "label": "BUG2_WIDTHS",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L6127",
-      "_origin": "ast",
-      "id": "tests_otp_spec_bug2_widths",
-      "community": 84,
-      "norm_label": "bug2_widths"
-    },
-    {
-      "label": "BUG2_RECORD_WIDTHS",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L6184",
-      "_origin": "ast",
-      "id": "tests_otp_spec_bug2_record_widths",
-      "community": 84,
-      "norm_label": "bug2_record_widths"
-    },
-    {
-      "label": "OP_WIDTHS",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L6470",
-      "_origin": "ast",
-      "id": "tests_otp_spec_op_widths",
-      "community": 84,
-      "norm_label": "op_widths"
-    },
-    {
-      "label": "LAP_STATE_OPEN_EMAILS_PENDING",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L6474",
-      "_origin": "ast",
-      "id": "tests_otp_spec_lap_state_open_emails_pending",
-      "community": 84,
-      "norm_label": "lap_state_open_emails_pending"
-    },
-    {
-      "label": "opBarBox()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L6481",
-      "_origin": "ast",
-      "id": "tests_otp_spec_opbarbox",
-      "community": 84,
-      "norm_label": "opbarbox()"
-    },
-    {
-      "label": "opBarStepStates()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L6502",
-      "_origin": "ast",
-      "id": "tests_otp_spec_opbarstepstates",
-      "community": 84,
-      "norm_label": "opbarstepstates()"
-    },
-    {
-      "label": "opBarPillInfo()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L6514",
-      "_origin": "ast",
-      "id": "tests_otp_spec_opbarpillinfo",
-      "community": 84,
-      "norm_label": "opbarpillinfo()"
-    },
-    {
-      "label": "scrollAndWaitForBar()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L6545",
-      "_origin": "ast",
-      "id": "tests_otp_spec_scrollandwaitforbar",
-      "community": 190,
-      "norm_label": "scrollandwaitforbar()"
-    },
-    {
-      "label": "pinBarPastCard()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L6918",
-      "_origin": "ast",
-      "id": "tests_otp_spec_pinbarpastcard",
-      "community": 190,
-      "norm_label": "pinbarpastcard()"
-    },
-    {
-      "label": "safari_check.py",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "safari_safari_check",
-      "community": 114,
-      "norm_label": "safari_check.py"
-    },
-    {
-      "label": "WD",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L47",
-      "_origin": "ast",
-      "id": "safari_safari_check_wd",
-      "community": 114,
-      "norm_label": "wd"
-    },
-    {
-      "label": ".__init__()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L48",
-      "_origin": "ast",
-      "id": "safari_safari_check_wd_init",
-      "community": 114,
-      "norm_label": ".__init__()"
-    },
-    {
-      "label": ".req()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L51",
-      "_origin": "ast",
-      "id": "safari_safari_check_wd_req",
-      "community": 114,
-      "norm_label": ".req()"
-    },
-    {
-      "label": ".s()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L58",
-      "_origin": "ast",
-      "id": "safari_safari_check_wd_s",
-      "community": 114,
-      "norm_label": ".s()"
-    },
-    {
-      "label": ".up()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L61",
-      "_origin": "ast",
-      "id": "safari_safari_check_wd_up",
-      "community": 114,
-      "norm_label": ".up()"
-    },
-    {
-      "label": ".start()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L74",
-      "_origin": "ast",
-      "id": "safari_safari_check_wd_start",
-      "community": 114,
-      "norm_label": ".start()"
-    },
-    {
-      "label": ".js()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L83",
-      "_origin": "ast",
-      "id": "safari_safari_check_wd_js",
-      "community": 114,
-      "norm_label": ".js()"
-    },
-    {
-      "label": ".find()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L86",
-      "_origin": "ast",
-      "id": "safari_safari_check_wd_find",
-      "community": 114,
-      "norm_label": ".find()"
-    },
-    {
-      "label": ".wait()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L89",
-      "_origin": "ast",
-      "id": "safari_safari_check_wd_wait",
-      "community": 114,
-      "norm_label": ".wait()"
-    },
-    {
-      "label": ".quit()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L100",
-      "_origin": "ast",
-      "id": "safari_safari_check_wd_quit",
-      "community": 114,
-      "norm_label": ".quit()"
-    },
-    {
-      "label": "main()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L110",
-      "_origin": "ast",
-      "id": "safari_safari_check_main",
-      "community": 114,
-      "norm_label": "main()"
-    },
-    {
-      "label": "tracker.spec.ts",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/tracker.spec.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "tests_tracker_spec",
-      "community": 87,
-      "norm_label": "tracker.spec.ts"
-    },
-    {
-      "label": "MONTHS",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/tracker.spec.ts",
-      "source_location": "L27",
-      "_origin": "ast",
-      "id": "tests_tracker_spec_months",
-      "community": 87,
-      "norm_label": "months"
-    },
-    {
-      "label": "expectedDayShort()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/tracker.spec.ts",
-      "source_location": "L28",
-      "_origin": "ast",
-      "id": "tests_tracker_spec_expecteddayshort",
-      "community": 87,
-      "norm_label": "expecteddayshort()"
-    },
-    {
-      "label": "FIXTURES",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/tracker.spec.ts",
-      "source_location": "L41",
-      "_origin": "ast",
-      "id": "tests_tracker_spec_fixtures",
-      "community": 87,
-      "norm_label": "fixtures"
-    },
-    {
-      "label": "SORTED_NAMES",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/tracker.spec.ts",
-      "source_location": "L90",
-      "_origin": "ast",
-      "id": "tests_tracker_spec_sorted_names",
-      "community": 87,
-      "norm_label": "sorted_names"
-    },
-    {
-      "label": "trackerPayload()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/tracker.spec.ts",
-      "source_location": "L92",
-      "_origin": "ast",
-      "id": "tests_tracker_spec_trackerpayload",
-      "community": 87,
-      "norm_label": "trackerpayload()"
-    },
-    {
-      "label": "harness()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/tracker.spec.ts",
-      "source_location": "L96",
-      "_origin": "ast",
-      "id": "tests_tracker_spec_harness",
-      "community": 87,
-      "norm_label": "harness()"
-    },
-    {
-      "label": "mockTracker()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/tracker.spec.ts",
-      "source_location": "L106",
-      "_origin": "ast",
-      "id": "tests_tracker_spec_mocktracker",
-      "community": 87,
-      "norm_label": "mocktracker()"
-    },
-    {
-      "label": "passGate()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/tracker.spec.ts",
-      "source_location": "L112",
-      "_origin": "ast",
-      "id": "tests_tracker_spec_passgate",
-      "community": 87,
-      "norm_label": "passgate()"
-    },
-    {
-      "label": "openTracker()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/tracker.spec.ts",
-      "source_location": "L119",
-      "_origin": "ast",
-      "id": "tests_tracker_spec_opentracker",
-      "community": 87,
-      "norm_label": "opentracker()"
-    },
-    {
-      "label": "rowByName()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/tracker.spec.ts",
-      "source_location": "L124",
-      "_origin": "ast",
-      "id": "tests_tracker_spec_rowbyname",
-      "community": 87,
-      "norm_label": "rowbyname()"
-    },
-    {
-      "label": "visibleNames()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/tracker.spec.ts",
-      "source_location": "L129",
-      "_origin": "ast",
-      "id": "tests_tracker_spec_visiblenames",
-      "community": 87,
-      "norm_label": "visiblenames()"
-    },
-    {
-      "label": "stepStates()",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/tracker.spec.ts",
-      "source_location": "L136",
-      "_origin": "ast",
-      "id": "tests_tracker_spec_stepstates",
-      "community": 87,
-      "norm_label": "stepstates()"
-    },
-    {
-      "label": "TT_WIDTHS",
-      "file_type": "code",
-      "source_file": "Assets/OTP/tests/tracker.spec.ts",
-      "source_location": "L148",
-      "_origin": "ast",
-      "id": "tests_tracker_spec_tt_widths",
-      "community": 87,
-      "norm_label": "tt_widths"
     },
     {
       "label": ".staticrypt.json",
@@ -2928,7 +2098,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_s_copyinto",
-      "community": 130,
+      "community": 59,
       "norm_label": ".copyinto()"
     },
     {
@@ -3028,7 +2198,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_s_decompose",
-      "community": 184,
+      "community": 130,
       "norm_label": ".decompose()"
     },
     {
@@ -3058,7 +2228,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_createcanvaselement",
-      "community": 44,
+      "community": 56,
       "norm_label": "createcanvaselement()"
     },
     {
@@ -3078,7 +2248,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_urltoimage",
-      "community": 45,
+      "community": 2,
       "norm_label": "_urltoimage()"
     },
     {
@@ -3198,7 +2368,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_cloneobject",
-      "community": 15,
+      "community": 57,
       "norm_label": "cloneobject()"
     },
     {
@@ -3218,7 +2388,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_error",
-      "community": 86,
+      "community": 55,
       "norm_label": "error()"
     },
     {
@@ -3358,7 +2528,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_strokeshape",
-      "community": 58,
+      "community": 41,
       "norm_label": ".strokeshape()"
     },
     {
@@ -3418,7 +2588,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_reset",
-      "community": 50,
+      "community": 58,
       "norm_label": ".reset()"
     },
     {
@@ -3518,7 +2688,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_beziercurveto",
-      "community": 46,
+      "community": 99,
       "norm_label": ".beziercurveto()"
     },
     {
@@ -3568,7 +2738,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_createlineargradient",
-      "community": 58,
+      "community": 50,
       "norm_label": ".createlineargradient()"
     },
     {
@@ -3578,7 +2748,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_createpattern",
-      "community": 41,
+      "community": 50,
       "norm_label": ".createpattern()"
     },
     {
@@ -3588,7 +2758,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_createradialgradient",
-      "community": 41,
+      "community": 50,
       "norm_label": ".createradialgradient()"
     },
     {
@@ -3598,7 +2768,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_drawimage",
-      "community": 43,
+      "community": 55,
       "norm_label": ".drawimage()"
     },
     {
@@ -3658,7 +2828,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_measuretext",
-      "community": 44,
+      "community": 56,
       "norm_label": ".measuretext()"
     },
     {
@@ -3668,7 +2838,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_getimagedata",
-      "community": 86,
+      "community": 55,
       "norm_label": ".getimagedata()"
     },
     {
@@ -3718,7 +2888,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_putimagedata",
-      "community": 86,
+      "community": 55,
       "norm_label": ".putimagedata()"
     },
     {
@@ -3728,7 +2898,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_quadraticcurveto",
-      "community": 46,
+      "community": 99,
       "norm_label": ".quadraticcurveto()"
     },
     {
@@ -3748,7 +2918,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_rotate",
-      "community": 41,
+      "community": 50,
       "norm_label": ".rotate()"
     },
     {
@@ -3768,7 +2938,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_scale",
-      "community": 55,
+      "community": 59,
       "norm_label": ".scale()"
     },
     {
@@ -3798,7 +2968,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_settransform",
-      "community": 50,
+      "community": 58,
       "norm_label": ".settransform()"
     },
     {
@@ -3828,7 +2998,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_f_translate",
-      "community": 41,
+      "community": 130,
       "norm_label": ".translate()"
     },
     {
@@ -3858,7 +3028,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_get",
-      "community": 41,
+      "community": 15,
       "norm_label": "get()"
     },
     {
@@ -4028,7 +3198,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_y",
-      "community": 55,
+      "community": 59,
       "norm_label": "y"
     },
     {
@@ -4038,7 +3208,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_y_constructor",
-      "community": 44,
+      "community": 53,
       "norm_label": ".constructor()"
     },
     {
@@ -4048,7 +3218,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_y_getcontext",
-      "community": 55,
+      "community": 59,
       "norm_label": ".getcontext()"
     },
     {
@@ -4078,7 +3248,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_y_setwidth",
-      "community": 55,
+      "community": 59,
       "norm_label": ".setwidth()"
     },
     {
@@ -4088,7 +3258,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_y_setheight",
-      "community": 55,
+      "community": 59,
       "norm_label": ".setheight()"
     },
     {
@@ -4098,7 +3268,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_y_getwidth",
-      "community": 55,
+      "community": 59,
       "norm_label": ".getwidth()"
     },
     {
@@ -4108,7 +3278,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_y_getheight",
-      "community": 55,
+      "community": 59,
       "norm_label": ".getheight()"
     },
     {
@@ -4138,7 +3308,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_v",
-      "community": 59,
+      "community": 51,
       "norm_label": "v"
     },
     {
@@ -4148,7 +3318,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_v_constructor",
-      "community": 59,
+      "community": 53,
       "norm_label": ".constructor()"
     },
     {
@@ -4158,7 +3328,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_x",
-      "community": 130,
+      "community": 59,
       "norm_label": "x"
     },
     {
@@ -4168,7 +3338,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_x_constructor",
-      "community": 59,
+      "community": 53,
       "norm_label": ".constructor()"
     },
     {
@@ -4318,7 +3488,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_addcomponentsgettersetter",
-      "community": 111,
+      "community": 57,
       "norm_label": "addcomponentsgettersetter()"
     },
     {
@@ -4378,7 +3548,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_constructor",
-      "community": 150,
+      "community": 51,
       "norm_label": ".constructor()"
     },
     {
@@ -4398,7 +3568,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_clearcache",
-      "community": 150,
+      "community": 15,
       "norm_label": "._clearcache()"
     },
     {
@@ -4438,7 +3608,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_clearselfanddescendantcache",
-      "community": 150,
+      "community": 4,
       "norm_label": "._clearselfanddescendantcache()"
     },
     {
@@ -4448,7 +3618,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_cache",
-      "community": 86,
+      "community": 55,
       "norm_label": ".cache()"
     },
     {
@@ -4458,7 +3628,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_iscached",
-      "community": 150,
+      "community": 41,
       "norm_label": ".iscached()"
     },
     {
@@ -4478,7 +3648,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_transformedrect",
-      "community": 130,
+      "community": 41,
       "norm_label": "._transformedrect()"
     },
     {
@@ -4508,7 +3678,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_getcachedscenecanvas",
-      "community": 86,
+      "community": 55,
       "norm_label": "._getcachedscenecanvas()"
     },
     {
@@ -4518,7 +3688,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_on",
-      "community": 56,
+      "community": 51,
       "norm_label": ".on()"
     },
     {
@@ -4528,7 +3698,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_off",
-      "community": 15,
+      "community": 51,
       "norm_label": ".off()"
     },
     {
@@ -4548,7 +3718,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_addeventlistener",
-      "community": 56,
+      "community": 51,
       "norm_label": ".addeventlistener()"
     },
     {
@@ -4558,7 +3728,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_removeeventlistener",
-      "community": 15,
+      "community": 51,
       "norm_label": ".removeeventlistener()"
     },
     {
@@ -4568,7 +3738,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_delegate",
-      "community": 15,
+      "community": 57,
       "norm_label": "._delegate()"
     },
     {
@@ -4608,7 +3778,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_getattr",
-      "community": 4,
+      "community": 57,
       "norm_label": ".getattr()"
     },
     {
@@ -4618,7 +3788,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_getancestors",
-      "community": 15,
+      "community": 41,
       "norm_label": ".getancestors()"
     },
     {
@@ -4638,7 +3808,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_setattrs",
-      "community": 150,
+      "community": 51,
       "norm_label": ".setattrs()"
     },
     {
@@ -4728,7 +3898,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_batchtransformchanges",
-      "community": 150,
+      "community": 15,
       "norm_label": "._batchtransformchanges()"
     },
     {
@@ -4738,7 +3908,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_setposition",
-      "community": 150,
+      "community": 15,
       "norm_label": ".setposition()"
     },
     {
@@ -4748,7 +3918,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_getposition",
-      "community": 130,
+      "community": 59,
       "norm_label": ".getposition()"
     },
     {
@@ -4768,7 +3938,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_getabsoluteposition",
-      "community": 43,
+      "community": 130,
       "norm_label": ".getabsoluteposition()"
     },
     {
@@ -4778,7 +3948,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_setabsoluteposition",
-      "community": 130,
+      "community": 15,
       "norm_label": ".setabsoluteposition()"
     },
     {
@@ -4788,7 +3958,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_settransform",
-      "community": 130,
+      "community": 15,
       "norm_label": "._settransform()"
     },
     {
@@ -4798,7 +3968,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_cleartransform",
-      "community": 130,
+      "community": 59,
       "norm_label": "._cleartransform()"
     },
     {
@@ -4808,7 +3978,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_move",
-      "community": 130,
+      "community": 59,
       "norm_label": ".move()"
     },
     {
@@ -4818,7 +3988,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_eachancestorreverse",
-      "community": 15,
+      "community": 59,
       "norm_label": "._eachancestorreverse()"
     },
     {
@@ -4828,7 +3998,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_rotate",
-      "community": 41,
+      "community": 46,
       "norm_label": ".rotate()"
     },
     {
@@ -4978,7 +4148,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_getlayer",
-      "community": 15,
+      "community": 41,
       "norm_label": ".getlayer()"
     },
     {
@@ -4988,7 +4158,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_getstage",
-      "community": 15,
+      "community": 41,
       "norm_label": ".getstage()"
     },
     {
@@ -5008,7 +4178,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_getabsolutetransform",
-      "community": 41,
+      "community": 59,
       "norm_label": ".getabsolutetransform()"
     },
     {
@@ -5018,7 +4188,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_getabsolutescale",
-      "community": 184,
+      "community": 130,
       "norm_label": ".getabsolutescale()"
     },
     {
@@ -5028,7 +4198,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_getabsoluterotation",
-      "community": 184,
+      "community": 130,
       "norm_label": ".getabsoluterotation()"
     },
     {
@@ -5038,7 +4208,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_gettransform",
-      "community": 41,
+      "community": 59,
       "norm_label": ".gettransform()"
     },
     {
@@ -5048,7 +4218,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_clone",
-      "community": 15,
+      "community": 57,
       "norm_label": ".clone()"
     },
     {
@@ -5058,7 +4228,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_tokonvacanvas",
-      "community": 86,
+      "community": 130,
       "norm_label": "._tokonvacanvas()"
     },
     {
@@ -5158,7 +4328,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_firechangeevent",
-      "community": 15,
+      "community": 57,
       "norm_label": "._firechangeevent()"
     },
     {
@@ -5208,7 +4378,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_requestdraw",
-      "community": 59,
+      "community": 51,
       "norm_label": "._requestdraw()"
     },
     {
@@ -5218,7 +4388,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_setcomponentattr",
-      "community": 15,
+      "community": 57,
       "norm_label": "._setcomponentattr()"
     },
     {
@@ -5248,7 +4418,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_draw",
-      "community": 86,
+      "community": 55,
       "norm_label": ".draw()"
     },
     {
@@ -5278,7 +4448,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_setdragposition",
-      "community": 56,
+      "community": 51,
       "norm_label": "._setdragposition()"
     },
     {
@@ -5348,7 +4518,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_q_isclientrectonscreen",
-      "community": 184,
+      "community": 130,
       "norm_label": ".isclientrectonscreen()"
     },
     {
@@ -5378,7 +4548,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_v_getchildren",
-      "community": 59,
+      "community": 51,
       "norm_label": ".getchildren()"
     },
     {
@@ -5388,7 +4558,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_v_haschildren",
-      "community": 59,
+      "community": 51,
       "norm_label": ".haschildren()"
     },
     {
@@ -5398,7 +4568,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_v_removechildren",
-      "community": 59,
+      "community": 51,
       "norm_label": ".removechildren()"
     },
     {
@@ -5408,7 +4578,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_v_destroychildren",
-      "community": 59,
+      "community": 51,
       "norm_label": ".destroychildren()"
     },
     {
@@ -5418,7 +4588,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_v_add",
-      "community": 59,
+      "community": 51,
       "norm_label": ".add()"
     },
     {
@@ -5428,7 +4598,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_v_destroy",
-      "community": 59,
+      "community": 51,
       "norm_label": ".destroy()"
     },
     {
@@ -5438,7 +4608,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_v_find",
-      "community": 56,
+      "community": 51,
       "norm_label": ".find()"
     },
     {
@@ -5458,7 +4628,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_v_generalfind",
-      "community": 59,
+      "community": 51,
       "norm_label": "._generalfind()"
     },
     {
@@ -5468,7 +4638,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_v_descendants",
-      "community": 59,
+      "community": 51,
       "norm_label": "._descendants()"
     },
     {
@@ -5478,7 +4648,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_v_toobject",
-      "community": 59,
+      "community": 51,
       "norm_label": ".toobject()"
     },
     {
@@ -5488,7 +4658,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_v_isancestorof",
-      "community": 15,
+      "community": 41,
       "norm_label": ".isancestorof()"
     },
     {
@@ -5498,7 +4668,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_v_clone",
-      "community": 59,
+      "community": 51,
       "norm_label": ".clone()"
     },
     {
@@ -5508,7 +4678,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_v_getallintersections",
-      "community": 56,
+      "community": 51,
       "norm_label": ".getallintersections()"
     },
     {
@@ -5518,7 +4688,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_v_clearselfanddescendantcache",
-      "community": 150,
+      "community": 15,
       "norm_label": "._clearselfanddescendantcache()"
     },
     {
@@ -5568,7 +4738,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_v_getclientrect",
-      "community": 184,
+      "community": 51,
       "norm_label": ".getclientrect()"
     },
     {
@@ -5678,7 +4848,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_tt_clear",
-      "community": 54,
+      "community": 55,
       "norm_label": ".clear()"
     },
     {
@@ -5718,7 +4888,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_tt_getpointerbyid",
-      "community": 56,
+      "community": 51,
       "norm_label": "._getpointerbyid()"
     },
     {
@@ -5788,7 +4958,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_tt_add",
-      "community": 59,
+      "community": 51,
       "norm_label": ".add()"
     },
     {
@@ -5798,7 +4968,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_tt_getparent",
-      "community": 15,
+      "community": 41,
       "norm_label": ".getparent()"
     },
     {
@@ -6038,7 +5208,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_tt_batchdraw",
-      "community": 54,
+      "community": 4,
       "norm_label": ".batchdraw()"
     },
     {
@@ -6138,7 +5308,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ft_getlineargradient",
-      "community": 58,
+      "community": 41,
       "norm_label": "._getlineargradient()"
     },
     {
@@ -6178,7 +5348,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ft_hasstroke",
-      "community": 58,
+      "community": 41,
       "norm_label": ".hasstroke()"
     },
     {
@@ -6198,7 +5368,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ft_intersects",
-      "community": 86,
+      "community": 55,
       "norm_label": ".intersects()"
     },
     {
@@ -6258,7 +5428,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ft_getclientrect",
-      "community": 150,
+      "community": 41,
       "norm_label": ".getclientrect()"
     },
     {
@@ -6288,7 +5458,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ft_drawhitfromcache",
-      "community": 86,
+      "community": 55,
       "norm_label": ".drawhitfromcache()"
     },
     {
@@ -6378,7 +5548,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_gethitcanvas",
-      "community": 86,
+      "community": 55,
       "norm_label": ".gethitcanvas()"
     },
     {
@@ -6388,7 +5558,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_getcontext",
-      "community": 86,
+      "community": 55,
       "norm_label": ".getcontext()"
     },
     {
@@ -6398,7 +5568,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_clear",
-      "community": 86,
+      "community": 55,
       "norm_label": ".clear()"
     },
     {
@@ -6488,7 +5658,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_setsize",
-      "community": 59,
+      "community": 53,
       "norm_label": ".setsize()"
     },
     {
@@ -6548,7 +5718,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_setwidth",
-      "community": 113,
+      "community": 53,
       "norm_label": ".setwidth()"
     },
     {
@@ -6578,7 +5748,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_batchdraw",
-      "community": 51,
+      "community": 4,
       "norm_label": ".batchdraw()"
     },
     {
@@ -6598,7 +5768,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_drawscene",
-      "community": 86,
+      "community": 55,
       "norm_label": ".drawscene()"
     },
     {
@@ -6608,7 +5778,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_drawhit",
-      "community": 86,
+      "community": 55,
       "norm_label": ".drawhit()"
     },
     {
@@ -6638,7 +5808,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_sethitgraphenabled",
-      "community": 113,
+      "community": 53,
       "norm_label": ".sethitgraphenabled()"
     },
     {
@@ -6648,7 +5818,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ht_gethitgraphenabled",
-      "community": 113,
+      "community": 53,
       "norm_label": ".gethitgraphenabled()"
     },
     {
@@ -6908,7 +6078,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_vt_setposition",
-      "community": 4,
+      "community": 59,
       "norm_label": ".setposition()"
     },
     {
@@ -7028,7 +6198,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_kt_addattr",
-      "community": 4,
+      "community": 57,
       "norm_label": "._addattr()"
     },
     {
@@ -7258,7 +6428,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ee",
-      "community": 186,
+      "community": 99,
       "norm_label": "ee"
     },
     {
@@ -7268,7 +6438,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ee_constructor",
-      "community": 150,
+      "community": 99,
       "norm_label": ".constructor()"
     },
     {
@@ -7278,7 +6448,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ee_scenefunc",
-      "community": 46,
+      "community": 99,
       "norm_label": "._scenefunc()"
     },
     {
@@ -7288,7 +6458,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ee_gettensionpoints",
-      "community": 46,
+      "community": 99,
       "norm_label": ".gettensionpoints()"
     },
     {
@@ -7308,7 +6478,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ee_getwidth",
-      "community": 186,
+      "community": 108,
       "norm_label": ".getwidth()"
     },
     {
@@ -7318,7 +6488,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ee_getheight",
-      "community": 186,
+      "community": 99,
       "norm_label": ".getheight()"
     },
     {
@@ -7328,7 +6498,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ee_getselfrect",
-      "community": 186,
+      "community": 99,
       "norm_label": ".getselfrect()"
     },
     {
@@ -7678,7 +6848,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_fe",
-      "community": 56,
+      "community": 51,
       "norm_label": "fe"
     },
     {
@@ -7688,7 +6858,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_fe_constructor",
-      "community": 56,
+      "community": 51,
       "norm_label": ".constructor()"
     },
     {
@@ -7698,7 +6868,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_fe_setimageload",
-      "community": 56,
+      "community": 51,
       "norm_label": "._setimageload()"
     },
     {
@@ -7708,7 +6878,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_fe_removeimageload",
-      "community": 56,
+      "community": 51,
       "norm_label": "._removeimageload()"
     },
     {
@@ -7718,7 +6888,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_fe_destroy",
-      "community": 56,
+      "community": 51,
       "norm_label": ".destroy()"
     },
     {
@@ -7758,7 +6928,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_fe_getwidth",
-      "community": 56,
+      "community": 51,
       "norm_label": ".getwidth()"
     },
     {
@@ -7768,7 +6938,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_fe_getheight",
-      "community": 56,
+      "community": 51,
       "norm_label": ".getheight()"
     },
     {
@@ -7778,7 +6948,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_fe_fromurl",
-      "community": 56,
+      "community": 2,
       "norm_label": ".fromurl()"
     },
     {
@@ -7788,7 +6958,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_be",
-      "community": 56,
+      "community": 51,
       "norm_label": "be"
     },
     {
@@ -7798,7 +6968,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_be_constructor",
-      "community": 56,
+      "community": 51,
       "norm_label": ".constructor()"
     },
     {
@@ -7808,7 +6978,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_be_gettext",
-      "community": 56,
+      "community": 51,
       "norm_label": ".gettext()"
     },
     {
@@ -7818,7 +6988,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_be_gettag",
-      "community": 56,
+      "community": 51,
       "norm_label": ".gettag()"
     },
     {
@@ -7828,7 +6998,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_be_addlisteners",
-      "community": 56,
+      "community": 51,
       "norm_label": "._addlisteners()"
     },
     {
@@ -7838,7 +7008,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_be_getwidth",
-      "community": 56,
+      "community": 51,
       "norm_label": ".getwidth()"
     },
     {
@@ -7848,7 +7018,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_be_getheight",
-      "community": 56,
+      "community": 51,
       "norm_label": ".getheight()"
     },
     {
@@ -7858,7 +7028,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_be_sync",
-      "community": 56,
+      "community": 51,
       "norm_label": "._sync()"
     },
     {
@@ -7898,7 +7068,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we",
-      "community": 44,
+      "community": 56,
       "norm_label": "we"
     },
     {
@@ -8188,7 +7358,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ze",
-      "community": 44,
+      "community": 56,
       "norm_label": "ze()"
     },
     {
@@ -8218,7 +7388,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_settext",
-      "community": 44,
+      "community": 56,
       "norm_label": ".settext()"
     },
     {
@@ -8238,7 +7408,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_getheight",
-      "community": 44,
+      "community": 56,
       "norm_label": ".getheight()"
     },
     {
@@ -8248,7 +7418,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_gettextwidth",
-      "community": 44,
+      "community": 56,
       "norm_label": ".gettextwidth()"
     },
     {
@@ -8258,7 +7428,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_gettextheight",
-      "community": 44,
+      "community": 56,
       "norm_label": ".gettextheight()"
     },
     {
@@ -8268,7 +7438,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_measuresize",
-      "community": 44,
+      "community": 56,
       "norm_label": ".measuresize()"
     },
     {
@@ -8278,7 +7448,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_getcontextfont",
-      "community": 44,
+      "community": 56,
       "norm_label": "._getcontextfont()"
     },
     {
@@ -8288,7 +7458,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_addtextline",
-      "community": 44,
+      "community": 56,
       "norm_label": "._addtextline()"
     },
     {
@@ -8298,7 +7468,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_settextdata",
-      "community": 44,
+      "community": 56,
       "norm_label": "._settextdata()"
     },
     {
@@ -8308,7 +7478,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_shouldhandleellipsis",
-      "community": 44,
+      "community": 56,
       "norm_label": "._shouldhandleellipsis()"
     },
     {
@@ -8318,7 +7488,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_trytoaddellipsistolastline",
-      "community": 44,
+      "community": 56,
       "norm_label": "._trytoaddellipsistolastline()"
     },
     {
@@ -8328,7 +7498,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_we_getstrokescaleenabled",
-      "community": 44,
+      "community": 56,
       "norm_label": ".getstrokescaleenabled()"
     },
     {
@@ -8378,7 +7548,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_qe_constructor",
-      "community": 44,
+      "community": 56,
       "norm_label": ".constructor()"
     },
     {
@@ -8448,7 +7618,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_qe_gettextheight",
-      "community": 44,
+      "community": 113,
       "norm_label": ".gettextheight()"
     },
     {
@@ -8468,7 +7638,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_qe_getcontextfont",
-      "community": 44,
+      "community": 56,
       "norm_label": "._getcontextfont()"
     },
     {
@@ -8478,7 +7648,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_qe_gettextsize",
-      "community": 44,
+      "community": 43,
       "norm_label": "._gettextsize()"
     },
     {
@@ -8498,7 +7668,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_qe_getselfrect",
-      "community": 186,
+      "community": 108,
       "norm_label": ".getselfrect()"
     },
     {
@@ -8668,7 +7838,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ni_getnodeshape",
-      "community": 184,
+      "community": 130,
       "norm_label": ".__getnodeshape()"
     },
     {
@@ -8758,7 +7928,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ni_handlemousemove",
-      "community": 130,
+      "community": 55,
       "norm_label": "._handlemousemove()"
     },
     {
@@ -8798,7 +7968,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ni_fitnodesinto",
-      "community": 51,
+      "community": 130,
       "norm_label": "._fitnodesinto()"
     },
     {
@@ -8828,7 +7998,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ni_update",
-      "community": 51,
+      "community": 4,
       "norm_label": ".update()"
     },
     {
@@ -8858,7 +8028,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ni_destroy",
-      "community": 51,
+      "community": 53,
       "norm_label": ".destroy()"
     },
     {
@@ -8878,7 +8048,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ni_clone",
-      "community": 59,
+      "community": 51,
       "norm_label": ".clone()"
     },
     {
@@ -8888,7 +8058,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "lib_konva_min_ni_getclientrect",
-      "community": 184,
+      "community": 130,
       "norm_label": ".getclientrect()"
     },
     {
@@ -9008,7 +8178,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "lib_perfect_freehand_i",
-      "community": 52,
+      "community": 2,
       "norm_label": "i()"
     },
     {
@@ -9048,7 +8218,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "lib_perfect_freehand_l",
-      "community": 52,
+      "community": 2,
       "norm_label": "l()"
     },
     {
@@ -9068,7 +8238,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "lib_perfect_freehand_d",
-      "community": 52,
+      "community": 65,
       "norm_label": "d()"
     },
     {
@@ -9098,7 +8268,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "lib_perfect_freehand_m",
-      "community": 90,
+      "community": 52,
       "norm_label": "m()"
     },
     {
@@ -9168,7 +8338,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "lib_perfect_freehand_x",
-      "community": 52,
+      "community": 2,
       "norm_label": "x()"
     },
     {
@@ -9268,7 +8438,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "lib_perfect_freehand_r",
-      "community": 52,
+      "community": 2,
       "norm_label": "r()"
     },
     {
@@ -9488,7 +8658,7 @@
       "source_location": "L177",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_setup",
-      "community": 90,
+      "community": 87,
       "norm_label": ".setup()"
     },
     {
@@ -9528,7 +8698,7 @@
       "source_location": "L193",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_sync",
-      "community": 177,
+      "community": 3,
       "norm_label": ".sync()"
     },
     {
@@ -9558,7 +8728,7 @@
       "source_location": "L196",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_onchange",
-      "community": 52,
+      "community": 3,
       "norm_label": ".onchange()"
     },
     {
@@ -9588,7 +8758,7 @@
       "source_location": "L201",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_onkeydown",
-      "community": 67,
+      "community": 87,
       "norm_label": ".onkeydown()"
     },
     {
@@ -9648,7 +8818,7 @@
       "source_location": "L224",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_canselect",
-      "community": 67,
+      "community": 87,
       "norm_label": ".canselect()"
     },
     {
@@ -9708,7 +8878,7 @@
       "source_location": "L231",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_settextboxvalue",
-      "community": 90,
+      "community": 87,
       "norm_label": ".settextboxvalue()"
     },
     {
@@ -9718,7 +8888,7 @@
       "source_location": "L232",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_getvalue",
-      "community": 65,
+      "community": 90,
       "norm_label": ".getvalue()"
     },
     {
@@ -9728,7 +8898,7 @@
       "source_location": "L232",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_setvalue",
-      "community": 177,
+      "community": 3,
       "norm_label": ".setvalue()"
     },
     {
@@ -9828,7 +8998,7 @@
       "source_location": "L241",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_selectall",
-      "community": 90,
+      "community": 87,
       "norm_label": ".selectall()"
     },
     {
@@ -9838,7 +9008,7 @@
       "source_location": "L244",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_inputstate",
-      "community": 90,
+      "community": 87,
       "norm_label": ".inputstate()"
     },
     {
@@ -9998,7 +9168,7 @@
       "source_location": "L293",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_updateoption",
-      "community": 3,
+      "community": 65,
       "norm_label": ".updateoption()"
     },
     {
@@ -10008,7 +9178,7 @@
       "source_location": "L302",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_removeoption",
-      "community": 3,
+      "community": 65,
       "norm_label": ".removeoption()"
     },
     {
@@ -10038,7 +9208,7 @@
       "source_location": "L306",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_getoption",
-      "community": 3,
+      "community": 65,
       "norm_label": ".getoption()"
     },
     {
@@ -10048,7 +9218,7 @@
       "source_location": "L310",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_getadjacent",
-      "community": 67,
+      "community": 87,
       "norm_label": ".getadjacent()"
     },
     {
@@ -10058,7 +9228,7 @@
       "source_location": "L314",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_getitem",
-      "community": 3,
+      "community": 65,
       "norm_label": ".getitem()"
     },
     {
@@ -10148,7 +9318,7 @@
       "source_location": "L340",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_updateoriginalinput",
-      "community": 65,
+      "community": 90,
       "norm_label": ".updateoriginalinput()"
     },
     {
@@ -10168,7 +9338,7 @@
       "source_location": "L346",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_close",
-      "community": 90,
+      "community": 87,
       "norm_label": ".close()"
     },
     {
@@ -10208,7 +9378,7 @@
       "source_location": "L351",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_deleteselection",
-      "community": 65,
+      "community": 87,
       "norm_label": ".deleteselection()"
     },
     {
@@ -10218,7 +9388,7 @@
       "source_location": "L359",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_shoulddelete",
-      "community": 65,
+      "community": 87,
       "norm_label": ".shoulddelete()"
     },
     {
@@ -10268,7 +9438,7 @@
       "source_location": "L364",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_controlchildren",
-      "community": 90,
+      "community": 87,
       "norm_label": ".controlchildren()"
     },
     {
@@ -10278,7 +9448,7 @@
       "source_location": "L364",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_lock",
-      "community": 177,
+      "community": 3,
       "norm_label": ".lock()"
     },
     {
@@ -10288,7 +9458,7 @@
       "source_location": "L364",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_unlock",
-      "community": 177,
+      "community": 3,
       "norm_label": ".unlock()"
     },
     {
@@ -10298,7 +9468,7 @@
       "source_location": "L364",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_setlocked",
-      "community": 177,
+      "community": 3,
       "norm_label": ".setlocked()"
     },
     {
@@ -10308,7 +9478,7 @@
       "source_location": "L364",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_disable",
-      "community": 177,
+      "community": 3,
       "norm_label": ".disable()"
     },
     {
@@ -10318,7 +9488,7 @@
       "source_location": "L364",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_enable",
-      "community": 177,
+      "community": 3,
       "norm_label": ".enable()"
     },
     {
@@ -10328,7 +9498,7 @@
       "source_location": "L364",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_setdisabled",
-      "community": 177,
+      "community": 3,
       "norm_label": ".setdisabled()"
     },
     {
@@ -10338,7 +9508,7 @@
       "source_location": "L364",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_setreadonly",
-      "community": 177,
+      "community": 3,
       "norm_label": ".setreadonly()"
     },
     {
@@ -10358,7 +9528,7 @@
       "source_location": "L365",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_render",
-      "community": 3,
+      "community": 65,
       "norm_label": ".render()"
     },
     {
@@ -10378,7 +9548,7 @@
       "source_location": "L372",
       "_origin": "ast",
       "id": "lib_tom_select_complete_min_ce_uncachevalue",
-      "community": 3,
+      "community": 65,
       "norm_label": ".uncachevalue()"
     },
     {
@@ -11048,126 +10218,6 @@
       "id": "playwright_config",
       "community": 173,
       "norm_label": "playwright.config.ts"
-    },
-    {
-      "label": "index.ts",
-      "file_type": "code",
-      "source_file": "supabase/functions/otp-record/index.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "otp_record_index",
-      "community": 185,
-      "norm_label": "index.ts"
-    },
-    {
-      "label": "MISS",
-      "file_type": "code",
-      "source_file": "supabase/functions/otp-record/index.ts",
-      "source_location": "L36",
-      "_origin": "ast",
-      "id": "otp_record_index_miss",
-      "community": 185,
-      "norm_label": "miss"
-    },
-    {
-      "label": "CORS",
-      "file_type": "code",
-      "source_file": "supabase/functions/otp-record/index.ts",
-      "source_location": "L38",
-      "_origin": "ast",
-      "id": "otp_record_index_cors",
-      "community": 185,
-      "norm_label": "cors"
-    },
-    {
-      "label": "json()",
-      "file_type": "code",
-      "source_file": "supabase/functions/otp-record/index.ts",
-      "source_location": "L44",
-      "_origin": "ast",
-      "id": "otp_record_index_json",
-      "community": 185,
-      "norm_label": "json()"
-    },
-    {
-      "label": "rpc()",
-      "file_type": "code",
-      "source_file": "supabase/functions/otp-record/index.ts",
-      "source_location": "L51",
-      "_origin": "ast",
-      "id": "otp_record_index_rpc",
-      "community": 185,
-      "norm_label": "rpc()"
-    },
-    {
-      "label": "listPadFiles()",
-      "file_type": "code",
-      "source_file": "supabase/functions/otp-record/index.ts",
-      "source_location": "L69",
-      "_origin": "ast",
-      "id": "otp_record_index_listpadfiles",
-      "community": 185,
-      "norm_label": "listpadfiles()"
-    },
-    {
-      "label": "tokenFromRequest()",
-      "file_type": "code",
-      "source_file": "supabase/functions/otp-record/index.ts",
-      "source_location": "L93",
-      "_origin": "ast",
-      "id": "otp_record_index_tokenfromrequest",
-      "community": 185,
-      "norm_label": "tokenfromrequest()"
-    },
-    {
-      "label": "index.ts",
-      "file_type": "code",
-      "source_file": "supabase/functions/otp-submit/index.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "otp_submit_index",
-      "community": 187,
-      "norm_label": "index.ts"
-    },
-    {
-      "label": "CORS",
-      "file_type": "code",
-      "source_file": "supabase/functions/otp-submit/index.ts",
-      "source_location": "L28",
-      "_origin": "ast",
-      "id": "otp_submit_index_cors",
-      "community": 187,
-      "norm_label": "cors"
-    },
-    {
-      "label": "json()",
-      "file_type": "code",
-      "source_file": "supabase/functions/otp-submit/index.ts",
-      "source_location": "L34",
-      "_origin": "ast",
-      "id": "otp_submit_index_json",
-      "community": 187,
-      "norm_label": "json()"
-    },
-    {
-      "label": "rpc()",
-      "file_type": "code",
-      "source_file": "supabase/functions/otp-submit/index.ts",
-      "source_location": "L41",
-      "_origin": "ast",
-      "id": "otp_submit_index_rpc",
-      "community": 187,
-      "norm_label": "rpc()"
-    },
-    {
-      "label": "mirror()",
-      "file_type": "code",
-      "source_file": "supabase/functions/otp-submit/index.ts",
-      "source_location": "L62",
-      "_origin": "ast",
-      "id": "otp_submit_index_mirror",
-      "community": 187,
-      "norm_label": "mirror()"
     },
     {
       "label": "video-data.json",
@@ -17680,100 +16730,10 @@
       "norm_label": "readme.md"
     },
     {
-      "label": "Teacher Tracker (otp-v0.12)",
-      "file_type": "document",
-      "source_file": "Assets/OTP/README.md",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "otp_readme_teacher_tracker_otp_v0_12",
-      "community": 118,
-      "norm_label": "teacher tracker (otp-v0.12)"
-    },
-    {
-      "label": "otp-v0.11 \u00b7 released to main (2026-09-20)",
-      "file_type": "document",
-      "source_file": "Assets/OTP/README.md",
-      "source_location": "L56",
-      "_origin": "ast",
-      "id": "otp_readme_otp_v0_11_released_to_main_2026_09_20",
-      "community": 118,
-      "norm_label": "otp-v0.11 \u00b7 released to main (2026-09-20)"
-    },
-    {
-      "label": "otp-v0.11 \u00b7 continue and close, no reload (2026-09-18, task 7, preview build)",
-      "file_type": "document",
-      "source_file": "Assets/OTP/README.md",
-      "source_location": "L71",
-      "_origin": "ast",
-      "id": "otp_readme_otp_v0_11_continue_and_close_no_reload_2026_09_18_task_7_preview_build",
-      "community": 118,
-      "norm_label": "otp-v0.11 \u00b7 continue and close, no reload (2026-09-18, task 7, preview build)"
-    },
-    {
-      "label": "otp-v0.11 \u00b7 status strip + Next Steps rework (2026-09-18, task 5, preview build)",
-      "file_type": "document",
-      "source_file": "Assets/OTP/README.md",
-      "source_location": "L164",
-      "_origin": "ast",
-      "id": "otp_readme_otp_v0_11_status_strip_next_steps_rework_2026_09_18_task_5_preview_build",
-      "community": 118,
-      "norm_label": "otp-v0.11 \u00b7 status strip + next steps rework (2026-09-18, task 5, preview build)"
-    },
-    {
-      "label": "otp-v0.10 \u00b7 released to main (2026-09-18)",
-      "file_type": "document",
-      "source_file": "Assets/OTP/README.md",
-      "source_location": "L222",
-      "_origin": "ast",
-      "id": "otp_readme_otp_v0_10_released_to_main_2026_09_18",
-      "community": 118,
-      "norm_label": "otp-v0.10 \u00b7 released to main (2026-09-18)"
-    },
-    {
-      "label": "otp-v0.10 \u00b7 Phase 3 (2026-09-17)",
-      "file_type": "document",
-      "source_file": "Assets/OTP/README.md",
-      "source_location": "L229",
-      "_origin": "ast",
-      "id": "otp_readme_otp_v0_10_phase_3_2026_09_17",
-      "community": 118,
-      "norm_label": "otp-v0.10 \u00b7 phase 3 (2026-09-17)"
-    },
-    {
-      "label": "otp-v0.10 \u00b7 Phase 2 (2026-09-16)",
-      "file_type": "document",
-      "source_file": "Assets/OTP/README.md",
-      "source_location": "L292",
-      "_origin": "ast",
-      "id": "otp_readme_otp_v0_10_phase_2_2026_09_16",
-      "community": 118,
-      "norm_label": "otp-v0.10 \u00b7 phase 2 (2026-09-16)"
-    },
-    {
-      "label": "otp-v0.10 \u00b7 Phase 1 (2026-09-16)",
-      "file_type": "document",
-      "source_file": "Assets/OTP/README.md",
-      "source_location": "L361",
-      "_origin": "ast",
-      "id": "otp_readme_otp_v0_10_phase_1_2026_09_16",
-      "community": 118,
-      "norm_label": "otp-v0.10 \u00b7 phase 1 (2026-09-16)"
-    },
-    {
-      "label": "otp-v0.9.4 (2026-09-15)",
-      "file_type": "document",
-      "source_file": "Assets/OTP/README.md",
-      "source_location": "L392",
-      "_origin": "ast",
-      "id": "otp_readme_otp_v0_9_4_2026_09_15",
-      "community": 118,
-      "norm_label": "otp-v0.9.4 (2026-09-15)"
-    },
-    {
       "label": "otp-v0.9.3 (2026-09-12)",
       "file_type": "document",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L418",
+      "source_location": "L1",
       "_origin": "ast",
       "id": "otp_readme_otp_v0_9_3_2026_09_12",
       "community": 118,
@@ -17783,7 +16743,7 @@
       "label": "otp-v0.9.2 (2026-09-11, evening)",
       "file_type": "document",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L441",
+      "source_location": "L24",
       "_origin": "ast",
       "id": "otp_readme_otp_v0_9_2_2026_09_11_evening",
       "community": 118,
@@ -17793,7 +16753,7 @@
       "label": "Progress in Lessons OTP form \u00b7 otp-v0.9.1",
       "file_type": "document",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L445",
+      "source_location": "L28",
       "_origin": "ast",
       "id": "otp_readme_progress_in_lessons_otp_form_otp_v0_9_1",
       "community": 118,
@@ -17803,7 +16763,7 @@
       "label": "What is on the page",
       "file_type": "document",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L458",
+      "source_location": "L41",
       "_origin": "ast",
       "id": "otp_readme_what_is_on_the_page",
       "community": 118,
@@ -17813,7 +16773,7 @@
       "label": "Build",
       "file_type": "document",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L541",
+      "source_location": "L124",
       "_origin": "ast",
       "id": "otp_readme_build",
       "community": 118,
@@ -17823,7 +16783,7 @@
       "label": "Backend contract",
       "file_type": "document",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L558",
+      "source_location": "L141",
       "_origin": "ast",
       "id": "otp_readme_backend_contract",
       "community": 118,
@@ -17833,7 +16793,7 @@
       "label": "Tests",
       "file_type": "document",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L658",
+      "source_location": "L241",
       "_origin": "ast",
       "id": "otp_readme_tests",
       "community": 118,
@@ -17843,7 +16803,7 @@
       "label": "Changelog",
       "file_type": "document",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L671",
+      "source_location": "L254",
       "_origin": "ast",
       "id": "otp_readme_changelog",
       "community": 118,
@@ -18233,7 +17193,7 @@
       "label": "How the pieces connect",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L127",
+      "source_location": "L122",
       "_origin": "ast",
       "id": "claude_how_the_pieces_connect",
       "community": 6,
@@ -18243,7 +17203,7 @@
       "label": "Hard rules \u00b7 do not break",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L162",
+      "source_location": "L157",
       "_origin": "ast",
       "id": "claude_hard_rules_do_not_break",
       "community": 6,
@@ -18253,7 +17213,7 @@
       "label": "Identity / auth (current state as of v0.10 \u00b7 2026-05-28)",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L194",
+      "source_location": "L179",
       "_origin": "ast",
       "id": "claude_identity_auth_current_state_as_of_v0_10_2026_05_28",
       "community": 6,
@@ -18263,7 +17223,7 @@
       "label": "Deploy chain",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L204",
+      "source_location": "L189",
       "_origin": "ast",
       "id": "claude_deploy_chain",
       "community": 6,
@@ -18273,7 +17233,7 @@
       "label": "HTML changes (`index.html` or either form)",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L206",
+      "source_location": "L191",
       "_origin": "ast",
       "id": "claude_html_changes_index_html_or_either_form",
       "community": 6,
@@ -18283,7 +17243,7 @@
       "label": "Apps Script changes (either `apps-script/*.gs` or `Assets/R3/apps-script/*.gs`)",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L215",
+      "source_location": "L200",
       "_origin": "ast",
       "id": "claude_apps_script_changes_either_apps_script_gs_or_assets_r3_apps_script_gs",
       "community": 6,
@@ -18293,7 +17253,7 @@
       "label": "Primary checkout note (standing, 2026-07-03)",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L222",
+      "source_location": "L207",
       "_origin": "ast",
       "id": "claude_primary_checkout_note_standing_2026_07_03",
       "community": 6,
@@ -18303,7 +17263,7 @@
       "label": "Cache invalidation (R3 only, since v0.33)",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L229",
+      "source_location": "L214",
       "_origin": "ast",
       "id": "claude_cache_invalidation_r3_only_since_v0_33",
       "community": 6,
@@ -18313,7 +17273,7 @@
       "label": "Coding discipline (Karpathy guidelines)",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L243",
+      "source_location": "L226",
       "_origin": "ast",
       "id": "claude_coding_discipline_karpathy_guidelines",
       "community": 6,
@@ -18323,7 +17283,7 @@
       "label": "When in doubt",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L254",
+      "source_location": "L237",
       "_origin": "ast",
       "id": "claude_when_in_doubt",
       "community": 6,
@@ -18333,7 +17293,7 @@
       "label": "Related",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L264",
+      "source_location": "L247",
       "_origin": "ast",
       "id": "claude_related",
       "community": 6,
@@ -18343,7 +17303,7 @@
       "label": "Self-learning",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L312",
+      "source_location": "L292",
       "_origin": "ast",
       "id": "claude_self_learning",
       "community": 6,
@@ -18353,7 +17313,7 @@
       "label": "Lessons",
       "file_type": "document",
       "source_file": "CLAUDE.md",
-      "source_location": "L317",
+      "source_location": "L297",
       "_origin": "ast",
       "id": "claude_lessons",
       "community": 6,
@@ -19200,44 +18160,44 @@
       "norm_label": "heal / big photo drop"
     },
     {
-      "label": "24-25-Primary School OTP - v4_5f5ef1c8.md",
+      "label": "24-25-Primary School OTP - v4_4607b267.md",
       "file_type": "document",
-      "source_file": "graphify-out/converted/24-25-Primary School OTP - v4_5f5ef1c8.md",
+      "source_file": "graphify-out/converted/24-25-Primary School OTP - v4_4607b267.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "converted_24_25_primary_school_otp_v4_5f5ef1c8",
-      "community": 192,
-      "norm_label": "24-25-primary school otp - v4_5f5ef1c8.md"
+      "id": "converted_24_25_primary_school_otp_v4_4607b267",
+      "community": 79,
+      "norm_label": "24-25-primary school otp - v4_4607b267.md"
     },
     {
-      "label": "Lesson Observation - Igor- 12_11_23dfeccd.md",
+      "label": "Lesson Observation - Igor- 12_11_1d3cd75e.md",
       "file_type": "document",
-      "source_file": "graphify-out/converted/Lesson Observation - Igor- 12_11_23dfeccd.md",
+      "source_file": "graphify-out/converted/Lesson Observation - Igor- 12_11_1d3cd75e.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "converted_lesson_observation_igor_12_11_23dfeccd",
-      "community": 193,
-      "norm_label": "lesson observation - igor- 12_11_23dfeccd.md"
+      "id": "converted_lesson_observation_igor_12_11_1d3cd75e",
+      "community": 86,
+      "norm_label": "lesson observation - igor- 12_11_1d3cd75e.md"
     },
     {
-      "label": "R3 Evidence Form Template_de079755.md",
+      "label": "R3 Evidence Form Template_5f7f8206.md",
       "file_type": "document",
-      "source_file": "graphify-out/converted/R3 Evidence Form Template_de079755.md",
+      "source_file": "graphify-out/converted/R3 Evidence Form Template_5f7f8206.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "converted_r3_evidence_form_template_de079755",
-      "community": 194,
-      "norm_label": "r3 evidence form template_de079755.md"
+      "id": "converted_r3_evidence_form_template_5f7f8206",
+      "community": 114,
+      "norm_label": "r3 evidence form template_5f7f8206.md"
     },
     {
-      "label": "Year 6 Lesson Plan_3dba3eb7.md",
+      "label": "Year 6 Lesson Plan_050d2fa9.md",
       "file_type": "document",
-      "source_file": "graphify-out/converted/Year 6 Lesson Plan_3dba3eb7.md",
+      "source_file": "graphify-out/converted/Year 6 Lesson Plan_050d2fa9.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "converted_year_6_lesson_plan_3dba3eb7",
-      "community": 195,
-      "norm_label": "year 6 lesson plan_3dba3eb7.md"
+      "id": "converted_year_6_lesson_plan_050d2fa9",
+      "community": 184,
+      "norm_label": "year 6 lesson plan_050d2fa9.md"
     },
     {
       "label": "handoff-2026-06-02-1151.md",
@@ -22947,9 +21907,9 @@
       "source_file": "Assets/OTP/encrypt.sh",
       "source_location": "L1",
       "weight": 1.0,
-      "source": "otp_encrypt",
-      "target": "users_igor_wt_otp_v012_assets_otp_encrypt_sh__entry",
-      "confidence_score": 1.0
+      "confidence_score": 1.0,
+      "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_assets_otp_encrypt_sh",
+      "target": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_b3918e_9fa3ad1e_9072_415d_b662_cbce5d9197ee_scratchpad_otp_build_assets_otp_encrypt_sh__entry"
     },
     {
       "relation": "contains",
@@ -23488,146 +22448,6 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/gs-stamps-harness.mjs",
-      "source_location": "L141",
-      "weight": 1.0,
-      "source": "tests_gs_stamps_harness",
-      "target": "tests_gs_stamps_harness_appendrecord",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/gs-stamps-harness.mjs",
-      "source_location": "L148",
-      "weight": 1.0,
-      "source": "tests_gs_stamps_harness",
-      "target": "tests_gs_stamps_harness_check",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/gs-stamps-harness.mjs",
-      "source_location": "L11",
-      "weight": 1.0,
-      "source": "tests_gs_stamps_harness",
-      "target": "tests_gs_stamps_harness_gs",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/gs-stamps-harness.mjs",
-      "source_location": "L9",
-      "weight": 1.0,
-      "source": "tests_gs_stamps_harness",
-      "target": "tests_gs_stamps_harness_here",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/gs-stamps-harness.mjs",
-      "source_location": "L61",
-      "weight": 1.0,
-      "source": "tests_gs_stamps_harness",
-      "target": "tests_gs_stamps_harness_makeenv",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/gs-stamps-harness.mjs",
-      "source_location": "L22",
-      "weight": 1.0,
-      "source": "tests_gs_stamps_harness",
-      "target": "tests_gs_stamps_harness_makesheet",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/gs-stamps-harness.mjs",
-      "source_location": "L133",
-      "weight": 1.0,
-      "source": "tests_gs_stamps_harness",
-      "target": "tests_gs_stamps_harness_mirrorrecord",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/gs-stamps-harness.mjs",
-      "source_location": "L146",
-      "weight": 1.0,
-      "source": "tests_gs_stamps_harness",
-      "target": "tests_gs_stamps_harness_output",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/gs-stamps-harness.mjs",
-      "source_location": "L126",
-      "weight": 1.0,
-      "source": "tests_gs_stamps_harness",
-      "target": "tests_gs_stamps_harness_payload",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/gs-stamps-harness.mjs",
-      "source_location": "L35",
-      "weight": 1.0,
-      "source": "tests_gs_stamps_harness",
-      "target": "tests_gs_stamps_harness_range",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/gs-stamps-harness.mjs",
-      "source_location": "L10",
-      "weight": 1.0,
-      "source": "tests_gs_stamps_harness",
-      "target": "tests_gs_stamps_harness_repo",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/gs-stamps-harness.mjs",
-      "source_location": "L18",
-      "weight": 1.0,
-      "source": "tests_gs_stamps_harness",
-      "target": "tests_gs_stamps_harness_response",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/gs-stamps-harness.mjs",
-      "source_location": "L16",
-      "weight": 1.0,
-      "source": "tests_gs_stamps_harness",
-      "target": "tests_gs_stamps_harness_results",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/gs-stamps-harness.mjs",
-      "source_location": "L147",
-      "weight": 1.0,
-      "source": "tests_gs_stamps_harness",
-      "target": "tests_gs_stamps_harness_stampcalls",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/tests/ipad/evidence.mjs",
       "source_location": "L14",
       "weight": 1.0,
@@ -23863,9 +22683,9 @@
       "source_file": "Assets/OTP/tests/ipad/rig.sh",
       "source_location": "L14",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_c82d79_dbb590c5_5d3d_4dfd_9feb_b9133a30ccc7_scratchpad_fix_otp_v0_9_1_assets_otp_tests_ipad_rig_sh",
-      "target": "ipad_rig_is_booted"
+      "target": "ipad_rig_is_booted",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -23873,9 +22693,9 @@
       "source_file": "Assets/OTP/tests/ipad/rig.sh",
       "source_location": "L1",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_c82d79_dbb590c5_5d3d_4dfd_9feb_b9133a30ccc7_scratchpad_fix_otp_v0_9_1_assets_otp_tests_ipad_rig_sh",
-      "target": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_c82d79_dbb590c5_5d3d_4dfd_9feb_b9133a30ccc7_scratchpad_fix_otp_v0_9_1_assets_otp_tests_ipad_rig_sh__entry"
+      "target": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_c82d79_dbb590c5_5d3d_4dfd_9feb_b9133a30ccc7_scratchpad_fix_otp_v0_9_1_assets_otp_tests_ipad_rig_sh__entry",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -23917,36 +22737,6 @@
       "confidence_score": 1.0,
       "source": "tests_otp_spec",
       "target": "tests_otp_spec_bannertext"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L6074",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_blockrecordfetch",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L6184",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_bug2_record_widths",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L6127",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_bug2_widths",
-      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -24002,16 +22792,6 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L4028",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_countgoogle",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L33",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -24032,16 +22812,6 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L3634",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_date_time_ids",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L340",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -24057,46 +22827,6 @@
       "confidence_score": 1.0,
       "source": "tests_otp_spec",
       "target": "tests_otp_spec_dayre"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L4015",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_edge_miss",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L4006",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_edgerecord",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L4045",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_expectconsistentformstate",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L4348",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_expectlistsapplied",
-      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -24142,51 +22872,11 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L6103",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_gridtops",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L100",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "tests_otp_spec",
       "target": "tests_otp_spec_harness"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L6059",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_holdlapstate",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L4334",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_holdoptions",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L6086",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_holdrecordfetch",
-      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -24202,91 +22892,11 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L3073",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_lap_state_never",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L6474",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_lap_state_open_emails_pending",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L3102",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_lap_state_open_no_own_steps",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L3112",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_lap_state_open_no_predecessor",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L3078",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_lap_state_open_with_own_steps",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L3119",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_lap_state_starting_next",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L29",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "tests_otp_spec",
       "target": "tests_otp_spec_level"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L3943",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_mac_draft",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L3129",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_mocklapstate",
-      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -24352,46 +22962,6 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L6470",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_op_widths",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L6481",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_opbarbox",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L6514",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_opbarpillinfo",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L6502",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_opbarstepstates",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L328",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -24407,16 +22977,6 @@
       "confidence_score": 1.0,
       "source": "tests_otp_spec",
       "target": "tests_otp_spec_openform"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L4068",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_optionkeys",
-      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -24462,16 +23022,6 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L6918",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_pinbarpastcard",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L304",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -24497,16 +23047,6 @@
       "confidence_score": 1.0,
       "source": "tests_otp_spec",
       "target": "tests_otp_spec_prev_ns_steps"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L6117",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_rawpicktomselect",
-      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -24592,26 +23132,6 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L4037",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_recordsource",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L4018",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_routeedgerecord",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L16",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -24632,66 +23152,6 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L3569",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_sb_options",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L3063",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_schoolyearlabel",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L6545",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_scrollandwaitforbar",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L4059",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_searchablesdisabled",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L4079",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_seeded_draft_json",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L4087",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_seeded_sync_json",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L325",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -24702,61 +23162,11 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L3368",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_step_card_size_by_width",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L3135",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_stripline",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L3136",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_stripstatuses",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L3146",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_striptext",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L319",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "tests_otp_spec",
       "target": "tests_otp_spec_tapat"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L3640",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_tapcentre",
-      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -24777,16 +23187,6 @@
       "confidence_score": 1.0,
       "source": "tests_otp_spec",
       "target": "tests_otp_spec_tapnotebtn"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L3636",
-      "weight": 1.0,
-      "source": "tests_otp_spec",
-      "target": "tests_otp_spec_textcolour",
-      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -24888,17 +23288,6 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L6118",
-      "weight": 1.0,
-      "source": "tests_otp_spec_rawpicktomselect",
-      "target": "tests_otp_spec_tscontrol",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
       "source_location": "L201",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -24992,488 +23381,6 @@
       "confidence_score": 1.0,
       "source": "tests_otp_spec_tapchip",
       "target": "tests_otp_spec_chipsel"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L4350",
-      "weight": 1.0,
-      "source": "tests_otp_spec_expectlistsapplied",
-      "target": "tests_otp_spec_optionkeys",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/otp.spec.ts",
-      "source_location": "L6920",
-      "weight": 1.0,
-      "source": "tests_otp_spec_pinbarpastcard",
-      "target": "tests_otp_spec_scrollandwaitforbar",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L110",
-      "weight": 1.0,
-      "source": "safari_safari_check",
-      "target": "safari_safari_check_main",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L47",
-      "weight": 1.0,
-      "source": "safari_safari_check",
-      "target": "safari_safari_check_wd",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L117",
-      "weight": 1.0,
-      "source": "safari_safari_check_main",
-      "target": "safari_safari_check_wd",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L86",
-      "weight": 1.0,
-      "source": "safari_safari_check_wd",
-      "target": "safari_safari_check_wd_find",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L48",
-      "weight": 1.0,
-      "source": "safari_safari_check_wd",
-      "target": "safari_safari_check_wd_init",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L83",
-      "weight": 1.0,
-      "source": "safari_safari_check_wd",
-      "target": "safari_safari_check_wd_js",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L100",
-      "weight": 1.0,
-      "source": "safari_safari_check_wd",
-      "target": "safari_safari_check_wd_quit",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L51",
-      "weight": 1.0,
-      "source": "safari_safari_check_wd",
-      "target": "safari_safari_check_wd_req",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L58",
-      "weight": 1.0,
-      "source": "safari_safari_check_wd",
-      "target": "safari_safari_check_wd_s",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L74",
-      "weight": 1.0,
-      "source": "safari_safari_check_wd",
-      "target": "safari_safari_check_wd_start",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L61",
-      "weight": 1.0,
-      "source": "safari_safari_check_wd",
-      "target": "safari_safari_check_wd_up",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "method",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L89",
-      "weight": 1.0,
-      "source": "safari_safari_check_wd",
-      "target": "safari_safari_check_wd_wait",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L121",
-      "weight": 1.0,
-      "source": "safari_safari_check_main",
-      "target": "safari_safari_check_wd_req",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L87",
-      "weight": 1.0,
-      "source": "safari_safari_check_wd_find",
-      "target": "safari_safari_check_wd_req",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L84",
-      "weight": 1.0,
-      "source": "safari_safari_check_wd_js",
-      "target": "safari_safari_check_wd_req",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L103",
-      "weight": 1.0,
-      "source": "safari_safari_check_wd_quit",
-      "target": "safari_safari_check_wd_req",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L75",
-      "weight": 1.0,
-      "source": "safari_safari_check_wd_start",
-      "target": "safari_safari_check_wd_req",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L63",
-      "weight": 1.0,
-      "source": "safari_safari_check_wd_up",
-      "target": "safari_safari_check_wd_req",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L121",
-      "weight": 1.0,
-      "source": "safari_safari_check_main",
-      "target": "safari_safari_check_wd_s",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L87",
-      "weight": 1.0,
-      "source": "safari_safari_check_wd_find",
-      "target": "safari_safari_check_wd_s",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L84",
-      "weight": 1.0,
-      "source": "safari_safari_check_wd_js",
-      "target": "safari_safari_check_wd_s",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L103",
-      "weight": 1.0,
-      "source": "safari_safari_check_wd_quit",
-      "target": "safari_safari_check_wd_s",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L78",
-      "weight": 1.0,
-      "source": "safari_safari_check_wd_start",
-      "target": "safari_safari_check_wd_s",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L119",
-      "weight": 1.0,
-      "source": "safari_safari_check_main",
-      "target": "safari_safari_check_wd_up",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L120",
-      "weight": 1.0,
-      "source": "safari_safari_check_main",
-      "target": "safari_safari_check_wd_start",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L123",
-      "weight": 1.0,
-      "source": "safari_safari_check_main",
-      "target": "safari_safari_check_wd_js",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L93",
-      "weight": 1.0,
-      "source": "safari_safari_check_wd_wait",
-      "target": "safari_safari_check_wd_js",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L135",
-      "weight": 1.0,
-      "source": "safari_safari_check_main",
-      "target": "safari_safari_check_wd_find",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L126",
-      "weight": 1.0,
-      "source": "safari_safari_check_main",
-      "target": "safari_safari_check_wd_wait",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/safari/safari_check.py",
-      "source_location": "L147",
-      "weight": 1.0,
-      "source": "safari_safari_check_main",
-      "target": "safari_safari_check_wd_quit",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/tracker.spec.ts",
-      "source_location": "L28",
-      "weight": 1.0,
-      "source": "tests_tracker_spec",
-      "target": "tests_tracker_spec_expecteddayshort",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/tracker.spec.ts",
-      "source_location": "L41",
-      "weight": 1.0,
-      "source": "tests_tracker_spec",
-      "target": "tests_tracker_spec_fixtures",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/tracker.spec.ts",
-      "source_location": "L96",
-      "weight": 1.0,
-      "source": "tests_tracker_spec",
-      "target": "tests_tracker_spec_harness",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/tracker.spec.ts",
-      "source_location": "L106",
-      "weight": 1.0,
-      "source": "tests_tracker_spec",
-      "target": "tests_tracker_spec_mocktracker",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/tracker.spec.ts",
-      "source_location": "L27",
-      "weight": 1.0,
-      "source": "tests_tracker_spec",
-      "target": "tests_tracker_spec_months",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/tracker.spec.ts",
-      "source_location": "L119",
-      "weight": 1.0,
-      "source": "tests_tracker_spec",
-      "target": "tests_tracker_spec_opentracker",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/tracker.spec.ts",
-      "source_location": "L112",
-      "weight": 1.0,
-      "source": "tests_tracker_spec",
-      "target": "tests_tracker_spec_passgate",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/tracker.spec.ts",
-      "source_location": "L124",
-      "weight": 1.0,
-      "source": "tests_tracker_spec",
-      "target": "tests_tracker_spec_rowbyname",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/tracker.spec.ts",
-      "source_location": "L90",
-      "weight": 1.0,
-      "source": "tests_tracker_spec",
-      "target": "tests_tracker_spec_sorted_names",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/tracker.spec.ts",
-      "source_location": "L136",
-      "weight": 1.0,
-      "source": "tests_tracker_spec",
-      "target": "tests_tracker_spec_stepstates",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/tracker.spec.ts",
-      "source_location": "L92",
-      "weight": 1.0,
-      "source": "tests_tracker_spec",
-      "target": "tests_tracker_spec_trackerpayload",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/tracker.spec.ts",
-      "source_location": "L148",
-      "weight": 1.0,
-      "source": "tests_tracker_spec",
-      "target": "tests_tracker_spec_tt_widths",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/tracker.spec.ts",
-      "source_location": "L129",
-      "weight": 1.0,
-      "source": "tests_tracker_spec",
-      "target": "tests_tracker_spec_visiblenames",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/tests/tracker.spec.ts",
-      "source_location": "L121",
-      "weight": 1.0,
-      "source": "tests_tracker_spec_opentracker",
-      "target": "tests_tracker_spec_passgate",
-      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -47873,117 +45780,6 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "supabase/functions/otp-record/index.ts",
-      "source_location": "L38",
-      "weight": 1.0,
-      "source": "otp_record_index",
-      "target": "otp_record_index_cors",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "supabase/functions/otp-record/index.ts",
-      "source_location": "L44",
-      "weight": 1.0,
-      "source": "otp_record_index",
-      "target": "otp_record_index_json",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "supabase/functions/otp-record/index.ts",
-      "source_location": "L69",
-      "weight": 1.0,
-      "source": "otp_record_index",
-      "target": "otp_record_index_listpadfiles",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "supabase/functions/otp-record/index.ts",
-      "source_location": "L36",
-      "weight": 1.0,
-      "source": "otp_record_index",
-      "target": "otp_record_index_miss",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "supabase/functions/otp-record/index.ts",
-      "source_location": "L51",
-      "weight": 1.0,
-      "source": "otp_record_index",
-      "target": "otp_record_index_rpc",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "supabase/functions/otp-record/index.ts",
-      "source_location": "L93",
-      "weight": 1.0,
-      "source": "otp_record_index",
-      "target": "otp_record_index_tokenfromrequest",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "supabase/functions/otp-record/index.ts",
-      "source_location": "L83",
-      "weight": 1.0,
-      "source": "otp_record_index_listpadfiles",
-      "target": "otp_record_index_json",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "supabase/functions/otp-submit/index.ts",
-      "source_location": "L28",
-      "weight": 1.0,
-      "source": "otp_submit_index",
-      "target": "otp_submit_index_cors",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "supabase/functions/otp-submit/index.ts",
-      "source_location": "L34",
-      "weight": 1.0,
-      "source": "otp_submit_index",
-      "target": "otp_submit_index_json",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "supabase/functions/otp-submit/index.ts",
-      "source_location": "L62",
-      "weight": 1.0,
-      "source": "otp_submit_index",
-      "target": "otp_submit_index_mirror",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "supabase/functions/otp-submit/index.ts",
-      "source_location": "L41",
-      "weight": 1.0,
-      "source": "otp_submit_index",
-      "target": "otp_submit_index_rpc",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
       "source_file": "video/observation-system-src/assets/data/video-data.json",
       "source_location": "L2",
       "weight": 1.0,
@@ -54119,76 +51915,6 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "Assets/OTP/README.md",
-      "source_location": "L361",
-      "weight": 1.0,
-      "source": "otp_readme",
-      "target": "otp_readme_otp_v0_10_phase_1_2026_09_16",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/README.md",
-      "source_location": "L292",
-      "weight": 1.0,
-      "source": "otp_readme",
-      "target": "otp_readme_otp_v0_10_phase_2_2026_09_16",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/README.md",
-      "source_location": "L229",
-      "weight": 1.0,
-      "source": "otp_readme",
-      "target": "otp_readme_otp_v0_10_phase_3_2026_09_17",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/README.md",
-      "source_location": "L222",
-      "weight": 1.0,
-      "source": "otp_readme",
-      "target": "otp_readme_otp_v0_10_released_to_main_2026_09_18",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/README.md",
-      "source_location": "L71",
-      "weight": 1.0,
-      "source": "otp_readme",
-      "target": "otp_readme_otp_v0_11_continue_and_close_no_reload_2026_09_18_task_7_preview_build",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/README.md",
-      "source_location": "L56",
-      "weight": 1.0,
-      "source": "otp_readme",
-      "target": "otp_readme_otp_v0_11_released_to_main_2026_09_20",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/README.md",
-      "source_location": "L164",
-      "weight": 1.0,
-      "source": "otp_readme",
-      "target": "otp_readme_otp_v0_11_status_strip_next_steps_rework_2026_09_18_task_5_preview_build",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/README.md",
       "source_location": "L1",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -54201,18 +51927,8 @@
       "source_file": "Assets/OTP/README.md",
       "source_location": "L1",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "otp_readme",
-      "target": "otp_readme_otp_v0_9_3_2026_09_12"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/README.md",
-      "source_location": "L392",
-      "weight": 1.0,
-      "source": "otp_readme",
-      "target": "otp_readme_otp_v0_9_4_2026_09_15",
+      "target": "otp_readme_otp_v0_9_3_2026_09_12",
       "confidence_score": 1.0
     },
     {
@@ -54224,16 +51940,6 @@
       "confidence_score": 1.0,
       "source": "otp_readme",
       "target": "otp_readme_progress_in_lessons_otp_form_otp_v0_9_1"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "Assets/OTP/README.md",
-      "source_location": "L1",
-      "weight": 1.0,
-      "source": "otp_readme",
-      "target": "otp_readme_teacher_tracker_otp_v0_12",
-      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -54291,9 +51997,9 @@
       "source_file": "Assets/OTP/tests/ipad/README.md",
       "source_location": "L1",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "private_tmp_claude_501_users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_claude_worktrees_handoff_load_c82d79_dbb590c5_5d3d_4dfd_9feb_b9133a30ccc7_scratchpad_fix_otp_v0_9_1_assets_otp_tests_ipad_readme_md",
-      "target": "ipad_readme_ipad_simulator_rig_for_the_otp_form_ipados_26_3"
+      "target": "ipad_readme_ipad_simulator_rig_for_the_otp_form_ipados_26_3",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -59127,5 +56833,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "637d197a36d2613a45d0bbe967c7b9a49995c57f"
+  "built_at_commit": "7438dfc6b370d1f85e5fce057bbda1735d7f3c97"
 }

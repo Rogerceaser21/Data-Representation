@@ -1,0 +1,464 @@
+{
+  "communities": {
+    "0": [
+      "admin_user_ais",
+      "apps_script_lesson_obs_config",
+      "apps_script_lesson_obs_doget",
+      "apps_script_lesson_obs_dopost",
+      "apps_script_r3_config",
+      "apps_script_r3_doget",
+      "apps_script_r3_dopost",
+      "apps_script_r3_teacherloader",
+      "bfcache_resilience",
+      "cache_service",
+      "claude_md",
+      "concept_admin_user",
+      "concept_github_pages",
+      "concept_google_workspace_groups",
+      "concept_ipad_safari_select_bug",
+      "concept_opaque_tom_select_values",
+      "concept_self_healing_fetch",
+      "concept_staticrypt",
+      "concept_supabase_main_db",
+      "concept_tom_select",
+      "email_signature_banner",
+      "github_pages",
+      "google_sheet_lesson_obs",
+      "google_sheet_r3",
+      "handoff_20260602",
+      "handoff_md_r3",
+      "img_ais_logo_navy",
+      "img_ais_logo_white",
+      "img_curtis_all",
+      "img_deena_abugeras",
+      "img_email_signature",
+      "img_gina_hanlon",
+      "img_hani_asad",
+      "img_jo_mare_kruger",
+      "img_lana_mosleh",
+      "index_pitch_deck",
+      "lesson_observation_form_main",
+      "lesson_observation_form_redirect",
+      "observed_teachers_plan",
+      "planning_checklist",
+      "planning_v010_checklist",
+      "r3_config_gs",
+      "r3_doget_gs",
+      "r3_dopost_gs",
+      "r3_email_kickoff",
+      "r3_encrypt_sh",
+      "r3_encrypted",
+      "r3_evidence_form_encrypted",
+      "r3_evidence_form_master",
+      "r3_google_links",
+      "r3_google_sheet",
+      "r3_helpers_gs",
+      "r3_master",
+      "r3_password_template",
+      "r3_readme",
+      "r3_teacher_loader",
+      "r3_template_docx",
+      "r3_tom_select_js",
+      "selection_picker_plan",
+      "spea_probation_pdf",
+      "staticrypt",
+      "tom_select"
+    ],
+    "1": [
+      "observation_igor",
+      "observation_igor_classroom_management",
+      "observation_igor_curriculum",
+      "observation_igor_digitech",
+      "observation_igor_interpersonal",
+      "observation_igor_observer",
+      "observation_igor_teacher",
+      "observation_igor_teaching_learning",
+      "otp_additional_adult",
+      "otp_aitsl_standards",
+      "otp_class_management",
+      "otp_digital_technologies",
+      "otp_learning_intention_sc",
+      "otp_lesson_delivery",
+      "otp_lesson_planning",
+      "otp_nasot",
+      "otp_primary_school_outstanding_teacher_profile",
+      "otp_progression",
+      "otp_questioning_dialogue",
+      "otp_relationships",
+      "otp_student_interaction",
+      "otp_student_wellbeing",
+      "otp_tlac",
+      "otp_urstrong",
+      "r3_assessment",
+      "r3_attainment",
+      "r3_curriculum",
+      "r3_evidence_form",
+      "r3_judgement_scale",
+      "r3_leadership",
+      "r3_teaching",
+      "year6_ac9tdi6p01",
+      "year6_ac9tdi6p02",
+      "year6_ac9tdi6p05",
+      "year6_acara",
+      "year6_cold_call",
+      "year6_differentiation",
+      "year6_exit_ticket",
+      "year6_google_ai_studio",
+      "year6_i_do_we_do_you_do",
+      "year6_if_then_statements",
+      "year6_input_output",
+      "year6_lesson_plan",
+      "year6_misconceptions",
+      "year6_one_shot_prompt",
+      "year6_prompt_engineering",
+      "year6_success_criteria",
+      "year6_tetris_game",
+      "year6_think_pair_share"
+    ],
+    "2": [
+      "lib_tom_select_complete_min",
+      "lib_tom_select_complete_min_c",
+      "lib_tom_select_complete_min_c_add",
+      "lib_tom_select_complete_min_c_clone",
+      "lib_tom_select_complete_min_c_last",
+      "lib_tom_select_complete_min_c_length",
+      "lib_tom_select_complete_min_ce_destroy",
+      "lib_tom_select_complete_min_ce_getsearchoptions",
+      "lib_tom_select_complete_min_ce_setupcallbacks",
+      "lib_tom_select_complete_min_ce_setuptemplates",
+      "lib_tom_select_complete_min_e",
+      "lib_tom_select_complete_min_le",
+      "lib_tom_select_complete_min_t",
+      "lib_tom_select_complete_min_t_constructor",
+      "lib_tom_select_complete_min_t_getscorefunction",
+      "lib_tom_select_complete_min_t_getsortfunction",
+      "lib_tom_select_complete_min_t_off",
+      "lib_tom_select_complete_min_t_on",
+      "lib_tom_select_complete_min_t_preparesearch",
+      "lib_tom_select_complete_min_t_search",
+      "lib_tom_select_complete_min_t_tokenize"
+    ],
+    "3": [
+      "lib_tom_select_complete_min_ce",
+      "lib_tom_select_complete_min_ce_addoption",
+      "lib_tom_select_complete_min_ce_addoptions",
+      "lib_tom_select_complete_min_ce_clearfilter",
+      "lib_tom_select_complete_min_ce_disable",
+      "lib_tom_select_complete_min_ce_enable",
+      "lib_tom_select_complete_min_ce_hook",
+      "lib_tom_select_complete_min_ce_lock",
+      "lib_tom_select_complete_min_ce_onchange",
+      "lib_tom_select_complete_min_ce_onmousedown",
+      "lib_tom_select_complete_min_ce_onpaste",
+      "lib_tom_select_complete_min_ce_registeroption",
+      "lib_tom_select_complete_min_ce_render",
+      "lib_tom_select_complete_min_ce_setdisabled",
+      "lib_tom_select_complete_min_ce_setlocked",
+      "lib_tom_select_complete_min_ce_setreadonly",
+      "lib_tom_select_complete_min_ce_setupoptions",
+      "lib_tom_select_complete_min_ce_setvalue",
+      "lib_tom_select_complete_min_ce_sync",
+      "lib_tom_select_complete_min_ce_unlock"
+    ],
+    "4": [
+      "deck_overflow_bug",
+      "deck_pdf_export",
+      "handoff_html_deck",
+      "img_slide1_cover_v012",
+      "img_slide3_bottom_v012",
+      "img_slide3_top_v012",
+      "img_slide4_bottom_v012",
+      "img_slide4_top_v012",
+      "img_slide4_v011_broken",
+      "index_html",
+      "lesson_obs_form",
+      "lo_config_gs",
+      "lo_doget_gs",
+      "lo_dopost_gs",
+      "lo_google_sheet",
+      "lo_helpers_gs",
+      "redirect_stub"
+    ],
+    "5": [
+      "lib_tom_select_complete_min_ce_additem",
+      "lib_tom_select_complete_min_ce_canselect",
+      "lib_tom_select_complete_min_ce_close",
+      "lib_tom_select_complete_min_ce_controlchildren",
+      "lib_tom_select_complete_min_ce_createitem",
+      "lib_tom_select_complete_min_ce_deleteselection",
+      "lib_tom_select_complete_min_ce_getadjacent",
+      "lib_tom_select_complete_min_ce_inputstate",
+      "lib_tom_select_complete_min_ce_onkeydown",
+      "lib_tom_select_complete_min_ce_onkeypress",
+      "lib_tom_select_complete_min_ce_onoptionselect",
+      "lib_tom_select_complete_min_ce_selectall",
+      "lib_tom_select_complete_min_ce_settextboxvalue",
+      "lib_tom_select_complete_min_ce_setup",
+      "lib_tom_select_complete_min_ce_shoulddelete"
+    ],
+    "6": [
+      "lib_tom_select_complete_min_ce_addoptiongroup",
+      "lib_tom_select_complete_min_ce_cancreate",
+      "lib_tom_select_complete_min_ce_canload",
+      "lib_tom_select_complete_min_ce_clearactiveoption",
+      "lib_tom_select_complete_min_ce_inputvalue",
+      "lib_tom_select_complete_min_ce_load",
+      "lib_tom_select_complete_min_ce_loadcallback",
+      "lib_tom_select_complete_min_ce_onfocus",
+      "lib_tom_select_complete_min_ce_oninput",
+      "lib_tom_select_complete_min_ce_preload",
+      "lib_tom_select_complete_min_ce_refreshoptions",
+      "lib_tom_select_complete_min_ce_registeroptiongroup",
+      "lib_tom_select_complete_min_ce_selectable"
+    ],
+    "7": [
+      "lib_tom_select_complete_min_ce_clear",
+      "lib_tom_select_complete_min_ce_clearcache",
+      "lib_tom_select_complete_min_ce_clearoptiongroups",
+      "lib_tom_select_complete_min_ce_clearoptions",
+      "lib_tom_select_complete_min_ce_getitem",
+      "lib_tom_select_complete_min_ce_getvalue",
+      "lib_tom_select_complete_min_ce_insertatcaret",
+      "lib_tom_select_complete_min_ce_removeitem",
+      "lib_tom_select_complete_min_ce_removeoption",
+      "lib_tom_select_complete_min_ce_removeoptiongroup",
+      "lib_tom_select_complete_min_ce_setcaret",
+      "lib_tom_select_complete_min_ce_updateoriginalinput",
+      "lib_tom_select_complete_min_t_trigger"
+    ],
+    "8": [
+      "lib_tom_select_complete_min_ce_advanceselection",
+      "lib_tom_select_complete_min_ce_blur",
+      "lib_tom_select_complete_min_ce_clearactiveitems",
+      "lib_tom_select_complete_min_ce_focus",
+      "lib_tom_select_complete_min_ce_getlastactive",
+      "lib_tom_select_complete_min_ce_movecaret",
+      "lib_tom_select_complete_min_ce_onblur",
+      "lib_tom_select_complete_min_ce_onclick",
+      "lib_tom_select_complete_min_ce_onitemselect",
+      "lib_tom_select_complete_min_ce_removeactiveitem",
+      "lib_tom_select_complete_min_ce_setactiveitem",
+      "lib_tom_select_complete_min_ce_setactiveitemclass"
+    ],
+    "9": [
+      "apps_script_appsscript_dependencies_enabledadvancedservices",
+      "assets_r3_apps_script_appsscript_json_apps_script_appsscript",
+      "assets_r3_apps_script_appsscript_json_apps_script_appsscript_dependencies",
+      "assets_r3_apps_script_appsscript_json_apps_script_appsscript_exceptionlogging",
+      "assets_r3_apps_script_appsscript_json_apps_script_appsscript_oauthscopes",
+      "assets_r3_apps_script_appsscript_json_apps_script_appsscript_runtimeversion",
+      "assets_r3_apps_script_appsscript_json_apps_script_appsscript_timezone",
+      "assets_r3_apps_script_appsscript_json_apps_script_appsscript_webapp",
+      "assets_r3_apps_script_appsscript_json_apps_script_appsscript_webapp_access",
+      "assets_r3_apps_script_appsscript_json_apps_script_appsscript_webapp_executeas"
+    ],
+    "10": [
+      "apps_script_appsscript_json_apps_script_appsscript",
+      "apps_script_appsscript_json_apps_script_appsscript_dependencies",
+      "apps_script_appsscript_json_apps_script_appsscript_exceptionlogging",
+      "apps_script_appsscript_json_apps_script_appsscript_oauthscopes",
+      "apps_script_appsscript_json_apps_script_appsscript_runtimeversion",
+      "apps_script_appsscript_json_apps_script_appsscript_timezone",
+      "apps_script_appsscript_json_apps_script_appsscript_webapp",
+      "apps_script_appsscript_json_apps_script_appsscript_webapp_access",
+      "apps_script_appsscript_json_apps_script_appsscript_webapp_executeas"
+    ],
+    "11": [
+      "apps_script_clasp_json_apps_script_clasp",
+      "apps_script_clasp_json_apps_script_clasp_filepushorder",
+      "apps_script_clasp_json_apps_script_clasp_htmlextensions",
+      "apps_script_clasp_json_apps_script_clasp_jsonextensions",
+      "apps_script_clasp_json_apps_script_clasp_rootdir",
+      "apps_script_clasp_json_apps_script_clasp_scriptextensions",
+      "apps_script_clasp_json_apps_script_clasp_scriptid",
+      "apps_script_clasp_json_apps_script_clasp_skipsubdirectories"
+    ],
+    "12": [
+      "assets_r3_apps_script_clasp_json_apps_script_clasp",
+      "assets_r3_apps_script_clasp_json_apps_script_clasp_filepushorder",
+      "assets_r3_apps_script_clasp_json_apps_script_clasp_htmlextensions",
+      "assets_r3_apps_script_clasp_json_apps_script_clasp_jsonextensions",
+      "assets_r3_apps_script_clasp_json_apps_script_clasp_rootdir",
+      "assets_r3_apps_script_clasp_json_apps_script_clasp_scriptextensions",
+      "assets_r3_apps_script_clasp_json_apps_script_clasp_scriptid",
+      "assets_r3_apps_script_clasp_json_apps_script_clasp_skipsubdirectories"
+    ],
+    "13": [
+      "lib_tom_select_complete_min_ce_additems",
+      "lib_tom_select_complete_min_ce_isfull",
+      "lib_tom_select_complete_min_ce_open",
+      "lib_tom_select_complete_min_ce_positiondropdown",
+      "lib_tom_select_complete_min_ce_refreshitems",
+      "lib_tom_select_complete_min_ce_refreshstate",
+      "lib_tom_select_complete_min_ce_refreshvaliditystate",
+      "lib_tom_select_complete_min_ce_setmaxitems"
+    ],
+    "14": [
+      "lib_tom_select_complete_min_ce_getoption",
+      "lib_tom_select_complete_min_ce_onoptionhover",
+      "lib_tom_select_complete_min_ce_scroll",
+      "lib_tom_select_complete_min_ce_scrolltooption",
+      "lib_tom_select_complete_min_ce_setactiveoption",
+      "lib_tom_select_complete_min_ce_uncachevalue",
+      "lib_tom_select_complete_min_ce_updateoption"
+    ],
+    "15": [
+      "claude_settings_local",
+      "claude_settings_local_permissions",
+      "claude_settings_local_permissions_allow"
+    ],
+    "16": [
+      "r3_encrypt",
+      "users_igor_library_cloudstorage_googledrive_igor_sesar_ais_ae_my_drive_digitech_claude_igor_online_data_representation_assets_r3_encrypt_sh__entry"
+    ],
+    "17": [
+      "r3_staticrypt",
+      "r3_staticrypt_salt"
+    ],
+    "18": [
+      "apps_script_lesson_obs_helpers"
+    ],
+    "19": [
+      "apps_script_r3_helpers"
+    ],
+    "20": [
+      "readme_md"
+    ]
+  },
+  "cohesion": {
+    "0": 0.06927551560021153,
+    "1": 0.05357142857142857,
+    "2": 0.1523809523809524,
+    "3": 0.1736842105263158,
+    "4": 0.25735294117647056,
+    "5": 0.23809523809523808,
+    "6": 0.19230769230769232,
+    "7": 0.21794871794871795,
+    "8": 0.21212121212121213,
+    "9": 0.2,
+    "10": 0.2222222222222222,
+    "11": 0.25,
+    "12": 0.25,
+    "13": 0.2857142857142857,
+    "14": 0.3333333333333333,
+    "15": 0.6666666666666666,
+    "16": 1.0,
+    "17": 1.0,
+    "18": 1.0,
+    "19": 1.0,
+    "20": 1.0
+  },
+  "gods": [
+    {
+      "id": "lib_tom_select_complete_min_ce",
+      "label": "ce",
+      "degree": 94
+    },
+    {
+      "id": "r3_master",
+      "label": "R3 Evidence Form Master Source",
+      "degree": 23
+    },
+    {
+      "id": "r3_evidence_form_master",
+      "label": "R3 Evidence Form (Master Source)",
+      "degree": 17
+    },
+    {
+      "id": "index_pitch_deck",
+      "label": "Teacher Observation Pitch Deck (index.html)",
+      "degree": 16
+    },
+    {
+      "id": "year6_lesson_plan",
+      "label": "Year 6 Lesson Plan \u2013 Build Tetris with A.I.",
+      "degree": 15
+    },
+    {
+      "id": "lesson_observation_form_main",
+      "label": "Lesson Observation Form (HTML)",
+      "degree": 13
+    },
+    {
+      "id": "otp_primary_school_outstanding_teacher_profile",
+      "label": "Primary School Outstanding Teacher Profile (OTP)",
+      "degree": 13
+    },
+    {
+      "id": "lib_tom_select_complete_min_t",
+      "label": "t",
+      "degree": 11
+    },
+    {
+      "id": "handoff_html_deck",
+      "label": "Handoff Brief Deck v0.12 Broken (2026-05-29)",
+      "degree": 11
+    },
+    {
+      "id": "index_html",
+      "label": "Pitch Deck (index.html, 5 slides)",
+      "degree": 11
+    }
+  ],
+  "surprises": [
+    {
+      "source": "Curtis All Portrait",
+      "target": "Teacher Observation Pitch Deck (index.html)",
+      "source_files": [
+        "SPEA Data Report/Curtis All.jpg",
+        "index.html"
+      ],
+      "confidence": "AMBIGUOUS",
+      "relation": "conceptually_related_to",
+      "why": "ambiguous connection - not explicitly stated in source; crosses file types (doc \u2194 image); connects across different repos/directories; peripheral node `Curtis All Portrait` unexpectedly reaches hub `Teacher Observation Pitch Deck (index.html)`"
+    },
+    {
+      "source": "Deena AbuGeras Portrait",
+      "target": "Teacher Observation Pitch Deck (index.html)",
+      "source_files": [
+        "SPEA Data Report/Deena AbuGeras from DB Files.jpg",
+        "index.html"
+      ],
+      "confidence": "AMBIGUOUS",
+      "relation": "conceptually_related_to",
+      "why": "ambiguous connection - not explicitly stated in source; crosses file types (doc \u2194 image); connects across different repos/directories; peripheral node `Deena AbuGeras Portrait` unexpectedly reaches hub `Teacher Observation Pitch Deck (index.html)`"
+    },
+    {
+      "source": "Gina Hanlon Portrait",
+      "target": "Teacher Observation Pitch Deck (index.html)",
+      "source_files": [
+        "SPEA Data Report/Gina Hanlon from DB Files (1).jpg",
+        "index.html"
+      ],
+      "confidence": "AMBIGUOUS",
+      "relation": "conceptually_related_to",
+      "why": "ambiguous connection - not explicitly stated in source; crosses file types (doc \u2194 image); connects across different repos/directories; peripheral node `Gina Hanlon Portrait` unexpectedly reaches hub `Teacher Observation Pitch Deck (index.html)`"
+    },
+    {
+      "source": "Hani Asad Portrait",
+      "target": "Teacher Observation Pitch Deck (index.html)",
+      "source_files": [
+        "SPEA Data Report/Hani Asad - DB Files.jpg",
+        "index.html"
+      ],
+      "confidence": "AMBIGUOUS",
+      "relation": "conceptually_related_to",
+      "why": "ambiguous connection - not explicitly stated in source; crosses file types (doc \u2194 image); connects across different repos/directories; peripheral node `Hani Asad Portrait` unexpectedly reaches hub `Teacher Observation Pitch Deck (index.html)`"
+    },
+    {
+      "source": "Lana Mosleh Portrait",
+      "target": "Teacher Observation Pitch Deck (index.html)",
+      "source_files": [
+        "SPEA Data Report/Lana Mosleh.jpg",
+        "index.html"
+      ],
+      "confidence": "AMBIGUOUS",
+      "relation": "conceptually_related_to",
+      "why": "ambiguous connection - not explicitly stated in source; crosses file types (doc \u2194 image); connects across different repos/directories; peripheral node `Lana Mosleh Portrait` unexpectedly reaches hub `Teacher Observation Pitch Deck (index.html)`"
+    }
+  ],
+  "tokens": {
+    "input": 19390,
+    "output": 9281
+  }
+}
