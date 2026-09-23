@@ -980,16 +980,24 @@ body.op-dock.op-bar-active:not(.pad-open) .op-bar {
 .op-bar-ns {
   flex: none;
   display: inline-flex; align-items: center; gap: 0.3em;
-  height: calc(var(--op-bar-h) - 0.7rem);
-  padding: 0 0.6rem;
+  /* otp-v0.12 P2-B: the SAME thin translucent pill as the docked
+     Agenda/Check-Teacher buttons (.float-link) - height/padding/
+     background/border/radius/blur/shadow/font lifted verbatim (including
+     .float-link's own explicit-height formula) so all three bar buttons
+     read as one family, per the owner's ask. */
+  padding: 0.5rem 0.95rem;
+  height: calc(1rem + 1.05em + 2px);
   border-radius: 999px;
   border: 1px solid var(--rule);
-  background: var(--card-bg);
-  color: var(--paper);
+  background: var(--surface-mid);
+  color: var(--paper-dim);
   font-family: var(--body-font);
   font-weight: 700;
-  font-size: clamp(0.66rem, 1.2vw, 0.8rem);
+  font-size: clamp(0.72rem, 1.4vw, 0.85rem);
   cursor: pointer;
+  -webkit-backdrop-filter: blur(6px);
+          backdrop-filter: blur(6px);
+  box-shadow: 0 4px 14px -6px rgba(20, 54, 66, 0.25);
   transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 .op-bar-ns .op-ns-icon { width: 1em; height: 1em; flex: none; }
@@ -1063,41 +1071,24 @@ body.is-viewer .op-ns-scrim { display: none !important; }
 
 /* --- docking: while the bar shows (and dock is on, which it always is in
    the product), the floating Agenda/Check buttons move to the bar's two
-   ends and become part of its surface. They must stay OBVIOUSLY tappable
-   buttons, not bare glyphs: labelled at 834/1024 by default, icon-only (but
-   still a full-contrast button chip) at 744 always, or at any width once
-   opBarFitContent() adds body.op-dock-compact because the labelled form does
-   not fit inside the (narrower, card-matched) bar. 44px minimum always.
-   Docking must switch off completely the instant body.pad-open is present,
-   however op-dock/op-bar-active landed, so every docking rule below is
-   qualified :not(.pad-open) on body, rather than trying to out-specificity
-   or !important an undo afterwards. --- */
-.float-link {
-  /* extends the base rule's transition list (background/color/border-
-     color/transform) with the geometry properties the dock/undock swap
-     touches; same specificity, later in the cascade, so this wins without
-     editing the original declaration. */
-  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease,
-              left 260ms cubic-bezier(0.22, 1, 0.36, 1), right 260ms cubic-bezier(0.22, 1, 0.36, 1),
-              width 260ms cubic-bezier(0.22, 1, 0.36, 1), padding 260ms cubic-bezier(0.22, 1, 0.36, 1),
-              border-radius 260ms cubic-bezier(0.22, 1, 0.36, 1);
-}
+   ends. Docking changes POSITION ONLY (owner: "pop in, looking exactly the
+   same... same shape, same everything") - the pill's own height, padding,
+   background, border, radius, shadow, blur and font are the base rule's,
+   untouched here, at every width including the icon-only tier (which only
+   hides the label span). --op-dock-btn-top is written by JS
+   (opBarSyncBtnTop, below) to vertically centre the pill's own (shorter)
+   height inside the 44px bar; the fallback is the one frame before that JS
+   has run. Docking must switch off completely the instant body.pad-open is
+   present, however op-dock/op-bar-active landed, so every docking rule
+   below is qualified :not(.pad-open) on body, rather than trying to
+   out-specificity or !important an undo afterwards. The full transition
+   list (background/color/border-color/transform + top/left/right) lives
+   on the base .float-link rule below, not a same-specificity rule here -
+   two `.float-link { transition: ... }` declarations of equal specificity
+   would just have the later one in source order win outright, silently
+   dropping the other's properties instead of merging them. --- */
 body.op-dock.op-bar-active:not(.pad-open) .float-link {
-  top: var(--op-bar-top);
-  height: var(--op-bar-h);
-  min-width: var(--op-bar-h);
-  padding: 0 0.55rem;
-  justify-content: center;
-  gap: 0.3em;
-  /* same visible surface + contrast as the Next Steps button (B3), so the
-     docked buttons read as one family of controls with the bar's own. */
-  background: var(--card-bg);
-  border: 1px solid var(--rule);
-  border-radius: 999px;
-  box-shadow: none;
-  color: var(--paper);
-  -webkit-backdrop-filter: none;
-          backdrop-filter: none;
+  top: var(--op-dock-btn-top, var(--op-bar-top));
   /* paints ABOVE op-bar-wrap (120), so the icon/label read crisp on top of
      the bar's own surface instead of being blurred a second time by it */
   z-index: 130;
@@ -1109,17 +1100,18 @@ body.op-dock.op-bar-active:not(.pad-open) .float-link.agenda { left: var(--op-ba
    viewport-left terms - avoids needing Check's own rendered width. */
 body.op-dock.op-bar-active:not(.pad-open) .float-link.check { right: calc(100vw - var(--op-bar-x) - var(--op-bar-w)); }
 @media (hover: hover) {
-  body.op-dock.op-bar-active:not(.pad-open) .float-link:hover { border-color: var(--ais-yellow); color: var(--paper); transform: translateY(0); }
+  /* colour/border-colour already match the base :hover rule; only the
+     lift differs (no translateY while docked in the thin bar row). */
+  body.op-dock.op-bar-active:not(.pad-open) .float-link:hover { transform: translateY(0); }
 }
 /* icon-only: the guaranteed floor at <=760px, or above that whenever
    opBarFitContent() decides the labelled buttons don't fit the (narrower,
-   card-matched) bar and adds this class - still a full button chip
-   (background + border), never a bare glyph, just without room for the label. */
+   card-matched) bar and adds this class - the label hides, but the pill
+   itself (padding/background/border/radius/etc) is untouched, still the
+   same pill, just without room for the label. */
 @media (max-width: 760px) {
-  body.op-dock.op-bar-active:not(.pad-open) .float-link { width: var(--op-bar-h); padding: 0; }
   body.op-dock.op-bar-active:not(.pad-open) .float-link span { display: none; }
 }
-body.op-dock-compact.op-dock.op-bar-active:not(.pad-open) .float-link { width: var(--op-bar-h); padding: 0; }
 body.op-dock-compact.op-dock.op-bar-active:not(.pad-open) .float-link span { display: none; }
 
 /* body.pad-open must hide the bar (and, B3, the Next Steps drop-down + its
@@ -1986,7 +1978,15 @@ textarea.long-text:focus { border-color: var(--rate-success); }
   display: inline-flex;
   align-items: center;
   gap: 0.45em;
-  padding: 0.5rem 0.95rem;
+  --fl-pad-v: 0.5rem;
+  padding: var(--fl-pad-v) 0.95rem;
+  /* otp-v0.12 P2-B: an EXPLICIT height, not just the intrinsic content
+     one, so the icon-only tier (label span hidden while docked) can never
+     render a shorter box than the labelled pill - both must compute to
+     the exact same height. 1.05em matches .fl-icon's own size below, the
+     tallest content present in either state. This is also what lets the
+     docked pill centre inside the 44px bar reliably (opBarSyncBtnTop). */
+  height: calc(2 * var(--fl-pad-v) + 1.05em + 2px);
   border-radius: 999px;
   border: 1px solid var(--rule);
   background: var(--surface-mid);
@@ -2000,7 +2000,12 @@ textarea.long-text:focus { border-color: var(--rate-success); }
   -webkit-backdrop-filter: blur(6px);
           backdrop-filter: blur(6px);
   box-shadow: 0 4px 14px -6px rgba(20, 54, 66, 0.25);
-  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  /* otp-v0.12 P2-B: top/left/right added so docking glides into place
+     instead of snapping - position is the ONLY thing docking may change
+     (see the docking block above), so it is the only geometry animated. */
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease,
+              top 260ms cubic-bezier(0.22, 1, 0.36, 1),
+              left 260ms cubic-bezier(0.22, 1, 0.36, 1), right 260ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 .float-link:hover {
   border-color: var(--ais-yellow);
@@ -2011,7 +2016,7 @@ textarea.long-text:focus { border-color: var(--rate-success); }
 .float-link.agenda { left: clamp(0.7rem, 1.4vw, 1.2rem); }
 .float-link.check  { right: clamp(0.7rem, 1.4vw, 1.2rem); }   /* mirrors Agenda's inset */
 @media (max-width: 560px) {
-  .float-link { font-size: 0.68rem; padding: 0.38rem 0.66rem; gap: 0.35em; }
+  .float-link { --fl-pad-v: 0.38rem; font-size: 0.68rem; padding: var(--fl-pad-v) 0.66rem; gap: 0.35em; }
 }
 @media (hover: none) {
   .float-link:hover { border-color: var(--rule); color: var(--paper-dim); transform: none; }
@@ -8357,6 +8362,29 @@ body.is-viewer .cog-btn { display: none; }
     if (rw > 4) document.documentElement.style.setProperty('--op-end-r', rw + 'px');
   }
 
+  // otp-v0.12 P2-B: the docked pill keeps its OWN (shorter) height now, so
+  // it must be centred inside the 44px bar rather than stretched to fill
+  // it. The pill's font-size uses clamp(...vw...), so its rendered height
+  // is not a fixed value a pure calc() can re-derive without duplicating
+  // font metrics; measured live instead, the same pattern as
+  // opBarSyncEndPadding above. Agenda and Check share one CSS rule so
+  // either's real height stands for both.
+  function opBarSyncBtnTop() {
+    var bar = document.getElementById('op-bar');
+    var agenda = document.querySelector('.float-link.agenda');
+    if (!bar || !agenda) return;
+    // getComputedStyle, not getBoundingClientRect: this runs BEFORE
+    // data-state flips to "shown" (see syncOpBarVisibility), while the bar
+    // can still be at its pre-materialize scale(0.94) transform - a
+    // bounding-box read would bake in that transient shrink. Computed
+    // 'height' ignores transform, always the real (unscaled) box.
+    var barH = parseFloat(getComputedStyle(bar).height);
+    var btnH = parseFloat(getComputedStyle(agenda).height);
+    if (!(barH > 4) || !(btnH > 4)) return;
+    var offset = (barH - btnH) / 2;
+    document.documentElement.style.setProperty('--op-dock-btn-top', 'calc(var(--op-bar-top) + ' + offset.toFixed(2) + 'px)');
+  }
+
   // the bar is exactly as wide as the card, so the full/short label and
   // labelled docked buttons can genuinely stop fitting at some widths. This
   // measures the ACTUAL fit (steps row scrollWidth vs its allotted
@@ -8375,6 +8403,7 @@ body.is-viewer .cog-btn { display: none; }
     if (!bar) return;
     document.body.classList.remove('op-dock-compact');
     opBarSyncEndPadding();
+    opBarSyncBtnTop();
     for (var i = 0; i < OP_LABEL_TIERS.length; i++) {
       bar.dataset.labelTier = OP_LABEL_TIERS[i];
       if (opBarFitsAtCurrentTier()) return;

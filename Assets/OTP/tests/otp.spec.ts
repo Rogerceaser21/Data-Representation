@@ -6798,8 +6798,13 @@ test("otp-v0.12 B2: Agenda and Check Teacher dock into the bar's two ends while 
     expect(await page.locator('.float-link.agenda').getAttribute('target'), `${width}px agenda target while docked`).toBe('_blank');
     expect(await page.locator('.float-link.check').getAttribute('href'), `${width}px check href changed while docked`).toBe(checkHref);
     expect(await page.locator('.float-link.check').getAttribute('target'), `${width}px check target while docked`).toBe('_blank');
-    expect(Math.abs(dockedAgenda.y - barBox.y), `${width}px agenda not level with the bar`).toBeLessThanOrEqual(2);
-    expect(Math.abs(dockedCheck.y - barBox.y), `${width}px check not level with the bar`).toBeLessThanOrEqual(2);
+    // otp-v0.12 P2-B: the docked pill keeps its OWN (shorter) height now
+    // (position only changes while docking; see the "one identical pill
+    // family" spec below) and is vertically CENTRED inside the 44px bar,
+    // not top-aligned to it - this changed from a top-edge check to a
+    // centre-to-centre check for that reason.
+    expect(Math.abs((dockedAgenda.y + dockedAgenda.height / 2) - (barBox.y + barBox.height / 2)), `${width}px agenda not centred in the bar`).toBeLessThanOrEqual(2);
+    expect(Math.abs((dockedCheck.y + dockedCheck.height / 2) - (barBox.y + barBox.height / 2)), `${width}px check not centred in the bar`).toBeLessThanOrEqual(2);
     expect(dockedAgenda.x, `${width}px agenda not at the bar's left end`).toBeGreaterThanOrEqual(barBox.x - 2);
     expect(dockedCheck.x + dockedCheck.width, `${width}px check not at the bar's right end`).toBeLessThanOrEqual(barBox.x + barBox.width + 2);
 
@@ -6809,6 +6814,103 @@ test("otp-v0.12 B2: Agenda and Check Teacher dock into the bar's two ends while 
     expect(Math.abs(backAgenda.x - cornerAgenda.x), `${width}px agenda did not return to its corner`).toBeLessThanOrEqual(2);
     expect(Math.abs(backCheck.x - cornerCheck.x), `${width}px check did not return to its corner`).toBeLessThanOrEqual(2);
     expect(h.errors).toEqual([]);
+  }
+});
+
+/** Every style property that must be byte-identical between the form's
+ *  undocked pill and the docked one (owner: "pop in, looking exactly the
+ *  same... same shape, same everything") - position (top/left/right) is
+ *  deliberately excluded, that's the only thing docking may change. */
+const FL_STYLE_PROPS = [
+  'height', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft',
+  'backgroundColor', 'borderTopWidth', 'borderTopStyle', 'borderTopColor',
+  'borderRadius', 'backdropFilter', 'webkitBackdropFilter', 'boxShadow',
+  'fontSize', 'fontWeight',
+] as const;
+
+const readFlStyle = (page: Page, sel: string) => page.evaluate(
+  ({ sel, props }) => {
+    const el = document.querySelector(sel) as HTMLElement | null;
+    if (!el) return null;
+    const cs = getComputedStyle(el);
+    const out: Record<string, string> = {};
+    for (const p of props) out[p] = (cs as any)[p] ?? '';
+    return out;
+  },
+  { sel, props: FL_STYLE_PROPS },
+);
+
+const flIconBox = (page: Page, sel: string) => page.evaluate((s) => {
+  const el = document.querySelector(s) as HTMLElement | null;
+  if (!el) return null;
+  const r = el.getBoundingClientRect();
+  return { width: r.width, height: r.height };
+}, sel);
+
+test("otp-v0.12 B2: Agenda, Check Teacher and the Next Steps button are one identical pill family - docking (incl. the icon-only tier) changes position only, never the pill's own style", async ({ page }) => {
+  for (const theme of ['light', 'dark'] as const) {
+    for (const { width, height } of OP_WIDTHS) {
+      const h = await harness(page);
+      await page.setViewportSize({ width, height });
+      // an open observation WITH its own Next Steps: the button must be in
+      // its normal ("has steps") look for the family-match check below, not
+      // its deliberately different grey/empty state (that variant is its
+      // own thing, out of scope here).
+      await mockLapState(page, LAP_STATE_OPEN_WITH_OWN_STEPS);
+      await openForm(page);
+      await page.evaluate((t) => document.documentElement.setAttribute('data-theme', t), theme);
+      await page.waitForTimeout(300);   // let the theme's colour transition settle before measuring
+
+      const undockedAgenda = await readFlStyle(page, '.float-link.agenda');
+      const undockedCheck = await readFlStyle(page, '.float-link.check');
+      const undockedIcon = await flIconBox(page, '.float-link.agenda .fl-icon');
+
+      await pickTomSelect(page, 'teacher', 'Test Teacher');
+      await expect(stripLine(page)).toContainText('open since', { timeout: 10_000 });
+      await expect(page.locator('#op-bar-ns-btn')).not.toHaveClass(/is-empty/);
+      await pinBarPastCard(page);
+      await page.waitForTimeout(200);   // let the 260ms top/left/right transition settle
+
+      const dockedAgenda = await readFlStyle(page, '.float-link.agenda');
+      const dockedCheck = await readFlStyle(page, '.float-link.check');
+      const dockedIcon = await flIconBox(page, '.float-link.agenda .fl-icon');
+      const nsStyle = await readFlStyle(page, '#op-bar-ns-btn');
+
+      for (const prop of FL_STYLE_PROPS) {
+        expect(dockedAgenda?.[prop], `${theme}/${width}px agenda ${prop} changed while docked`).toBe(undockedAgenda?.[prop]);
+        expect(dockedCheck?.[prop], `${theme}/${width}px check ${prop} changed while docked`).toBe(undockedCheck?.[prop]);
+        expect(nsStyle?.[prop], `${theme}/${width}px Next Steps button ${prop} does not match the docked Agenda`).toBe(dockedAgenda?.[prop]);
+      }
+      expect(dockedIcon, `${theme}/${width}px agenda icon size changed while docked`).toEqual(undockedIcon);
+
+      // vertical centring inside the 44px bar (offset <= 1px)
+      const centre = await page.evaluate(() => {
+        const bar = document.getElementById('op-bar')!.getBoundingClientRect();
+        const a = document.querySelector('.float-link.agenda')!.getBoundingClientRect();
+        const c = document.querySelector('.float-link.check')!.getBoundingClientRect();
+        return {
+          barMid: bar.top + bar.height / 2,
+          agendaMid: a.top + a.height / 2,
+          checkMid: c.top + c.height / 2,
+        };
+      });
+      expect(Math.abs(centre.agendaMid - centre.barMid), `${theme}/${width}px agenda not centred in the bar (<=1px)`).toBeLessThanOrEqual(1);
+      expect(Math.abs(centre.checkMid - centre.barMid), `${theme}/${width}px check not centred in the bar (<=1px)`).toBeLessThanOrEqual(1);
+
+      // the .float-link transition list animates position only (+ the
+      // existing hover colour/transform, which are not geometry)
+      const transProps = await page.evaluate(
+        () => getComputedStyle(document.querySelector('.float-link.agenda')!).transitionProperty,
+      );
+      expect(transProps, `${theme}/${width}px .float-link transitions width`).not.toMatch(/\bwidth\b/);
+      expect(transProps, `${theme}/${width}px .float-link transitions padding`).not.toMatch(/\bpadding\b/);
+      expect(transProps, `${theme}/${width}px .float-link transitions border-radius`).not.toMatch(/border-radius/);
+      expect(transProps, `${theme}/${width}px .float-link must still animate top`).toMatch(/\btop\b/);
+      expect(transProps, `${theme}/${width}px .float-link must still animate left`).toMatch(/\bleft\b/);
+      expect(transProps, `${theme}/${width}px .float-link must still animate right`).toMatch(/\bright\b/);
+
+      expect(h.errors).toEqual([]);
+    }
   }
 });
 
