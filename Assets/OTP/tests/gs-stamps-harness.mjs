@@ -114,7 +114,7 @@ function makeEnv(options = {}) {
     Session: { getScriptTimeZone() { return 'UTC'; } }
   };
   vm.createContext(context);
-  for (const file of ['00_Config.gs', '01_doPost.gs', '02_doGet.gs', '03_helpers.gs', '05_Supabase.gs', '08_OtpMirror.gs']) {
+  for (const file of ['00_Config.gs', '01_doPost.gs', '02_doGet.gs', '03_helpers.gs', '05_Supabase.gs', '08_OtpMirror.gs', '09_OtpReflect.gs']) {
     vm.runInContext(fs.readFileSync(path.join(GS, file), 'utf8'), context, { filename: file });
   }
   context.lookupOtpObserverEmail = () => state.coachEmail;
@@ -251,10 +251,10 @@ check('k an ungated submit acquires only the original append lock', () => {
   assert.equal(env.state.lockAcquires, 1);
 });
 
-check('h a 38-header Sheet gains only the two trailing headers', () => {
+check('h a 38-header Sheet gains only the trailing headers (otp-v0.14: 41 columns, teacher_token last)', () => {
   const env = makeEnv(); const all = env.context.getOtpColumns();
-  assert.equal(all.length, 40);
-  assert.equal(all[38], 'coach_emailed_at'); assert.equal(all[39], 'teacher_emailed_at');
+  assert.equal(all.length, 41);
+  assert.equal(all[38], 'coach_emailed_at'); assert.equal(all[39], 'teacher_emailed_at'); assert.equal(all[40], 'teacher_token');
   const legacy = env.spreadsheet.insertSheet('OTP Submissions');
   legacy._data = [all.slice(0, 38), Array.from({ length: 38 }, (_, i) => 'cell-' + (i + 1))];
   env.context.getOtpSheetWithHeader_(env.spreadsheet);

@@ -35,6 +35,10 @@ function doPost(e) {
     // by the form itself.
     if (data && data.form === 'otp' && data.action === 'mirror') return handleOtpMirror(data);
     if (data && data.form === 'otp' && data.action === 'heal') return jsonOut(healOtpMirror());
+    // otp-v0.14: the Teacher Reflection / Plan flow. otp-reflect (edge function)
+    // POSTs here after otp_reflect_write succeeds; this mirrors the answered
+    // part(s) into the "OTP Reflections" tab and sends E2/E4 (09_OtpReflect.gs).
+    if (data && data.form === 'otp' && data.action === 'reflect_mirror') return handleOtpReflectMirror(data);
     if (data && data.form === 'otp') return handleOtpPost(data);
 
     const ss = SpreadsheetApp.openById(getSheetId());
@@ -709,10 +713,18 @@ function sendOtpSubmissionEmail(ss, recordId, recordToken, submittedAt, data) {
  * will meet them to agree next steps. Silent when the teacher's Teachers
  * 26-27 row (lookupOtpTeacherEmail, 02_doGet.gs) carries no email, or the
  * value there isn't an email at all (hard rule 12).
+ *
+ * otp-v0.14: when the record carries a teacher_token (the Teacher Reflection
+ * flow), this copy is REPLACED whole by E1 (sendOtpReflectInviteEmail_,
+ * 09_OtpReflect.gs): no view link, no record token, a button straight into
+ * the reflection form. A record without a token behaves exactly as before.
  */
 function sendOtpTeacherEmail(ss, recordId, recordToken, submittedAt, data) {
   const teacherEmail = lookupOtpTeacherEmail(ss, data.teacher);
   if (!teacherEmail || teacherEmail.indexOf('@') < 0) return false;
+
+  const teacherToken = String(data.teacher_token || '').trim();
+  if (teacherToken) return sendOtpReflectInviteEmail_(ss, teacherEmail, teacherToken, data);
 
   const viewUrl = RECORD_VIEWER_URL_OTP + '?token=' + encodeURIComponent(recordToken);
   const observerName = String(data.inspector || data.observer || 'Your observer').trim();
@@ -743,8 +755,17 @@ function sendOtpTeacherEmail(ss, recordId, recordToken, submittedAt, data) {
  * teacher, CC the observer + the backup mailbox. View link only, the record
  * is locked now so no edit link. `record` is the full row (header -> value)
  * exactly as it now stands on the Sheet.
+ *
+ * otp-v0.14: when the record carries a teacher_token, this copy is REPLACED
+ * whole by E3 (sendOtpReflectCloseEmail_, 09_OtpReflect.gs): the Next Steps
+ * plus a button into the plan form (questions 4-8), and the view link only
+ * once Part 1 has been sent. Same To/CC/subject either way; a record without
+ * a token behaves exactly as before.
  */
 function sendOtpCloseEmail(ss, record) {
+  const teacherToken = String(record.teacher_token || '').trim();
+  if (teacherToken) return sendOtpReflectCloseEmail_(ss, record, teacherToken);
+
   const teacherEmail = lookupOtpTeacherEmail(ss, record.teacher);
   if (!teacherEmail || teacherEmail.indexOf('@') < 0) return;
 
