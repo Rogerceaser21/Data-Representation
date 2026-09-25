@@ -165,6 +165,12 @@ begin
         when 'observer'         then to_jsonb(coalesce(nullif(p_payload->>'inspector', ''), p_payload->>'observer', ''))
         when 'observation_date' then to_jsonb(coalesce(nullif(p_payload->>'date', ''), p_payload->>'observation_date', ''))
         when 'record_token'     then to_jsonb(v_token)
+        -- '' (not omitted) when reflection_flow is absent: teacher_token is a
+        -- schema column like every other entry in `cols` (closed_at, lap...),
+        -- always present with a blank sentinel until it applies. A record
+        -- with '' behaves identically to a pre-v0.14 record that had no such
+        -- key at all (reflection_flow / owed / emails all key off "is this
+        -- non-empty", never off "does this key exist"); accepted, not omitted.
         when 'teacher_token'    then case when coalesce(p_payload->>'reflection_flow', '') = 'true'
                                        then to_jsonb(replace(gen_random_uuid()::text, '-', ''))
                                        else to_jsonb(''::text) end
@@ -282,7 +288,7 @@ begin
     'lap', nullif(v_rec->>'lap', '')::int,
     'pending_since', v_now, 'record', v_rec);
 end $$;
-revoke all on function public.otp_write(text, jsonb) from public, anon, authenticated;
+revoke all on function public.otp_write(text, jsonb) from public, anon, authenticated, dreamlit_app;
 grant execute on function public.otp_write(text, jsonb) to service_role;
 
 -- ---------- 3) otp_reflect_links: shared {reflect, view} link resolver ----------
@@ -302,7 +308,7 @@ as $$
       'https://rogerceaser21.github.io/Data-Representation/Assets/OTP/otp-record.html')
   );
 $$;
-revoke all on function public.otp_reflect_links() from public, anon, authenticated;
+revoke all on function public.otp_reflect_links() from public, anon, authenticated, dreamlit_app;
 grant execute on function public.otp_reflect_links() to service_role;
 
 -- ---------- 4) otp_reflect_state ----------
@@ -376,7 +382,7 @@ begin
     'owed', to_jsonb(v_owed)
   );
 end $$;
-revoke all on function public.otp_reflect_state(text) from public, anon, authenticated;
+revoke all on function public.otp_reflect_state(text) from public, anon, authenticated, dreamlit_app;
 grant execute on function public.otp_reflect_state(text) to service_role;
 
 -- ---------- 5) otp_reflect_write ----------
@@ -489,9 +495,20 @@ begin
         'q7', btrim(coalesce(v_answers->>'q7', '')),
         'q8', btrim(coalesce(v_answers->>'q8', '')));
     end if;
+    -- on conflict do nothing: two concurrent sends of the same part (a
+    -- double tap) can both pass the v_existing pre-check above; without this
+    -- the second insert throws a unique-violation whose PostgREST error text
+    -- carries the record_token, which would then risk being logged by the
+    -- caller. A raced loser here is simply reclassified as duplicate below,
+    -- exactly like a part that already existed before this call started.
     insert into otp_reflections (school_id, record_token, part, answers, submitted_at, mirror_pending_since)
-      values (v_school, v_record_token, v_part, v_norm, v_now, v_now);
-    v_sent := array_append(v_sent, v_part);
+      values (v_school, v_record_token, v_part, v_norm, v_now, v_now)
+      on conflict (record_token, part) do nothing;
+    if found then
+      v_sent := array_append(v_sent, v_part);
+    else
+      v_dup := array_append(v_dup, v_part);
+    end if;
   end loop;
 
   return jsonb_build_object(
@@ -502,7 +519,7 @@ begin
     'mirror_ref', v_record_token
   );
 end $$;
-revoke all on function public.otp_reflect_write(text, jsonb) from public, anon, authenticated;
+revoke all on function public.otp_reflect_write(text, jsonb) from public, anon, authenticated, dreamlit_app;
 grant execute on function public.otp_reflect_write(text, jsonb) to service_role;
 
 -- ---------- 6) otp_record_by_teacher_token ----------
@@ -542,8 +559,35 @@ begin
     'evidence_pad_id', coalesce(v_content->>'evidence_pad_id', '')
   );
 end $$;
-revoke all on function public.otp_record_by_teacher_token(text) from public, anon, authenticated;
+revoke all on function public.otp_record_by_teacher_token(text) from public, anon, authenticated, dreamlit_app;
 grant execute on function public.otp_record_by_teacher_token(text) to service_role;
+
+-- ---------- 6b) otp_record_by_token (replace, migrate_21 body, now also
+-- strips teacher_token) ----------
+-- migrate_21's body only stripped record_token, because teacher_token did
+-- not exist yet. A reflection-flow record's content can now carry
+-- teacher_token, and this function feeds the coach's existing ?token= route
+-- (supabase/functions/otp-record/index.ts), which is byte-identical in
+-- behaviour per the otp-v0.14 contract; byte-identical means it must not
+-- start handing back a new secret it never used to carry. Everything else
+-- (exact-token lookup, service_role only) is unchanged.
+create or replace function public.otp_record_by_token(p_token text)
+returns jsonb
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select coalesce(
+    (select jsonb_build_object('found', true, 'data', a.content - 'record_token' - 'teacher_token')
+       from assessments a
+      where a.type = 'otp'
+        and a.source_ref = btrim(coalesce(p_token, ''))
+        and btrim(coalesce(p_token, '')) ~ '^[0-9a-f]{32}$'),
+    jsonb_build_object('found', false));
+$$;
+revoke all on function public.otp_record_by_token(text) from public, anon, authenticated, dreamlit_app;
+grant execute on function public.otp_record_by_token(text) to service_role;
 
 -- ---------- 7) otp_reflection_for_mirror ----------
 create or replace function public.otp_reflection_for_mirror(p_record_token text)
@@ -592,7 +636,7 @@ begin
     'links', otp_reflect_links()
   );
 end $$;
-revoke all on function public.otp_reflection_for_mirror(text) from public, anon, authenticated;
+revoke all on function public.otp_reflection_for_mirror(text) from public, anon, authenticated, dreamlit_app;
 grant execute on function public.otp_reflection_for_mirror(text) to service_role;
 
 -- ---------- 8) mark_reflection_mirrored ----------
@@ -615,7 +659,7 @@ begin
   get diagnostics v_n = row_count;
   return jsonb_build_object('marked', v_n);
 end $$;
-revoke all on function public.mark_reflection_mirrored(text, int, timestamptz, timestamptz) from public, anon, authenticated;
+revoke all on function public.mark_reflection_mirrored(text, int, timestamptz, timestamptz) from public, anon, authenticated, dreamlit_app;
 grant execute on function public.mark_reflection_mirrored(text, int, timestamptz, timestamptz) to service_role;
 
 -- ---------- 9) otp_reflections_unmirrored ----------
@@ -631,7 +675,7 @@ as $$
    where mirror_pending_since is not null
      and mirror_pending_since < now() - make_interval(secs => coalesce(p_older_than_seconds, 120));
 $$;
-revoke all on function public.otp_reflections_unmirrored(int) from public, anon, authenticated;
+revoke all on function public.otp_reflections_unmirrored(int) from public, anon, authenticated, dreamlit_app;
 grant execute on function public.otp_reflections_unmirrored(int) to service_role;
 
 -- ---------- 10) otp_record_for_mirror (replace, migrate_24 body + links) ----------
@@ -655,7 +699,7 @@ as $$
       where a.type = 'otp' and a.source_ref = lower(btrim(coalesce(p_token, '')))),
     jsonb_build_object('found', false));
 $$;
-revoke all on function public.otp_record_for_mirror(text) from public, anon, authenticated;
+revoke all on function public.otp_record_for_mirror(text) from public, anon, authenticated, dreamlit_app;
 grant execute on function public.otp_record_for_mirror(text) to service_role;
 
 -- ---------- 11) get_teacher_lap_state (replace, migrate_22 body + reflection fields) ----------
@@ -775,6 +819,13 @@ begin
     'observation_count', v_observation_count,
     'next_lap', v_next_lap,
     'open_count', v_open_count,
+    -- record_token / record_id on 'open' are migrate_22 behaviour, unchanged
+    -- (the coach's own gated OTP form uses them to keep working an open
+    -- draft); "SAME output as today" carries them forward as-is. They are
+    -- NOT the token this contract's "never a token" line guards: that line
+    -- is about the reflection fields below never leaking teacher_token,
+    -- which they do not (reflection_flow/part1_at/part2_at are derived
+    -- internally and never return the token itself).
     'open', case when v_open_content is null then null else jsonb_build_object(
       'record_token', v_open_content->>'record_token',
       'record_id', v_open_content->>'record_id',
