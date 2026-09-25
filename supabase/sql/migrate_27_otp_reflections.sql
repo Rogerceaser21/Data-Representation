@@ -321,7 +321,10 @@ security definer
 set search_path = public
 as $$
 declare
-  v_token   text := lower(btrim(coalesce(p_teacher_token, '')));
+  -- exact-match only, like otp_record_by_token: btrim but never lower(), so
+  -- a non-canonical token (wrong case, wrong length) is a miss at the regex
+  -- test itself and the table is never scanned with it.
+  v_token   text := btrim(coalesce(p_teacher_token, ''));
   v_content jsonb;
   v_status  text;
   v_part1   jsonb;
@@ -393,7 +396,8 @@ security definer
 set search_path = public
 as $$
 declare
-  v_token        text := lower(btrim(coalesce(p_teacher_token, '')));
+  -- exact-match only, like otp_record_by_token: btrim but never lower().
+  v_token        text := btrim(coalesce(p_teacher_token, ''));
   v_content      jsonb;
   v_record_token text;
   v_status       text;
@@ -531,7 +535,8 @@ security definer
 set search_path = public
 as $$
 declare
-  v_token         text := lower(btrim(coalesce(p_teacher_token, '')));
+  -- exact-match only, like otp_record_by_token: btrim but never lower().
+  v_token         text := btrim(coalesce(p_teacher_token, ''));
   v_content       jsonb;
   v_part1_exists  boolean;
 begin

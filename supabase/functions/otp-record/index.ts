@@ -175,50 +175,53 @@ Deno.serve(async (req: Request) => {
     const raw = req.method === 'POST' ? await req.text() : '';
     if (raw.length > MAX_BODY_BYTES) return json(MISS);
 
-    // otp-v0.14 T1: a request carrying 't' is the teacher route, entirely
-    // separate from the coach 'token' route below (never falls through to it).
-    const teacherToken = teacherTokenFromRequest(req, raw);
-    if (teacherToken) {
-      if (!CANONICAL_TOKEN.test(teacherToken)) return json(MISS);
-      const rec = await rpc('otp_record_by_teacher_token', { p_teacher_token: teacherToken });
-      if (!rec || rec.found !== true) return json(MISS);
-      if (rec.locked === true) return json({ success: false, error: 'reflection_needed' });
+    // otp-v0.14 T1: 'token' still wins whenever it is carried, exactly as
+    // before T1 (byte-identical) - a request that carries BOTH 'token' and
+    // 't' takes the coach route, never the teacher one. Only a request with
+    // no 'token' falls to the teacher route ('t').
+    const token = tokenFromRequest(req, raw);
+    if (token) {
+      // Not the canonical form: a miss on both backends, so never a DB call.
+      if (!CANONICAL_TOKEN.test(token)) return json(MISS);
+
+      const out = await rpc('otp_record_by_token', { p_token: token });
+      if (!out || out.found !== true || !out.data) return json(MISS);
 
       const answer: Record<string, unknown> = {
         success: true,
-        data: rec.data,
+        data: out.data,
         form: 'otp',
         source: 'supabase',
-        teacher_view: true,
       };
-      const padId = String((rec as any).evidence_pad_id || '').trim();
+      const padId = String((out.data as any).evidence_pad_id || '').trim();
       if (padId) {
-        const urls = await signPadUrls(padId);
-        if (urls.length) answer.pad_urls = urls;
+        const files = await listPadFiles(padId);
+        if (files.length) answer.pad_files = files;
       }
-      console.log(JSON.stringify({ teacherRecord: true, ms: Date.now() - t0 }));
+      console.log(JSON.stringify({ record: (out.data as any).record_id, ms: Date.now() - t0 }));
       return json(answer);
     }
 
-    const token = tokenFromRequest(req, raw);
-    // Not the canonical form: a miss on both backends, so never a DB call.
-    if (!CANONICAL_TOKEN.test(token)) return json(MISS);
-
-    const out = await rpc('otp_record_by_token', { p_token: token });
-    if (!out || out.found !== true || !out.data) return json(MISS);
+    // otp-v0.14 T1: no 'token' carried - 't' is the teacher route.
+    const teacherToken = teacherTokenFromRequest(req, raw);
+    if (!CANONICAL_TOKEN.test(teacherToken)) return json(MISS);
+    const rec = await rpc('otp_record_by_teacher_token', { p_teacher_token: teacherToken });
+    if (!rec || rec.found !== true) return json(MISS);
+    if (rec.locked === true) return json({ success: false, error: 'reflection_needed' });
 
     const answer: Record<string, unknown> = {
       success: true,
-      data: out.data,
+      data: rec.data,
       form: 'otp',
       source: 'supabase',
+      teacher_view: true,
     };
-    const padId = String((out.data as any).evidence_pad_id || '').trim();
+    const padId = String((rec as any).evidence_pad_id || '').trim();
     if (padId) {
-      const files = await listPadFiles(padId);
-      if (files.length) answer.pad_files = files;
+      const urls = await signPadUrls(padId);
+      if (urls.length) answer.pad_urls = urls;
     }
-    console.log(JSON.stringify({ record: (out.data as any).record_id, ms: Date.now() - t0 }));
+    console.log(JSON.stringify({ teacherRecord: true, ms: Date.now() - t0 }));
     return json(answer);
   } catch (e) {
     // Never the caller's problem and never a different message (hard rule 12):
