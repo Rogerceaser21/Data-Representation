@@ -593,6 +593,14 @@ body {
           mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 
+/* otp-v0.14: the teacher viewer's "reflection needed" calm card button,
+   pencil icon lifted from the status strip's own Teacher Reflection Form
+   icon (strip-card-2) so the two read as the same action everywhere. */
+.action-btn.reflect::before {
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20h9'/%3E%3Cpath d='M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 20h9'/%3E%3Cpath d='M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
 .action-btn.new::before {
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E") center / contain no-repeat;
           mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E") center / contain no-repeat;
@@ -783,6 +791,12 @@ body.is-viewer .prev-ns { display: none !important; }
 .strip-card.is-pending   { border-color: var(--paper-faint); border-style: solid; }
 .strip-card.is-coming    { border-color: var(--paper-faint); border-style: dashed; }
 .strip-card.is-grey      { border-color: var(--paper-faint); border-style: solid; opacity: 0.6; }
+/* otp-v0.14: a reflection-flow lap's Teacher Reflection / Plan Form step
+   waiting on the TEACHER, not the coach - calm, never Active, never a block
+   on anything else in the form (contrast the "coming soon" dashed look,
+   which means "not built yet"; this means "built, sent, awaiting a reply"). */
+.strip-card.is-waiting   { border-color: var(--ais-yellow); border-style: solid; }
+.strip-card.is-waiting   .strip-status { color: var(--ais-yellow); }
 
 /* Never in the ungated teacher viewer (R5: teachers only ever view). */
 body.is-viewer .status-strip-section { display: none !important; }
@@ -931,6 +945,14 @@ body.op-dock.op-bar-active:not(.pad-open) .op-bar {
   border-style: dashed; border-color: var(--paper-faint);
   color: var(--paper-faint);
   opacity: 0.75;
+}
+/* otp-v0.14: same "waiting on teacher" state as .strip-card.is-waiting above;
+   the bar reads its state straight off the big card's own class (see
+   opBarBuildSteps below), so this is the only line needed to keep them in sync. */
+.op-step.is-waiting .op-step-dot {
+  background: transparent;
+  border-color: var(--ais-yellow);
+  color: var(--ais-yellow);
 }
 .op-step.is-completed .op-step-dot {
   background: var(--rate-success);
@@ -3532,7 +3554,7 @@ body.is-viewer .cog-btn { display: none; }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · Progress in Lessons OTP · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">otp-v0.13</a></span>
+    <span>Form · Progress in Lessons OTP · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">otp-v0.14</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto saved</span>
@@ -3900,6 +3922,12 @@ body.is-viewer .cog-btn { display: none; }
   // neither has to wait on a fresh fetch.
   let nextLapCache = null;
   let openBlockInfo = null;
+  // otp-v0.14: the last get_teacher_lap_state read's own reflection_flow /
+  // part1_at for whichever lap is open, keyed by its record_token. Close Lap
+  // reads this (matched against EDIT_RECORD.token) to render step 2's just-
+  // closed state without a second fetch - see renderStripJustClosed's own
+  // comment for why a fetch is never an option there.
+  let openReflectionInfo = null;
   // otp-v0.19: declared here (moved from just above initTomSelects, otp-v0.11)
   // so updateSubmitState's teacherOpenBlocked check (via currentTeacherName)
   // can read it safely from its own bootstrap call, well before
@@ -5999,6 +6027,10 @@ body.is-viewer .cog-btn { display: none; }
     // Part C.1 (otp-v0.11 plan 3.6): the v0.11 form always asks the server to
     // enforce R7 on a submit. Never stored in content (the server strips it).
     data.enforce_open_block = 'true';
+    // otp-v0.14: every submit from this form is a reflection-flow lap (the
+    // ONLY new key on the wire; the server mints teacher_token from it, at
+    // 'submit' only, and never stores the flag itself).
+    data.reflection_flow = 'true';
 
     btn.disabled = true;
     btn.textContent = 'Saving…';
@@ -6127,6 +6159,9 @@ body.is-viewer .cog-btn { display: none; }
     // this, on every write action; an update that moves the teacher to one
     // with another open lap is refused the same way as a submit.
     data.enforce_open_block = 'true';
+    // otp-v0.14: sent on every write, like enforce_open_block; harmless on
+    // update/close (otp_write only mints teacher_token at a true 'submit').
+    data.reflection_flow = 'true';
     // otp-v0.10: Supabase first (about 1 s). Only a success answer is final;
     // a miss (a lap Supabase does not hold, a stall) takes the Google path below.
     try {
@@ -6224,7 +6259,13 @@ body.is-viewer .cog-btn { display: none; }
       // BEFORE the direct render below, so a late "open" answer can never
       // pass seq === lapStateSeq and redraw over the just-closed state.
       lapStateSeq++;
-      renderStripJustClosed(lap, closedAt);   // otp-v0.11 plan 2.1 example 4: no re-fetch
+      // otp-v0.14: reflection_flow/part1_at for THIS record, from the same
+      // get_teacher_lap_state read that put it in edit mode - only trusted
+      // when its token still matches the record just closed (see
+      // renderStripJustClosed's own comment; a stale/mismatched cache falls
+      // back to legacy rendering rather than risk showing the wrong state).
+      const ri = (openReflectionInfo && openReflectionInfo.token === recordToken) ? openReflectionInfo : null;
+      renderStripJustClosed(lap, closedAt, ri && ri.reflection_flow, ri && ri.part1_at);   // otp-v0.11 plan 2.1 example 4: no re-fetch
       showToast('Observation ' + lap + ' closed · ' + teacher + ' has been told', 'success');
       return;
     }
@@ -6455,6 +6496,27 @@ body.is-viewer .cog-btn { display: none; }
     if (toast) toast.classList.remove('show', 'error', 'success');
   }
 
+  // otp-v0.14: the teacher ?t= route's "not yet" card - Part 1 has not been
+  // sent, so there is nothing to view yet. Same calm overlay as the landing/
+  // miss card above, with a button straight to the reflection form.
+  function showReflectionNeededCard(t) {
+    const overlay = document.getElementById('form-loading');
+    if (overlay) {
+      overlay.dataset.landing = '1';
+      overlay.classList.remove('is-hidden');
+      const card = overlay.querySelector('.form-loading-card');
+      if (card) {
+        card.innerHTML = '<div class="form-loading-label">Please answer three short questions about your lesson first.</div>' +
+          '<a class="action-btn primary reflect" id="btn-reflect-needed">Reflect on your lesson</a>';
+        const btn = card.querySelector('#btn-reflect-needed');
+        // set as a property, never concatenated into the innerHTML string above
+        if (btn) btn.href = 'otp-reflect.html?t=' + encodeURIComponent(t);
+      }
+    }
+    const toast = document.getElementById('toast');
+    if (toast) toast.classList.remove('show', 'error', 'success');
+  }
+
   // otp-v0.11 plan 3.5.4: everything a loaded record owns, cleared BEFORE it
   // is filled. Before Continue, this page only ever populated a record ONCE
   // (a fresh page has nothing already on it); now the same page can show a
@@ -6482,6 +6544,105 @@ body.is-viewer .cog-btn { display: none; }
     padViewToken = '';
     padViewFiles = {};
     padViewCache.clear();
+    padViewMode = 'token';   // otp-v0.14: back to the default (coach ?token= / Apps Script) mode
+    padViewUrlMap = {};
+  }
+
+  // otp-v0.14: the record-population half of loadClosedRecord's old inline
+  // body, extracted verbatim (pure move, no behaviour change) so the new
+  // teacher ?t= route (loadTeacherRecord below) can reuse it instead of
+  // duplicating ~70 lines. Fills every form field from `rec`, syncs the
+  // rubric/Tom Selects, and (in the ungated viewer build only)
+  // seedViewerControlsFromRecord. Never locks or unlocks the form itself -
+  // callers do that afterwards with lockForm/enterEditMode.
+  function populateRecordFields(rec) {
+    clearRecordDisplay();   // otp-v0.11 plan 3.5.4: blank the page before this record fills it
+    // otp-v0.6: render the record on the rubric its numbering refers to,
+    // BEFORE populating, so a pre-v0.6 record lights the right paragraphs.
+    setActiveRubric(rec.rubric_version === 'sp1-v2' ? SP1 : SP1_V1);
+    Object.entries(rec).forEach(([key, value]) => {
+      // otp-v0.11 plan 3.5.5: a blank value still gets applied (the current
+      // form was just cleared above, but a field this record deliberately
+      // left blank must never show a stray value on a REUSED page either).
+      if (value === null || value === undefined) return;
+
+      // Apps Script sheets sometimes return dates as ISO strings, normalise for <input type=date>
+      const toDateInput = (v) => {
+        const d = new Date(v);
+        if (isNaN(d)) return String(v);
+        return d.toISOString().split('T')[0];
+      };
+
+      const radios = FORM.querySelectorAll('input[type="radio"][name="' + CSS.escape(key) + '"]');
+      if (radios.length) {
+        radios.forEach(r => { r.checked = (r.value === String(value)); });
+        return;
+      }
+
+      // Sheet stores `observation_date`, form field is named `date`; the OTP
+      // Sheet stores `observer`, the form field is still `inspector` (a copy of
+      // the R3 master). otp-v0.9: without the second mapping the Observer stayed
+      // blank on locked and edited records and the required-field gate kept
+      // Save changes disabled (caught by the live proof, 2026-09-11).
+      const candidates = [key];
+      if (key === 'observation_date') candidates.push('date');
+      if (key === 'observer') candidates.push('inspector');
+
+      for (const cand of candidates) {
+        const el = FORM.querySelector('[name="' + CSS.escape(cand) + '"]') || document.getElementById(cand);
+        if (el) {
+          if (el.type === 'date') {
+            el.value = toDateInput(value);
+          } else if (el.tagName === 'SELECT' && ['teacher', 'inspector', 'subject', 'grade'].includes(cand)) {
+            // v0.34: opaque-keyed Tom Selects. The Sheet stores the display
+            // text (e.g. "Alisja De Bruyn"); the option value is "t0".
+            // Stash text in dataset.pendingValue so populateTomSelect picks
+            // it up if options are still in flight, AND try a direct text →
+            // value lookup in case options have already landed.
+            // otp-v0.5: grade joins this path. Its options are static (added
+            // at init), but Tom Select strips the original <select>, so a
+            // plain el.value assignment would be dropped.
+            el.dataset.pendingValue = String(value);
+            const ts = tomSelects[cand];
+            if (ts) {
+              const match = Object.values(ts.options).find(o => o.text === String(value));
+              if (match) ts.setValue(match.value, true);
+            }
+          } else {
+            el.value = value;
+          }
+          // Selects need a change event to refresh the button-trigger display (v0.15).
+          if (el.tagName === 'SELECT') el.dispatchEvent(new Event('change', { bubbles: true }));
+          break;
+        }
+      }
+    });
+
+    syncSingleSelectVisuals();
+    syncDateTimeEmpty();        // otp-v0.9.4: an empty date/time reads empty
+    syncRubricChips();          // otp-v0.1: re-press the SP1 chips from sp1_*
+    syncRubricNotes();          // otp-v0.6: badges from sp1_notes (read-only here)
+    autoGrowAll();              // otp-v0.9.3: a record's long answers show in full
+    // otp-v0.5: a record carries both grade and school. Derive school from
+    // the restored grade so the two can never disagree; a record with no
+    // grade keeps the school it recorded.
+    const gradeEl = document.getElementById('grade');
+    if (gradeEl && gradeEl.value) syncSchoolFromGrade();
+    // v0.24: Subject is school-filtered. Refresh its options based on the
+    // now-set school value BEFORE pushing other Tom Select values, so the
+    // saved Subject can be re-selected from the correct filtered list.
+    refreshSubjectOptions();
+    // Push restored values into every other Tom Select instance. Teacher /
+    // inspector / subject are opaque-keyed (v0.34) and were already restored
+    // by the text-match path above, so they're skipped here.
+    Object.entries(tomSelects).forEach(([name, ts]) => {
+      if (['teacher', 'inspector', 'subject'].includes(name)) return;
+      const sel = document.getElementById(name);
+      if (ts && sel && sel.value) ts.setValue(sel.value, true);
+    });
+    // otp-v0.10 Phase 3: the key-free viewer never loads the option lists,
+    // so Teacher / Observer / Subject / Curriculum come from the record.
+    if (window.R3_VIEWER) seedViewerControlsFromRecord(rec);
   }
 
   // CNL-009 (otp-v0.11 fix round 2): `onFail`, given only by Continue, rolls
@@ -6555,93 +6716,7 @@ body.is-viewer .cog-btn { display: none; }
       if (!result.success) throw new Error(result.error || 'Record not found');
 
       const rec = result.data;
-      clearRecordDisplay();   // otp-v0.11 plan 3.5.4: blank the page before this record fills it
-      // otp-v0.6: render the record on the rubric its numbering refers to,
-      // BEFORE populating, so a pre-v0.6 record lights the right paragraphs.
-      setActiveRubric(rec.rubric_version === 'sp1-v2' ? SP1 : SP1_V1);
-      Object.entries(rec).forEach(([key, value]) => {
-        // otp-v0.11 plan 3.5.5: a blank value still gets applied (the current
-        // form was just cleared above, but a field this record deliberately
-        // left blank must never show a stray value on a REUSED page either).
-        if (value === null || value === undefined) return;
-
-        // Apps Script sheets sometimes return dates as ISO strings — normalise for <input type=date>
-        const toDateInput = (v) => {
-          const d = new Date(v);
-          if (isNaN(d)) return String(v);
-          return d.toISOString().split('T')[0];
-        };
-
-        const radios = FORM.querySelectorAll('input[type="radio"][name="' + CSS.escape(key) + '"]');
-        if (radios.length) {
-          radios.forEach(r => { r.checked = (r.value === String(value)); });
-          return;
-        }
-
-        // Sheet stores `observation_date`, form field is named `date`; the OTP
-        // Sheet stores `observer`, the form field is still `inspector` (a copy of
-        // the R3 master). otp-v0.9: without the second mapping the Observer stayed
-        // blank on locked and edited records and the required-field gate kept
-        // Save changes disabled (caught by the live proof, 2026-09-11).
-        const candidates = [key];
-        if (key === 'observation_date') candidates.push('date');
-        if (key === 'observer') candidates.push('inspector');
-
-        for (const cand of candidates) {
-          const el = FORM.querySelector('[name="' + CSS.escape(cand) + '"]') || document.getElementById(cand);
-          if (el) {
-            if (el.type === 'date') {
-              el.value = toDateInput(value);
-            } else if (el.tagName === 'SELECT' && ['teacher', 'inspector', 'subject', 'grade'].includes(cand)) {
-              // v0.34: opaque-keyed Tom Selects. The Sheet stores the display
-              // text (e.g. "Alisja De Bruyn"); the option value is "t0".
-              // Stash text in dataset.pendingValue so populateTomSelect picks
-              // it up if options are still in flight, AND try a direct text →
-              // value lookup in case options have already landed.
-              // otp-v0.5: grade joins this path. Its options are static (added
-              // at init), but Tom Select strips the original <select>, so a
-              // plain el.value assignment would be dropped.
-              el.dataset.pendingValue = String(value);
-              const ts = tomSelects[cand];
-              if (ts) {
-                const match = Object.values(ts.options).find(o => o.text === String(value));
-                if (match) ts.setValue(match.value, true);
-              }
-            } else {
-              el.value = value;
-            }
-            // Selects need a change event to refresh the button-trigger display (v0.15).
-            if (el.tagName === 'SELECT') el.dispatchEvent(new Event('change', { bubbles: true }));
-            break;
-          }
-        }
-      });
-
-      syncSingleSelectVisuals();
-      syncDateTimeEmpty();        // otp-v0.9.4: an empty date/time reads empty
-      syncRubricChips();          // otp-v0.1: re-press the SP1 chips from sp1_*
-      syncRubricNotes();          // otp-v0.6: badges from sp1_notes (read-only here)
-      autoGrowAll();              // otp-v0.9.3: a record's long answers show in full
-      // otp-v0.5: a record carries both grade and school. Derive school from
-      // the restored grade so the two can never disagree; a record with no
-      // grade keeps the school it recorded.
-      const gradeEl = document.getElementById('grade');
-      if (gradeEl && gradeEl.value) syncSchoolFromGrade();
-      // v0.24: Subject is school-filtered. Refresh its options based on the
-      // now-set school value BEFORE pushing other Tom Select values, so the
-      // saved Subject can be re-selected from the correct filtered list.
-      refreshSubjectOptions();
-      // Push restored values into every other Tom Select instance. Teacher /
-      // inspector / subject are opaque-keyed (v0.34) and were already restored
-      // by the text-match path above, so they're skipped here.
-      Object.entries(tomSelects).forEach(([name, ts]) => {
-        if (['teacher', 'inspector', 'subject'].includes(name)) return;
-        const sel = document.getElementById(name);
-        if (ts && sel && sel.value) ts.setValue(sel.value, true);
-      });
-      // otp-v0.10 Phase 3: the key-free viewer never loads the option lists,
-      // so Teacher / Observer / Subject / Curriculum come from the record.
-      if (window.R3_VIEWER) seedViewerControlsFromRecord(rec);
+      populateRecordFields(rec);
       // otp-v0.9: ?edit=<token> keeps an OPEN lap live; a closed lap opens
       // read-only down the existing lock path, with no dead buttons.
       const stillOpen = EDIT_MODE && String(rec.status || '').toLowerCase() !== 'closed';
@@ -6684,6 +6759,59 @@ body.is-viewer .cog-btn { display: none; }
       if (onFail) { onFail(); return; }
       showToast('Could not load record: ' + (err.message || err), 'error');
       hideLoadingOverlay();   // otp-v0.10 Phase 3: never leave the overlay over a toast
+    }
+  }
+
+  /* otp-v0.14: the teacher viewer's OWN route, ?t=<teacher_token>. Never the
+     Apps Script GET, never `token` - Supabase (otp-record's teacher branch)
+     is the only source, so a miss here is final (hard rule 10), and a
+     network/stall failure retries silently forever, exactly like the
+     dropdown-options fetch (loadDropdownOptions), never like loadClosedRecord's
+     Google fallback (there is no fallback to fall to). */
+  async function fetchTeacherRecordOnce(t) {
+    const ctrl = new AbortController();
+    const timer = setTimeout(function () { ctrl.abort(); }, SB_RECORD_TIMEOUT_MS);
+    try {
+      const resp = await fetch(SB_FN_RECORD + '?t=' + encodeURIComponent(t), { signal: ctrl.signal });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      return await resp.json();   // any parsed body, success or business failure, is DEFINITIVE
+    } finally { clearTimeout(timer); }
+  }
+
+  async function loadTeacherRecord(t) {
+    t = String(t == null ? '' : t).trim();
+    if (!CANONICAL_TOKEN.test(t)) { showViewerLanding(VIEWER_MISS_LINE); return; }
+    showToast('Loading record…');
+    for (let attempt = 1; ; attempt++) {
+      let result = null;
+      try { result = await fetchTeacherRecordOnce(t); } catch (e) { result = null; }
+      if (result) {
+        if (result.success === true && result.data) {
+          const rec = result.data;
+          populateRecordFields(rec);
+          lockForm(rec.record_id, rec.submitted_at, 'closed', rec);
+          if (result.pad_urls && result.pad_urls.length) initPadAttachments(result.pad_urls, '');
+          hideLoadingOverlay();
+          showToast('Record loaded · ' + (rec.teacher || rec.record_id), 'success');
+          return;
+        }
+        if (result.error === 'reflection_needed') { showReflectionNeededCard(t); return; }
+        // any other parsed answer (a genuine miss, an unexpected shape) is
+        // final too, hard rule 12: the same calm card a bad link gets.
+        showViewerLanding(VIEWER_MISS_LINE);
+        return;
+      }
+      // Stall, timeout, or a non-JSON/non-OK response: keep retrying behind
+      // the overlay, no visible error (hard rule 12), same last-resort
+      // reload guard as loadDropdownOptions for a genuinely wedged tab.
+      if (attempt >= 8) {
+        if (location.search.indexOf('_r=') === -1) {
+          const sep = location.search ? '&' : '?';
+          location.replace(location.href + sep + '_r=1');
+        }
+        return;
+      }
+      await new Promise(function (r) { setTimeout(r, 800); });
     }
   }
 
@@ -6749,14 +6877,27 @@ body.is-viewer .cog-btn { display: none; }
   let padViewFiles = {};                   // target → [names]
   let padViewSeq = 0;                      // invalidates stale async loads
   let padViewScrollY = 0;                  // v0.56: page scroll spot to restore on close
+  // otp-v0.14: 'token' = the coach route above (Apps Script ?action=pad_image,
+  // token-gated); 'urls' = the teacher ?t= route, whose pad pages arrive as
+  // ready-to-use signed URLs (pad_urls) with no Apps Script token at all.
+  let padViewMode = 'token';
+  let padViewUrlMap = {};                  // name → signed url (url mode only)
 
+  // otp-v0.14: `files` is either an array of filenames (coach route, as
+  // before) or an array of {name, url} signed URLs (teacher route's
+  // pad_urls) - `token` is required only for the former.
   function initPadAttachments(files, token) {
-    if (!files || !files.length || !token) return;
-    padViewToken = token;
+    if (!files || !files.length) return;
+    const isUrlMode = typeof files[0] === 'object' && files[0] !== null;
+    if (!isUrlMode && !token) return;
+    padViewMode = isUrlMode ? 'urls' : 'token';
+    padViewToken = isUrlMode ? '' : token;
     padViewFiles = {};
-    files.forEach(function(n) {
-      const name = String(n || '');
+    padViewUrlMap = {};
+    files.forEach(function(entry) {
+      const name = String(isUrlMode ? ((entry && entry.name) || '') : (entry || ''));
       if (!/^[a-z0-9-]+\.jpg$/.test(name)) return;
+      if (isUrlMode) padViewUrlMap[name] = String((entry && entry.url) || '');
       const base = name.replace(/\.jpg$/, '').replace(/-\d+$/, '');
       const target = PAD_SLUG_TARGETS[base] || (base === 'page' ? 'observer_comments' : '');
       if (!target) return;
@@ -6793,7 +6934,11 @@ body.is-viewer .cog-btn { display: none; }
       window.scrollTo(0, 0);
     }
     try {
-      const uris = await Promise.all(files.map(function (name) { return fetchPadImage(name, token); }));
+      // otp-v0.14: url mode already has a fetchable signed URL per page, no
+      // token-gated round trip needed.
+      const uris = padViewMode === 'urls'
+        ? files.map(function (name) { return padViewUrlMap[name] || ''; }).filter(Boolean)
+        : await Promise.all(files.map(function (name) { return fetchPadImage(name, token); }));
       if (gen !== formContextGen || seq !== padViewSeq) return;   // superseded / closed
       scroll.innerHTML = '';
       uris.forEach(function(uri) {
@@ -6863,9 +7008,11 @@ body.is-viewer .cog-btn { display: none; }
   // view; with no token the frosted overlay stays up as a calm landing card and
   // nothing loads (no blank form, no dropdown options, no error UI).
   if (window.R3_VIEWER) document.body.classList.add('is-viewer');
+  // otp-v0.14: ?t= is the teacher route (see contract section 5), viewer-only.
   const VIEWER_LANDING = !!window.R3_VIEWER &&
     !new URLSearchParams(window.location.search).get('id') &&
-    !new URLSearchParams(window.location.search).get('token');
+    !new URLSearchParams(window.location.search).get('token') &&
+    !new URLSearchParams(window.location.search).get('t');
   (function checkClosedRecord() {
     if (VIEWER_LANDING) {
       showViewerLanding();
@@ -6876,6 +7023,11 @@ body.is-viewer .cog-btn { display: none; }
     const params = new URLSearchParams(window.location.search);
     const id = params.get('id');
     const token = params.get('token');
+    // otp-v0.14: the teacher route only when there is no id/token (token
+    // still wins if a link somehow carries both, matching the edge
+    // function's own precedence).
+    const t = window.R3_VIEWER && !id && !token ? params.get('t') : null;
+    if (t) { loadTeacherRecord(t); return; }
     if (id || token) loadClosedRecord(id, token);
   })();
 
@@ -7732,7 +7884,7 @@ body.is-viewer .cog-btn { display: none; }
     const startYear = now.getMonth() >= 7 ? y : y - 1;
     return startYear + '/' + (startYear + 1);
   }
-  const STRIP_STATUS_WORD = { current: 'Active', completed: 'Completed', pending: 'Pending', coming: 'Coming soon', grey: '' };
+  const STRIP_STATUS_WORD = { current: 'Active', completed: 'Completed', pending: 'Pending', coming: 'Coming soon', waiting: 'Waiting on teacher', grey: '' };
   const STRIP_GREY_VIEW = {
     n: null, line: 'Select a teacher',
     status: ['grey', 'grey', 'grey', 'grey', 'grey', 'grey'],
@@ -7765,26 +7917,47 @@ body.is-viewer .cog-btn { display: none; }
   }
 
   // plan 2.1 worked examples 1-3, from a get_teacher_lap_state success answer.
+  // otp-v0.14: d.open AND d.last_closed now also carry reflection_flow/
+  // part1_at/part2_at (contract section 1). A legacy lap (reflection_flow
+  // false/absent) renders exactly as before ('coming' on steps 2/5); a
+  // reflection-flow lap shows step 2 completed once part1_at lands, else the
+  // calm "waiting on teacher" state (never Active, never a block). Step 5
+  // stays pending while the lap is open (Part 2 only opens at Close Lap); once
+  // no lap is open (d.last_closed, the "now starting Observation N+1" view),
+  // steps 2/5 instead read the LAST closed lap's own reflection progress
+  // (completed once part1_at/part2_at land, else "waiting on teacher") - the
+  // paperwork stays visible while the strip otherwise points at the next one.
   function stripViewFromLapState(d) {
     if (d.open) {
       const n = String(d.open.lap || '').trim() || '1';
       const emailsDone = !!d.open.emails_legacy ||
         (!!d.open.coach_emailed_at && !!d.open.teacher_emailed_at);
+      const rf = !!d.open.reflection_flow;
       return {
         n: n,
         line: 'Observation ' + n + ' · open since ' + formatDay(d.open.observation_date) +
               ' · coach ' + (d.open.observer || ''),
-        status: ['completed', 'coming', emailsDone ? 'completed' : 'pending', 'current', 'coming', 'pending'],
+        status: ['completed',
+                 rf ? (d.open.part1_at ? 'completed' : 'waiting') : 'coming',
+                 emailsDone ? 'completed' : 'pending',
+                 'current',
+                 rf ? 'pending' : 'coming',
+                 'pending'],
       };
     }
     if (d.last_closed) {
       const prevN = String(d.last_closed.lap || '').trim() || '1';
       const n = String(d.next_lap || '').trim() || '1';
+      const rf = !!d.last_closed.reflection_flow;
       return {
         n: n,
         line: 'Observation ' + prevN + ' completed ' + formatDay(d.last_closed.closed_at) +
               ' · now starting Observation ' + n,
-        status: ['current', 'coming', 'pending', 'pending', 'coming', 'pending'],
+        status: ['current',
+                 rf ? (d.last_closed.part1_at ? 'completed' : 'waiting') : 'coming',
+                 'pending', 'pending',
+                 rf ? (d.last_closed.part2_at ? 'completed' : 'waiting') : 'coming',
+                 'pending'],
       };
     }
     const n = String(d.next_lap || '').trim() || '1';
@@ -7798,12 +7971,26 @@ body.is-viewer .cog-btn { display: none; }
   // plan 2.1 worked example 4: straight after a successful Close Lap in this
   // page. A direct, local render (the record that just closed IS the
   // answer): no re-fetch, so this never races a fresh get_teacher_lap_state.
-  function renderStripJustClosed(lap, closedAtIso) {
+  // otp-v0.14: reflectionFlow/part1At are OPTIONAL, sourced from the
+  // in-session openReflectionInfo cache (see refreshTeacherStatus below) by
+  // the ONLY caller that has fresh data for them - Close Lap, on the very
+  // record it just closed. The other caller (loadClosedRecord, opening an
+  // ALREADY-closed record cold, e.g. an old ?edit= link) passes neither and
+  // keeps today's 'coming' rendering: otp_record_by_token stays
+  // byte-identical (contract section 1) and carries no reflection fields, so
+  // there is genuinely nothing to show there. Part 2 has not been sent the
+  // moment a lap closes (it only opens at Close Lap), so a reflection-flow
+  // lap's step 5 always reads "waiting on teacher" here, never completed.
+  function renderStripJustClosed(lap, closedAtIso, reflectionFlow, part1At) {
     const n = String(lap || '').trim() || '1';
     renderStripView({
       n: n,
       line: 'Observation ' + n + ' completed ' + formatDay(closedAtIso),
-      status: ['completed', 'coming', 'completed', 'completed', 'coming', 'completed'],
+      status: ['completed',
+               reflectionFlow ? (part1At ? 'completed' : 'waiting') : 'coming',
+               'completed', 'completed',
+               reflectionFlow ? 'waiting' : 'coming',
+               'completed'],
     });
   }
 
@@ -7813,13 +8000,18 @@ body.is-viewer .cog-btn { display: none; }
   // Completed, card 4 Current) for the whole 3 s locked interval, instead of
   // the stale pre-submit picture, without racing a fresh get_teacher_lap_state.
   // Emails are still going out server-side, so card 3 stays Pending.
+  // otp-v0.14: buildSubmitPayload now always sends reflection_flow:true (the
+  // only new POST key), so every Save & Lock from here on IS a
+  // reflection-flow lap - step 2 goes straight to "waiting on teacher"
+  // (nothing sent yet) and step 5 is pending, not "coming soon", for the
+  // whole locked interval.
   function renderStripJustOpened(lap, observationDateVal, observerName) {
     const n = String(lap || '').trim() || '1';
     renderStripView({
       n: n,
       line: 'Observation ' + n + ' · open since ' + formatDay(observationDateVal) +
             ' · coach ' + (observerName || ''),
-      status: ['completed', 'coming', 'pending', 'current', 'coming', 'pending'],
+      status: ['completed', 'waiting', 'pending', 'current', 'pending', 'pending'],
     });
   }
 
@@ -7890,6 +8082,7 @@ body.is-viewer .cog-btn { display: none; }
     // this fetch answers (or never does).
     openBlockInfo = null;
     nextLapCache = null;
+    openReflectionInfo = null;
     updateSubmitState();
     if (!name) {
       window.__otpReadSource.lapState = 'none';
@@ -7904,6 +8097,11 @@ body.is-viewer .cog-btn { display: none; }
       window.__otpReadSource.lapState = 'supabase';
       nextLapCache = { teacher: name, next_lap: d.next_lap };
       openBlockInfo = d.open ? { teacher: name, lap: lapOf(d.open) } : null;
+      openReflectionInfo = d.open ? {
+        token: d.open.record_token,
+        reflection_flow: !!d.open.reflection_flow,
+        part1_at: d.open.part1_at || null,
+      } : null;
       renderStripView(stripViewFromLapState(d));
       renderNextStepsFromLapState(d);
       updateSubmitState();   // reflect the open-block grey state right away

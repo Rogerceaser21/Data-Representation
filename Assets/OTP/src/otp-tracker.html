@@ -318,11 +318,6 @@ body {
   border-style: dashed;
 }
 .pill[disabled]:hover { background: transparent; color: var(--paper-mid); }
-.pill .chip-soon {
-  font-style: italic;
-  font-size: 0.85em;
-  opacity: 0.85;
-}
 
 /* ===========================================
    TEACHER LIST
@@ -446,6 +441,13 @@ body {
   border-style: dashed; border-color: var(--paper-faint);
   color: var(--paper-faint);
   opacity: 0.75;
+}
+/* otp-v0.14: same "waiting on teacher" state as the form's own status strip
+   (.strip-card.is-waiting) - calm, never the Active pill. */
+.tt-step.is-waiting {
+  background: transparent;
+  border-color: var(--ais-yellow);
+  color: var(--ais-yellow);
 }
 .tt-step.is-completed {
   background: var(--rate-success);
@@ -741,10 +743,10 @@ body {
       <button class="pill is-selected" type="button" data-chip="all">All</button>
       <button class="pill" type="button" data-chip="not-observed">Not observed</button>
       <button class="pill" type="button" data-chip="observation">Observation</button>
-      <button class="pill" type="button" data-chip="reflection" disabled title="Coming soon"><span class="chip-label">Reflection Form</span> <span class="chip-soon">· Coming soon</span></button>
+      <button class="pill" type="button" data-chip="reflection">Reflection Form</button>
       <button class="pill" type="button" data-chip="emails">Emails</button>
       <button class="pill" type="button" data-chip="feedback">Feedback Meeting</button>
-      <button class="pill" type="button" data-chip="plan" disabled title="Coming soon"><span class="chip-label">Plan Form</span> <span class="chip-soon">· Coming soon</span></button>
+      <button class="pill" type="button" data-chip="plan">Plan Form</button>
       <button class="pill" type="button" data-chip="completed">Completed</button>
     </div>
   </section>
@@ -864,25 +866,39 @@ function fmtDayShort(v) {
    The same three shapes drive both a teacher's current row and each of
    their history entries (a history entry carries its own state + emails).
 
-   SEAM (do not build yet: PLAN-A.md section 10): a later version may show
-   what the teacher wrote per step, once the Teacher Reflection Form and
-   Teacher Plan Form exist. get_otp_tracker()'s shape already reserves room
-   for that inside `open` / each `history` entry; nothing here reads or
-   renders it, and no token, rating, note or Next Step is ever in the
-   payload this page receives.
+   otp-v0.14: `open`/`last_closed`/each history entry now also carries
+   reflection_flow/part1_at/part2_at (migrate_27). A legacy lap
+   (reflection_flow falsy, e.g. every fixture from before this release) is
+   UNCHANGED - steps 2/5 stay 'coming'. A reflection-flow lap instead shows
+   step 2 completed once part1_at lands, else the calm 'waiting' state
+   (never Active, never a block); step 5 is 'pending' while open (Part 2 only
+   opens at Close Lap), then completed once part2_at lands, else 'waiting'.
    =========================================== */
-function stepsForState(state, emailsDone) {
-  if (state === 'open') return ['completed', 'coming', emailsDone ? 'completed' : 'pending', 'current', 'coming', 'pending'];
-  if (state === 'closed') return ['completed', 'coming', 'completed', 'completed', 'coming', 'completed'];
+function stepsForState(state, emailsDone, reflectionFlow, part1At, part2At) {
+  if (state === 'open') {
+    return ['completed',
+            reflectionFlow ? (part1At ? 'completed' : 'waiting') : 'coming',
+            emailsDone ? 'completed' : 'pending',
+            'current',
+            reflectionFlow ? 'pending' : 'coming',
+            'pending'];
+  }
+  if (state === 'closed') {
+    return ['completed',
+            reflectionFlow ? (part1At ? 'completed' : 'waiting') : 'coming',
+            'completed', 'completed',
+            reflectionFlow ? (part2At ? 'completed' : 'waiting') : 'coming',
+            'completed'];
+  }
   return ['pending', 'coming', 'pending', 'pending', 'coming', 'pending'];
 }
 function stepsFor(t) {
-  if (t.open) return stepsForState('open', t.open.emails_done);
-  if (t.last_closed) return stepsForState('closed', false);
+  if (t.open) return stepsForState('open', t.open.emails_done, t.open.reflection_flow, t.open.part1_at, null);
+  if (t.last_closed) return stepsForState('closed', false, t.last_closed.reflection_flow, t.last_closed.part1_at, t.last_closed.part2_at);
   return stepsForState('none', false);
 }
 function stepsForHist(h) {
-  return stepsForState(h.state, h.emails_done);
+  return stepsForState(h.state, h.emails_done, h.reflection_flow, h.part1_at, h.part2_at);
 }
 function activeStepIndex(steps) {
   var i = steps.indexOf('current');
@@ -902,16 +918,49 @@ function sublineText(t) {
   return '';
 }
 
-/* "Waiting on" classification for the chips (plan section 4). */
+/* "Waiting on" classification for the chips (plan section 4). Legacy
+   behaviour, unaffected by reflection_flow: not-observed / emails / feedback
+   / completed stay exclusive and exactly as before v0.14. */
 function waitingOn(t) {
   if (!t.open && !t.last_closed) return 'not-observed';   // never observed
-  if (!t.open && t.last_closed) return 'completed';        // latest closed
-  return t.open.emails_done ? 'feedback' : 'emails';        // open
+  if (t.open) return t.open.emails_done ? 'feedback' : 'emails';
+  return 'completed';
+}
+/* otp-v0.14: independent of waitingOn above - a row can be BOTH e.g. still
+   owed its emails AND waiting on the teacher's reflection at once, so these
+   are their own booleans, not folded into the exclusive category. Mirrors
+   stepsForState's step 2 / step 5 'waiting' condition exactly (same for the
+   open and closed shapes), so the Reflection/Plan chips match every row
+   whose step 2 / step 5 actually reads "waiting on teacher". */
+function reflectionWaiting(t) {
+  var lap = t.open || t.last_closed;
+  return !!(lap && lap.reflection_flow && !lap.part1_at);
+}
+function planWaiting(t) {
+  if (t.open) return false;   // step 5 is 'pending' while open, never 'waiting'
+  var lap = t.last_closed;
+  return !!(lap && lap.reflection_flow && !lap.part2_at);
 }
 /* The "Observation" chip = next thing due is an observation: never
    observed, OR latest observation completed (ready for the next one). */
 function isObservationDue(t) {
   return !t.open;
+}
+
+/* otp-v0.14: the two per-observation status lines under each history block.
+   A legacy lap (reflection_flow falsy) keeps the old seam wording verbatim.
+   Never shows the teacher's answers - date and stage only, same as the rest
+   of Check Teacher. */
+function reflectionLine(h) {
+  if (!h.reflection_flow) return 'Teacher Reflection · not yet available';
+  if (h.part1_at) return 'Teacher Reflection · sent ' + fmtDayShort(h.part1_at);
+  return 'Teacher Reflection · waiting on teacher';
+}
+function planLine(h) {
+  if (!h.reflection_flow) return 'Teacher Plan · not yet available';
+  if (h.part2_at) return 'Teacher Plan · sent ' + fmtDayShort(h.part2_at);
+  if (h.state === 'closed') return 'Teacher Plan · waiting on teacher';
+  return 'Teacher Plan · after Close Lap';
 }
 
 /* ===========================================
@@ -970,6 +1019,8 @@ function buildRow(t) {
   row.dataset.name = t.name.toLowerCase();
   row.dataset.waiting = waitingOn(t);
   row.dataset.obsDue = isObservationDue(t) ? '1' : '0';
+  row.dataset.reflWait = reflectionWaiting(t) ? '1' : '0';
+  row.dataset.planWait = planWaiting(t) ? '1' : '0';
 
   var main = document.createElement('button');
   main.type = 'button';
@@ -1048,6 +1099,19 @@ function buildRow(t) {
         noSteps.textContent = 'No Next Steps yet';
         block.appendChild(noSteps);
       }
+
+      // otp-v0.14: this observation's own Reflection / Plan status, answers
+      // NOT shown here (that would be per-question detail; Check Teacher is
+      // stage only). A legacy lap keeps the old seam wording verbatim.
+      var reflP = document.createElement('span');
+      reflP.className = 'tt-placeholder';
+      reflP.textContent = reflectionLine(h);
+      block.appendChild(reflP);
+      var planP = document.createElement('span');
+      planP.className = 'tt-placeholder';
+      planP.textContent = planLine(h);
+      block.appendChild(planP);
+
       hist.appendChild(block);
     });
   } else {
@@ -1058,16 +1122,16 @@ function buildRow(t) {
     emptyLabel.textContent = 'No observations recorded yet this school year.';
     emptyRow.appendChild(emptyLabel);
     hist.appendChild(emptyRow);
-  }
 
-  // Reflection / Plan seams (PLAN-A.md section 10, do not build yet): what
-  // the teacher wrote per step, once those forms exist.
-  ['Teacher Reflection', 'Teacher Plan'].forEach(function (label) {
-    var ph = document.createElement('span');
-    ph.className = 'tt-placeholder';
-    ph.textContent = label + ' · not yet available';
-    hist.appendChild(ph);
-  });
+    // No observation exists yet to attach a per-lap Reflection/Plan status
+    // to, so the row keeps the old generic pair (unchanged from pre-v0.14).
+    ['Teacher Reflection', 'Teacher Plan'].forEach(function (label) {
+      var ph = document.createElement('span');
+      ph.className = 'tt-placeholder';
+      ph.textContent = label + ' · not yet available';
+      hist.appendChild(ph);
+    });
+  }
 
   histInner.appendChild(hist);
   histWrap.appendChild(histInner);
@@ -1125,7 +1189,11 @@ function applyFilter() {
     else if (activeChip === 'emails') chipMatch = row.dataset.waiting === 'emails';
     else if (activeChip === 'feedback') chipMatch = row.dataset.waiting === 'emails' || row.dataset.waiting === 'feedback';
     else if (activeChip === 'completed') chipMatch = row.dataset.waiting === 'completed';
-    else if (activeChip === 'reflection' || activeChip === 'plan') chipMatch = false; // coming soon, always empty
+    // otp-v0.14: rows still waiting on the teacher for that part - independent
+    // of the chips above, a row can match one of these AND emails/feedback/
+    // completed at once (e.g. emails not sent yet AND Part 1 not sent yet).
+    else if (activeChip === 'reflection') chipMatch = row.dataset.reflWait === '1';
+    else if (activeChip === 'plan') chipMatch = row.dataset.planWait === '1';
     var show = nameMatch && chipMatch;
     row.style.display = show ? '' : 'none';
     if (show) visible++;

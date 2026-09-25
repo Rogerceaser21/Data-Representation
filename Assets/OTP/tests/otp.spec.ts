@@ -504,7 +504,7 @@ test('renders all 32 SP1 v2 rubric chips verbatim, in order, 4/5/7/8/8', async (
   await expect(page.locator('tr.rub-caption .rub-cap-k')).toHaveText('Aspect of Practice');
   await expect(page.locator('tr.rub-caption .rub-cap-v')).toHaveText(RUBRIC.aspect);
   // the footer renders uppercase through CSS, so match the text case-insensitively
-  await expect(page.locator('.form-footer')).toContainText(/otp-v0\.13/i);
+  await expect(page.locator('.form-footer')).toContainText(/otp-v0\.14/i);
   await expect(page.locator('#rubric_version')).toHaveValue('sp1-v2');
 
   expect(h.errors).toEqual([]);
@@ -1312,7 +1312,13 @@ test('submit posts exactly the CONTRACT keys with form="otp" and rubric_version=
   // record_token/action, never stored in content (the server strips it), so
   // it sits outside the §2 contract the same way.
   expect(body.enforce_open_block).toBe('true');
-  const contractKeys = Object.keys(body).filter((k) => k !== 'record_token' && k !== 'enforce_open_block');
+  // otp-v0.14: reflection_flow is the ONLY new POST key, sent the same way -
+  // a transport flag (the server mints teacher_token from it, never stores
+  // the flag itself), outside the §2 contract.
+  expect(body.reflection_flow).toBe('true');
+  const contractKeys = Object.keys(body).filter(
+    (k) => k !== 'record_token' && k !== 'enforce_open_block' && k !== 'reflection_flow',
+  );
   expect(contractKeys.sort()).toEqual(CONTRACT_KEYS);
   expect(contractKeys).toHaveLength(32);   // §2 list, counted not assumed (otp-v0.8: + time_out)
   expect(body.form).toBe('otp');
@@ -2109,7 +2115,7 @@ test('otp-v0.7: no console errors and no horizontal overflow at 1280, 1180x820 a
       await notePop(page).evaluate((el) => getComputedStyle(el).position),
     ).toBe('absolute');
 
-    await expect(page.locator('.form-footer')).toContainText(/otp-v0\.13/i);
+    await expect(page.locator('.form-footer')).toContainText(/otp-v0\.14/i);
     await page.evaluate((k) => localStorage.removeItem(k), DRAFT_KEY);
   }
 
@@ -2513,11 +2519,15 @@ test('otp-v0.9: Save changes posts action "update" with the record_token and all
   // CNL-001 (otp-v0.11 fix round 1): every write, including update, now
   // carries this transport flag too (plan 3.6), same treatment as action/record_token.
   expect(body.enforce_open_block).toBe('true');
-  // the submit contract, unchanged: the SAME 32 keys, plus action + record_token + enforce_open_block
-  const contract = Object.keys(body).filter((k) => k !== 'action' && k !== 'record_token' && k !== 'enforce_open_block');
+  // otp-v0.14: reflection_flow rides along on every write, same treatment.
+  expect(body.reflection_flow).toBe('true');
+  // the submit contract, unchanged: the SAME 32 keys, plus action + record_token + enforce_open_block + reflection_flow
+  const contract = Object.keys(body).filter(
+    (k) => k !== 'action' && k !== 'record_token' && k !== 'enforce_open_block' && k !== 'reflection_flow',
+  );
   expect(contract.sort()).toEqual(CONTRACT_KEYS);
   expect(contract).toHaveLength(32);
-  expect(Object.keys(body)).toHaveLength(35);
+  expect(Object.keys(body)).toHaveLength(36);
   expect(body.form).toBe('otp');
   expect(body.teacher).toBe('Test Teacher');
   expect(body.inspector).toBe('Test Observer');
@@ -2557,7 +2567,9 @@ test('otp-v0.9: Close Lap, confirmed, posts "close", locks the form and the bann
   expect(h.posts[0].record_token).toBe(EDIT_TOKEN_FIXTURE);
   // CNL-001 (otp-v0.11 fix round 1): close also carries enforce_open_block now.
   expect(h.posts[0].enforce_open_block).toBe('true');
-  expect(Object.keys(h.posts[0])).toHaveLength(35);
+  // otp-v0.14: close also carries reflection_flow now, same treatment.
+  expect(h.posts[0].reflection_flow).toBe('true');
+  expect(Object.keys(h.posts[0])).toHaveLength(36);
 
   const banner = await bannerText(page);
   expect(banner).toMatch(dayRe('Observation 1 · closed ', '2026-09-11T09:30:00.000Z'));
@@ -3219,6 +3231,44 @@ const LAP_STATE_STARTING_NEXT = {
   },
 };
 
+/** otp-v0.14: an open reflection-flow lap, Part 1 not yet sent. */
+const LAP_STATE_OPEN_REFLECTION_WAITING = {
+  ...LAP_STATE_OPEN_WITH_OWN_STEPS,
+  open: {
+    ...LAP_STATE_OPEN_WITH_OWN_STEPS.open,
+    reflection_flow: true, part1_at: null, part2_at: null,
+  },
+};
+/** Same lap, Part 1 already sent. */
+const LAP_STATE_OPEN_REFLECTION_SENT = {
+  ...LAP_STATE_OPEN_WITH_OWN_STEPS,
+  open: {
+    ...LAP_STATE_OPEN_WITH_OWN_STEPS.open,
+    reflection_flow: true, part1_at: '2026-09-17T07:00:00.000Z', part2_at: null,
+  },
+};
+
+/** Skeptic fix (T5): the "last one closed, coach starts the next" view
+ *  (LAP_STATE_STARTING_NEXT's shape) for a reflection-flow lap that is still
+ *  waiting on BOTH parts - step 2 and step 5 must read "waiting on teacher",
+ *  never "Coming soon". */
+const LAP_STATE_CLOSED_REFLECTION_WAITING = {
+  ...LAP_STATE_STARTING_NEXT,
+  last_closed: {
+    ...LAP_STATE_STARTING_NEXT.last_closed,
+    reflection_flow: true, part1_at: null, part2_at: null,
+  },
+};
+/** Same closed lap, both parts sent - step 2 and step 5 must read Completed. */
+const LAP_STATE_CLOSED_REFLECTION_DONE = {
+  ...LAP_STATE_STARTING_NEXT,
+  last_closed: {
+    ...LAP_STATE_STARTING_NEXT.last_closed,
+    reflection_flow: true,
+    part1_at: '2026-09-14T11:00:00.000Z', part2_at: '2026-09-16T09:00:00.000Z',
+  },
+};
+
 async function mockLapState(page: Page, answer: any) {
   await page.route('**/rest/v1/rpc/get_teacher_lap_state', (r: Route) =>
     r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(answer) }),
@@ -3294,6 +3344,122 @@ test('otp-v0.11: the status strip renders the four worked examples of plan 2.1',
   expect(await stripStatuses(page)).toEqual(
     ['Completed', 'Coming soon', 'Completed', 'Completed', 'Coming soon', 'Completed']);
   expect(await stripText(page), 'otp-v0.12: "Current" is retired').not.toContain('Current');
+  expect(h.errors).toEqual([]);
+});
+
+/* ===================================================================
+   otp-v0.14 T5 · the status strip / pinned bar for a reflection-flow lap
+   (get_teacher_lap_state's open/last_closed now carry reflection_flow/
+   part1_at/part2_at, migrate_27). A lap missing these fields (every fixture
+   above) is unaffected - proven throughout this file already; these tests
+   cover the NEW step 2/5 states, which must fail on the untouched otp-v0.13
+   code (it has never heard of 'waiting' and always renders 'coming' here).
+   =================================================================== */
+
+test('otp-v0.14 T5: an open reflection-flow lap shows step 2 "Waiting on teacher" (never Active), step 5 Pending not "Coming soon"', async ({ page }) => {
+  const h = await harness(page);
+  await mockLapState(page, LAP_STATE_OPEN_REFLECTION_WAITING);
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await expect(stripLine(page)).toContainText('open since', { timeout: 10_000 });
+  expect(await stripStatuses(page)).toEqual(
+    ['Completed', 'Waiting on teacher', 'Completed', 'Active', 'Pending', 'Pending']);
+  await expect(page.locator('#strip-card-2')).toHaveClass(/\bis-waiting\b/);
+  await expect(page.locator('#strip-card-2')).not.toHaveClass(/\bis-coming\b/);
+  expect(await stripText(page)).not.toContain('Coming soon');
+  // the pinned bar's own dot mirrors the card exactly (it reads the card's
+  // own class straight off the DOM, see opBarBuildSteps).
+  expect(await opBarStepStates(page)).toEqual(
+    ['completed', 'waiting', 'completed', 'active', 'pending', 'pending']);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.14 T5: once Part 1 lands, step 2 goes Completed - the rest of the strip is untouched', async ({ page }) => {
+  const h = await harness(page);
+  await mockLapState(page, LAP_STATE_OPEN_REFLECTION_SENT);
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await expect(stripLine(page)).toContainText('open since', { timeout: 10_000 });
+  expect(await stripStatuses(page)).toEqual(
+    ['Completed', 'Completed', 'Completed', 'Active', 'Pending', 'Pending']);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.14 T5 skeptic fix: the "last one closed, starting next" strip shows the CLOSED lap\'s own reflection progress on steps 2 and 5, never "Coming soon"', async ({ page }) => {
+  const h = await harness(page);
+  await mockLapState(page, LAP_STATE_CLOSED_REFLECTION_WAITING);
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await expect(stripLine(page)).toContainText('now starting Observation', { timeout: 10_000 });
+  expect(await stripStatuses(page)).toEqual(
+    ['Active', 'Waiting on teacher', 'Pending', 'Pending', 'Waiting on teacher', 'Pending']);
+  expect(await stripText(page)).not.toContain('Coming soon');
+
+  const h2 = await harness(page);
+  await mockLapState(page, LAP_STATE_CLOSED_REFLECTION_DONE);
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await expect(stripLine(page)).toContainText('now starting Observation', { timeout: 10_000 });
+  expect(await stripStatuses(page)).toEqual(
+    ['Active', 'Completed', 'Pending', 'Pending', 'Completed', 'Pending']);
+  expect(h.errors).toEqual([]);
+  expect(h2.errors).toEqual([]);
+});
+
+test('otp-v0.14 T5: right after Save & Lock, a brand-new lap is reflection-flow - step 2 waits, step 5 is Pending not "Coming soon"', async ({ page }) => {
+  const h = await harness(page);
+  page.on('dialog', (d) => d.accept());
+  await mockLapState(page, LAP_STATE_NEVER);
+  await openForm(page);
+  await fillRequired(page);
+  await page.locator('#btn-submit').click();
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 15_000 });
+  expect(await stripStatuses(page)).toEqual(
+    ['Completed', 'Waiting on teacher', 'Pending', 'Active', 'Pending', 'Pending']);
+  expect(await stripText(page)).not.toContain('Coming soon');
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.14 T5: Close Lap on a reflection-flow lap whose Part 1 was already sent - step 2 stays Completed, step 5 goes "Waiting on teacher" (Part 2 cannot exist yet)', async ({ page }) => {
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
+  page.on('dialog', (d) => d.accept());
+  await mockLapState(page, LAP_STATE_OPEN_REFLECTION_SENT);
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
+  await page.locator('#btn-close-lap').click();
+  await expect(page.locator('#otp-form')).toHaveClass(/is-locked/, { timeout: 10_000 });
+  expect(await stripStatuses(page)).toEqual(
+    ['Completed', 'Completed', 'Completed', 'Completed', 'Waiting on teacher', 'Completed']);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.14 T5: Close Lap on a reflection-flow lap whose Part 1 was never sent renders step 2 "Waiting on teacher" too', async ({ page }) => {
+  const h = await harness(page, { record: RECORD_PAYLOAD_OPEN });
+  page.on('dialog', (d) => d.accept());
+  await mockLapState(page, LAP_STATE_OPEN_REFLECTION_WAITING);
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await expect(page.locator('#btn-close-lap')).toBeVisible({ timeout: 15_000 });
+  await page.locator('#btn-close-lap').click();
+  await expect(page.locator('#otp-form')).toHaveClass(/is-locked/, { timeout: 10_000 });
+  expect(await stripStatuses(page)).toEqual(
+    ['Completed', 'Waiting on teacher', 'Completed', 'Completed', 'Waiting on teacher', 'Completed']);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.14 T5: an ALREADY-CLOSED record loaded cold via ?edit= is untouched - no reflection cache to draw on, byte-identical to otp-v0.13', async ({ page }) => {
+  // otp_record_by_token stays byte-identical (contract section 1): the
+  // coach's own record GET never carries reflection_flow/part1_at, so this
+  // path (loadClosedRecord's already-closed branch) must keep rendering
+  // 'coming' regardless of what a stale/mismatched lap-state mock says.
+  const h = await harness(page, { record: RECORD_PAYLOAD_CLOSED });
+  await mockLapState(page, LAP_STATE_OPEN_REFLECTION_WAITING);   // deliberately irrelevant/mismatched
+  await page.goto(`${FORM_URL}?edit=${EDIT_TOKEN_FIXTURE}`);
+  await passGate(page);
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 15_000 });
+  expect(await stripStatuses(page)).toEqual(
+    ['Completed', 'Coming soon', 'Completed', 'Completed', 'Coming soon', 'Completed']);
   expect(h.errors).toEqual([]);
 });
 
@@ -3644,13 +3810,13 @@ test('otp-v0.11 F2: a late get_teacher_lap_state answer never redraws over a jus
   expect(h.errors).toEqual([]);
 });
 
-test('otp-v0.13: the footer reads otp-v0.13', async ({ page }) => {
+test('otp-v0.14: the footer reads otp-v0.14', async ({ page }) => {
   await harness(page);
   await openForm(page);
   await expect(
     page.locator('.form-footer'),
-    'footer version was not bumped to otp-v0.13',
-  ).toContainText(/otp-v0\.13/i);
+    'footer version was not bumped to otp-v0.14',
+  ).toContainText(/otp-v0\.14/i);
   // release: the preview round label is gone from the shipped footer
   await expect(page.locator('.form-footer')).not.toContainText(/preview/i);
 });
@@ -4583,6 +4749,135 @@ test('otp-v0.10 Phase 3: an uppercase token skips Supabase and reaches Google un
   await expect.poll(() => padImages.length, { timeout: 15_000 }).toBeGreaterThan(0);
   expect(padImages[0]).toContain(`token=${UPPER}`);
   expect(padImages[0]).toContain('name=observer-comments-1.jpg');
+  expect(h.errors).toEqual([]);
+});
+
+/* ============================================================================
+ * otp-v0.14 T5 · the teacher viewer's OWN ?t= route (contract section 5).
+ * Never the Apps Script GET, never `token`; Supabase is the only source, so
+ * a stall retries silently forever and a parsed miss/reflection_needed is
+ * final. These must fail on the untouched otp-v0.13 code (?t= was not a
+ * recognised param at all before this task; the page fell to VIEWER_LANDING).
+ * ========================================================================== */
+const TEACHER_TOKEN_FIXTURE = 'aa11bb22cc33dd44ee55ff6600112233';
+
+/** What the otp-record edge function's TEACHER branch answers. */
+const teacherEdgeAnswer = (payload: any = RECORD_PAYLOAD_OPEN, padUrls?: { name: string; url: string }[]) => ({
+  success: true,
+  data: payload.data,
+  form: 'otp',
+  source: 'supabase',
+  teacher_view: true,
+  ...(padUrls && padUrls.length ? { pad_urls: padUrls } : {}),
+});
+
+test('otp-v0.14 T5 viewer: ?t= success renders the record read-only, calling the edge function with t= and never token=, never Google', async ({ page }) => {
+  const h = await harness(page);
+  const google = await countGoogle(page);
+  const urls = await routeEdgeRecord(page, (r) =>
+    r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(teacherEdgeAnswer()) }),
+  );
+
+  await page.goto(RECORD_URL + '?t=' + TEACHER_TOKEN_FIXTURE);
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 15_000 });
+  await expect(page.locator('#next_step_3')).toHaveValue('Record next step three');
+
+  expect(urls.length).toBeGreaterThan(0);
+  expect(urls.every((u) => u.includes('t=' + TEACHER_TOKEN_FIXTURE))).toBe(true);
+  expect(urls.some((u) => u.includes('token='))).toBe(false);
+  expect(google).toHaveLength(0);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.14 T5 viewer: ?t= reflection_needed shows the calm "answer first" card with a working Reflect button', async ({ page }) => {
+  const h = await harness(page);
+  const google = await countGoogle(page);
+  await routeEdgeRecord(page, (r) =>
+    r.fulfill({ status: 200, contentType: 'application/json',
+      body: JSON.stringify({ success: false, error: 'reflection_needed' }) }),
+  );
+
+  await page.goto(RECORD_URL + '?t=' + TEACHER_TOKEN_FIXTURE);
+  const card = page.locator('#form-loading .form-loading-card');
+  await expect(card).toContainText(
+    'Please answer three short questions about your lesson first.', { timeout: 15_000 },
+  );
+  const btn = page.locator('#btn-reflect-needed');
+  await expect(btn).toHaveText('Reflect on your lesson');
+  await expect(btn).toHaveAttribute('href', 'otp-reflect.html?t=' + TEACHER_TOKEN_FIXTURE);
+  await expect(page.locator('#toast')).not.toHaveClass(/show/);
+  expect(google).toHaveLength(0);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.14 T5 viewer: ?t= a miss shows the SAME calm landing card as a bad ?token= link', async ({ page }) => {
+  const h = await harness(page);
+  await routeEdgeRecord(page, (r) =>
+    r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(EDGE_MISS) }),
+  );
+
+  await page.goto(RECORD_URL + '?t=' + TEACHER_TOKEN_FIXTURE);
+  const card = page.locator('#form-loading .form-loading-card');
+  await expect(card).toContainText(
+    'This link is not valid or has expired. Ask your observer for a new link.', { timeout: 15_000 },
+  );
+  await expect(page.locator('#toast')).not.toHaveClass(/show/);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.14 T5 viewer: a non-canonical ?t= shows the calm landing card, no network call at all', async ({ page }) => {
+  const h = await harness(page);
+  const urls = await routeEdgeRecord(page, (r) =>
+    r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(teacherEdgeAnswer()) }),
+  );
+
+  await page.goto(RECORD_URL + '?t=not-hex-at-all');
+  const card = page.locator('#form-loading .form-loading-card');
+  await expect(card).toContainText('This link is not valid or has expired.', { timeout: 15_000 });
+  expect(urls).toHaveLength(0);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.14 T5 viewer: ?t= retries silently through a stall/500 before answering, no error UI, never falls to Google', async ({ page }) => {
+  const h = await harness(page);
+  const google = await countGoogle(page);
+  let attempt = 0;
+  await routeEdgeRecord(page, async (r) => {
+    attempt++;
+    if (attempt < 3) { await r.fulfill({ status: 500, contentType: 'text/plain', body: 'upstream error' }); return; }
+    await r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(teacherEdgeAnswer()) });
+  });
+
+  await page.goto(RECORD_URL + '?t=' + TEACHER_TOKEN_FIXTURE);
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 20_000 });
+  expect(attempt).toBeGreaterThanOrEqual(3);
+  expect(google).toHaveLength(0);
+  await expect(page.locator('#toast')).not.toHaveClass(/error/);
+  expect(h.errors.filter((e) => !/status of 500/.test(e))).toEqual([]);
+});
+
+test('otp-v0.14 T5 viewer: ?t= pad pages come from pad_urls (signed URLs), never the token-gated Apps Script route', async ({ page }) => {
+  const h = await harness(page);
+  const google = await countGoogle(page);
+  const signedUrl = 'https://rfbetrcevtmisknndpgg.supabase.co/storage/v1/object/sign/evidence-pads/teacher-pad-1/observer-comments-1.jpg?token=signed-abc';
+  // a regex, not the plain string: Playwright's glob route matcher treats a
+  // bare `?` as a single-char wildcard, which the signed URL's own query
+  // string would trip.
+  await page.route(new RegExp(signedUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')), (r: Route) =>
+    r.fulfill({ status: 200, contentType: 'image/jpeg', body: Buffer.from(ONE_PX_JPEG, 'base64') }),
+  );
+  await routeEdgeRecord(page, (r) =>
+    r.fulfill({ status: 200, contentType: 'application/json',
+      body: JSON.stringify(teacherEdgeAnswer(RECORD_PAYLOAD_OPEN, [{ name: 'observer-comments-1.jpg', url: signedUrl }])) }),
+  );
+
+  await page.goto(RECORD_URL + '?t=' + TEACHER_TOKEN_FIXTURE);
+  await expect(page.locator('#submitted-banner')).toHaveClass(/is-active/, { timeout: 15_000 });
+  await expect(page.locator('.pad-attach[data-pad-target="observer_comments"]')).toBeVisible();
+
+  await page.locator('.pad-attach[data-pad-target="observer_comments"]').click();
+  await expect(page.locator('#pad-view-scroll img')).toHaveAttribute('src', signedUrl, { timeout: 15_000 });
+  expect(google.filter((u) => u.includes('action=pad_image'))).toHaveLength(0);
   expect(h.errors).toEqual([]);
 });
 
