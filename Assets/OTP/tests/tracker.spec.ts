@@ -139,7 +139,7 @@ async function stepStates(row: Locator): Promise<string[]> {
   const states: string[] = [];
   for (let i = 0; i < count; i++) {
     const cls = (await icons.nth(i).getAttribute('class')) || '';
-    const m = /is-(pending|coming|completed|current)/.exec(cls);
+    const m = /is-(pending|coming|completed|current|waiting)/.exec(cls);
     states.push(m ? m[1] : '?');
   }
   return states;
@@ -293,15 +293,144 @@ test('otp-v0.12 A2: chip Completed shows only rows with no open and a last close
   expect(h.errors).toEqual([]);
 });
 
-test('otp-v0.12 A2: Reflection Form and Plan Form chips are disabled and marked Coming soon', async ({ page }) => {
+/* ==========================================================================
+ * otp-v0.14 T5: reflection-flow rows (get_otp_tracker now carries
+ * reflection_flow/part1_at/part2_at per open/last_closed/history entry;
+ * FIXTURES above has none of these fields, so every one of its rows stays
+ * on the pre-v0.14 legacy rendering, proven throughout this file already).
+ * ========================================================================== */
+const REFLECTION_FIXTURES = [
+  {
+    // open, reflection_flow, teacher has not sent Part 1 yet.
+    name: 'Layla Haddad', section: 'secondary', on_roster: true, observation_count: 1,
+    open: {
+      lap: 1, observation_date: '2026-09-20', observer: 'Marcus Lee', emails_done: true,
+      reflection_flow: true, part1_at: null,
+    },
+    open_count: 1, last_closed: null,
+    history: [{
+      lap: 1, state: 'open', observation_date: '2026-09-20', observer: 'Marcus Lee', closed_at: '',
+      emails_done: true, next_steps: [], reflection_flow: true, part1_at: null, part2_at: null,
+    }],
+  },
+  {
+    // open, reflection_flow, Part 1 already sent.
+    name: 'Karim Atallah', section: 'primary', on_roster: true, observation_count: 1,
+    open: {
+      lap: 1, observation_date: '2026-09-18', observer: 'Dana Cole', emails_done: true,
+      reflection_flow: true, part1_at: '2026-09-19T07:00:00.000Z',
+    },
+    open_count: 1, last_closed: null,
+    history: [{
+      lap: 1, state: 'open', observation_date: '2026-09-18', observer: 'Dana Cole', closed_at: '',
+      emails_done: true, next_steps: [], reflection_flow: true, part1_at: '2026-09-19T07:00:00.000Z', part2_at: null,
+    }],
+  },
+  {
+    // closed, reflection_flow, Part 1 sent, Part 2 (the plan) still owed.
+    name: 'Noor Salim', section: 'secondary', on_roster: true, observation_count: 1,
+    open: null, open_count: 0,
+    last_closed: {
+      lap: 1, observation_date: '2026-09-10', observer: 'Marcus Lee', closed_at: '2026-09-12T08:00:00.000Z',
+      reflection_flow: true, part1_at: '2026-09-11T07:00:00.000Z', part2_at: null,
+    },
+    history: [{
+      lap: 1, state: 'closed', observation_date: '2026-09-10', observer: 'Marcus Lee', closed_at: '2026-09-12T08:00:00.000Z',
+      emails_done: true, next_steps: ['Agree a shared vocabulary list'],
+      reflection_flow: true, part1_at: '2026-09-11T07:00:00.000Z', part2_at: null,
+    }],
+  },
+  {
+    // closed, reflection_flow, both parts sent.
+    name: 'Ravi Chandran', section: 'primary', on_roster: true, observation_count: 1,
+    open: null, open_count: 0,
+    last_closed: {
+      lap: 1, observation_date: '2026-09-01', observer: 'Dana Cole', closed_at: '2026-09-03T08:00:00.000Z',
+      reflection_flow: true, part1_at: '2026-09-02T07:00:00.000Z', part2_at: '2026-09-05T09:00:00.000Z',
+    },
+    history: [{
+      lap: 1, state: 'closed', observation_date: '2026-09-01', observer: 'Dana Cole', closed_at: '2026-09-03T08:00:00.000Z',
+      emails_done: true, next_steps: [],
+      reflection_flow: true, part1_at: '2026-09-02T07:00:00.000Z', part2_at: '2026-09-05T09:00:00.000Z',
+    }],
+  },
+];
+
+test('otp-v0.14 T5: an open reflection-flow lap shows step 2 waiting until Part 1 lands, then completed', async ({ page }) => {
   const h = await harness(page);
-  await mockTracker(page, FIXTURES);
+  await mockTracker(page, REFLECTION_FIXTURES);
   await openTracker(page);
 
-  await expect(page.locator('.pill[data-chip="reflection"]')).toBeDisabled();
-  await expect(page.locator('.pill[data-chip="reflection"]')).toContainText('Coming soon');
-  await expect(page.locator('.pill[data-chip="plan"]')).toBeDisabled();
-  await expect(page.locator('.pill[data-chip="plan"]')).toContainText('Coming soon');
+  const waiting = rowByName(page, 'Layla Haddad');
+  expect(await stepStates(waiting)).toEqual(['completed', 'waiting', 'completed', 'current', 'pending', 'pending']);
+
+  const sent = rowByName(page, 'Karim Atallah');
+  expect(await stepStates(sent)).toEqual(['completed', 'completed', 'completed', 'current', 'pending', 'pending']);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.14 T5: a closed reflection-flow lap shows step 5 waiting until Part 2 lands, then completed', async ({ page }) => {
+  const h = await harness(page);
+  await mockTracker(page, REFLECTION_FIXTURES);
+  await openTracker(page);
+
+  const waiting = rowByName(page, 'Noor Salim');
+  expect(await stepStates(waiting)).toEqual(['completed', 'completed', 'completed', 'completed', 'waiting', 'completed']);
+
+  const sent = rowByName(page, 'Ravi Chandran');
+  expect(await stepStates(sent)).toEqual(['completed', 'completed', 'completed', 'completed', 'completed', 'completed']);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.14 T5: Reflection Form and Plan Form chips are enabled and filter to rows waiting on the teacher', async ({ page }) => {
+  const h = await harness(page);
+  await mockTracker(page, REFLECTION_FIXTURES);
+  await openTracker(page);
+
+  await expect(page.locator('.pill[data-chip="reflection"]')).toBeEnabled();
+  await expect(page.locator('.pill[data-chip="reflection"]')).not.toContainText('Coming soon');
+  await expect(page.locator('.pill[data-chip="plan"]')).toBeEnabled();
+  await expect(page.locator('.pill[data-chip="plan"]')).not.toContainText('Coming soon');
+
+  await page.locator('.pill[data-chip="reflection"]').click();
+  expect(await visibleNames(page)).toEqual(['Layla Haddad']);
+
+  await page.locator('.pill[data-chip="plan"]').click();
+  expect(await visibleNames(page)).toEqual(['Noor Salim']);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.14 T5: the two per-observation placeholders read sent/waiting/after Close Lap, no answers shown', async ({ page }) => {
+  const h = await harness(page);
+  await mockTracker(page, REFLECTION_FIXTURES);
+  await openTracker(page);
+
+  const waitingRow = rowByName(page, 'Layla Haddad');
+  await waitingRow.locator('.tt-row-main').click();
+  const waitingPh = waitingRow.locator('.tt-hist-block').first().locator('.tt-placeholder');
+  await expect(waitingPh.nth(0)).toHaveText('Teacher Reflection · waiting on teacher');
+  await expect(waitingPh.nth(1)).toHaveText('Teacher Plan · after Close Lap');
+
+  const sentRow = rowByName(page, 'Karim Atallah');
+  await sentRow.locator('.tt-row-main').click();
+  const sentPh = sentRow.locator('.tt-hist-block').first().locator('.tt-placeholder');
+  await expect(sentPh.nth(0)).toHaveText(`Teacher Reflection · sent ${expectedDayShort('2026-09-19T07:00:00.000Z')}`);
+  await expect(sentPh.nth(1)).toHaveText('Teacher Plan · after Close Lap');
+
+  const closedWaitingRow = rowByName(page, 'Noor Salim');
+  await closedWaitingRow.locator('.tt-row-main').click();
+  const closedWaitingPh = closedWaitingRow.locator('.tt-hist-block').first().locator('.tt-placeholder');
+  await expect(closedWaitingPh.nth(0)).toHaveText(`Teacher Reflection · sent ${expectedDayShort('2026-09-11T07:00:00.000Z')}`);
+  await expect(closedWaitingPh.nth(1)).toHaveText('Teacher Plan · waiting on teacher');
+
+  const bothSentRow = rowByName(page, 'Ravi Chandran');
+  await bothSentRow.locator('.tt-row-main').click();
+  const bothSentPh = bothSentRow.locator('.tt-hist-block').first().locator('.tt-placeholder');
+  await expect(bothSentPh.nth(0)).toHaveText(`Teacher Reflection · sent ${expectedDayShort('2026-09-02T07:00:00.000Z')}`);
+  await expect(bothSentPh.nth(1)).toHaveText(`Teacher Plan · sent ${expectedDayShort('2026-09-05T09:00:00.000Z')}`);
+
+  // answers are never on Check Teacher: no q1..q8 text anywhere in the row.
+  await expect(bothSentRow).not.toContainText(/How did the lesson go/);
   expect(h.errors).toEqual([]);
 });
 
@@ -439,17 +568,27 @@ test('otp-v0.12 A2: closed lap 3 with two earlier laps renders three blocks, new
   expect(h.errors).toEqual([]);
 });
 
-test('otp-v0.12 A2: two dashed placeholders sit under the observations, both when observed and when never observed', async ({ page }) => {
+test('otp-v0.12 A2: two dashed placeholders sit under EACH observation (legacy laps), and under the row when never observed', async ({ page }) => {
   const h = await harness(page);
   await mockTracker(page, FIXTURES);
   await openTracker(page);
 
+  // otp-v0.14: FIXTURES carries no reflection_flow at all, so every lap is
+  // legacy - one pair per OBSERVATION now (Beatrix Yun has 3), not one pair
+  // for the whole row; each pair keeps the old wording verbatim.
   const observedRow = rowByName(page, 'Beatrix Yun');
   await observedRow.locator('.tt-row-main').click();
-  const observedPlaceholders = observedRow.locator('.tt-history > .tt-placeholder');
-  await expect(observedPlaceholders).toHaveCount(2);
-  await expect(observedPlaceholders.nth(0)).toHaveText('Teacher Reflection · not yet available');
-  await expect(observedPlaceholders.nth(1)).toHaveText('Teacher Plan · not yet available');
+  const blocks = observedRow.locator('.tt-hist-block');
+  await expect(blocks).toHaveCount(3);
+  for (let i = 0; i < 3; i++) {
+    const ph = blocks.nth(i).locator('.tt-placeholder');
+    await expect(ph).toHaveCount(2);
+    await expect(ph.nth(0)).toHaveText('Teacher Reflection · not yet available');
+    await expect(ph.nth(1)).toHaveText('Teacher Plan · not yet available');
+  }
+  // none of these sit directly under .tt-history any more (that spot is now
+  // only for the never-observed fallback, checked below).
+  await expect(observedRow.locator('.tt-history > .tt-placeholder')).toHaveCount(0);
 
   const neverRow = rowByName(page, 'Zoe Larkin');
   await neverRow.locator('.tt-row-main').click();
