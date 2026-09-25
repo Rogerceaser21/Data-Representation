@@ -1,6 +1,7 @@
-// otp-record · otp-v0.10 Phase 3 · the OTP form's Supabase-first RECORD read.
+// otp-record · otp-v0.10 Phase 3 (+ otp-v0.14 T1 teacher route) · the OTP
+// form's Supabase-first RECORD read.
 //
-// GET ?token=<32hex>   or   POST { token: '<32hex>' }
+// GET ?token=<32hex>   or   POST { token: '<32hex>' }   (coach route, unchanged)
 //   1. otp_record_by_token(token) in Postgres (service key, server-side only):
 //      the record's content minus record_token, in about a second where the
 //      Apps Script Sheet scan takes 3-45 s.
@@ -11,6 +12,16 @@
 //      Assets/R3/apps-script/06_PadExtract.gs listPadFiles. A storage failure
 //      only drops pad_files; the record still answers. The pad page IMAGES
 //      stay on Apps Script (?action=pad_image), token-gated and lazy.
+//
+// GET ?t=<32hex>   or   POST { t: '<32hex>' }   (teacher route, otp-v0.14 T1)
+//   otp_record_by_teacher_token(t): a miss answers MISS; a lap whose Part 1
+//   has not been sent yet answers { success:false, error:'reflection_needed' }
+//   (the teacher viewer sends them to the reflection form first); once
+//   unlocked, answers { success:true, data, form:'otp', source:'supabase',
+//   teacher_view:true } plus, when the record carries pad pages, `pad_urls`
+//   (1-hour SIGNED URLs from the private bucket, since this route has no
+//   Apps Script token to lazy-load images through) - never `pad_files`,
+//   never a token in the answer.
 //
 // Hard rule 10: an exact match on the canonical 32-hex token is the only way
 // in (nothing is lowercased, only surrounding whitespace is trimmed, exactly
@@ -90,6 +101,44 @@ async function listPadFiles(padId: string): Promise<string[]> {
   }
 }
 
+// The pad's page JPEGs as 1-hour SIGNED URLs (the teacher route has no Apps
+// Script token to lazy-load images through, unlike the coach route's
+// pad_files + ?action=pad_image). Any problem answers [] so the record still
+// loads (hard rule 12); never returns a token.
+async function signPadUrls(padId: string): Promise<{ name: string; url: string }[]> {
+  const id = String(padId || '').trim();
+  if (!CANONICAL_TOKEN.test(id)) return [];
+  try {
+    const names = await listPadFiles(id);
+    if (!names.length) return [];
+    const pathToName = new Map(names.map((n) => [`${id}/${n}`, n]));
+    const r = await fetch(`${SB_URL}/storage/v1/object/sign/${PAD_BUCKET}`, {
+      method: 'POST',
+      headers: {
+        apikey: SERVICE_KEY,
+        Authorization: `Bearer ${SERVICE_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ expiresIn: 3600, paths: [...pathToName.keys()] }),
+    });
+    if (!r.ok) return [];
+    const signed = await r.json();
+    if (!Array.isArray(signed)) return [];
+    const out: { name: string; url: string }[] = [];
+    for (const s of signed) {
+      const su = s && s.signedURL;
+      const p = s && s.path;
+      if (!su || !p) continue;
+      const name = pathToName.get(p);
+      if (!name) continue;
+      out.push({ name, url: `${SB_URL}/storage/v1${su}` });
+    }
+    return out;
+  } catch (_e) {
+    return [];
+  }
+}
+
 function tokenFromRequest(req: Request, raw: string): string {
   if (req.method === 'GET') {
     return String(new URL(req.url).searchParams.get('token') || '').trim();
@@ -97,6 +146,19 @@ function tokenFromRequest(req: Request, raw: string): string {
   try {
     const body = JSON.parse(raw || '{}');
     return String((body && body.token) || '').trim();
+  } catch (_e) {
+    return '';
+  }
+}
+
+// otp-v0.14 T1: the teacher route's own carrier ('t'), read the same way.
+function teacherTokenFromRequest(req: Request, raw: string): string {
+  if (req.method === 'GET') {
+    return String(new URL(req.url).searchParams.get('t') || '').trim();
+  }
+  try {
+    const body = JSON.parse(raw || '{}');
+    return String((body && body.t) || '').trim();
   } catch (_e) {
     return '';
   }
@@ -112,25 +174,54 @@ Deno.serve(async (req: Request) => {
 
     const raw = req.method === 'POST' ? await req.text() : '';
     if (raw.length > MAX_BODY_BYTES) return json(MISS);
-    const token = tokenFromRequest(req, raw);
-    // Not the canonical form: a miss on both backends, so never a DB call.
-    if (!CANONICAL_TOKEN.test(token)) return json(MISS);
 
-    const out = await rpc('otp_record_by_token', { p_token: token });
-    if (!out || out.found !== true || !out.data) return json(MISS);
+    // otp-v0.14 T1: 'token' still wins whenever it is carried, exactly as
+    // before T1 (byte-identical) - a request that carries BOTH 'token' and
+    // 't' takes the coach route, never the teacher one. Only a request with
+    // no 'token' falls to the teacher route ('t').
+    const token = tokenFromRequest(req, raw);
+    if (token) {
+      // Not the canonical form: a miss on both backends, so never a DB call.
+      if (!CANONICAL_TOKEN.test(token)) return json(MISS);
+
+      const out = await rpc('otp_record_by_token', { p_token: token });
+      if (!out || out.found !== true || !out.data) return json(MISS);
+
+      const answer: Record<string, unknown> = {
+        success: true,
+        data: out.data,
+        form: 'otp',
+        source: 'supabase',
+      };
+      const padId = String((out.data as any).evidence_pad_id || '').trim();
+      if (padId) {
+        const files = await listPadFiles(padId);
+        if (files.length) answer.pad_files = files;
+      }
+      console.log(JSON.stringify({ record: (out.data as any).record_id, ms: Date.now() - t0 }));
+      return json(answer);
+    }
+
+    // otp-v0.14 T1: no 'token' carried - 't' is the teacher route.
+    const teacherToken = teacherTokenFromRequest(req, raw);
+    if (!CANONICAL_TOKEN.test(teacherToken)) return json(MISS);
+    const rec = await rpc('otp_record_by_teacher_token', { p_teacher_token: teacherToken });
+    if (!rec || rec.found !== true) return json(MISS);
+    if (rec.locked === true) return json({ success: false, error: 'reflection_needed' });
 
     const answer: Record<string, unknown> = {
       success: true,
-      data: out.data,
+      data: rec.data,
       form: 'otp',
       source: 'supabase',
+      teacher_view: true,
     };
-    const padId = String((out.data as any).evidence_pad_id || '').trim();
+    const padId = String((rec as any).evidence_pad_id || '').trim();
     if (padId) {
-      const files = await listPadFiles(padId);
-      if (files.length) answer.pad_files = files;
+      const urls = await signPadUrls(padId);
+      if (urls.length) answer.pad_urls = urls;
     }
-    console.log(JSON.stringify({ record: (out.data as any).record_id, ms: Date.now() - t0 }));
+    console.log(JSON.stringify({ teacherRecord: true, ms: Date.now() - t0 }));
     return json(answer);
   } catch (e) {
     // Never the caller's problem and never a different message (hard rule 12):
