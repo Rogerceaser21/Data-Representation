@@ -227,19 +227,26 @@ test('offline: get_otp_portal returns an empty response, row 02 stays Not assess
   // the real-failure case.
   await page.route('**/rest/v1/rpc/get_otp_portal', (r: Route) => r.fulfill({ status: 200, contentType: 'application/json', body: 'null' }));
 
+  // wait for the get_otp_portal response itself (not just get_raw_snapshot + a timer): proves the
+  // fetch really fired, so a deleted/never-called loadOtpPortal() times out here instead of the
+  // test passing on a page that never made the request at all.
   const rawResp = page.waitForResponse((r) => r.url().includes('/rpc/get_raw_snapshot'));
+  const otpResp = page.waitForResponse((r) => r.url().includes('/rpc/get_otp_portal'));
   await page.goto(PAGE_URL);
-  await rawResp;
+  await Promise.all([rawResp, otpResp]);
   await page.evaluate((id) => {
     (window as any).showBoard('portal');
     (window as any).openPortalTeacher(id);
   }, 't-priya');
-  // give the aborted fetch's catch() a moment to settle; the row must never flip to a live state.
+  // give the resolved fetch's .then() a moment to settle; the row must never flip to a live state.
   await page.waitForTimeout(300);
 
   await expect(otpRow(page).locator('.pl')).toHaveText('Not assessed');
   await expect(otpRow(page)).toBeDisabled();
   await expect(otpBadge(page)).toHaveCount(0);
+  // #otpStack must exist in the DOM (row 02's markup was built) while staying hidden, not merely
+  // "hidden" because it is absent (a hidden-or-missing locator also satisfies toBeHidden()).
+  await expect(page.locator('#otpStack')).toHaveCount(1);
   await expect(page.locator('#otpStack')).toBeHidden();
   expect(h.errors, 'console/page errors').toEqual([]);
 });
@@ -251,9 +258,13 @@ test('offline (real failure): get_otp_portal request aborted, row 02 stays Not a
   // cannot reach. Registered AFTER harness()'s own get_otp_portal mock, so this wins.
   await page.route('**/rest/v1/rpc/get_otp_portal', (r: Route) => r.abort('failed'));
 
+  // wait for the request to actually fail (Playwright's 'requestfailed' event), not just a timer:
+  // proves the fetch really fired and really aborted, so a deleted/never-called loadOtpPortal()
+  // times out here instead of the test passing on a page that never made the request at all.
   const rawResp = page.waitForResponse((r) => r.url().includes('/rpc/get_raw_snapshot'));
+  const otpFailed = page.waitForEvent('requestfailed', (r) => r.url().includes('/rpc/get_otp_portal'));
   await page.goto(PAGE_URL);
-  await rawResp;
+  await Promise.all([rawResp, otpFailed]);
   await page.evaluate((id) => {
     (window as any).showBoard('portal');
     (window as any).openPortalTeacher(id);
@@ -265,6 +276,9 @@ test('offline (real failure): get_otp_portal request aborted, row 02 stays Not a
   await expect(otpRow(page)).toBeDisabled();
   await expect(otpRow(page)).not.toHaveClass(/\bnew\b/);
   await expect(otpBadge(page)).toHaveCount(0);
+  // #otpStack must exist in the DOM (row 02's markup was built) while staying hidden, not merely
+  // "hidden" because it is absent (a hidden-or-missing locator also satisfies toBeHidden()).
+  await expect(page.locator('#otpStack')).toHaveCount(1);
   await expect(page.locator('#otpStack')).toBeHidden();
 
   // Chromium logs the browser's own net::ERR_FAILED line to the console for the aborted fetch;
