@@ -616,6 +616,50 @@ check('e3 SUPABASE_SECRET_KEY missing: both sweeps report the same clean failure
   assert.equal(summary.reflections.success, false);
 });
 
+check('e4 a mark failure on first mirror leaves the row written but unmarked; a later heal marks it without rewriting the row or resending mail (skeptic-found, 2026-09-25)', () => {
+  const record = baseRecord();
+  // First mirror: the row write + both emails go through, but
+  // mark_reflection_mirrored 500s (a transient failure, or the execution
+  // dying between the row write and the mark).
+  const env = makeEnv({ forMirror: reflectionForMirror(record, [part1()]), markCode: 500 });
+  const first = env.context.mirrorOtpReflectionsFromSupabase_(TOKEN_A);
+  assert.deepEqual(toPlain(first), { mirrored: 0, parts: [] }, 'the mark call failed, so nothing counts as mirrored yet');
+  const sheet = env.spreadsheet.getSheetByName('OTP Reflections');
+  assert.equal(sheet._data.length, 2, 'the row was written despite the mark failure');
+  assert.equal(env.state.mail.length, 2, 'E2 + E4 sent once, on the write that actually happened');
+  const headers = sheet._data[0];
+  const stampedTeacherAt = sheet._data[1][headers.indexOf('teacher_emailed_at')];
+  assert.match(stampedTeacherAt, /^2026-/, 'sheet stamps were written even though the mark call failed');
+
+  // Supabase still lists Part 1 as unmirrored (the mark never landed); a
+  // later heal (mirror_pending_since now old enough) must finish it: mark
+  // succeeds, but never rewrite the row or resend E2/E4.
+  env.state.markCode = 200;
+  env.state.unmirrored = [{ record_token: TOKEN_A, part: 1 }];
+  const summary = env.context.healOtpMirror();
+  assert.equal(summary.reflections.healed, 1, 'the stuck part is healed');
+  assert.equal(summary.reflections.failed, 0);
+  assert.equal(sheet._data.length, 2, 'still exactly one row, never duplicated');
+  assert.equal(env.state.mail.length, 2, 'no resend: E2/E4 total stays at 2, not 4');
+  const markCalls = env.state.fetches.filter((f) => f.url.includes('mark_reflection_mirrored'));
+  assert.equal(markCalls.length, 2, 'one failed mark attempt from the first mirror, one successful mark attempt from the heal');
+  const lastMarkBody = JSON.parse(markCalls[markCalls.length - 1].payload);
+  assert.equal(lastMarkBody.p_part, 1);
+  assert.match(lastMarkBody.p_teacher_at, /^2026-/, 'the heal marks using the stamps already recorded on the row, not a fresh timestamp');
+});
+
+check('e5 allowMarkExisting stays OFF for an ordinary (non-heal) mirror call: d9’s race-drop behaviour is unchanged', () => {
+  const record = baseRecord();
+  const env = makeEnv({ forMirror: reflectionForMirror(record, [part1()]) });
+  const sheet = env.context.getOtpReflectionsSheetWithHeader_(env.spreadsheet);
+  env.context.upsertOtpReflectionRow_(sheet, record, part1());
+  const out = env.context.mirrorOtpReflectionsFromSupabase_(TOKEN_A);
+  assert.deepEqual(toPlain(out), { mirrored: 0, parts: [] }, 'an ordinary call still defers to a same-moment racer, no allowMarkExisting');
+  assert.equal(env.state.mail.length, 0);
+  const markCalls = env.state.fetches.filter((f) => f.url.includes('mark_reflection_mirrored'));
+  assert.equal(markCalls.length, 0, 'an ordinary reflect_mirror call never marks a part it did not itself write');
+});
+
 /* ── (f) a brand-image fetch failure never blocks the send ─────────────── */
 
 check('f1 image fetch failure: E1 still sends, cid markup stays (broken image, not a broken email)', () => {
