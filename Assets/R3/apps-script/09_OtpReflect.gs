@@ -23,12 +23,17 @@
  *   1. write or update ONE row per (record_id, part) on the "OTP Reflections"
  *      tab (never a duplicate on a second mirror of the same part),
  *   2. send ONE E2 "thank you" email to the teacher covering every pending
- *      part, and ONE E4 "answers received" email to the coach covering every
- *      pending part (a Close Lap that lands with Part 1 still owed can hand
+ *      part that still owes its teacher stamp, and ONE E4 "answers received"
+ *      email to the coach covering every pending part that still owes its
+ *      coach stamp (a Close Lap that lands with Part 1 still owed can hand
  *      the teacher both parts to send in one go, so both can be pending
  *      together; a lap opened normally sends Part 1 alone, then Part 2 alone
- *      after Close Lap),
- *   3. mark_reflection_mirrored per part with whichever stamp actually sent.
+ *      after Close Lap; a part whose Sheet row already exists, e.g. a prior
+ *      run that wrote the row then died before MailApp, still owes whichever
+ *      stamp is still blank on it, and gets it here rather than being marked
+ *      mirrored unsent),
+ *   3. mark_reflection_mirrored per part with whichever stamp is now set
+ *      (already on the row, or just sent).
  *
  * E1 (the submit-time invite) and E3 (the close-time Next Steps + plan
  * invite) replace sendOtpTeacherEmail / sendOtpCloseEmail (01_doPost.gs) when
@@ -555,23 +560,32 @@ function handleOtpReflectMirror(data) {
 
 /**
  * Mirrors every not-yet-mirrored reflection part of one record_token: tab
- * row(s), E2 + E4 (one of each covering every pending part), then
- * mark_reflection_mirrored per part. Returns { mirrored, parts } (mirrored
- * counts parts successfully marked), or null when Supabase has no such
- * record.
+ * row(s), E2 + E4, then mark_reflection_mirrored per part. Returns
+ * { mirrored, parts } (mirrored counts parts successfully marked), or null
+ * when Supabase has no such record.
+ *
+ * Every pending part is decided ON ITS OWN CURRENT STAMPS, whether its Sheet
+ * row is brand new (stamps blank) or already exists (stamps read off the
+ * row): a part still needs E2 when its teacher stamp is empty, still needs
+ * E4 when its coach stamp is empty. ONE E2 covers every part that needs it
+ * and ONE E4 covers every part that needs it, so two parts landing together
+ * (fresh, heal, or a fresh part alongside a stuck existing one) still get
+ * exactly one of each (skeptic-found, 2026-09-25: the previous split between
+ * "reallyPending" and "already has a row" meant an existing-but-unmarked row
+ * with BOTH stamps still empty, e.g. a run that wrote the row then died
+ * before MailApp, was marked mirrored on heal without ever sending E2 or E4).
+ * A part whose stamp is already set is never re-emailed, only re-marked
+ * (idempotent: mark_reflection_mirrored fills a stamp only when it is null).
  *
  * `allowMarkExisting` (default false): when a part's Sheet row already
  * exists at lock time, an ordinary mirror call (the reflect_mirror doPost
- * route, fired the moment a submit lands) drops it and never marks it,
- * assuming a same-moment racer (the edge function's waitUntil, or a
- * retried POST) is already finishing that exact part. The heal sweep
- * passes true: by the time otp_reflections_unmirrored lists a part
- * (mirror_pending_since older than OTP_HEAL_OLDER_THAN_S), any genuine
- * racer has long since finished or failed, so an existing-but-unmarked row
- * is a stuck mark call (e.g. mark_reflection_mirrored 500s once), not an
- * in-flight one, and heal must be able to finish it: retry the mark using
- * the stamps already on the row, never rewrite the row or resend mail
- * (skeptic-found, 2026-09-25).
+ * route, fired the moment a submit lands) drops it entirely, assuming a
+ * same-moment racer (the edge function's waitUntil, or a retried POST) is
+ * already finishing that exact part. The heal sweep passes true: by the
+ * time otp_reflections_unmirrored lists a part (mirror_pending_since older
+ * than OTP_HEAL_OLDER_THAN_S), any genuine racer has long since finished or
+ * failed, so an existing row is heal's to finish, sending whatever it still
+ * owes and never rewriting the row's answers.
  */
 function mirrorOtpReflectionsFromSupabase_(token, allowMarkExisting) {
   const cur = fetchOtpReflectionForMirror_(token);
@@ -585,8 +599,7 @@ function mirrorOtpReflectionsFromSupabase_(token, allowMarkExisting) {
   const ss = SpreadsheetApp.openById(getSheetId());
   const lock = LockService.getScriptLock();
   lock.waitLock(30000);
-  var reallyPending = [];   // no Sheet row yet: write it, send E2/E4, then mark
-  var alreadyRows = [];     // Sheet row already exists: only (re)try the mark, using its own stamps
+  var items = [];   // one entry per part this call handles: { reflection, isNew, teacherEmailedAt, coachEmailedAt, needTeacher, needCoach }
   var teacherStampAt = '';
   var coachStampAt = '';
   try {
@@ -594,56 +607,59 @@ function mirrorOtpReflectionsFromSupabase_(token, allowMarkExisting) {
     pending.forEach(function(r) {
       const found = findOtpReflectionRow_(sheet, record.record_id, r.part);
       if (found.rowIdx < 0) {
-        reallyPending.push(r);
+        items.push({ reflection: r, isNew: true, teacherEmailedAt: '', coachEmailedAt: '' });
       } else if (allowMarkExisting) {
-        alreadyRows.push({ part: r.part, stamps: readOtpReflectionRowStamps_(sheet, record.record_id, r.part) });
+        const stamps = readOtpReflectionRowStamps_(sheet, record.record_id, r.part);
+        items.push({ reflection: r, isNew: false, teacherEmailedAt: stamps.teacherEmailedAt, coachEmailedAt: stamps.coachEmailedAt });
       }
       // else (ordinary call, row already exists): dropped, not re-mirrored,
       // not re-marked; a same-moment racer owns finishing it.
     });
-    if (!reallyPending.length && !alreadyRows.length) return out;
+    if (!items.length) return out;
 
-    if (reallyPending.length) {
-      reallyPending.forEach(function(r) { upsertOtpReflectionRow_(sheet, record, r); });
+    items.forEach(function(item) {
+      item.needTeacher = !item.teacherEmailedAt;
+      item.needCoach = !item.coachEmailedAt;
+      if (item.isNew) upsertOtpReflectionRow_(sheet, record, item.reflection);
+    });
 
+    const needTeacherParts = items.filter(function(item) { return item.needTeacher; }).map(function(item) { return item.reflection; });
+    const needCoachParts = items.filter(function(item) { return item.needCoach; }).map(function(item) { return item.reflection; });
+
+    if (needTeacherParts.length) {
       try {
-        if (sendOtpReflectThankYouEmail_(ss, record, links, reallyPending)) teacherStampAt = new Date().toISOString();
+        if (sendOtpReflectThankYouEmail_(ss, record, links, needTeacherParts)) teacherStampAt = new Date().toISOString();
       } catch (mailErr) {
         Logger.log('OTP reflect mirror: thank-you email failed for ' + token + ': ' + mailErr.message);
       }
+    }
+    if (needCoachParts.length) {
       try {
-        if (sendOtpReflectCoachEmail_(ss, record, reallyPending)) coachStampAt = new Date().toISOString();
+        if (sendOtpReflectCoachEmail_(ss, record, needCoachParts)) coachStampAt = new Date().toISOString();
       } catch (mailErr) {
         Logger.log('OTP reflect mirror: coach email failed for ' + token + ': ' + mailErr.message);
       }
-
-      if (teacherStampAt || coachStampAt) {
-        reallyPending.forEach(function(r) { setOtpReflectionRowStamps_(sheet, record.record_id, r.part, teacherStampAt, coachStampAt); });
-      }
     }
+
+    items.forEach(function(item) {
+      const t = item.needTeacher && teacherStampAt ? teacherStampAt : null;
+      const c = item.needCoach && coachStampAt ? coachStampAt : null;
+      if (t || c) setOtpReflectionRowStamps_(sheet, record.record_id, item.reflection.part, t, c);
+    });
   } finally {
     lock.releaseLock();
   }
 
-  reallyPending.forEach(function(r) {
+  items.forEach(function(item) {
+    const finalTeacherAt = item.teacherEmailedAt || (item.needTeacher && teacherStampAt ? teacherStampAt : null);
+    const finalCoachAt = item.coachEmailedAt || (item.needCoach && coachStampAt ? coachStampAt : null);
     try {
-      if (markReflectionMirrored_(token, r.part, teacherStampAt || null, coachStampAt || null)) {
+      if (markReflectionMirrored_(token, item.reflection.part, finalTeacherAt || null, finalCoachAt || null)) {
         out.mirrored++;
-        out.parts.push(r.part);
+        out.parts.push(item.reflection.part);
       }
     } catch (e) {
-      Logger.log('OTP reflect mirror: mark failed for ' + token + ' part ' + r.part + ': ' + e.message);
-    }
-  });
-
-  alreadyRows.forEach(function(a) {
-    try {
-      if (markReflectionMirrored_(token, a.part, a.stamps.teacherEmailedAt || null, a.stamps.coachEmailedAt || null)) {
-        out.mirrored++;
-        out.parts.push(a.part);
-      }
-    } catch (e) {
-      Logger.log('OTP reflect mirror: mark failed (already-written row) for ' + token + ' part ' + a.part + ': ' + e.message);
+      Logger.log('OTP reflect mirror: mark failed for ' + token + ' part ' + item.reflection.part + ': ' + e.message);
     }
   });
 

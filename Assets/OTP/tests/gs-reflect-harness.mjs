@@ -60,6 +60,25 @@ function readBaselineSources() {
 }
 const BASE_SOURCES = readBaselineSources();
 
+// otp-v0.14 T4b · the fc1f050 (pre-fix) 09_OtpReflect.gs, with every other
+// file at its CURRENT on-disk content (the sources map used by makeEnv is
+// all-or-nothing: an entry missing from it loads as blank, so every other
+// GS_REFLECT_FILES member must be supplied too). Lets the e6c control check
+// run the T4b repro scenario against the exact pre-fix mirror function.
+function readCommitSource(commit, file) {
+  try {
+    return execSync('git show ' + commit + ':Assets/R3/apps-script/' + file, { cwd: REPO, maxBuffer: 1 << 26, stdio: ['ignore', 'pipe', 'ignore'] }).toString();
+  } catch (e) {
+    return '';
+  }
+}
+function readCurrentSources() {
+  const out = {};
+  for (const file of GS_REFLECT_FILES) out[file] = fs.readFileSync(path.join(GS, file), 'utf8');
+  return out;
+}
+const FC1F050_SOURCES = { ...readCurrentSources(), '09_OtpReflect.gs': readCommitSource('fc1f050', '09_OtpReflect.gs') };
+
 function response(code, body, isBlob) {
   const out = { getResponseCode: () => code, getContentText: () => body };
   if (isBlob) out.getBlob = () => ({ __blob: true, bytes: String(body || '').length });
@@ -646,6 +665,78 @@ check('e4 a mark failure on first mirror leaves the row written but unmarked; a 
   const lastMarkBody = JSON.parse(markCalls[markCalls.length - 1].payload);
   assert.equal(lastMarkBody.p_part, 1);
   assert.match(lastMarkBody.p_teacher_at, /^2026-/, 'the heal marks using the stamps already recorded on the row, not a fresh timestamp');
+});
+
+// otp-v0.14 T4b · the "row exists, both stamps empty" heal defect
+// (skeptic-found, 2026-09-25): a run that wrote the OTP Reflections row then
+// died before MailApp left teacher_emailed_at and coach_emailed_at both
+// blank while Supabase still listed the part unmirrored. On fc1f050,
+// healOtpMirror's allowMarkExisting branch only ever retried the mark using
+// the row's OWN (empty) stamps, so it reported the part healed, sent zero
+// emails, and marked it with p_teacher_at:null/p_coach_at:null for good: the
+// teacher never got E2, the coach never got E4. Runs the exact scenario
+// against a chosen source set (the current tree by default) so it can be
+// pointed at fc1f050's own 09_OtpReflect.gs to prove the defect reproduces
+// there, and against the fixed tree to prove it no longer does.
+function existingEmptyRowHealScenario(sources) {
+  const record = baseRecord();
+  const env = makeEnv({
+    sources,
+    forMirror: reflectionForMirror(record, [part1()]),
+    unmirrored: [{ record_token: TOKEN_A, part: 1 }]
+  });
+  // The prior (died-before-mail) run: row written, stamps blank.
+  const sheet = env.context.getOtpReflectionsSheetWithHeader_(env.spreadsheet);
+  env.context.upsertOtpReflectionRow_(sheet, record, part1());
+
+  const summary1 = env.context.healOtpMirror();
+  const mailAfterFirst = env.state.mail.slice();
+  const markCallsAfterFirst = env.state.fetches.filter((f) => f.url.includes('mark_reflection_mirrored')).slice();
+  const headers = sheet._data[0];
+  const rowAfterFirst = sheet._data[1].slice();
+
+  const summary2 = env.context.healOtpMirror();
+  const mailAfterSecond = env.state.mail.slice();
+
+  return { headers, summary1, summary2, mailAfterFirst, markCallsAfterFirst, rowAfterFirst, mailAfterSecond };
+}
+
+check('e6c CONTROL (fc1f050): the same scenario reproduces the defect, no email, marked null/null (proves the harness catches it)', () => {
+  const r = existingEmptyRowHealScenario(FC1F050_SOURCES);
+  const teacherMails = r.mailAfterFirst.filter((m) => m.to === 'teacher@example.test');
+  const coachMails = r.mailAfterFirst.filter((m) => m.to === 'coach@example.test');
+  assert.equal(teacherMails.length, 0, 'fc1f050: no E2 sent (the bug)');
+  assert.equal(coachMails.length, 0, 'fc1f050: no E4 sent (the bug)');
+  assert.equal(r.markCallsAfterFirst.length, 1, 'fc1f050: heal still calls mark once');
+  const body = JSON.parse(r.markCallsAfterFirst[0].payload);
+  assert.equal(body.p_teacher_at, null, 'fc1f050: marked with a null teacher stamp despite never emailing');
+  assert.equal(body.p_coach_at, null, 'fc1f050: marked with a null coach stamp despite never emailing');
+  assert.equal(r.summary1.reflections.healed, 1, 'fc1f050: heal REPORTS the part healed even though it sent nothing (the bug)');
+});
+
+check('e6 heal on an existing row with both stamps empty sends E2 + E4 exactly once each, marks both stamps, and a second heal sends nothing more', () => {
+  const r = existingEmptyRowHealScenario(undefined);
+  const teacherMails = r.mailAfterFirst.filter((m) => m.to === 'teacher@example.test');
+  const coachMails = r.mailAfterFirst.filter((m) => m.to === 'coach@example.test');
+  assert.equal(teacherMails.length, 1, 'E2 sent exactly once');
+  assert.equal(coachMails.length, 1, 'E4 sent exactly once');
+  assert.ok(teacherMails[0].htmlBody.includes('Thank you for sending your reflection. Your observation is now open for you.'));
+  assertE2ViewButton(teacherMails[0]);
+  assert.ok(coachMails[0].subject.includes('Reflection received'));
+  assert.ok(coachMails[0].htmlBody.includes('How did the lesson go? What worked, and what did not?'));
+
+  assert.equal(r.markCallsAfterFirst.length, 1);
+  const body = JSON.parse(r.markCallsAfterFirst[0].payload);
+  assert.equal(body.p_part, 1);
+  assert.match(body.p_teacher_at, /^2026-/, 'marked with a real teacher stamp');
+  assert.match(body.p_coach_at, /^2026-/, 'marked with a real coach stamp');
+
+  assert.match(r.rowAfterFirst[r.headers.indexOf('teacher_emailed_at')], /^2026-/, 'row teacher stamp filled');
+  assert.match(r.rowAfterFirst[r.headers.indexOf('coach_emailed_at')], /^2026-/, 'row coach stamp filled');
+
+  assert.equal(r.summary1.reflections.healed, 1);
+  assert.equal(r.summary1.reflections.failed, 0);
+  assert.equal(r.mailAfterSecond.length, r.mailAfterFirst.length, 'second heal sends nothing more (stamp already set, never re-emailed)');
 });
 
 check('e5 allowMarkExisting stays OFF for an ordinary (non-heal) mirror call: d9’s race-drop behaviour is unchanged', () => {
