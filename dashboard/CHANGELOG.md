@@ -5,6 +5,12 @@ the Settings "Build history" panel, appends an entry here, and is git-tagged
 `dash-vX.Y` so any version can be restored. Live (gated, password `ais2026ais`):
 https://rogerceaser21.github.io/Data-Representation/dashboard/
 
+## v0.64 . 2026-09-25
+- **Teacher portal, row 02, OTP &amp; APR (Self-Assessment) goes live.** For a teacher with at least one reflection-flow observation, the row reads a new `get_otp_portal()` RPC (same resilience pattern as `loadLive`; offline or unreachable leaves the row Not assessed, exactly like any other pipeline that has not landed yet), shows a subline for the newest observation ("Observation N . date"), an Action needed or Up to date pill, and the existing pulsing red badge with the count of forms still owed.
+- **Section cards.** Opening the row slides in one card per observation, newest first: header "OTP . Observation N . date . Coach: observer", the agreed Next Steps once the lap is closed, and each part of the teacher's own reflection read-only (exact question wording, bold) or "Not sent yet".
+- **Teacher action buttons built, off by default.** "Fill in your reflection", "Fill in your plan" and "View observation" are built but stay hidden behind `PORTAL_TEACHER_ACTIONS = false`, since `get_otp_portal` carries no per-teacher token yet; they switch on once Google SSO adds one.
+- Scope: `dashboard/src/index.html` portal section only. No other board changed. Rollback: `dash-v0.63`.
+
 ## v0.63 . 2026-07-07
 - **Round regeneration, Route B (This Mac / Max plan) enabled.** The Engine picker's "This Mac (Max plan)" option is now live and the default. It regenerates through Claude Code on the Max plan (`claude -p`), pinned to the same certified Claude Sonnet 5, at no API-dollar cost. "Cloud (API key)" stays available as the fast path.
 - **Transport.** A `claude -p` branch was added to the shared caller (`~/AIS-Data-Dashboard/db/bench_llm.mjs`): same `genJSON()` interface, dispatched by the `REGEN_ENGINE` env var. It runs headless against the Max-plan login (macOS Keychain), strips any API key / managed gateway from the child env so it never bills the API, describes the JSON schema in the prompt (no API-side enforcement), and parses + shape-checks + retries. Concurrency is throttled for the Max plan's usage windows with backoff.

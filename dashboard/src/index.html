@@ -885,6 +885,18 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
 .pptbody{display:grid;grid-template-rows:0fr;transition:grid-template-rows .5s cubic-bezier(.4,0,.2,1)}
 .pptype.open .pptbody{grid-template-rows:1fr}
 .pptbody-in{overflow:hidden;min-height:0}
+/* OTP & APR section under the hero (otp-v0.14 T3): one card per reflection-flow lap, teacher's own
+   answers read-only. Reuses .panel/.ppsumhead/.ns-badge/.ns-empty/.ns-btn; only the question/answer
+   and Next Steps list layout are new. */
+.otpqa{margin-top:12px}
+.otpqa+.otpqa{margin-top:16px}
+.otpq{margin:0 0 10px}
+.otpq:last-child{margin-bottom:0}
+.otpq b{display:block;font-size:12.5px;font-weight:700;color:var(--ink);margin-bottom:3px}
+.otpq p{margin:0;font-size:13px;line-height:1.6;color:var(--ink-dim)}
+.otpns{margin:12px 0 16px}
+.otpnsl{margin:0;padding-left:18px;font-size:13px;line-height:1.7;color:var(--ink-dim)}
+.otpacts{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
 /* grouped yearbook wall */
 .psecthead{display:flex;align-items:baseline;gap:12px;margin:26px 0 12px}
 .psecthead:first-child{margin-top:4px}
@@ -1312,6 +1324,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
       </div>
     <div class="panel" style="margin-top:14px">
       <div class="ey">Build history</div>
+        <div class="vrow"><span class="vtag">v0.64</span><span class="vnote">Teacher portal, row 02, OTP &amp; APR (Self-Assessment) goes live for a teacher with at least one reflection-flow observation: it reads a new get_otp_portal RPC (same resilience as the rest of the live data; offline leaves it Not assessed), shows a subline for the newest observation, an Action needed or Up to date pill, and the usual pulsing badge with the number of forms still owed. Opening the row slides in one card per observation (newest first) with the agreed Next Steps once closed and the teacher's own answers to both parts, read only. The teacher action buttons (Fill in your reflection, Fill in your plan, View observation) are built but stay off behind a flag until Google SSO lands, since the RPC carries no per-teacher token yet. No other board changed.</span></div>
         <div class="vrow"><span class="vtag">v0.63</span><span class="vnote">Round regeneration, Route B (This Mac, Max plan) enabled. The Engine picker's "This Mac (Max plan)" option is now live and the default: it regenerates through Claude Code on the Max plan (`claude -p`), pinned to the same certified Sonnet 5, at no API cost. The local runner on the Mac accepts these jobs and drives generation through the Max-plan login (macOS Keychain), with the same anti-fabrication gates and judge as the cloud route, plus concurrency throttling and resume (a run interrupted by a Max usage window continues where it left off). "Cloud (API key)" remains available as the fast path. Nothing reaches the live boards until you press Publish.</span></div>
         <div class="vrow"><span class="vtag">v0.62</span><span class="vnote">Round regeneration, safer controls. The Round field is now a picker of the rounds that exist in the data (plus the round set now), defaulting to the current round, so a round can no longer be mistyped. Choosing a round shows whether it has already been generated: a fresh round reads "Not yet generated, safe to generate", while a round that already has writing shows how many narrative items and coaching notes exist and, on Start, asks you to confirm, since regenerating rewrites the Snapshot and report wording (approved coaching notes are kept).</span></div>
         <div class="vrow"><span class="vtag">v0.61</span><span class="vnote">Round regeneration, admin only. Settings gains a Round regeneration panel: when a new inspection round has landed and been set, one button regenerates every AI-written surface for that round (the Snapshot narrative and insights, the report references, the recommendations and every teacher's coaching note) on the certified pipeline, holds the result for your review, and publishes it to the live dashboard only on your approval. The panel shows the job's live status, stage and progress with a Cancel, and a Publish to live button once the run clears the verbatim and fabrication checks. Runs headless through the cloud API key; the Mac Max-plan route follows. Nothing reaches the live boards until you press Publish.</span></div>
@@ -1396,7 +1409,7 @@ body.presenting .mast,body.presenting .themeico,body.presenting .printico{displa
   </div>
   <div class="foot">
     <span>AIS Sharjah . Observation governance dashboard . demo build, login-less.</span>
-    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.63</span></span>
+    <span><span class="badge" id="genBadge">snapshot</span> <span class="badge">Dashboard v0.64</span></span>
   </div>
 </div>
 
@@ -1565,6 +1578,14 @@ function specHTML(items,flagVal,selIdx,segmented){const pct=v=>(Math.max(1,Math.
 /* the selectable list: All observations on top (default), then one card per session */
 const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
 function monthYear(date){if(!date)return '';const p=String(date).split('-');return (MONTHS[(+p[1])-1]||'')+' '+(p[0]||'').slice(2);}
+/* "14 Sep" for the OTP portal row/cards (otp-v0.14 T3): mirrors the OTP form's own formatDay
+   (STRIP-003) so a date-only value ("2026-09-14") is parsed as a local calendar date, never through
+   `new Date('2026-09-14')` (UTC midnight, can render a day early west of UTC). Fixed month table,
+   not Intl, because en-GB abbreviates September as "Sept", not the "Sep" the contract uses. */
+const OTP_DAY_MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function otpDayShort(v){if(!v)return '';const s=String(v);const m=/^(\d{4})-(\d{2})-(\d{2})/.exec(s);
+  try{const d=m?new Date(+m[1],+m[2]-1,+m[3]):new Date(s);if(isNaN(d))return s;
+    return String(d.getDate()).padStart(2,'0')+' '+OTP_DAY_MONTHS[d.getMonth()];}catch(e){return s;}}
 function obsList(t){const out=[];
   // All observations: one dot per OBSERVATION at its score (best skill), so the flag (their
   // average) sits dead-centre between them and is congruent with the top Spectrum.
@@ -1913,6 +1934,41 @@ function ppApproved(t){return roundsChrono().reverse().filter(rd=>{const nn=nsGe
 function ppUnseen(t){if(!SEEN)return [];const s=SEEN[t.id];return ppApproved(t).filter(r=>!s||!s.has(r));}
 function ppMarkSeen(t){if(!SEEN)SEEN={};(SEEN[t.id]=SEEN[t.id]||new Set());ppApproved(t).forEach(r=>SEEN[t.id].add(r));   // optimistic
   sbRpc('portal_mark_seen',{p_teacher_id:t.id}).catch(()=>{});}   // write lands behind; silent on failure
+/* OTP & APR portal row (otp-v0.14 T3, row 02): live data from get_otp_portal, keyed by normalised
+   teacher name (the RPC has no teacher_id, only the plain name it was given at submit time). Stays
+   null until fetched, so row 02 reads Not assessed like any other section whose pipeline has not
+   landed yet, offline included. */
+let OTP_PORTAL=null;
+function otpKey(name){return String(name||'').trim().toLowerCase().replace(/\s+/g,' ');}
+function otpOwedCount(laps){return laps.reduce((n,l)=>n+((l.owed||[]).length),0);}
+const OTP_QUESTIONS=[[1,'How did the lesson go? What worked, and what did not?'],[2,'Where was student progress?'],
+  [3,'Is there anything your coach should know before you meet?'],[4,'What challenges do you expect?'],
+  [5,'What are your own ideas to overcome them?'],[6,'How will you put them in place, and from when?'],
+  [7,'What support do you need and who would be most likely to provide it?'],
+  [8,'What change in student learning do you expect, and by when?']];
+// SSO not live yet (otp-v0.14): get_otp_portal carries no per-teacher token, so before Google SSO
+// anyone holding the dashboard password could open a teacher's OTP form via these buttons. Built,
+// wired, and left off; the SSO release flips this on once a per-user token read lands.
+const PORTAL_TEACHER_ACTIONS=false;
+function otpActionsBtns(lap){const owed=lap.owed||[];const btns=[];
+  if(owed.includes(1))btns.push('<button type="button" class="ns-btn go">Fill in your reflection</button>');
+  if(owed.includes(2))btns.push('<button type="button" class="ns-btn go">Fill in your plan</button>');
+  if(lap.part1)btns.push('<button type="button" class="ns-btn">View observation</button>');
+  return btns.length?`<div class="otpacts">${btns.join('')}</div>`:'';}
+function otpPartBlock(partNum,part,qs){
+  if(!part)return `<div class="otpqa"><div class="ey" style="margin:0 0 8px">${partNum===1?'Your view of the lesson':'Your plan'}</div><p class="ns-empty">Not sent yet.</p></div>`;
+  const rows=qs.map(([n,q])=>{const key='q'+n;let ans=part.answers[key];
+    if(key==='q2'){const lvl=part.answers.q2_level||'',cmt=part.answers.q2_comment||'';ans=cmt?lvl+'. '+cmt:lvl;}
+    return `<div class="otpq"><b>${n}. ${esc(q)}</b><p>${esc(ans||'')}</p></div>`;}).join('');
+  return `<div class="otpqa"><div class="ey" style="margin:0 0 8px">${partNum===1?'Your view of the lesson':'Your plan'}</div>${rows}</div>`;}
+function otpCard(lap){
+  const closedTag=lap.status==='closed'?'<span class="ns-badge approved">Closed</span>':'';
+  const steps=(lap.status==='closed'&&Array.isArray(lap.next_steps)&&lap.next_steps.length)
+    ?`<div class="otpns"><div class="ey" style="margin:0 0 8px">Next Steps agreed</div><ol class="otpnsl">${lap.next_steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol></div>`:'';
+  const p1=otpPartBlock(1,lap.part1,OTP_QUESTIONS.slice(0,3));
+  const p2=otpPartBlock(2,lap.part2,OTP_QUESTIONS.slice(3));
+  const acts=PORTAL_TEACHER_ACTIONS?otpActionsBtns(lap):'';
+  return `<div class="panel" style="margin-top:14px"><div class="ppsumhead"><div class="ey" style="margin:0">OTP . Observation ${lap.lap} . ${esc(otpDayShort(lap.observation_date))} . Coach: ${esc(lap.observer||'')}</div>${closedTag}</div>${steps}${p1}${p2}${acts}</div>`;}
 function renderPortalPage(t){const host=byId('portalPage');const ov=t.n_obs?teacherAvg(t):null;
   const meta=[t.section||null,t.dept?t.dept+(t.dept_role==='head'?' (head)':''):null,
     t.n_obs?(t.n_obs+(t.n_obs===1?' observation':' observations')+' . June '+t.n_june+' . February '+t.n_feb):'No observations recorded yet this year'].filter(Boolean).join('   .   ');
@@ -1924,13 +1980,27 @@ function renderPortalPage(t){const host=byId('portalPage');const ov=t.n_obs?teac
   // v0.60: an unseen approval shows a pulsing red "New Notification" badge beside the row + a
   // dashed red ring on it (seen state = Supabase portal_seen, cross-device; per-user after SSO).
   const unseen=ppUnseen(t);
+  // OTP & APR (row 02, otp-v0.14 T3): live once get_otp_portal has landed AND carries this teacher
+  // (matched by normalised name); laps already arrive newest first from the RPC.
+  const otpLaps=(OTP_PORTAL&&OTP_PORTAL[otpKey(t.name)])?OTP_PORTAL[otpKey(t.name)].laps:[];
+  const otpLive=otpLaps.length>0;
+  const otpOwed=otpOwedCount(otpLaps);
   const list=`<div class="hsecs">${PORTAL_SECTIONS.map((sec,i)=>{
-    const live=sec.live&&ov!=null;
-    const hasNew=live&&unseen.length>0;   // red badge OUTSIDE the row + dashed red ring on it
-    const badge=hasNew?`<span class="hnew"><i></i>${unseen.length>1?unseen.length+' New Notifications':'New Notification'}</span>`:'';
-    const pill=live?`<span class="pl" style="background:${rampAt(ov)}">${wordOf(ov)}</span>`
-      :sec.soon?'<span class="pl soon">Coming soon</span>':'<span class="pl na">Not assessed</span>';
-    const sub=live?`<small>Evidence on record . ${t.n_obs} observation${t.n_obs===1?'':'s'}</small>`:'';
+    let live,hasNew,badge,pill,sub;
+    if(sec.key==='otp'){
+      live=otpLive;hasNew=live&&otpOwed>0;
+      badge=hasNew?`<span class="hnew"><i></i>${otpOwed} form${otpOwed===1?'':'s'} to fill in</span>`:'';
+      pill=live?(otpOwed>0?'<span class="pl soon">Action needed</span>':'<span class="pl" style="background:#3CBB6C">Up to date</span>')
+        :'<span class="pl na">Not assessed</span>';
+      sub=live?`<small>Observation ${esc(String(otpLaps[0].lap))} . ${esc(otpDayShort(otpLaps[0].observation_date))}</small>`:'';
+    }else{
+      live=sec.live&&ov!=null;
+      hasNew=live&&unseen.length>0;   // red badge OUTSIDE the row + dashed red ring on it
+      badge=hasNew?`<span class="hnew"><i></i>${unseen.length>1?unseen.length+' New Notifications':'New Notification'}</span>`:'';
+      pill=live?`<span class="pl" style="background:${rampAt(ov)}">${wordOf(ov)}</span>`
+        :sec.soon?'<span class="pl soon">Coming soon</span>':'<span class="pl na">Not assessed</span>';
+      sub=live?`<small>Evidence on record . ${t.n_obs} observation${t.n_obs===1?'':'s'}</small>`:'';
+    }
     return `<div class="hsecrow"><button type="button" class="hsec${live?' me':''}${hasNew?' new':''}" data-ptype="${sec.key}"${live?'':' disabled'}><span class="no">${String(i+1).padStart(2,'0')}</span><span class="tt">${sec.label}${sub}</span>${pill}</button>${badge}</div>`;}).join('')}</div>`;
   // SPEA section under the hero (v0.58 = the ROUND STACK): one card per round whose coaching note
   // is APPROVED, newest first; each card = that round's summary + a pop-down with ONLY that round's
@@ -1948,13 +2018,15 @@ function renderPortalPage(t){const host=byId('portalPage');const ov=t.n_obs?teac
     </div>`;}).join('')
     :`<div class="pptype"><div class="panel ppsum"><div class="ppsumhead"><div class="ey" style="margin:0">SPEA R3 Observation . summary</div></div>
       <div class="ns-empty">${t.n_obs?'Your observation summary appears here once your observer approves it.':'No observations recorded yet this year.'}</div></div></div>`;
+  const otpStackHtml=otpLaps.map(otpCard).join('');
   host.innerHTML=`<div class="pband">
       <div>
         <h2 class="bname">${esc(t.name)}</h2>
         <div class="bmeta">${esc(meta)}</div>
         ${list}
       </div>${frame}</div>
-    <div id="ppStack" hidden>${stack}</div>`;
+    <div id="ppStack" hidden>${stack}</div>
+    <div id="otpStack" hidden>${otpStackHtml}</div>`;
   apprRounds.forEach((rd,i)=>{   // teacher-view copies per round (built at render, freeze-safe)
     const fo=t.observations.filter(o=>o.round===rd);
     const t2={...t,observations:fo,n_obs:fo.length};   // n_obs drives the All-card counter
@@ -1963,8 +2035,14 @@ function renderPortalPage(t){const host=byId('portalPage');const ov=t.n_obs?teac
     buildArc(t2,'svgArcP'+i,progScore,progAvg,false);buildArc(t2,'svgArcTP'+i,teachScore,teachAvg,true);
     renderNextSteps(t2,byId('ppNextSteps'+i),{teacherView:true,round:rd});
     const more=byId('ppMore'+i);more.onclick=()=>{const open=byId('ppType'+i).classList.toggle('open');more.classList.toggle('open',open);};});
-  // nothing shows below the hero until the teacher opens a section; opening marks its approvals seen
+  // nothing shows below the hero until the teacher opens a section; opening a SPEA notification
+  // marks its approvals seen. OTP has no "seen" state (row 02 is driven by owed forms, not views).
   host.querySelectorAll('[data-ptype]').forEach(b=>{if(b.disabled)return;
+    if(b.dataset.ptype==='otp'){
+      b.onclick=()=>{const s=byId('otpStack');
+        if(s.hidden){s.hidden=false;reveal('#otpStack .panel',.05);}
+        s.scrollIntoView({behavior:'smooth',block:'start'});};
+      return;}
     b.onclick=()=>{const s=byId('ppStack');
       if(s.hidden){s.hidden=false;reveal('#ppStack .panel',.05);}
       ppMarkSeen(t);
@@ -2173,6 +2251,17 @@ async function loadPortalSeen(){if(!SB_URL||SB_URL.indexOf('http')!==0)return;
     SEEN=m;
     if(current==='portal'&&portalId!=null){const t=teacherById(portalId);if(t)renderPortalPage(t);}
   }catch(e){/* silent: badge simply stays absent, no error UI */}}
+/* OTP & APR row 02 (get_otp_portal, migrate_27, otp-v0.14 T3): a SEPARATE fetch from get_raw_snapshot,
+   same resilience as loadLive. Unreachable or unconfigured leaves OTP_PORTAL null, so row 02 simply
+   stays Not assessed, same as any other section whose pipeline has not landed. */
+async function loadOtpPortal(){if(!SB_URL||SB_URL.indexOf('http')!==0)return;
+  try{const ctrl=new AbortController(),to=setTimeout(()=>ctrl.abort(),7000);
+    const r=await fetch(SB_URL.replace(/\/+$/,'')+'/rest/v1/rpc/get_otp_portal',
+      {method:'POST',headers:{apikey:SB_KEY,Authorization:'Bearer '+SB_KEY,'Content-Type':'application/json'},body:'{}',signal:ctrl.signal});
+    clearTimeout(to);if(!r.ok)return;const arr=await r.json();if(!Array.isArray(arr))return;
+    const m={};for(const x of arr)m[otpKey(x.teacher)]=x;OTP_PORTAL=m;
+    if(current==='portal'&&portalId!=null){const t=teacherById(portalId);if(t)renderPortalPage(t);}
+  }catch(e){/* offline / blocked / timeout -> row 02 stays Not assessed, no error UI */}}
 const I_CHECK='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.6l3.4 3.4L13 4.6"/></svg>';
 const I_ARROW='<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11L11 5M6.2 5H11v4.8"/></svg>';
 let snapPhase='primary_kindy';
@@ -3164,6 +3253,7 @@ initRefPanel();
 loadNarrative();
 loadNextSteps();
 loadPortalSeen();
+loadOtpPortal();
 </script>
 </body>
 </html>
