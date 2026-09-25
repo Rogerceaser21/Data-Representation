@@ -409,10 +409,15 @@ function handleOtpPost(data) {
   // otp-v0.9: a plain-language copy to the teacher themselves (no edit link,
   // no rating, no rubric state). Silent when their Teachers 26-27 row carries
   // no email (hard rule 12).
+  // otp-v0.14: pass `record`, not `data` - record.teacher_token is the
+  // server-built, always-'' value on this direct-append path (buildOtpRecord
+  // never copies a client-posted teacher_token), so a client cannot force the
+  // E1 branch by posting its own teacher_token (skeptic-found defect,
+  // 2026-09-25).
   var teacherMail = false;
   var teacherStamp = '';
   try {
-    teacherMail = sendOtpTeacherEmail(ss, recordId, recordToken, submittedAt, data);
+    teacherMail = sendOtpTeacherEmail(ss, recordId, recordToken, submittedAt, record);
     if (teacherMail) teacherStamp = new Date().toISOString();
   } catch (mailErr) {
     Logger.log('OTP teacher email failed for ' + recordId + ': ' + mailErr.message);

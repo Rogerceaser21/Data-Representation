@@ -708,6 +708,19 @@ check('h1 a fresh OTP submit ignores a client-posted teacher_token (buildOtpReco
   assert.equal(mirrored.teacher_token, '', 'the Supabase mirror payload carries no client-supplied teacher_token either');
 });
 
+check('h4 a fresh OTP submit with a client-posted teacher_token still sends the teacher the LEGACY email, not E1 (skeptic-found defect, 2026-09-25)', () => {
+  const env = makeEnv();
+  const payload = { form: 'otp', teacher: 'Jo Mare Kruger', inspector: 'Dave Richards', date: '2026-09-18', teacher_token: ATTACKER_TOKEN_1 };
+  const out = output(env.context.doPost({ postData: { contents: JSON.stringify(payload) } }));
+  assert.equal(out.success, true);
+  const mail = mailTo(env.state, 'teacher@example.test');
+  assert.ok(mail, 'the teacher receives an email at all (the pre-fix bug sent none: otpLinksFor_ found no links for the empty record_token and E1 silently returned false)');
+  assert.equal(mail.subject, 'AIS OTP Observation 1 · 2026-09-18', 'legacy subject formula');
+  assert.ok(mail.htmlBody.includes('otp-record.html?token='), 'legacy body carries the view-link URL');
+  assert.ok(!mail.htmlBody.includes('cid:ais_header'), 'never the E1 branded template');
+  assert.equal(mail.inlineImages, undefined, 'never E1 inline images');
+});
+
 check('h2 action:update never overwrites an existing teacher_token, even when the client posts a different one', () => {
   const env = makeEnv(); const sheet = env.sheet();
   env.context.mirrorOtpRecord_(env.spreadsheet, sheet, baseRecord({ teacher_token: TEACHER_TOKEN_A }));
