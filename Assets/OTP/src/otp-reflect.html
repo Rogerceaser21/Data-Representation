@@ -138,7 +138,7 @@ body {
 }
 
 /* ===========================================
-   HEADER — same classnames as the main form, copied verbatim, the way
+   HEADER: same classnames as the main form, copied verbatim, the way
    otp-tracker.html's header does.
    =========================================== */
 .otr-header {
@@ -412,31 +412,20 @@ textarea.long-text.needs-value { outline: 2px dashed var(--ais-blue); outline-of
 :root[data-theme="dark"] .theme-toggle .icon-moon { display: block; }
 
 /* ===========================================
-   LOADING OVERLAY + calm bad-link card (hard rule 12: no error UI, ever),
-   copied verbatim from otp-progress-form.html's #form-loading, same
-   .form-loading-note the ungated viewer's landing card uses.
+   LOADING STATE + calm bad-link card (hard rule 12: no error UI, ever),
+   card look copied verbatim from otp-progress-form.html's #form-loading,
+   same .form-loading-note the ungated viewer's landing card uses. Renders
+   in normal document flow (no fixed overlay, no scroll lock), the way the
+   rest of this page does.
    =========================================== */
 .form-loading {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(239, 236, 226, 0.55);
-  -webkit-backdrop-filter: blur(14px) saturate(140%);
-          backdrop-filter: blur(14px) saturate(140%);
-  transition: opacity 320ms ease, visibility 320ms ease;
-  opacity: 1;
-  visibility: visible;
-}
-:root[data-theme="dark"] .form-loading {
-  background: rgba(10, 13, 31, 0.55);
+  min-height: 60vh;
 }
 .form-loading.is-hidden {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
+  display: none;
 }
 .form-loading-card {
   display: flex;
@@ -1148,7 +1137,7 @@ async function onSendClick() {
     }
     if (data && data.success === false) {
       // any other business miss (not_open / Record not found / etc): hard
-      // rule 12, never show an error — quietly refresh state and re-render.
+      // rule 12, never show an error, quietly refresh state and re-render.
       SENDING = false;
       setFieldsDisabled(false);
       await loadState();

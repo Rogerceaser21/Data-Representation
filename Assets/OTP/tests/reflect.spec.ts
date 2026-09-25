@@ -2,7 +2,7 @@
  * otp-v0.14 T2 · Teacher Reflection + Plan
  *
  * Tests the BUILT artifact (Assets/OTP/otp-reflect.html), not the master,
- * because it ships as a plain ungated copy with no rewritten paths — but the
+ * because it ships as a plain ungated copy with no rewritten paths, but the
  * spec still runs it from its OUTPUT location so ../brand/ resolves the way
  * it does live. Run `bash Assets/OTP/encrypt.sh` before this spec.
  *
@@ -21,6 +21,24 @@ const FN_PATTERN = '**/functions/v1/otp-reflect**';
 
 const TOKEN = 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4';
 
+/* Question wording EXACT, from CONTRACT.md section 3, independent of the
+ * page's own QUESTIONS object so a wording regression there is caught. */
+const QUESTIONS: Record<string, string> = {
+  q1: 'How did the lesson go? What worked, and what did not?',
+  q2: 'Where was student progress?',
+  q3: 'Is there anything your coach should know before you meet?',
+  q4: 'What challenges do you expect?',
+  q5: 'What are your own ideas to overcome them?',
+  q6: 'How will you put them in place, and from when?',
+  q7: 'What support do you need and who would be most likely to provide it?',
+  q8: 'What change in student learning do you expect, and by when?',
+};
+const EYEBROW_TEXT = 'AIS Sharjah · Teacher Reflection';
+const LOCK_NOTE_TEXT = "Three short questions, about 5 minutes. Your coach's notes open for you as soon as you send your answers. We ask first so your view of the lesson is your own.";
+const OWED_NOTE_TEXT = 'You have not sent questions 1 to 3 yet, so they are here too.';
+const Q2_COMMENT_PLACEHOLDER = 'Add a comment if you want (optional)…';
+const BADLINK_TEXT = 'This link is not valid or has expired. Ask your coach for a new link.';
+
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 function expectedDayShort(v: string): string {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v);
@@ -29,7 +47,7 @@ function expectedDayShort(v: string): string {
 }
 
 /* ==========================================================================
- * Fixture states — the real otp_reflect_state() shape (CONTRACT.md section 1),
+ * Fixture states: the real otp_reflect_state() shape (CONTRACT.md section 1),
  * one per contract-section-3 state.
  * ========================================================================== */
 const BASE = {
@@ -74,7 +92,7 @@ function stateClosedBothOwed(): any {
   };
 }
 function stateClosedBothSent(): any {
-  // Nothing owed, both parts sent — full thank-you / view state.
+  // Nothing owed, both parts sent: full thank-you / view state.
   return {
     found: true, ...BASE, status: 'closed', closed_at: '2026-09-16T08:00:00.000Z',
     next_steps: ['Check understanding with mini whiteboards before independent work.', 'Give the early finishers a stretch question on the board.', 'Use the success criteria in the plenary.'],
@@ -592,6 +610,64 @@ test('otp-v0.14 T2: the built page carries no Supabase key, only the public func
 });
 
 /* ==========================================================================
+ * Question wording EXACT, plus the eyebrow, lock note, owed note and the
+ * Q2 comment placeholder (verbatim, CONTRACT.md section 3).
+ * ========================================================================== */
+
+test('otp-v0.14 T2: Part 1 owed renders the eyebrow, lock note and Q1-3 wording verbatim, and the Q2 comment placeholder', async ({ page }) => {
+  const h = await harness(page);
+  await mockReflect(page, stateObserved());
+  await openReflect(page);
+
+  await expect(page.locator('.form-eyebrow')).toContainText(EYEBROW_TEXT);
+  await expect(page.locator('.otr-lock')).toContainText(LOCK_NOTE_TEXT);
+  const q1 = await page.locator('#q1').locator('xpath=../p[contains(@class,"otr-q")]').textContent();
+  expect(q1).toContain(QUESTIONS.q1);
+  const q2 = await page.locator('#q2_level_group').locator('xpath=../p[contains(@class,"otr-q")]').textContent();
+  expect(q2).toContain(QUESTIONS.q2);
+  const q3 = await page.locator('#q3').locator('xpath=../p[contains(@class,"otr-q")]').textContent();
+  expect(q3).toContain(QUESTIONS.q3);
+  await expect(page.locator('#q2_comment')).toHaveAttribute('placeholder', Q2_COMMENT_PLACEHOLDER);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.14 T2: both owed renders the owed note and Q4-8 wording verbatim', async ({ page }) => {
+  const h = await harness(page);
+  await mockReflect(page, stateClosedBothOwed());
+  await openReflect(page);
+
+  await expect(page.locator('.otr-owed-note')).toHaveText(OWED_NOTE_TEXT);
+  for (const id of ['q4', 'q5', 'q6', 'q7', 'q8']) {
+    const text = await page.locator('#' + id).locator('xpath=../p[contains(@class,"otr-q")]').textContent();
+    expect(text, id).toContain(QUESTIONS[id]);
+  }
+  expect(h.errors).toEqual([]);
+});
+
+/* ==========================================================================
+ * View link only when view_unlocked (CONTRACT.md section 3), both directions
+ * ========================================================================== */
+
+test('otp-v0.14 T2: no view link while anything is still owed (part1, both, part2 states)', async ({ page }) => {
+  const h = await harness(page);
+  await mockReflect(page, stateObserved());
+  await openReflect(page);
+  await expect(page.locator('#otr-view-link')).toHaveCount(0);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.14 T2: a thank-you state with view_unlocked false (defensive) renders no view link', async ({ page }) => {
+  const h = await harness(page);
+  const decoy = stateClosedBothSent();
+  decoy.view_unlocked = false;
+  await mockReflect(page, decoy);
+  await openReflect(page);
+  await expect(page.locator('#otr-title')).toHaveText('Thank you.');
+  await expect(page.locator('#otr-view-link')).toHaveCount(0);
+  expect(h.errors).toEqual([]);
+});
+
+/* ==========================================================================
  * Widths (744 / 820 / 1024) x themes (light / dark): layout stability
  * ========================================================================== */
 
@@ -604,6 +680,7 @@ const SWEEP_STATES: Array<{ name: string; state: any }> = [
   { name: 'part1', state: stateObserved() },
   { name: 'both', state: stateClosedBothOwed() },
   { name: 'part2', state: stateClosedPart2Owed() },
+  { name: 'part1sent', state: statePart1Sent() },
   { name: 'thankyou', state: stateClosedBothSent() },
 ];
 
@@ -629,6 +706,49 @@ for (const { name, state } of SWEEP_STATES) {
     expect(h.errors).toEqual([]);
   });
 }
+
+test('otp-v0.14 T2: the bad-link card renders with no horizontal overflow at 744/820/1024, light and dark', async ({ page }) => {
+  const h = await harness(page);
+  await page.route(FN_PATTERN, (r: Route) => r.abort());
+  await page.goto(REFLECT_URL);
+  await expect(page.locator('#otr-badlink-text')).toHaveText(BADLINK_TEXT);
+
+  for (const dark of [false, true]) {
+    if (dark) {
+      await page.locator('#theme-toggle').click();
+      await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+    }
+    for (const { width, height } of WIDTHS) {
+      await page.setViewportSize({ width, height });
+      const overflowed = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1);
+      expect(overflowed, `badlink @ ${width}px dark=${dark}: horizontal overflow`).toBe(false);
+      await expect(page.locator('#otr-badlink-text')).toBeVisible();
+    }
+  }
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.14 T2: the missing-outline state renders with no horizontal overflow at 744/820/1024, light and dark', async ({ page }) => {
+  const h = await harness(page);
+  await mockReflect(page, stateObserved());
+  await openReflect(page);
+  await page.locator('#otr-send').click();
+  await expect(page.locator('#q1')).toHaveClass(/needs-value/);
+
+  for (const dark of [false, true]) {
+    if (dark) {
+      await page.locator('#theme-toggle').click();
+      await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+    }
+    for (const { width, height } of WIDTHS) {
+      await page.setViewportSize({ width, height });
+      const overflowed = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1);
+      expect(overflowed, `missing-outline @ ${width}px dark=${dark}: horizontal overflow`).toBe(false);
+      await expect(page.locator('#q1')).toHaveClass(/needs-value/);
+    }
+  }
+  expect(h.errors).toEqual([]);
+});
 
 test('otp-v0.14 T2: a stored dark preference paints dark before first render', async ({ page, context }) => {
   const h = await harness(page);

@@ -97,7 +97,7 @@ rmdir "$TRACKER_TMP_DIR"
 echo "Encrypted to $TRACKER_OUTPUT"
 
 # Teacher Reflection + Plan (otp-v0.14 T2): self-contained, ships UNGATED
-# (no StatiCrypt, no Supabase key — it only calls the public otp-reflect
+# (no StatiCrypt, no Supabase key; it only calls the public otp-reflect
 # edge function, and the token in the link is the only credential, the
 # same shape as the ungated teacher viewer above). A plain copy is enough:
 # the master carries no build-time secret to strip.
