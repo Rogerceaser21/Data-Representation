@@ -577,6 +577,17 @@ function handleOtpReflectMirror(data) {
  * A part whose stamp is already set is never re-emailed, only re-marked
  * (idempotent: mark_reflection_mirrored fills a stamp only when it is null).
  *
+ * A part whose needed E2/E4 send actually THROWS (MailApp, e.g. a quota
+ * error) is never marked at all, fresh or heal alike: mark_reflection_mirrored
+ * is skipped for it so it stays on otp_reflections_unmirrored and the next
+ * heal sweep retries the email that failed, never surfacing an error (hard
+ * rule 12; skeptic-found, 2026-09-25: calling mark_reflection_mirrored anyway
+ * with the still-missing stamp left as null took the part off the unmirrored
+ * list for good, so the owed email was never sent). This is distinct from a
+ * send that simply has no address to try (sendOtp...Email_ returns false
+ * without throwing), which still marks with a null stamp as before, since a
+ * retry there could never succeed either.
+ *
  * `allowMarkExisting` (default false): when a part's Sheet row already
  * exists at lock time, an ordinary mirror call (the reflect_mirror doPost
  * route, fired the moment a submit lands) drops it entirely, assuming a
@@ -602,6 +613,8 @@ function mirrorOtpReflectionsFromSupabase_(token, allowMarkExisting) {
   var items = [];   // one entry per part this call handles: { reflection, isNew, teacherEmailedAt, coachEmailedAt, needTeacher, needCoach }
   var teacherStampAt = '';
   var coachStampAt = '';
+  var teacherSendThrew = false;   // MailApp actually threw (e.g. quota) on a needed E2, as opposed to sendOtp...Email_ cleanly returning false (no address on file)
+  var coachSendThrew = false;
   try {
     const sheet = getOtpReflectionsSheetWithHeader_(ss);
     pending.forEach(function(r) {
@@ -630,6 +643,7 @@ function mirrorOtpReflectionsFromSupabase_(token, allowMarkExisting) {
       try {
         if (sendOtpReflectThankYouEmail_(ss, record, links, needTeacherParts)) teacherStampAt = new Date().toISOString();
       } catch (mailErr) {
+        teacherSendThrew = true;
         Logger.log('OTP reflect mirror: thank-you email failed for ' + token + ': ' + mailErr.message);
       }
     }
@@ -637,6 +651,7 @@ function mirrorOtpReflectionsFromSupabase_(token, allowMarkExisting) {
       try {
         if (sendOtpReflectCoachEmail_(ss, record, needCoachParts)) coachStampAt = new Date().toISOString();
       } catch (mailErr) {
+        coachSendThrew = true;
         Logger.log('OTP reflect mirror: coach email failed for ' + token + ': ' + mailErr.message);
       }
     }
@@ -653,6 +668,19 @@ function mirrorOtpReflectionsFromSupabase_(token, allowMarkExisting) {
   items.forEach(function(item) {
     const finalTeacherAt = item.teacherEmailedAt || (item.needTeacher && teacherStampAt ? teacherStampAt : null);
     const finalCoachAt = item.coachEmailedAt || (item.needCoach && coachStampAt ? coachStampAt : null);
+    // A part still owes a stamp it needed AND that stamp's send actually
+    // threw (a transient MailApp failure, e.g. quota, worth retrying) stays
+    // UNMARKED: mark_reflection_mirrored is skipped entirely for it, so
+    // Supabase never sets mirrored_at and the next heal sweep retries the
+    // email that failed (skeptic-found, 2026-09-25: marking it anyway with a
+    // null stamp let the part leave the unmirrored list for good, so the
+    // owed email was never sent). A stamp still missing because there was
+    // simply no address to send to (sendOtp...Email_ returned false without
+    // throwing, e.g. no email on file) is NOT retry-able, so that part is
+    // still marked with a null stamp, same as before (see d6).
+    const stillOwesTeacher = item.needTeacher && !finalTeacherAt && teacherSendThrew;
+    const stillOwesCoach = item.needCoach && !finalCoachAt && coachSendThrew;
+    if (stillOwesTeacher || stillOwesCoach) return;
     try {
       if (markReflectionMirrored_(token, item.reflection.part, finalTeacherAt || null, finalCoachAt || null)) {
         out.mirrored++;

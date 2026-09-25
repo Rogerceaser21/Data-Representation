@@ -79,6 +79,16 @@ function readCurrentSources() {
 }
 const FC1F050_SOURCES = { ...readCurrentSources(), '09_OtpReflect.gs': readCommitSource('fc1f050', '09_OtpReflect.gs') };
 
+// otp-v0.14 T4c · the 8bce233 (pre-this-fix) 09_OtpReflect.gs, same
+// all-or-nothing sources map as FC1F050_SOURCES, layered on the CURRENT
+// on-disk content of every other file. 8bce233 already fixed the "existing
+// row, both stamps empty" heal defect (P4a/e6 above) but a skeptic then
+// found it still marks a part mirrored when a NEEDED E2/E4 send actually
+// THROWS (MailApp, e.g. a quota error), fresh path or heal alike (P4b/P4d
+// below). Lets those control checks run the exact repro scenario against
+// the exact pre-this-fix mirror function.
+const T4B_SOURCES = { ...readCurrentSources(), '09_OtpReflect.gs': readCommitSource('8bce233', '09_OtpReflect.gs') };
+
 function response(code, body, isBlob) {
   const out = { getResponseCode: () => code, getContentText: () => body };
   if (isBlob) out.getBlob = () => ({ __blob: true, bytes: String(body || '').length });
@@ -174,7 +184,8 @@ function makeEnv(options = {}) {
     reflectState: options.reflectState === undefined ? { found: true, view_unlocked: false } : options.reflectState,
     unmirrored: options.unmirrored || [],
     imagesFail: !!options.imagesFail,
-    markCode: options.markCode || 200
+    markCode: options.markCode || 200,
+    mailThrowFor: options.mailThrowFor || null   // array of `to` addresses MailApp.sendEmail throws for (a quota-style transient failure), null = never throws
   };
   const sheets = new Map();
   const spreadsheet = {
@@ -224,7 +235,10 @@ function makeEnv(options = {}) {
       }
       return response(200, '{}');
     } },
-    MailApp: { sendEmail(opts) { state.mail.push({ ...opts }); } },
+    MailApp: { sendEmail(opts) {
+      if (state.mailThrowFor && state.mailThrowFor.includes(opts.to)) throw new Error('quota exceeded (mock)');
+      state.mail.push({ ...opts });
+    } },
     GmailApp: { sendEmail() {} },
     Logger: { log(message) { state.logs.push(String(message)); } },
     Utilities: {
@@ -749,6 +763,103 @@ check('e5 allowMarkExisting stays OFF for an ordinary (non-heal) mirror call: d9
   assert.equal(env.state.mail.length, 0);
   const markCalls = env.state.fetches.filter((f) => f.url.includes('mark_reflection_mirrored'));
   assert.equal(markCalls.length, 0, 'an ordinary reflect_mirror call never marks a part it did not itself write');
+});
+
+// otp-v0.14 T4c · a needed E2/E4 send that actually THROWS (MailApp, e.g. a
+// quota error) must leave the part unmarked so a later heal retries it
+// (skeptic-found, 2026-09-25, probes P4b/P4d): on 8bce233 the final mark loop
+// called mark_reflection_mirrored regardless of whether a still-missing
+// stamp's send had thrown, so a part could be marked mirrored for good having
+// never actually sent the email it owed. Covers both the fresh path
+// (mirrorOtpReflectionsFromSupabase_ with allowMarkExisting unset/false) and
+// the heal path (allowMarkExisting true, via healOtpMirror), against a chosen
+// source set so it can be pointed at 8bce233's own 09_OtpReflect.gs to prove
+// each defect reproduces there, and against the fixed tree to prove it
+// no longer does.
+
+/** Fresh mirror of a brand-new Part 1 row; `throwFor` = MailApp `to` addresses that throw. */
+function freshThrowScenario(sources, throwFor) {
+  const record = baseRecord();
+  const env = makeEnv({ sources, forMirror: reflectionForMirror(record, [part1()]), mailThrowFor: throwFor });
+  const out = env.context.mirrorOtpReflectionsFromSupabase_(TOKEN_A);
+  const sheet = env.spreadsheet.getSheetByName('OTP Reflections');
+  const headers = sheet._data[0];
+  const markCalls = env.state.fetches.filter((f) => f.url.includes('mark_reflection_mirrored'));
+  return { out, env, sheet, headers, row: sheet._data[1], markCalls };
+}
+
+check('e7c CONTROL (8bce233): a teacher-mail throw on a fresh mirror still marks the part, losing E2 for good (proves the harness catches it)', () => {
+  const r = freshThrowScenario(T4B_SOURCES, ['teacher@example.test']);
+  assert.deepEqual(toPlain(r.out), { mirrored: 1, parts: [1] }, '8bce233: reports the part mirrored even though E2 never went out (the bug)');
+  assert.equal(r.markCalls.length, 1);
+  const body = JSON.parse(r.markCalls[0].payload);
+  assert.equal(body.p_teacher_at, null, '8bce233: marked with a null teacher stamp despite the throw');
+  assert.match(body.p_coach_at, /^2026-/);
+});
+
+check('e7 a teacher-mail throw on a fresh mirror leaves the part unmarked (E2 still owed); E4 sent and stamped; a later heal retries E2 only, no resend of E4', () => {
+  const r = freshThrowScenario(undefined, ['teacher@example.test']);
+  assert.deepEqual(toPlain(r.out), { mirrored: 0, parts: [] }, 'not marked: the teacher stamp is still owed and its send threw');
+  assert.equal(r.markCalls.length, 0, 'mark_reflection_mirrored is never called while a thrown-on stamp is still missing');
+  assert.equal(r.row[r.headers.indexOf('teacher_emailed_at')], '', 'teacher stamp stays blank (E2 threw)');
+  assert.match(r.row[r.headers.indexOf('coach_emailed_at')], /^2026-/, 'coach stamp recorded on the row (E4 really sent)');
+  const teacherMails = r.env.state.mail.filter((m) => m.to === 'teacher@example.test');
+  const coachMails = r.env.state.mail.filter((m) => m.to === 'coach@example.test');
+  assert.equal(teacherMails.length, 0, 'E2 never went out (MailApp threw)');
+  assert.equal(coachMails.length, 1, 'E4 sent exactly once despite the E2 throw');
+
+  // Retry (quota cleared): Supabase still lists the part unmirrored, so the
+  // next heal picks up the SAME row (now with only the coach stamp on it).
+  r.env.state.mailThrowFor = null;
+  const out2 = r.env.context.mirrorOtpReflectionsFromSupabase_(TOKEN_A, true);
+  assert.deepEqual(toPlain(out2), { mirrored: 1, parts: [1] }, 'the retried heal marks it now that both stamps are set');
+  const teacherMails2 = r.env.state.mail.filter((m) => m.to === 'teacher@example.test');
+  const coachMails2 = r.env.state.mail.filter((m) => m.to === 'coach@example.test');
+  assert.equal(teacherMails2.length, 1, 'E2 sent exactly once on the retry');
+  assert.equal(coachMails2.length, 1, 'E4 never resent (its stamp was already set)');
+});
+
+/** Heal on an existing row with both stamps already blank (the T4b scenario); `throwFor` = MailApp `to` addresses that throw. */
+function healThrowScenario(sources, throwFor) {
+  const record = baseRecord();
+  const env = makeEnv({
+    sources,
+    forMirror: reflectionForMirror(record, [part1()]),
+    unmirrored: [{ record_token: TOKEN_A, part: 1 }],
+    mailThrowFor: throwFor
+  });
+  const sheet = env.context.getOtpReflectionsSheetWithHeader_(env.spreadsheet);
+  env.context.upsertOtpReflectionRow_(sheet, record, part1());   // the prior died-before-mail run: row written, stamps blank
+  const summary = env.context.healOtpMirror();
+  const markCalls = env.state.fetches.filter((f) => f.url.includes('mark_reflection_mirrored'));
+  return { env, sheet, summary, markCalls, headers: sheet._data[0], row: sheet._data[1] };
+}
+
+check('e8c CONTROL (8bce233): heal on an existing empty-stamped row where BOTH sends throw still reports it healed and marks null/null (proves the harness catches it)', () => {
+  const r = healThrowScenario(T4B_SOURCES, ['teacher@example.test', 'coach@example.test']);
+  assert.equal(r.summary.reflections.healed, 1, '8bce233: reports the part healed even though nothing was ever sent (the bug)');
+  assert.equal(r.markCalls.length, 1);
+  const body = JSON.parse(r.markCalls[0].payload);
+  assert.equal(body.p_teacher_at, null);
+  assert.equal(body.p_coach_at, null);
+});
+
+check('e8 heal on an existing empty-stamped row where BOTH sends throw stays pending (not healed, not marked), no error escapes, so the next sweep retries', () => {
+  const r = healThrowScenario(undefined, ['teacher@example.test', 'coach@example.test']);
+  assert.equal(r.summary.reflections.healed, 0, 'nothing actually sent, so nothing counts as healed');
+  assert.equal(r.summary.reflections.failed, 1);
+  assert.equal(r.markCalls.length, 0, 'mark_reflection_mirrored never called while both required stamps are still missing');
+  assert.equal(r.row[r.headers.indexOf('teacher_emailed_at')], '');
+  assert.equal(r.row[r.headers.indexOf('coach_emailed_at')], '');
+  assert.equal(r.env.state.mail.length, 0, 'no error escapes, and nothing was actually delivered');
+
+  // Retry (quota cleared): the next heal sweep sends both, still exactly once each.
+  r.env.state.mailThrowFor = null;
+  const summary2 = r.env.context.healOtpMirror();
+  assert.equal(summary2.reflections.healed, 1);
+  const teacherMails = r.env.state.mail.filter((m) => m.to === 'teacher@example.test');
+  const coachMails = r.env.state.mail.filter((m) => m.to === 'coach@example.test');
+  assert.equal(teacherMails.length, 1); assert.equal(coachMails.length, 1);
 });
 
 /* ── (f) a brand-image fetch failure never blocks the send ─────────────── */
