@@ -35,6 +35,10 @@ function doPost(e) {
     // by the form itself.
     if (data && data.form === 'otp' && data.action === 'mirror') return handleOtpMirror(data);
     if (data && data.form === 'otp' && data.action === 'heal') return jsonOut(healOtpMirror());
+    // otp-v0.14: the Teacher Reflection / Plan flow. otp-reflect (edge function)
+    // POSTs here after otp_reflect_write succeeds; this mirrors the answered
+    // part(s) into the "OTP Reflections" tab and sends E2/E4 (09_OtpReflect.gs).
+    if (data && data.form === 'otp' && data.action === 'reflect_mirror') return handleOtpReflectMirror(data);
     if (data && data.form === 'otp') return handleOtpPost(data);
 
     const ss = SpreadsheetApp.openById(getSheetId());
@@ -405,10 +409,15 @@ function handleOtpPost(data) {
   // otp-v0.9: a plain-language copy to the teacher themselves (no edit link,
   // no rating, no rubric state). Silent when their Teachers 26-27 row carries
   // no email (hard rule 12).
+  // otp-v0.14: pass `record`, not `data` - record.teacher_token is the
+  // server-built, always-'' value on this direct-append path (buildOtpRecord
+  // never copies a client-posted teacher_token), so a client cannot force the
+  // E1 branch by posting its own teacher_token (skeptic-found defect,
+  // 2026-09-25).
   var teacherMail = false;
   var teacherStamp = '';
   try {
-    teacherMail = sendOtpTeacherEmail(ss, recordId, recordToken, submittedAt, data);
+    teacherMail = sendOtpTeacherEmail(ss, recordId, recordToken, submittedAt, record);
     if (teacherMail) teacherStamp = new Date().toISOString();
   } catch (mailErr) {
     Logger.log('OTP teacher email failed for ' + recordId + ': ' + mailErr.message);
@@ -546,7 +555,10 @@ function handleOtpUpdateOrCloseLocked_(ss, sheet, data) {
   while (values[rowIdx].length < headers.length) values[rowIdx].push('');
 
   const isClose = data.action === 'close';
-  const LOCKED = { record_id: true, submitted_at: true, record_token: true, lap: true, round: true, coach_emailed_at: true, teacher_emailed_at: true };
+  // otp-v0.14: teacher_token is locked exactly like record_token, coach_emailed_at
+  // and teacher_emailed_at (skeptic-found defect, 2026-09-25) - it is minted once
+  // by Supabase's otp_write and must never be set or changed by a client field.
+  const LOCKED = { record_id: true, submitted_at: true, record_token: true, teacher_token: true, lap: true, round: true, coach_emailed_at: true, teacher_emailed_at: true };
 
   headers.forEach(function(h, c) {
     if (LOCKED[h]) return;
@@ -637,6 +649,10 @@ function buildOtpRecord(columns, data, recordId, recordToken, submittedAt) {
     else if (col === 'observation_date') record[col] = data.date || data.observation_date || '';
     else if (col === 'record_token') record[col] = recordToken;
     else if (col === 'coach_emailed_at' || col === 'teacher_emailed_at') record[col] = '';
+    // otp-v0.14: teacher_token is minted only by Supabase's otp_write (mirrored
+    // into this sheet via mirrorOtpRecord_/reflect_mirror), never copied from a
+    // client-posted field here (skeptic-found defect, 2026-09-25).
+    else if (col === 'teacher_token') record[col] = '';
     else if (col === 'school') record[col] = schoolForGrade(data.grade) || (data[col] != null ? data[col] : '');
     else record[col] = data[col] != null ? data[col] : '';
   });
@@ -709,10 +725,18 @@ function sendOtpSubmissionEmail(ss, recordId, recordToken, submittedAt, data) {
  * will meet them to agree next steps. Silent when the teacher's Teachers
  * 26-27 row (lookupOtpTeacherEmail, 02_doGet.gs) carries no email, or the
  * value there isn't an email at all (hard rule 12).
+ *
+ * otp-v0.14: when the record carries a teacher_token (the Teacher Reflection
+ * flow), this copy is REPLACED whole by E1 (sendOtpReflectInviteEmail_,
+ * 09_OtpReflect.gs): no view link, no record token, a button straight into
+ * the reflection form. A record without a token behaves exactly as before.
  */
 function sendOtpTeacherEmail(ss, recordId, recordToken, submittedAt, data) {
   const teacherEmail = lookupOtpTeacherEmail(ss, data.teacher);
   if (!teacherEmail || teacherEmail.indexOf('@') < 0) return false;
+
+  const teacherToken = String(data.teacher_token || '').trim();
+  if (teacherToken) return sendOtpReflectInviteEmail_(ss, teacherEmail, teacherToken, data);
 
   const viewUrl = RECORD_VIEWER_URL_OTP + '?token=' + encodeURIComponent(recordToken);
   const observerName = String(data.inspector || data.observer || 'Your observer').trim();
@@ -743,8 +767,17 @@ function sendOtpTeacherEmail(ss, recordId, recordToken, submittedAt, data) {
  * teacher, CC the observer + the backup mailbox. View link only, the record
  * is locked now so no edit link. `record` is the full row (header -> value)
  * exactly as it now stands on the Sheet.
+ *
+ * otp-v0.14: when the record carries a teacher_token, this copy is REPLACED
+ * whole by E3 (sendOtpReflectCloseEmail_, 09_OtpReflect.gs): the Next Steps
+ * plus a button into the plan form (questions 4-8), and the view link only
+ * once Part 1 has been sent. Same To/CC/subject either way; a record without
+ * a token behaves exactly as before.
  */
 function sendOtpCloseEmail(ss, record) {
+  const teacherToken = String(record.teacher_token || '').trim();
+  if (teacherToken) return sendOtpReflectCloseEmail_(ss, record, teacherToken);
+
   const teacherEmail = lookupOtpTeacherEmail(ss, record.teacher);
   if (!teacherEmail || teacherEmail.indexOf('@') < 0) return;
 

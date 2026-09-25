@@ -230,7 +230,13 @@ function getOtpColumns() {
     'status', 'closed_at', 'lap', 'round',
     // otp-v0.11: successful submission recipients are stamped separately.
     // These server-owned fields are append-only and never copied from a post.
-    'coach_emailed_at', 'teacher_emailed_at'
+    'coach_emailed_at', 'teacher_emailed_at',
+    // otp-v0.14: the Teacher Reflection + Plan flow. Generated once by
+    // otp_write at submit (only when the client sends reflection_flow:true),
+    // locked thereafter (never touched by update/close). '' on every legacy
+    // record and every record made without the flag. Append-only, per the
+    // rule above.
+    'teacher_token'
   ];
 }
 

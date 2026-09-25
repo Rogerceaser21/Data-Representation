@@ -213,6 +213,12 @@ function fetchOtpRecordForMirror_(token) {
 function mirrorOtpTokenFromSupabase_(ss, sheet, token, opts) {
   const cur = fetchOtpRecordForMirror_(token);
   if (!cur || !cur.record) return null;
+  // otp-v0.14: otp_record_for_mirror now also returns links:{reflect,view}
+  // (migrate_27). Carried on the record as a non-column key (getOtpColumns()
+  // never lists it, so it never reaches the Sheet row) purely so
+  // sendOtpTeacherEmail / sendOtpCloseEmail can read it when the record
+  // carries a teacher_token; see otpLinksFor_ (09_OtpReflect.gs).
+  cur.record._links = cur.links;
   const lock = LockService.getScriptLock();
   lock.waitLock(30000);
   var out;
@@ -298,10 +304,15 @@ function handleOtpMirror(data) {
  * The heal sweep: every OTP record Supabase still lists as unmirrored after
  * OTP_HEAL_OLDER_THAN_S seconds is mirrored now. Runs from the 5-minute trigger
  * and from doPost action:'heal'. Returns a summary object (also logged).
+ *
+ * otp-v0.14: also sweeps otp_reflections_unmirrored (healOtpReflections_,
+ * 09_OtpReflect.gs) under its own 'reflections' key, same batch/age limits;
+ * a record's OWN sweep failing (missing secret, bad RPC) never blocks the
+ * other's, and each is logged independently.
  */
 function healOtpMirror() {
   const secret = getSupabaseSecret();
-  if (!secret) return { success: false, error: 'SUPABASE_SECRET_KEY not set' };
+  if (!secret) return { success: false, error: 'SUPABASE_SECRET_KEY not set', reflections: healOtpReflections_() };
   const resp = UrlFetchApp.fetch(SUPABASE_URL + OTP_MIRROR_RPC_UNMIRRORED, {
     method: 'post',
     contentType: 'application/json',
@@ -309,34 +320,39 @@ function healOtpMirror() {
     payload: JSON.stringify({ p_older_than_seconds: OTP_HEAL_OLDER_THAN_S }),
     muteHttpExceptions: true
   });
+  var summary;
   if (resp.getResponseCode() !== 200) {
     Logger.log('OTP heal: otp_unmirrored HTTP ' + resp.getResponseCode() + ': ' + resp.getContentText());
-    return { success: false, error: 'otp_unmirrored HTTP ' + resp.getResponseCode() };
-  }
-  var items = [];
-  try { items = JSON.parse(resp.getContentText()) || []; } catch (e) {}
-  if (!items.length) return { success: true, pending: 0, healed: 0, failed: 0 };
-
-  const ss = SpreadsheetApp.openById(getSheetId());
-  const sheet = getOtpSheetWithHeader_(ss);
-  // A few per run, each under its own short lock and without the slow
-  // previous-lap pre-warm, so a long backlog never runs into the 6-minute
-  // execution limit while holding the Sheet; the next run takes the rest.
-  const batch = items.slice(0, OTP_HEAL_BATCH);
-  var healed = 0, failed = 0;
-  batch.forEach(function(it) {
-    const token = String((it && it.record && it.record.record_token) || '').trim();
-    if (!otpTokenOk_(token)) { failed++; return; }
-    try {
-      const out = mirrorOtpTokenFromSupabase_(ss, sheet, token, { prewarm: false });
-      if (out && out.marked) healed++; else failed++;
-    } catch (e) {
-      failed++;
-      Logger.log('OTP heal: ' + token + ' failed: ' + e.message);
+    summary = { success: false, error: 'otp_unmirrored HTTP ' + resp.getResponseCode() };
+  } else {
+    var items = [];
+    try { items = JSON.parse(resp.getContentText()) || []; } catch (e) {}
+    if (!items.length) {
+      summary = { success: true, pending: 0, healed: 0, failed: 0 };
+    } else {
+      const ss = SpreadsheetApp.openById(getSheetId());
+      const sheet = getOtpSheetWithHeader_(ss);
+      // A few per run, each under its own short lock and without the slow
+      // previous-lap pre-warm, so a long backlog never runs into the 6-minute
+      // execution limit while holding the Sheet; the next run takes the rest.
+      const batch = items.slice(0, OTP_HEAL_BATCH);
+      var healed = 0, failed = 0;
+      batch.forEach(function(it) {
+        const token = String((it && it.record && it.record.record_token) || '').trim();
+        if (!otpTokenOk_(token)) { failed++; return; }
+        try {
+          const out = mirrorOtpTokenFromSupabase_(ss, sheet, token, { prewarm: false });
+          if (out && out.marked) healed++; else failed++;
+        } catch (e) {
+          failed++;
+          Logger.log('OTP heal: ' + token + ' failed: ' + e.message);
+        }
+      });
+      summary = { success: true, pending: items.length, healed: healed, failed: failed };
     }
-  });
-  const summary = { success: true, pending: items.length, healed: healed, failed: failed };
+  }
   Logger.log('OTP heal: ' + JSON.stringify(summary));
+  summary.reflections = healOtpReflections_();
   return summary;
 }
 
