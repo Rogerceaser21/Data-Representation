@@ -10,7 +10,7 @@
  * fonts, favicon and the cdnjs scripts (three.js / gsap / MotionPathPlugin) are
  * also routed, which is safe because every use of window.THREE / window.gsap in
  * the master is already guarded (motion is enhancement only, per the dashboard
- * house style) — blocking them just proves the resting, un-animated end state.
+ * house style), blocking them just proves the resting, un-animated end state.
  */
 import { test, expect, Page, Route } from '@playwright/test';
 
@@ -43,11 +43,12 @@ const DATA_JS_STUB = `window.__AIS_DATA = {
 
 /** Synthetic RAW snapshot (shapeSnapshot's INPUT shape) for get_raw_snapshot: proves get_otp_portal
  *  is a genuinely separate fetch that still applies once loadLive() swaps D under it (matched by
- *  teacher NAME, not id). Three fictional teachers, never real AIS staff. */
+ *  teacher NAME, not id). Four fictional teachers, never real AIS staff. */
 const RAW_TEACHERS = [
   { id: 't-priya', full_name: 'Priya Fictional Teacher', section: 'primary', dept: null, dept_role: null, photo_url: null },
   { id: 't-zara', full_name: 'Zara Fictional Teacher', section: 'secondary', dept: null, dept_role: null, photo_url: null },
   { id: 't-miles', full_name: 'Miles Fictional Teacher', section: 'secondary', dept: null, dept_role: null, photo_url: null },
+  { id: 't-noor', full_name: 'Noor Fictional Teacher', section: 'primary', dept: null, dept_role: null, photo_url: null },
 ];
 const RAW_SNAPSHOT = { generated_on: '2026-09-25T00:00:00Z', criteria: [], inspectors: [], teachers: RAW_TEACHERS, assessments: [], scores: [] };
 
@@ -55,7 +56,9 @@ const RAW_SNAPSHOT = { generated_on: '2026-09-25T00:00:00Z', criteria: [], inspe
  *  Priya = owed (a newer open lap owing part 1, plus an older fully-answered closed lap: also
  *  proves "newest first" ordering and mixed sent/not-sent within one teacher).
  *  Zara = up to date (one closed lap, both parts sent).
- *  Miles = absent entirely (not a reflection-flow teacher -> row 02 stays Not assessed). */
+ *  Miles = absent entirely (not a reflection-flow teacher -> row 02 stays Not assessed).
+ *  Noor = two open laps, one owing BOTH parts, proving the badge sums owed across laps (2+1=3),
+ *  not just the newest lap. */
 const OTP_PORTAL_PAYLOAD = [
   {
     teacher: 'Priya Fictional Teacher',
@@ -101,6 +104,21 @@ const OTP_PORTAL_PAYLOAD = [
           },
         },
         owed: [],
+      },
+    ],
+  },
+  {
+    teacher: 'Noor Fictional Teacher',
+    laps: [
+      {
+        lap: 2, observation_date: '2026-09-20', subject: 'Science', grade: 'Year 6',
+        observer: 'Sam Example', status: 'observed', closed_at: null,
+        part1: null, part2: null, owed: [1, 2],
+      },
+      {
+        lap: 1, observation_date: '2026-01-15', subject: 'Science', grade: 'Year 6',
+        observer: 'Sam Example', status: 'observed', closed_at: null,
+        part1: null, part2: null, owed: [1],
       },
     ],
   },
@@ -167,31 +185,46 @@ test('row 02: Not assessed for a non-reflection-flow teacher, owed for one with 
   await selectTeacher(page, 't-miles');
   await expect(otpRow(page).locator('.pl')).toHaveText('Not assessed');
   await expect(otpRow(page)).toBeDisabled();
+  await expect(otpRow(page)).not.toHaveClass(/\bnew\b/);
   await expect(otpBadge(page)).toHaveCount(0);
 
   await selectTeacher(page, 't-priya');
   await expect(otpRow(page).locator('.pl')).toHaveText('Action needed');
   await expect(otpRow(page).locator('.tt small')).toHaveText('Observation 2 . 14 Sep');
-  await expect(otpBadge(page)).toHaveText('1 forms to fill in');
+  await expect(otpRow(page)).toHaveClass(/\bnew\b/);
+  await expect(otpBadge(page)).toHaveText('1 form to fill in');
   await expect(otpRow(page)).toBeEnabled();
 
   await selectTeacher(page, 't-zara');
   await expect(otpRow(page).locator('.pl')).toHaveText('Up to date');
   await expect(otpRow(page).locator('.tt small')).toHaveText('Observation 1 . 10 Sep');
+  await expect(otpRow(page)).not.toHaveClass(/\bnew\b/);
   await expect(otpBadge(page)).toHaveCount(0);
 
   expect(h.errors, 'console/page errors').toEqual([]);
 });
 
-test('offline: get_otp_portal unreachable leaves row 02 Not assessed, no error UI', async ({ page }) => {
+test('badge sums owed across laps, including a lap owing both parts', async ({ page }) => {
+  const h = await harness(page);
+  await gotoAndLoadOtp(page);
+
+  await selectTeacher(page, 't-noor');
+  await expect(otpRow(page).locator('.pl')).toHaveText('Action needed');
+  await expect(otpRow(page)).toHaveClass(/\bnew\b/);
+  await expect(otpBadge(page)).toHaveText('3 forms to fill in');   // lap 2 owes [1,2] + lap 1 owes [1] = 3
+
+  expect(h.errors, 'console/page errors').toEqual([]);
+});
+
+test('offline: get_otp_portal returns an empty response, row 02 stays Not assessed, no error UI', async ({ page }) => {
   const h = await harness(page);
   // registered AFTER harness()'s own get_otp_portal mock, so this wins (newest route wins). A 200
   // of `null` is how this codebase's own harness simulates "unreachable" everywhere else (the
   // generic *.supabase.co catch-all above does the same): loadOtpPortal's own guards (`!r.ok`,
-  // `!Array.isArray(arr)`) bail out and OTP_PORTAL stays null. A real network failure (r.abort(),
-  // or a non-2xx status) would prove the same code path but has the browser itself log a
-  // "Failed to load resource" console entry for the failed request, which is not a product defect
-  // but would make this spec's own probe the thing that fails the zero-console-errors assertion.
+  // `!Array.isArray(arr)`) bail out and OTP_PORTAL stays null. The next test below proves the same
+  // resilience against a REAL network failure (r.abort()), which a browser logs to the console for
+  // reasons unrelated to product code, so that test filters the console for it instead of skipping
+  // the real-failure case.
   await page.route('**/rest/v1/rpc/get_otp_portal', (r: Route) => r.fulfill({ status: 200, contentType: 'application/json', body: 'null' }));
 
   const rawResp = page.waitForResponse((r) => r.url().includes('/rpc/get_raw_snapshot'));
@@ -209,6 +242,35 @@ test('offline: get_otp_portal unreachable leaves row 02 Not assessed, no error U
   await expect(otpBadge(page)).toHaveCount(0);
   await expect(page.locator('#otpStack')).toBeHidden();
   expect(h.errors, 'console/page errors').toEqual([]);
+});
+
+test('offline (real failure): get_otp_portal request aborted, row 02 stays Not assessed, no product error', async ({ page }) => {
+  const h = await harness(page);
+  // A genuine aborted request (not a well-formed empty response) proves loadOtpPortal's own
+  // AbortController + try/catch actually swallows a real network failure, the case the test above
+  // cannot reach. Registered AFTER harness()'s own get_otp_portal mock, so this wins.
+  await page.route('**/rest/v1/rpc/get_otp_portal', (r: Route) => r.abort('failed'));
+
+  const rawResp = page.waitForResponse((r) => r.url().includes('/rpc/get_raw_snapshot'));
+  await page.goto(PAGE_URL);
+  await rawResp;
+  await page.evaluate((id) => {
+    (window as any).showBoard('portal');
+    (window as any).openPortalTeacher(id);
+  }, 't-priya');
+  // give the aborted fetch's catch() a moment to settle; the row must never flip to a live state.
+  await page.waitForTimeout(300);
+
+  await expect(otpRow(page).locator('.pl')).toHaveText('Not assessed');
+  await expect(otpRow(page)).toBeDisabled();
+  await expect(otpRow(page)).not.toHaveClass(/\bnew\b/);
+  await expect(otpBadge(page)).toHaveCount(0);
+  await expect(page.locator('#otpStack')).toBeHidden();
+
+  // Chromium logs the browser's own net::ERR_FAILED line to the console for the aborted fetch;
+  // that is not a product error, so it is filtered out here rather than asserted away entirely.
+  const productErrors = h.errors.filter((e) => !/ERR_FAILED|Failed to load resource/i.test(e));
+  expect(productErrors, 'non-network console/page errors').toEqual([]);
 });
 
 test('section cards: header, Next Steps only when closed, exact question wording, Not sent yet, action buttons absent', async ({ page }) => {
@@ -257,7 +319,7 @@ test('section cards: header, Next Steps only when closed, exact question wording
   expect(h.errors, 'console/page errors').toEqual([]);
 });
 
-test('Zara: single closed lap, q2 with no comment renders the level alone, both themes at 820x1180 and 1280', async ({ page }) => {
+test('owed (Priya) and up-to-date (Zara) states, section cards, both themes at 820x1180 and 1280', async ({ page }) => {
   const h = await harness(page);
   for (const theme of ['light', 'dark'] as const) {
     for (const vp of [{ width: 820, height: 1180 }, { width: 1280, height: 900 }]) {
@@ -266,8 +328,28 @@ test('Zara: single closed lap, q2 with no comment renders the level alone, both 
       if (theme === 'dark') await page.evaluate(() => (window as any).applyTheme('dark'));
       await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
 
+      // Priya: owed state, badge, .new ring, and both section cards (open + closed lap).
+      await selectTeacher(page, 't-priya');
+      await expect(otpRow(page).locator('.pl')).toHaveText('Action needed');
+      await expect(otpRow(page)).toHaveClass(/\bnew\b/);
+      await expect(otpBadge(page)).toHaveText('1 form to fill in');
+      await otpRow(page).click();
+      const priyaCards = page.locator('#otpStack > .panel');
+      await expect(priyaCards).toHaveCount(2);
+      const openCard = priyaCards.nth(0);
+      const notSent = openCard.locator('.ns-empty');
+      await expect(notSent).toHaveCount(2);
+      await expect(notSent.nth(0)).toHaveText('Not sent yet.');
+      const closedCard = priyaCards.nth(1);
+      await expect(closedCard.locator('.ns-badge.approved')).toHaveText('Closed');
+      await expect(closedCard.locator('.otpq', { hasText: '1. How did the lesson go? What worked, and what did not?' })).toHaveCount(1);
+      await expect(closedCard.locator('.otpq', { hasText: '8. What change in student learning do you expect, and by when?' })).toHaveCount(1);
+      await expect(priyaCards.locator('.otpacts')).toHaveCount(0);
+
+      // Zara: up-to-date state, q2 with no comment renders the level alone.
       await selectTeacher(page, 't-zara');
       await expect(otpRow(page).locator('.pl')).toHaveText('Up to date');
+      await expect(otpRow(page)).not.toHaveClass(/\bnew\b/);
       await otpRow(page).click();
       const card = page.locator('#otpStack > .panel').first();
       await expect(card).toContainText('OTP . Observation 1 . 10 Sep . Coach: Alex Example');

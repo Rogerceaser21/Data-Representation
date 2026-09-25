@@ -1989,7 +1989,7 @@ function renderPortalPage(t){const host=byId('portalPage');const ov=t.n_obs?teac
     let live,hasNew,badge,pill,sub;
     if(sec.key==='otp'){
       live=otpLive;hasNew=live&&otpOwed>0;
-      badge=hasNew?`<span class="hnew"><i></i>${otpOwed} forms to fill in</span>`:'';
+      badge=hasNew?`<span class="hnew"><i></i>${otpOwed} form${otpOwed===1?'':'s'} to fill in</span>`:'';
       pill=live?(otpOwed>0?'<span class="pl" style="background:#E67637">Action needed</span>':'<span class="pl" style="background:#3CBB6C">Up to date</span>')
         :'<span class="pl na">Not assessed</span>';
       sub=live?`<small>Observation ${esc(String(otpLaps[0].lap))} . ${esc(otpDayShort(otpLaps[0].observation_date))}</small>`:'';
