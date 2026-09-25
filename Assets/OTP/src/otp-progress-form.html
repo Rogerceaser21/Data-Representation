@@ -2714,7 +2714,10 @@ body.is-viewer .cog-btn { display: none; }
   /* otp-v0.7.1: no reserved strip any more. The text sits in .rub-chip-text
      and an empty float spacer (.rub-note-gap) trails it, so the "+" (a sibling
      pulled up over the chip's bottom-right corner) shares the last line with
-     the text and the chip only grows when that line is full. */
+     the text and the chip only grows when that line is full.
+     otp-v0.13: position:relative so the letter badge (.rub-state-badge, a
+     child of the chip) can sit absolutely in that same corner. */
+  position: relative;
   padding: 0.2rem 0.28rem;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
@@ -2724,8 +2727,11 @@ body.is-viewer .cog-btn { display: none; }
 .rub-chip-text { display: inline; }
 /* otp-v0.7.1: the corner the "+" occupies. 22px wide so a word stops clear of
    the 20px circle; 20px tall so the circle (inset 4px, the chip's 0.2rem
-   bottom padding under it) never meets the line above either. */
-.rub-note-gap { float: right; width: 22px; height: 20px; }
+   bottom padding under it) never meets the line above either.
+   otp-v0.13: widened to also clear the letter badge sitting left of the "+"
+   (badge 20px + a small gap + the original 22px), so the last line of text
+   never runs under either circle. */
+.rub-note-gap { float: right; width: 46px; height: 20px; }
 /* otp-v0.2: the chip colour IS the recorded state, so these rules sit after
    :hover and win over it. The legend swatches share them.
    otp-v0.7: a calm pastel tint; the chip keeps its normal ink and its normal
@@ -2815,6 +2821,50 @@ body.is-viewer .cog-btn { display: none; }
   100% { transform: scale(1); }
 }
 .rub-note-btn.badge-pop { animation: rub-badge-pop 220ms ease-out; }
+
+/* otp-v0.13: colour-blind-safe letter badge (G/Y/R/N) so a rubric statement's
+   state reads without relying on the green/yellow/red tint. Same 20px circle
+   as the "+", same thin neutral border, no colour fill (it must never itself
+   depend on colour). Two contexts share this class:
+   - inside a chip (.rub-chip .rub-state-badge below): absolutely positioned
+     in the reserved corner, immediately left of the "+"; the letter is driven
+     purely by the chip's own data-state, so no new JS state tracking.
+   - in the legend key (.rub-legend-badge): static, inline before the wording,
+     data-state set once at render time so it explains the four letters. */
+.rub-state-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid rgba(20, 54, 66, 0.28);
+  font-family: var(--body-font);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--navy);
+  background: transparent;
+}
+.rub-state-badge::before { content: 'N'; }
+.rub-chip .rub-state-badge {
+  /* otp-v0.13: position:relative is on the chip, so "right"/"bottom" here are
+     measured from its PADDING box, one px inside its 1px border; 3px (not 4)
+     puts the badge's bottom edge level with the "+" circle's (which is
+     inset 4px from the chip's OUTER border edge). */
+  position: absolute;
+  right: 27px;
+  bottom: 3px;
+  pointer-events: none; /* the chip itself owns the tap cycle */
+}
+.rub-chip[data-state="present"] .rub-state-badge::before { content: 'G'; }
+.rub-chip[data-state="partial"] .rub-state-badge::before { content: 'Y'; }
+.rub-chip[data-state="absent"] .rub-state-badge::before { content: 'R'; }
+.rub-legend-badge[data-state="present"]::before { content: 'G'; }
+.rub-legend-badge[data-state="partial"]::before { content: 'Y'; }
+.rub-legend-badge[data-state="absent"]::before { content: 'R'; }
+:root[data-theme="dark"] .rub-state-badge { color: var(--paper); border-color: rgba(242, 239, 230, 0.28); }
 
 /* otp-v0.7: the criterion note is a pop-up CARD anchored to the "+" it came
    from. ONE card and ONE scrim, permanently mounted inside the rubric section
@@ -3487,7 +3537,7 @@ body.is-viewer .cog-btn { display: none; }
        FOOTER
        ============================================ -->
   <footer class="form-footer">
-    <span>Form · Progress in Lessons OTP · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">otp-v0.12</a></span>
+    <span>Form · Progress in Lessons OTP · <a href="https://github.com/Rogerceaser21/Data-Representation/releases" target="_blank" rel="noopener">otp-v0.13 preview 1</a></span>
     <span class="save-status" id="save-status">
       <span class="pulse"></span>
       <span class="text">Auto saved</span>
@@ -7391,6 +7441,14 @@ body.is-viewer .cog-btn { display: none; }
         gap.className = 'rub-note-gap';
         gap.setAttribute('aria-hidden', 'true');
         b.appendChild(gap);
+        /* otp-v0.13: colour-blind-safe letter badge, a CHILD of the chip (never
+           a button, so it never intercepts the tap). The letter comes from
+           the chip's own data-state via CSS (.rub-state-badge), so nothing
+           here needs updating when syncRubricChips changes the state. */
+        const sb = document.createElement('span');
+        sb.className = 'rub-state-badge';
+        sb.setAttribute('aria-hidden', 'true');
+        b.appendChild(sb);
         box.appendChild(b);
         /* otp-v0.6: the note button is a SIBLING of the chip, never a child: a
            button inside a button is invalid HTML and would swallow the tap
@@ -7427,6 +7485,12 @@ body.is-viewer .cog-btn { display: none; }
       sw.dataset.state = item.state;
       sw.setAttribute('aria-hidden', 'true');
       wrap.appendChild(sw);
+      /* otp-v0.13: same letter badge as the chips, so the key explains G/Y/R/N */
+      const lb = document.createElement('span');
+      lb.className = 'rub-state-badge rub-legend-badge';
+      lb.dataset.state = item.state;
+      lb.setAttribute('aria-hidden', 'true');
+      wrap.appendChild(lb);
       wrap.appendChild(document.createTextNode(item.text));
       legBox.appendChild(wrap);
     });

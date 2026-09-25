@@ -504,7 +504,7 @@ test('renders all 32 SP1 v2 rubric chips verbatim, in order, 4/5/7/8/8', async (
   await expect(page.locator('tr.rub-caption .rub-cap-k')).toHaveText('Aspect of Practice');
   await expect(page.locator('tr.rub-caption .rub-cap-v')).toHaveText(RUBRIC.aspect);
   // the footer renders uppercase through CSS, so match the text case-insensitively
-  await expect(page.locator('.form-footer')).toContainText(/otp-v0\.12/i);
+  await expect(page.locator('.form-footer')).toContainText(/otp-v0\.13/i);
   await expect(page.locator('#rubric_version')).toHaveValue('sp1-v2');
 
   expect(h.errors).toEqual([]);
@@ -1910,6 +1910,92 @@ test('the colour legend is a permanent strip under the level headers; the Info b
   expect(h.errors).toEqual([]);
 });
 
+test('otp-v0.13: a colour-blind-safe letter badge (N/G/Y/R) rides every chip, left of the "+", and the legend explains it', async ({ page }) => {
+  const h = await harness(page);
+  await openForm(page);
+
+  const badgeLetter = (page: Page, key: string, n: number) =>
+    chipAt(page, key, n).locator('.rub-state-badge').evaluate(
+      (el) => getComputedStyle(el, '::before').content.replace(/"/g, ''),
+    );
+
+  // all 32 chips start unselected: every badge reads N
+  const initial = await page.evaluate(() =>
+    Array.from(document.querySelectorAll('.rub-chip')).map(
+      (chip) => getComputedStyle(chip.querySelector('.rub-state-badge')!, '::before').content.replace(/"/g, ''),
+    ),
+  );
+  expect(initial).toHaveLength(32);
+  expect(initial.every((l) => l === 'N')).toBe(true);
+
+  // one chip through the full cycle: N -> G -> Y -> R -> N, letter follows
+  // the SAME data-state the chip already carries (no new JS state logic)
+  await expect(chipAt(page, 'good', 3)).toHaveAttribute('data-state', '');
+  expect(await badgeLetter(page, 'good', 3)).toBe('N');
+
+  await tapChip(page, 'good', 3);
+  await expect(chipAt(page, 'good', 3)).toHaveAttribute('data-state', 'present');
+  expect(await badgeLetter(page, 'good', 3)).toBe('G');
+
+  await tapChip(page, 'good', 3);
+  await expect(chipAt(page, 'good', 3)).toHaveAttribute('data-state', 'partial');
+  expect(await badgeLetter(page, 'good', 3)).toBe('Y');
+
+  await tapChip(page, 'good', 3);
+  await expect(chipAt(page, 'good', 3)).toHaveAttribute('data-state', 'absent');
+  expect(await badgeLetter(page, 'good', 3)).toBe('R');
+
+  await tapChip(page, 'good', 3);
+  await expect(chipAt(page, 'good', 3)).toHaveAttribute('data-state', '');
+  expect(await badgeLetter(page, 'good', 3)).toBe('N');
+
+  // the badge sits inside the chip, left of the "+", the two never overlap
+  const geo = await chipAt(page, 'good', 3).evaluate((chip) => {
+    const badge = chip.querySelector('.rub-state-badge')!.getBoundingClientRect();
+    const plus = (chip.nextElementSibling as HTMLElement).getBoundingClientRect();
+    return { badge, plus };
+  });
+  expect(geo.badge.right, 'badge sits left of the +').toBeLessThanOrEqual(geo.plus.left);
+  const overlaps =
+    geo.badge.right > geo.plus.left &&
+    geo.badge.left < geo.plus.right &&
+    geo.badge.bottom > geo.plus.top &&
+    geo.badge.top < geo.plus.bottom;
+  expect(overlaps, 'badge and + bounding boxes must not overlap').toBe(false);
+  // and on the same row/baseline as the "+" (bottom edges line up)
+  expect(Math.abs(geo.badge.bottom - geo.plus.bottom)).toBeLessThan(1);
+  expect(geo.badge.width).toBe(20);
+  expect(geo.badge.height).toBe(20);
+
+  // the badge is a plain child span (never a button), pointer-events:none, and
+  // never eats the tap: a click at the badge's OWN coordinates still cycles
+  // the chip underneath it.
+  const badgeIsSpan = await chipAt(page, 'good', 5)
+    .locator('.rub-state-badge')
+    .evaluate((el) => el.tagName);
+  expect(badgeIsSpan).toBe('SPAN');
+  await chipAt(page, 'good', 5).scrollIntoViewIfNeeded();
+  const badgeCentre = await chipAt(page, 'good', 5)
+    .locator('.rub-state-badge')
+    .evaluate((el) => {
+      const r = el.getBoundingClientRect();
+      return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+    });
+  await expect(chipAt(page, 'good', 5)).toHaveAttribute('data-state', '');
+  await page.mouse.click(badgeCentre.x, badgeCentre.y);
+  await expect(chipAt(page, 'good', 5)).toHaveAttribute('data-state', 'present');
+
+  // the legend explains all four letters, in the same order as the words
+  const legendLetters = await page.evaluate(() =>
+    Array.from(document.querySelectorAll('#rubric-legend .rub-legend-badge')).map(
+      (el) => getComputedStyle(el, '::before').content.replace(/"/g, ''),
+    ),
+  );
+  expect(legendLetters).toEqual(['N', 'G', 'Y', 'R']);
+
+  expect(h.errors).toEqual([]);
+});
+
 test('otp-v0.5: Grade replaces School and derives it, Kindy through Secondary', async ({ page }) => {
   const h = await harness(page);
   await openForm(page);
@@ -2016,7 +2102,7 @@ test('otp-v0.7: no console errors and no horizontal overflow at 1280, 1180x820 a
       await notePop(page).evaluate((el) => getComputedStyle(el).position),
     ).toBe('absolute');
 
-    await expect(page.locator('.form-footer')).toContainText(/otp-v0\.12/i);
+    await expect(page.locator('.form-footer')).toContainText(/otp-v0\.13/i);
     await page.evaluate((k) => localStorage.removeItem(k), DRAFT_KEY);
   }
 
@@ -3551,15 +3637,13 @@ test('otp-v0.11 F2: a late get_teacher_lap_state answer never redraws over a jus
   expect(h.errors).toEqual([]);
 });
 
-test('otp-v0.12: the footer reads otp-v0.12', async ({ page }) => {
+test('otp-v0.13: the footer reads otp-v0.13', async ({ page }) => {
   await harness(page);
   await openForm(page);
   await expect(
     page.locator('.form-footer'),
-    'footer version was not bumped to otp-v0.12',
-  ).toContainText(/otp-v0\.12/i);
-  // release: the preview round label is gone from the shipped footer
-  await expect(page.locator('.form-footer')).not.toContainText(/preview/i);
+    'footer version was not bumped to otp-v0.13',
+  ).toContainText(/otp-v0\.13/i);
 });
 
 /** otp-v0.10 Phase 1: the dropdown lists and the previous-lap card are read from
