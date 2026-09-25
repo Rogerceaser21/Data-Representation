@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teacher Reflection · AIS Sharjah</title>
+<script>
+  /* Pre-paint theme, same key + logic as the gate and the other OTP pages, so
+     a teacher's choice on one page holds on the others (localStorage is
+     shared across this Pages origin). */
+  (function() {
+    try {
+      var stored = localStorage.getItem('ais-form-theme');
+      var theme = stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      if (theme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+    } catch (e) {}
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;0,8..60,700;1,8..60,400;1,8..60,500&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;0,700&family=Lora:ital,wght@0,400;0,500;0,600;0,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ===========================================
+   otp-v0.14 T2 · Teacher Reflection + Plan form. Self-contained: this page
+   ships UNGATED (Assets/OTP/otp-reflect.html, copied verbatim by
+   encrypt.sh) and carries NO Supabase key at all, only the public edge
+   function URL (the token in the link is the only credential, exactly like
+   the ungated teacher viewer, otp-record.html).
+
+   THEME TOKENS + shell/header/pill/textarea/action-btn CSS copied verbatim
+   from Assets/OTP/src/otp-progress-form.html (the same source
+   Assets/OTP/src/otp-tracker.html copied from), renamed to page-scoped
+   classes (otr-*) the way otp-tracker.html did (tt-*), except the inner
+   header block (brand-row / form-title-block / form-eyebrow / stripe /
+   form-title), which keeps the SAME class names as the main form, exactly
+   as otp-tracker.html's header does.
+   =========================================== */
+:root {
+  --display-font: 'Lora', Georgia, 'Times New Roman', serif;
+  --body-font: 'Inter', system-ui, -apple-system, sans-serif;
+
+  --navy: #143642;
+  --navy-elev: #ffffff;
+  --navy-card: #f4f3ee;
+  --navy-edge: #e3e2dc;
+  --paper: #143642;
+  --paper-dim: #3a4f59;
+  --paper-mid: #6b7e85;
+  --paper-faint: #9aa6ac;
+
+  --ais-red: #EF343A;
+  --ais-blue: #1257FF;
+  --ais-yellow: #FFBA14;
+  --rate-success: #2ea15a;
+  --rate-success-deep: #0f5f30;
+  --rate-unsuccess: #d68a1a;
+  --rate-unsuccess-deep: #b06d10;
+
+  --rule: rgba(20, 54, 66, 0.14);
+  --rule-soft: rgba(20, 54, 66, 0.07);
+  --page-bg: #efece2;
+  --card-bg: #ffffff;
+  --row-tint: rgba(20, 54, 66, 0.025);
+  --section-tint: rgba(20, 54, 66, 0.055);
+  --surface-soft: rgba(20, 54, 66, 0.025);
+  --surface-mid: rgba(20, 54, 66, 0.045);
+  --surface-strong: rgba(20, 54, 66, 0.08);
+  --shadow-card: 0 14px 36px -18px rgba(20, 54, 66, 0.22), 0 2px 6px -3px rgba(20, 54, 66, 0.08);
+
+  --title: clamp(1.85rem, 3.4vw, 2.6rem);
+  --section: clamp(1.15rem, 1.8vw, 1.4rem);
+  --label: clamp(0.7rem, 0.95vw, 0.8rem);
+  --body: clamp(0.95rem, 1.25vw, 1.05rem);
+  --small: clamp(0.78rem, 1.05vw, 0.88rem);
+  --tiny: clamp(0.72rem, 0.95vw, 0.8rem);
+}
+
+:root[data-theme="dark"] {
+  --display-font: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --body-font: 'Source Sans 3', system-ui, -apple-system, sans-serif;
+  --navy: #0a0d1f;
+  --navy-elev: #11162e;
+  --navy-card: #131938;
+  --navy-edge: #1c244d;
+  --paper: #f2efe6;
+  --paper-dim: #cdd0e0;
+  --paper-mid: #9ea3bf;
+  --paper-faint: #6c7290;
+  --rule: rgba(255, 255, 255, 0.10);
+  --rule-soft: rgba(255, 255, 255, 0.06);
+  --page-bg: #04061a;
+  --card-bg: #11162e;
+  --row-tint: rgba(255, 255, 255, 0.025);
+  --section-tint: rgba(255, 255, 255, 0.05);
+  --surface-soft: rgba(255, 255, 255, 0.03);
+  --surface-mid: rgba(255, 255, 255, 0.05);
+  --surface-strong: rgba(255, 255, 255, 0.08);
+  --rate-success: #3CBB6C;
+  --rate-success-deep: #1e7a3f;
+  --rate-unsuccess: #ff9a4d;
+  --rate-unsuccess-deep: #c46810;
+  --shadow-card: 0 18px 48px -20px rgba(0, 0, 0, 0.55), 0 3px 8px -3px rgba(0, 0, 0, 0.4);
+}
+
+* { box-sizing: border-box; }
+html { scrollbar-gutter: stable; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--body-font);
+  background: var(--page-bg);
+  color: var(--paper);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  min-height: 100vh;
+  padding: clamp(1rem, 2.5vw, 2rem) clamp(0.6rem, 2vw, 1.5rem);
+  padding-bottom: clamp(5rem, 8vw, 7rem);
+  transition: background 0.3s ease, color 0.3s ease;
+  overflow-x: hidden;
+}
+
+/* ===========================================
+   SHELL (mirrors .form-container)
+   =========================================== */
+.otr-shell {
+  max-width: 900px;
+  margin: 0 auto;
+  background: var(--card-bg);
+  border: 1px solid var(--rule);
+  border-radius: clamp(0.5rem, 0.9vw, 0.8rem);
+  box-shadow: var(--shadow-card);
+  padding: clamp(1.4rem, 3vw, 2.6rem);
+  position: relative;
+  overflow: hidden;
+}
+.otr-shell::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, var(--ais-red), var(--ais-yellow), var(--ais-blue));
+}
+
+/* ===========================================
+   HEADER — same classnames as the main form, copied verbatim, the way
+   otp-tracker.html's header does.
+   =========================================== */
+.otr-header {
+  padding-bottom: clamp(1rem, 2vw, 1.6rem);
+  margin-bottom: clamp(1.2rem, 2.4vw, 2rem);
+  border-bottom: 1px solid var(--rule);
+}
+.brand-row {
+  display: flex; align-items: center;
+  gap: clamp(0.6rem, 1.2vw, 1rem);
+}
+.brand-row img {
+  height: clamp(48px, 7vw, 72px);
+  width: auto;
+  display: block;
+}
+.form-title-block { display: flex; flex-direction: column; gap: 0.25rem; min-width: 0; }
+.form-eyebrow {
+  font-family: var(--body-font);
+  font-size: var(--label);
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--ais-red);
+  display: inline-flex; align-items: center; gap: 0.7em;
+}
+.form-eyebrow .stripe {
+  width: clamp(1.8rem, 2.6vw, 2.4rem);
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--ais-red), var(--ais-yellow), var(--rate-success));
+}
+.form-title {
+  font-family: var(--display-font);
+  font-weight: 700;
+  font-size: var(--title);
+  line-height: 1.05;
+  letter-spacing: -0.012em;
+  color: var(--paper);
+  margin: 0;
+}
+.form-title em {
+  font-style: italic; font-weight: 400; color: var(--rate-success-deep);
+}
+:root[data-theme="dark"] .form-title em { color: var(--rate-success); }
+.otr-thanks-sub {
+  font-family: var(--body-font);
+  font-size: var(--body);
+  color: var(--paper-dim);
+  margin: 0.35rem 0 0;
+}
+
+/* ===========================================
+   META LINE + LOCK NOTE + OWED NOTE
+   =========================================== */
+.otr-meta {
+  font-family: var(--body-font);
+  font-size: var(--small);
+  color: var(--paper-dim);
+  margin: 0 0 1.2rem;
+}
+.otr-lock {
+  display: flex; gap: 0.6rem; align-items: flex-start;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--ais-blue);
+  border-radius: 0.45rem;
+  background: var(--surface-soft);
+  color: var(--paper-dim);
+  font-size: var(--small);
+  line-height: 1.5;
+  margin-bottom: 1.2rem;
+}
+.otr-lock .otr-lock-icon { flex-shrink: 0; }
+.otr-owed-note {
+  font-family: var(--body-font);
+  font-weight: 600;
+  color: var(--paper);
+  font-size: var(--small);
+  margin: 0 0 1.1rem;
+}
+
+/* ===========================================
+   QUESTION SECTIONS (form-section / mirrors the main form's spacing)
+   =========================================== */
+.form-section { margin-bottom: clamp(1.2rem, 2vw, 1.8rem); }
+.otr-q {
+  font-family: var(--body-font);
+  font-weight: 600;
+  color: var(--paper);
+  margin: 0 0 0.5rem;
+  font-size: var(--small);
+}
+.otr-q b { color: var(--ais-blue); margin-right: 0.35rem; }
+.otr-required { color: var(--ais-red); margin-left: 0.15rem; }
+
+/* Long-text textarea, copied verbatim from otp-progress-form.html */
+textarea.long-text {
+  width: 100%;
+  font-family: var(--body-font);
+  font-size: var(--body);
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--rule);
+  border-radius: 0.4rem;
+  background: var(--card-bg);
+  color: var(--paper);
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s ease;
+  line-height: 1.5;
+}
+textarea.long-text::placeholder { color: var(--paper-faint); font-style: italic; }
+textarea.long-text:focus { border-color: var(--rate-success); }
+textarea.long-text[readonly] {
+  background: var(--row-tint);
+  cursor: default;
+}
+textarea.long-text[readonly]:focus { border-color: var(--rule); }
+
+/* Single-select pill group (Q2), copied verbatim from otp-progress-form.html */
+.pill-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.4rem 0;
+}
+.pill {
+  font-family: var(--body-font);
+  font-size: var(--small);
+  font-weight: 500;
+  padding: 0.5rem 0.95rem;
+  border-radius: 999px;
+  border: 1px dashed var(--rule);
+  background: transparent;
+  color: var(--paper-mid);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.pill:hover { background: var(--surface-mid); color: var(--paper); }
+.pill.is-selected {
+  background: var(--rate-success);
+  color: white;
+  border: 1px solid var(--rate-success-deep);
+  font-weight: 600;
+}
+.pill:disabled { cursor: default; opacity: 0.6; }
+
+/* Missing-required outline: same dashed-blue convention as the main form's
+   .needs-value (info-cell / timeout-block). */
+textarea.long-text.needs-value { outline: 2px dashed var(--ais-blue); outline-offset: 2px; }
+.pill-group.needs-value { outline: 2px dashed var(--ais-blue); outline-offset: 4px; border-radius: 999px; }
+
+/* Next Steps echo, copied verbatim from otp-progress-form.html .prev-ns */
+.prev-ns {
+  margin-top: 0.45rem;
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--ais-blue);
+  border-radius: clamp(0.3rem, 0.5vw, 0.45rem);
+  background: var(--surface-soft);
+}
+.prev-ns-head {
+  font-family: var(--body-font);
+  font-size: var(--tiny);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--paper);
+}
+.prev-ns-echo {
+  padding: 0.5rem 0.75rem 0.6rem;
+  margin: 0 0 clamp(0.6rem, 1vw, 0.9rem);
+}
+.prev-ns-echo .prev-ns-list { margin-top: 0.35rem; }
+.prev-ns-list {
+  margin: 0; padding-left: 1.15rem;
+  display: flex; flex-direction: column; gap: 0.25rem;
+  font-size: var(--small); color: var(--paper-dim);
+}
+.prev-ns-list li { line-height: 1.45; }
+
+/* ===========================================
+   ACTION BUTTON (Send / View), copied verbatim from otp-progress-form.html
+   =========================================== */
+.otr-bar { display: flex; justify-content: flex-end; gap: 0.6rem; margin-top: 0.6rem; }
+.action-btn {
+  cursor: pointer;
+  display: inline-flex; align-items: center; gap: 0.55em;
+  font-family: var(--body-font);
+  font-size: clamp(0.7rem, 0.92vw, 0.82rem);
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding: 0.5em 1.1em;
+  border-radius: 999px;
+  border: 1px solid var(--rule);
+  color: var(--paper-dim);
+  background: var(--card-bg);
+  box-shadow: 0 8px 20px -10px rgba(20, 54, 66, 0.25);
+  transition: opacity 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  -webkit-backdrop-filter: blur(6px);
+          backdrop-filter: blur(6px);
+  text-decoration: none;
+}
+.action-btn::before {
+  content: ""; width: 0.85em; height: 0.85em;
+  background: currentColor;
+  flex-shrink: 0;
+}
+.action-btn.submit {
+  background: var(--rate-success-deep);
+  border-color: var(--rate-success-deep);
+  color: white;
+  box-shadow: 0 10px 24px -8px rgba(15, 95, 48, 0.45);
+}
+.action-btn.submit:hover {
+  background: var(--rate-success);
+  border-color: var(--rate-success);
+  color: white;
+}
+.action-btn.submit.disabled {
+  background: var(--surface-mid);
+  border-color: var(--rule);
+  color: var(--paper-faint);
+  box-shadow: none;
+}
+.action-btn.submit::before {
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.action-btn.primary {
+  background: var(--rate-success);
+  border-color: var(--rate-success-deep);
+  color: white;
+  box-shadow: 0 10px 24px -8px rgba(46, 161, 90, 0.45);
+}
+.action-btn.primary:hover {
+  background: var(--rate-success-deep);
+  border-color: var(--rate-success-deep);
+  color: white;
+}
+.action-btn.primary::before {
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E") center / contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+/* ===========================================
+   THEME TOGGLE, copied verbatim from otp-tracker.html
+   =========================================== */
+.theme-toggle {
+  flex-shrink: 0;
+  width: clamp(2.75rem, 2.6vw, 2.9rem);
+  height: clamp(2.75rem, 2.6vw, 2.9rem);
+  border-radius: 50%;
+  border: 1px solid var(--rule);
+  background: var(--surface-mid);
+  color: var(--paper-dim);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; padding: 0;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+}
+.theme-toggle:hover {
+  background: var(--surface-strong);
+  color: var(--paper);
+  border-color: var(--rate-success);
+  transform: scale(1.06);
+}
+.theme-toggle:active { transform: scale(0.96); }
+.theme-toggle .icon { width: 1.15em; height: 1.15em; display: block; }
+.theme-toggle .icon-sun { display: block; }
+.theme-toggle .icon-moon { display: none; }
+:root[data-theme="dark"] .theme-toggle .icon-sun { display: none; }
+:root[data-theme="dark"] .theme-toggle .icon-moon { display: block; }
+
+/* ===========================================
+   LOADING OVERLAY + calm bad-link card (hard rule 12: no error UI, ever),
+   copied verbatim from otp-progress-form.html's #form-loading, same
+   .form-loading-note the ungated viewer's landing card uses.
+   =========================================== */
+.form-loading {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(239, 236, 226, 0.55);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+          backdrop-filter: blur(14px) saturate(140%);
+  transition: opacity 320ms ease, visibility 320ms ease;
+  opacity: 1;
+  visibility: visible;
+}
+:root[data-theme="dark"] .form-loading {
+  background: rgba(10, 13, 31, 0.55);
+}
+.form-loading.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.form-loading-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  padding: 32px 44px;
+  background: rgba(255, 255, 255, 0.42);
+  border: 1px solid var(--rule);
+  border-radius: 18px;
+  box-shadow: 0 24px 48px -20px rgba(20, 54, 66, 0.22);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+          backdrop-filter: blur(22px) saturate(160%);
+  position: relative;
+  overflow: hidden;
+}
+:root[data-theme="dark"] .form-loading-card {
+  background: rgba(17, 22, 46, 0.5);
+  box-shadow: 0 24px 48px -20px rgba(0, 0, 0, 0.55);
+}
+.form-loading-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--ais-red), var(--ais-yellow), #1257FF);
+  opacity: 0.85;
+}
+.form-loading-spinner {
+  color: var(--ais-yellow);
+  display: block;
+  filter: drop-shadow(0 4px 10px rgba(255, 186, 20, 0.35));
+}
+.form-loading-spinner .ring-spin {
+  transform-origin: 32px 32px;
+  animation: form-loading-spin 1.05s linear infinite;
+}
+@keyframes form-loading-spin {
+  to { transform: rotate(360deg); }
+}
+.form-loading-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+}
+.form-loading-label .dot {
+  width: 0.4em;
+  height: 0.4em;
+  border-radius: 50%;
+  background: var(--ais-yellow);
+  box-shadow: 0 0 8px var(--ais-yellow);
+  animation: form-loading-pulse 1.4s ease-in-out infinite;
+}
+@keyframes form-loading-pulse {
+  0%, 100% { opacity: 0.35; transform: scale(0.85); }
+  50%      { opacity: 1;    transform: scale(1.1); }
+}
+.form-loading-note {
+  max-width: 32ch;
+  text-align: center;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--paper-dim);
+}
+
+/* iPad / Safari touch hardening (v0.19 convention), applied verbatim */
+.pill,
+.action-btn,
+.theme-toggle {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(20, 54, 66, 0.06);
+}
+</style>
+</head>
+<body>
+
+<button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle light or dark theme" title="Toggle light / dark theme" style="position:fixed; left:clamp(0.7rem,1.4vw,1.2rem); bottom:clamp(0.7rem,1.4vw,1.2rem); z-index:100;">
+  <svg class="icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+  </svg>
+  <svg class="icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="4"/>
+    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+  </svg>
+</button>
+
+<div class="form-loading" id="form-loading" role="status" aria-live="polite" aria-label="Loading your reflection">
+  <div class="form-loading-card" id="form-loading-card">
+    <svg class="form-loading-spinner" viewBox="0 0 64 64" width="56" height="56" aria-hidden="true">
+      <circle cx="32" cy="32" r="26" fill="none" stroke="currentColor" stroke-opacity="0.18" stroke-width="5"/>
+      <circle class="ring-spin" cx="32" cy="32" r="26" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-dasharray="50 200"/>
+    </svg>
+    <div class="form-loading-label"><span class="dot"></span>Loading your reflection</div>
+  </div>
+</div>
+
+<div class="otr-shell" id="otr-shell" hidden></div>
+
+<script>
+/* ===========================================
+   Theme toggle: same mechanism and same localStorage key as the gate and
+   the other OTP pages (data-theme attribute on <html>, persisted).
+   =========================================== */
+(function initTheme() {
+  var root = document.documentElement;
+  var toggle = document.getElementById('theme-toggle');
+
+  function syncImages(theme) {
+    document.querySelectorAll('img[data-light-src][data-dark-src]').forEach(function (img) {
+      var next = theme === 'dark' ? img.dataset.darkSrc : img.dataset.lightSrc;
+      if (img.getAttribute('src') !== next) img.setAttribute('src', next);
+    });
+  }
+  function applyTheme(theme, persist) {
+    if (theme === 'dark') root.setAttribute('data-theme', 'dark');
+    else root.removeAttribute('data-theme');
+    syncImages(theme);
+    if (persist) {
+      try { localStorage.setItem('ais-form-theme', theme); } catch (e) {}
+    }
+  }
+  window.__otrSyncThemeImages = function () {
+    syncImages(root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light');
+  };
+  syncImages(root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light');
+  if (toggle) {
+    toggle.addEventListener('click', function () {
+      var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      applyTheme(next, true);
+    });
+  }
+})();
+
+/* ===========================================
+   otp-v0.14 T2 · Teacher Reflection + Plan
+   No Supabase key ships in this build (hard rule 14 family): only the
+   public edge function URL, and the token in the link is the only
+   credential, exactly like the ungated viewer (otp-record.html).
+   =========================================== */
+var SB_FN_REFLECT = 'https://rfbetrcevtmisknndpgg.supabase.co/functions/v1/otp-reflect';
+var CANONICAL_TOKEN = /^[0-9a-f]{32}$/;
+var RETRY_DELAY_MS = 600;
+var STORAGE_PREFIX = 'ais-otp-reflect-v1:';
+var Q2_LEVELS = ['Beginner', 'Emerging', 'Good', 'Great', 'Outstanding'];
+var QUESTIONS = {
+  q1: 'How did the lesson go? What worked, and what did not?',
+  q2: 'Where was student progress?',
+  q3: 'Is there anything your coach should know before you meet?',
+  q4: 'What challenges do you expect?',
+  q5: 'What are your own ideas to overcome them?',
+  q6: 'How will you put them in place, and from when?',
+  q7: 'What support do you need and who would be most likely to provide it?',
+  q8: 'What change in student learning do you expect, and by when?'
+};
+
+// Test-only: ?_tmo=<ms> shortens the per-attempt cap so the resilience
+// specs don't have to wait through the real 7s timeout. Unset (the normal
+// case, and always on a teacher's own link) leaves it at 7000.
+var FETCH_TIMEOUT_MS = (function () {
+  try {
+    var v = parseInt(new URLSearchParams(location.search).get('_tmo'), 10);
+    return v > 0 ? v : 7000;
+  } catch (e) { return 7000; }
+})();
+
+var CURRENT_TOKEN = '';
+var CURRENT_STATE = null;
+var CURRENT_KIND = '';
+var SENDING = false;
+var draftTimer = null;
+
+function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+function getToken() {
+  try { return String(new URLSearchParams(location.search).get('t') || '').trim(); }
+  catch (e) { return ''; }
+}
+
+/* Mirrors the tracker's own fmtDayShort (STRIP-003 rule): a date-only value
+   is a calendar date, parsed by hand as local, never through
+   `new Date('YYYY-MM-DD')`. */
+var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+function fmtDayShort(v) {
+  if (!v) return '';
+  var s = String(v);
+  var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s);
+  try {
+    var d = m
+      ? new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]))
+      : new Date(s);
+    if (isNaN(d)) return s;
+    return String(d.getDate()).padStart(2, '0') + ' ' + MONTHS[d.getMonth()];
+  } catch (e) { return s; }
+}
+
+/* ===========================================
+   Local draft: autosave to localStorage key
+   ais-otp-reflect-v1:<first 8 chars of t>, debounced, restored on load,
+   cleared after a successful send.
+   =========================================== */
+function draftKey(token) {
+  return STORAGE_PREFIX + String(token || '').slice(0, 8);
+}
+function loadDraft(token) {
+  try { return JSON.parse(localStorage.getItem(draftKey(token)) || 'null'); }
+  catch (e) { return null; }
+}
+function saveDraftNow() {
+  if (!CURRENT_TOKEN) return;
+  try { localStorage.setItem(draftKey(CURRENT_TOKEN), JSON.stringify(currentValues())); }
+  catch (e) {}
+}
+function scheduleDraftSave() {
+  clearTimeout(draftTimer);
+  draftTimer = setTimeout(saveDraftNow, 220);
+}
+function clearDraft(token) {
+  try { localStorage.removeItem(draftKey(token)); } catch (e) {}
+}
+function restoreDraft() {
+  var d = loadDraft(CURRENT_TOKEN);
+  if (!d) return;
+  ['q1', 'q3', 'q4', 'q5', 'q6', 'q7', 'q8'].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el && !el.readOnly && d[id]) el.value = d[id];
+  });
+  var q2c = document.getElementById('q2_comment');
+  if (q2c && !q2c.readOnly && d.q2_comment) q2c.value = d.q2_comment;
+  if (d.q2_level) {
+    var btn = document.querySelector('#q2_level_group .pill[data-value="' + d.q2_level.replace(/"/g, '\\"') + '"]');
+    if (btn) {
+      document.querySelectorAll('#q2_level_group .pill').forEach(function (p) { p.classList.remove('is-selected'); });
+      btn.classList.add('is-selected');
+    }
+  }
+}
+
+/* ===========================================
+   Fetch helpers: each attempt capped via AbortController (NOT
+   AbortSignal.timeout, iOS 16+ only). No apikey / Authorization header (the
+   edge function is deployed --no-verify-jwt and this build carries no key),
+   mirroring the ungated viewer's keyless otp-record read.
+   =========================================== */
+async function fetchJSON(url, opts) {
+  var controller = new AbortController();
+  var timer = setTimeout(function () { controller.abort(); }, FETCH_TIMEOUT_MS);
+  try {
+    var o = Object.assign({ signal: controller.signal }, opts || {});
+    var resp = await fetch(url, o);
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    return await resp.json();
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function showLoading(on) {
+  document.getElementById('form-loading').classList.toggle('is-hidden', !on);
+}
+
+/* hard rule 12: no error UI, ever. A bad/expired/missing link gets the same
+   calm card the ungated viewer shows for a missing record, reusing the
+   loading overlay's card the same way showViewerLanding does. */
+function showBadLink() {
+  var card = document.getElementById('form-loading-card');
+  card.innerHTML = '';
+  var note = document.createElement('div');
+  note.className = 'form-loading-note';
+  note.id = 'otr-badlink-text';
+  note.textContent = 'This link is not valid or has expired. Ask your coach for a new link.';
+  card.appendChild(note);
+  showLoading(true);
+}
+
+/* ===========================================
+   Load state, with hard rule 12 (no error UI, ever): each attempt is
+   capped, a stall / non-2xx / unexpected shape retries silently behind the
+   loading overlay; after 8 attempts a single guarded reload (?_r=1) gives a
+   wedged tab a clean context. A definitive success:false (bad/expired
+   token) is shown once, calmly, and never retried. Mirrors
+   otp-tracker.html's loadTracker.
+   =========================================== */
+async function loadState() {
+  var token = getToken();
+  if (!CANONICAL_TOKEN.test(token)) { showBadLink(); return; }
+  CURRENT_TOKEN = token;
+  showLoading(true);
+  for (var attempt = 1; ; attempt++) {
+    var data = null;
+    try { data = await fetchJSON(SB_FN_REFLECT + '?t=' + encodeURIComponent(token), { method: 'GET' }); }
+    catch (e) { data = null; }
+
+    if (data && data.success === true && data.state && data.state.found === true) {
+      CURRENT_STATE = data.state;
+      showLoading(false);
+      renderView(deriveView(CURRENT_STATE));
+      return;
+    }
+    if (data && data.success === false) {
+      showBadLink();
+      return;
+    }
+    if (attempt >= 8) {
+      if (location.search.indexOf('_r=') === -1) {
+        var sep = location.search ? '&' : '?';
+        location.replace(location.href + sep + '_r=1');
+      }
+      return;
+    }
+    await sleep(RETRY_DELAY_MS);
+  }
+}
+
+/* ===========================================
+   View derivation + render
+   =========================================== */
+function deriveView(state) {
+  var owed = state.owed || [];
+  var has1 = owed.indexOf(1) !== -1;
+  var has2 = owed.indexOf(2) !== -1;
+  if (!has1 && !has2) return 'thankyou';
+  if (has1 && has2) return 'both';
+  if (has1) return 'part1';
+  return 'part2';
+}
+
+function requiredFieldsFor(kind) {
+  var req = [];
+  if (kind === 'part1' || kind === 'both') req = req.concat(['q1', 'q2_level', 'q3']);
+  if (kind === 'part2' || kind === 'both') req = req.concat(['q4', 'q5', 'q6', 'q7', 'q8']);
+  return req;
+}
+
+function currentValues() {
+  var v = {};
+  ['q1', 'q3', 'q4', 'q5', 'q6', 'q7', 'q8'].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el) v[id] = el.value;
+  });
+  var q2c = document.getElementById('q2_comment');
+  if (q2c) v.q2_comment = q2c.value;
+  var sel = document.querySelector('#q2_level_group .pill.is-selected');
+  v.q2_level = sel ? sel.dataset.value : '';
+  return v;
+}
+function missingFields(kind) {
+  var v = currentValues();
+  return requiredFieldsFor(kind).filter(function (k) { return !String(v[k] || '').trim(); });
+}
+function updateSendState() {
+  var btn = document.getElementById('otr-send');
+  if (!btn) return;
+  btn.classList.toggle('disabled', missingFields(CURRENT_KIND).length > 0);
+}
+function outlineMissing(keys) {
+  (keys || []).forEach(function (k) {
+    if (k === 'q2_level') {
+      var g = document.getElementById('q2_level_group');
+      if (g) g.classList.add('needs-value');
+    } else {
+      var el = document.getElementById(k);
+      if (el) el.classList.add('needs-value');
+    }
+  });
+}
+function clearOutlines() {
+  document.querySelectorAll('.needs-value').forEach(function (el) { el.classList.remove('needs-value'); });
+}
+function onFieldInput() {
+  this.classList.remove('needs-value');
+  updateSendState();
+  scheduleDraftSave();
+}
+function onQ2Click(e) {
+  document.querySelectorAll('#q2_level_group .pill').forEach(function (p) { p.classList.remove('is-selected'); });
+  e.currentTarget.classList.add('is-selected');
+  var group = document.getElementById('q2_level_group');
+  if (group) group.classList.remove('needs-value');
+  updateSendState();
+  scheduleDraftSave();
+}
+
+/* ===========================================
+   DOM builders. Every teacher-derived string (answers, names) goes through
+   textContent, never innerHTML.
+   =========================================== */
+function buildHeader(kind) {
+  var header = document.createElement('header');
+  header.className = 'otr-header';
+  var brandRow = document.createElement('div');
+  brandRow.className = 'brand-row';
+  var img = document.createElement('img');
+  img.dataset.lightSrc = '../brand/AIS Logo/AIS Navy.png';
+  img.dataset.darkSrc = '../brand/AIS Logo/AIS White.png';
+  img.src = img.dataset.lightSrc;
+  img.alt = 'Australian International School Sharjah';
+  brandRow.appendChild(img);
+
+  var titleBlock = document.createElement('div');
+  titleBlock.className = 'form-title-block';
+  var eyebrow = document.createElement('span');
+  eyebrow.className = 'form-eyebrow';
+  var stripe = document.createElement('span');
+  stripe.className = 'stripe';
+  eyebrow.appendChild(stripe);
+  eyebrow.appendChild(document.createTextNode('AIS Sharjah · Teacher Reflection'));
+  titleBlock.appendChild(eyebrow);
+
+  var h1 = document.createElement('h1');
+  h1.className = 'form-title';
+  h1.id = 'otr-title';
+  if (kind === 'part1') {
+    h1.appendChild(document.createTextNode('Your view of '));
+    var em1 = document.createElement('em'); em1.textContent = 'the lesson'; h1.appendChild(em1);
+  } else if (kind === 'thankyou') {
+    h1.textContent = 'Thank you.';
+  } else {
+    h1.appendChild(document.createTextNode('Your '));
+    var em2 = document.createElement('em'); em2.textContent = 'plan'; h1.appendChild(em2);
+  }
+  titleBlock.appendChild(h1);
+
+  if (kind === 'thankyou') {
+    var sub = document.createElement('p');
+    sub.className = 'otr-thanks-sub';
+    sub.id = 'otr-thanks-sub';
+    sub.textContent = 'Your answers are sent.';
+    titleBlock.appendChild(sub);
+  }
+
+  brandRow.appendChild(titleBlock);
+  header.appendChild(brandRow);
+  return header;
+}
+
+function buildMeta(state) {
+  var p = document.createElement('p');
+  p.className = 'otr-meta';
+  var gradeSubject = [state.grade, state.subject].filter(Boolean).join(' ');
+  var pieces = ['Observation ' + state.lap, gradeSubject, fmtDayShort(state.observation_date), 'Coach: ' + state.observer].filter(Boolean);
+  p.textContent = pieces.join(' · ');
+  return p;
+}
+
+function buildLockNote() {
+  var div = document.createElement('div');
+  div.className = 'otr-lock';
+  var icon = document.createElement('span');
+  icon.className = 'otr-lock-icon';
+  icon.setAttribute('aria-hidden', 'true');
+  icon.textContent = '🔒';
+  var text = document.createElement('span');
+  text.textContent = "Three short questions, about 5 minutes. Your coach's notes open for you as soon as you send your answers. We ask first so your view of the lesson is your own.";
+  div.appendChild(icon);
+  div.appendChild(text);
+  return div;
+}
+
+function buildOwedNote() {
+  var p = document.createElement('p');
+  p.className = 'otr-owed-note';
+  p.textContent = 'You have not sent questions 1 to 3 yet, so they are here too.';
+  return p;
+}
+
+function buildNextSteps(state) {
+  var div = document.createElement('div');
+  div.className = 'prev-ns prev-ns-echo';
+  var head = document.createElement('span');
+  head.className = 'prev-ns-head';
+  head.textContent = 'NEXT STEPS AGREED WITH YOUR COACH · OBSERVATION ' + state.lap;
+  div.appendChild(head);
+  var ol = document.createElement('ol');
+  ol.className = 'prev-ns-list';
+  (state.next_steps || []).forEach(function (s) {
+    if (!s || !String(s).trim()) return;
+    var li = document.createElement('li');
+    li.textContent = s;
+    ol.appendChild(li);
+  });
+  div.appendChild(ol);
+  return div;
+}
+
+function buildQuestionSection(num, id, opts) {
+  opts = opts || {};
+  var section = document.createElement('section');
+  section.className = 'form-section';
+  var q = document.createElement('p');
+  q.className = 'otr-q';
+  var b = document.createElement('b');
+  b.textContent = String(num);
+  q.appendChild(b);
+  q.appendChild(document.createTextNode(QUESTIONS[id]));
+  section.appendChild(q);
+
+  var ta = document.createElement('textarea');
+  ta.className = 'long-text';
+  ta.id = id;
+  ta.rows = opts.rows || 3;
+  ta.maxLength = 4000;
+  if (opts.readOnly) {
+    ta.readOnly = true;
+    ta.value = opts.value || '';
+  } else {
+    ta.placeholder = 'Your answer…';
+    ta.value = opts.value || '';
+    ta.addEventListener('input', onFieldInput);
+  }
+  section.appendChild(ta);
+  return section;
+}
+
+function buildQ2Section(opts) {
+  opts = opts || {};
+  var section = document.createElement('section');
+  section.className = 'form-section';
+  var q = document.createElement('p');
+  q.className = 'otr-q';
+  var b = document.createElement('b');
+  b.textContent = '2';
+  q.appendChild(b);
+  q.appendChild(document.createTextNode(QUESTIONS.q2));
+  if (!opts.readOnly) {
+    var star = document.createElement('span');
+    star.className = 'otr-required';
+    star.textContent = '*';
+    q.appendChild(star);
+  }
+  section.appendChild(q);
+
+  var group = document.createElement('div');
+  group.className = 'pill-group';
+  group.id = 'q2_level_group';
+  Q2_LEVELS.forEach(function (lvl) {
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'pill';
+    btn.dataset.value = lvl;
+    btn.textContent = lvl;
+    if (lvl === opts.level) btn.classList.add('is-selected');
+    if (opts.readOnly) btn.disabled = true;
+    else btn.addEventListener('click', onQ2Click);
+    group.appendChild(btn);
+  });
+  section.appendChild(group);
+
+  var hasComment = !!(opts.comment && String(opts.comment).trim());
+  if (!opts.readOnly || hasComment) {
+    var comment = document.createElement('textarea');
+    comment.className = 'long-text';
+    comment.id = 'q2_comment';
+    comment.rows = 2;
+    comment.maxLength = 4000;
+    comment.style.marginTop = '0.6rem';
+    if (opts.readOnly) {
+      comment.readOnly = true;
+      comment.value = opts.comment || '';
+    } else {
+      comment.placeholder = 'Add a comment if you want (optional)…';
+      comment.value = opts.comment || '';
+      comment.addEventListener('input', onFieldInput);
+    }
+    section.appendChild(comment);
+  }
+  return section;
+}
+
+function buildBar() {
+  var bar = document.createElement('div');
+  bar.className = 'otr-bar';
+  var btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'action-btn submit disabled';
+  btn.id = 'otr-send';
+  btn.textContent = 'Send my answers';
+  btn.addEventListener('click', onSendClick);
+  bar.appendChild(btn);
+  return bar;
+}
+
+function buildViewLink(token) {
+  var bar = document.createElement('div');
+  bar.className = 'otr-bar';
+  var a = document.createElement('a');
+  a.className = 'action-btn primary';
+  a.id = 'otr-view-link';
+  a.href = 'otp-record.html?t=' + encodeURIComponent(token);
+  a.textContent = 'View your observation';
+  bar.appendChild(a);
+  return bar;
+}
+
+function setFieldsDisabled(on) {
+  document.querySelectorAll('#otr-shell textarea:not([readonly])').forEach(function (t) { t.disabled = on; });
+  document.querySelectorAll('#otr-shell #q2_level_group .pill').forEach(function (p) { p.disabled = on; });
+}
+
+function renderView(kind) {
+  var shell = document.getElementById('otr-shell');
+  shell.innerHTML = '';
+  shell.appendChild(buildHeader(kind));
+  shell.appendChild(buildMeta(CURRENT_STATE));
+
+  if (kind === 'thankyou') {
+    if (CURRENT_STATE.part1) {
+      var a1 = CURRENT_STATE.part1.answers || {};
+      shell.appendChild(buildQuestionSection(1, 'q1', { readOnly: true, value: a1.q1, rows: 4 }));
+      shell.appendChild(buildQ2Section({ readOnly: true, level: a1.q2_level, comment: a1.q2_comment }));
+      shell.appendChild(buildQuestionSection(3, 'q3', { readOnly: true, value: a1.q3 }));
+    }
+    if (CURRENT_STATE.part2) {
+      shell.appendChild(buildNextSteps(CURRENT_STATE));
+      var a2 = CURRENT_STATE.part2.answers || {};
+      shell.appendChild(buildQuestionSection(4, 'q4', { readOnly: true, value: a2.q4 }));
+      shell.appendChild(buildQuestionSection(5, 'q5', { readOnly: true, value: a2.q5 }));
+      shell.appendChild(buildQuestionSection(6, 'q6', { readOnly: true, value: a2.q6 }));
+      shell.appendChild(buildQuestionSection(7, 'q7', { readOnly: true, value: a2.q7 }));
+      shell.appendChild(buildQuestionSection(8, 'q8', { readOnly: true, value: a2.q8 }));
+    }
+    if (CURRENT_STATE.view_unlocked) shell.appendChild(buildViewLink(CURRENT_TOKEN));
+    CURRENT_KIND = kind;
+  } else {
+    if (kind === 'part1') shell.appendChild(buildLockNote());
+    if (kind === 'both') shell.appendChild(buildOwedNote());
+
+    if (kind === 'part1' || kind === 'both') {
+      shell.appendChild(buildQuestionSection(1, 'q1', { rows: 4 }));
+      shell.appendChild(buildQ2Section({}));
+      shell.appendChild(buildQuestionSection(3, 'q3', {}));
+    }
+    if (kind === 'part2' || kind === 'both') {
+      shell.appendChild(buildNextSteps(CURRENT_STATE));
+      shell.appendChild(buildQuestionSection(4, 'q4', {}));
+      shell.appendChild(buildQuestionSection(5, 'q5', {}));
+      shell.appendChild(buildQuestionSection(6, 'q6', {}));
+      shell.appendChild(buildQuestionSection(7, 'q7', {}));
+      shell.appendChild(buildQuestionSection(8, 'q8', {}));
+    }
+    shell.appendChild(buildBar());
+    CURRENT_KIND = kind;
+    restoreDraft();
+    updateSendState();
+  }
+
+  if (window.__otrSyncThemeImages) window.__otrSyncThemeImages();
+  shell.hidden = false;
+}
+
+/* ===========================================
+   Send: client-side validation first (grey button + tap outlines missing,
+   no network call at all if invalid). Once valid: a network failure
+   retries silently while the button shows "Sending…" (hard rule 12); a
+   definitive missing_answers business error outlines the server's own
+   list; any other business miss is treated calmly by re-fetching state.
+   =========================================== */
+async function onSendClick() {
+  if (SENDING) return;
+  var btn = document.getElementById('otr-send');
+  clearOutlines();
+  var missing = missingFields(CURRENT_KIND);
+  if (missing.length) { outlineMissing(missing); return; }
+
+  var v = currentValues();
+  var parts = {};
+  if (CURRENT_KIND === 'part1' || CURRENT_KIND === 'both') {
+    parts['1'] = { q1: v.q1.trim(), q2_level: v.q2_level, q2_comment: (v.q2_comment || '').trim(), q3: v.q3.trim() };
+  }
+  if (CURRENT_KIND === 'part2' || CURRENT_KIND === 'both') {
+    parts['2'] = { q4: v.q4.trim(), q5: v.q5.trim(), q6: v.q6.trim(), q7: v.q7.trim(), q8: v.q8.trim() };
+  }
+
+  SENDING = true;
+  var prevText = btn.textContent;
+  btn.classList.add('disabled');
+  btn.textContent = 'Sending…';
+  setFieldsDisabled(true);
+
+  for (;;) {
+    var data = null;
+    try {
+      data = await fetchJSON(SB_FN_REFLECT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ t: CURRENT_TOKEN, parts: parts })
+      });
+    } catch (e) { data = null; }
+
+    if (data && data.success === true) {
+      clearDraft(CURRENT_TOKEN);
+      CURRENT_STATE = data.state;
+      SENDING = false;
+      renderView(deriveView(CURRENT_STATE));
+      return;
+    }
+    if (data && data.success === false && data.error === 'missing_answers') {
+      SENDING = false;
+      btn.classList.remove('disabled');
+      btn.textContent = prevText;
+      setFieldsDisabled(false);
+      outlineMissing(data.missing);
+      updateSendState();
+      return;
+    }
+    if (data && data.success === false) {
+      // any other business miss (not_open / Record not found / etc): hard
+      // rule 12, never show an error — quietly refresh state and re-render.
+      SENDING = false;
+      setFieldsDisabled(false);
+      await loadState();
+      return;
+    }
+    // network / timeout / parse failure: retry silently.
+    await sleep(RETRY_DELAY_MS);
+  }
+}
+
+// v0.37-style bfcache guard: a stale tab restored from suspension can hang
+// its next fetch forever; reload to a clean context before the teacher
+// notices anything.
+window.addEventListener('pageshow', function (event) {
+  if (event.persisted) location.reload();
+});
+
+loadState();
+</script>
+</body>
+</html>
