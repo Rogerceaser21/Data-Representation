@@ -558,31 +558,45 @@ function mirrorOtpReflectionsFromSupabase_(token) {
   const ss = SpreadsheetApp.openById(getSheetId());
   const lock = LockService.getScriptLock();
   lock.waitLock(30000);
+  var reallyPending = [];
   var teacherStampAt = '';
   var coachStampAt = '';
   try {
     const sheet = getOtpReflectionsSheetWithHeader_(ss);
-    pending.forEach(function(r) { upsertOtpReflectionRow_(sheet, record, r); });
+    // Skeptic-found race (2026-09-25), same script lock pattern the OTP record
+    // mirror uses (mirrorOtpRecord_'s findOtpRowByToken_): `pending` was read
+    // from Supabase BEFORE this call waited for the lock, so an overlapping
+    // mirror (the edge function's waitUntil plus the heal sweep, or a retried
+    // POST) can already have written a part's row while this call waited. The
+    // Sheet row is the durable marker under the lock; a part whose row already
+    // exists was someone else's completed mirror, so it is dropped here and
+    // never re-emailed or re-marked.
+    reallyPending = pending.filter(function(r) {
+      return findOtpReflectionRow_(sheet, record.record_id, r.part).rowIdx < 0;
+    });
+    if (!reallyPending.length) return out;
+
+    reallyPending.forEach(function(r) { upsertOtpReflectionRow_(sheet, record, r); });
 
     try {
-      if (sendOtpReflectThankYouEmail_(ss, record, links, pending)) teacherStampAt = new Date().toISOString();
+      if (sendOtpReflectThankYouEmail_(ss, record, links, reallyPending)) teacherStampAt = new Date().toISOString();
     } catch (mailErr) {
       Logger.log('OTP reflect mirror: thank-you email failed for ' + token + ': ' + mailErr.message);
     }
     try {
-      if (sendOtpReflectCoachEmail_(ss, record, pending)) coachStampAt = new Date().toISOString();
+      if (sendOtpReflectCoachEmail_(ss, record, reallyPending)) coachStampAt = new Date().toISOString();
     } catch (mailErr) {
       Logger.log('OTP reflect mirror: coach email failed for ' + token + ': ' + mailErr.message);
     }
 
     if (teacherStampAt || coachStampAt) {
-      pending.forEach(function(r) { setOtpReflectionRowStamps_(sheet, record.record_id, r.part, teacherStampAt, coachStampAt); });
+      reallyPending.forEach(function(r) { setOtpReflectionRowStamps_(sheet, record.record_id, r.part, teacherStampAt, coachStampAt); });
     }
   } finally {
     lock.releaseLock();
   }
 
-  pending.forEach(function(r) {
+  reallyPending.forEach(function(r) {
     try {
       if (markReflectionMirrored_(token, r.part, teacherStampAt || null, coachStampAt || null)) {
         out.mirrored++;

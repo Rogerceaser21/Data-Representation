@@ -7,18 +7,24 @@
  *   node Assets/OTP/tests/gs-reflect-harness.mjs
  *
  * Covers: a record WITHOUT a teacher_token behaves byte-identically to
- * otp-v0.13 (E1/E3's legacy bodies, unchanged); E1 (submit invite), E2
- * (thank-you), E3 (close + plan invite, with and without Part 1 sent) and E4
- * (coach copy) content, incl. that no teacher-facing email ever prints the
- * record_token; the "OTP Reflections" tab row write + update (no duplicate
- * on a second mirror of the same part); email stamps written to the tab and
- * via mark_reflection_mirrored; the heal sweep (otp_reflections_unmirrored);
- * and a brand-image fetch failure never blocks the send.
+ * otp-v0.13 (proven both by substring checks AND by a real dump-for-dump
+ * comparison against the otp-v0.13 (origin/main) sources themselves, same
+ * technique as gs-harness.mjs section (b)); E1 (submit invite), E2
+ * (thank-you, incl. that its button really targets links.view), E3 (close +
+ * plan invite, with and without Part 1 sent) and E4 (coach copy) content,
+ * incl. that no teacher-facing email ever prints the record_token; the "OTP
+ * Reflections" tab row write + update (no duplicate on a second mirror of
+ * the same part); email stamps written to the tab and via
+ * mark_reflection_mirrored; the heal sweep (otp_reflections_unmirrored); a
+ * concurrent-mirror race under the script lock (no double-send); teacher_token
+ * is LOCKED against a client-posted submit/update/close value; and a
+ * brand-image fetch failure never blocks the send.
  */
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
+import { execSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -27,6 +33,32 @@ const GS = path.join(REPO, 'Assets', 'R3', 'apps-script');
 const TOKEN_A = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';      // record_token
 const TEACHER_TOKEN_A = 'dddddddddddddddddddddddddddddd1';  // teacher_token
 const results = [];
+
+// otp-v0.14 T4 · the exact files this harness loads (see makeEnv below); also
+// used to build the otp-v0.13 baseline bundle for the byte-identical legacy
+// comparison (section a').
+const GS_REFLECT_FILES = ['00_Config.gs', '01_doPost.gs', '03_helpers.gs', '05_Supabase.gs', '08_OtpMirror.gs', '09_OtpReflect.gs'];
+
+/**
+ * The otp-v0.13 (origin/main) source of each file in GS_REFLECT_FILES, keyed
+ * by filename. 09_OtpReflect.gs has no origin/main counterpart (it did not
+ * exist at otp-v0.13), so it loads as an empty file, same as gs-harness.mjs's
+ * baseline bundle: it contributes nothing, which is exactly what it did
+ * before this branch existed, and every legacy call path in this harness
+ * (sendOtpTeacherEmail, sendOtpCloseEmail, mirrorOtpRecord_) never reaches it.
+ */
+function readBaselineSources() {
+  const out = {};
+  for (const file of GS_REFLECT_FILES) {
+    try {
+      out[file] = execSync('git show origin/main:Assets/R3/apps-script/' + file, { cwd: REPO, maxBuffer: 1 << 26, stdio: ['ignore', 'pipe', 'ignore'] }).toString();
+    } catch (e) {
+      out[file] = '';
+    }
+  }
+  return out;
+}
+const BASE_SOURCES = readBaselineSources();
 
 function response(code, body, isBlob) {
   const out = { getResponseCode: () => code, getContentText: () => body };
@@ -73,14 +105,27 @@ function range(sheet, r, c, nr, nc) {
   return out;
 }
 
+// reflectionForMirror's default links (below); pulled out so the E2 tests can
+// assert the thank-you button really targets links.view, not links.reflect.
+const MIRROR_REFLECT_LINK = 'https://example.test/otp-reflect.html';
+const MIRROR_VIEW_LINK = 'https://example.test/otp-record.html';
+
 /** { found, record, reflections, links } as otp_reflection_for_mirror would answer. */
 function reflectionForMirror(record, reflections, links) {
   return {
     found: true,
     record,
     reflections: reflections || [],
-    links: links || { reflect: 'https://example.test/otp-reflect.html', view: 'https://example.test/otp-record.html' }
+    links: links || { reflect: MIRROR_REFLECT_LINK, view: MIRROR_VIEW_LINK }
   };
+}
+
+/** Asserts an E2 mail's "Click here to view." button targets links.view + ?t=<teacher_token>, never links.reflect. */
+function assertE2ViewButton(mail) {
+  const viewHref = 'href="' + MIRROR_VIEW_LINK + '?t=' + TEACHER_TOKEN_A + '"';
+  const reflectHref = 'href="' + MIRROR_REFLECT_LINK + '?t=' + TEACHER_TOKEN_A + '"';
+  assert.ok(mail.htmlBody.includes(viewHref), 'E2 button targets links.view + ?t=<teacher_token>: looked for ' + viewHref);
+  assert.ok(!mail.htmlBody.includes(reflectHref), 'E2 button never points at links.reflect');
 }
 
 function baseRecord(extra) {
@@ -179,8 +224,13 @@ function makeEnv(options = {}) {
     Session: { getScriptTimeZone() { return 'UTC'; } }
   };
   vm.createContext(context);
-  for (const file of ['00_Config.gs', '01_doPost.gs', '03_helpers.gs', '05_Supabase.gs', '08_OtpMirror.gs', '09_OtpReflect.gs']) {
-    vm.runInContext(fs.readFileSync(path.join(GS, file), 'utf8'), context, { filename: file });
+  // sources (optional): a { filename: code } map overriding the disk read,
+  // used by the byte-identical baseline comparison below (section a') to run
+  // the SAME scenario against the otp-v0.13 sources instead of the current
+  // working tree.
+  for (const file of GS_REFLECT_FILES) {
+    const code = options.sources ? (options.sources[file] || '') : fs.readFileSync(path.join(GS, file), 'utf8');
+    vm.runInContext(code, context, { filename: file });
   }
   context.lookupOtpObserverEmail = () => state.coachEmail;
   context.lookupOtpTeacherEmail = () => state.teacherEmail;
@@ -231,6 +281,58 @@ check('a3 mirrorOtpRecord_ on a no-token record sends the legacy teacher email, 
   env.context.mirrorOtpRecord_(env.spreadsheet, sheet, baseRecord({ teacher_token: '' }));
   const mail = mailTo(env.state, 'teacher@example.test');
   assert.ok(mail && !mail.htmlBody.includes('cid:ais_header'));
+});
+
+/* ── (a') the same legacy calls, dumped and compared BYTE FOR BYTE against
+ * the real otp-v0.13 (origin/main) sources, not just substring checks. This
+ * is what actually proves "byte-identical" per the contract: a1-a3 above
+ * only assert a few chosen fragments stayed put, so a change elsewhere in the
+ * body (e.g. a wording tweak, a missing line) would pass them silently but
+ * fails here. ────────────────────────────────────────────────────────────── */
+
+/** mail array after mirrorOtpRecord_ appends a fresh no-token record (the full submit-time flow: backup + teacher email + stamps). */
+function legacySubmitDump(sources) {
+  const env = makeEnv({ sources });
+  const sheet = env.sheet();
+  env.context.mirrorOtpRecord_(env.spreadsheet, sheet, baseRecord({ teacher_token: '' }));
+  return env.state.mail;
+}
+/** mail array after sendOtpTeacherEmail's legacy (no-token) copy. */
+function legacyTeacherDump(sources) {
+  const env = makeEnv({ sources });
+  const data = { teacher: 'Jo Mare Kruger', inspector: 'Dave Richards', date: '2026-09-18', lap: 1, teacher_token: '' };
+  env.context.sendOtpTeacherEmail(env.spreadsheet, 'AIS-OTP-20260918-101112', TOKEN_A, '2026-09-18T10:11:12.345Z', data);
+  return env.state.mail;
+}
+/** mail array after sendOtpCloseEmail's legacy (no-token) copy. */
+function legacyCloseDump(sources) {
+  const env = makeEnv({ sources });
+  const record = { teacher: 'Jo Mare Kruger', observer: 'Dave Richards', observation_date: '2026-09-18', lap: 1,
+    record_token: TOKEN_A, teacher_token: '', closed_at: '2026-09-18T10:11:12.345Z',
+    next_step_1: 'Step one', next_step_2: 'Step two', next_step_3: 'Step three' };
+  env.context.sendOtpCloseEmail(env.spreadsheet, record);
+  return env.state.mail;
+}
+
+check("a4 legacy submit (backup + teacher email) is byte-identical to otp-v0.13's own sources", () => {
+  const cur = JSON.stringify(legacySubmitDump(undefined));
+  const base = JSON.stringify(legacySubmitDump(BASE_SOURCES));
+  assert.ok(cur.length > 20, 'the current run really produced mail (not a vacuous empty-vs-empty pass)');
+  assert.equal(cur, base);
+});
+
+check("a5 legacy sendOtpTeacherEmail is byte-identical to otp-v0.13's own sources", () => {
+  const cur = JSON.stringify(legacyTeacherDump(undefined));
+  const base = JSON.stringify(legacyTeacherDump(BASE_SOURCES));
+  assert.ok(cur.length > 20, 'the current run really produced mail (not a vacuous empty-vs-empty pass)');
+  assert.equal(cur, base);
+});
+
+check("a6 legacy sendOtpCloseEmail is byte-identical to otp-v0.13's own sources", () => {
+  const cur = JSON.stringify(legacyCloseDump(undefined));
+  const base = JSON.stringify(legacyCloseDump(BASE_SOURCES));
+  assert.ok(cur.length > 20, 'the current run really produced mail (not a vacuous empty-vs-empty pass)');
+  assert.equal(cur, base);
 });
 
 /* ── (b) E1 · the submit-time invite ─────────────────────────────────────── */
@@ -352,6 +454,7 @@ check('d1 Part 1 alone: doPost route mirrors one row, sends E2 (Part 1 wording) 
   assert.ok(teacherMail.htmlBody.includes('Thank you for sending your reflection. Your observation is now open for you.'));
   assert.ok(teacherMail.htmlBody.includes('will arrange a time to go through it with you and agree your next steps together.'));
   assert.ok(!teacherMail.htmlBody.includes(TOKEN_A), 'E2 never prints the record_token');
+  assertE2ViewButton(teacherMail);
 
   const coachMail = mailTo(env.state, 'coach@example.test');
   assert.ok(coachMail.subject.includes('Reflection received'));
@@ -373,6 +476,7 @@ check('d2 Part 2 alone owed (Part 1 already mirrored): E2 uses Part 2 wording, E
   const teacherMail = mailTo(env.state, 'teacher@example.test');
   assert.ok(teacherMail.htmlBody.includes('Thank you for sending your plan. Here is your observation.'));
   assert.ok(!teacherMail.htmlBody.includes('will arrange a time to go through it'));
+  assertE2ViewButton(teacherMail);
   const coachMail = mailTo(env.state, 'coach@example.test');
   assert.ok(coachMail.subject.includes('Plan received'));
   assert.ok(coachMail.htmlBody.includes('What challenges do you expect?'));
@@ -394,6 +498,7 @@ check('d3 both parts land together (Close Lap handed over Part 1 + Part 2 unsent
   const teacherMails = env.state.mail.filter((m) => m.to === 'teacher@example.test');
   assert.equal(teacherMails.length, 1, 'exactly one E2 covering both parts');
   assert.ok(teacherMails[0].htmlBody.includes('Thank you for sending your plan. Here is your observation.'));
+  assertE2ViewButton(teacherMails[0]);
 
   const coachMails = env.state.mail.filter((m) => m.to === 'coach@example.test');
   assert.equal(coachMails.length, 1, 'exactly one E4 covering both parts');
@@ -451,6 +556,25 @@ check('d8 a non-canonical record_token is rejected before any Supabase call', ()
   const out = output(env.context.doPost({ postData: { contents: JSON.stringify({ form: 'otp', action: 'reflect_mirror', record_token: 'not-a-token' }) } }));
   assert.deepEqual(out, { success: false, error: 'bad record' });
   assert.equal(env.state.fetches.length, 0);
+});
+
+check('d9 a concurrent mirror that already wrote the row under the lock (a stale pre-lock Supabase read) is never re-mirrored', () => {
+  const record = baseRecord();
+  // Supabase's pre-lock read still shows Part 1 pending (mirrored_at:null),
+  // exactly as it would while a second, overlapping call (the edge function's
+  // waitUntil plus the heal sweep, or a retried POST) is mid-flight: it wrote
+  // the "OTP Reflections" row for Part 1 but has not yet called
+  // mark_reflection_mirrored. This call must lose the race gracefully, not
+  // resend E2/E4.
+  const env = makeEnv({ forMirror: reflectionForMirror(record, [part1()]) });
+  const sheet = env.context.getOtpReflectionsSheetWithHeader_(env.spreadsheet);
+  env.context.upsertOtpReflectionRow_(sheet, record, part1());
+  const out = env.context.mirrorOtpReflectionsFromSupabase_(TOKEN_A);
+  assert.deepEqual(toPlain(out), { mirrored: 0, parts: [] }, 'the part someone else already wrote is dropped, not re-mirrored');
+  assert.equal(env.state.mail.length, 0, 'no duplicate E2 or E4');
+  assert.equal(sheet._data.length, 2, 'still header + exactly one row for the part, never duplicated');
+  const markCalls = env.state.fetches.filter((f) => f.url.includes('mark_reflection_mirrored'));
+  assert.equal(markCalls.length, 0, 'a part this call never actually mirrored is never marked by this call either');
 });
 
 /* ── (e) heal sweep ───────────────────────────────────────────────────────── */
@@ -518,6 +642,46 @@ check('g1 getOtpColumns() is 41 columns, teacher_token last', () => {
   const all = env.context.getOtpColumns();
   assert.equal(all.length, 41);
   assert.equal(all[40], 'teacher_token');
+});
+
+/* ── (h) teacher_token is LOCKED: never set by a client field, never touched
+ * by update/close (skeptic-found defect, 2026-09-25) ────────────────────── */
+
+const ATTACKER_TOKEN_1 = 'c'.repeat(32);
+const ATTACKER_TOKEN_2 = '9'.repeat(32);
+
+check('h1 a fresh OTP submit ignores a client-posted teacher_token (buildOtpRecord never copies it)', () => {
+  const env = makeEnv();
+  const payload = { form: 'otp', teacher: 'Jo Mare Kruger', inspector: 'Dave Richards', date: '2026-09-18', teacher_token: ATTACKER_TOKEN_1 };
+  const out = output(env.context.doPost({ postData: { contents: JSON.stringify(payload) } }));
+  assert.equal(out.success, true);
+  const sheet = env.spreadsheet.getSheetByName('OTP Submissions');
+  const headers = sheet._data[0];
+  assert.equal(sheet._data[1][headers.indexOf('teacher_token')], '', 'a client-posted teacher_token never lands on the Sheet row');
+  const ingest = env.state.fetches.filter((f) => f.url.includes('ingest_otp'));
+  assert.equal(ingest.length, 1);
+  const mirrored = JSON.parse(ingest[0].payload).payload;
+  assert.equal(mirrored.teacher_token, '', 'the Supabase mirror payload carries no client-supplied teacher_token either');
+});
+
+check('h2 action:update never overwrites an existing teacher_token, even when the client posts a different one', () => {
+  const env = makeEnv(); const sheet = env.sheet();
+  env.context.mirrorOtpRecord_(env.spreadsheet, sheet, baseRecord({ teacher_token: TEACHER_TOKEN_A }));
+  const payload = { form: 'otp', action: 'update', record_token: TOKEN_A, teacher_token: ATTACKER_TOKEN_2 };
+  const out = output(env.context.doPost({ postData: { contents: JSON.stringify(payload) } }));
+  assert.equal(out.success, true);
+  const headers = sheet._data[0];
+  assert.equal(sheet._data[1][headers.indexOf('teacher_token')], TEACHER_TOKEN_A, 'update never overwrites the locked teacher_token');
+});
+
+check('h3 action:close never blanks an existing teacher_token, even when the client posts an empty one', () => {
+  const env = makeEnv(); const sheet = env.sheet();
+  env.context.mirrorOtpRecord_(env.spreadsheet, sheet, baseRecord({ teacher_token: TEACHER_TOKEN_A }));
+  const payload = { form: 'otp', action: 'close', record_token: TOKEN_A, teacher_token: '', next_step_1: 'A', next_step_2: 'B', next_step_3: 'C' };
+  const out = output(env.context.doPost({ postData: { contents: JSON.stringify(payload) } }));
+  assert.equal(out.success, true);
+  const headers = sheet._data[0];
+  assert.equal(sheet._data[1][headers.indexOf('teacher_token')], TEACHER_TOKEN_A, 'close never blanks the locked teacher_token');
 });
 
 console.log('gs-reflect-harness: PASS (' + results.length + '/' + results.length + ')');

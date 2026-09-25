@@ -550,7 +550,10 @@ function handleOtpUpdateOrCloseLocked_(ss, sheet, data) {
   while (values[rowIdx].length < headers.length) values[rowIdx].push('');
 
   const isClose = data.action === 'close';
-  const LOCKED = { record_id: true, submitted_at: true, record_token: true, lap: true, round: true, coach_emailed_at: true, teacher_emailed_at: true };
+  // otp-v0.14: teacher_token is locked exactly like record_token, coach_emailed_at
+  // and teacher_emailed_at (skeptic-found defect, 2026-09-25) - it is minted once
+  // by Supabase's otp_write and must never be set or changed by a client field.
+  const LOCKED = { record_id: true, submitted_at: true, record_token: true, teacher_token: true, lap: true, round: true, coach_emailed_at: true, teacher_emailed_at: true };
 
   headers.forEach(function(h, c) {
     if (LOCKED[h]) return;
@@ -641,6 +644,10 @@ function buildOtpRecord(columns, data, recordId, recordToken, submittedAt) {
     else if (col === 'observation_date') record[col] = data.date || data.observation_date || '';
     else if (col === 'record_token') record[col] = recordToken;
     else if (col === 'coach_emailed_at' || col === 'teacher_emailed_at') record[col] = '';
+    // otp-v0.14: teacher_token is minted only by Supabase's otp_write (mirrored
+    // into this sheet via mirrorOtpRecord_/reflect_mirror), never copied from a
+    // client-posted field here (skeptic-found defect, 2026-09-25).
+    else if (col === 'teacher_token') record[col] = '';
     else if (col === 'school') record[col] = schoolForGrade(data.grade) || (data[col] != null ? data[col] : '');
     else record[col] = data[col] != null ? data[col] : '';
   });
