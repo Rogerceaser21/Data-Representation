@@ -3248,6 +3248,27 @@ const LAP_STATE_OPEN_REFLECTION_SENT = {
   },
 };
 
+/** Skeptic fix (T5): the "last one closed, coach starts the next" view
+ *  (LAP_STATE_STARTING_NEXT's shape) for a reflection-flow lap that is still
+ *  waiting on BOTH parts - step 2 and step 5 must read "waiting on teacher",
+ *  never "Coming soon". */
+const LAP_STATE_CLOSED_REFLECTION_WAITING = {
+  ...LAP_STATE_STARTING_NEXT,
+  last_closed: {
+    ...LAP_STATE_STARTING_NEXT.last_closed,
+    reflection_flow: true, part1_at: null, part2_at: null,
+  },
+};
+/** Same closed lap, both parts sent - step 2 and step 5 must read Completed. */
+const LAP_STATE_CLOSED_REFLECTION_DONE = {
+  ...LAP_STATE_STARTING_NEXT,
+  last_closed: {
+    ...LAP_STATE_STARTING_NEXT.last_closed,
+    reflection_flow: true,
+    part1_at: '2026-09-14T11:00:00.000Z', part2_at: '2026-09-16T09:00:00.000Z',
+  },
+};
+
 async function mockLapState(page: Page, answer: any) {
   await page.route('**/rest/v1/rpc/get_teacher_lap_state', (r: Route) =>
     r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(answer) }),
@@ -3362,6 +3383,27 @@ test('otp-v0.14 T5: once Part 1 lands, step 2 goes Completed - the rest of the s
   expect(await stripStatuses(page)).toEqual(
     ['Completed', 'Completed', 'Completed', 'Active', 'Pending', 'Pending']);
   expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.14 T5 skeptic fix: the "last one closed, starting next" strip shows the CLOSED lap\'s own reflection progress on steps 2 and 5, never "Coming soon"', async ({ page }) => {
+  const h = await harness(page);
+  await mockLapState(page, LAP_STATE_CLOSED_REFLECTION_WAITING);
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await expect(stripLine(page)).toContainText('now starting Observation', { timeout: 10_000 });
+  expect(await stripStatuses(page)).toEqual(
+    ['Active', 'Waiting on teacher', 'Pending', 'Pending', 'Waiting on teacher', 'Pending']);
+  expect(await stripText(page)).not.toContain('Coming soon');
+
+  const h2 = await harness(page);
+  await mockLapState(page, LAP_STATE_CLOSED_REFLECTION_DONE);
+  await openForm(page);
+  await pickTomSelect(page, 'teacher', 'Test Teacher');
+  await expect(stripLine(page)).toContainText('now starting Observation', { timeout: 10_000 });
+  expect(await stripStatuses(page)).toEqual(
+    ['Active', 'Completed', 'Pending', 'Pending', 'Completed', 'Pending']);
+  expect(h.errors).toEqual([]);
+  expect(h2.errors).toEqual([]);
 });
 
 test('otp-v0.14 T5: right after Save & Lock, a brand-new lap is reflection-flow - step 2 waits, step 5 is Pending not "Coming soon"', async ({ page }) => {

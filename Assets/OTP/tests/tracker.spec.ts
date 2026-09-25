@@ -400,6 +400,66 @@ test('otp-v0.14 T5: Reflection Form and Plan Form chips are enabled and filter t
   expect(h.errors).toEqual([]);
 });
 
+/* Skeptic fix (T5): a reflection-flow row's Reflection/Plan waiting state is
+ * INDEPENDENT of its legacy Emails/Feedback Meeting/Completed classification
+ * - a row can match both a legacy chip and a reflection chip at once, and
+ * the legacy chips must keep matching reflection-flow rows exactly as they
+ * do a legacy row (emails pending, or closed-but-owing-its-plan). */
+const REFLECTION_CHIP_GAP_FIXTURES = [
+  {
+    // open, reflection_flow, emails NOT yet sent, Part 1 not yet sent: must
+    // show under BOTH the Emails chip (legacy classification) AND the
+    // Reflection chip (step 2 waiting), never dropped from either.
+    name: 'Amara Diallo', section: 'primary', on_roster: true, observation_count: 1,
+    open: {
+      lap: 1, observation_date: '2026-09-21', observer: 'Marcus Lee', emails_done: false,
+      reflection_flow: true, part1_at: null,
+    },
+    open_count: 1, last_closed: null,
+    history: [{
+      lap: 1, state: 'open', observation_date: '2026-09-21', observer: 'Marcus Lee', closed_at: '',
+      emails_done: false, next_steps: [], reflection_flow: true, part1_at: null, part2_at: null,
+    }],
+  },
+  {
+    // closed, reflection_flow, NEITHER part sent: step 2 reads "waiting" too
+    // (not just step 5), so this must also show under the Reflection chip.
+    name: 'Zane Kessler', section: 'secondary', on_roster: true, observation_count: 1,
+    open: null, open_count: 0,
+    last_closed: {
+      lap: 1, observation_date: '2026-09-05', observer: 'Dana Cole', closed_at: '2026-09-07T08:00:00.000Z',
+      reflection_flow: true, part1_at: null, part2_at: null,
+    },
+    history: [{
+      lap: 1, state: 'closed', observation_date: '2026-09-05', observer: 'Dana Cole', closed_at: '2026-09-07T08:00:00.000Z',
+      emails_done: true, next_steps: [], reflection_flow: true, part1_at: null, part2_at: null,
+    }],
+  },
+];
+
+test('otp-v0.14 T5 skeptic fix: Emails/Feedback Meeting keep matching a reflection-flow row still waiting on its teacher', async ({ page }) => {
+  const h = await harness(page);
+  await mockTracker(page, REFLECTION_CHIP_GAP_FIXTURES);
+  await openTracker(page);
+
+  await page.locator('.pill[data-chip="emails"]').click();
+  expect(await visibleNames(page)).toEqual(['Amara Diallo']);
+
+  await page.locator('.pill[data-chip="reflection"]').click();
+  expect(await visibleNames(page)).toEqual(['Amara Diallo', 'Zane Kessler']);
+  expect(h.errors).toEqual([]);
+});
+
+test('otp-v0.14 T5 skeptic fix: Completed keeps matching a closed lap that still owes its Plan Form', async ({ page }) => {
+  const h = await harness(page);
+  await mockTracker(page, REFLECTION_FIXTURES);   // Noor Salim: closed, owes Part 2
+  await openTracker(page);
+
+  await page.locator('.pill[data-chip="completed"]').click();
+  expect(await visibleNames(page)).toEqual(['Noor Salim', 'Ravi Chandran']);
+  expect(h.errors).toEqual([]);
+});
+
 test('otp-v0.14 T5: the two per-observation placeholders read sent/waiting/after Close Lap, no answers shown', async ({ page }) => {
   const h = await harness(page);
   await mockTracker(page, REFLECTION_FIXTURES);

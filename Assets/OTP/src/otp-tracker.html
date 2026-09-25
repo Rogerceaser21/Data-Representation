@@ -918,18 +918,28 @@ function sublineText(t) {
   return '';
 }
 
-/* "Waiting on" classification for the chips (plan section 4). otp-v0.14: a
-   reflection-flow lap still waiting on its teacher (Part 1 while open, Part 2
-   once closed) takes priority - that IS the thing next due, coach-side
-   emails/feedback notwithstanding. */
+/* "Waiting on" classification for the chips (plan section 4). Legacy
+   behaviour, unaffected by reflection_flow: not-observed / emails / feedback
+   / completed stay exclusive and exactly as before v0.14. */
 function waitingOn(t) {
   if (!t.open && !t.last_closed) return 'not-observed';   // never observed
-  if (t.open) {
-    if (t.open.reflection_flow && !t.open.part1_at) return 'reflection';
-    return t.open.emails_done ? 'feedback' : 'emails';
-  }
-  if (t.last_closed.reflection_flow && !t.last_closed.part2_at) return 'plan';
+  if (t.open) return t.open.emails_done ? 'feedback' : 'emails';
   return 'completed';
+}
+/* otp-v0.14: independent of waitingOn above - a row can be BOTH e.g. still
+   owed its emails AND waiting on the teacher's reflection at once, so these
+   are their own booleans, not folded into the exclusive category. Mirrors
+   stepsForState's step 2 / step 5 'waiting' condition exactly (same for the
+   open and closed shapes), so the Reflection/Plan chips match every row
+   whose step 2 / step 5 actually reads "waiting on teacher". */
+function reflectionWaiting(t) {
+  var lap = t.open || t.last_closed;
+  return !!(lap && lap.reflection_flow && !lap.part1_at);
+}
+function planWaiting(t) {
+  if (t.open) return false;   // step 5 is 'pending' while open, never 'waiting'
+  var lap = t.last_closed;
+  return !!(lap && lap.reflection_flow && !lap.part2_at);
 }
 /* The "Observation" chip = next thing due is an observation: never
    observed, OR latest observation completed (ready for the next one). */
@@ -1009,6 +1019,8 @@ function buildRow(t) {
   row.dataset.name = t.name.toLowerCase();
   row.dataset.waiting = waitingOn(t);
   row.dataset.obsDue = isObservationDue(t) ? '1' : '0';
+  row.dataset.reflWait = reflectionWaiting(t) ? '1' : '0';
+  row.dataset.planWait = planWaiting(t) ? '1' : '0';
 
   var main = document.createElement('button');
   main.type = 'button';
@@ -1177,9 +1189,11 @@ function applyFilter() {
     else if (activeChip === 'emails') chipMatch = row.dataset.waiting === 'emails';
     else if (activeChip === 'feedback') chipMatch = row.dataset.waiting === 'emails' || row.dataset.waiting === 'feedback';
     else if (activeChip === 'completed') chipMatch = row.dataset.waiting === 'completed';
-    // otp-v0.14: rows still waiting on the teacher for that part.
-    else if (activeChip === 'reflection') chipMatch = row.dataset.waiting === 'reflection';
-    else if (activeChip === 'plan') chipMatch = row.dataset.waiting === 'plan';
+    // otp-v0.14: rows still waiting on the teacher for that part - independent
+    // of the chips above, a row can match one of these AND emails/feedback/
+    // completed at once (e.g. emails not sent yet AND Part 1 not sent yet).
+    else if (activeChip === 'reflection') chipMatch = row.dataset.reflWait === '1';
+    else if (activeChip === 'plan') chipMatch = row.dataset.planWait === '1';
     var show = nameMatch && chipMatch;
     row.style.display = show ? '' : 'none';
     if (show) visible++;

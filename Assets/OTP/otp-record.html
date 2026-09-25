@@ -6566,7 +6566,7 @@ body.is-viewer .cog-btn { display: none; }
       // left blank must never show a stray value on a REUSED page either).
       if (value === null || value === undefined) return;
 
-      // Apps Script sheets sometimes return dates as ISO strings — normalise for <input type=date>
+      // Apps Script sheets sometimes return dates as ISO strings, normalise for <input type=date>
       const toDateInput = (v) => {
         const d = new Date(v);
         if (isNaN(d)) return String(v);
@@ -7917,12 +7917,16 @@ body.is-viewer .cog-btn { display: none; }
   }
 
   // plan 2.1 worked examples 1-3, from a get_teacher_lap_state success answer.
-  // otp-v0.14: d.open now also carries reflection_flow/part1_at/part2_at
-  // (contract section 1). A legacy lap (reflection_flow false/absent) renders
-  // exactly as before ('coming' on steps 2/5); a reflection-flow lap shows
-  // step 2 completed once part1_at lands, else the calm "waiting on teacher"
-  // state (never Active, never a block), and step 5 stays pending while the
-  // lap is open (Part 2 only opens at Close Lap).
+  // otp-v0.14: d.open AND d.last_closed now also carry reflection_flow/
+  // part1_at/part2_at (contract section 1). A legacy lap (reflection_flow
+  // false/absent) renders exactly as before ('coming' on steps 2/5); a
+  // reflection-flow lap shows step 2 completed once part1_at lands, else the
+  // calm "waiting on teacher" state (never Active, never a block). Step 5
+  // stays pending while the lap is open (Part 2 only opens at Close Lap); once
+  // no lap is open (d.last_closed, the "now starting Observation N+1" view),
+  // steps 2/5 instead read the LAST closed lap's own reflection progress
+  // (completed once part1_at/part2_at land, else "waiting on teacher") - the
+  // paperwork stays visible while the strip otherwise points at the next one.
   function stripViewFromLapState(d) {
     if (d.open) {
       const n = String(d.open.lap || '').trim() || '1';
@@ -7944,11 +7948,16 @@ body.is-viewer .cog-btn { display: none; }
     if (d.last_closed) {
       const prevN = String(d.last_closed.lap || '').trim() || '1';
       const n = String(d.next_lap || '').trim() || '1';
+      const rf = !!d.last_closed.reflection_flow;
       return {
         n: n,
         line: 'Observation ' + prevN + ' completed ' + formatDay(d.last_closed.closed_at) +
               ' · now starting Observation ' + n,
-        status: ['current', 'coming', 'pending', 'pending', 'coming', 'pending'],
+        status: ['current',
+                 rf ? (d.last_closed.part1_at ? 'completed' : 'waiting') : 'coming',
+                 'pending', 'pending',
+                 rf ? (d.last_closed.part2_at ? 'completed' : 'waiting') : 'coming',
+                 'pending'],
       };
     }
     const n = String(d.next_lap || '').trim() || '1';
