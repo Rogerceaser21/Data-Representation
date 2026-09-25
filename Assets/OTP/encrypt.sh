@@ -95,3 +95,19 @@ mv "$TRACKER_TMP_DIR/otp-tracker.html" "$TRACKER_OUTPUT"
 rmdir "$TRACKER_TMP_DIR"
 
 echo "Encrypted to $TRACKER_OUTPUT"
+
+# Teacher Reflection + Plan (otp-v0.14 T2): self-contained, ships UNGATED
+# (no StatiCrypt, no Supabase key; it only calls the public otp-reflect
+# edge function, and the token in the link is the only credential, the
+# same shape as the ungated teacher viewer above). A plain copy is enough:
+# the master carries no build-time secret to strip.
+REFLECT_MASTER="src/otp-reflect.html"
+REFLECT_OUTPUT="otp-reflect.html"
+
+if [[ ! -f "$REFLECT_MASTER" ]]; then
+  echo "Reflect master not found: $REFLECT_MASTER" >&2
+  exit 1
+fi
+
+cp "$REFLECT_MASTER" "$REFLECT_OUTPUT"
+echo "Copied to $REFLECT_OUTPUT"
