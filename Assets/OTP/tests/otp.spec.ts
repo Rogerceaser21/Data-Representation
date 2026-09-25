@@ -1591,18 +1591,12 @@ test('otp-v0.7.1: the three recorded states paint calm tints, no coloured edge, 
     ).toBe(t.tint);
     await page.mouse.move(0, 0);
 
-    // the legend swatch carries the same tint and its normal 1px border
-    const sw = await page
-      .locator(`.rub-legend-sw[data-state="${t.state}"]`)
-      .evaluate((el) => {
-        const s = getComputedStyle(el);
-        return { bg: s.backgroundColor, left: s.borderLeftColor, top: s.borderTopColor, leftWidth: s.borderLeftWidth, w: s.width };
-      });
-    expect(sw.bg, t.state).toBe(t.tint);
-    expect(sw.left, t.state).toBe(sw.top);
-    expect(sw.left, t.state).not.toBe(t.edge);
-    expect(sw.leftWidth, t.state).toBe('1px');
-    expect(parseFloat(sw.w), t.state).toBeGreaterThanOrEqual(8);
+    // otp-v0.13: the legend's own colour cue is the letter badge (the square
+    // swatch is gone); it carries the same tint as a chip in that state
+    const lb = await page
+      .locator(`.rub-legend-badge[data-state="${t.state}"]`)
+      .evaluate((el) => getComputedStyle(el).backgroundColor);
+    expect(lb, t.state).toBe(t.tint);
   }
 
   // the dark theme keeps the same hues as translucent tints, no edge either
@@ -1810,18 +1804,31 @@ test('the colour legend is a permanent strip under the level headers; the Info b
     'Yellow: partially present in lesson',
     'Red: expected but not present in lesson',
   ]);
-  // otp-v0.5: the "no colour" swatch is the untouched chip, not a fourth colour
-  const swatches = legend.locator('.rub-legend-sw');
-  expect(await swatches.evaluateAll((els) => els.map((e) => (e as HTMLElement).dataset.state)))
+  // otp-v0.13: the square swatch is gone; the letter badge is the key's only
+  // colour cue now, filled with the same tint the chip in that state uses
+  await expect(legend.locator('.rub-legend-sw')).toHaveCount(0);
+  const badges = legend.locator('.rub-legend-badge');
+  expect(await badges.evaluateAll((els) => els.map((e) => (e as HTMLElement).dataset.state)))
     .toEqual(['', 'present', 'partial', 'absent']);
-  const paint = await page.evaluate(() => ({
-    swatch: getComputedStyle(document.querySelector('.rub-legend-sw[data-state=""]')!).backgroundColor,
-    swatchBorder: getComputedStyle(document.querySelector('.rub-legend-sw[data-state=""]')!).borderTopColor,
-    chip: getComputedStyle(document.querySelector('.rub-chip[data-state=""]')!).backgroundColor,
-    chipBorder: getComputedStyle(document.querySelector('.rub-chip[data-state=""]')!).borderTopColor,
-  }));
-  expect(paint.swatch).toBe(paint.chip);
-  expect(paint.swatchBorder).toBe(paint.chipBorder);
+  // tap each state onto a scratch chip so we have a live chip in every state
+  // to compare the legend badges against
+  const scratchChip = page.locator('.rub-chip[data-level="good"][data-n="4"]');
+  for (const l of ['present', 'partial', 'absent'] as const) {
+    const taps = { present: 1, partial: 2, absent: 3 }[l];
+    for (let i = 0; i < taps; i++) await scratchChip.click();
+    await page.mouse.move(0, 0);
+    await page.waitForTimeout(400); // the 0.16s colour transition has settled
+    const [badge, chip] = await Promise.all([
+      page.locator(`.rub-legend-badge[data-state="${l}"]`).evaluate((el) => getComputedStyle(el).backgroundColor),
+      scratchChip.evaluate((el) => getComputedStyle(el).backgroundColor),
+    ]);
+    expect(badge, l).toBe(chip);
+    for (let i = taps; i < 4; i++) await scratchChip.click(); // finish the cycle, back to N
+  }
+  const nBg = await page
+    .locator('.rub-legend-badge[data-state=""]')
+    .evaluate((el) => getComputedStyle(el).backgroundColor);
+  expect(nBg).toBe('rgba(0, 0, 0, 0)');
   // the tap hint is unchanged
   await expect(legend.locator('.rub-legend-hint')).toHaveText(
     'Tap a criterion to mark it green; tap again for yellow, again for red; a fourth tap clears it.'
