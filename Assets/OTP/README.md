@@ -53,6 +53,20 @@ returns a token, a rating, a note or a Next Step, only stage.
   above (the built tracker's raw bytes hold no fixture name/key, the viewer
   stays keyless with no reachable link, the form's link targets the tracker).
 
+## otp-v0.13 · released to main (2026-09-25)
+
+Tag `otp-v0.13`. Built outputs committed together (served md5 = committed): form
+`e87eae14d213e0e09449695fb6c7a3fe`, teacher page `89360646c75082850523675e70c03082`,
+Teacher Tracker unchanged (`9a0d99cbbeed3551bedbfa8902740ee1`, source untouched, file kept
+byte-identical). The preview is archived as origin tag `preview-otp-v0.13` (two review
+rounds on `.../Assets/OTP/preview.13/`). What shipped, for a colour-blind observer: every
+rubric statement shows a G / Y / R / N letter badge left of its "+" (CSS `::before` off
+the chip's own `data-state`, no fill, `pointer-events:none`), and the colour key above
+the rubric lost its squares: its G / Y / R circles carry the chip tints, N plain.
+Display only: no data, Sheet, Supabase or Apps Script change. Suite: 420 specs,
+Chromium + WebKit, exit 0. Known flaky spec (pre-existing, 3/40 on otp-v0.12): the dark
+docked-button P3 test can read a border colour mid-fade; a fix is its own task.
+
 ## otp-v0.12 · released to main (2026-09-23)
 
 Tag `otp-v0.12`. Built outputs committed together (served md5 = committed): form
